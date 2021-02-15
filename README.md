@@ -50,9 +50,6 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/pr
 - **Ultimate Software(UKG)**(soon)
 - **Workday**(soon)
     
-Smartrecruiters is a well known HR product including an ATS 
-(Applicant Tracking System), CRM (Candidate Relationship Management),
-helping organizations attract and hire better talent.
 
 ## 🚀 Installation
 ### 
@@ -74,6 +71,7 @@ To run workflows, the environment requires:
     │   ├── connector_push.py
     │   ├── README.md
     ├── .gitignore
+    ├── tutorial
     ├── LICENSE
     └── README.md
 
@@ -83,9 +81,11 @@ To run workflows, the environment requires:
 
   2.  **`.gitignore`**: This file tells git which files it should not track / not maintain a version history for.
 
-  3.  **`LICENSE`**: Apache License.
+  3.  **`tutorial`**: Pull/Push workflow examples.
+      
+  4.  **`LICENSE`**: Apache License.
 
-  4. **`README.md`**: A text file containing useful reference information about this project.
+  5. **`README.md`**: A text file containing useful reference information about this project.
 
 ## :octocat: Contributions
 
