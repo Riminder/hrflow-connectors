@@ -34,7 +34,21 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/pr
   - Our cool demos labs : https://labs.hrflow.ai
 
 ## List of Connectors
-  - **Smartrecruiters:**
+- **ADP**(soon)
+- **Careerbuilder**(soon)
+- **Cegid(Meta4)**(soon)
+- **Ceridian**(soon)
+- **Cornerstone OnDemand**(soon)
+- **Indeed**(soon)
+- **Kronos(UKG)**(soon)
+- **Monster**(soon)
+- **Oracle**(soon)
+- **SAP Successfactors**(soon)
+- **Salesforce**(soon)
+- **Smartrecruiters**
+- **Talentsoft**(soon)
+- **Ultimate Software(UKG)**(soon)
+- **Workday**(soon)
     
 Smartrecruiters is a well known HR product including an ATS 
 (Applicant Tracking System), CRM (Candidate Relationship Management),
