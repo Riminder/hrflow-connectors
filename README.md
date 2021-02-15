@@ -12,6 +12,12 @@
 ![](https://img.shields.io/github/v/release/Riminder/hrflow-connectors) ![](https://img.shields.io/github/license/Riminder/hrflow-connectors)
 
 
+<p align="center">
+  <a href="https://hrflow.ai">
+    <img alt="hrflow" src="https://hrflow.ai/new/img/home/corporate.svg"/>
+  </a>
+</p>
+
 <br/>
   hrflow-connectors is an open source project created by HrFlow.ai 
 to allow developers to connect easily HR ecosystem component.
@@ -19,6 +25,7 @@ to allow developers to connect easily HR ecosystem component.
 This project is basically designed to handle simply and easily,
 complex HR integrations by using [**workflows**](https://developers.hrflow.ai/products-1/workflows) feature.
 <br/>
+
 
 ## About HrFlow.ai
   https://www.HrFlow.ai is an API first company that provides the most sophisticated AI Powered JOB & PROFILE API. Corporates and Software vendors can leverage our technology layers to Parse, Enrich and Score both job and candidate data. The platform supports +200 apps, pipelines and code integrations so you can automate workflows with your favorite tools.
@@ -47,22 +54,18 @@ To run workflows, the environment requires:
   in this project.
 
     .
-    ├── Smartrecruiters
-    │   ├── pull_jobs_from_hrflow_into_smartrecruiters.py 
-    │   ├── pull_jobs_from_smartrecruiters_into_hrflow.py
-    │   ├── pull_profiles_from_hrflow_into_smartrecruiters.py
-    │   ├── pull_profiles_from_smartrecruiters_into_hrflow.py
-    │   ├── send_job_from_hrflow_into_smartrecruiters.py 
-    │   ├── send_job_from_smartrecruiters_into_hrflow.py
-    │   ├── send_profile_from_hrflow_into_smartrecruiters.py
-    │   ├── send_profile_from_smartrecruiters_into_hrflow.py
+    ├── connector_name
+    │   ├── connector_pull.py 
+    │   ├── connector_catch.py 
+    │   ├── connector_push.py
+    │   ├── README.md
     ├── .gitignore
     ├── LICENSE
     └── README.md
 
-  1.  **`/Smartrecruiters`**: This directory will contain
+  1.  **`/connector_name`**: This directory will contain
       all of the code related to either **PULL** or **CATCH**
-      profiles / jobs to HrFlow.ai from Smartrecruiters and vice versa.
+      profiles / jobs from HrFlow.ai to Destination and vice versa.
 
   2.  **`.gitignore`**: This file tells git which files it should not track / not maintain a version history for.
 
