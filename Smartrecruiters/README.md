@@ -20,23 +20,26 @@
 helping organizations attract and hire better talent.
 
 ## Getting Started
-The connection between HrFlow.ai and Smartrecruiters exists as part of many workflows,
+The connection between HrFlow.ai and Smartrecruiters exists as part of a flow, 
+a continuum of events that gets something done.,
 
-This interactive flow can be simplified to three basic steps:
+This interactive flow uses mainly three concepts:
 - Authentication
-- Pull jobs/profiles from/into Smartrecruiter from/into HrFlow.ai
-- Send job/profile from/into Smartrecruiter from/into HrFlow.ai
+- HrFlow.ai APIs
+- Smartrecruiters APIs
 
 
 ## Authentication
-Enabling connection between HrFlow.ai and Smartrecruiters, you’ll be able
+Enabling connection between **HrFlow.ai** and **Smartrecruiters**, you’ll be able
 immediately to assist to the magic show 
 
 You need both HrFlow.ai token and Smartrecruiter token
 
 ### HrFlow.ai token
-You can find your HrFlow.ai API [credentials](https://developers.hrflow.ai/getting-started/authentication) by clicking on API > Keys  tab in your dashboard settings
+You can find your HrFlow.ai API credentials by clicking on API > Keys  tab in your dashboard settings
 section.
+
+please follow this [link](https://developers.hrflow.ai/getting-started/authentication) for further information.
 
 <p align="center">
   <a href="https://hrflow.ai">
@@ -45,7 +48,10 @@ section.
 </p>
 
 ### Smartrecruiters token
-Smart token is [available](https://dev.smartrecruiters.com/customer-api/authentication/api-key/) in API / Integrations
+Token is available in your Smartrecruiter account, you navigate to Settings/Admin 
+then you will find the API key in API/Integrations. 
+
+for more information please follow this [link](https://dev.smartrecruiters.com/customer-api/authentication/api-key/) in API / Integrations
 
 <p align="center">
   <a href="https://hrflow.ai">
@@ -55,8 +61,8 @@ Smart token is [available](https://dev.smartrecruiters.com/customer-api/authenti
 
 ## HrFlow.ai APIs
 
-HrFlow.ai developed APIs to solve HR problems and to rapidly build production-ready integrations with 
-modern tools.
+HrFlow.ai has designed and developed its APIs to solve many complex HR problems
+and to rapidly build a production-ready integrations with modern tools such as Smartrecruiters.
 
 <p align="center">
   <a href="https://hrflow.ai">
@@ -64,15 +70,14 @@ modern tools.
   </a>
 </p>
 
-Using HrFlow.ai AI stack you can connect to Smartrecruiters and then enrich your data
-before send it to the destination of your choice
+Using HrFlow.ai AI stack you can connect to Smartrecruiters and enrich your data
+before send it to your destination.
 
 
 ## Smartrecruiters APIs
-SmartRecruiters APIs allow you to connect to their recruiting services 
-Marketplace 
+SmartRecruiters APIs allow you to connect to all recruiting services.
 
-These APIs help customers push or pull data from/into Smartrecruiters
+These APIs help customers to push or pull data from/into Smartrecruiters
 
 <p align="center">
   <a href="https://hrflow.ai">
