@@ -107,11 +107,18 @@ def hydrate(smart_job):
 def format_skills(job_description, ents):
     _skills = []
     for ent in ents:
-        if ent.get('label') == "Skill":
+        if ent.get('label') == "HardSkill":
             skill = {
                 "name": job_description[ent.get('start'):ent.get('end')],
                 "value": None,
-                "type": ent.get('subtype')
+                "type": "hard"
+            }
+            _skills.append(skill)
+        if ent.get('label') == "SoftSkill":
+            skill = {
+                "name": job_description[ent.get('start'):ent.get('end')],
+                "value": None,
+                "type": "soft"
             }
             _skills.append(skill)
     return _skills
