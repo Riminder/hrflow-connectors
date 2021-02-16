@@ -1,5 +1,3 @@
-<!-- AUTO-GENERATED-CONTENT:START (STARTER) -->
-
 <p align="center">
   <a href="https://hrflow.ai">
     <img alt="hrflow" src="https://img.riminder.net/logo-hrflow.svg" width="120" />
@@ -45,7 +43,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/pr
 - **Oracle**(soon)
 - **SAP Successfactors**(soon)
 - **Salesforce**(soon)
-- **Smartrecruiters**
+- [**Smartrecruiters**](https://www.smartrecruiters.com/)
 - **Talentsoft**(soon)
 - **Ultimate Software(UKG)**(soon)
 - **Workday**(soon)
@@ -66,9 +64,16 @@ To run workflows, the environment requires:
 
     .
     ├── connector_name
-    │   ├── connector_pull.py 
-    │   ├── connector_catch.py 
-    │   ├── connector_push.py
+    │   ├── candidate.json 
+    │   ├── job.json
+    │   ├── pull_jobs_from_hrflow_into_connector.py 
+    │   ├── pull_jobs_from_connector_into_hrflow.py
+    │   ├── pull_profiles_from_hrflow_into_connector.py 
+    │   ├── pull_profiles_from_connector_into_hrflow.py
+    │   ├── send_job_from_hrflow_into_connector.py 
+    │   ├── send_job_from_connector_into_hrflow.py
+    │   ├── send_profiles_from_hrflow_into_connector.py 
+    │   ├── send_profiles_from_connector_into_hrflow.py    
     │   ├── README.md
     ├── .gitignore
     ├── tutorial
@@ -77,7 +82,7 @@ To run workflows, the environment requires:
 
   1.  **`/connector_name`**: This directory will contain
       all of the code related to either **PULL** or **CATCH**
-      profiles / jobs from HrFlow.ai to Destination and vice versa.
+      profiles / jobs from HrFlow.ai into Connector and vice versa.
 
   2.  **`.gitignore`**: This file tells git which files it should not track / not maintain a version history for.
 
@@ -97,5 +102,3 @@ To run workflows, the environment requires:
 
   Any contributions you make to this effort are of course greatly 
   appreciated.
-
-<!-- AUTO-GENERATED-CONTENT:END -->
