@@ -4,12 +4,12 @@
   },
   "actions": {
     "details": {
-      "url": "https://api.smartrecruiters.com/jobs/3696cad0-a9b0-4a40-9cd7-4cc5feb1a509",
+      "url": "https://api.smartrecruiters.com/jobs/job_uuid",
       "method": "GET"
     }
   },
-  "refNumber": "REF1368S",
-  "id": "3696cad0-a9b0-4a40-9cd7-4cc5feb1a509",
+  "refNumber": "JOB_REF",
+  "id": "job_uuid",
   "language": {
     "code": "en",
     "labelNative": "English (US)",
