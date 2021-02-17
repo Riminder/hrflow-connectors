@@ -31,3 +31,17 @@
   "status": "SOURCING",
   "updatedOn": "2021-01-19T08:57:05.000Z"
 }
+
+
+from html.parser import HTMLParser
+def _handle_data(self, data):
+    self.text += data
+
+HTMLParser.handle_data = _handle_data
+
+def get_html_text(html: str):
+    parser = HTMLParser()
+    parser.text = ''
+    parser.feed(html)
+
+    return parser.text.strip()
