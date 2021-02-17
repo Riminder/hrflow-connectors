@@ -5,7 +5,7 @@
   </a>
 </p>
 <h1 align="center">
-  Smartrecruiter connectors
+  Smartrecruiters connectors
 </h1>
 
 
@@ -21,7 +21,7 @@ helping organizations attract and hire better talent.
 
 ## Getting Started
 The connection between HrFlow.ai and Smartrecruiters exists as part of a flow, 
-a continuum of events that gets something done.,
+a continuum of events that gets something done.
 
 This interactive flow uses mainly three concepts:
 - Authentication
@@ -31,7 +31,7 @@ This interactive flow uses mainly three concepts:
 
 ## Authentication
 Enabling connection between **HrFlow.ai** and **Smartrecruiters**, you’ll be able
-immediately to assist to the magic show 
+immediately to go through your integration. 
 
 You need both HrFlow.ai token and Smartrecruiter token
 
@@ -43,7 +43,7 @@ please follow this [link](https://developers.hrflow.ai/getting-started/authentic
 
 <p align="center">
   <a href="https://hrflow.ai">
-    <img alt="hrflow" src="https://gblobscdn.gitbook.com/assets%2F-M1L6Hspq8r9LXd5_gIC%2F-M1N14eQV1O6EFeF_V24%2F-M1N3dNcSAPnjgG0BRYh%2FScreenshot%20from%202020-03-01%2022-48-16.png?alt=media&token=5febc3f5-aed6-4ef3-abb0-6c7804eae5d1"/>
+    <img alt="hrflow" src="https://gblobscdn.gitbook.com/assets%2F-M1L6Hspq8r9LXd5_gIC%2F-MTkZzWWfGI1PHGVKHv0%2F-MTkawmrka2F7JNwKUCw%2Fapi_key.png?alt=media&token=fe3f1974-68ac-412d-aaa4-2cfe683b91ad"/>
   </a>
 </p>
 
