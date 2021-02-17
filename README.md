@@ -64,7 +64,7 @@ To run workflows, the environment requires:
 
     .
     ├── connector_name
-    │   ├── candidate.json 
+    │   ├── profile.json 
     │   ├── job.json
     │   ├── pull_jobs_from_hrflow_into_connector.py 
     │   ├── pull_jobs_from_connector_into_hrflow.py
