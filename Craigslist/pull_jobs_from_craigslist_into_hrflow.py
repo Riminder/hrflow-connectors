@@ -1,9 +1,7 @@
 import os
-import datetime
-from selenium import webdriver 
+from selenium import webdriver
 from hrflow import Hrflow
 import requests
-import time
 
 
 class Crawler:
@@ -94,46 +92,71 @@ def format_skills(text: str, ents: list) -> list:
     @param ents: list of entities in the text
     @return: list of skills
     """
-    skills = [{ "name": text[ent['start']:ent['end']], "value": None, "type": "hard" if ent['label'] == "HardSkill" else "soft"} for ent in ents if ent['label'] in ["HardSkill", "SoftSkill"]]
-    return list(set(skills))
+    skills = [{ "name": text[ent['start']:ent['end']].lower(),
+                "value": None, "type": "hard" if ent['label'] == "HardSkill" else "soft"}
+              for ent in ents if ent['label'] in ["HardSkill", "SoftSkill"]]
+    return list({v['name']:v for v in skills}.values())
 
 
 def workflow(settings: dict) -> None:
     """
     PULL WORKFLOW allows you to run the following code instructions on a regular basis
+
+    WORKFLOW follows these steps:
+        1- Launch HrFlow.ai Client
+        2- Open Jobboard URL
+        3- Compute total_pages to iterate over
+        4- Iterate over all pages
+        5- Iterate over ALL jobs in the given page
+        6- For every job, check whether the job is already exist in HrFlow.ai's board using Job API
+            6.1- if the job exists : nothing happens
+            6.2- if the job doesn't exist :
+                6.2.1- load and format the job
+                6.2.2- enrich the job using Document API
+                6.2.3- post the job using Job API
+
     @rtype: None
     @param settings: dictionary of settings params of the workflow
     """
+    SIZE = 120 # Max Size Per Page
+
     print('HrFlow.ai client')
     hrflow_client = Hrflow(api_secret=settings["API_KEY"], api_user=settings["USER_EMAIL"])
     
     c = Crawler()
     driver = c.get_driver()
-    driver.get(settings["JOBBOARD_URL"])
+
+    jobboard_url = settings["JOBBOARD_URL"]
+
+    driver.get(jobboard_url)
     driver.maximize_window()
     total_jobs = int(driver.find_element_by_xpath("//*[@class='totalcount']").text)
-    jobs = driver.find_elements_by_xpath("//*[@class='result-heading']")
-    for raw_job in range(0, total_jobs):
-        driver.get(jobs[i].find_element_by_tag_name('a').get_attribute("href"))
-        reference = driver.find_element_by_xpath("//*[@class='postinginfo']").text.split(':')[0].strip()
-        job_hrflow = hrflow_client.job.indexing.get(board_key=settings["BOARD_KEY"], reference=reference).get('data')
 
-        if job_hrflow:
-            driver.find_element_by_xpath("//*[@class='next']").click()
-            pass
-        else: 
-            try:
-                job = format_job(driver)
-                job["reference"] = reference
-                job["agent_key"] = settings['AGENT_KEY']
-                # Parse skills
-                SECTION_SEPARATOR = "\n\n"  # important to separate sections by double line jumps
-                job_text = SECTION_SEPARATOR.join(section['description'] or "" for section in job["sections"])
-                job_parsing = hrflow_client.document.parsing.post(text=job_text).get('data')
-                job['skills'] = format_skills(job_text, job_parsing["ents"])
-                print("Save job")
-                hrflow_client.job.indexing.add_json(board_key=settings["BOARD_KEY"], job_json=job)
-            except requests.exceptions.RequestException:
-                print('Saving job with reference %s failed'%(reference))
-        driver.get(settings['JOBBOARD_URL'])
-        jobs = driver.find_elements_by_xpath("//*[@class='result-heading']")
+    total_pages = total_jobs // SIZE + 1
+
+    for page in range(0, total_pages):
+        for raw_job in range(0, total_jobs):
+            driver.get(jobboard_url)
+            jobs = driver.find_elements_by_xpath("//*[@class='result-heading']")
+
+            driver.get(jobs[raw_job].find_element_by_tag_name('a').get_attribute("href"))
+            reference = driver.find_element_by_xpath("//*[@class='postinginfo']").text.split(':')[0].strip()
+            job_hrflow = hrflow_client.job.indexing.get(board_key=settings["BOARD_KEY"], reference=reference).get('data')
+
+            if job_hrflow:
+                pass
+            else:
+                try:
+                    job = format_job(driver)
+                    job["reference"] = reference
+                    job["agent_key"] = settings['AGENT_KEY']
+                    # Parse skills
+                    SECTION_SEPARATOR = "\n\n"  # important to separate sections by double line jumps
+                    job_text = SECTION_SEPARATOR.join(section['description'] or "" for section in job["sections"])
+                    job_parsing = hrflow_client.document.parsing.post(text=job_text).get('data')
+                    job['skills'] = format_skills(job_text, job_parsing["ents"])
+                    print("Save job")
+                    hrflow_client.job.indexing.add_json(board_key=settings["BOARD_KEY"], job_json=job)
+                except requests.exceptions.RequestException:
+                    print('Saving job with reference %s failed'%(reference))
+        jobboard_url += "s=%s"%((page+1)*SIZE)
