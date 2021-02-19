@@ -37,9 +37,11 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/pr
 - **Cegid(Meta4)**(soon)
 - **Ceridian**(soon)
 - **Cornerstone OnDemand**(soon)
-- [**Smartrecruiters**](https://github.com/Riminder/hrflow-connectors/tree/master/Craigslist)
+- [**Crosstalent**](https://github.com/Riminder/hrflow-connectors/tree/master/Crosstalent)
+- [**Smartrecruiters**](https://github.com/Riminder/hrflow-connectors/tree/master/Smartrecruiters)
 - **Indeed**(soon)
 - **Kronos(UKG)**(soon)
+- [**Mailchimp**](https://github.com/Riminder/hrflow-connectors/tree/master/Mailchimp)
 - **Monster**(soon)
 - **Oracle**(soon)
 - **SAP Successfactors**(soon)
@@ -51,21 +53,25 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/pr
 - **Workday**(soon)
     
 
-## 🚀 Installation
+## 🚀 Environment
 ### 
-To run workflows, the environment requires:
+Workflows runs in the following environment:
 
-    python (>= 3.6)
-    requests (>= 2.25.1)
-    hrflow (>= 1.8.6)
+    python== 3.6
+    hrflow==1.8.6
+    requests==2.24.0
+    selenium==3.141.0
+    twilio==6.46.0
+    scipy==1.5.1
+    numpy==1.19.0
 
 ## 🧐 What's inside?
 
-  A quick look at the top-level files and directories you'll see
-  in this project.
+  A quick look at the top-level files of a [**connector code structure**](https://github.com/Riminder/hrflow-connectors/tree/master/.Example):
+
 
     .
-    ├── connector_name
+    ├── Connector_name
     │   ├── profile.json 
     │   ├── job.json
     │   ├── pull_jobs_from_hrflow_into_connector.py 
