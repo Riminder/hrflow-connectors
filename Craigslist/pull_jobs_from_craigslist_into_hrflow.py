@@ -92,9 +92,9 @@ def format_skills(text: str, ents: list) -> list:
     @param ents: list of entities in the text
     @return: list of skills
     """
-    skills = [{ "name": text[ent['start']:ent['end']].lower(),
-                "value": None, "type": "hard" if ent['label'] == "HardSkill" else "soft"}
-              for ent in ents if ent['label'] in ["HardSkill", "SoftSkill"]]
+    skills = [{ "name": text[ent['start']:ent['end']].lower(), "value": None,
+                "type": "hard" if ent['label'] == "HardSkill" else "soft"}
+              for ent in ents if ent['label'].endswith("Skill")]
     return list({v['name']:v for v in skills}.values())
 
 
@@ -103,49 +103,39 @@ def workflow(settings: dict) -> None:
     PULL WORKFLOW allows you to run the following code instructions on a regular basis
 
     WORKFLOW follows these steps:
-        1- Launch HrFlow.ai Client
+        1- Init HrFlow.ai Client
         2- Open Jobboard URL
-        3- Compute total_pages to iterate over
+        3- Compute total_pages
         4- Iterate over all pages
-        5- Iterate over ALL jobs in the given page
-        6- For every job, check whether the job is already exist in HrFlow.ai's board using Job API
-            6.1- if the job exists : nothing happens
-            6.2- if the job doesn't exist :
-                6.2.1- load and format the job
-                6.2.2- enrich the job using Document API
-                6.2.3- post the job using Job API
+             - Iterate over all jobs in the given page
+                - For every job, check whether the job already indexed in HrFlow.ai's board using Job API
+                - If the job doesn't exist :
+                        - scrap and format the job
+                        - enrich the job using HrFlow.ai Document API
+                        - save the job using HrFlow.ai Job API
 
     @rtype: None
     @param settings: dictionary of settings params of the workflow
     """
-    SIZE = 120 # Max Size Per Page
-
-    print('HrFlow.ai client')
     hrflow_client = Hrflow(api_secret=settings["API_KEY"], api_user=settings["USER_EMAIL"])
-    
     c = Crawler()
     driver = c.get_driver()
-
-    jobboard_url = settings["JOBBOARD_URL"]
-
-    driver.get(jobboard_url)
+    # Get MAX PAGES
+    driver.get(settings["JOBBOARD_URL"])
     driver.maximize_window()
     total_jobs = int(driver.find_element_by_xpath("//*[@class='totalcount']").text)
-
-    total_pages = total_jobs // SIZE + 1
-
+    count_jobs = 120 # count jobs per Page
+    total_pages = total_jobs // count_jobs + 1
     for page in range(0, total_pages):
-        for raw_job in range(0, total_jobs):
-            driver.get(jobboard_url)
-            jobs = driver.find_elements_by_xpath("//*[@class='result-heading']")
-
-            driver.get(jobs[raw_job].find_element_by_tag_name('a').get_attribute("href"))
+        page_url = settings["JOBBOARD_URL"]+"s=%s"%((page+1)*count_jobs)
+        driver.get(page_url)
+        jobs = driver.find_elements_by_xpath("//*[@class='result-heading']")
+        total_jobs = int(driver.find_element_by_xpath("//*[@class='totalcount']").text)
+        for i in range(0, total_jobs):
+            driver.get(jobs[i].find_element_by_tag_name('a').get_attribute("href"))
             reference = driver.find_element_by_xpath("//*[@class='postinginfo']").text.split(':')[0].strip()
-            job_hrflow = hrflow_client.job.indexing.get(board_key=settings["BOARD_KEY"], reference=reference).get('data')
-
-            if job_hrflow:
-                pass
-            else:
+            verify_job = hrflow_client.job.indexing.get(board_key=settings["BOARD_KEY"], reference=reference).get('data')
+            if not verify_job:
                 try:
                     job = format_job(driver)
                     job["reference"] = reference
@@ -155,8 +145,7 @@ def workflow(settings: dict) -> None:
                     job_text = SECTION_SEPARATOR.join(section['description'] or "" for section in job["sections"])
                     job_parsing = hrflow_client.document.parsing.post(text=job_text).get('data')
                     job['skills'] = format_skills(job_text, job_parsing["ents"])
-                    print("Save job")
+                    # Save Job
                     hrflow_client.job.indexing.add_json(board_key=settings["BOARD_KEY"], job_json=job)
                 except requests.exceptions.RequestException:
                     print('Saving job with reference %s failed'%(reference))
-        jobboard_url += "s=%s"%((page+1)*SIZE)

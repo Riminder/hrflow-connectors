@@ -5,6 +5,9 @@ from twilio.rest import Client as Twilio
 
 
 class ReceivedSMS(object):
+    """
+    SMS object received
+    """
     def __init__(self, data: dict):
         self.ToCountry = data.get("ToCountry")  # FR
         self.ToState = data.get("ToState")  # (empty)
@@ -39,7 +42,7 @@ def workflow(body: dict, settings: dict) -> None:
         sms_parsing = hrflow_client.document.parsing.post(text=sms.Body).get('data')
     except requests.exceptions.RequestException:
         print('Parsing sms with SmsSid: %s failed ' % (sms.SmsSid))
-    skills = [sms.Body[ent['start']:ent['end']] for ent in sms_parsing["ents"]
+    skills = [sms.Body[ent['start']:ent['end']].lower() for ent in sms_parsing["ents"]
               if ent['label'] in ["HardSkill", "SoftSkill"]]
     if skills:
         message = "Here is the list of parsed skills from the SMS: "
