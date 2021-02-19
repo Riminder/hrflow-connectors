@@ -99,7 +99,7 @@ def get_tag_value(tags, name):
 xstr = lambda s: s or " "
 
 
-def workflow(settings, body):
+def workflow(body, settings):
     print("Welcome to catch: new application")
 
     profile_key = body["profile_key"]
