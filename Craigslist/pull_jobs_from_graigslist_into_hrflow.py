@@ -113,7 +113,7 @@ def workflow(settings: dict) -> None:
     driver.maximize_window()
     total_jobs = int(driver.find_element_by_xpath("//*[@class='totalcount']").text)
     jobs = driver.find_elements_by_xpath("//*[@class='result-heading']")
-    for i in range(0, total_jobs):
+    for raw_job in range(0, total_jobs):
         driver.get(jobs[i].find_element_by_tag_name('a').get_attribute("href"))
         reference = driver.find_element_by_xpath("//*[@class='postinginfo']").text.split(':')[0].strip()
         job_hrflow = hrflow_client.job.indexing.get(board_key=settings["BOARD_KEY"], reference=reference).get('data')
