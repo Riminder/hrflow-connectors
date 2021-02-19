@@ -70,10 +70,10 @@ To run workflows, the environment requires:
     │   ├── pull_jobs_from_connector_into_hrflow.py
     │   ├── pull_profiles_from_hrflow_into_connector.py 
     │   ├── pull_profiles_from_connector_into_hrflow.py
-    │   ├── send_job_from_hrflow_into_connector.py 
-    │   ├── send_job_from_connector_into_hrflow.py
-    │   ├── send_profiles_from_hrflow_into_connector.py 
-    │   ├── send_profiles_from_connector_into_hrflow.py    
+    │   ├── push_job_from_hrflow_into_connector.py 
+    │   ├── push_job_from_connector_into_hrflow.py
+    │   ├── push_profiles_from_hrflow_into_connector.py 
+    │   ├── push_profiles_from_connector_into_hrflow.py    
     │   ├── README.md
     ├── .gitignore
     ├── tutorial
