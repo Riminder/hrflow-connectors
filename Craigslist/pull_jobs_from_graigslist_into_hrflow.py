@@ -102,7 +102,7 @@ def workflow(settings: dict) -> None:
     """
     PULL WORKFLOW allows you to run the following code instructions on a regular basis
     @rtype: None
-    @param settings: dictionnary of settings params of the workflow
+    @param settings: dictionary of settings params of the workflow
     """
     print('HrFlow.ai client')
     hrflow_client = Hrflow(api_secret=settings["API_KEY"], api_user=settings["USER_EMAIL"])
