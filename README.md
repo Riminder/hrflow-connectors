@@ -67,7 +67,7 @@ Workflows runs in the following environment:
 
 ## 🧐 What's inside?
 
-  A quick look at the top-level files of a [**connector code structure**](https://github.com/Riminder/hrflow-connectors/tree/master/.Example):
+  A quick look at the top-level files of a [**connector code structure**](https://github.com/Riminder/hrflow-connectors/tree/master/.ExampleConnector):
 
 
     .
