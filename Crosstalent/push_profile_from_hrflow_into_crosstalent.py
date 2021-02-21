@@ -35,6 +35,7 @@ def format_crosstalent_profile(profile):
 def workflow(body: dict, settings: dict) -> None:
     """
     CATCH WORKFLOW allows you to run a code function given an API POST request
+    @param body: POST request Body
     @rtype: None
     @param settings: dictionary of settings params of the workflow
     """
