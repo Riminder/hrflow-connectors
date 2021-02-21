@@ -8,7 +8,7 @@ class ReceivedSMS(object):
     """
     SMS object received
     """
-    def __init__(self, data: dict):
+    def __init__(self, data: dict)-> object:
         self.ToCountry = data.get("ToCountry")  # FR
         self.ToState = data.get("ToState")  # (empty)
         self.SmsMessageSid = data.get("SmsMessageSid")  # SM5565cf41ar77c19981370121f4b7fdaf
