@@ -8,7 +8,7 @@ class Crawler:
     """
     selenium Crawler Class
     """
-    def __init__(self):
+    def __init__(self) -> object:
         chrome_options = webdriver.ChromeOptions()
         self._tmp_folder = '/tmp/chromium'
         if not os.path.exists(self._tmp_folder):
