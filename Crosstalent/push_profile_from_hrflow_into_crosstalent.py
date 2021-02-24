@@ -179,14 +179,13 @@ def format_crosstalent_profile(profile: dict) -> dict:
 def workflow(body: dict, settings: dict) -> None:
     """
     CATCH WORKFLOW allows you to run a code function given an API POST request
-    @param body: POST request Body
     @rtype: None
+    @param body: POST request Body
     @param settings: dictionary of settings params of the workflow
     """
     event = WebhookEvent(body)
     if not event.profile:
         return
-
     assert event.type == "profile.parsing.success"  # This workflow is only to create a new profile
     hrflow_client = Hrflow(api_secret=settings["API_KEY"], api_user=settings["USER_EMAIL"])
     crosstalent_api_url = "https://{}.salesforce.com/services/oauth2/token".format(settings["CT_ENV"])
@@ -201,14 +200,13 @@ def workflow(body: dict, settings: dict) -> None:
         }
         crosstalent_token = requests.post(crosstalent_api_url, data=payload).json()["access_token"]
     except requests.exceptions.RequestException:
-        print('Retrieving token from Crosstalent failed')
+        raise Exception('Retrieving token from Crosstalent failed')
     # Get HrFlow.ai Profile
     try:
         profile_hrflow = hrflow_client.profile.indexing.get(source_key=event.source_key, key=event.profile_key).get(
             'data')
     except requests.exceptions.RequestException:
-        print(
-            'Retrieving profile with profile_key: %s and source_key: %s failed' % (event.profile_key, event.source_key))
+        raise Exception('Retrieving profile with profile_key: %s and source_key: %s failed' % (event.profile_key, event.source_key))
     # Create HrFlow.ai Profile in Crosstalent
     # TODO: verify that the profile doesn't exist yet in Crosstalent
     try:
@@ -222,4 +220,4 @@ def workflow(body: dict, settings: dict) -> None:
                           json=format_crosstalent_profile(profile_hrflow),
                           headers=headers)
     except requests.exceptions.RequestException:
-        print('Saving profile with profile_key: %s and source_key: %s failed' % (event.profile_key, event.source_key))
+        raise Exception('Saving profile with profile_key: %s and source_key: %s failed' % (event.profile_key, event.source_key))
