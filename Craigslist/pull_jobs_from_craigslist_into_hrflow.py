@@ -148,4 +148,4 @@ def workflow(settings: dict) -> None:
                     # Save Job
                     hrflow_client.job.indexing.add_json(board_key=settings["BOARD_KEY"], job_json=job)
                 except requests.exceptions.RequestException:
-                    print('Saving job with reference %s failed'%(reference))
+                    raise Exception('Saving job with reference %s failed'%(reference))

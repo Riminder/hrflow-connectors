@@ -41,7 +41,7 @@ def workflow(body: dict, settings: dict) -> None:
     try:
         sms_parsing = hrflow_client.document.parsing.post(text=sms.Body).get('data')
     except requests.exceptions.RequestException:
-        print('Parsing sms with SmsSid: %s failed ' % (sms.SmsSid))
+        raise Exception('Parsing sms with SmsSid: %s failed ' % (sms.SmsSid))
     skills = [sms.Body[ent['start']:ent['end']].lower() for ent in sms_parsing["ents"]
               if ent['label'] in ["HardSkill", "SoftSkill"]]
     if skills:
