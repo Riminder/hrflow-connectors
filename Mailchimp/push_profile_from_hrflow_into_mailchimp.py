@@ -6,6 +6,8 @@ from mailchimp_transactional.api_client import ApiClientError
 def get_profile_event(_request: dict) -> dict:
     """
     Reconstruct webhook body
+    @param _request: POST request
+    @return: webhook event
     """
     return {
         "type": _request.get('type'),
