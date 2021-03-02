@@ -32,18 +32,18 @@ class ReceivedSMS(object):
 def workflow(body: dict, settings: dict) -> None:
     """
     CATCH WORKFLOW allows you to run a code function given an API POST request
-    @rtype: None
+    @rtype: null
     @param settings: dictionary of settings params of the workflow
     """
     hrflow_client = Hrflow(api_secret=settings["API_KEY"], api_user=settings["USER_EMAIL"])
     twilio_client = Twilio(settings["TWILIO_SID"], settings["TWILIO_TOKEN"])  # from twilio.com/console
     sms = ReceivedSMS(body)
     try:
-        sms_parsing = hrflow_client.document.parsing.post(text=sms.Body).get('data')
+        sms_parsing = hrflow_client.document.parsing.post(text=sms.Body).get("data")
     except requests.exceptions.RequestException:
-        raise Exception('Parsing sms with SmsSid: %s failed ' % (sms.SmsSid))
-    skills = [sms.Body[ent['start']:ent['end']].lower() for ent in sms_parsing["ents"]
-              if ent['label'] in ["HardSkill", "SoftSkill"]]
+        raise Exception("Parsing sms with SmsSid: %s failed " % (sms.SmsSid))
+    skills = [sms.Body[ent["start"]:ent["end"]].lower() for ent in sms_parsing["ents"]
+              if ent["label"] in ["HardSkill", "SoftSkill"]]
     if skills:
         message = "Here is the list of parsed skills from the SMS: "
         message += ", ".join(skills)
