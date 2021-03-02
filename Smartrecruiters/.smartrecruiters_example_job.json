@@ -41,7 +41,7 @@ HTMLParser.handle_data = _handle_data
 
 def get_html_text(html: str):
     parser = HTMLParser()
-    parser.text = ''
+    parser.text = ""
     parser.feed(html)
 
     return parser.text.strip()

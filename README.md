@@ -50,7 +50,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/pr
 - **Salesforce**(soon)
 - [**Smartrecruiters**](https://github.com/Riminder/hrflow-connectors/tree/master/Smartrecruiters)
 - [**Staffme**](https://github.com/Riminder/hrflow-connectors/tree/master/Staffme)
-- **Talentsoft**(soon)
+- [**Talentsoft**]((https://github.com/Riminder/hrflow-connectors/tree/master/Talentsoft))
 - [**Twilio**](https://github.com/Riminder/hrflow-connectors/tree/master/Twilio)
 - **Ultimate Software(UKG)**(soon)
 - **Workday**(soon)
@@ -68,7 +68,7 @@ Workflows runs in the following environment:
     scipy==1.5.1
     numpy==1.19.0
 
-## 🧐 What's inside?
+## 🧐 What"s inside?
 
   A quick look at the top-level files of a [**connector code structure**](https://github.com/Riminder/hrflow-connectors/tree/master/.ExampleConnector):
 
@@ -108,7 +108,7 @@ Workflows runs in the following environment:
   Please feel free to contribute to the quality of this content by
   submitting PRs for improvements to code, architecture, etc. 
   While typo fixes are welcomed, they will likely be caught through 
-  normal editing/publishing processes, so please don't worry about 
+  normal editing/publishing processes, so please don"t worry about 
   them right now.
 
   Any contributions you make to this effort are of course greatly 
