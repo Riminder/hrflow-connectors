@@ -1,8 +1,20 @@
 import requests
 from typing import Union, Dict
 
+class Auth:
+    def update(
+        self,
+        url: Union[str, None] = None,
+        headers: Union[Dict[str, str], None] = None,
+        payload: Union[str, None] = None,
+        cookies: Union[str, None] = None,
+    ):
+        pass
 
-class OAuth2PasswordCredentialsBody:
+class NoAuth(Auth):
+    pass
+
+class OAuth2PasswordCredentialsBody(Auth):
     def __init__(
         self,
         access_token_url: str,
