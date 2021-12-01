@@ -18,6 +18,11 @@ class HTTPAction(BaseModel):
     _cookies: Dict[str,str] = dict()
     _payload: Dict[str,str] = dict()
 
+    def __init__(self, auth: Auth = NoAuth(), *args, **kwargs):
+        super().__init__(*args, auth=auth, **kwargs)
+
+        self.auth.update(params=self._params, headers=self._headers, cookies=self._cookies, payload=self._payload)
+
     def execute(self) -> requests.Response:
         if self.url is None:
             raise ConnectionError("URL is not defined !")
