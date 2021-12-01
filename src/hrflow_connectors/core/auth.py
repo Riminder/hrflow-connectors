@@ -1,7 +1,9 @@
 import requests
-from typing import Union, Dict
+from typing import Union, Dict, Optional
+from pydantic import BaseModel, validator
 
-class Auth:
+
+class Auth(BaseModel):
     def update(
         self,
         url: Union[str, None] = None,
@@ -11,10 +13,20 @@ class Auth:
     ):
         pass
 
+
 class NoAuth(Auth):
     pass
 
+
 class OAuth2PasswordCredentialsBody(Auth):
+    access_token_url: str
+    client_id: str
+    client_secret: str
+    username: str
+    password: str
+
+    access_token: Optional[str] = None
+
     def __init__(
         self,
         access_token_url: str,
@@ -22,7 +34,18 @@ class OAuth2PasswordCredentialsBody(Auth):
         client_secret: str,
         username: str,
         password: str,
+        *args,
+        **kwargs,
     ):
+        super().__init__(
+            access_token_url=access_token_url,
+            client_id=client_id,
+            client_secret=client_secret,
+            username=username,
+            password=password,
+            *args,
+            **kwargs,
+        )
         payload = dict()
         payload["grant_type"] = "password"
         payload["client_id"] = client_id
@@ -35,8 +58,9 @@ class OAuth2PasswordCredentialsBody(Auth):
             raise ConnectionError(
                 "OAuth2 failed ! Reason : `{}`".format(response.content)
             )
-
+        #print(self._access_token)
         self.access_token = response.json()["access_token"]
+
 
     def update(
         self,
@@ -48,3 +72,4 @@ class OAuth2PasswordCredentialsBody(Auth):
 
         if headers is not None:
             headers.update({"Authorization": "OAuth {}".format(self.access_token)})
+    
