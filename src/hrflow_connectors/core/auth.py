@@ -6,10 +6,10 @@ from pydantic import BaseModel, validator
 class Auth(BaseModel):
     def update(
         self,
-        url: Union[str, None] = None,
+        params: Union[Dict[str, str], None] = None,
         headers: Union[Dict[str, str], None] = None,
-        payload: Union[str, None] = None,
-        cookies: Union[str, None] = None,
+        payload: Union[Dict[str, str], None] = None,
+        cookies: Union[Dict[str, str], None] = None,
     ):
         pass
 
@@ -58,18 +58,16 @@ class OAuth2PasswordCredentialsBody(Auth):
             raise ConnectionError(
                 "OAuth2 failed ! Reason : `{}`".format(response.content)
             )
-        #print(self._access_token)
         self.access_token = response.json()["access_token"]
 
 
     def update(
         self,
-        url: Union[str, None] = None,
+        params: Union[Dict[str, str], None] = None,
         headers: Union[Dict[str, str], None] = None,
-        payload: Union[str, None] = None,
-        cookies: Union[str, None] = None,
+        payload: Union[Dict[str, str], None] = None,
+        cookies: Union[Dict[str, str], None] = None,
     ):
-
         if headers is not None:
             headers.update({"Authorization": "OAuth {}".format(self.access_token)})
     
