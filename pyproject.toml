@@ -7,9 +7,13 @@ authors = ["Your Name <you@example.com>"]
 [tool.poetry.dependencies]
 python = "^3.6"
 requests = "^2.26.0"
+pydantic = "1.7.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
+jupyter = "^1.0.0"
+pytest-cov = "^3.0.0"
+black = "20.8b0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
