@@ -6,9 +6,7 @@ from hrflow_connectors.core.auth import Auth, NoAuth
 def test_HTTPAction_get():
     class TestHTTPAction(HTTPAction):
         def __init__(self, auth:Auth = NoAuth()):
-            super(TestHTTPAction, self).__init__(auth)
-            self.http_method = "GET"
-            self.url = "https://gorest.co.in/public/v1/posts"
+            super().__init__(auth=auth, http_method = "GET", url="https://gorest.co.in/public/v1/posts")
     
     action = TestHTTPAction()
     response = action.execute()

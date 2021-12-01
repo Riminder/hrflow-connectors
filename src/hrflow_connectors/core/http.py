@@ -1,45 +1,51 @@
 import requests
+from pydantic import BaseModel
+from typing import Optional, Dict
+
 
 from .auth import Auth, NoAuth
 
-class HTTPAction:
-    def __init__(self, auth: Auth = NoAuth):
-        self._auth = auth
-        self._session = requests.Session()
 
-        self.url = None
-        self.http_method = "GET"
+class HTTPAction(BaseModel):
+    auth: Auth = NoAuth()
+    
+    url: Optional[str] = None
+    http_method: str = "GET"
 
-        self.params = dict()
-        self.headers = dict()
-        self.cookies = dict()
-        self.payload = dict()
+    _session: requests.Session = requests.Session()
+    _params: Dict[str,str] = dict()
+    _headers: Dict[str,str] = dict()
+    _cookies: Dict[str,str] = dict()
+    _payload: Dict[str,str] = dict()
 
     def execute(self) -> requests.Response:
         if self.url is None:
             raise ConnectionError("URL is not defined !")
 
-        params = self.params
+        params = self._params
         if params == dict():
             params = None
-        
-        headers = self.headers
+
+        headers = self._headers
         if headers == dict():
             headers = None
 
-        cookies = self.cookies
+        cookies = self._cookies
         if cookies == dict():
             cookies = None
 
-        payload = self.payload
+        payload = self._payload
         if payload == dict():
             payload = None
 
-        return self.session.request(method=self.http_method, url=self.url, params=params, headers=headers, cookies=cookies, data=payload)
-
-    @property
-    def auth(self) -> Auth:
-        return self._auth
+        return self.session.request(
+            method=self.http_method,
+            url=self.url,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+            data=payload,
+        )
     
     @property
     def session(self) -> requests.Session:
