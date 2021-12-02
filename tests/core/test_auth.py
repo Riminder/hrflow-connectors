@@ -19,6 +19,7 @@ def test_OAuth2PasswordCredentialsBody_get_access_token():
     username = "bond"
     password = "jb"
 
+    # build Mock for request
     body = dict(
         grant_type="password",
         client_id=client_id,
@@ -36,6 +37,7 @@ def test_OAuth2PasswordCredentialsBody_get_access_token():
         match=match,
     )
 
+    # Auth to test
     auth = OAuth2PasswordCredentialsBody(
         access_token_url=access_token_url,
         client_id=client_id,
