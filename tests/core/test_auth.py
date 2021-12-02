@@ -1,7 +1,5 @@
 import responses
-import pytest
 
-import hrflow_connectors as hc
 from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
 
 OAuth2PasswordCredentialsBody_JSON_RESPONSE = {
