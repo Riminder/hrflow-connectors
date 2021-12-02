@@ -14,14 +14,23 @@ def test_HTTPAction_get():
     # build Mock for request
     responses.add(responses.GET, request_url, status=200, json=body)
 
-    # HTTPAction to test
+   # HTTPAction to test
     class TestHTTPAction(HTTPAction):
         auth: Auth = NoAuth()
-        http_method: str = "GET"
-        url: str = request_url
+
+        @property
+        def http_method(self):
+            return "GET"
+        
+        @property
+        def url_base(self):
+            return "https://test.test"
+        
+        def path(self):
+            return "/get"
 
     action = TestHTTPAction()
-    response = action.execute()
+    response = action.send_request()
 
     assert isinstance(response, requests.Response)
     assert response.status_code == 200
@@ -42,11 +51,20 @@ def test_HTTPAction_post():
     # HTTPAction to test
     class TestHTTPAction(HTTPAction):
         auth: Auth = NoAuth()
-        http_method: str = "POST"
-        url: str = request_url
+
+        @property
+        def http_method(self):
+            return "POST"
+        
+        @property
+        def url_base(self):
+            return "https://test.test"
+        
+        def path(self):
+            return "/post"
 
     action = TestHTTPAction()
-    response = action.execute()
+    response = action.send_request()
 
     assert isinstance(response, requests.Response)
     assert response.status_code == 200
@@ -68,12 +86,24 @@ def test_HTTPAction_get_with_header():
     # HTTPAction to test
     class TestHTTPAction(HTTPAction):
         auth: Auth = NoAuth()
-        http_method: str = "GET"
-        url: str = request_url
-        _headers: Dict[str, str] = dict(d="world !")
+
+        @property
+        def http_method(self):
+            return "GET"
+        
+        @property
+        def url_base(self):
+            return "https://test.test"
+        
+        def path(self):
+            return "/header"
+        
+        def build_request_headers(self):
+            super().build_request_headers()
+            self._headers["d"] = "world !"
 
     action = TestHTTPAction()
-    response = action.execute()
+    response = action.send_request()
 
     assert isinstance(response, requests.Response)
     assert response.status_code == 200
