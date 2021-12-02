@@ -47,12 +47,13 @@ def test_OAuth2PasswordCredentialsBody_get_access_token():
         password=password,
     )
 
+    access_token = auth.get_access_token()
     assert (
-        auth.access_token == OAuth2PasswordCredentialsBody_JSON_RESPONSE["access_token"]
+        access_token == OAuth2PasswordCredentialsBody_JSON_RESPONSE["access_token"]
     )
 
     headers = dict(test="abc")
     auth.update(headers=headers)
 
     assert headers.get("test") == "abc"
-    assert headers.get("Authorization") == "OAuth {}".format(auth.access_token)
+    assert headers.get("Authorization") == "OAuth {}".format(access_token)

@@ -28,8 +28,9 @@ def auth():
 
 
 def test_Auth(auth):
-    assert isinstance(auth.access_token, str)
-    assert auth.access_token != ""
+    access_token = auth.get_access_token()
+    assert isinstance(access_token, str)
+    assert access_token != ""
 
 
 def test_GetAllJobs(auth):
