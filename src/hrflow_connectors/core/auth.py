@@ -60,7 +60,6 @@ class OAuth2PasswordCredentialsBody(Auth):
             )
         self.access_token = response.json()["access_token"]
 
-
     def update(
         self,
         params: Union[Dict[str, str], None] = None,
@@ -70,4 +69,3 @@ class OAuth2PasswordCredentialsBody(Auth):
     ):
         if headers is not None:
             headers.update({"Authorization": "OAuth {}".format(self.access_token)})
-    
