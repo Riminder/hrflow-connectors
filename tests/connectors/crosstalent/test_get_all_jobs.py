@@ -34,6 +34,6 @@ def test_Auth(auth):
 
 def test_GetAllJobs(auth):
     action = GetAllJobs(auth=auth)
-    response = action.execute()
+    response = action.send_request()
 
     assert response.status_code == 200

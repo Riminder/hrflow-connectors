@@ -1,36 +1,58 @@
 import requests
-from pydantic import BaseModel
+from pydantic import Field
 from typing import Optional, Dict
 
 
+from .action import Action
 from .auth import Auth, NoAuth
 
 
-class HTTPAction(BaseModel):
+class HTTPAction(Action):
     auth: Auth = NoAuth()
-
-    url: Optional[str] = None
-    http_method: str = "GET"
 
     _session: requests.Session = requests.Session()
     _params: Dict[str, str] = dict()
     _headers: Dict[str, str] = dict()
-    _cookies: Dict[str, str] = dict()
     _payload: Dict[str, str] = dict()
+    _cookies: Dict[str, str] = dict()
 
-    def __init__(self, auth: Auth = NoAuth(), *args, **kwargs):
-        super().__init__(*args, auth=auth, **kwargs)
 
-        self.auth.update(
-            params=self._params,
-            headers=self._headers,
-            cookies=self._cookies,
-            payload=self._payload,
-        )
+    @property
+    def url_base(self) -> Optional[str]:
+        return None
 
-    def execute(self) -> requests.Response:
-        if self.url is None:
-            raise ConnectionError("URL is not defined !")
+    @property
+    def http_method(self):
+        return "GET"
+
+    def path(self):
+        return ""
+
+    def build_request_params(self):
+        self._params.clear()
+    
+    def build_request_headers(self):
+        self._headers.clear()
+    
+    def build_request_payload(self):
+        self._payload.clear()
+    
+    def build_request_cookies(self):
+        self._cookies.clear()
+
+    def send_request(self) -> requests.Response:
+        if self.url_base is None:
+            raise ConnectionError("Base URL (property function) is not defined !")
+
+        # Build the request
+        url = self.url_base + self.path()
+        self.build_request_params()
+        self.build_request_headers()
+        self.build_request_payload()
+        self.build_request_cookies()
+
+        # Add the auth property in the different sections
+        self.auth.update(params=self._params, headers=self._headers, cookies=self._cookies, payload=self._payload)
 
         params = self._params
         if params == dict():
@@ -50,7 +72,7 @@ class HTTPAction(BaseModel):
 
         return self.session.request(
             method=self.http_method,
-            url=self.url,
+            url=url,
             params=params,
             headers=headers,
             cookies=cookies,
