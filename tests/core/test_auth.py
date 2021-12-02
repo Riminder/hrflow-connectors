@@ -1,27 +1,54 @@
-import os
-import json
+import responses
+import pytest
 
 import hrflow_connectors as hc
 from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
 
-ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(hc.__file__), "../../"))
+OAuth2PasswordCredentialsBody_JSON_RESPONSE = {
+    "access_token": "ABC.TOKEN.EFD",
+    "instance_url": "https://test.test/services/oauth2/token",
+    "id": "https://test.test/id/00D3N0000002eRJXAY/0055N000006PGpLQAW",
+    "token_type": "Bearer",
+    "issued_at": "1638442809550",
+    "signature": "wp1jFqVjffN2gLP3O9NvK93VBYFdgHD/FtwiYEhPrlQ=",
+}
 
-
-def get_credentials():
-    with open(os.path.join(ROOT_PATH, "credentials.json"), "r") as f:
-        credentials = json.loads(f.read())
-    return credentials["crosstalent"]["oauth2"]
-
-
+@responses.activate
 def test_OAuth2PasswordCredentialsBody_get_access_token():
-    credentials = get_credentials()
-    access_token_url = "https://test.salesforce.com/services/oauth2/token"
-    auth = OAuth2PasswordCredentialsBody(
-        access_token_url=access_token_url, **credentials
+    access_token_url = "https://test.test/services/oauth2/token"
+    client_id = "007"
+    client_secret = "double0"
+    username = "bond"
+    password = "jb"
+
+    body = dict(
+        grant_type="password",
+        client_id=client_id,
+        client_secret=client_secret,
+        username=username,
+        password=password,
+    )
+    match = [responses.matchers.urlencoded_params_matcher(body)]
+
+    responses.add(
+        responses.POST,
+        access_token_url,
+        status=200,
+        json=OAuth2PasswordCredentialsBody_JSON_RESPONSE,
+        match=match,
     )
 
-    assert isinstance(auth.access_token, str)
-    assert auth.access_token != ""
+    auth = OAuth2PasswordCredentialsBody(
+        access_token_url=access_token_url,
+        client_id=client_id,
+        client_secret=client_secret,
+        username=username,
+        password=password,
+    )
+
+    assert (
+        auth.access_token == OAuth2PasswordCredentialsBody_JSON_RESPONSE["access_token"]
+    )
 
     headers = dict(test="abc")
     auth.update(headers=headers)
