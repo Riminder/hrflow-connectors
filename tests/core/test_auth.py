@@ -11,6 +11,7 @@ OAuth2PasswordCredentialsBody_JSON_RESPONSE = {
     "signature": "wp1jFqVjffN2gLP3O9NvK93VBYFdgHD/FtwiYEhPrlQ=",
 }
 
+
 @responses.activate
 def test_OAuth2PasswordCredentialsBody_get_access_token():
     access_token_url = "https://test.test/services/oauth2/token"

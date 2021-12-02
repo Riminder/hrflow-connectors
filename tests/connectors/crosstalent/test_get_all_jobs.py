@@ -22,16 +22,18 @@ def auth():
         client_id=credentials["crosstalent"]["oauth2"]["client_id"],
         client_secret=credentials["crosstalent"]["oauth2"]["client_secret"],
         username=credentials["crosstalent"]["oauth2"]["username"],
-        password=credentials["crosstalent"]["oauth2"]["password"]
+        password=credentials["crosstalent"]["oauth2"]["password"],
     )
     return auth
+
 
 def test_Auth(auth):
     assert isinstance(auth.access_token, str)
     assert auth.access_token != ""
 
+
 def test_GetAllJobs(auth):
     action = GetAllJobs(auth=auth)
     response = action.execute()
-    
+
     assert response.status_code == 200
