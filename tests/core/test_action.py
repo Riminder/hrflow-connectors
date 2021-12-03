@@ -10,7 +10,7 @@ def list_to_filter():
     list_to_filter.append(dict(element1="value2", element2="value2"))
     return list_to_filter
 
-def test_apply_filters_single_filter(list_to_filter):
+def test_apply_logics_single_filter(list_to_filter):
     def filter_element1_with_value1(element):
         return element.get("element1") == "value1"
     
@@ -21,7 +21,7 @@ def test_apply_filters_single_filter(list_to_filter):
     assert dict(element1="value1", element2="value2") in filtered_list
     assert dict(element1="value1", element2="value1") in filtered_list
 
-def test_apply_filters_two_filter(list_to_filter):
+def test_apply_logics_two_filter(list_to_filter):
     def filter_element1_with_value1(element):
         return element.get("element1") == "value1"
     
@@ -34,7 +34,7 @@ def test_apply_filters_two_filter(list_to_filter):
     assert len(filtered_list) == 1
     assert dict(element1="value1", element2="value1") in filtered_list
 
-def test_apply_filters_single_filter_without_interaction(list_to_filter):
+def test_apply_logics_single_filter_without_interaction(list_to_filter):
     def filter_nothing(element):
         return True
     
