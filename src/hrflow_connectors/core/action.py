@@ -31,7 +31,7 @@ class Action(BaseModel):
             filtered_list = list(filter(logic_function, filtered_list))
         return filtered_list
     
-    def connect(self, data : Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data : Dict[str, Any]) -> Dict[str, Any]:
         """
         Connect `data` fields to another field format. 
         
@@ -66,7 +66,7 @@ class Action(BaseModel):
         # connect each filtered_data to the format accepted by the pull function (destination, source, board)
         output_data = []
         for element in filtered_data:
-            adapted_element = self.connect(element)
+            adapted_element = self.format(element)
             output_data.append(adapted_element)
         
         self.push(output_data)
