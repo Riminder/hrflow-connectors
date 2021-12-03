@@ -3,6 +3,9 @@ from typing import List, Dict, Any
 
 class Action(BaseModel):
     logics: List[str] = Field([], description="Function names to apply as filter before pushing the data")
+    global_scope: Dict[str, Any] = None
+    local_scope: Dict[str, Any] = None
+
     workflow_catch: bool = Field(True, const=True, description="Indicates if the action is executable in a workflow catch")
     workflow_pull: bool = Field(True, const=True, description="Indicates if the action is executable in a workflow pull")
 
@@ -22,7 +25,11 @@ class Action(BaseModel):
         Returns:
             List[Dict[str, Any]]: Filtered data stream
         """
-        raise NotImplementedError("`apply_logics` is not implemented")
+        filtered_list = data
+        for logic_function_name in self.logics:
+            logic_function = eval(logic_function_name, self.global_scope, self.local_scope)
+            filtered_list = list(filter(logic_function, filtered_list))
+        return filtered_list
     
     def push(self, data : List[Dict[str, Any]]):
         """
