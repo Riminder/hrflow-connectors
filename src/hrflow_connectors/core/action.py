@@ -92,6 +92,9 @@ class BoardAction(Action):
 
     def push(self, data: Iterator[Dict[str, Any]]):
         for job in data:
-            self.hrflow_client.job.indexing.add_json(
+            response = self.hrflow_client.job.indexing.add_json(
                 board_key=self.board_key, job_json=job
             )
+            if response["code"] >= 300:
+                message = response["message"]
+                raise ConnectionError("Failed to push ! Reason : `{}`".format(message))
