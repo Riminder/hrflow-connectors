@@ -14,18 +14,18 @@ def test_HTTPStream_get():
     # build Mock for request
     responses.add(responses.GET, request_url, status=200, json=body)
 
-   # HTTPStream to test
+    # HTTPStream to test
     class TestHTTPStream(HTTPStream):
         auth: Auth = NoAuth()
 
         @property
         def http_method(self):
             return "GET"
-        
+
         @property
         def url_base(self):
             return "https://test.test"
-        
+
         def path(self):
             return "/get"
 
@@ -55,11 +55,11 @@ def test_HTTPStream_post():
         @property
         def http_method(self):
             return "POST"
-        
+
         @property
         def url_base(self):
             return "https://test.test"
-        
+
         def path(self):
             return "/post"
 
@@ -90,14 +90,14 @@ def test_HTTPStream_get_with_header():
         @property
         def http_method(self):
             return "GET"
-        
+
         @property
         def url_base(self):
             return "https://test.test"
-        
+
         def path(self):
             return "/header"
-        
+
         def build_request_headers(self):
             super().build_request_headers()
             self._headers["d"] = "world !"

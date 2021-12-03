@@ -15,7 +15,6 @@ class HTTPStream(BaseModel):
     _payload: Dict[str, str] = dict()
     _cookies: Dict[str, str] = dict()
 
-
     @property
     def url_base(self) -> Optional[str]:
         return None
@@ -29,13 +28,13 @@ class HTTPStream(BaseModel):
 
     def build_request_params(self):
         self._params.clear()
-    
+
     def build_request_headers(self):
         self._headers.clear()
-    
+
     def build_request_payload(self):
         self._payload.clear()
-    
+
     def build_request_cookies(self):
         self._cookies.clear()
 
@@ -51,7 +50,12 @@ class HTTPStream(BaseModel):
         self.build_request_cookies()
 
         # Add the auth property in the different sections
-        self.auth.update(params=self._params, headers=self._headers, cookies=self._cookies, payload=self._payload)
+        self.auth.update(
+            params=self._params,
+            headers=self._headers,
+            cookies=self._cookies,
+            payload=self._payload,
+        )
 
         params = self._params
         if params == dict():

@@ -49,4 +49,6 @@ class OAuth2PasswordCredentialsBody(Auth):
         cookies: Union[Dict[str, str], None] = None,
     ):
         if headers is not None:
-            headers.update({"Authorization": "OAuth {}".format(self.get_access_token())})
+            headers.update(
+                {"Authorization": "OAuth {}".format(self.get_access_token())}
+            )
