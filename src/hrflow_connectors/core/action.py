@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Iterator
+from hrflow import Hrflow
 
 class Action(BaseModel):
     logics: List[str] = Field([], description="Function names to apply as filter before pushing the data")
@@ -66,3 +67,12 @@ class Action(BaseModel):
         # connect each filtered_data to the format accepted by the pull function (destination, source, board)
         output_data = map(self.format, filtered_data)        
         self.push(output_data)
+
+
+class BoardAction(Action):
+    hrflow_client: Hrflow
+    board_key: str
+
+    def push(self, data : Iterator[Dict[str, Any]]):
+        for job in data:
+            self.hrflow_client.job.indexing.add_json(board_key=self.board_key, job_json=job)
