@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Iterator
 
 class Action(BaseModel):
     logics: List[str] = Field([], description="Function names to apply as filter before pushing the data")
@@ -9,13 +9,13 @@ class Action(BaseModel):
     workflow_catch: bool = Field(True, const=True, description="Indicates if the action is executable in a workflow catch")
     workflow_pull: bool = Field(True, const=True, description="Indicates if the action is executable in a workflow pull")
 
-    def pull(self) ->  List[Dict[str, Any]]:
+    def pull(self) ->  Iterator[Dict[str, Any]]:
         """
         Pull data
         """
         raise NotImplementedError("`pull` is not implemented")
     
-    def apply_logics(self, data : List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def apply_logics(self, data : Iterator[Dict[str, Any]]) -> Iterator[Dict[str, Any]]:
         """
         Apply filters defined in `logics` on the `data` stream
 
@@ -28,12 +28,12 @@ class Action(BaseModel):
         filtered_list = data
         for logic_function_name in self.logics:
             logic_function = eval(logic_function_name, self.global_scope, self.local_scope)
-            filtered_list = list(filter(logic_function, filtered_list))
+            filtered_list = filter(logic_function, filtered_list)
         return filtered_list
     
     def format(self, data : Dict[str, Any]) -> Dict[str, Any]:
         """
-        Connect `data` fields to another field format. 
+        Format `data` fields to another field format. 
         
         For example to select and transform only some fields from a database to Hrflow. 
         This function must adapt the data schema passed in (from the `pull`) to the expected data schema in output (ready to be used in the `pull` function)
@@ -46,7 +46,7 @@ class Action(BaseModel):
         """
         return data
 
-    def push(self, data : List[Dict[str, Any]]):
+    def push(self, data : Iterator[Dict[str, Any]]):
         """
         Push data
 
@@ -64,9 +64,5 @@ class Action(BaseModel):
         filtered_data = self.apply_logics(input_data)
         
         # connect each filtered_data to the format accepted by the pull function (destination, source, board)
-        output_data = []
-        for element in filtered_data:
-            adapted_element = self.format(element)
-            output_data.append(adapted_element)
-        
+        output_data = map(self.format, filtered_data)        
         self.push(output_data)
