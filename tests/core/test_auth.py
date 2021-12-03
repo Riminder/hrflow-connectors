@@ -48,9 +48,7 @@ def test_OAuth2PasswordCredentialsBody_get_access_token():
     )
 
     access_token = auth.get_access_token()
-    assert (
-        access_token == OAuth2PasswordCredentialsBody_JSON_RESPONSE["access_token"]
-    )
+    assert access_token == OAuth2PasswordCredentialsBody_JSON_RESPONSE["access_token"]
 
     headers = dict(test="abc")
     auth.update(headers=headers)
