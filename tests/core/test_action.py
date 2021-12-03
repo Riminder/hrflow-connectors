@@ -66,7 +66,7 @@ def test_Action_connect_and_execute(generated_data_list):
         def pull(self):
             return generated_data_list
         
-        def connect(self, data):
+        def format(self, data):
             element1 = data.get("element1")
             element2= data.get("element2")
             adapted_data = dict(element3=element1, element4="{}+{}".format(element1, element2))
