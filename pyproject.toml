@@ -8,6 +8,7 @@ authors = ["Your Name <you@example.com>"]
 python = "^3.6"
 requests = "^2.26.0"
 pydantic = "1.7.4"
+hrflow = "^1.9.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
