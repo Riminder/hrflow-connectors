@@ -2,20 +2,20 @@ import requests
 import responses
 from typing import Dict
 
-from hrflow_connectors.core.http import HTTPAction
+from hrflow_connectors.core.http import HTTPStream
 from hrflow_connectors.core.auth import Auth, NoAuth
 
 
 @responses.activate
-def test_HTTPAction_get():
+def test_HTTPStream_get():
     request_url = "https://test.test/get"
     body = {"test": "hello"}
 
     # build Mock for request
     responses.add(responses.GET, request_url, status=200, json=body)
 
-   # HTTPAction to test
-    class TestHTTPAction(HTTPAction):
+   # HTTPStream to test
+    class TestHTTPStream(HTTPStream):
         auth: Auth = NoAuth()
 
         @property
@@ -29,7 +29,7 @@ def test_HTTPAction_get():
         def path(self):
             return "/get"
 
-    action = TestHTTPAction()
+    action = TestHTTPStream()
     response = action.send_request()
 
     assert isinstance(response, requests.Response)
@@ -41,15 +41,15 @@ def test_HTTPAction_get():
 
 
 @responses.activate
-def test_HTTPAction_post():
+def test_HTTPStream_post():
     request_url = "https://test.test/post"
     body = {"test": "hello"}
 
     # build Mock for request
     responses.add(responses.POST, request_url, status=200, json=body)
 
-    # HTTPAction to test
-    class TestHTTPAction(HTTPAction):
+    # HTTPStream to test
+    class TestHTTPStream(HTTPStream):
         auth: Auth = NoAuth()
 
         @property
@@ -63,7 +63,7 @@ def test_HTTPAction_post():
         def path(self):
             return "/post"
 
-    action = TestHTTPAction()
+    action = TestHTTPStream()
     response = action.send_request()
 
     assert isinstance(response, requests.Response)
@@ -75,7 +75,7 @@ def test_HTTPAction_post():
 
 
 @responses.activate
-def test_HTTPAction_get_with_header():
+def test_HTTPStream_get_with_header():
     request_url = "https://test.test/header"
     body = {"test": "hello"}
 
@@ -83,8 +83,8 @@ def test_HTTPAction_get_with_header():
     match = [responses.matchers.header_matcher(dict(d="world !"))]
     responses.add(responses.GET, request_url, status=200, json=body, match=match)
 
-    # HTTPAction to test
-    class TestHTTPAction(HTTPAction):
+    # HTTPStream to test
+    class TestHTTPStream(HTTPStream):
         auth: Auth = NoAuth()
 
         @property
@@ -102,7 +102,7 @@ def test_HTTPAction_get_with_header():
             super().build_request_headers()
             self._headers["d"] = "world !"
 
-    action = TestHTTPAction()
+    action = TestHTTPStream()
     response = action.send_request()
 
     assert isinstance(response, requests.Response)

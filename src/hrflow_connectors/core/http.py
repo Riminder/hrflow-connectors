@@ -1,13 +1,12 @@
 import requests
-from pydantic import Field
+from pydantic import BaseModel, Field
 from typing import Optional, Dict
 
 
-from .action import Action
 from .auth import Auth, NoAuth
 
 
-class HTTPAction(Action):
+class HTTPStream(BaseModel):
     auth: Auth = NoAuth()
 
     _session: requests.Session = requests.Session()
