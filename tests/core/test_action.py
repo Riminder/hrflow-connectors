@@ -27,7 +27,7 @@ def test_apply_logics_single_filter(generated_data_list):
         return element.get("element1") == "value1"
     
     action = Action(logics=["filter_element1_with_value1"], global_scope=globals(), local_scope=locals())
-    filtered_list = action.apply_logics(generated_data_list)
+    filtered_list = list(action.apply_logics(generated_data_list))
 
     assert len(filtered_list) == 2
     assert dict(element1="value1", element2="value2") in filtered_list
@@ -41,7 +41,7 @@ def test_apply_logics_two_filter(generated_data_list):
         return element.get("element2") == "value1"
     
     action = Action(logics=["filter_element1_with_value1", "filter_element2_with_value1"], global_scope=globals(), local_scope=locals())
-    filtered_list = action.apply_logics(generated_data_list)
+    filtered_list = list(action.apply_logics(generated_data_list))
 
     assert len(filtered_list) == 1
     assert dict(element1="value1", element2="value1") in filtered_list
@@ -51,7 +51,7 @@ def test_apply_logics_single_filter_without_interaction(generated_data_list):
         return True
     
     action = Action(logics=["filter_nothing"], global_scope=globals(), local_scope=locals())
-    filtered_list = action.apply_logics(generated_data_list)
+    filtered_list = list(action.apply_logics(generated_data_list))
 
     assert len(filtered_list) == 4
     assert dict(element1="value1", element2="value2") in filtered_list
@@ -73,7 +73,7 @@ def test_Action_connect_and_execute(generated_data_list):
             return adapted_data
         
         def push(self, data):
-            requests.post("http://test.test/push", json=dict(data=data))
+            requests.post("http://test.test/push", json=dict(data=list(data)))
 
     # Expected Output
     expected_output = []
