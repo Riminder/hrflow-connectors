@@ -1,8 +1,8 @@
 from ....core.auth import OAuth2PasswordCredentialsBody
-from ....core.http import HTTPAction
+from ....core.http import HTTPStream
 
 
-class GetAllJobs(HTTPAction):
+class GetAllJobs(HTTPStream):
     auth: OAuth2PasswordCredentialsBody
 
     @property
