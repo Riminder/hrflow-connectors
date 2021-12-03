@@ -31,6 +31,21 @@ class Action(BaseModel):
             filtered_list = list(filter(logic_function, filtered_list))
         return filtered_list
     
+    def connect(self, data : Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Connect `data` fields to another field format. 
+        
+        For example to select and transform only some fields from a database to Hrflow. 
+        This function must adapt the data schema passed in (from the `pull`) to the expected data schema in output (ready to be used in the `pull` function)
+
+        Args:
+            data (Dict[str, Any]): Data we want to adapt to the output format
+
+        Returns:
+            Dict[str, Any]: Data adapted to the input format of the pull function, ready to be sent
+        """
+        return data
+
     def push(self, data : List[Dict[str, Any]]):
         """
         Push data
@@ -44,4 +59,14 @@ class Action(BaseModel):
         """
         Execute action
         """
-        raise NotImplementedError("`execute` is not implemented")
+        input_data = self.pull()
+
+        filtered_data = self.apply_logics(input_data)
+        
+        # connect each filtered_data to the format accepted by the pull function (destination, source, board)
+        output_data = []
+        for element in filtered_data:
+            adapted_element = self.connect(element)
+            output_data.append(adapted_element)
+        
+        self.push(output_data)
