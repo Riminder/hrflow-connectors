@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Iterator
-from hrflow import Hrflow
+from typing import List, Dict, Any, Iterator, TypeVar
+
+Hrflow = TypeVar("Hrflow")
 
 
 class Action(BaseModel):
