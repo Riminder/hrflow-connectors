@@ -12,16 +12,17 @@
 
 <p align="center">
   <a href="https://hrflow.ai">
-    <img alt="hrflow" src="https://hrflow.ai/new/img/home/corporate.svg"/>
+    <img alt="hrflow" src="https://hrflow-ai.imgix.net/corporate.svg"/>
   </a>
 </p>
 
 <br/>
-  hrflow-connectors is an open source project created by HrFlow.ai 
+
+  `hrflow-connectors` is an open source project created by **HrFlow.ai** 
 to allow developers to connect easily HR ecosystem component.
 
 This project is basically designed to handle simply and easily,
-complex HR integrations by using [**workflows**](https://developers.hrflow.ai/products-1/workflows) feature.
+complex HR integrations by using [**workflows**](https://developers.hrflow.ai/docs/workflows) feature.
 <br/>
 
 
@@ -32,28 +33,28 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/pr
   - Our cool demos labs : https://labs.hrflow.ai
 
 ## List of Connectors
-- **ADP**(soon)
-- [**Craigslist**](https://github.com/Riminder/hrflow-connectors/tree/master/Craigslist)
-- **Careerbuilder**(soon)
-- **Cegid(Meta4)**(soon)
-- **Ceridian**(soon)
-- **Cornerstone OnDemand**(soon)
-- [**Crosstalent**](https://github.com/Riminder/hrflow-connectors/tree/master/Crosstalent)
-- [**Digitalrecruiters**](https://github.com/Riminder/hrflow-connectors/tree/master/Digitalrecruiters)
-- **Indeed**(soon)
-- **Kronos(UKG)**(soon)
-- [**Laponi**](https://github.com/Riminder/hrflow-connectors/tree/master/Laponi)
-- [**Mailchimp**](https://github.com/Riminder/hrflow-connectors/tree/master/Mailchimp)
-- **Monster**(soon)
-- **Oracle**(soon)
-- **SAP Successfactors**(soon)
-- **Salesforce**(soon)
-- [**Smartrecruiters**](https://github.com/Riminder/hrflow-connectors/tree/master/Smartrecruiters)
-- [**Staffme**](https://github.com/Riminder/hrflow-connectors/tree/master/Staffme)
-- [**Talentsoft**]((https://github.com/Riminder/hrflow-connectors/tree/master/Talentsoft))
-- [**Twilio**](https://github.com/Riminder/hrflow-connectors/tree/master/Twilio)
-- **Ultimate Software(UKG)**(soon)
-- **Workday**(soon)
+- **ADP** (soon)
+- **Craigslist** (soon)
+- **Careerbuilder** (soon)
+- **Cegid(Meta4)** (soon)
+- **Ceridian** (soon)
+- **Cornerstone OnDemand** (soon)
+- **Crosstalent** : `GetAllJobs`
+- **Digitalrecruiters** (soon)
+- **Indeed** (soon)
+- **Kronos(UKG)** (soon)
+- **Laponi** (soon)
+- **Mailchimp** (soon)
+- **Monster** (soon)
+- **Oracle** (soon)
+- **SAP Successfactors** (soon)
+- **Salesforce** (soon)
+- **Smartrecruiters** (soon)
+- **Staffme** (soon)
+- **Talentsoft** (soon)
+- **Twilio** (soon)
+- **Ultimate Software(UKG)** (soon)
+- **Workday** (soon)
     
 
 ## 🚀 Environment
@@ -61,7 +62,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/pr
 Workflows runs in the following environment:
 
     python== 3.6
-    hrflow==1.8.6
+    hrflow==1.9.0
     requests==2.24.0
     selenium==3.141.0
     twilio==6.46.0
@@ -70,34 +71,15 @@ Workflows runs in the following environment:
 
 ## 🧐 What"s inside?
 
-  A quick look at the top-level files of a [**connector code structure**](https://github.com/Riminder/hrflow-connectors/tree/master/.ExampleConnector):
+  A quick look at the top-level files of a **connector code structure**.
 
 
-    .
-    ├── Connector_name
-    │   ├── profile.json 
-    │   ├── job.json
-    │   ├── pull_jobs_from_hrflow_into_connector.py 
-    │   ├── pull_jobs_from_connector_into_hrflow.py
-    │   ├── pull_profiles_from_hrflow_into_connector.py 
-    │   ├── pull_profiles_from_connector_into_hrflow.py
-    │   ├── push_job_from_hrflow_into_connector.py 
-    │   ├── push_job_from_connector_into_hrflow.py
-    │   ├── push_profiles_from_hrflow_into_connector.py 
-    │   ├── push_profiles_from_connector_into_hrflow.py    
-    │   ├── README.md
-    ├── .gitignore
-    ├── tutorial
-    ├── LICENSE
-    └── README.md
-
-  1.  **`/connector_name`**: This directory will contain
-      all of the code related to either **PULL** or **CATCH**
-      profiles / jobs from HrFlow.ai into Connector and vice versa.
+  1.  **`src/hrflow_connectors/connectors`**: This directory will contain
+      all connectors.
 
   2.  **`.gitignore`**: This file tells git which files it should not track / not maintain a version history for.
 
-  3.  **`tutorial`**: Pull/Push workflow examples.
+  3.  **`tutorial`**: Use cases.
       
   4.  **`LICENSE`**: Apache License.
 
