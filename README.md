@@ -61,7 +61,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 ### 
 Workflows runs in the following environment:
 
-    python== 3.6
+    python==3.6
     hrflow==1.9.0
     requests==2.24.0
     selenium==3.141.0
