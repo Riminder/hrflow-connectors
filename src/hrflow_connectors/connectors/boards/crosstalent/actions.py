@@ -4,13 +4,21 @@ from ....core.auth import OAuth2PasswordCredentialsBody
 from ....core.http import HTTPStream
 from ....core.action import BoardAction
 
+from pydantic import Field
+
 
 class GetAllJobs(HTTPStream, BoardAction):
     auth: OAuth2PasswordCredentialsBody
+    subdomain: str = Field(
+        ...,
+        description="Subdomain Crosstalent just before `salesforce.com`. For example subdomain=`my_subdomain.my` in `http://my_subdomain.my.salesforce.com/ABC`",
+    )
 
     @property
     def url_base(self):
-        return "https://vulcain-eng--recette.my.salesforce.com/services/apexrest/crta/HrFlowGetJobOffers/"
+        return "https://{}.salesforce.com/services/apexrest/crta/HrFlowGetJobOffers/".format(
+            self.subdomain
+        )
 
     @property
     def http_method(self):
