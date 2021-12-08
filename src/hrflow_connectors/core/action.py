@@ -86,6 +86,7 @@ class Action(BaseModel):
 class BoardAction(Action):
     hrflow_client: Hrflow
     board_key: str
+    hydrate_with_parsing: bool = False
 
     class Config:
         # `Hrflow` class is arbitrary type and can not be use without this option
@@ -99,3 +100,31 @@ class BoardAction(Action):
             if response["code"] >= 300:
                 message = response["message"]
                 raise ConnectionError("Failed to push ! Reason : `{}`".format(message))
+    
+    def hydrate_job_with_parsing(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Hydrate job with parsing
+
+        Args:
+            data (Dict[str, Any]): job to hydrate
+
+        Returns:
+            Dict[str, Any]: hydrated job
+        """
+        return data
+
+    def execute(self):
+        """
+        Execute action
+        """
+        input_data = self.pull()
+
+        filtered_data = self.apply_logics(input_data)
+
+        # connect each filtered_data to the format accepted by the pull function (destination, source, board)
+        output_data = map(self.format, filtered_data)
+
+        if self.hydrate_with_parsing:
+            output_data = map(self.hydrate_job_with_parsing, output_data)
+
+        self.push(output_data)
