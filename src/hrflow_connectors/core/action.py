@@ -260,6 +260,46 @@ class BoardAction(Action):
 
         return job
 
+    def check_reference_in_board(self, job: Dict[str, Any]) -> bool:
+        """
+        Check if a job reference is in the Board.
+        If the job reference is not in the Board, add the job.
+        Otherwise, if job is archived, this function unarchives it.
+
+        Args:
+            job (Dict[str, Any]): job object
+
+        Returns:
+            bool: Job is in the Board
+        """
+        reference = job.get("reference")
+
+        if reference is None:
+            return True
+
+        response = self.hrflow_client.job.indexing.get(
+            board_key=self.board_key, reference=reference
+        )
+        response_code = response["code"]
+        if response_code >= 400 and "Unable to find object: job" in response["message"]:
+            # Job with this reference is not in the Board
+            return True
+        elif response_code >= 400:
+            RuntimeError("Indexing get failed : {}".format(response["message"]))
+        elif response_code == 200:
+            job_in_board = response["data"]
+            archived_at = job_in_board.get("archived_at")
+            if archived_at is None:
+                # Job is not archived
+                return False
+            else:
+                # Job is archived
+                self.client_hrflow.job.indexing.archive(
+                    self.board_key, reference=reference, is_archive=0
+                )
+                return False
+        return False
+
     def execute(self):
         """
         Execute action
@@ -273,5 +313,7 @@ class BoardAction(Action):
 
         if self.hydrate_with_parsing:
             output_data = map(self.hydrate_job_with_parsing, output_data)
+
+        ## TODO already_in_board_filter
 
         self.push(output_data)
