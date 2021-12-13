@@ -3,6 +3,7 @@ from ..utils.hrflow import find_element_in_list
 
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Iterator, TypeVar
+import itertools
 
 Hrflow = TypeVar("Hrflow")
 
@@ -94,6 +95,77 @@ class BoardAction(Action):
     class Config:
         # `Hrflow` class is arbitrary type and can not be use without this option
         arbitrary_types_allowed = True
+
+    def get_all_job_pages_from_board(self) -> Iterator[Iterator[Dict[str, Any]]]:
+        """
+        Get all job pages from Board
+
+        Yields:
+            Iterator[Iterator[Dict[str, Any]]]: Iterator of job Iterator. For example: List of job list.
+        """
+
+        def get_jobs_page(page) -> Dict[str, Any]:
+            response = self.client_hrflow.job.searching.list(
+                board_keys=[self.board_key], limit=30, page=page
+            )
+            if response["code"] >= 300:
+                raise RuntimeError(
+                    "Hrflow searching failed : `{}`".format(response["message"])
+                )
+            return response
+
+        job_page = get_jobs_page(page=1)
+        max_page = job_page["meta"]["maxPage"]
+        job_list = job_page["data"]["jobs"]
+        yield job_list
+
+        for page in range(2, max_page + 1):
+            job_page = get_jobs_page(page=page)
+            job_list = job_page["data"]["jobs"]
+            if len(job_page["data"]["jobs"]) == 0:
+                return
+            yield job_list
+
+    def get_all_references_from_board(self) -> Iterator[Dict[str, Any]]:
+        """
+        Get all job references from a Board
+
+        Yields:
+            Iterator[Dict[str, Any]]: Iterator with all job references
+        """
+
+        def get_reference_from_job_list(
+            job_list: Iterator[Dict[str, Any]]
+        ) -> Iterator[Dict[str, Any]]:
+            """
+            Get reference from job list
+
+            Args:
+                job_list (Iterator[Dict[str,Any]]): Job list
+
+            Yields:
+                Iterator[Dict[str, Any]]: Iteractor of references
+            """
+            get_reference_from_job = lambda job: job.get("reference")
+            return map(get_reference_from_job, job_list)
+
+        def none_filter(data: Dict[str, Any]) -> bool:
+            """
+            Filter None type
+
+            Args:
+                data (Dict[str, Any]): data to check
+
+            Returns:
+                bool: data is not None ?
+            """
+            return data is not None
+
+        all_job_pages_iter = self.get_all_job_pages_from_board()
+        all_reference_pages_iter = map(get_reference_from_job_list, all_job_pages_iter)
+        chain_reference_iter = itertools.chain.from_iterable(all_reference_pages_iter)
+        clean_iter = filter(none_filter, chain_reference_iter)
+        return clean_iter
 
     def push(self, data: Iterator[Dict[str, Any]]):
         for job in data:
