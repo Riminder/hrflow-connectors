@@ -53,19 +53,18 @@ class GetAllJobs(HTTPStream, BoardAction):
         lng = data.get("crta__Location__Longitude__s")
         text = data.get("Lieu__c")
 
-        gmaps = dict()
-        gmaps["city"] = data.get("crta__CT_City__c")
-        gmaps["country"] = data.get("crta__CT_Country__c")
+        geojson = dict()
+        geojson["city"] = data.get("crta__CT_City__c")
+        geojson["country"] = data.get("crta__CT_Country__c")
 
         postcode = None
         postcode = data.get("crta__CT_Postal_code__c")
         if postcode is None:
             postcode = data.get("crta__Postal_Code__c")
 
-        gmaps["postcode"] = postcode
-        gmaps["state"] = data.get("crta__Etat__c")
+        geojson["postcode"] = postcode
 
-        job["location"] = dict(lat=lat, lng=lng, text=text, gmaps=gmaps)
+        job["location"] = dict(lat=lat, lng=lng, text=text, geojson=geojson)
 
         # summary
         job["summary"] = data.get("crta__CT_Description__c")
@@ -165,6 +164,7 @@ class GetAllJobs(HTTPStream, BoardAction):
         create_tag("LastActivityDate")
         create_tag("LastViewedDate")
         create_tag("LastReferencedDate")
+        create_tag("crta__Etat__c")
         create_tag("crta__CT_Annee_budget__c")
         create_tag("crta__CT_Avec_RTT__c")
         create_tag("crta__CT_Contact_Person__c")
