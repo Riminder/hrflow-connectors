@@ -1,3 +1,5 @@
+from ..utils.clean_text import remove_html_tags
+
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Iterator, TypeVar
 
@@ -100,10 +102,12 @@ class BoardAction(Action):
             if response["code"] >= 300:
                 message = response["message"]
                 raise ConnectionError("Failed to push ! Reason : `{}`".format(message))
-    
-    def hydrate_job_with_parsing(self, data: Dict[str, Any]) -> Dict[str, Any]:
+
+    def hydrate_job_with_parsing(self, job: Dict[str, Any]) -> Dict[str, Any]:
         """
         Hydrate job with parsing
+
+        Enrich the different fields of the job by applying parsing to large texts like `summary` or `sections`
 
         Args:
             data (Dict[str, Any]): job to hydrate
@@ -111,7 +115,65 @@ class BoardAction(Action):
         Returns:
             Dict[str, Any]: hydrated job
         """
-        return data
+        # Concat `summary` text and each `section` together
+        concatenated_str = job.get("summary")
+        if concatenated_str is None:
+            concatenated_str = ""
+
+        section_list = job.get("sections")
+        if section_list is not None:
+            for section in section_list:
+                section_description = section.get("description")
+                if section_description is not None:
+                    concatenated_str += "\n" + section_description
+
+        # Clean the `concatenated_str` by removing htlm tags
+        cleaned_str = remove_html_tags(concatenated_str)
+
+        # If text is empty, the parsing can return an error
+        if cleaned_str == "":
+            return job
+
+        # Parse the `cleaned`
+        response = self.hrflow_client.document.parsing.post(text=cleaned_str)
+        if response["code"] >= 300:
+            raise RuntimeError("Parsing failed : `{}`".format(response["message"]))
+        entity_list = response["data"]["ents"]
+        parsed_text = response["data"]["text"]
+
+        # Enrich job with parsing
+        ## Initialize each field that can be enrich (case of None type)
+        field_to_init = ["skills", "languages", "certifications", "courses", "tasks"]
+        for field_name in field_to_init:
+            field_value = job.get(field_name)
+            if field_value is None:
+                job[field_name] = []
+
+        ## Map parsing labels with job fields
+        label_to_job_field = dict(
+            Course="courses",
+            Task="tasks",
+            Certification="certifications",
+            Language="languages",
+        )
+        for entity in entity_list:
+            start = entity["start"]
+            end = entity["end"]
+            label = entity["label"]
+            selection = parsed_text[start:end]
+
+            if label in ["Course", "Task", "Certification", "Language"]:
+                field_to_add = dict(name=selection, value=None)
+                job[label_to_job_field[label]].append(field_to_add)
+            elif label in ["Skill", "HardSkill", "SoftSkill"]:
+                label_to_skill_type = dict(
+                    Skill=None, HardSkill="hard", SoftSkill="soft"
+                )
+                skill_type = label_to_skill_type[label]
+                skill = dict(name=selection, type=skill_type, value=None)
+                job["skills"].append(skill)
+
+        return job
 
     def execute(self):
         """
