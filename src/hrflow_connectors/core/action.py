@@ -1,4 +1,5 @@
 from ..utils.clean_text import remove_html_tags
+from ..utils.hrflow import find_element_in_list
 
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Iterator, TypeVar
@@ -163,15 +164,27 @@ class BoardAction(Action):
             selection = parsed_text[start:end]
 
             if label in ["Course", "Task", "Certification", "Language"]:
-                field_to_add = dict(name=selection, value=None)
-                job[label_to_job_field[label]].append(field_to_add)
+                element_to_add = dict(name=selection, value=None)
+                # If element to add is unique. To avoid doublon.
+                if (
+                    find_element_in_list(
+                        element_list=job[label_to_job_field[label]], name=selection
+                    )
+                    is None
+                ):
+                    job[label_to_job_field[label]].append(element_to_add)
             elif label in ["Skill", "HardSkill", "SoftSkill"]:
                 label_to_skill_type = dict(
                     Skill=None, HardSkill="hard", SoftSkill="soft"
                 )
                 skill_type = label_to_skill_type[label]
                 skill = dict(name=selection, type=skill_type, value=None)
-                job["skills"].append(skill)
+                # If element to add is unique. To avoid doublon.
+                if (
+                    find_element_in_list(element_list=job["skills"], name=selection)
+                    is None
+                ):
+                    job["skills"].append(skill)
 
         return job
 
