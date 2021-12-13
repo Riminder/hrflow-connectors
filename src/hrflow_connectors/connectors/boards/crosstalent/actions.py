@@ -3,8 +3,6 @@ from typing import Iterator, Dict, Any
 from ....core.auth import OAuth2PasswordCredentialsBody
 from ....core.http import HTTPStream
 from ....core.action import BoardAction
-from ....core.hrflow_wrapper import JobWrapper
-from .formats.job_format import JobFormat
 
 from pydantic import Field
 
@@ -35,20 +33,20 @@ class GetAllJobs(HTTPStream, BoardAction):
             raise ConnectionError(error_message.format(response.content))
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        job_params = dict()
+        job = dict()
 
         # name
-        job_params["name"] = data.get("Name", "Undefined")
+        job["name"] = data.get("Name", "Undefined")
 
         # reference
         # TODO remove comment after debug format
         # job["name"] = data.get("Id")
 
         # created_at
-        job_params["created_at"] = data.get("CreatedDate")
+        job["created_at"] = data.get("CreatedDate")
 
         # url
-        job_params["url"] = data.get("crtarecr__URL_of_the_form_on_job_offer__c")
+        job["url"] = data.get("crtarecr__URL_of_the_form_on_job_offer__c")
 
         # location
         lat = data.get("crta__Location__Latitude__s")
@@ -67,59 +65,229 @@ class GetAllJobs(HTTPStream, BoardAction):
         gmaps["postcode"] = postcode
         gmaps["state"] = data.get("crta__Etat__c")
 
-        job_params["location"] = dict(lat=lat, lng=lng, text=text, gmaps=gmaps)
+        job["location"] = dict(lat=lat, lng=lng, text=text, gmaps=gmaps)
 
         # summary
-        job_params["summary"] = data.get("crta__CT_Description__c")
-
-        ## Instanciate job wrapper
-        # it makes it easier for us to use the job object
-        job_object = JobWrapper(**job_params)
+        job["summary"] = data.get("crta__CT_Description__c")
 
         # sections
-        section_id_list = JobFormat.sections
-        for section_id in section_id_list:
-            section_description = data.get(section_id)
+        job["sections"] = []
+
+        def create_section(field_name: str, title: str = None):
+            """
+            Create a section in job if `field_name` value is not `None`
+
+            Args:
+                field_name (str): Field name in Crosstalent. For example : `crta__RC_Service__c`
+                title (str, optional): Section title. Defaults to None.
+            """
+            section_name = "crosstalent_{}".format(field_name)
+            section_title = title
+            section_description = data.get(field_name)
             if section_description is not None:
-                job_object.set_section(
-                    name=section_id, title=section_id, description=section_description
+                section = dict(
+                    name=section_name,
+                    title=section_title,
+                    description=section_description,
                 )
+                job["sections"].append(section)
+
+        ## Add sections
+        create_section("crta__CT_Benefices_attendus__c", "Bénéfices attendus")
+        create_section("crta__CT_Description__c", "Descriptif du poste")
+        create_section(
+            "crta__CT_Detail_motif_recours_CDD__c",
+            "Précisions si surcroît/motif particulier",
+        )
+        create_section(
+            "crta__CT_Horaires_particuliers__c", "Horaires particuliers à préciser"
+        )
+        create_section("crta__CT_Needed_skills__c", "Compétences requises")
+        create_section(
+            "crta__CT_Other_contract_benefits__c", "Autres dispositions contractuelles"
+        )
+        create_section(
+            "crta__CT_Other_salary_benefits__c", "Autres éléments de rémunération"
+        )
+        create_section("crta__CT_Remuneration_variable__c", "Variable")
+        create_section("crta__RC_Service__c", "Service")
+        create_section("crtarecr__Personalised_header__c", "Entête personnalisée")
+        create_section("crtarecr__Required_Profile__c", "Profil recherché")
+        create_section("Profil_recherche__c", "Profil recherché")
 
         # languages
-        job_object.languages = []
-        language_name_1 = data.get("crtarecr__Language_1__c")
-        language_level_1 = data.get("crtarecr__Language_level_1__c")
-        if language_name_1 is not None:
-            job_object.add_field(
-                job_object.languages, name=language_name_1, value=language_level_1
-            )
+        job["languages"] = []
 
-        language_name_2 = data.get("crtarecr__Language_2__c")
-        language_level_2 = data.get("crtarecr__Language_level_2__c")
-        if language_name_2 is not None:
-            job_object.add_field(
-                job_object.languages, name=language_name_2, value=language_level_2
-            )
+        def create_language(field_language_name: str, field_language_level: str):
+            """
+            Create language in job if `field_language_name` is not `None`
 
-        language_name_3 = data.get("crtarecr__Language_3__c")
-        language_level_3 = data.get("crtarecr__Language_level_3__c")
-        if language_name_3 is not None:
-            job_object.add_field(
-                job_object.languages, name=language_name_3, value=language_level_3
-            )
+            Args:
+                field_language_name (str): Field name in Crosstalent. For example : `crtarecr__Language_1__c`
+                field_language_level (str): Field level in Crosstalent. For example : `crtarecr__Language_level_1__c`
+            """
+            language_name = data.get(field_language_name)
+            language_level = data.get(field_language_level)
+            if language_name is not None:
+                language = dict(name=language_name, value=language_level)
+                job["languages"].append(language)
+
+        ## Add languages
+        create_language("crtarecr__Language_1__c", "crtarecr__Language_level_1__c")
+        create_language("crtarecr__Language_2__c", "crtarecr__Language_level_2__c")
+        create_language("crtarecr__Language_3__c", "crtarecr__Language_level_3__c")
 
         # tags
-        tag_id_list = JobFormat.tags
-        for tag_id in tag_id_list:
-            tag_value = data.get(tag_id)
+        job["tags"] = []
+
+        def create_tag(field_name: str):
+            """
+            Create tag in job if `field_name` is not `None`
+
+            Args:
+                field_name (str): Field name in Crosstalent. For example : `crta__CT_Avec_RTT__c`
+            """
+            tag_name = "crosstalent_{}".format(field_name)
+            tag_value = data.get(field_name)
             if tag_value is not None:
-                job_object.set_tag(name=tag_id, value=tag_value)
+                tag = dict(name=tag_name, value=tag_value)
+                job["tags"].append(tag)
+
+        ## Add tags
+        create_tag("OwnerId")
+        create_tag("IsDeleted")
+        create_tag("CurrencyIsoCode")
+        create_tag("RecordTypeId")
+        create_tag("CreatedById")
+        create_tag("LastModifiedDate")
+        create_tag("LastModifiedById")
+        create_tag("SystemModstamp")
+        create_tag("LastActivityDate")
+        create_tag("LastViewedDate")
+        create_tag("LastReferencedDate")
+        create_tag("crta__CT_Annee_budget__c")
+        create_tag("crta__CT_Avec_RTT__c")
+        create_tag("crta__CT_Contact_Person__c")
+        create_tag("crta__CT_Date__c")
+        create_tag("crta__CT_Date_debut_Contrat__c")
+        create_tag("crta__CT_Date_fin_Contrat__c")
+        create_tag("crta__CT_Duration__c")
+        create_tag("crta__CT_Duree_Stage__c")
+        create_tag("crta__CT_Email_Manager__c")
+        create_tag("crta__CT_End_date__c")
+        create_tag("crta__CT_Entrprise_Postal_code__c")
+        create_tag("crta__CT_Industry_of_activities__c")
+        create_tag("crta__CT_Modalite_attribution_remun_variable__c")
+        create_tag("crta__CT_Motif_CDI__c")
+        create_tag("crta__CT_Motif_recours_CDD__c")
+        create_tag("crta__CT_Nom_Responsable_hierarchique__c")
+        create_tag("crta__CT_Nom_demandeur_DAR__c")
+        create_tag("crta__CT_Number_of_opened_positions__c")
+        create_tag("crta__CT_Organization_name__c")
+        create_tag("crta__CT_Prevu_au_budget__c")
+        create_tag("crta__CT_Publiee_Site_web_externe__c")
+        create_tag("crta__CT_Salary__c")
+        create_tag("crta__CT_Scope__c")
+        create_tag("crta__CT_date_validation_DAR__c")
+        create_tag("crta__Categorie__c")
+        create_tag("crta__Contrainte__c")
+        create_tag("crta__Contrat__c")
+        create_tag("crta__Date_limite_de_reponse__c")
+        create_tag("crta__Date_max_du_positionnement__c")
+        create_tag("crta__Diffusion_de_l_offre__c")
+        create_tag("crta__Duree_ouverture_mois__c")
+        create_tag("crta__Email_du_recruteur__c")
+        create_tag("crta__Etat__c")
+        create_tag("crta__Filiere__c")
+        create_tag("crta__Origine_de_l_offre__c")
+        create_tag("crta__Status__c")
+        create_tag("crta__Temps_de_travail_en_pourcentage__c")
+        create_tag("crtarecr__Archived__c")
+        create_tag("crtarecr__BU1__c")
+        create_tag("crtarecr__BU2__c")
+        create_tag("crtarecr__Contract_type__c")
+        create_tag("crtarecr__Contractual_status__c")
+        create_tag("crtarecr__Employment_start_date__c")
+        create_tag("crtarecr__End_date_of_Intranet_Site_publication__c")
+        create_tag("crtarecr__End_date_of_Jobboard_publication__c")
+        create_tag("crtarecr__End_date_of_Website_publication__c")
+        create_tag("crtarecr__Envisaged_annual_gross_remuneration__c")
+        create_tag("crtarecr__HR_Function__c")
+        create_tag("crtarecr__Max_salary__c")
+        create_tag("crtarecr__Max_term_months__c")
+        create_tag("crtarecr__Min_salary__c")
+        create_tag("crtarecr__Min_term_months__c")
+        create_tag("crtarecr__Period__c")
+        create_tag("crtarecr__Published_on_Jobboards__c")
+        create_tag("crtarecr__Published_on_Website__c")
+        create_tag("crtarecr__Recruiter_Firstname__c")
+        create_tag("crtarecr__Recruiter_Lastname__c")
+        create_tag("crtarecr__Recruitment_Request_Date__c")
+        create_tag("crtarecr__Recruitment_request_status__c")
+        create_tag("crtarecr__Reference__c")
+        create_tag("crtarecr__Required_Experience_Level__c")
+        create_tag("crtarecr__Required_diploma_level__c")
+        create_tag("crtarecr__Start_date_of_Intranet_Site_publication__c")
+        create_tag("crtarecr__Start_date_of_Jobboard_publication__c")
+        create_tag("crtarecr__Start_date_of_Website_publication__c")
+        create_tag("crtarecr__Type_of_employment__c")
+        create_tag("crtarecr__Weekly_Working_Time_in_hours__c")
+        create_tag("Position__c")
+        create_tag("M_tier__c")
+        create_tag("Famille_de_m_tier__c")
+        create_tag("Sourcing_Auto__c")
+        create_tag("Mots_Clefs__c")
+        create_tag("Disponibilit_imm_diate__c")
+        create_tag("Date_de_d_but__c")
+        create_tag("Date_de_fin__c")
+        create_tag("Fourchette_de_salaire__c")
+        create_tag("Secteur_d_activite__c")
+        create_tag("Domaine_d_activite__c")
+        create_tag("Niveau_d_exp_rience_attendu__c")
+        create_tag("Emploi_Type__c")
+        create_tag("Pays__c")
+        create_tag("Mobilit_R_gion__c")
+        create_tag("Mobilit_Pays__c")
+        create_tag("Entit_juridique__c")
+        create_tag("Site_de_diffusion_de_l_offre__c")
+        create_tag("Compte_de_rattachement__c")
 
         # metadatas
-        meta_id_list = JobFormat.metadatas
-        for meta_id in meta_id_list:
-            meta_value = data.get(meta_id)
-            if meta_value is not None:
-                job_object.set_meta(name=meta_id, value=meta_value)
+        job["metadatas"] = []
 
-        return job_object.dict()
+        def create_metadata(field_name: str):
+            """
+            Create metadata in job if `field_name` is not `None`
+
+            Args:
+                field_name (str): Field name in Crosstalent. For example : `crta__Fiche_de_poste__c`
+            """
+            metadata_name = "crosstalent_{}".format(field_name)
+            metadata_value = data.get(field_name)
+            if metadata_value is not None:
+                metadata = dict(name=metadata_name, value=metadata_value)
+                job["metadatas"].append(metadata)
+
+        ## TODO Add metadata
+        create_metadata("crta__CT_Code__c")
+        create_metadata("crta__CT_Designation__c")
+        create_metadata("crta__CT_Support__c")
+        create_metadata("crta__CT_Work_hours__c")
+        create_metadata("crta__Direction__c")
+        create_metadata("crta__Entite__c")
+        create_metadata("crta__Entity__c")
+        create_metadata("crta__Fiche_de_poste__c")
+        create_metadata("crta__Location__c")
+        create_metadata("crta__Nb_positionnements__c")
+        create_metadata("crta__Rattachement_hierarchique__c")
+        create_metadata("crta__Recruteur__c")
+        create_metadata("crta__Texte_statut__c")
+        create_metadata("crta__Valeur_statut__c")
+        create_metadata("crtarecr__Approver_1__c")
+        create_metadata("crtarecr__Approver_2__c")
+        create_metadata("crtarecr__Job_based_in__c")
+        create_metadata("crtarecr__Link_of_the_form_on_job_offer__c")
+        create_metadata("crtarecr__Nb_of_applications_still_to_be_processed__c")
+        create_metadata("Besoin_client__c")
+
+        return job
