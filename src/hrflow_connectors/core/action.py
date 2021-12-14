@@ -263,8 +263,8 @@ class BoardAction(Action):
     def check_reference_in_board(self, job: Dict[str, Any]) -> bool:
         """
         Check if a job reference is in the Board.
-        If the job reference is not in the Board, add the job.
-        Otherwise, if job is archived, this function unarchives it.
+        If the job reference is not in the Board, return `True` to add the job.
+        Otherwise return `False` and if job is archived, this function unarchives it.
 
         Args:
             job (Dict[str, Any]): job object
@@ -300,6 +300,31 @@ class BoardAction(Action):
                 return False
         return False
 
+    def get_all_references_from_stream(self) -> Iterator[str]:
+        """
+        Get all job references from stream
+
+        Yields:
+            Iterator[str]: return all references
+        """
+        raise NotImplementedError("`get_all_references_from_stream` is not implemented")
+
+    def check_deletion_references_from_stream(self):
+        """
+        Check the deletion of references from stream
+
+        if reference in Board is missing in Stream
+        Then archive the job with this reference
+        """
+        all_references_from_board_list = list(self.get_all_references_from_board())
+        all_references_from_stream_list = list(self.get_all_references_from_stream())
+        for reference in all_references_from_board_list:
+            if reference not in all_references_from_stream_list:
+                # Archive the job with this reference
+                self.hrflow_client.job.indexing.archive(
+                    self.board_key, reference=reference, is_archive=1
+                )
+
     def execute(self):
         """
         Execute action
@@ -314,6 +339,7 @@ class BoardAction(Action):
         if self.hydrate_with_parsing:
             output_data = map(self.hydrate_job_with_parsing, output_data)
 
-        ## TODO already_in_board_filter
+        self.check_deletion_references_from_stream()
 
-        self.push(output_data)
+        unique_data_to_push = filter(self.check_reference_in_board, output_data)
+        self.push(unique_data_to_push)
