@@ -91,6 +91,7 @@ class BoardAction(Action):
     hrflow_client: Hrflow
     board_key: str
     hydrate_with_parsing: bool = False
+    archive_deleted_jobs_from_stream: bool = True
 
     class Config:
         # `Hrflow` class is arbitrary type and can not be use without this option
@@ -339,7 +340,8 @@ class BoardAction(Action):
         if self.hydrate_with_parsing:
             output_data = map(self.hydrate_job_with_parsing, output_data)
 
-        self.check_deletion_references_from_stream()
+        if self.archive_deleted_jobs_from_stream:
+            self.check_deletion_references_from_stream()
 
         unique_data_to_push = filter(self.check_reference_in_board, output_data)
         self.push(unique_data_to_push)
