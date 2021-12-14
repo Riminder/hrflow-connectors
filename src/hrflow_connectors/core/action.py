@@ -105,7 +105,7 @@ class BoardAction(Action):
         """
 
         def get_jobs_page(page) -> Dict[str, Any]:
-            response = self.client_hrflow.job.searching.list(
+            response = self.hrflow_client.job.searching.list(
                 board_keys=[self.board_key], limit=30, page=page
             )
             if response["code"] >= 300:
@@ -294,7 +294,7 @@ class BoardAction(Action):
                 return False
             else:
                 # Job is archived
-                self.client_hrflow.job.indexing.archive(
+                self.hrflow_client.job.indexing.archive(
                     self.board_key, reference=reference, is_archive=0
                 )
                 return False
