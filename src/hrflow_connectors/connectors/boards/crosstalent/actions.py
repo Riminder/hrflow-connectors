@@ -24,6 +24,16 @@ class GetAllJobs(HTTPStream, BoardAction):
     def http_method(self):
         return "GET"
 
+    def get_all_references_from_stream(self):
+        input_data = self.pull()
+        filtered_data = self.apply_logics(input_data)
+        formated_data = map(self.format, filtered_data)
+        references_iter = map(lambda job: job.get("reference"), formated_data)
+        references_without_none_iter = filter(
+            lambda ref: ref is not None, references_iter
+        )
+        return references_without_none_iter
+
     def pull(self) -> Iterator[Dict[str, Any]]:
         response = self.send_request()
         if response.status_code == 200:
@@ -39,8 +49,7 @@ class GetAllJobs(HTTPStream, BoardAction):
         job["name"] = data.get("Name", "Undefined")
 
         # reference
-        # TODO remove comment after debug format
-        # job["name"] = data.get("Id")
+        job["reference"] = data.get("Id")
 
         # created_at
         job["created_at"] = data.get("CreatedDate")

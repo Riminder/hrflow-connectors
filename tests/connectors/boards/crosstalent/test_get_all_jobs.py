@@ -50,7 +50,7 @@ def test_GetAllJobs(auth, hrflow_client):
         auth=auth,
         subdomain="vulcain-eng--recette.my",
         hrflow_client=hrflow_client,
-        board_key="00bada5bbd99c87bd5a327b486261edaad86bc03",
+        board_key="8eba188e1af123a9818d00974ff37b943b7d54f4",
         hydrate_with_parsing=True,
     )
     action.execute()
