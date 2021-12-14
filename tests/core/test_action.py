@@ -188,6 +188,7 @@ def generated_parsing_text_response():
 
 @responses.activate
 def test_BoardAction_hydrate_job_with_parsing(generated_parsing_text_response):
+    # Catch request
     responses.add(
         responses.POST,
         "https://api.hrflow.ai/v1/document/parsing",
@@ -195,6 +196,7 @@ def test_BoardAction_hydrate_job_with_parsing(generated_parsing_text_response):
         json=generated_parsing_text_response,
     )
 
+    # Build Action
     hrflow_client = Hrflow(api_user="", api_secret="")
 
     action = BoardAction(
@@ -213,3 +215,130 @@ def test_BoardAction_hydrate_job_with_parsing(generated_parsing_text_response):
 
     assert len(hydrated_job["languages"]) == 1
     assert hydrated_job["languages"][0] == dict(name="english", value=None)
+
+@pytest.fixture
+def generate_indexing_get_response():
+    def indexing_get_response_func(code, message, archived_at):
+        job = dict(archived_at=archived_at)
+        response = dict(code=code, message=message, data=job)
+        return response
+    return indexing_get_response_func
+
+@responses.activate
+def test_BoardAction_check_reference_in_board_for_job_not_in_board(generate_indexing_get_response):
+    # Generate job
+    job = dict(reference="REF1")
+
+    # generated response
+    message = "Invalid parameters. Unable to find object: job"
+    generated_response = generate_indexing_get_response(code=400, message=message, archived_at=None)
+
+    # Catch request
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        status=400,
+        json=generated_response,
+    )
+
+    # Build Action
+    hrflow_client = Hrflow(api_user="", api_secret="")
+
+    action = BoardAction(
+        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
+    )
+    check_response = action.check_reference_in_board(job)
+    assert check_response
+
+@responses.activate
+def test_BoardAction_check_reference_in_board_for_not_archived_job_in_board(generate_indexing_get_response):
+    # Generate job
+    job = dict(reference="REF1")
+
+    # generated response
+    message = "Job details"
+    generated_response = generate_indexing_get_response(code=200, message=message, archived_at=None)
+
+    # Catch request
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        status=200,
+        json=generated_response,
+    )
+
+    # Build Action
+    hrflow_client = Hrflow(api_user="", api_secret="")
+
+    action = BoardAction(
+        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
+    )
+    check_response = action.check_reference_in_board(job)
+    assert not check_response
+
+@responses.activate
+def test_BoardAction_check_reference_in_board_fail(generate_indexing_get_response):
+    # Generate job
+    job = dict(reference="REF1")
+
+    # generated response
+    message = "Fail"
+    generated_response = generate_indexing_get_response(code=400, message=message, archived_at=None)
+
+    # Catch request
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        status=400,
+        json=generated_response,
+    )
+
+    # Build Action
+    hrflow_client = Hrflow(api_user="", api_secret="")
+
+    action = BoardAction(
+        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
+    )
+    try:
+        action.check_reference_in_board(job)
+        assert False
+    except RuntimeError:
+        assert True
+
+@responses.activate
+def test_BoardAction_check_reference_in_board_for_archived_job_in_board(generate_indexing_get_response):
+    # Generate job
+    job = dict(reference="REF1")
+
+    # generated response
+    message = "Job details"
+    generated_response = generate_indexing_get_response(code=200, message=message, archived_at="2021-12-25T00:00:00")
+
+    # Catch request
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        status=200,
+        json=generated_response,
+    )
+
+
+    # create a matcher to check if the JSON Body sent by the Connector is in the right shape and has the right values
+    expected_body = dict(board_key="abc", reference="REF1", is_archive=False)
+    match = [responses.matchers.json_params_matcher(expected_body)]
+    responses.add(
+        responses.PATCH,
+        "https://api.hrflow.ai/v1/job/indexing/archive",
+        status=200,
+        match=match,
+    )
+
+
+    # Build Action
+    hrflow_client = Hrflow(api_user="", api_secret="")
+
+    action = BoardAction(
+        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
+    )
+    check_response = action.check_reference_in_board(job)
+    assert not check_response

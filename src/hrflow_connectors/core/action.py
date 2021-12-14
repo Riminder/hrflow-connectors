@@ -285,7 +285,7 @@ class BoardAction(Action):
             # Job with this reference is not in the Board
             return True
         elif response_code >= 400:
-            RuntimeError("Indexing get failed : {}".format(response["message"]))
+            raise RuntimeError("Indexing get failed : {}".format(response["message"]))
         elif response_code == 200:
             job_in_board = response["data"]
             archived_at = job_in_board.get("archived_at")
