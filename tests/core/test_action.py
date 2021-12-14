@@ -1,7 +1,8 @@
-from hrflow_connectors.core.action import Action
+from hrflow_connectors.core.action import Action, BoardAction
 import pytest
 import requests
 import responses
+from hrflow import Hrflow
 
 
 @pytest.fixture
@@ -114,3 +115,101 @@ def test_Action_connect_and_execute(generated_data_list):
     # Exec action
     action = TestConnectorAction()
     action.execute()
+
+
+@pytest.fixture
+def generated_jobs():
+    def generate_jobs_page(page: int, jobs=30):
+        job_list = []
+        for i in range(jobs):
+            job_list.append(dict(reference="{}-{}".format(i, page)))
+        return job_list
+
+    return generate_jobs_page
+
+
+def generate_hrflow_search_response(data, max_page=2):
+    meta = dict(maxPage=max_page)
+    response = dict(code=200, message="Success", meta=meta, data=dict(jobs=data))
+    return response
+
+
+@responses.activate
+def test_BoardAction_get_all_references_from_board(generated_jobs):
+    # Generate pages of jobs
+    page_1 = generated_jobs(page=1, jobs=30)
+    page_2 = generated_jobs(page=2, jobs=29)
+
+    # Generate responses return by Hrflow
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=1&sort_by=created_at",
+        status=200,
+        json=generate_hrflow_search_response(page_1, max_page=2),
+    )
+
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=2&sort_by=created_at",
+        status=200,
+        json=generate_hrflow_search_response(page_2, max_page=2),
+    )
+
+    # Catch requests sent to Hrflow
+
+    hrflow_client = Hrflow(api_user="", api_secret="")
+
+    action = BoardAction(
+        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
+    )
+    all_reference_iter = action.get_all_references_from_board()
+    all_reference_list = list(all_reference_iter)
+
+    assert len(all_reference_list) == 59
+
+    all_reference_list.sort()
+    page_1_expected = ["{}-{}".format(i, 1) for i in range(30)]
+    page_2_expected = ["{}-{}".format(i, 2) for i in range(29)]
+
+    reference_expected = page_1_expected + page_2_expected
+    reference_expected.sort()
+
+    assert all_reference_list == reference_expected
+
+@pytest.fixture
+def generated_parsing_text_response():
+    text = "I love Python\ni speak english"
+    ents = []
+    ents.append(dict(start=7, end=13, label="HardSkill"))
+    ents.append(dict(start=22, end=29, label="Language"))
+    data = dict(ents=ents, text=text)
+    response = dict(code=200, message="Success", data=data)
+    return response
+
+@responses.activate
+def test_BoardAction_hydrate_job_with_parsing(generated_parsing_text_response):
+    responses.add(
+        responses.POST,
+        "https://api.hrflow.ai/v1/document/parsing",
+        status=200,
+        json=generated_parsing_text_response,
+    )
+
+    hrflow_client = Hrflow(api_user="", api_secret="")
+
+    action = BoardAction(
+        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
+    )
+    section = dict(name="s", title=None, description="i speak english")
+    job = dict(reference="REF123", summary="I love Python", sections=[section])
+
+    assert len(job.get("skills", [])) == 0
+    assert len(job.get("language", [])) == 0
+
+    hydrated_job = action.hydrate_job_with_parsing(job)
+
+    assert len(hydrated_job["skills"]) == 1
+    assert hydrated_job["skills"][0] == dict(name="Python", type="hard", value=None)
+
+    assert len(hydrated_job["languages"]) == 1
+    assert hydrated_job["languages"][0] == dict(name="english", value=None)
