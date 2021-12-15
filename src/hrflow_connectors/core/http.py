@@ -7,6 +7,17 @@ from .auth import Auth, NoAuth
 
 
 class HTTPStream(BaseModel):
+    """
+    HTTPStream
+    Abstract Class
+
+    To send a request with a JSON body, you must set the `content-type` header to `application/json`.
+    It is important to write the header key `content-type` in lower case.
+
+    To define `params`, `headers`, `payload` or `cookies`, you cannot override the associated private attributes.
+    It is necessary to overload the functions `build_request_...`. For example: `build_request_params`, ...
+    """
+
     auth: Auth = NoAuth()
 
     _session: requests.Session = requests.Session()
@@ -73,14 +84,20 @@ class HTTPStream(BaseModel):
         if payload == dict():
             payload = None
 
-        return self.session.request(
-            method=self.http_method,
-            url=url,
-            params=params,
-            headers=headers,
-            cookies=cookies,
-            data=payload,
-        )
+        params = dict()
+        params["method"] = self.http_method
+        params["params"] = self.params
+        params["headers"] = self.headers
+        params["cookies"] = self.cookies
+
+        # Check if request is a JSON application
+        content_type = self.headers.get("content-type")
+        if content_type is not None and "application/json" in content_type:
+            params["json"] = self.payload
+        else:
+            params["data"] = self.payload
+
+        return self.session.request(**params)
 
     @property
     def session(self) -> requests.Session:

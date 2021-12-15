@@ -2,7 +2,7 @@ from ..utils.clean_text import remove_html_tags
 from ..utils.hrflow import find_element_in_list
 
 from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Iterator, TypeVar
+from typing import List, Dict, Any, Iterator, TypeVar, Optional
 import itertools
 
 Hrflow = TypeVar("Hrflow")
@@ -74,7 +74,7 @@ class Action(BaseModel):
         """
         raise NotImplementedError("`push` is not implemented")
 
-    def execute(self):
+    def execute(self) -> Optional[Dict[str, Any]]:
         """
         Execute action
         """
@@ -326,7 +326,7 @@ class BoardAction(Action):
                     self.board_key, reference=reference, is_archive=1
                 )
 
-    def execute(self):
+    def execute(self) -> Optional[Dict[str, Any]]:
         """
         Execute action
         """
@@ -345,3 +345,28 @@ class BoardAction(Action):
 
         unique_data_to_push = filter(self.check_reference_in_board, output_data)
         self.push(unique_data_to_push)
+
+
+class SourceDestinationAction(Action):
+    hrflow_client: Hrflow
+    source_key: str
+    profile_key: str
+
+    class Config:
+        # `Hrflow` class is arbitrary type and can not be use without this option
+        arbitrary_types_allowed = True
+
+    def pull(self) -> Iterator[Dict[str, Any]]:
+        """
+        Pull data
+        """
+        response = self.hrflow_client.profile.indexing.get(
+            source_key=self.source_key, key=self.profile_key
+        )
+        if response["code"] >= 400:
+            raise RuntimeError(
+                "Indexing profile get failed : `{}`".format(response["message"])
+            )
+
+        profile = response["data"]
+        return [profile]
