@@ -25,3 +25,20 @@ def find_element_in_list(
         if element.items() >= fields.items():
             return element
     return None
+
+
+def generate_workflow_response(self, status_code=201, **kwargs) -> Dict[str, Any]:
+    """
+    Generate CATCH workflow response
+
+    Args:
+        status_code (int, optional): status code like HTTP code. Defaults to 201.
+        **kwargs: additional fields to add to the returned response
+
+    Returns:
+        Dict[str, Any]: Generated response
+    """
+    headers = {"Content-Type": "application/json"}
+    response = dict(status_code=status_code, headers=headers)
+    response.update(kwargs)
+    return response
