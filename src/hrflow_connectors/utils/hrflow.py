@@ -27,7 +27,7 @@ def find_element_in_list(
     return None
 
 
-def generate_workflow_response(self, status_code=201, **kwargs) -> Dict[str, Any]:
+def generate_workflow_response(status_code=201, **kwargs) -> Dict[str, Any]:
     """
     Generate CATCH workflow response
 

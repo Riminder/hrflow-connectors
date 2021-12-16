@@ -5,7 +5,7 @@ from hrflow import Hrflow
 
 import hrflow_connectors as hc
 from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
-from hrflow_connectors.connectors.boards.crosstalent.actions import GetAllJobs
+from hrflow_connectors.connectors.destinations.crosstalent.actions import PushProfile
 
 ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(hc.__file__), "../../"))
 
@@ -42,18 +42,13 @@ def hrflow_client(credentials):
     return hrflow_client_func
 
 
-def test_Auth(auth):
-    access_token = auth.get_access_token()
-    assert isinstance(access_token, str)
-    assert access_token != ""
-
-
-def test_GetAllJobs(auth, hrflow_client):
-    action = GetAllJobs(
+def test_PushProfile(auth, hrflow_client):
+    action = PushProfile(
         auth=auth,
         subdomain="vulcain-eng--recette.my",
-        hrflow_client=hrflow_client("dev-demo"),
-        board_key="8eba188e1af123a9818d00974ff37b943b7d54f4",
-        hydrate_with_parsing=True,
+        hrflow_client=hrflow_client("vulcain"),
+        profile_key="f43920e95fd485bfff0fb4707bfaac927533fa5a",
+        source_key="18928d3753a1cb312b3541236599358b94e53957",
     )
-    action.execute()
+    response = action.execute()
+    assert response.get("status_code") == 201
