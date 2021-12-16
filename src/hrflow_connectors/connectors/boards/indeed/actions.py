@@ -122,7 +122,7 @@ class GetAllJobs(BoardAction, Crawler):
                     jobs_Links.append(link)
 
             finally:
-                driver.quit()
+                
                 pass
 
         return jobs_Links
@@ -181,11 +181,10 @@ class GetAllJobs(BoardAction, Crawler):
         job["summary"] = driver.find_element_by_id("jobDescriptionText").text
 
         # description
-        description = driver.find_element_by_id("descriptionText").text
+        description = driver.find_element_by_id("jobDescriptionText").text
 
-        job["sections"] = list(
-            dict(name="description", title="description", description=description)
-        )
+        job["sections"] = [{'name': "description", 'title':'description', 'description': description}]
+      
 
         # compensation
         try:
