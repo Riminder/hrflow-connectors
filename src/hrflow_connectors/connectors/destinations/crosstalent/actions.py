@@ -27,7 +27,10 @@ class PushProfile(SourceDestinationAction, HTTPStream):
     def http_method(self):
         return "POST"
 
-    def push(self):
+    def push(self, data):
+        self._payload.clear()
+        profile = next(data)
+        self._payload.update(profile)
         response = self.send_request()
         if response.status_code >= 400:
             raise RuntimeError(

@@ -13,9 +13,6 @@ class HTTPStream(BaseModel):
 
     To send a request with a JSON body, you must set the `content-type` header to `application/json`.
     It is important to write the header key `content-type` in lower case.
-
-    To define `params`, `headers`, `payload` or `cookies`, you cannot override the associated private attributes.
-    It is necessary to overload the functions `build_request_...`. For example: `build_request_params`, ...
     """
 
     auth: Auth = NoAuth()
@@ -38,16 +35,16 @@ class HTTPStream(BaseModel):
         return ""
 
     def build_request_params(self):
-        self._params.clear()
+        pass
 
     def build_request_headers(self):
-        self._headers.clear()
+        pass
 
     def build_request_payload(self):
-        self._payload.clear()
+        pass
 
     def build_request_cookies(self):
-        self._cookies.clear()
+        pass
 
     def send_request(self) -> requests.Response:
         if self.url_base is None:
@@ -86,18 +83,19 @@ class HTTPStream(BaseModel):
 
         params = dict()
         params["method"] = self.http_method
-        params["params"] = self.params
-        params["headers"] = self.headers
-        params["cookies"] = self.cookies
+        params["url"] = url
+        params["params"] = params
+        params["headers"] = headers
+        params["cookies"] = cookies
 
         # Check if request is a JSON application
-        content_type = self.headers.get("content-type")
+        content_type = self._headers.get("content-type")
         if content_type is not None and "application/json" in content_type:
-            params["json"] = self.payload
+            params["json"] = self._payload
         else:
-            params["data"] = self.payload
+            params["data"] = self._payload
 
-        return self.session.request(**params)
+        return self._session.request(**params)
 
     @property
     def session(self) -> requests.Session:
