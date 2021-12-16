@@ -15,7 +15,7 @@ class GetAllJobs(HTTPStream, BoardAction):
     )
 
     @property
-    def url_base(self):
+    def base_url(self):
         return "https://{}.salesforce.com/services/apexrest/crta/HrFlowGetJobOffers/".format(
             self.subdomain
         )
