@@ -4,9 +4,11 @@ from ....core.http import HTTPStream
 from ....utils.hrflow import generate_workflow_response
 
 from pydantic import Field
+from typing import Dict, Any
 
 
 class PushProfile(SourceDestinationAction, HTTPStream):
+    payload: Dict[str, Any] = dict()
     auth: OAuth2PasswordCredentialsBody
     subdomain: str = Field(
         ...,
@@ -15,10 +17,10 @@ class PushProfile(SourceDestinationAction, HTTPStream):
 
     def build_request_headers(self):
         super().build_request_headers()
-        self._headers["content-type"] = "application/json"
+        self.headers["content-type"] = "application/json"
 
     @property
-    def url_base(self):
+    def base_url(self):
         return "https://{}.salesforce.com/services/apexrest/crta/HrFlowCreateProfile".format(
             self.subdomain
         )
@@ -28,9 +30,9 @@ class PushProfile(SourceDestinationAction, HTTPStream):
         return "POST"
 
     def push(self, data):
-        self._payload.clear()
+        self.payload.clear()
         profile = next(data)
-        self._payload.update(profile)
+        self.payload.update(profile)
         response = self.send_request()
         if response.status_code >= 400:
             raise RuntimeError(
