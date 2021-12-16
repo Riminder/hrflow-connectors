@@ -122,7 +122,7 @@ class GetAllJobs(BoardAction, Crawler):
                     jobs_Links.append(link)
 
             finally:
-                
+
                 pass
 
         return jobs_Links
@@ -154,7 +154,9 @@ class GetAllJobs(BoardAction, Crawler):
 
         # reference
         m = re.search("jk=(.+?)&tk", job_link)
-        job["reference"] = m.group(1)
+        if m:
+
+            job["reference"] = m.group(1)
 
         # created_at, updated_at : isn't shown on ideed, TODO : convert "il y a n jours" into date time
         job["created_at"] = None
@@ -183,8 +185,9 @@ class GetAllJobs(BoardAction, Crawler):
         # description
         description = driver.find_element_by_id("jobDescriptionText").text
 
-        job["sections"] = [{'name': "description", 'title':'description', 'description': description}]
-      
+        job["sections"] = [
+            {"name": "description", "title": "description", "description": description}
+        ]
 
         # compensation
         try:
@@ -261,6 +264,19 @@ class GetAllJobs(BoardAction, Crawler):
             "par" in jobType.strip()
         ):  # Because of indeed architecture the jobType is found sometimes in the same XPATH as the salary
             jobType = None
+
+        if jobType not in [
+            "CDI",
+            "CDD",
+            "Stage",
+            "Alternance",
+            "Temps plein",
+            "Temps partiel",
+            "Apprentissage",
+            "Contrat Pro",
+            "Stage, alternance",
+        ]:
+            jobType = None  # avoid that Selenium parse useless and erronous information due to Indeed dynamic website architecture
 
         job["tags"] = list(
             dict(name="indeed_compensantion", value=salary),
