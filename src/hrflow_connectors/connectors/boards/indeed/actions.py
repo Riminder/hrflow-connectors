@@ -1,4 +1,4 @@
-from typing import Iterator, Dict, Any
+from typing import Dict, Any
 from ....core.action import BoardAction
 import re
 from pydantic import Field
@@ -8,9 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
-from hrflow import Hrflow
 from selenium import webdriver
-from enum import Enum
 from selenium.common.exceptions import NoSuchElementException
 from typing import Any
 
@@ -45,7 +43,14 @@ class Crawler:
 
 class GetAllJobs(BoardAction, Crawler):
 
-    job_search: str = Field(..., description="Search Job offers in 'fr.indeed.com'")
+    subdomain: str = Field(
+        ...,
+        description="Subdomain just before 'indeed.com' for example subdomain ='fr' in 'https://fr.indeed.com ",
+    )
+    job_search: str = Field(
+        ...,
+        description="Name of the job position we want to search offers in 'fr.indeed.com'",
+    )
     job_location: str = Field(..., description="Location of the job offers")
     job_board_url: str = Field(..., description="https://fr.indeed.com")
     limit: int = Field(
@@ -53,25 +58,78 @@ class GetAllJobs(BoardAction, Crawler):
         description=" limit of jobs extracted on page, usually on 'indeed.com', the number of offers per page is 15",
     )
     limit_extract: int = Field(..., description=" limit of pages you want to extract")
+    hydrate_job_with_parsing: True = Field(
+        ..., description="get job skills, language requirements and such attributes"
+    )
 
-    def url_base(self, pagination: int) -> str:
+    @property
+    def url_base(self) -> str:
+        return "https://{}.indeed.com/".format(self.subdomain)
+
+    def pull(self) -> list:
+        """the role of this function is to interact with indeed, click buttons and search offers based on job title and location.
+        for each page we scrap all the job cards shown (usually 15 per page, and for each job card it retrieves its individual link
         """
-        Params:
-            pagination (int):  Page number
+        jobs_Links = []
+        driver = Crawler.get_driver()
+        driver.get(self.url_base)
+        # Find the text box and enter the type of job the user wants to get offers data
+        search = driver.find_element_by_id("text-input-what")
+        search.send_keys(self.job_search)
+        search.send_keys(Keys.RETURN)
 
-        Desc :
-            Generate a url.
-        Returns :
-            string url.
+        try:
+            # Get total number of related job offers in all pages.
+            total_job_s = driver.find_element_by_xpath(
+                "//div[@id='searchCountPages']"
+            ).text
+        except NoSuchElementException:
+            pass
+
+        # retrieve the number of total related job offers from string 'for example from Page 1 de 993 emplois we get total_jobs = 993'
+        total_job_s = total_job_s.split()
+        start = total_job_s.index("de")
+        end = total_job_s.index("emplois")
+        total_jobs = int("".join([total_job_s[i] for i in range(start + 1, end)]))
+
+        count_jobs = self.limit  # max 15 jobs per page
+        total_page = int(total_jobs / count_jobs)
+
+        for page in range(0, total_page):
+            if page == self.limit_extract:  # break if page reaches limit set by user
+                break
+            page_url = (
+                "https://{}.indeed.com/emplois?q={}&l={}&limit={}&start={}".format(
+                    self.subdomain,
+                    self.job_search,
+                    self.job_location,
+                    self.limit,
+                    pagination=(page * count_jobs),
+                )
+            )
+            driver.get(page_url)
+            sleep(3)
+
+            try:  # get jobCards inside of a page
+                jobCards = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.ID, "mosaic-provider-jobcards"))
+                )
+                # get joblink for each jobCard
+                elements = jobCards.find_elements_by_class_name("tapItem")
+                for x in elements:
+
+                    link = x.get_attribute("href")
+                    jobs_Links.append(link)
+
+            finally:
+                driver.quit()
+                pass
+
+        return jobs_Links
+
+    def format(self, job_link: str) -> Dict[str, Any]:
         """
-
-        return "https://fr.indeed.com/emplois?q={}&l={}&limit={}&start={}".format(
-            self.job_search, self.job_location, self.limit, pagination
-        )
-
-    def format(self, joblink: str) -> Dict[str, Any]:
-        """
-        parameter: joblink parsed after the function pull is executed.
+        parameter: job_link parsed after the function pull is executed. each job link is retrieved from the jobs_Links list scrapped in the pull function
 
         Description: generates a dictionary of a job attributes, for each job link the function scraps with selenium and parse useful attributes.
 
@@ -79,7 +137,7 @@ class GetAllJobs(BoardAction, Crawler):
         """
         job = dict()
         driver = Crawler.get_driver()
-        driver.get(joblink)
+        driver.get(job_link)
 
         # name
         try:
@@ -95,7 +153,7 @@ class GetAllJobs(BoardAction, Crawler):
             pass
 
         # reference
-        m = re.search("jk=(.+?)&tk", joblink)
+        m = re.search("jk=(.+?)&tk", job_link)
         job["reference"] = m.group(1)
 
         # created_at, updated_at : isn't shown on ideed, TODO : convert "il y a n jours" into date time
@@ -117,7 +175,7 @@ class GetAllJobs(BoardAction, Crawler):
         job["location"] = dict(text=text, lat=None, lng=None)
 
         # url
-        job["url"] = joblink
+        job["url"] = job_link
 
         # summary
         job["summary"] = driver.find_element_by_id("jobDescriptionText").text
@@ -200,7 +258,9 @@ class GetAllJobs(BoardAction, Crawler):
         except NoSuchElementException:
             pass
 
-        if "par" in jobType.strip():
+        if (
+            "par" in jobType.strip()
+        ):  # Because of indeed architecture the jobType is found sometimes in the same XPATH as the salary
             jobType = None
 
         job["tags"] = list(
@@ -213,53 +273,3 @@ class GetAllJobs(BoardAction, Crawler):
         job["metadatas"] = list()
 
         return job
-
-    def pull(self) -> list:
-
-        jobsLinks = []
-        driver = Crawler.get_driver()
-        driver.get(self.job_board_url)
-        # Find the text box and enter the type of job the user entered earlier
-        search = driver.find_element_by_id("text-input-what")
-        search.send_keys(self.job_search)
-        search.send_keys(Keys.RETURN)
-
-        try:
-            # Get total number of job inside a string.
-            total_job_s = driver.find_element_by_xpath(
-                "//div[@id='searchCountPages']"
-            ).text
-        except NoSuchElementException:
-            pass
-
-        total_job_s = total_job_s.split()
-        start = total_job_s.index("de")
-        end = total_job_s.index("emplois")
-
-        total_jobs = int("".join([total_job_s[i] for i in range(start + 1, end)]))
-        count_jobs = self.limit  # max 15 jobs par parge
-        total_page = int(total_jobs / count_jobs)
-
-        for page in range(0, total_page):
-            if page == self.limit_extract:
-                break
-            page_url = self.url_base(pagination=(page * count_jobs))
-            driver.get(page_url)
-            sleep(3)
-
-            try:
-                jobCards = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.ID, "mosaic-provider-jobcards"))
-                )
-
-                elements = jobCards.find_elements_by_class_name("tapItem")
-                for x in elements:
-
-                    link = x.get_attribute("href")
-                    jobsLinks.append(link)
-
-            finally:
-                driver.quit()
-                pass
-
-        return jobsLinks
