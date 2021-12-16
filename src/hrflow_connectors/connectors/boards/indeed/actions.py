@@ -1,3 +1,7 @@
+from typing import Iterator, Dict, Any
+from ....core.action import BoardAction
+import re
+from pydantic import Field
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -11,20 +15,6 @@ from selenium.common.exceptions import NoSuchElementException
 from typing import Any
 
 
-settings = {
-    "JOBBOARD_URL": "https://fr.indeed.com",
-    "JOBBOARD_URL_PAGINATION": "https://fr.indeed.com/emplois?q={}&l={}&limit={}&start={}",
-    "BOARD_KEY": "write in your board key",
-    "API_KEY": "write in your api_key",
-    "AGENT_KEY": "",
-    "USER_EMAIL": "write you api user key",
-    "JOB_SEARCH": "write in the job you want to search",
-    "JOB_LOCATION": "write in your job location",
-    "LIMIT": 20,
-    "LIMIT_EXTRACT": 5,
-}
-
-
 class Crawler:
 
     """
@@ -32,8 +22,7 @@ class Crawler:
 
     """
 
-    def __init__(self) -> object:
-
+    def __init__(self):
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
@@ -54,36 +43,21 @@ class Crawler:
         return self._driver
 
 
-class SkillType(str, Enum):
-    SoftSkill = "soft"
-    HardSkill = "hard"
-    Language = "language"
-    Other = "other"
+class GetAllJobs(BoardAction, Crawler):
 
+    job_search: str = Field(..., description="Search Job offers in 'fr.indeed.com'")
+    job_location: str = Field(..., description="Location of the job offers")
+    job_board_url: str = Field(..., description="https://fr.indeed.com")
+    limit: int = Field(
+        ...,
+        description=" limit of jobs extracted on page, usually on 'indeed.com', the number of offers per page is 15",
+    )
+    limit_extract: int = Field(..., description=" limit of pages you want to extract")
 
-class getAllJobs(Crawler):
-    def __init__(self, settings):
-
-        self._job_search = settings["JOB_SEARCH"]
-        self._job_location = settings["JOB_LOCATION"]
-        self._limit = settings["LIMIT"]
-        self._user_mail = settings["USER_EMAIL"]
-        self._jobboard_url = settings["JOBBOARD_URL"]
-        self._jobboardurl_pagination = settings["JOBBOARD_URL_PAGINATION"]
-        self._limit_extract = settings["LIMIT_EXTRACT"]
-        self._api_key = settings["API_KEY"]
-        self._board_key = settings["BOARD_KEY"]
-        self._agent_key = settings["AGENT_KEY"]
-        self._settings = settings
-
-    def base_url(self, pagination: int) -> str:
-
+    def url_base(self, pagination: int) -> str:
         """
         Params:
-            job_search : Job to look for
-            job_location : Location
-            limit : Number of job per page
-            pagination :  Page number
+            pagination (int):  Page number
 
         Desc :
             Generate a url.
@@ -91,240 +65,201 @@ class getAllJobs(Crawler):
             string url.
         """
 
-        url_template = self._jobboardurl_pagination
-        url = url_template.format(
-            self._job_search, self._job_location, self._limit, pagination
+        return "https://fr.indeed.com/emplois?q={}&l={}&limit={}&start={}".format(
+            self.job_search, self.job_location, self.limit, pagination
         )
-        return url
 
-    class SkillType(str, Enum):
-        SoftSkill = "soft"
-        HardSkill = "hard"
-        Language = "language"
-        Other = "other"
-
-    def indeed_scrapper(self) -> tuple:
-
+    def format(self, joblink: str) -> Dict[str, Any]:
         """
-        scrapping the important attributes of a job card(Indeed pages show at first jobs in cards format),
-        to do that you should use selenium
+        parameter: joblink parsed after the function pull is executed.
+
+        Description: generates a dictionary of a job attributes, for each job link the function scraps with selenium and parse useful attributes.
+
+        returns: a job in the HrFlow job object format
         """
-        jobsTitles = []
+        job = dict()
+        driver = Crawler.get_driver()
+        driver.get(joblink)
+
+        # name
+        try:
+            job["name"] = driver.find_element_by_xpath(
+                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div[1]/h1"
+            ).text
+
+        except NoSuchElementException:
+
+            job["name"] = driver.find_element_by_xpath(
+                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[3]/div[1]/div[1]/h1"
+            ).text
+            pass
+
+        # reference
+        m = re.search("jk=(.+?)&tk", joblink)
+        job["reference"] = m.group(1)
+
+        # created_at, updated_at : isn't shown on ideed, TODO : convert "il y a n jours" into date time
+        job["created_at"] = None
+        job["updated_at"] = None
+
+        # location
+        try:
+            text = driver.find_element_by_xpath(
+                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[3]/div[1]/div[2]/div/div/div[2]"
+            ).text
+
+        except NoSuchElementException:
+
+            text = driver.find_element_by_xpath(
+                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div[2]/div/div/div[2]"
+            ).text
+
+        job["location"] = dict(text=text, lat=None, lng=None)
+
+        # url
+        job["url"] = joblink
+
+        # summary
+        job["summary"] = driver.find_element_by_id("jobDescriptionText").text
+
+        # description
+        description = driver.find_element_by_id("descriptionText").text
+
+        job["sections"] = list(
+            dict(name="description", title="description", description=description)
+        )
+
+        # compensation
+        try:
+            salary = driver.find_element_by_xpath(
+                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[2]/span[1]"
+            ).text
+
+            if (
+                "Stage" in salary.split()
+            ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
+                salary = None
+
+            if (
+                "Apprentissage" in salary.split()
+            ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
+
+                salary = None
+
+            if (
+                "CDI" in salary.split()
+            ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
+
+                salary = None
+
+            if (
+                "Alternance" in salary.split()
+            ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
+
+                salary = None
+
+            if (
+                "Temps plein" in salary.split()
+            ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
+
+                salary = None
+
+        except NoSuchElementException:
+            salary = None
+
+        # employment_type
+        try:
+            jobType = driver.find_element_by_xpath(
+                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[2]/span[2]/"
+            ).text
+
+        except NoSuchElementException:
+            pass
+
+        try:
+            jobType = driver.find_element_by_xpath(
+                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[2]"
+            ).text
+
+        except NoSuchElementException:
+            pass
+
+        try:
+            jobType = driver.find_element_by_xpath(
+                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[3]/div[2]/span"
+            ).text
+
+        except NoSuchElementException:
+            pass
+
+        try:
+            jobType = driver.find_element_by_xpath(
+                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[2]/span"
+            ).text
+
+        except NoSuchElementException:
+            pass
+
+        if "par" in jobType.strip():
+            jobType = None
+
+        job["tags"] = list(
+            dict(name="indeed_compensantion", value=salary),
+            dict(name="indeed_employment_type", value=jobType),
+        )
+
+        job["ranges_date"] = list()
+        job["ranges_float"] = list()
+        job["metadatas"] = list()
+
+        return job
+
+    def pull(self) -> list:
+
         jobsLinks = []
-        jobsSalaries = []
-        jobSummaries = []
-        jobsLocations = []
-        jobsRefs = []
-
-        c = Crawler()
-        driver = c.get_driver()
-        driver.get(self._jobboard_url)
+        driver = Crawler.get_driver()
+        driver.get(self.job_board_url)
         # Find the text box and enter the type of job the user entered earlier
         search = driver.find_element_by_id("text-input-what")
-        search.send_keys(self._job_search)
+        search.send_keys(self.job_search)
         search.send_keys(Keys.RETURN)
 
-        total_jobs = 248
-        count_jobs = self._limit
+        try:
+            # Get total number of job inside a string.
+            total_job_s = driver.find_element_by_xpath(
+                "//div[@id='searchCountPages']"
+            ).text
+        except NoSuchElementException:
+            pass
 
+        total_job_s = total_job_s.split()
+        start = total_job_s.index("de")
+        end = total_job_s.index("emplois")
+
+        total_jobs = int("".join([total_job_s[i] for i in range(start + 1, end)]))
+        count_jobs = self.limit  # max 15 jobs par parge
         total_page = int(total_jobs / count_jobs)
 
         for page in range(0, total_page):
-            if page == settings["LIMIT_EXTRACT"]:
+            if page == self.limit_extract:
                 break
-            page_url = self.base_url(pagination=(page * count_jobs))
+            page_url = self.url_base(pagination=(page * count_jobs))
             driver.get(page_url)
-            sleep(10)
+            sleep(3)
 
-            # Try to locate the id mentioned below, if it is not found within 10 seconds then close the program
             try:
                 jobCards = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.ID, "mosaic-provider-jobcards"))
                 )
 
-                # Collects all of the job titles on the page
-                elements = jobCards.find_elements_by_tag_name("span")
-                for x in elements:
-                    val = x.get_attribute("title")
-                    # Make sure that the empty values aren't shown
-                    if not len(val.strip()) == 0:
-                        jobsTitles.append(val)
-
-                elements = jobCards.find_elements_by_class_name("job-snippet")
-                for x in elements:
-                    val = x.text
-
-                    jobSummaries.append(val)
-
-                elements = jobCards.find_elements_by_class_name("companyLocation")
-                for x in elements:
-                    val = x.text
-                    jobsLocations.append(val)
-
-                elements = jobCards.find_elements_by_class_name("salary-snippet")
-                for x in elements:
-                    val = x.text
-                    jobsSalaries.append(val)
-
-                elements = jobCards.find_elements_by_tag_name("a")
-                for x in elements:
-                    val = x.get_attribute("data-jk")
-                    jobsRefs.append(val)
-
                 elements = jobCards.find_elements_by_class_name("tapItem")
                 for x in elements:
 
-                    val = x.get_attribute("href")
-
-                    jobsLinks.append(val)
+                    link = x.get_attribute("href")
+                    jobsLinks.append(link)
 
             finally:
+                driver.quit()
                 pass
 
-            # After everything has been done close the program
-        return (
-            jobsTitles,
-            jobsLocations,
-            jobsSalaries,
-            jobsRefs,
-            jobsLinks,
-            jobSummaries,
-        )
-
-    def get_descriptions(self, jobLink: str) -> str:
-        c = Crawler()
-        driver = c.get_driver()
-
-        driver.get(jobLink)
-
-        description = driver.find_element_by_id("jobDescriptionText").text
-
-        return description
-
-    def format_entities(self, desc_parsing) -> dict:
-        description = desc_parsing["text"]
-        skills = filter(
-            lambda x: x["label"] in ["HardSkill", "SoftSkill", "Language"],
-            desc_parsing["ents"],
-        )
-        tasks = filter(lambda x: x["label"] == "Task", desc_parsing["ents"])
-        certifications = filter(
-            lambda x: x["label"] == "Certification", desc_parsing["ents"]
-        )
-        courses = filter(lambda x: x["label"] == "Course", desc_parsing["ents"])
-
-        def transform(obj):
-            return dict(name=description[obj["start"] : obj["end"]], value=None)
-
-        skills = list(
-            map(
-                lambda x: dict(**transform(x), type=SkillType[x["label"]].value), skills
-            )
-        )
-        tasks = list(map(transform, tasks))
-        certifications = list(map(transform, certifications))
-        courses = list(map(transform, courses))
-        return dict(
-            skills=skills, tasks=tasks, certifications=certifications, courses=courses
-        )
-
-    def to_hrflow_job_format(self):
-
-        hrflow_client = hrflow_client = Hrflow(
-            api_secret=self._api_key, api_user=self._user_mail
-        )
-
-        (
-            jobsTitles,
-            jobsLocations,
-            jobsSalaries,
-            jobsRefs,
-            jobsLinks,
-            jobSummaries,
-        ) = self.indeed_scrapper()
-
-        for i in range(len(jobsTitles)):
-            try:
-                job_json = {
-                    "name": jobsTitles[i],
-                    "agent_key": None,
-                    "reference": jobsRefs[i],
-                    "url": jobsLinks[i],
-                    "created_at": None,
-                    "updated_at": None,
-                    "summary": jobSummaries[i],
-                    "location": {"text": jobsLocations[i], "lat": None, "lng": None},
-                    "sections": [
-                        {
-                            "name": "description",
-                            "title": "Description",
-                            "description": self.get_descriptions(jobsLinks[i]),
-                        }
-                    ],
-                    "skills": [],
-                    "languages": [],
-                    "tags": [
-                        {"name": "compensation", "value": jobsSalaries[i]},
-                        {"name": "employment_type", "value": None},
-                    ],
-                    "ranges_date": [],
-                    "ranges_float": [],
-                    "metadatas": [],
-                }
-
-            except IndexError:
-
-                job_json = {
-                    "name": jobsTitles[i],
-                    "agent_key": None,
-                    "reference": jobsRefs[i],
-                    "url": jobsLinks[i],
-                    "created_at": None,
-                    "updated_at": None,
-                    "summary": jobSummaries[i],
-                    "location": {"text": jobsLocations[i], "lat": None, "lng": None},
-                    "sections": [
-                        {
-                            "name": "description",
-                            "title": "Description",
-                            "description": self.get_descriptions(jobsLinks[i]),
-                        }
-                    ],
-                    "skills": [],
-                    "languages": [],
-                    "tags": [
-                        {"name": "compensation", "value": None},
-                        {"name": "employment_type", "value": None},
-                    ],
-                    "ranges_date": [],
-                    "ranges_float": [],
-                    "metadatas": [],
-                }
-
-            if len(self.get_descriptions(jobsLinks[i])) > 0:
-
-                SECTION_SEPARATOR = (
-                    "\n\n"  # important to separate sections by double line jumps
-                )
-                job_text = SECTION_SEPARATOR.join(
-                    section["description"] or "" for section in job_json["sections"]
-                )
-
-                desc_parsing = hrflow_client.document.parsing.post(text=job_text)
-                desc_parsing = desc_parsing["data"]
-                formated = self.format_entities(desc_parsing)
-                job_json.update(formated)
-
-            hrflow_client.job.indexing.add_json(board_key="", job_json=job_json)
-
-
-def workflow(settings):
-
-    all = getAllJobs(settings)
-
-    pull = all.to_hrflow_job_format()
-
-    return pull
-
-
-workflow(settings)
+        return jobsLinks
