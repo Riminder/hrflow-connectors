@@ -8,9 +8,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
-from selenium import webdriver
+
 from selenium.common.exceptions import NoSuchElementException
-from typing import Any
 
 
 class Crawler:
@@ -33,8 +32,10 @@ class Crawler:
         chrome_options.add_argument("--v=99")
         chrome_options.add_argument("--single-process")
         chrome_options.add_argument("--ignore-certificate-errors")
-        #chrome_options.binary_location = "/opt/bin/headless-chromium" #use this in HrFlow workflows
-        self._driver = webdriver.Chrome(executable_path= "chromedriver.exe" ,chrome_options=chrome_options) #use this for local running with the executable path as the Chromedriver path in your machine
+        # chrome_options.binary_location = "/opt/bin/headless-chromium" #use this in HrFlow workflows
+        self._driver = webdriver.Chrome(
+            executable_path="chromedriver.exe", chrome_options=chrome_options
+        )  # use this for local running with the executable path as the Chromedriver path in your machine
 
     def get_driver(self):
 
@@ -58,16 +59,19 @@ class GetAllJobs(BoardAction, Crawler):
         description=" limit of jobs extracted on page, usually on 'indeed.com', the number of offers per page is 15",
     )
     limit_extract: int = Field(1, description=" limit of pages you want to extract")
-    
 
     @property
     def url_base(self) -> str:
         return "https:/{}.indeed.com/".format(self.subdomain)
 
+    def path(self, pagination: int) -> str:
 
-    def path(self, pagination:int) -> str:
-
-        return "emplois?q={query}&l={location}&limit={limit}&start={start}".format(query = self.job_search, location = self.job_location, limit = self.limit, start = pagination)
+        return "emplois?q={query}&l={location}&limit={limit}&start={start}".format(
+            query=self.job_search,
+            location=self.job_location,
+            limit=self.limit,
+            start=pagination,
+        )
 
     def pull(self) -> list:
         """the role of this function is to interact with indeed, click buttons and search offers based on job title and location.
@@ -81,10 +85,8 @@ class GetAllJobs(BoardAction, Crawler):
         search.send_keys(self.job_search)
         search.send_keys(Keys.RETURN)
 
-        
-            # Get total number of related job offers in all pages.
-        total_job_s = driver.find_element_by_id('searchCountPages' ).text
-        
+        # Get total number of related job offers in all pages.
+        total_job_s = driver.find_element_by_id("searchCountPages").text
 
         # retrieve the number of total related job offers from string 'for example from Page 1 de 993 emplois we get total_jobs = 993'
         total_job_s = total_job_s.split()
@@ -98,7 +100,7 @@ class GetAllJobs(BoardAction, Crawler):
         for page in range(0, total_page):
             if page == self.limit_extract:  # break if page reaches limit set by user
                 break
-            page_url = self.url_base + self.path(pagination = count_jobs * page)
+            page_url = self.url_base + self.path(pagination=count_jobs * page)
             driver.get(page_url)
             sleep(3)
 
@@ -190,19 +192,19 @@ class GetAllJobs(BoardAction, Crawler):
                 "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[2]/span[1]"
             ).text
 
-
-
         except NoSuchElementException:
-            salary = 'Null'
+            salary = "Null"
 
         if salary:
 
-            words = ['stage', 'CDI', 'Temps plein', 'CDD', 'Alternance'] 
-            for w in words: # Need to be sure that we are parsing a salary and not a job Type because of indeed dynamic structure
+            words = ["stage", "CDI", "Temps plein", "CDD", "Alternance"]
+            for (
+                w
+            ) in (
+                words
+            ):  # Need to be sure that we are parsing a salary and not a job Type because of indeed dynamic structure
                 if w in salary:
-                    salary = 'Null'
-            
-
+                    salary = "Null"
 
         # employment_type
         try:
@@ -237,8 +239,6 @@ class GetAllJobs(BoardAction, Crawler):
         except NoSuchElementException:
             pass
             jobType = None
-
-        
 
         if jobType not in [
             "CDI",
