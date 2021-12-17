@@ -349,7 +349,7 @@ class BoardAction(Action):
         self.push(unique_data_to_push)
 
 
-class SourceDestinationAction(Action):
+class ProfileDestinationAction(Action):
     hrflow_client: Hrflow
     source_key: str
     profile_key: str

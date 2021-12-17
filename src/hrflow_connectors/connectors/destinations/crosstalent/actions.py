@@ -1,5 +1,5 @@
 from ....core.auth import OAuth2PasswordCredentialsBody
-from ....core.action import SourceDestinationAction
+from ....core.action import ProfileDestinationAction
 from ....core.http import HTTPStream
 from ....utils.hrflow import generate_workflow_response
 
@@ -7,7 +7,7 @@ from pydantic import Field
 from typing import Dict, Any
 
 
-class PushProfile(SourceDestinationAction, HTTPStream):
+class PushProfile(ProfileDestinationAction, HTTPStream):
     payload: Dict[str, Any] = dict()
     auth: OAuth2PasswordCredentialsBody
     subdomain: str = Field(
