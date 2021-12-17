@@ -4,7 +4,7 @@ from ..utils.hrflow import find_element_in_list
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Iterator, TypeVar, Optional, Union
 import itertools
-import xml
+import xml.etree.ElementTree
 
 Hrflow = TypeVar("Hrflow")
 TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
