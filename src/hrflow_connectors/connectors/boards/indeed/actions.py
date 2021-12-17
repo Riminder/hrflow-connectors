@@ -54,24 +54,29 @@ class GetAllJobs(BoardAction, Crawler):
     job_location: str = Field(..., description="Location of the job offers")
     job_board_url: str = Field(..., description="https://fr.indeed.com")
     limit: int = Field(
-        ...,
+        15,
         description=" limit of jobs extracted on page, usually on 'indeed.com', the number of offers per page is 15",
     )
-    limit_extract: int = Field(..., description=" limit of pages you want to extract")
+    limit_extract: int = Field(1, description=" limit of pages you want to extract")
     hydrate_job_with_parsing: True = Field(
         ..., description="get job skills, language requirements and such attributes"
     )
 
     @property
     def url_base(self) -> str:
-        return "https://{}.indeed.com/".format(self.subdomain)
+        return "https://{}.indeed.com".format(self.subdomain)
+
+
+    def path(self, pagination:int) -> str:
+
+        return "/emplois?q={query}&l={location}&limit={limit}&start={start}".format(query = self.job_search, location = self.job_location, limit = self.limit, start = pagination)
 
     def pull(self) -> list:
         """the role of this function is to interact with indeed, click buttons and search offers based on job title and location.
         for each page we scrap all the job cards shown (usually 15 per page, and for each job card it retrieves its individual link
         """
         jobs_Links = []
-        driver = Crawler.get_driver()
+        driver = Crawler().get_driver()
         driver.get(self.url_base)
         # Find the text box and enter the type of job the user wants to get offers data
         search = driver.find_element_by_id("text-input-what")
@@ -136,7 +141,7 @@ class GetAllJobs(BoardAction, Crawler):
         returns: a job in the HrFlow job object format
         """
         job = dict()
-        driver = Crawler.get_driver()
+        driver = Crawler().get_driver()
         driver.get(job_link)
 
         # name
@@ -157,6 +162,9 @@ class GetAllJobs(BoardAction, Crawler):
         if m:
 
             job["reference"] = m.group(1)
+
+        else:
+            job["reference"] = None
 
         # created_at, updated_at : isn't shown on ideed, TODO : convert "il y a n jours" into date time
         job["created_at"] = None
@@ -196,30 +204,30 @@ class GetAllJobs(BoardAction, Crawler):
             ).text
 
             if (
-                "Stage" in salary.split()
+                "Stage" in salary
             ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
                 salary = None
 
             if (
-                "Apprentissage" in salary.split()
-            ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
-
-                salary = None
-
-            if (
-                "CDI" in salary.split()
+                "Apprentissage" in salary
             ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
 
                 salary = None
 
             if (
-                "Alternance" in salary.split()
+                "CDI" in salary
             ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
 
                 salary = None
 
             if (
-                "Temps plein" in salary.split()
+                "Alternance" in salary
+            ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
+
+                salary = None
+
+            if (
+                "Temps plein" in salary
             ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
 
                 salary = None
@@ -278,10 +286,10 @@ class GetAllJobs(BoardAction, Crawler):
         ]:
             jobType = None  # avoid that Selenium parse useless and erronous information due to Indeed dynamic website architecture
 
-        job["tags"] = list(
+        job["tags"] = [
             dict(name="indeed_compensantion", value=salary),
             dict(name="indeed_employment_type", value=jobType),
-        )
+        ]
 
         job["ranges_date"] = list()
         job["ranges_float"] = list()
