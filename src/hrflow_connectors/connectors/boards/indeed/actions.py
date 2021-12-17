@@ -33,8 +33,8 @@ class Crawler:
         chrome_options.add_argument("--v=99")
         chrome_options.add_argument("--single-process")
         chrome_options.add_argument("--ignore-certificate-errors")
-        chrome_options.binary_location = "/opt/bin/headless-chromium"
-        self._driver = webdriver.Chrome(chrome_options=chrome_options)
+        #chrome_options.binary_location = "/opt/bin/headless-chromium" #use this in HrFlow workflows
+        self._driver = webdriver.Chrome(executable_path= "chromedriver.exe" ,chrome_options=chrome_options) #use this for local running with the executable path as the Chromedriver path in your machine
 
     def get_driver(self):
 
@@ -45,35 +45,33 @@ class GetAllJobs(BoardAction, Crawler):
 
     subdomain: str = Field(
         ...,
-        description="Subdomain just before 'indeed.com' for example subdomain ='fr' in 'https://fr.indeed.com ",
+        description="Subdomain just before 'indeed.com' for example subdomain ='fr' in 'https:/fr.indeed.com ",
     )
     job_search: str = Field(
         ...,
         description="Name of the job position we want to search offers in 'fr.indeed.com'",
     )
     job_location: str = Field(..., description="Location of the job offers")
-    job_board_url: str = Field(..., description="https://fr.indeed.com")
+
     limit: int = Field(
         15,
         description=" limit of jobs extracted on page, usually on 'indeed.com', the number of offers per page is 15",
     )
     limit_extract: int = Field(1, description=" limit of pages you want to extract")
-    hydrate_job_with_parsing: True = Field(
-        ..., description="get job skills, language requirements and such attributes"
-    )
+    
 
     @property
     def url_base(self) -> str:
-        return "https://{}.indeed.com".format(self.subdomain)
+        return "https:/{}.indeed.com/".format(self.subdomain)
 
 
     def path(self, pagination:int) -> str:
 
-        return "/emplois?q={query}&l={location}&limit={limit}&start={start}".format(query = self.job_search, location = self.job_location, limit = self.limit, start = pagination)
+        return "emplois?q={query}&l={location}&limit={limit}&start={start}".format(query = self.job_search, location = self.job_location, limit = self.limit, start = pagination)
 
     def pull(self) -> list:
         """the role of this function is to interact with indeed, click buttons and search offers based on job title and location.
-        for each page we scrap all the job cards shown (usually 15 per page, and for each job card it retrieves its individual link
+        for each page we scrap all the job cards shown (usually 15 per page), and for each job card it retrieves its individual link
         """
         jobs_Links = []
         driver = Crawler().get_driver()
@@ -83,13 +81,10 @@ class GetAllJobs(BoardAction, Crawler):
         search.send_keys(self.job_search)
         search.send_keys(Keys.RETURN)
 
-        try:
+        
             # Get total number of related job offers in all pages.
-            total_job_s = driver.find_element_by_xpath(
-                "//div[@id='searchCountPages']"
-            ).text
-        except NoSuchElementException:
-            pass
+        total_job_s = driver.find_element_by_id('searchCountPages' ).text
+        
 
         # retrieve the number of total related job offers from string 'for example from Page 1 de 993 emplois we get total_jobs = 993'
         total_job_s = total_job_s.split()
@@ -103,15 +98,7 @@ class GetAllJobs(BoardAction, Crawler):
         for page in range(0, total_page):
             if page == self.limit_extract:  # break if page reaches limit set by user
                 break
-            page_url = (
-                "https://{}.indeed.com/emplois?q={}&l={}&limit={}&start={}".format(
-                    self.subdomain,
-                    self.job_search,
-                    self.job_location,
-                    self.limit,
-                    pagination=(page * count_jobs),
-                )
-            )
+            page_url = self.url_base + self.path(pagination = count_jobs * page)
             driver.get(page_url)
             sleep(3)
 
@@ -203,37 +190,19 @@ class GetAllJobs(BoardAction, Crawler):
                 "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[2]/span[1]"
             ).text
 
-            if (
-                "Stage" in salary
-            ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
-                salary = None
 
-            if (
-                "Apprentissage" in salary
-            ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
-
-                salary = None
-
-            if (
-                "CDI" in salary
-            ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
-
-                salary = None
-
-            if (
-                "Alternance" in salary
-            ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
-
-                salary = None
-
-            if (
-                "Temps plein" in salary
-            ):  # Mandatory to be sure that we are parsing a salary and not a job type because of indeed web design structure
-
-                salary = None
 
         except NoSuchElementException:
-            salary = None
+            salary = 'Null'
+
+        if salary:
+
+            words = ['stage', 'CDI', 'Temps plein', 'CDD', 'Alternance'] 
+            for w in words: # Need to be sure that we are parsing a salary and not a job Type because of indeed dynamic structure
+                if w in salary:
+                    salary = 'Null'
+            
+
 
         # employment_type
         try:
@@ -267,11 +236,9 @@ class GetAllJobs(BoardAction, Crawler):
 
         except NoSuchElementException:
             pass
-
-        if (
-            "par" in jobType.strip()
-        ):  # Because of indeed architecture the jobType is found sometimes in the same XPATH as the salary
             jobType = None
+
+        
 
         if jobType not in [
             "CDI",
@@ -294,5 +261,7 @@ class GetAllJobs(BoardAction, Crawler):
         job["ranges_date"] = list()
         job["ranges_float"] = list()
         job["metadatas"] = list()
+
+        driver.quit()
 
         return job
