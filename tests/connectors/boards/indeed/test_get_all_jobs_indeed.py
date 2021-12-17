@@ -27,12 +27,16 @@ def hrflow_client(credentials):
 
 def test_GetAllJobs(hrflow_client):
     action = GetAllJobs(
+        
         subdomain="fr",
         hrflow_client=hrflow_client,
         job_search = 'Data Scientist',
         job_location = 'Paris',
+        limit = 15,
+        limit_extract = 1,
+        
 
-        board_key="8eba188e1af123a9818d00974ff37b943b7d54f4",
+        board_key="ad9bdfb905566e88ace7698736efb2f625f65a39",
         hydrate_with_parsing=True,
         archive_deleted_jobs_from_stream = False
 
