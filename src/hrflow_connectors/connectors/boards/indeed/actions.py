@@ -8,9 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
-
 from selenium.common.exceptions import NoSuchElementException
-
 
 class GetAllJobs(BoardAction):
 
@@ -28,17 +26,14 @@ class GetAllJobs(BoardAction):
         ...,
         description="A separate executable that Selenium WebDriver uses to control Chrome. Make sure you install the chromedriver with the same version as your local Chrome navigator",
     )
-
     @property
     def url_base(self) -> str:
         return "https:/{}.indeed.com".format(self.subdomain)
-
     @property
     def Crawler(self):
         """
         Selenium Crawler function
         """
-
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
@@ -56,7 +51,6 @@ class GetAllJobs(BoardAction):
         driver = webdriver.Chrome(
             executable_path=self.executable_path, chrome_options=chrome_options
         )  # use this for local running with the executable path as the Chromedriver path in your machine
-
         return driver
 
     def path(self, pagination: int) -> str:
@@ -68,7 +62,6 @@ class GetAllJobs(BoardAction):
         Returns:
             str: for example it returns /emplois?q=data%20scientist&l=paris&start=10 if we are looking for Data Scientist offers in Paris in page 2
         """
-
         return "/emplois?q={query}&l={location}&start={start}".format(
             query=self.job_search,
             location=self.job_location,
@@ -92,7 +85,6 @@ class GetAllJobs(BoardAction):
 
         # Get the search count str for example 'Page 1 de 993 emplois'
         search_count_str = driver.find_element_by_id("searchCountPages").text
-
         # retrieve the number of total related job offers from string 'for example from 'Page 1 de 993 emplois' we get job_search_count = 993'
         search_count = (
             search_count_str.split()
@@ -117,7 +109,6 @@ class GetAllJobs(BoardAction):
             page_url = self.url_base + self.path(pagination=count_jobs * page)
             driver.get(page_url)
             sleep(3)
-
             try:  # get jobCards inside of a page
                 jobCards = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.ID, "mosaic-provider-jobcards"))
@@ -128,12 +119,10 @@ class GetAllJobs(BoardAction):
 
                     link = x.get_attribute("href")
                     job_links_list.append(link)
-
             except:
                 raise Exception(
                     "Runtime Error: Selenium Webdriver could not find elements, verify that the page is not empty"
                 )
-
         return job_links_list
 
     def format(self, job_link: str) -> Dict[str, Any]:
@@ -156,33 +145,25 @@ class GetAllJobs(BoardAction):
         # reference
         m = re.search("jk=(.+?)&", job_link)
         if m:
-
             job["reference"] = m.group(1)
-
         else:
             job["reference"] = None
 
         # created_at, updated_at : isn't shown on ideed, TODO : convert "il y a n jours" into date time
         job["created_at"] = None
         job["updated_at"] = None
-
         # location
         try:
             location = driver.find_element_by_xpath(
                 "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[3]/div[1]/div[2]/div/div/div[2]"
             ).text
-
         except NoSuchElementException:
-
             location = driver.find_element_by_xpath(
                 "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div[2]/div/div/div[2]"
             ).text
-
         job["location"] = dict(text=location, lat=None, lng=None)
-
         # url
         job["url"] = job_link
-
         # summary
         text = driver.find_element_by_id("jobDescriptionText").text
         job["summary"] = text
@@ -190,16 +171,13 @@ class GetAllJobs(BoardAction):
         job["sections"] = [
             {"name": "description", "title": "description", "description": text}
         ]
-
         # compensation and jobType if they exist are in the same header so we get them both in one task of finding elements
         try:
             element = driver.find_element_by_class_name(
                 "jobsearch-JobMetadataHeader-item"
             ).text
         except NoSuchElementException:
-
             element = "Null"
-
         # compensation
         # Need to be sure that we are parsing a salary and not a job Type because of indeed dynamic structure
         items = element.split()
@@ -219,7 +197,6 @@ class GetAllJobs(BoardAction):
             if item in items:
                 items.remove(item)
                 salary = " ".join([items[i] for i in range(len(items))])
-
         # employment_type
         # avoid that Selenium parse useless and erronous information due to Indeed dynamic website architecture for example it can give jobType = "38 000 € par an - CDI" or "2 369 € - 4 645 € par mois - Temps plein, CDD"
         if element not in [
@@ -235,25 +212,19 @@ class GetAllJobs(BoardAction):
         ]:
             if "CDI" in element.split():
                 jobType = "CDI"
-
             elif "plein" in element.split():
                 jobType = "CDI"
-
             elif "CDD" in element.split():
                 jobType = "CDD"
-
             else:
                 jobType = "null"
-
         job["tags"] = [
             dict(name="indeed_compensantion", value=salary),
             dict(name="indeed_employment_type", value=jobType),
         ]
-
         job["ranges_date"] = list()
         job["ranges_float"] = list()
         job["metadatas"] = list()
 
         driver.quit()
-
         return job
