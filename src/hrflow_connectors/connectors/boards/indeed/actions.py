@@ -193,38 +193,25 @@ class GetAllJobs(BoardAction):
             {"name": "description", "title": "description", "description": description}
         ]
 
-        # compensation
+        # compensation and jobType if they exist are in the same header so we get them both in one task of finding elements
         try:
-            salary = driver.find_element_by_xpath(
-                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[2]/span[1]"
-            ).text
-
+            element = driver.find_element_by_class_name('jobsearch-JobMetadataHeader-item').text
         except NoSuchElementException:
-            salary = "Null"
 
-        if salary:
+            element = 'Null'
 
-            words = ["stage", "CDI", "Temps plein", "CDD", "Alternance"]
-            for (
-                w
-            ) in (
-                words
-            ):  # Need to be sure that we are parsing a salary and not a job Type because of indeed dynamic structure
-                if w in salary:
-                    salary = "Null"
+        #compensation
+        # Need to be sure that we are parsing a salary and not a job Type because of indeed dynamic structure
+        items = element.split()
+        l = ['Temps plein','Temps', 'plein', 'CDI', 'plein,', 'Stage', 'CDD', 'Apprentissage', 'Alternance', 'partiel']
+        for item in l: 
+            if item in items:
+                items.remove(item)
+                salary = " ".join([items[i] for i in range(len(items))])
 
         # employment_type
-        try:
-
-            jobType = driver.find_element_by_class_name(
-                "jobsearch-JobMetadataHeader-item"
-            ).text
-        except NoSuchElementException:
-
-            jobType = "Null"
-
         # avoid that Selenium parse useless and erronous information due to Indeed dynamic website architecture for example it can give jobType = "38 000 € par an - CDI" or "2 369 € - 4 645 € par mois - Temps plein, CDD"
-        if jobType not in [
+        if element not in [
             "CDI",
             "CDD",
             "Stage",
@@ -235,13 +222,13 @@ class GetAllJobs(BoardAction):
             "Contrat Pro",
             "Stage, alternance",
         ]:
-            if "CDI" in jobType.split():
+            if "CDI" in element.split():
                 jobType = "CDI"
 
-            elif "plein" in jobType.split():
+            elif "plein" in element.split():
                 jobType = "CDI"
 
-            elif "CDD" in jobType.split():
+            elif "CDD" in element.split():
                 jobType = "CDD"
 
             else:
