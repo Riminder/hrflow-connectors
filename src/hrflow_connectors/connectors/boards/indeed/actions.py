@@ -195,16 +195,29 @@ class GetAllJobs(BoardAction):
 
         # compensation and jobType if they exist are in the same header so we get them both in one task of finding elements
         try:
-            element = driver.find_element_by_class_name('jobsearch-JobMetadataHeader-item').text
+            element = driver.find_element_by_class_name(
+                "jobsearch-JobMetadataHeader-item"
+            ).text
         except NoSuchElementException:
 
-            element = 'Null'
+            element = "Null"
 
-        #compensation
+        # compensation
         # Need to be sure that we are parsing a salary and not a job Type because of indeed dynamic structure
         items = element.split()
-        l = ['Temps plein','Temps', 'plein', 'CDI', 'plein,', 'Stage', 'CDD', 'Apprentissage', 'Alternance', 'partiel']
-        for item in l: 
+        l = [
+            "Temps plein",
+            "Temps",
+            "plein",
+            "CDI",
+            "plein,",
+            "Stage",
+            "CDD",
+            "Apprentissage",
+            "Alternance",
+            "partiel",
+        ]
+        for item in l:
             if item in items:
                 items.remove(item)
                 salary = " ".join([items[i] for i in range(len(items))])
