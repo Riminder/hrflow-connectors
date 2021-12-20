@@ -28,16 +28,12 @@ def hrflow_client(credentials):
 def test_GetAllJobs(hrflow_client):
     action = GetAllJobs(
         
-        executable_path = "/limam_ala/projects/indeed/hrflow-connectors/src/hrflow_connectors/connectors/boards/indeed/chromedriver_linux64/chromedriver",
+        executable_path = "src/hrflow_connectors/connectors/boards/indeed/chromedriver_linux64/chromedriver",
         subdomain="fr",
         hrflow_client=hrflow_client,
         job_search = 'Data Scientist',
         job_location = 'Paris',
-        limit = 15,
-        limit_extract = 1,
-        
-
-        board_key="ad9bdfb905566e88ace7698736efb2f625f65a39",
+        board_key="a73c76ff7e0d10a6c6e99390035682df46a419db",
         hydrate_with_parsing=True,
         archive_deleted_jobs_from_stream = False
 
