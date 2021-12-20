@@ -65,17 +65,21 @@ class Profile(BaseModel):
 class EventParser(BaseModel):
     request: Dict[str, Any]
 
-    def get_profile(self) -> Optional[Profile]:
+    def get_profile(self, source_to_listen: List[str] = None) -> Optional[Profile]:
         """
         Get profile
 
         If the parser does not find `Profile` object, then it will return `None`
+
+        Args:
+            source_to_listen (List[str], optional): list of source keys to listen. Defaults to None if you want to listen all available sources.
 
         Returns:
             Optional[Profile]: `Profile` object or `None` if not found
         """
         profile_dict = self.request.get("profile")
         if profile_dict is not None:
-            return Profile.parse_obj(profile_dict)
-        else:
-            return None
+            profile_obj = Profile.parse_obj(profile_dict)
+            if source_to_listen is None or profile_obj.source.key in source_to_listen:
+                return profile_obj
+        return None
