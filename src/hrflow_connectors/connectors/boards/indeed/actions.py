@@ -12,37 +12,9 @@ from time import sleep
 from selenium.common.exceptions import NoSuchElementException
 
 
-class Crawler:
-
-    """
-    Selenium Crawler Class
-
-    """
-
-    def __init__(self):
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--window-size=1280x1696")
-        chrome_options.add_argument("--hide-scrollbars")
-        chrome_options.add_argument("--enable-logging")
-        chrome_options.add_argument("--log-level=0")
-        chrome_options.add_argument("--v=99")
-        chrome_options.add_argument("--single-process")
-        chrome_options.add_argument("--ignore-certificate-errors")
-        # chrome_options.binary_location = "/opt/bin/headless-chromium" #use this in HrFlow workflows
-        self._driver = webdriver.Chrome(
-            executable_path="chromedriver.exe", chrome_options=chrome_options
-        )  # use this for local running with the executable path as the Chromedriver path in your machine
-
-    def get_driver(self):
-
-        return self._driver
 
 
-class GetAllJobs(BoardAction, Crawler):
+class GetAllJobs(BoardAction):
 
     subdomain: str = Field(
         ...,
@@ -60,10 +32,42 @@ class GetAllJobs(BoardAction, Crawler):
     )
     limit_extract: int = Field(1, description=" limit of pages you want to extract")
 
+    executable_path: str = Field(..., description = "A separate executable that Selenium WebDriver uses to control Chrome. Make sure you install the chromedriver with the same version as your local Chrome navigator")
+
     @property
     def url_base(self) -> str:
         return "https:/{}.indeed.com/".format(self.subdomain)
 
+    @property
+    def Crawler(self):
+        """ 
+        Selenium Crawler function
+        """
+
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--window-size=1280x1696")
+        chrome_options.add_argument("--hide-scrollbars")
+        chrome_options.add_argument("--enable-logging")
+        chrome_options.add_argument("--log-level=0")
+        chrome_options.add_argument("--v=99")
+        chrome_options.add_argument("--single-process")
+        chrome_options.add_argument("--ignore-certificate-errors")
+        """chrome_options.binary_location = "/opt/bin/headless-chromium""" #use this in HrFlow workflows
+        """driver = webdriver.Chrome(chrome_options)""" #use this in HrFlow workflows
+        driver = webdriver.Chrome(
+            executable_path=self.executable_path, chrome_options=chrome_options
+        )  # use this for local running with the executable path as the Chromedriver path in your machine
+
+
+        return driver
+
+
+
+    
     def path(self, pagination: int) -> str:
 
         return "emplois?q={query}&l={location}&limit={limit}&start={start}".format(
@@ -78,7 +82,7 @@ class GetAllJobs(BoardAction, Crawler):
         for each page we scrap all the job cards shown (usually 15 per page), and for each job card it retrieves its individual link
         """
         jobs_Links = []
-        driver = Crawler().get_driver()
+        driver = self.Crawler
         driver.get(self.url_base)
         # Find the text box and enter the type of job the user wants to get offers data
         search = driver.find_element_by_id("text-input-what")
@@ -130,7 +134,7 @@ class GetAllJobs(BoardAction, Crawler):
         returns: a job in the HrFlow job object format
         """
         job = dict()
-        driver = Crawler().get_driver()
+        driver = self.Crawler
         driver.get(job_link)
 
         # name
