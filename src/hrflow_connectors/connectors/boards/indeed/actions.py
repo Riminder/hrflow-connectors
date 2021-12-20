@@ -152,7 +152,7 @@ class GetAllJobs(BoardAction):
         # name
         job["name"] = driver.find_element_by_class_name('jobsearch-JobInfoHeader-title').text
         # reference
-        m = re.search("jk=(.+?)&tk", job_link)
+        m = re.search("jk=(.+?)&", job_link)
         if m:
 
             job["reference"] = m.group(1)
