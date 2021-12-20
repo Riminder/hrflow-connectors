@@ -112,7 +112,7 @@ class GetAllJobs(BoardAction):
             job_search_count / count_jobs
         )  # for example for a total of 993 and a count of 15 we loop over 66 pages
 
-        for page in range(0, 1):
+        for page in range(0, total_page):
 
             page_url = self.url_base + self.path(pagination=count_jobs * page)
             driver.get(page_url)
