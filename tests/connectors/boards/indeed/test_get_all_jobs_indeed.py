@@ -26,12 +26,12 @@ def hrflow_client(credentials):
 
 def test_GetAllJobs(hrflow_client):
     action = GetAllJobs(
-        executable_path="src/hrflow_connectors/connectors/boards/indeed/chromedriver_linux64/chromedriver",
+        executable_path="chromedriver.exe",
         subdomain="fr",
         hrflow_client=hrflow_client,
-        job_search="Data Scientist",
+        job_search="Software Engineer",
         job_location="Paris",
-        board_key="a73c76ff7e0d10a6c6e99390035682df46a419db",
+        board_key="5865a71e45b94e29f7c1c97d71479ef2757df414",
         hydrate_with_parsing=True,
         archive_deleted_jobs_from_stream=False,
     )

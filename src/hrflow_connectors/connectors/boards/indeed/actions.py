@@ -35,7 +35,7 @@ class GetAllJobs(BoardAction):
         Selenium Crawler function
         """
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--headless")
+        """chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--disable-gpu")
@@ -45,7 +45,7 @@ class GetAllJobs(BoardAction):
         chrome_options.add_argument("--log-level=0")
         chrome_options.add_argument("--v=99")
         chrome_options.add_argument("--single-process")
-        chrome_options.add_argument("--ignore-certificate-errors")
+        chrome_options.add_argument("--ignore-certificate-errors")"""
         """chrome_options.binary_location = "/opt/bin/headless-chromium"""  # use this in HrFlow workflows
         """driver = webdriver.Chrome(chrome_options)"""  # use this in HrFlow workflows
         driver = webdriver.Chrome(
@@ -119,10 +119,9 @@ class GetAllJobs(BoardAction):
 
                     link = x.get_attribute("href")
                     job_links_list.append(link)
-            except:
-                raise Exception(
-                    "Runtime Error: Selenium Webdriver could not find elements, verify that the page is not empty"
-                )
+            finally:
+                pass
+
         return job_links_list
 
     def format(self, job_link: str) -> Dict[str, Any]:
@@ -135,6 +134,7 @@ class GetAllJobs(BoardAction):
             Dict[str, Any]: [a job in the HrFlow job object format]
         """
         job = dict()
+        contract_type = ''
         driver = self.Crawler
         driver.get(job_link)
 
@@ -165,7 +165,12 @@ class GetAllJobs(BoardAction):
         # url
         job["url"] = job_link
         # summary
-        text = driver.find_element_by_id("jobDescriptionText").text
+        try:
+
+            text = driver.find_element_by_id("jobDescriptionText").text
+
+        except NoSuchElementException:
+            text = None
         job["summary"] = text
         # description
         job["sections"] = [
@@ -196,7 +201,7 @@ class GetAllJobs(BoardAction):
         for item in l:
             if item in items:
                 items.remove(item)
-                salary = " ".join([items[i] for i in range(len(items))])
+        salary = " ".join([items[i] for i in range(len(items))])
         # employment_type
         # avoid that Selenium parse useless and erronous information due to Indeed dynamic website architecture for example it can give jobType = "38 000 € par an - CDI" or "2 369 € - 4 645 € par mois - Temps plein, CDD"
         if element not in [
@@ -211,13 +216,14 @@ class GetAllJobs(BoardAction):
             "Stage, alternance",
         ]:
             if "CDI" in element.split():
-                jobType = "CDI"
+                contract_type = "CDI"
             elif "plein" in element.split():
-                jobType = "CDI"
+                contract_type = "CDI"
             elif "CDD" in element.split():
-                jobType = "CDD"
+                contract_type = "CDD"
             else:
-                jobType = "null"
+                contract_type = "null"
+        jobType = contract_type
         job["tags"] = [
             dict(name="indeed_compensantion", value=salary),
             dict(name="indeed_employment_type", value=jobType),
