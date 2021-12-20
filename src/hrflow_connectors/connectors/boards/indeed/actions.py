@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Iterator, Optional
 from ....core.action import BoardAction
 import re
 from pydantic import Field
@@ -26,17 +26,12 @@ class GetAllJobs(BoardAction):
     )
     job_location: str = Field(..., description="Location of the job offers")
 
-    limit: int = Field(
-        15,
-        description=" limit of jobs extracted on page, usually on 'indeed.com', the number of offers per page is 15",
-    )
-    limit_extract: int = Field(1, description=" limit of pages you want to extract")
 
     executable_path: str = Field(..., description = "A separate executable that Selenium WebDriver uses to control Chrome. Make sure you install the chromedriver with the same version as your local Chrome navigator")
 
     @property
     def url_base(self) -> str:
-        return "https:/{}.indeed.com/".format(self.subdomain)
+        return "https:/{}.indeed.com".format(self.subdomain)
 
     @property
     def Crawler(self):
@@ -69,19 +64,32 @@ class GetAllJobs(BoardAction):
 
     
     def path(self, pagination: int) -> str:
+        """path [generates the path and pagination of the job offers search]
 
-        return "emplois?q={query}&l={location}&limit={limit}&start={start}".format(
+        Args:
+            pagination (int): for example pagination = 10 if we want to start from page 2
+
+        Returns:
+            str: for example it returns /emplois?q=data%20scientist&l=paris&start=10 if we are looking for Data Scientist offers in Paris in page 2
+        """
+
+        return "/emplois?q={query}&l={location}&start={start}".format(
             query=self.job_search,
             location=self.job_location,
-            limit=self.limit,
             start=pagination,
         )
 
-    def pull(self) -> list:
-        """the role of this function is to interact with indeed, click buttons and search offers based on job title and location.
-        for each page we scrap all the job cards shown (usually 15 per page), and for each job card it retrieves its individual link
+
+      
+
+    def pull(self) -> Iterator[str]:
+        """pull [the role of this function is to interact with indeed, click buttons and search offers based on job title and location.
+        for each page we scrap all the job cards shown (usually 15 per page), and for each job card it retrieves its individual link]
+
+        Returns:
+            Iterator[str]: [list of scrapped jobLinks]
         """
-        jobs_Links = []
+        job_links_list = []
         driver = self.Crawler
         driver.get(self.url_base)
         # Find the text box and enter the type of job the user wants to get offers data
@@ -89,22 +97,23 @@ class GetAllJobs(BoardAction):
         search.send_keys(self.job_search)
         search.send_keys(Keys.RETURN)
 
-        # Get total number of related job offers in all pages.
-        total_job_s = driver.find_element_by_id("searchCountPages").text
+        # Get the search count str for example 'Page 1 de 993 emplois'
+        search_count_str = driver.find_element_by_id("searchCountPages").text
 
-        # retrieve the number of total related job offers from string 'for example from Page 1 de 993 emplois we get total_jobs = 993'
-        total_job_s = total_job_s.split()
-        start = total_job_s.index("de")
-        end = total_job_s.index("emplois")
-        total_jobs = int("".join([total_job_s[i] for i in range(start + 1, end)]))
+        # retrieve the number of total related job offers from string 'for example from 'Page 1 de 993 emplois' we get job_search_count = 993'
+        search_count= search_count_str.split()  #split the string in a list of strings ['1', 'de', '993', 'emplois']
+        start = search_count.index("de") 
+        end = search_count.index("emplois") #find the words that surround the total number of jobs
+        job_search_count = int("".join([search_count[i] for i in range(start + 1, end)]))  #group different parts of the number together for example if it is 'Page 1 de 1993 emplois' we get 1993 
 
-        count_jobs = self.limit  # max 15 jobs per page
-        total_page = int(total_jobs / count_jobs)
+        #If there is only one job offer result -corresponding to 'emploi'- or none a value error is raised, it is a rare case and the custom should make sure to type in a real job name.
 
-        for page in range(0, total_page):
-            if page == self.limit_extract:  # break if page reaches limit set by user
-                break
-            page_url = self.url_base + self.path(pagination=count_jobs * page)
+        count_jobs = 15  # maximum jobs shown per page 15, important for pagination
+        total_page = int(job_search_count / count_jobs) # for example for a total of 993 and a count of 15 we loop over 66 pages
+
+        for page in range(0, 1):
+            
+            page_url = self.url_base + self.path(pagination=count_jobs * page)  
             driver.get(page_url)
             sleep(3)
 
@@ -117,13 +126,14 @@ class GetAllJobs(BoardAction):
                 for x in elements:
 
                     link = x.get_attribute("href")
-                    jobs_Links.append(link)
+                    job_links_list.append(link)
 
-            finally:
+            except:
+                raise Exception("Runtime Error: Selenium Webdriver could not find elements, verify that the page is not empty")
 
-                pass
+                
 
-        return jobs_Links
+        return job_links_list
 
     def format(self, job_link: str) -> Dict[str, Any]:
         """
@@ -241,7 +251,7 @@ class GetAllJobs(BoardAction):
             ).text
 
         except NoSuchElementException:
-            pass
+            
             jobType = None
 
         if jobType not in [
