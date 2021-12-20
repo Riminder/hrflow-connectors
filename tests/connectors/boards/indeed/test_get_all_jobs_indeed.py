@@ -28,6 +28,7 @@ def hrflow_client(credentials):
 def test_GetAllJobs(hrflow_client):
     action = GetAllJobs(
         
+        executable_path = "/limam_ala/projects/indeed/hrflow-connectors/src/hrflow_connectors/connectors/boards/indeed/chromedriver_linux64/chromedriver",
         subdomain="fr",
         hrflow_client=hrflow_client,
         job_search = 'Data Scientist',
