@@ -12,8 +12,6 @@ from time import sleep
 from selenium.common.exceptions import NoSuchElementException
 
 
-
-
 class GetAllJobs(BoardAction):
 
     subdomain: str = Field(
@@ -26,8 +24,10 @@ class GetAllJobs(BoardAction):
     )
     job_location: str = Field(..., description="Location of the job offers")
 
-
-    executable_path: str = Field(..., description = "A separate executable that Selenium WebDriver uses to control Chrome. Make sure you install the chromedriver with the same version as your local Chrome navigator")
+    executable_path: str = Field(
+        ...,
+        description="A separate executable that Selenium WebDriver uses to control Chrome. Make sure you install the chromedriver with the same version as your local Chrome navigator",
+    )
 
     @property
     def url_base(self) -> str:
@@ -35,7 +35,7 @@ class GetAllJobs(BoardAction):
 
     @property
     def Crawler(self):
-        """ 
+        """
         Selenium Crawler function
         """
 
@@ -51,18 +51,14 @@ class GetAllJobs(BoardAction):
         chrome_options.add_argument("--v=99")
         chrome_options.add_argument("--single-process")
         chrome_options.add_argument("--ignore-certificate-errors")
-        """chrome_options.binary_location = "/opt/bin/headless-chromium""" #use this in HrFlow workflows
-        """driver = webdriver.Chrome(chrome_options)""" #use this in HrFlow workflows
+        """chrome_options.binary_location = "/opt/bin/headless-chromium"""  # use this in HrFlow workflows
+        """driver = webdriver.Chrome(chrome_options)"""  # use this in HrFlow workflows
         driver = webdriver.Chrome(
             executable_path=self.executable_path, chrome_options=chrome_options
         )  # use this for local running with the executable path as the Chromedriver path in your machine
 
-
         return driver
 
-
-
-    
     def path(self, pagination: int) -> str:
         """path [generates the path and pagination of the job offers search]
 
@@ -78,9 +74,6 @@ class GetAllJobs(BoardAction):
             location=self.job_location,
             start=pagination,
         )
-
-
-      
 
     def pull(self) -> Iterator[str]:
         """pull [the role of this function is to interact with indeed, click buttons and search offers based on job title and location.
@@ -101,19 +94,27 @@ class GetAllJobs(BoardAction):
         search_count_str = driver.find_element_by_id("searchCountPages").text
 
         # retrieve the number of total related job offers from string 'for example from 'Page 1 de 993 emplois' we get job_search_count = 993'
-        search_count= search_count_str.split()  #split the string in a list of strings ['1', 'de', '993', 'emplois']
-        start = search_count.index("de") 
-        end = search_count.index("emplois") #find the words that surround the total number of jobs
-        job_search_count = int("".join([search_count[i] for i in range(start + 1, end)]))  #group different parts of the number together for example if it is 'Page 1 de 1993 emplois' we get 1993 
+        search_count = (
+            search_count_str.split()
+        )  # split the string in a list of strings ['1', 'de', '993', 'emplois']
+        start = search_count.index("de")
+        end = search_count.index(
+            "emplois"
+        )  # find the words that surround the total number of jobs
+        job_search_count = int(
+            "".join([search_count[i] for i in range(start + 1, end)])
+        )  # group different parts of the number together for example if it is 'Page 1 de 1993 emplois' we get 1993
 
-        #If there is only one job offer result -corresponding to 'emploi'- or none a value error is raised, it is a rare case and the custom should make sure to type in a real job name.
+        # If there is only one job offer result -corresponding to 'emploi'- or none a value error is raised, it is a rare case and the custom should make sure to type in a real job name.
 
         count_jobs = 15  # maximum jobs shown per page 15, important for pagination
-        total_page = int(job_search_count / count_jobs) # for example for a total of 993 and a count of 15 we loop over 66 pages
+        total_page = int(
+            job_search_count / count_jobs
+        )  # for example for a total of 993 and a count of 15 we loop over 66 pages
 
         for page in range(0, 1):
-            
-            page_url = self.url_base + self.path(pagination=count_jobs * page)  
+
+            page_url = self.url_base + self.path(pagination=count_jobs * page)
             driver.get(page_url)
             sleep(3)
 
@@ -129,19 +130,20 @@ class GetAllJobs(BoardAction):
                     job_links_list.append(link)
 
             except:
-                raise Exception("Runtime Error: Selenium Webdriver could not find elements, verify that the page is not empty")
-
-                
+                raise Exception(
+                    "Runtime Error: Selenium Webdriver could not find elements, verify that the page is not empty"
+                )
 
         return job_links_list
 
     def format(self, job_link: str) -> Dict[str, Any]:
-        """
-        parameter: job_link parsed after the function pull is executed. each job link is retrieved from the jobs_Links list scrapped in the pull function
+        """format [generates a dictionary of a job attributes, for each job link the function scraps with selenium and parse useful attributes.]
 
-        Description: generates a dictionary of a job attributes, for each job link the function scraps with selenium and parse useful attributes.
+        Args:
+            job_link (str): [job_link parsed after the function pull is executed. each job link is retrieved from the job_links_list scrapped in the pull function]
 
-        returns: a job in the HrFlow job object format
+        Returns:
+            Dict[str, Any]: [a job in the HrFlow job object format]
         """
         job = dict()
         driver = self.Crawler
@@ -251,7 +253,7 @@ class GetAllJobs(BoardAction):
             ).text
 
         except NoSuchElementException:
-            
+
             jobType = None
 
         if jobType not in [
