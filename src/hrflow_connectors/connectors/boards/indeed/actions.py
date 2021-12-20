@@ -168,29 +168,27 @@ class GetAllJobs(BoardAction):
 
         # location
         try:
-            text = driver.find_element_by_xpath(
+            location = driver.find_element_by_xpath(
                 "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[3]/div[1]/div[2]/div/div/div[2]"
             ).text
 
         except NoSuchElementException:
 
-            text = driver.find_element_by_xpath(
+            location = driver.find_element_by_xpath(
                 "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div[2]/div/div/div[2]"
             ).text
 
-        job["location"] = dict(text=text, lat=None, lng=None)
+        job["location"] = dict(text=location, lat=None, lng=None)
 
         # url
         job["url"] = job_link
 
         # summary
-        job["summary"] = driver.find_element_by_id("jobDescriptionText").text
-
+        text = driver.find_element_by_id("jobDescriptionText").text
+        job["summary"] = text
         # description
-        description = driver.find_element_by_id("jobDescriptionText").text
-
         job["sections"] = [
-            {"name": "description", "title": "description", "description": description}
+            {"name": "description", "title": "description", "description": text}
         ]
 
         # compensation and jobType if they exist are in the same header so we get them both in one task of finding elements
