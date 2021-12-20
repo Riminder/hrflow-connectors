@@ -1,4 +1,5 @@
 from typing import Dict, Any, List, Optional
+from pydantic import BaseModel
 
 
 def find_element_in_list(
@@ -42,3 +43,20 @@ def generate_workflow_response(status_code=201, **kwargs) -> Dict[str, Any]:
     response = dict(status_code=status_code, headers=headers)
     response.update(kwargs)
     return response
+
+
+class Source(BaseModel):
+    """
+    Hrflow Source
+    """
+
+    key: str
+
+
+class Profile(BaseModel):
+    """
+    Hrflow Profile
+    """
+
+    key: str
+    source: Source
