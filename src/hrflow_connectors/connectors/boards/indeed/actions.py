@@ -150,7 +150,9 @@ class GetAllJobs(BoardAction):
         driver.get(job_link)
 
         # name
-        job["name"] = driver.find_element_by_class_name('jobsearch-JobInfoHeader-title').text
+        job["name"] = driver.find_element_by_class_name(
+            "jobsearch-JobInfoHeader-title"
+        ).text
         # reference
         m = re.search("jk=(.+?)&", job_link)
         if m:
@@ -213,38 +215,15 @@ class GetAllJobs(BoardAction):
 
         # employment_type
         try:
-            jobType = driver.find_element_by_xpath(
-                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[2]/span[2]/"
+
+            jobType = driver.find_element_by_class_name(
+                "jobsearch-JobMetadataHeader-item"
             ).text
-
-        except NoSuchElementException:
-            pass
-
-        try:
-            jobType = driver.find_element_by_xpath(
-                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[2]"
-            ).text
-
-        except NoSuchElementException:
-            pass
-
-        try:
-            jobType = driver.find_element_by_xpath(
-                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[3]/div[2]/span"
-            ).text
-
-        except NoSuchElementException:
-            pass
-
-        try:
-            jobType = driver.find_element_by_xpath(
-                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[2]/span"
-            ).text
-
         except NoSuchElementException:
 
-            jobType = None
+            jobType = "Null"
 
+        # avoid that Selenium parse useless and erronous information due to Indeed dynamic website architecture for example it can give jobType = "38 000 € par an - CDI" or "2 369 € - 4 645 € par mois - Temps plein, CDD"
         if jobType not in [
             "CDI",
             "CDD",
@@ -256,7 +235,17 @@ class GetAllJobs(BoardAction):
             "Contrat Pro",
             "Stage, alternance",
         ]:
-            jobType = None  # avoid that Selenium parse useless and erronous information due to Indeed dynamic website architecture
+            if "CDI" in jobType.split():
+                jobType = "CDI"
+
+            elif "plein" in jobType.split():
+                jobType = "CDI"
+
+            elif "CDD" in jobType.split():
+                jobType = "CDD"
+
+            else:
+                jobType = "null"
 
         job["tags"] = [
             dict(name="indeed_compensantion", value=salary),
