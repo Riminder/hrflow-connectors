@@ -6,6 +6,7 @@ from hrflow import Hrflow
 import hrflow_connectors as hc
 from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
 from hrflow_connectors.connectors.destinations.crosstalent.actions import PushProfile
+from hrflow_connectors.utils.hrflow import Profile, Source
 
 ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(hc.__file__), "../../"))
 
@@ -43,12 +44,16 @@ def hrflow_client(credentials):
 
 
 def test_PushProfile(auth, hrflow_client):
+
+    profile = Profile(
+        key="ea5704b959c5e53aaef65c04ef5018ae1fee1a77",
+        source=Source(key="15517d70b0870e4cf431eefd78f8b39cff5607e8"),
+    )
     action = PushProfile(
         auth=auth,
         subdomain="vulcain-eng--recette.my",
         hrflow_client=hrflow_client("vulcain"),
-        profile_key="ea5704b959c5e53aaef65c04ef5018ae1fee1a77",
-        source_key="15517d70b0870e4cf431eefd78f8b39cff5607e8",
+        profile=profile,
     )
     response = action.execute()
     assert response.get("status_code") == 201

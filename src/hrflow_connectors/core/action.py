@@ -1,5 +1,5 @@
 from ..utils.clean_text import remove_html_tags
-from ..utils.hrflow import find_element_in_list
+from ..utils.hrflow import find_element_in_list, Profile
 
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Iterator, TypeVar, Optional, Union
@@ -351,8 +351,7 @@ class BoardAction(Action):
 
 class ProfileDestinationAction(Action):
     hrflow_client: Hrflow
-    source_key: str
-    profile_key: str
+    profile: Profile
 
     class Config:
         # `Hrflow` class is arbitrary type and can not be use without this option
@@ -363,7 +362,7 @@ class ProfileDestinationAction(Action):
         Pull data
         """
         response = self.hrflow_client.profile.indexing.get(
-            source_key=self.source_key, key=self.profile_key
+            source_key=self.profile.source.key, key=self.profile.key
         )
         if response["code"] >= 400:
             raise RuntimeError(
