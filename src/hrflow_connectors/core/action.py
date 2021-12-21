@@ -1,11 +1,13 @@
 from ..utils.clean_text import remove_html_tags
-from ..utils.hrflow import find_element_in_list
+from ..utils.hrflow import find_element_in_list, Profile
 
 from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Iterator, TypeVar
+from typing import List, Dict, Any, Iterator, TypeVar, Optional, Union
 import itertools
+import xml.etree.ElementTree
 
 Hrflow = TypeVar("Hrflow")
+TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
 
 
 class Action(BaseModel):
@@ -26,21 +28,21 @@ class Action(BaseModel):
         description="Indicates if the action is executable in a workflow pull",
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[TalentDataType]:
         """
         Pull data
         """
         raise NotImplementedError("`pull` is not implemented")
 
-    def apply_logics(self, data: Iterator[Dict[str, Any]]) -> Iterator[Dict[str, Any]]:
+    def apply_logics(self, data: Iterator[TalentDataType]) -> Iterator[TalentDataType]:
         """
         Apply filters defined in `logics` on the `data` stream
 
         Args:
-            data (List[Dict[str, Any]]): Data stream to filter
+            data (List[TalentDataType]): Data stream to filter
 
         Returns:
-            List[Dict[str, Any]]: Filtered data stream
+            List[TalentDataType]: Filtered data stream
         """
         filtered_list = data
         for logic_function_name in self.logics:
@@ -50,7 +52,7 @@ class Action(BaseModel):
             filtered_list = filter(logic_function, filtered_list)
         return filtered_list
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: TalentDataType) -> Dict[str, Any]:
         """
         Format `data` fields to another field format.
 
@@ -58,23 +60,23 @@ class Action(BaseModel):
         This function must adapt the data schema passed in (from the `pull`) to the expected data schema in output (ready to be used in the `pull` function)
 
         Args:
-            data (Dict[str, Any]): Data we want to adapt to the output format
+            data (TalentDataType): Data we want to adapt to the output format
 
         Returns:
             Dict[str, Any]: Data adapted to the input format of the pull function, ready to be sent
         """
         return data
 
-    def push(self, data: Iterator[Dict[str, Any]]):
+    def push(self, data: Iterator[Union[str, Dict[str, Any]]]):
         """
         Push data
 
         Args:
-            data (List[Dict[str, Any]]): Data to push
+            data (List[Union[str, Dict[str, Any]]]): Data to push
         """
         raise NotImplementedError("`push` is not implemented")
 
-    def execute(self):
+    def execute(self) -> Optional[Dict[str, Any]]:
         """
         Execute action
         """
@@ -127,17 +129,17 @@ class BoardAction(Action):
                 return
             yield job_list
 
-    def get_all_references_from_board(self) -> Iterator[Dict[str, Any]]:
+    def get_all_references_from_board(self) -> Iterator[str]:
         """
         Get all job references from a Board
 
         Yields:
-            Iterator[Dict[str, Any]]: Iterator with all job references
+            Iterator[str]: Iterator with all job references
         """
 
         def get_reference_from_job_list(
             job_list: Iterator[Dict[str, Any]]
-        ) -> Iterator[Dict[str, Any]]:
+        ) -> Iterator[str]:
             """
             Get reference from job list
 
@@ -150,12 +152,12 @@ class BoardAction(Action):
             get_reference_from_job = lambda job: job.get("reference")
             return map(get_reference_from_job, job_list)
 
-        def none_filter(data: Dict[str, Any]) -> bool:
+        def none_filter(data: Optional[str]) -> bool:
             """
             Filter None type
 
             Args:
-                data (Dict[str, Any]): data to check
+                data (Optional[str]): data to check
 
             Returns:
                 bool: data is not None ?
@@ -168,7 +170,7 @@ class BoardAction(Action):
         clean_iter = filter(none_filter, chain_reference_iter)
         return clean_iter
 
-    def push(self, data: Iterator[Dict[str, Any]]):
+    def push(self, data: Iterator[Union[str, Dict[str, Any]]]):
         for job in data:
             response = self.hrflow_client.job.indexing.add_json(
                 board_key=self.board_key, job_json=job
@@ -326,7 +328,7 @@ class BoardAction(Action):
                     self.board_key, reference=reference, is_archive=1
                 )
 
-    def execute(self):
+    def execute(self) -> Optional[Dict[str, Any]]:
         """
         Execute action
         """
@@ -345,3 +347,27 @@ class BoardAction(Action):
 
         unique_data_to_push = filter(self.check_reference_in_board, output_data)
         self.push(unique_data_to_push)
+
+
+class ProfileDestinationAction(Action):
+    hrflow_client: Hrflow
+    profile: Profile
+
+    class Config:
+        # `Hrflow` class is arbitrary type and can not be use without this option
+        arbitrary_types_allowed = True
+
+    def pull(self) -> Iterator[TalentDataType]:
+        """
+        Pull data
+        """
+        response = self.hrflow_client.profile.indexing.get(
+            source_key=self.profile.source.key, key=self.profile.key
+        )
+        if response["code"] >= 400:
+            raise RuntimeError(
+                "Indexing profile get failed : `{}`".format(response["message"])
+            )
+
+        profile = response["data"]
+        return [profile]
