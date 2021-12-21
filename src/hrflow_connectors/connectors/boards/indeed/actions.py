@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
 from selenium.common.exceptions import NoSuchElementException
 
-class GetAllJobs(BoardAction):
+class IndeedFeed(BoardAction):
 
     subdomain: str = Field(
         ...,
