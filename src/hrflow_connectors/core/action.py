@@ -72,7 +72,7 @@ class Action(BaseModel):
         Returns:
             Dict[str, Any]: Data adapted to the input format of the pull function, ready to be sent
         """
-        if self.format is not None:
+        if self.format_function_name is not None:
             format_function = eval(
                 self.format_function_name, self.global_scope, self.local_scope
             )
