@@ -28,9 +28,14 @@ class IndeedFeed(BoardAction):
         description="A separate executable that Selenium WebDriver used to control Chrome. Make sure you install the chromedriver with the same version as your local Chrome navigator",
     )
 
-    binary_location: Optional[str] = Field(None, description="Location of the binary chromium, usually in HrFlow workflows it equals `/opt/bin/headless-chromium`")
+    binary_location: Optional[str] = Field(
+        None,
+        description="Location of the binary chromium, usually in HrFlow workflows it equals `/opt/bin/headless-chromium`",
+    )
 
-    max_page: Optional[int] = Field(None, description="maximum number of pages to search")
+    max_page: Optional[int] = Field(
+        None, description="maximum number of pages to search"
+    )
 
     @property
     def url_base(self) -> str:
@@ -56,11 +61,13 @@ class IndeedFeed(BoardAction):
 
         if self.binary_location is not None:
             chrome_options.binary_location = self.binary_location
-        
+
         if self.executable_path is None:
             driver = webdriver.Chrome(chrome_options)
         else:
-            driver = webdriver.Chrome(executable_path=self.executable_path, chrome_options=chrome_options)
+            driver = webdriver.Chrome(
+                executable_path=self.executable_path, chrome_options=chrome_options
+            )
 
         return driver
 
@@ -133,12 +140,8 @@ class IndeedFeed(BoardAction):
 
                     link = x.get_attribute("href")
                     job_links_list.append(link)
-            finally:
+            finally:  # continue to next page
                 pass
-        
-        
-
-            
 
         return job_links_list
 
