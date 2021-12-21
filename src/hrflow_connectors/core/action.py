@@ -300,6 +300,13 @@ class BoardAction(Action):
                 self.hrflow_client.job.indexing.archive(
                     self.board_key, reference=reference, is_archive=0
                 )
+                # Get job key
+                job_response = response["data"]
+                job_key = job_response["key"]
+                # Edit job
+                self.hrflow_client.job.indexing.edit(
+                    board_key=self.board_key, key=job_key, job_json=job
+                )
                 return False
         return False
 
