@@ -23,7 +23,7 @@ def test_HTTPStream_get():
             return "GET"
 
         @property
-        def url_base(self):
+        def base_url(self):
             return "https://test.test"
 
         def path(self):
@@ -57,7 +57,7 @@ def test_HTTPStream_post():
             return "POST"
 
         @property
-        def url_base(self):
+        def base_url(self):
             return "https://test.test"
 
         def path(self):
@@ -92,15 +92,14 @@ def test_HTTPStream_get_with_header():
             return "GET"
 
         @property
-        def url_base(self):
+        def base_url(self):
             return "https://test.test"
 
         def path(self):
             return "/header"
 
         def build_request_headers(self):
-            super().build_request_headers()
-            self._headers["d"] = "world !"
+            self.headers["d"] = "world !"
 
     action = TestHTTPStream()
     response = action.send_request()

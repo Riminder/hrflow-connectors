@@ -1,22 +1,33 @@
 import requests
 from pydantic import BaseModel, Field
-from typing import Optional, Dict
+from typing import Optional, Dict, Any, Union, TypeVar
 
 
 from .auth import Auth, NoAuth
 
 
+Session = TypeVar("Session")
+
+
 class HTTPStream(BaseModel):
+    """
+    HTTPStream
+    Abstract Class
+
+    To send a request with a JSON body, you must set the `content-type` header to `application/json`.
+    It is important to write the header key `content-type` in lower case.
+    """
+
     auth: Auth = NoAuth()
 
-    _session: requests.Session = requests.Session()
-    _params: Dict[str, str] = dict()
-    _headers: Dict[str, str] = dict()
-    _payload: Dict[str, str] = dict()
-    _cookies: Dict[str, str] = dict()
+    session: Session = requests.Session()
+    params: Dict[str, str] = dict()
+    headers: Dict[str, str] = dict()
+    payload: Union[None, str, Dict[str, Any]] = None
+    cookies: Dict[str, str] = dict()
 
     @property
-    def url_base(self) -> Optional[str]:
+    def base_url(self) -> Optional[str]:
         return None
 
     @property
@@ -27,23 +38,40 @@ class HTTPStream(BaseModel):
         return ""
 
     def build_request_params(self):
-        self._params.clear()
+        pass
 
     def build_request_headers(self):
-        self._headers.clear()
+        pass
 
     def build_request_payload(self):
-        self._payload.clear()
+        pass
 
     def build_request_cookies(self):
-        self._cookies.clear()
+        pass
+
+    def get_content_type(self) -> Optional[str]:
+        """
+        Get Content-Type of the body request
+
+        This function find the "Content-Type" in Header
+        and it is NOT case sensitive.
+        So, it can find "content-type" or "CONTENT-TYPE" as well.
+
+        Returns:
+            str: return content-type or None.
+        """
+        for key, value in self.headers.items():
+            if key.lower() == "content-type":
+                return value
 
     def send_request(self) -> requests.Response:
-        if self.url_base is None:
-            raise ConnectionError("Base URL (property function) is not defined !")
+        if self.base_url is None:
+            raise ConnectionError(
+                "Base URL `base_url` (property function) is not defined !"
+            )
 
         # Build the request
-        url = self.url_base + self.path()
+        url = self.base_url + self.path()
         self.build_request_params()
         self.build_request_headers()
         self.build_request_payload()
@@ -51,37 +79,32 @@ class HTTPStream(BaseModel):
 
         # Add the auth property in the different sections
         self.auth.update(
-            params=self._params,
-            headers=self._headers,
-            cookies=self._cookies,
-            payload=self._payload,
+            params=self.params,
+            headers=self.headers,
+            cookies=self.cookies,
+            payload=self.payload,
         )
 
-        params = self._params
-        if params == dict():
-            params = None
-
-        headers = self._headers
-        if headers == dict():
-            headers = None
-
-        cookies = self._cookies
-        if cookies == dict():
-            cookies = None
-
-        payload = self._payload
+        payload = self.payload
         if payload == dict():
             payload = None
 
-        return self.session.request(
-            method=self.http_method,
-            url=url,
-            params=params,
-            headers=headers,
-            cookies=cookies,
-            data=payload,
-        )
+        params = dict()
+        params["method"] = self.http_method
+        params["url"] = url
+        params["params"] = self.params
+        params["headers"] = self.headers
+        params["cookies"] = self.cookies
 
-    @property
-    def session(self) -> requests.Session:
-        return self._session
+        # Check if request is a JSON application
+        content_type = self.get_content_type()
+        if (
+            content_type is not None
+            and "application/json" in content_type.lower()
+            and isinstance(self.payload, dict)
+        ):
+            params["json"] = self.payload
+        else:
+            params["data"] = self.payload
+
+        return self.session.request(**params)
