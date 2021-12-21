@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
 from selenium.common.exceptions import NoSuchElementException
 
+
 class IndeedFeed(BoardAction):
 
     subdomain: str = Field(
@@ -24,11 +25,13 @@ class IndeedFeed(BoardAction):
 
     executable_path: str = Field(
         ...,
-        description="A separate executable that Selenium WebDriver uses to control Chrome. Make sure you install the chromedriver with the same version as your local Chrome navigator",
+        description="A separate executable that Selenium WebDriver used to control Chrome. Make sure you install the chromedriver with the same version as your local Chrome navigator",
     )
+
     @property
     def url_base(self) -> str:
         return "https:/{}.indeed.com".format(self.subdomain)
+
     @property
     def Crawler(self):
         """
@@ -134,7 +137,7 @@ class IndeedFeed(BoardAction):
             Dict[str, Any]: [a job in the HrFlow job object format]
         """
         job = dict()
-        contract_type = ''
+        contract_type = ""
         driver = self.Crawler
         driver.get(job_link)
 
