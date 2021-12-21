@@ -4,7 +4,7 @@ import pytest
 from hrflow import Hrflow
 
 import hrflow_connectors as hc
-from hrflow_connectors.connectors.boards.indeed.actions import GetAllJobs
+from hrflow_connectors.connectors.boards.indeed.actions import IndeedFeed
 
 ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(hc.__file__), "../../"))
 
@@ -24,9 +24,11 @@ def hrflow_client(credentials):
     return client
 
 
-def test_GetAllJobs(hrflow_client):
-    action = GetAllJobs(
-        executable_path="chromedriver.exe",
+def test_IndeedFeed(hrflow_client):
+    executable_path = os.path.join(ROOT_PATH, "src/hrflow_connectors/connectors/boards/indeed/chromedriver_linux64/chromedriver")
+    action = IndeedFeed(
+        executable_path=executable_path,
+        max_page = 2,
         subdomain="fr",
         hrflow_client=hrflow_client,
         job_search="Software Engineer",
