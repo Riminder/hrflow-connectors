@@ -76,6 +76,49 @@ def test_apply_logics_single_filter_without_interaction(generated_data_list):
     assert dict(element1="value2", element2="value2") in filtered_list
 
 
+def test_extern_format_function():
+    def extern_format(data):
+        return dict(c=data["a"], d=data["a"] + data["b"])
+
+    action = Action(
+        format_function_name="extern_format",
+        global_scope=globals(),
+        local_scope=locals(),
+    )
+
+    job_to_transform = dict(a="aaa", b="bbb", f="fff")
+    transformed_job = action.format(job_to_transform)
+    assert transformed_job == dict(c="aaa", d="aaabbb")
+
+
+def test_default_format_without_extern_format_function():
+    action = Action(
+        format_function_name=None,
+    )
+    job_to_transform = dict(a="aaa", b="bbb", f="fff")
+    transformed_job = action.format(job_to_transform)
+    assert transformed_job == dict(a="aaa", b="bbb", f="fff")
+
+
+def test_overwritten_format_with_extern_format_function():
+    def extern_format(data):
+        return dict(c=data["a"], d=data["a"] + data["b"])
+
+    class TestAction(Action):
+        def format(self, data):
+            return dict(f=data["f"], g=data["a"] + data["b"])
+
+    action = TestAction(
+        format_function_name="extern_format",
+        global_scope=globals(),
+        local_scope=locals(),
+    )
+
+    job_to_transform = dict(a="aaa", b="bbb", f="fff")
+    transformed_job = action.format(job_to_transform)
+    assert transformed_job == dict(f="fff", g="aaabbb")
+
+
 @responses.activate
 def test_Action_connect_and_execute(generated_data_list):
     # Build a connector from `generated_data_list` to `http://test.test/push`
