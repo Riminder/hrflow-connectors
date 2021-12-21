@@ -23,10 +23,14 @@ class IndeedFeed(BoardAction):
     )
     job_location: str = Field(..., description="Location of the job offers")
 
-    executable_path: str = Field(
-        ...,
+    executable_path: Optional[str] = Field(
+        None,
         description="A separate executable that Selenium WebDriver used to control Chrome. Make sure you install the chromedriver with the same version as your local Chrome navigator",
     )
+
+    binary_location: Optional[str] = Field(None, description="Location of the binary chromium, usually in HrFlow workflows it equals `/opt/bin/headless-chromium`")
+
+    max_page: Optional[int] = Field(None, description="maximum number of pages to search")
 
     @property
     def url_base(self) -> str:
@@ -49,11 +53,15 @@ class IndeedFeed(BoardAction):
         chrome_options.add_argument("--v=99")
         chrome_options.add_argument("--single-process")
         chrome_options.add_argument("--ignore-certificate-errors")
-        """chrome_options.binary_location = "/opt/bin/headless-chromium"""  # use this in HrFlow workflows
-        """driver = webdriver.Chrome(chrome_options)"""  # use this in HrFlow workflows
-        driver = webdriver.Chrome(
-            executable_path=self.executable_path, chrome_options=chrome_options
-        )  # use this for local running with the executable path as the Chromedriver path in your machine
+
+        if self.binary_location is not None:
+            chrome_options.binary_location = self.binary_location
+        
+        if self.executable_path is None:
+            driver = webdriver.Chrome(chrome_options)
+        else:
+            driver = webdriver.Chrome(executable_path=self.executable_path, chrome_options=chrome_options)
+
         return driver
 
     def path(self, pagination: int) -> str:
@@ -107,6 +115,9 @@ class IndeedFeed(BoardAction):
             job_search_count / count_jobs
         )  # for example for a total of 993 and a count of 15 we loop over 66 pages
 
+        if self.max_page is not None:
+            total_page = self.max_page
+
         for page in range(0, total_page):
 
             page_url = self.url_base + self.path(pagination=count_jobs * page)
@@ -124,6 +135,10 @@ class IndeedFeed(BoardAction):
                     job_links_list.append(link)
             finally:
                 pass
+        
+        
+
+            
 
         return job_links_list
 
