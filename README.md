@@ -39,9 +39,9 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 - **Cegid(Meta4)** (soon)
 - **Ceridian** (soon)
 - **Cornerstone OnDemand** (soon)
-- **Crosstalent** : `GetAllJobs`
+- **Crosstalent** : [`GetAllJobs`](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/boards/crosstalent/), [`PushProfile`](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/destinations/crosstalent)
 - **Digitalrecruiters** (soon)
-- **Indeed** (soon)
+- **Indeed** : [`IndeedFeed`](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/boards/indeed)
 - **Kronos(UKG)** (soon)
 - **Laponi** (soon)
 - **Mailchimp** (soon)
