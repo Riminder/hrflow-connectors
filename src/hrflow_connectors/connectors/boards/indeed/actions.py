@@ -38,7 +38,7 @@ class IndeedFeed(BoardAction):
         Selenium Crawler function
         """
         chrome_options = webdriver.ChromeOptions()
-        """chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--disable-gpu")
@@ -48,7 +48,7 @@ class IndeedFeed(BoardAction):
         chrome_options.add_argument("--log-level=0")
         chrome_options.add_argument("--v=99")
         chrome_options.add_argument("--single-process")
-        chrome_options.add_argument("--ignore-certificate-errors")"""
+        chrome_options.add_argument("--ignore-certificate-errors")
         """chrome_options.binary_location = "/opt/bin/headless-chromium"""  # use this in HrFlow workflows
         """driver = webdriver.Chrome(chrome_options)"""  # use this in HrFlow workflows
         driver = webdriver.Chrome(
