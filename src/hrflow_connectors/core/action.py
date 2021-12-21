@@ -17,6 +17,10 @@ class Action(BaseModel):
     global_scope: Dict[str, Any] = None
     local_scope: Dict[str, Any] = None
 
+    format_function_name: Optional[str] = Field(
+        None, description="Function name to format job before pushing"
+    )
+
     workflow_catch: bool = Field(
         True,
         const=True,
@@ -59,12 +63,20 @@ class Action(BaseModel):
         For example to select and transform only some fields from a database to Hrflow.
         This function must adapt the data schema passed in (from the `pull`) to the expected data schema in output (ready to be used in the `pull` function)
 
+        If the `format_function_name` attribute is initialized with the name of a function,
+        then it will be executed instead of the `format` method of the connector.
+
         Args:
             data (TalentDataType): Data we want to adapt to the output format
 
         Returns:
             Dict[str, Any]: Data adapted to the input format of the pull function, ready to be sent
         """
+        if self.format is not None:
+            format_function = eval(
+                self.format_function_name, self.global_scope, self.local_scope
+            )
+            return format_function(data)
         return data
 
     def push(self, data: Iterator[Union[str, Dict[str, Any]]]):
