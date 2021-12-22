@@ -46,6 +46,7 @@ class SmartJobs(BoardAction):
             response_jobs = requests.get(
                 url=self.base_url, params=params, headers=headers
             ).json()
+            #get list of job jsons
             jobs = response_jobs["content"]
             for job in jobs:
                 response_job = requests.get(
@@ -120,9 +121,6 @@ class SmartJobs(BoardAction):
                 description=additional_information,
             ),
         ]
-        # language requirements
-        language = data.get("jobAd").get("language").get("label")
-        job["languages"] = list(dict(name=language, value=None))
         # job tags
         status = data.get("status")
         posting_status = data.get("postingStatus")
