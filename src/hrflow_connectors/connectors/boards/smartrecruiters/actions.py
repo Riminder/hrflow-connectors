@@ -5,10 +5,10 @@ import requests
 
 
 class SmartJobs(BoardAction):
-    xstr = lambda s: s or ""
+
     token: str = Field(..., description="Token to get access to smart jobs pulling API")
     updated_after: Optional[str] = Field(
-        ..., description="custom pulling of jobs only updated after a certain date"
+        None, description="custom pulling of jobs only updated after a certain date"
     )
     offset: int = Field(
         ...,
@@ -41,18 +41,17 @@ class SmartJobs(BoardAction):
         ).json()
         total_found = response["totalFound"]
 
-        while self.offset < total_found:
-            params.update({"offset": self.offset})
-            response_jobs = requests.get(
-                url=self.base_url, params=params, headers=headers
+        params.update({"offset": self.offset})
+        response_jobs = requests.get(
+            url=self.base_url, params=params, headers=headers
+        ).json()
+        jobs = response_jobs["content"]
+        for job in jobs:
+            response_job = requests.get(
+                url="https://api.smartrecruiters.com/jobs/" + job.get("id"),
+                headers=headers,
             ).json()
-            jobs = response_jobs["content"]
-            for job in jobs:
-                response_job = requests.get(
-                    url="https://api.smartrecruiters.com/jobs/" + job.get("id"),
-                    headers=headers,
-                ).json()
-                job_data_list.append(response_job)
+            job_data_list.append(response_job)
 
         return job_data_list
 
@@ -121,8 +120,6 @@ class SmartJobs(BoardAction):
         ]
         # language requirements
         language = data.get("jobAd").get("language").get("label")
-        job["languages"] = list(dict(name=language, value=None))
-        # job tags
         status = data.get("status")
         posting_status = data.get("postingStatus")
         job_uuid = data.get("id")
@@ -130,10 +127,11 @@ class SmartJobs(BoardAction):
         employmentType = data.get("typeOfEmployment", {}).get("id")
         industry = data.get("industry", {}).get("id")
         creator = (
-            self.xstr(data.get("creator").get("firstName"))
+            str(data.get("creator").get("firstName"))
             + " "
-            + self.xstr(data.get("creator").get("lastName"))
+            + str(data.get("creator").get("lastName"))
         )
+
         function = data.get("function", {}).get("id")
         department = data.get("department", {}).get("id")
         manual = data.get("location", {}).get("manual")

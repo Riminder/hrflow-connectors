@@ -27,12 +27,12 @@ def hrflow_client(credentials):
 def test_SmartJobs(hrflow_client):
     action = SmartJobs(
         token="",
-        hrflow_client=hrflow_client, 
-        updated_after="", 
+        hrflow_client=hrflow_client,  
         offset=0, 
-        limit=3,
+        limit=2,
         board_key = "",
         hydrate_with_parsing=True,
+        archive_deleted_jobs_from_stream=False,
 
         )
 
