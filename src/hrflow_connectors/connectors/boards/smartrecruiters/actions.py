@@ -50,7 +50,7 @@ class SmartJobs(BoardAction):
             jobs = response_jobs["content"]
             for job in jobs:
                 response_job = requests.get(
-                    url="https://api.smartrecruiters.com/jobs/" + job.get("id"),
+                    url=self.base_url + job.get("id"),
                     headers=headers,
                 ).json()
                 job_data_list.append(response_job)
