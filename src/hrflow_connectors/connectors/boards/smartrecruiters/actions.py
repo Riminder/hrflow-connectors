@@ -12,7 +12,7 @@ class SmartJobs(BoardAction):
         ..., description="custom pulling of jobs only updated after a certain date"
     )
     offset: int = Field(..., description="")
-    posting_status: str = Field("PUBLIC", description="Job offersavailability")
+    posting_status: str = Field("PUBLIC", description="Job offers availability")
     limit: int = Field(..., description="")
 
     @property
