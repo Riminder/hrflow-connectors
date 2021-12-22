@@ -30,7 +30,7 @@ class SmartJobs(BoardAction):
 
         """
         job_data_list = []
-        headers = {"X-SmartToken": self.token}
+        headers = {"X-SmartToken": self.token, "Content-type": "application/json"}
         params = dict(
             postingStatus=self.posting_status, limit=self.limit, offset=self.offset
         )
