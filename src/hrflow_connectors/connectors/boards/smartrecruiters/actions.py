@@ -25,7 +25,13 @@ class SmartJobs(HTTPStream, BoardAction):
         return "GET"
 
     def pull(self) -> Iterator[Dict[str, Any]]:
+        """
+        [send tokenized requests to SmartRecruiters to get job offers data and pull their data]
 
+        Returns:
+            [job_datas]: Iterator[Dict[str, Any] [a list of jobs data jsons]
+
+        """
         job_data_list = []
         headers = {"X-SmartToken": self.token}
         params = dict(
@@ -54,6 +60,14 @@ class SmartJobs(HTTPStream, BoardAction):
         return job_data_list
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """format [generates a dictionary of a job attributes, for each job_son data]
+
+        Args:
+            data (Dict[str, Any]): [unique job_data json yielded after the function pull is executed.]
+
+        Returns:
+            Dict[str, Any]: [a job in the HrFlow job object format]
+        """
         job = dict()
         # job Title
         job["name"] = data.get("title")
