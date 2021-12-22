@@ -28,4 +28,9 @@ def hrflow_client(credentials):
 
 
 def test_SmartJobs(hrflow_client):
-    action = SmartJobs(token="", updated_after="", offset=1, limit=1)
+    action = SmartJobs(
+        token="", 
+        updated_after="", 
+        offset=1, 
+        limit=1
+        )
