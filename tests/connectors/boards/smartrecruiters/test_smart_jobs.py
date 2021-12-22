@@ -18,19 +18,22 @@ def credentials():
 
 @pytest.fixture
 def hrflow_client(credentials):
-    def hrflow_client_func(portal_name="dev-demo"):
-        x_api_key = credentials["hrflow"][portal_name]["x-api-key"]
-        x_user_email = credentials["hrflow"][portal_name]["x-user-email"]
-        client = Hrflow(api_secret=x_api_key, api_user=x_user_email)
-        return client
-
-    return hrflow_client_func
+    x_api_key = credentials["hrflow"]["x-api-key"]
+    x_user_email = credentials["hrflow"]["x-user-email"]
+    client = Hrflow(api_secret=x_api_key, api_user=x_user_email)
+    return client
 
 
 def test_SmartJobs(hrflow_client):
     action = SmartJobs(
-        token="", 
+        token="",
+        hrflow_client=hrflow_client, 
         updated_after="", 
         offset=1, 
-        limit=1
+        limit=1,
+        board_key = "",
+        hydrate_with_parsing=True,
+
         )
+
+    action.execute()
