@@ -41,17 +41,19 @@ class SmartJobs(BoardAction):
         ).json()
         total_found = response["totalFound"]
 
-        params.update({"offset": self.offset})
-        response_jobs = requests.get(
-            url=self.base_url, params=params, headers=headers
-        ).json()
-        jobs = response_jobs["content"]
-        for job in jobs:
-            response_job = requests.get(
-                url="https://api.smartrecruiters.com/jobs/" + job.get("id"),
-                headers=headers,
+        while self.offset < total_found:
+            params.update({"offset": self.offset})
+            response_jobs = requests.get(
+                url=self.base_url, params=params, headers=headers
             ).json()
-            job_data_list.append(response_job)
+            jobs = response_jobs["content"]
+            for job in jobs:
+                response_job = requests.get(
+                    url="https://api.smartrecruiters.com/jobs/" + job.get("id"),
+                    headers=headers,
+                ).json()
+                job_data_list.append(response_job)
+            self.offset += self.limit
 
         return job_data_list
 
@@ -120,6 +122,8 @@ class SmartJobs(BoardAction):
         ]
         # language requirements
         language = data.get("jobAd").get("language").get("label")
+        job["languages"] = list(dict(name=language, value=None))
+        # job tags
         status = data.get("status")
         posting_status = data.get("postingStatus")
         job_uuid = data.get("id")
@@ -127,11 +131,10 @@ class SmartJobs(BoardAction):
         employmentType = data.get("typeOfEmployment", {}).get("id")
         industry = data.get("industry", {}).get("id")
         creator = (
-            str(data.get("creator").get("firstName"))
+            (data.get("creator").get("firstName"))
             + " "
-            + str(data.get("creator").get("lastName"))
+            + (data.get("creator").get("lastName"))
         )
-
         function = data.get("function", {}).get("id")
         department = data.get("department", {}).get("id")
         manual = data.get("location", {}).get("manual")
