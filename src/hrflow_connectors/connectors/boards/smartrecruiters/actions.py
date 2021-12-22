@@ -4,16 +4,18 @@ from ....core.action import BoardAction
 import requests
 
 
-
 class SmartJobs(BoardAction):
     xstr = lambda s: s or ""
     token: str = Field(..., description="Token to get access to smart jobs pulling API")
     updated_after: Optional[str] = Field(
         ..., description="custom pulling of jobs only updated after a certain date"
     )
-    offset: int = Field(..., description="")
+    offset: int = Field(
+        ...,
+        description=" if offset is 0 and limit is 10 and `totalFound` resources are 130, our response will containt the first 10 ",
+    )
     posting_status: str = Field("PUBLIC", description="Job offers availability")
-    limit: int = Field(..., description="")
+    limit: int = Field(..., description="see `offset` description")
 
     @property
     def base_url(self):
@@ -21,7 +23,7 @@ class SmartJobs(BoardAction):
 
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
-        pull [send tokenized requests to SmartRecruiters to get job offers data and pull their data]
+        `pull` [send tokenized requests to SmartRecruiters to get job offers data and pull their data]
 
         Returns:
             [job_datas]: Iterator[Dict[str, Any] [a list of jobs data jsons]
@@ -56,10 +58,10 @@ class SmartJobs(BoardAction):
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        format [generates a dictionary of a job attributes, for each job_son data]
+        `format`[generates a dictionary of a job attributes, for each job_son data]
 
         Args:
-            data (Dict[str, Any]): [unique job_data json yielded after the function pull is executed.]
+            data (Dict[str, Any]): [unique job_data json yielded after the function `pull` is executed.]
 
         Returns:
             Dict[str, Any]: [a job in the HrFlow job object format]

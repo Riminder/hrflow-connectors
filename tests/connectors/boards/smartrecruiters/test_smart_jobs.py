@@ -29,8 +29,8 @@ def test_SmartJobs(hrflow_client):
         token="",
         hrflow_client=hrflow_client, 
         updated_after="", 
-        offset=1, 
-        limit=1,
+        offset=0, 
+        limit=3,
         board_key = "",
         hydrate_with_parsing=True,
 
