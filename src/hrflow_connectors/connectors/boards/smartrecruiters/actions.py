@@ -1,6 +1,5 @@
-from typing import Iterator, Dict, Any
+from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
-from ....core.auth import OAuth2PasswordCredentialsBody
 from ....core.http import HTTPStream
 from ....core.action import BoardAction
 import requests
@@ -8,8 +7,14 @@ from datetime import datetime
 
 
 class SmartJobs(HTTPStream, BoardAction):
-    auth: OAuth2PasswordCredentialsBody
     xstr = lambda s: s or ""
+    token: str = Field(..., description="Token to get access to smart jobs pulling API")
+    updated_after: Optional[str] = Field(
+        ..., description="custom pulling of jobs only updated after a certain date"
+    )
+    offset: int = Field(..., description="")
+    posting_status: str = Field("PUBLIC", description="Job offersavailability")
+    limit: int = Field(..., description="")
 
     @property
     def base_url(self):
@@ -18,6 +23,35 @@ class SmartJobs(HTTPStream, BoardAction):
     @property
     def http_method(self):
         return "GET"
+
+    def pull(self) -> Iterator[Dict[str, Any]]:
+
+        job_data_list = []
+        headers = {"X-SmartToken": self.token}
+        params = dict(
+            postingStatus=self.posting_status, limit=self.limit, offset=self.offset
+        )
+        if self.updated_after:
+            params["updatedAfter"] = self.updated_after
+        response = requests.get(
+            url=self.base_url, params=params, headers=headers
+        ).json()
+        total_found = response["totalFound"]
+
+        while self.offset < total_found:
+            params.update({"offset": self.offset})
+            response_jobs = requests.get(
+                url=self.base_url, params=params, headers=headers
+            ).json()
+            jobs = response_jobs["content"]
+            for job in jobs:
+                response_job = requests.get(
+                    url="https://api.smartrecruiters.com/jobs/" + job.get("id"),
+                    headers=headers,
+                ).json()
+                job_data_list.append(response_job)
+
+        return job_data_list
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         job = dict()
@@ -110,14 +144,14 @@ class SmartJobs(HTTPStream, BoardAction):
             dict(name="eeo_category", value=eeo_category),
         ]
         # ranges of duration and salary
-        job["ranges_date"] = list[
+        job["ranges_date"] = [
             dict(
                 name="targetHiringDate",
                 value_min=None,
                 value_max=data.get("targetHiringDate"),
             )
         ]
-        job["ranges_float"] = list[
+        job["ranges_float"] = [
             dict(
                 name="compensation",
                 value_min=data.get("compensation", {}).get("min"),
