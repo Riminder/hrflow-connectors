@@ -1,12 +1,11 @@
 from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
-from ....core.http import HTTPStream
 from ....core.action import BoardAction
 import requests
-from datetime import datetime
 
 
-class SmartJobs(HTTPStream, BoardAction):
+
+class SmartJobs(BoardAction):
     xstr = lambda s: s or ""
     token: str = Field(..., description="Token to get access to smart jobs pulling API")
     updated_after: Optional[str] = Field(
@@ -20,13 +19,9 @@ class SmartJobs(HTTPStream, BoardAction):
     def base_url(self):
         return "https://api.smartrecruiters.com/jobs"
 
-    @property
-    def http_method(self):
-        return "GET"
-
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
-        [send tokenized requests to SmartRecruiters to get job offers data and pull their data]
+        pull [send tokenized requests to SmartRecruiters to get job offers data and pull their data]
 
         Returns:
             [job_datas]: Iterator[Dict[str, Any] [a list of jobs data jsons]
@@ -60,7 +55,8 @@ class SmartJobs(HTTPStream, BoardAction):
         return job_data_list
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """format [generates a dictionary of a job attributes, for each job_son data]
+        """
+        format [generates a dictionary of a job attributes, for each job_son data]
 
         Args:
             data (Dict[str, Any]): [unique job_data json yielded after the function pull is executed.]
