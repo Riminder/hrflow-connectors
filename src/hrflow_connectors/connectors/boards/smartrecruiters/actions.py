@@ -12,7 +12,7 @@ class SmartJobs(BoardAction):
     )
     offset: int = Field(
         ...,
-        description=" if offset is 0 and limit is 10 and `totalFound` resources are 130, our response will containt the first 10 ",
+        description=" if offset is 0 and limit is 10 and `totalFound` resources are 130, our response will contain the first 10 ",
     )
     posting_status: str = Field("PUBLIC", description="Job offers availability")
     limit: int = Field(..., description="see `offset` description")
@@ -46,7 +46,7 @@ class SmartJobs(BoardAction):
             response_jobs = requests.get(
                 url=self.base_url, params=params, headers=headers
             ).json()
-            #get list of job jsons
+            # get list of job jsons
             jobs = response_jobs["content"]
             for job in jobs:
                 response_job = requests.get(
