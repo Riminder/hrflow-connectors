@@ -3,7 +3,7 @@ import json
 import pytest
 from hrflow import Hrflow
 import hrflow_connectors as hc
-from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
+from hrflow_connectors.core.auth import SmartToken
 from hrflow_connectors.connectors.boards.smartrecruiters.actions import SmartJobs
 
 ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(hc.__file__), "../../"))
@@ -17,23 +17,39 @@ def credentials():
 
 
 @pytest.fixture
+def auth(credentials):
+    auth = SmartToken(
+        access_token=credentials["smartrecruiters"]["oauth2"]["X-SmartToken"]
+    )
+    return auth
+
+
+@pytest.fixture
 def hrflow_client(credentials):
-    x_api_key = credentials["hrflow"]["x-api-key"]
-    x_user_email = credentials["hrflow"]["x-user-email"]
-    client = Hrflow(api_secret=x_api_key, api_user=x_user_email)
-    return client
+    def hrflow_client_func(portal_name="dev-demo"):
+        x_api_key = credentials["hrflow"][portal_name]["x-api-key"]
+        x_user_email = credentials["hrflow"][portal_name]["x-user-email"]
+        client = Hrflow(api_secret=x_api_key, api_user=x_user_email)
+        return client
+
+    return hrflow_client_func
 
 
-def test_SmartJobs(hrflow_client):
+def test_Auth(auth):
+    access_token = auth.get_access_token()
+    assert isinstance(access_token, str)
+    assert access_token != ""
+
+
+def test_SmartJobs(auth, hrflow_client):
     action = SmartJobs(
-        token="",
-        hrflow_client=hrflow_client,  
-        offset=0, 
+        auth=auth,
+        hrflow_client=hrflow_client("dev-demo"),
+        offset=0,
         limit=2,
-        board_key = "",
+        board_key="8ebdea98768dfc04d15f76afab70415ed280ea90",
         hydrate_with_parsing=True,
         archive_deleted_jobs_from_stream=False,
-
-        )
+    )
 
     action.execute()
