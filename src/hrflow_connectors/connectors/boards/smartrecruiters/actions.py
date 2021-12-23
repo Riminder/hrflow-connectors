@@ -3,7 +3,6 @@ from pydantic import Field
 from ....core.action import BoardAction
 from ....core.http import HTTPStream
 from ....core.auth import SmartToken
-import json
 
 
 class SmartJobs(HTTPStream, BoardAction):
@@ -42,8 +41,7 @@ class SmartJobs(HTTPStream, BoardAction):
             self.params["updatedAfter"] = self.updated_after
 
         response = self.send_request()
-        response_json = json.loads(response.text)
-        total_found = response_json["totalFound"] #total offers found
+        total_found = response.json()["totalFound"] #total offers found
         while self.offset < total_found:
             self.params.update({"offset": self.offset})
             response_update = self.send_request()
