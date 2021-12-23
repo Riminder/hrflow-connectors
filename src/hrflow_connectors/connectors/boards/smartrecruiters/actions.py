@@ -13,7 +13,7 @@ class SmartJobs(HTTPStream, BoardAction):
     )
     offset: int = Field(
         ...,
-        description=" if offset is 0 and limit is 10 and `totalFound` resources are 130, our response will contain the first 10 ",
+        description="if offset is 0 and limit is 10 and `totalFound` resources are 130, our response will contain the first 10",
     )
     posting_status: str = Field("PUBLIC", description="Job offers availability")
     limit: int = Field(..., description="see `offset` description")
@@ -32,7 +32,6 @@ class SmartJobs(HTTPStream, BoardAction):
 
         Returns:
             [jobs_content]: Iterator[Dict[str, Any] [a list of jobs content in json format]
-
         """
         jobs_content = []
         self.params["postingStatus"] = self.posting_status
@@ -44,12 +43,11 @@ class SmartJobs(HTTPStream, BoardAction):
 
         response = self.send_request()
         response_json = json.loads(response.text)
-        total_found = response_json["totalFound"]
+        total_found = response_json["totalFound"] #total offers found
         while self.offset < total_found:
             self.params.update({"offset": self.offset})
             response_update = self.send_request()
-            response_json_update = json.loads(response_update.text)
-            content = response_json_update["content"]
+            content = response_update.__dict__["content"]  #get list of job offers contents
             jobs_content += content
             self.offset += self.limit
 
