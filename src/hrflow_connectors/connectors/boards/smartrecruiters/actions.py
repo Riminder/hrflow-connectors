@@ -60,7 +60,7 @@ class SmartJobs(BoardAction):
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        `format`[generates a dictionary of a job attributes, for each job_son data]
+        `format`[generates a dictionary of a job attributes, for each job_json data]
 
         Args:
             data (Dict[str, Any]): [unique job_data json yielded after the function `pull` is executed.]
