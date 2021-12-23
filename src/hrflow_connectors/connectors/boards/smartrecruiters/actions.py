@@ -1,12 +1,13 @@
 from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
 from ....core.action import BoardAction
-import requests
+from ....core.http import HTTPStream
+from ....core.auth import SmartToken
+import json
 
 
-class SmartJobs(BoardAction):
-
-    token: str = Field(..., description="Token to get access to smart jobs pulling API")
+class SmartJobs(HTTPStream, BoardAction):
+    auth: SmartToken
     updated_after: Optional[str] = Field(
         None, description="custom pulling of jobs only updated after a certain date"
     )
@@ -21,49 +22,45 @@ class SmartJobs(BoardAction):
     def base_url(self):
         return "https://api.smartrecruiters.com/jobs"
 
+    @property
+    def http_method(self):
+        return "GET"
+
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
-        `pull` [send tokenized requests to SmartRecruiters to get job offers data and pull their data]
+        `pull` [send tokenized requests to SmartRecruiters to pull job offers content]
 
         Returns:
-            [job_datas]: Iterator[Dict[str, Any] [a list of jobs data jsons]
+            [jobs_content]: Iterator[Dict[str, Any] [a list of jobs content in json format]
 
         """
-        job_data_list = []
-        headers = {"X-SmartToken": self.token, "Content-type": "application/json"}
-        params = dict(
-            postingStatus=self.posting_status, limit=self.limit, offset=self.offset
-        )
-        if self.updated_after:
-            params["updatedAfter"] = self.updated_after
-        response = requests.get(
-            url=self.base_url, params=params, headers=headers
-        ).json()
-        total_found = response["totalFound"]
+        jobs_content = []
+        self.params["postingStatus"] = self.posting_status
+        self.params["limit"] = self.limit
+        self.params["offset"] = self.offset
 
+        if self.updated_after:
+            self.params["updatedAfter"] = self.updated_after
+
+        response = self.send_request()
+        response_json = json.loads(response.text)
+        total_found = response_json["totalFound"]
         while self.offset < total_found:
-            params.update({"offset": self.offset})
-            response_jobs = requests.get(
-                url=self.base_url, params=params, headers=headers
-            ).json()
-            # get list of job jsons
-            jobs = response_jobs["content"]
-            for job in jobs:
-                response_job = requests.get(
-                    url=self.base_url + job.get("id"),
-                    headers=headers,
-                ).json()
-                job_data_list.append(response_job)
+            self.params.update({"offset": self.offset})
+            response_update = self.send_request()
+            response_json_update = json.loads(response_update.text)
+            content = response_json_update["content"]
+            jobs_content += content
             self.offset += self.limit
 
-        return job_data_list
+        return jobs_content
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        `format`[generates a dictionary of a job attributes, for each job_json data]
+        `format`[generates a dictionary of a job attributes, for each job content data]
 
         Args:
-            data (Dict[str, Any]): [unique job_data json yielded after the function `pull` is executed.]
+            data (Dict[str, Any]): [unique job offer content data yielded after the function `pull` is executed.]
 
         Returns:
             Dict[str, Any]: [a job in the HrFlow job object format]
@@ -80,26 +77,38 @@ class SmartJobs(BoardAction):
         job["updated_at"] = data.get("updatedon")
         job["summary"] = ""
         # location
-        lat = data.get("location").get("latitude")
-        lng = data.get("location").get("longitude")
+        lat = data.get("location", {}).get("latitude")
+        lng = data.get("location", {}).get("longitude")
         text = " ".join(
             data.get("location")[key]
             for key in ["country", "region", "city", "address"]
-            if data.get("location").get(key)
+            if data.get("location", {}).get(key)
         )
         job["location"] = dict(lat=lat, lng=lng, text=text)
         # job sections: descriptions and qualifications
         companyDescription = (
-            data.get("jobAd").get("sections").get("companyDescription").get("text")
+            data.get("jobAd", {})
+            .get("sections", {})
+            .get("companyDescription", {})
+            .get("text")
         )
         jobDescription = (
-            data.get("jobAd").get("sections").get("jobDescription").get("text")
+            data.get("jobAd", {})
+            .get("sections", {})
+            .get("jobDescription", {})
+            .get("text")
         )
         qualification = (
-            data.get("jobAd").get("sections").get("qualifications").get("text")
+            data.get("jobAd", {})
+            .get("sections", {})
+            .get("qualifications", {})
+            .get("text")
         )
         additional_information = (
-            data.get("jobAd").get("sections").get("additionalInformation").get("text")
+            data.get("jobAd", {})
+            .get("sections", {})
+            .get("additionalInformation", {})
+            .get("text")
         )
         job["sections"] = [
             dict(
@@ -128,10 +137,8 @@ class SmartJobs(BoardAction):
         experience_level = data.get("experienceLevel", {}).get("id")
         employmentType = data.get("typeOfEmployment", {}).get("id")
         industry = data.get("industry", {}).get("id")
-        creator = (
-            (data.get("creator").get("firstName"))
-            + " "
-            + (data.get("creator").get("lastName"))
+        creator = data.get(
+            "creator",
         )
         function = data.get("function", {}).get("id")
         department = data.get("department", {}).get("id")
