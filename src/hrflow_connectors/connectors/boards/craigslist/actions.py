@@ -2,6 +2,7 @@ from typing import Dict, Any, Iterator, Optional
 from ....core.action import BoardAction
 from pydantic import Field
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 import re
 
 
@@ -65,7 +66,10 @@ class CraigslistJobs(BoardAction):
         """
         job_link_list = list()
         driver = self.Crawler
-        driver.get(self.base_url)
+        try:
+            driver.get(self.base_url)
+        except WebDriverException:
+            print("This site in not available, check if {}.craiglist.org is a valid subdomain".format(self.subdomain))
         driver.maximize_window()
         total_jobs = int(driver.find_element_by_xpath("//*[@class='totalcount']").text)
         count_jobs = 120  # count jobs per Page
