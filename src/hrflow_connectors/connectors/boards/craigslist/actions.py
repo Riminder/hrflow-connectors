@@ -2,6 +2,8 @@ from typing import Dict, Any, Iterator, Optional
 from ....core.action import BoardAction
 from pydantic import Field
 from selenium import webdriver
+import re
+
 
 class CraigslistJobs(BoardAction):
 
@@ -53,7 +55,7 @@ class CraigslistJobs(BoardAction):
             )
 
         return driver
-    
+
     def pull(self) -> Iterator[str]:
         """
         `pull`[The role of this function is to scrap and retrieve each job offer link for each job posted]
@@ -66,17 +68,18 @@ class CraigslistJobs(BoardAction):
         driver.get(self.base_url)
         driver.maximize_window()
         total_jobs = int(driver.find_element_by_xpath("//*[@class='totalcount']").text)
-        count_jobs = 120 # count jobs per Page
+        count_jobs = 120  # count jobs per Page
         total_pages = total_jobs // count_jobs + 1
         for page in range(0, total_pages):
-            driver.get(self.base_url + "s=%s"%((page+1)*count_jobs))
+            driver.get(self.base_url + "s=%s" % ((page + 1) * count_jobs))
             jobs = driver.find_elements_by_xpath("//*[@id='search-results']/li")
-            job_link_list += [job.find_element_by_tag_name("a").get_attribute("href") for job in jobs]
-
+            job_link_list += [
+                job.find_element_by_tag_name("a").get_attribute("href") for job in jobs
+            ]
 
         return job_link_list
 
-    def format(self, job_link:str) -> Dict[str, Any]:
+    def format(self, job_link: str) -> Dict[str, Any]:
         """
         `format`[generates a dictionary of a job attributes, for each job link the function scraps with selenium and parse useful attributes.]
 
@@ -91,15 +94,30 @@ class CraigslistJobs(BoardAction):
         driver.get(job_link)
 
         job["name"] = driver.find_element_by_xpath("//*[@id='titletextonly']").text
-        job["reference"] = driver.find_element_by_xpath("//*[@class='postinginfo']").text.split(":")[0].strip()
+        m = re.search("7(.+?).html", job_link)
+        if m:
+            job["reference"] = m.group(1)
         job["url"] = job_link
-        job["created_at"] = driver.find_elements_by_xpath("//*[@class='postinginfo reveal']")[0].find_element_by_tag_name("time").get_attribute("datetime")
+        job["created_at"] = (
+            driver.find_elements_by_xpath("//*[@class='postinginfo reveal']")[0]
+            .find_element_by_tag_name("time")
+            .get_attribute("datetime")
+        )
         job["updated_at"] = None
         job["summary"] = ""
-        job["location"] = dict(text = self.subdomain, lat = None, lng = None)
-        job["sections"] = [dict(name = "description", title = "Description", description = driver.find_element_by_xpath("//*[@id='postingbody']").text )]
+        job["location"] = dict(text=self.subdomain, lat=None, lng=None)
+        job["sections"] = [
+            dict(
+                name="description",
+                title="Description",
+                description=driver.find_element_by_xpath("//*[@id='postingbody']").text,
+            )
+        ]
         tags = driver.find_element_by_xpath("//*[@class='attrgroup']").text.split("\n")
-        job["tags"] = [ dict(name = "compensatipn", value = tags[0].split(":")[1].strip()), dict(name = "employment_type", value = tags[1].split(":")[1].strip())]
+        job["tags"] = [
+            dict(name="compensatipn", value=tags[0].split(":")[1].strip()),
+            dict(name="employment_type", value=tags[1].split(":")[1].strip()),
+        ]
         job["ranges_date"] = []
         job["ranges_float"] = []
         job["metadatas"] = []
