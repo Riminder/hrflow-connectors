@@ -2,10 +2,9 @@ from typing import Dict, Any, Iterator, Optional
 from ....core.action import BoardAction
 from pydantic import Field
 from selenium import webdriver
-from collections import deque
-
 
 class CraigslistJobs(BoardAction):
+
     subdomain: str = Field(
         ...,
         description="Subdomain just before 'craigslist.org/d/emploi/search/jjj' for example subdomain =`paris` in `https://paris.craigslist.org/d/emploi/search/jjj`, it is also the localisation of the job offers ",
@@ -20,13 +19,10 @@ class CraigslistJobs(BoardAction):
         description="Location of the binary chromium, usually in HrFlow workflows it equals `/opt/bin/headless-chromium`",
     )
 
-
     @property
     def base_url(self):
 
         return "https://{}.craigslist.org/d/emploi/search/jjj".format(self.subdomain)
-
-
 
     @property
     def Crawler(self):
@@ -57,9 +53,14 @@ class CraigslistJobs(BoardAction):
             )
 
         return driver
-
     
     def pull(self) -> Iterator[str]:
+        """
+        `pull`[The role of this function is to scrap and retrieve each job offer link for each job posted]
+
+        Returns:
+            Iterator[str]: [list of scrapped jobLinks]
+        """
         job_link_list = list()
         driver = self.Crawler
         driver.get(self.base_url)
@@ -71,17 +72,21 @@ class CraigslistJobs(BoardAction):
             driver.get(self.base_url + "s=%s"%((page+1)*count_jobs))
             jobs = driver.find_elements_by_xpath("//*[@class='result-heading']")
             total_jobs = int(driver.find_element_by_xpath("//*[@class='totalcount']").text)
-            job_link_list += [jobs[i].find_element_by_tag_name("a").get_attribute("href") for i in range(0,total_jobs)]
+            job_link_list += [jobs[i].find_element_by_tag_name("a").get_attribute("href") for i in range(0,10)]
 
 
         return job_link_list
 
-
-
-
-
-
     def format(self, job_link:str) -> Dict[str, Any]:
+        """
+        `format`[generates a dictionary of a job attributes, for each job link the function scraps with selenium and parse useful attributes.]
+
+        Args:
+            job_link (str): [job_link parsed after the function pull is executed. each job link is retrieved from the job_links_list scrapped in the pull function]
+
+        Returns:
+            Dict[str, Any]: [a job in the HrFlow job object format]
+        """
         job = dict()
         driver = self.Crawler
         driver.get(job_link)
@@ -92,8 +97,7 @@ class CraigslistJobs(BoardAction):
         job["created_at"] = driver.find_elements_by_xpath("//*[@class='postinginfo reveal']")[0].find_element_by_tag_name("time").get_attribute("datetime")
         job["updated_at"] = None
         job["summary"] = ""
-        location = driver.find_element_by_xpath("//*[@id='map']")
-        job["location"] = dict(text = None, lat = location.get_attribute("data-latitude"), lng = location.get_attribute("data-longitude"))
+        job["location"] = dict(text = self.subdomain, lat = None, lng = None)
         job["sections"] = [dict(name = "description", title = "Description", description = driver.find_element_by_xpath("//*[@id='postingbody']").text )]
         tags = driver.find_element_by_xpath("//*[@class='attrgroup']").text.split("\n")
         job["tags"] = [ dict(name = "compensatipn", value = tags[0].split(":")[1].strip()), dict(name = "employment_type", value = tags[1].split(":")[1].strip())]
@@ -102,6 +106,3 @@ class CraigslistJobs(BoardAction):
         job["metadatas"] = []
 
         return job
-
-
-
