@@ -125,7 +125,7 @@ class CraigslistJobs(BoardAction):
         ]
         tags = driver.find_element_by_xpath("//*[@class='attrgroup']").text.split("\n")
         job["tags"] = [
-            dict(name="compensatipn", value=tags[0].split(":")[1].strip()),
+            dict(name="compensation", value=tags[0].split(":")[1].strip()),
             dict(name="employment_type", value=tags[1].split(":")[1].strip()),
         ]
         job["ranges_date"] = []
