@@ -3,8 +3,7 @@ from ....core.action import BoardAction
 from pydantic import Field
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
-import re
-
+from re import search
 
 class CraigslistJobs(BoardAction):
 
@@ -104,7 +103,7 @@ class CraigslistJobs(BoardAction):
         driver.get(job_link)
 
         job["name"] = driver.find_element_by_xpath("//*[@id='titletextonly']").text
-        m = re.search("7(.+?).html", job_link)
+        m = search("7(.+?).html", job_link) #searching for a match to get the reference to the job
         if m:
             job["reference"] = m.group(1)
         job["url"] = job_link
