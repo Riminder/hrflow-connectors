@@ -70,9 +70,8 @@ class CraigslistJobs(BoardAction):
         total_pages = total_jobs // count_jobs + 1
         for page in range(0, total_pages):
             driver.get(self.base_url + "s=%s"%((page+1)*count_jobs))
-            jobs = driver.find_elements_by_xpath("//*[@class='result-heading']")
-            total_jobs = int(driver.find_element_by_xpath("//*[@class='totalcount']").text)
-            job_link_list += [jobs[i].find_element_by_tag_name("a").get_attribute("href") for i in range(0,10)]
+            jobs = driver.find_elements_by_xpath("//*[@id='search-results']/li")
+            job_link_list += [job.find_element_by_tag_name("a").get_attribute("href") for job in jobs]
 
 
         return job_link_list
