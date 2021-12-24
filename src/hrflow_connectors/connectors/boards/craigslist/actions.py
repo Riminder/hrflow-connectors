@@ -2,6 +2,7 @@ from typing import Dict, Any, Iterator, Optional
 from ....core.action import BoardAction
 from pydantic import Field
 from selenium import webdriver
+from collections import deque
 
 
 class CraigslistJobs(BoardAction):
@@ -24,6 +25,8 @@ class CraigslistJobs(BoardAction):
     def base_url(self):
 
         return "https://{}.craigslist.org/d/emploi/search/jjj".format(self.subdomain)
+
+
 
     @property
     def Crawler(self):
@@ -55,5 +58,50 @@ class CraigslistJobs(BoardAction):
 
         return driver
 
+    
+    def pull(self) -> Iterator[str]:
+        job_link_list = list()
+        driver = self.Crawler
+        driver.get(self.base_url)
+        driver.maximize_window()
+        total_jobs = int(driver.find_element_by_xpath("//*[@class='totalcount']").text)
+        count_jobs = 120 # count jobs per Page
+        total_pages = total_jobs // count_jobs + 1
+        for page in range(0, total_pages):
+            driver.get(self.base_url + "s=%s"%((page+1)*count_jobs))
+            jobs = driver.find_elements_by_xpath("//*[@class='result-heading']")
+            total_jobs = int(driver.find_element_by_xpath("//*[@class='totalcount']").text)
+            job_link_list += [jobs[i].find_element_by_tag_name("a").get_attribute("href") for i in range(0,total_jobs)]
 
-        
+
+        return job_link_list
+
+
+
+
+
+
+    def format(self, job_link:str) -> Dict[str, Any]:
+        job = dict()
+        driver = self.Crawler
+        driver.get(job_link)
+
+        job["name"] = driver.find_element_by_xpath("//*[@id='titletextonly']").text
+        job["reference"] = driver.find_element_by_xpath("//*[@class='postinginfo']").text.split(":")[0].strip()
+        job["url"] = job_link
+        job["created_at"] = driver.find_elements_by_xpath("//*[@class='postinginfo reveal']")[0].find_element_by_tag_name("time").get_attribute("datetime")
+        job["updated_at"] = None
+        job["summary"] = ""
+        location = driver.find_element_by_xpath("//*[@id='map']")
+        job["location"] = dict(text = None, lat = location.get_attribute("data-latitude"), lng = location.get_attribute("data-longitude"))
+        job["sections"] = [dict(name = "description", title = "Description", description = driver.find_element_by_xpath("//*[@id='postingbody']").text )]
+        tags = driver.find_element_by_xpath("//*[@class='attrgroup']").text.split("\n")
+        job["tags"] = [ dict(name = "compensatipn", value = tags[0].split(":")[1].strip()), dict(name = "employment_type", value = tags[1].split(":")[1].strip())]
+        job["ranges_date"] = []
+        job["ranges_float"] = []
+        job["metadatas"] = []
+
+        return job
+
+
+
