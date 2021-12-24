@@ -69,14 +69,20 @@ class CraigslistJobs(BoardAction):
         try:
             driver.get(self.base_url)
         except WebDriverException:
-            print("This site in not available, check if {}.craiglist.org is a valid subdomain".format(self.subdomain))
+            print(
+                "This site in not available, check if {}.craiglist.org is a valid subdomain".format(
+                    self.subdomain
+                )
+            )
         driver.maximize_window()
         total_jobs = int(driver.find_element_by_xpath("//*[@class='totalcount']").text)
         count_jobs = 120  # count jobs per Page
         total_pages = total_jobs // count_jobs + 1
         for page in range(0, total_pages):
             driver.get(self.base_url + "s=%s" % ((page + 1) * count_jobs))
+            #jobs rows
             jobs = driver.find_elements_by_xpath("//*[@id='search-results']/li")
+            #retrieve job link from each job row
             job_link_list += [
                 job.find_element_by_tag_name("a").get_attribute("href") for job in jobs
             ]
