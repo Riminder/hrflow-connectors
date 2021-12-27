@@ -86,7 +86,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         if email == None:
             raise Exception(f"No email for hrflow_profile {data.get('reference')} but one is mandatory")
 
-        body = {
+        profile = {
             "vacancy": self.vacancy,
             "firstname": info.get("first_name") if info.get("first_name") is not None else "N/A",
             "lastname": info.get("last_name") if info.get("last_name") is not None else "N/A",
@@ -98,7 +98,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
                 "data": get_candidate_attachments(data)
             }
         }
-        return body
+        return profile
 
     def execute(self):
         super().execute()
