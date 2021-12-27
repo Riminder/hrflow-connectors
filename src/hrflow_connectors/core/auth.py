@@ -18,7 +18,7 @@ class NoAuth(Auth):
     pass
 
 
-class AuthApiKey(Auth):
+class APIKeyAuth(Auth):
     api_key: str
 
     def update(
