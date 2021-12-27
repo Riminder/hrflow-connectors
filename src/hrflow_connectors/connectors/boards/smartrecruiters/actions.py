@@ -65,7 +65,7 @@ class SmartJobs(HTTPStream, BoardAction):
         # job Title
         job["name"] = data.get("title")
         # job Reference
-        job["references"] = data.get("refNumber")
+        job["reference"] = data.get("refNumber")
         # job Url
         job["url"] = None
         # creation date and -update- of the offer
