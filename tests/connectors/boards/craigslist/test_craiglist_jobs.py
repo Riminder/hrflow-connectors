@@ -6,6 +6,9 @@ from hrflow import Hrflow
 import hrflow_connectors as hc
 from hrflow_connectors.connectors.boards.craigslist.actions import CraigslistJobs
 
+#adding web driver manager as a DEV dependency to make testing easier for users
+from webdriver_manager.chrome import ChromeDriverManager
+
 ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(hc.__file__), "../../"))
 
 
@@ -27,9 +30,9 @@ def hrflow_client(credentials):
     return hrflow_client_func
 
 def test_CraigslistJobs(hrflow_client):
-    executable_path = os.path.join(ROOT_PATH, "chromedriver.exe")
+    
     action = CraigslistJobs(
-        executable_path=executable_path,
+        executable_path=ChromeDriverManager().install(),
         subdomain="Paris",
         hrflow_client=hrflow_client("dev-demo"),
         board_key="fc197c369ed9a8d35041961b268076885b2ea6f2",

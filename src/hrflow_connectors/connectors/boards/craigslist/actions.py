@@ -104,7 +104,7 @@ class CraigslistJobs(BoardAction):
 
         job["name"] = driver.find_element_by_xpath("//*[@id='titletextonly']").text
         m = search("7(.+?).html", job_link) #searching for a match to get the reference to the job
-        if m:
+        if m is not None:
             job["reference"] = m.group(1)
         job["url"] = job_link
         job["created_at"] = (
@@ -112,8 +112,7 @@ class CraigslistJobs(BoardAction):
             .find_element_by_tag_name("time")
             .get_attribute("datetime")
         )
-        job["updated_at"] = None
-        job["summary"] = ""
+        job["summary"] = None
         job["location"] = dict(text=self.subdomain, lat=None, lng=None)
         job["sections"] = [
             dict(
@@ -122,10 +121,10 @@ class CraigslistJobs(BoardAction):
                 description=driver.find_element_by_xpath("//*[@id='postingbody']").text,
             )
         ]
-        tags = driver.find_element_by_xpath("//*[@class='attrgroup']").text.split("\n")
+        tags = driver.find_elements_by_tag_name("b")
         job["tags"] = [
-            dict(name="compensation", value=tags[0].split(":")[1].strip()),
-            dict(name="employment_type", value=tags[1].split(":")[1].strip()),
+            dict(name="craigslist_compensation", value=tags[0].text),
+            dict(name="craigslist_employment_type", value=tags[1].text),
         ]
         job["ranges_date"] = []
         job["ranges_float"] = []
