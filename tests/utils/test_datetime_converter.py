@@ -3,131 +3,178 @@ from hrflow_connectors.utils.datetime_converter import (
     from_str_to_datetime,
     DateFormatError,
 )
-import pandas as pd
-
-
-def assert_datetime(datetime_string):
-    got = from_str_to_datetime(datetime_string)
-    expected = pd.to_datetime(datetime_string).to_pydatetime()
-    assert got == expected
 
 
 ## YYYY/MM/DD
 def test_simple_slash_date():
-    assert_datetime("2000/10/01")
+    got = from_str_to_datetime("2000/10/01")
+    expected = datetime.datetime(2000, 10, 1, 0, 0)
+    assert got == expected
 
 
 ### Separation : Space
 def test_simple_slash_date_space_with_hours():
-    assert_datetime("2000/10/01 12")
+    got = from_str_to_datetime("2000/10/01 12")
+    expected = datetime.datetime(2000, 10, 1, 12, 0)
+    assert got == expected
 
 
 def test_simple_slash_date_space_with_hours_minutes():
-    assert_datetime("2000/10/01 12:02")
+    got = from_str_to_datetime("2000/10/01 12:02")
+    expected = datetime.datetime(2000, 10, 1, 12, 2)
+    assert got == expected
 
 
 def test_simple_slash_date_space_with_hours_minutes_seconds():
-    assert_datetime("2000/10/01 12:02:14")
+    got = from_str_to_datetime("2000/10/01 12:02:14")
+    expected = datetime.datetime(2000, 10, 1, 12, 2, 14)
+    assert got == expected
 
 
 ### Separation : T
 def test_simple_slash_date_T_with_hours():
-    assert_datetime("2000/10/01T12")
+    got = from_str_to_datetime("2000/10/01T12")
+    expected = datetime.datetime(2000, 10, 1, 12, 0)
+    assert got == expected
 
 
 def test_simple_slash_date_T_with_hours_minutes():
-    assert_datetime("2000/10/01T12:02")
+    got = from_str_to_datetime("2000/10/01T12:02")
+    expected = datetime.datetime(2000, 10, 1, 12, 2)
+    assert got == expected
 
 
 def test_simple_slash_date_T_with_hours_minutes_seconds():
-    assert_datetime("2000/10/01T12:02:14")
+    got = from_str_to_datetime("2000/10/01T12:02:14")
+    expected = datetime.datetime(2000, 10, 1, 12, 2, 14)
+    assert got == expected
 
 
 ## YYYY-MM-DD
 def test_simple_hyphen_date():
-    assert_datetime("2000-10-01")
+    got = from_str_to_datetime("2000-10-01")
+    expected = datetime.datetime(2000, 10, 1, 0, 0)
+    assert got == expected
 
 
 ### Separation : Space
 def test_simple_hyphen_date_space_with_hours():
-    assert_datetime("2000-10-01 12")
+    got = from_str_to_datetime("2000-10-01 12")
+    expected = datetime.datetime(2000, 10, 1, 12, 0)
+    assert got == expected
 
 
 def test_simple_hyphen_date_space_with_hours_minutes():
-    assert_datetime("2000-10-01 12:02")
+    got = from_str_to_datetime("2000-10-01 12:02")
+    expected = datetime.datetime(2000, 10, 1, 12, 2)
+    assert got == expected
 
 
 def test_simple_hyphen_date_space_with_hours_minutes_seconds():
-    assert_datetime("2000-10-01 12:02:14")
+    got = from_str_to_datetime("2000-10-01 12:02:14")
+    expected = datetime.datetime(2000, 10, 1, 12, 2, 14)
+    assert got == expected
 
 
 def test_simple_hyphen_date_space_with_hours_minutes_seconds_milliseconds_short():
-    assert_datetime("2000-10-01 12:02:14.123")
+    got = from_str_to_datetime("2000-10-01 12:02:14.123")
+    expected = datetime.datetime(2000, 10, 1, 12, 2, 14, 123000)
+    assert got == expected
 
 
 def test_simple_hyphen_date_space_with_hours_minutes_seconds_milliseconds_long():
-    assert_datetime("2000-10-01 12:02:14.851541")
+    got = from_str_to_datetime("2000-10-01 12:02:14.851541")
+    expected = datetime.datetime(2000, 10, 1, 12, 2, 14, 851541)
+    assert got == expected
 
 
 ### Separation : T
 def test_simple_hyphen_date_T_with_hours():
-    assert_datetime("2000-10-01T12")
+    got = from_str_to_datetime("2000-10-01T12")
+    expected = datetime.datetime(2000, 10, 1, 12, 0)
+    assert got == expected
 
 
 def test_simple_hyphen_date_T_with_hours_minutes():
-    assert_datetime("2000-10-01T12:02")
+    got = from_str_to_datetime("2000-10-01T12:02")
+    expected = datetime.datetime(2000, 10, 1, 12, 2)
+    assert got == expected
 
 
 def test_simple_hyphen_date_T_with_hours_minutes_seconds():
-    assert_datetime("2000-10-01T12:02:14")
+    got = from_str_to_datetime("2000-10-01T12:02:14")
+    expected = datetime.datetime(2000, 10, 1, 12, 2, 14)
+    assert got == expected
 
 
 def test_simple_hyphen_date_T_with_hours_minutes_seconds_milliseconds_short():
-    assert_datetime("2000-10-01T12:02:14.123")
+    got = from_str_to_datetime("2000-10-01T12:02:14.123")
+    expected = datetime.datetime(2000, 10, 1, 12, 2, 14, 123000)
+    assert got == expected
 
 
 def test_simple_hyphen_date_T_with_hours_minutes_seconds_milliseconds_long():
-    assert_datetime("2000-10-01T12:02:14.851541")
+    got = from_str_to_datetime("2000-10-01T12:02:14.851541")
+    expected = datetime.datetime(2000, 10, 1, 12, 2, 14, 851541)
+    assert got == expected
 
 
 ## Time zone
 def test_simple_hyphen_date_T_with_hours_minutes_seconds_Z():
-    assert_datetime("2000-10-01T12:02:14Z")
+    got = from_str_to_datetime("2000-10-01T12:02:14Z")
+    tz = datetime.timezone.utc
+    expected = datetime.datetime(2000, 10, 1, 12, 2, 14, tzinfo=tz)
+    assert got == expected
 
 
 def test_simple_hyphen_date_T_with_hours_Z():
-    assert_datetime("2000-10-01T12Z")
+    got = from_str_to_datetime("2000-10-01T12Z")
+    tz = datetime.timezone.utc
+    expected = datetime.datetime(2000, 10, 1, 12, 0, tzinfo=tz)
+    assert got == expected
 
 
 def test_simple_hyphen_date_T_with_hours_minutes_seconds_milliseconds_long_plus_6_colons():
-    assert_datetime("2000-10-01T12:02:14.851541+06:00")
+    got = from_str_to_datetime("2000-10-01T12:02:14.851541+06:00")
+    tz = datetime.timezone(datetime.timedelta(hours=6))
+    expected = datetime.datetime(2000, 10, 1, 12, 2, 14, 851541, tzinfo=tz)
+    assert got == expected
 
 
 def test_simple_hyphen_date_T_with_hours_minutes_seconds_milliseconds_long_plus_8():
-    assert_datetime("2000-10-01T12:02:14.851541+0800")
+    got = from_str_to_datetime("2000-10-01T12:02:14.851541+0800")
+    tz = datetime.timezone(datetime.timedelta(hours=8))
+    expected = datetime.datetime(2000, 10, 1, 12, 2, 14, 851541, tzinfo=tz)
+    assert got == expected
 
 
 def test_simple_hyphen_date_T_with_hours_minutes_seconds_moins_3():
-    assert_datetime("2000-10-01T12:02:14-0300")
-
-
-def test_simple_hyphen_date_space_with_hours():
-    assert_datetime("2000-10-01 12")
+    got = from_str_to_datetime("2000-10-01T12:02:14-0300")
+    tz = datetime.timezone(datetime.timedelta(hours=-3))
+    expected = datetime.datetime(2000, 10, 1, 12, 2, 14, tzinfo=tz)
+    assert got == expected
 
 
 ## Random examples
-
-
-def test_simple_date_in_DR():
-    assert_datetime("2021-10-11T14:57:33+00:00")
+def test_simple_date_with_colons_in_timezone():
+    got = from_str_to_datetime("2021-10-11T14:57:33+00:00")
+    tz = datetime.timezone.utc
+    expected = datetime.datetime(2021, 10, 11, 14, 57, 33, tzinfo=tz)
+    assert got == expected
 
 
 def test_simple_date_in_HrFlow_tag():
-    assert_datetime("2021-10-13T10:57:38+0200")
+    got = from_str_to_datetime("2021-10-13T10:57:38+0200")
+    tz = datetime.timezone(datetime.timedelta(hours=2))
+    expected = datetime.datetime(2021, 10, 13, 10, 57, 38, tzinfo=tz)
+    assert got == expected
 
 
 def test_simple_date_in_HrFlow():
-    assert_datetime("2021-10-01T12:59:05+0000")
+    got = from_str_to_datetime("2021-10-01T12:59:05+0000")
+    tz = datetime.timezone.utc
+    expected = datetime.datetime(2021, 10, 1, 12, 59, 5, tzinfo=tz)
+    assert got == expected
 
 
 def test_wrong_date_with_letter():
