@@ -105,7 +105,7 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
     )
     compagny: str = Field(
         ...,
-        description="The pool in which candidates will be placed. Findable in the URL",
+        description="The id of the compagny",
     )
 
     def build_request_headers(self):
@@ -268,3 +268,9 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
         }
 
         return profile
+
+    def execute(self):
+        super().execute()
+        return generate_workflow_response(
+            status_code=201, message="Profile successfully pushed"
+        )
