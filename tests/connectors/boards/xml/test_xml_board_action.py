@@ -7,14 +7,10 @@ import pytest
 from hrflow import Hrflow
 import responses
 
-import hrflow_connectors as hc
-
-ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(hc.__file__), "../../"))
-
 
 @pytest.fixture
-def credentials():
-    with open(os.path.join(ROOT_PATH, "credentials.json"), "r") as f:
+def credentials(pytestconfig):
+    with open(os.path.join(pytestconfig.rootpath, "credentials.json"), "r") as f:
         credentials = json.loads(f.read())
     return credentials
 
@@ -164,6 +160,7 @@ def test_get_all_jobs_from_samsic_xml_stream(hrflow_client):
     )
     action.execute()
 
+
 @responses.activate
 def test_XMLBoardAction_pull_generic_xml_stream(hrflow_client):
     xml_stream_url = "https://test.test/job/xml_stream"
@@ -192,12 +189,7 @@ def test_XMLBoardAction_pull_generic_xml_stream(hrflow_client):
     </board>
 </all>"""
 
-    responses.add(
-        responses.GET,
-        xml_stream_url,
-        status=200,
-        body=xml_stream_str
-    )
+    responses.add(responses.GET, xml_stream_url, status=200, body=xml_stream_str)
 
     job_list_xpath = "board/jobs"
     action = XMLBoardAction(
@@ -206,7 +198,7 @@ def test_XMLBoardAction_pull_generic_xml_stream(hrflow_client):
         hrflow_client=hrflow_client("dev-demo"),
         board_key="abc",
         hydrate_with_parsing=False,
-        archive_deleted_jobs_from_stream=False
+        archive_deleted_jobs_from_stream=False,
     )
     xml_job_node_list = action.pull()
 
@@ -214,16 +206,16 @@ def test_XMLBoardAction_pull_generic_xml_stream(hrflow_client):
     job_node_1, job_node_2, job_node_3 = xml_job_node_list
 
     name_1, reference_1 = list(job_node_1)
-    assert job_node_1.attrib['data-id'] == "1"
+    assert job_node_1.attrib["data-id"] == "1"
     assert name_1.text == "Data scientist"
     assert reference_1.text == "ds42"
 
     name_2, reference_2 = list(job_node_2)
-    assert job_node_2.attrib['data-id'] == "2"
+    assert job_node_2.attrib["data-id"] == "2"
     assert name_2.text == "Software Engineer"
     assert reference_2.text == "se18"
 
     name_3, reference_3 = list(job_node_3)
-    assert job_node_3.attrib['data-id'] == "3"
+    assert job_node_3.attrib["data-id"] == "3"
     assert name_3.text == "Painter"
     assert reference_3.text == "pt56"
