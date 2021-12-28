@@ -1,15 +1,14 @@
-import datetime
 from hrflow_connectors.utils.timedelta_converter import (
     from_str_to_timedelta,
     TimeDeltaFormatError,
 )
-import pandas as pd
 
 
 def assert_datetime(datetime_string):
-    got = from_str_to_timedelta(datetime_string)
-    expected = pd.to_timedelta(datetime_string).to_pytimedelta()
-    assert got == expected
+    str_in_timedelta = from_str_to_timedelta(datetime_string)
+    got_string = str(str_in_timedelta)
+    expected_string = datetime_string
+    assert got_string == expected_string
 
 
 def test_simple_timedelta_with_8_hours():
