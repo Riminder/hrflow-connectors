@@ -122,22 +122,6 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
     def http_method(self):
         return "POST"
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
-        """
-        Pull data
-        """
-        response = self.hrflow_client.profile.indexing.get(
-            source_key=self.profile.source.key, key=self.profile.key
-        )
-        if response["code"] >= 400:
-            raise RuntimeError(
-                "Indexing profile get failed : `{}`".format(response["message"])
-            )
-
-        profile = response["data"]
-        formated_data = map(self.format, profile)
-        return list(formated_data)
-
     def push(self, data):
         self.payload.clear()
         profile = next(data)
