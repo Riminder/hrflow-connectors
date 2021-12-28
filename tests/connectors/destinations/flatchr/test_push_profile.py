@@ -21,7 +21,7 @@ def credentials():
 @pytest.fixture
 def auth(credentials):
     auth = APIKeyAuth(
-        api_key=credentials["crosstalent"]["oauth2"]["client_id"]
+        api_key=credentials["flatchr"]["x-api-key"]
     )
     return auth
 
@@ -40,14 +40,15 @@ def hrflow_client(credentials):
 def test_PushProfile(auth, hrflow_client):
 
     profile = Profile(
-        key="ea5704b959c5e53aaef65c04ef5018ae1fee1a77",
-        source=Source(key="15517d70b0870e4cf431eefd78f8b39cff5607e8"),
+        key="5746beca5e941a5a55706efd9adfce31f59e6e2b",
+        source=Source(key="d42eed17626b7ae3dc05efca363788caef91d44b"),
     )
     action = PushProfile(
         auth=auth,
-        subdomain="vulcain-eng--recette.my",
-        hrflow_client=hrflow_client("vulcain"),
+        subdomain="careers",
+        hrflow_client=hrflow_client(),
         profile=profile,
+        vacancy="k0M5O9ylKZnxbQBy",
     )
     response = action.execute()
     assert response.get("status_code") == 201
