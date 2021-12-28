@@ -41,15 +41,20 @@ class SmartJobs(HTTPStream, BoardAction):
             self.params["updatedAfter"] = self.updated_after
 
         response = self.send_request()
-        total_found = response.json()["totalFound"] #total offers found
-        while self.offset < total_found:
-            self.params.update({"offset": self.offset})
-            response_update = self.send_request()
-            content = response_update.__dict__["content"]  #get list of job offers contents
-            jobs_content += content
-            self.offset += self.limit
+        if response.status_code == 200:
 
-        return jobs_content
+            total_found = response.json()["totalFound"]  # total offers found
+            for i in range(self.offset, self.limit, total_found):
+                self.params.update({"offset": i})
+                response_update = self.send_request()
+                jobs_content = response_update.__dict__[
+                    "content"
+                ]  # get list of job offers contents
+                yield jobs_content
+
+        else:
+            error_message = "Unable to pull the data ! Reason : `{}`"
+            raise ConnectionError(error_message.format(response.content))
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -75,11 +80,16 @@ class SmartJobs(HTTPStream, BoardAction):
         # location
         lat = data.get("location", {}).get("latitude")
         lng = data.get("location", {}).get("longitude")
-        text = " ".join(
-            data.get("location")[key]
-            for key in ["country", "region", "city", "address"]
-            if data.get("location", {}).get(key)
-        )
+        location_field_list = ["country", "region", "city", "address"]
+        location_field_name_list = []
+        for field_name in location_field_list:
+            if data.get("location", "").get(field_name):
+                location_field_name_list.append(
+                    data.get("location", "").get(field_name)
+                )
+
+        text = " ".join(location_field_name_list)
+
         job["location"] = dict(lat=lat, lng=lng, text=text)
         # job sections: descriptions and qualifications
         companyDescription = (
@@ -108,21 +118,21 @@ class SmartJobs(HTTPStream, BoardAction):
         )
         job["sections"] = [
             dict(
-                name="company_description",
-                title="companyDescription",
+                name="smartrecruiters_company_description",
+                title="smartrecruiters_companyDescription",
                 description=companyDescription,
             ),
             dict(
-                name="job_description",
-                title="jobDescription",
+                name="smartrecruiters_job_description",
+                title="smartrecruiters_jobDescription",
                 description=jobDescription,
             ),
             dict(
-                name="qualifications", title="qualifications", description=qualification
+                name="smartrecruiters_qualifications", title="smartrecruiters_qualifications", description=qualification
             ),
             dict(
-                name="additional_information",
-                title="additionalInformation",
+                name="smartrecruiters_additional_information",
+                title="smartrecruiters_additionalInformation",
                 description=additional_information,
             ),
         ]
@@ -141,31 +151,31 @@ class SmartJobs(HTTPStream, BoardAction):
         manual = data.get("location", {}).get("manual")
         remote = data.get("location", {}).get("remote")
         eeo_category = data.get("eeoCategory", {}).get("id")
-        compensation = data.get("compensation", {})
+        compensation = data.get("compensation", None)
         job["tags"] = [
-            dict(name="status", value=status),
-            dict(name="posting_status", value=posting_status),
+            dict(name="smartrecruiters_status", value=status),
+            dict(name="smartrecruiters_postingStatus", value=posting_status),
             dict(name="job_uuid", value=job_uuid),
-            dict(name="experience_level", value=experience_level),
+            dict(name="smartrecruiters_experience_level", value=experience_level),
             dict(name="type_of_employment", value=employmentType),
-            dict(name="compensation", value=compensation),
-            dict(name="industry", value=industry),
-            dict(name="creator", value=creator),
-            dict(name="function", value=function),
-            dict(name="department", value=department),
-            dict(name="manual", value=manual),
-            dict(name="remote", value=remote),
-            dict(name="eeo_category", value=eeo_category),
+            dict(name="smartrecruiters_compensation", value=compensation),
+            dict(name="smartrecruiters_industry", value=industry),
+            dict(name="smartrecruiters_creator", value=creator),
+            dict(name="smartrecruiters_function", value=function),
+            dict(name="smartrecruiters_department-id", value=department),
+            dict(name="smartrecruiters_location-manual", value=manual),
+            dict(name="smartrecruiters_job-remote", value=remote),
+            dict(name="equal_employment_opportunity_category", value=eeo_category),
         ]
         # ranges of duration and salary
-        job["ranges_date"] = [
+        ranges_date = [
             dict(
                 name="targetHiringDate",
                 value_min=None,
                 value_max=data.get("targetHiringDate"),
             )
         ]
-        job["ranges_float"] = [
+        ranges_float = [
             dict(
                 name="compensation",
                 value_min=data.get("compensation", {}).get("min"),
@@ -173,6 +183,8 @@ class SmartJobs(HTTPStream, BoardAction):
                 unit=data.get("compensation", {}).get("currency"),
             )
         ]
-        job["metadatas"] = []
+        job["metadatas"] = dict(
+            smartrecruiters_date=ranges_date, smartrecruiters_float=ranges_float
+        )
 
         return job
