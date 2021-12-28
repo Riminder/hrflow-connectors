@@ -14,7 +14,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
     auth: APIKeyAuth
     subdomain: str = Field(
         ...,
-        description="Subdomain Flatchr just before `flatchr.io`. For example subdomain=`my_subdomain.my` in "
+        description="Subdomain flatchr just before `flatchr.io`. For example subdomain=`my_subdomain.my` in "
                     "`http://my_subdomain.my.flatchr.io/ABC`",
     )
     vacancy: str = Field(
@@ -37,22 +37,6 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
     def http_method(self):
         return "POST"
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
-        """
-        Pull data
-        """
-        response = self.hrflow_client.profile.indexing.get(
-            source_key=self.profile.source.key, key=self.profile.key
-        )
-        if response["code"] >= 400:
-            raise RuntimeError(
-                "Indexing profile get failed : `{}`".format(response["message"])
-            )
-
-        profile = response["data"]
-        formated_data = map(self.format, profile)
-        return list(formated_data)
-
     def push(self, data):
         self.payload.clear()
         profile = next(data)
@@ -60,7 +44,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         response = self.send_request()
         if response.status_code >= 400:
             raise RuntimeError(
-                "Push profile to Flatchr failed : `{}`".format(response.content)
+                "Push profile to flatchr failed : `{}`".format(response.content)
             )
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -112,7 +96,7 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
     auth: APIKeyAuth
     subdomain: str = Field(
         ...,
-        description="Subdomain Flatchr just before `flatchr.io`. For example subdomain=`my_subdomain.my` in "
+        description="Subdomain flatchr just before `flatchr.io`. For example subdomain=`my_subdomain.my` in "
                     "`http://my_subdomain.my.flatchr.io/ABC`",
     )
     vacancy: str = Field(
@@ -161,7 +145,7 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
         response = self.send_request()
         if response.status_code >= 400:
             raise RuntimeError(
-                "Push profile to Flatchr failed : `{}`".format(response.content)
+                "Push profile to flatchr failed : `{}`".format(response.content)
             )
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
