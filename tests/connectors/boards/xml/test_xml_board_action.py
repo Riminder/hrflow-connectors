@@ -5,6 +5,7 @@ import os
 import json
 import pytest
 from hrflow import Hrflow
+import responses
 
 import hrflow_connectors as hc
 
@@ -162,3 +163,67 @@ def test_get_all_jobs_from_samsic_xml_stream(hrflow_client):
         local_scope=locals(),
     )
     action.execute()
+
+@responses.activate
+def test_XMLBoardAction_pull_generic_xml_stream(hrflow_client):
+    xml_stream_url = "https://test.test/job/xml_stream"
+
+    xml_stream_str = """<?xml version="1.0" encoding="UTF-8"?>
+<all>
+    <meta>
+        <update>2021-11-09T15:00:00.999651</update>
+        <version>42</version>
+    </meta>
+    <board>
+        <jobs>
+            <job data-id="1">
+                <name>Data scientist</name>
+                <reference>ds42</reference>
+            </job>
+            <job data-id="2">
+                <name>Software Engineer</name>
+                <reference>se18</reference>
+            </job>
+            <job data-id="3">
+                <name>Painter</name>
+                <reference>pt56</reference>
+            </job>
+        </jobs>
+    </board>
+</all>"""
+
+    responses.add(
+        responses.GET,
+        xml_stream_url,
+        status=200,
+        body=xml_stream_str
+    )
+
+    job_list_xpath = "board/jobs"
+    action = XMLBoardAction(
+        xml_stream_url=xml_stream_url,
+        job_list_xpath=job_list_xpath,
+        hrflow_client=hrflow_client("dev-demo"),
+        board_key="abc",
+        hydrate_with_parsing=False,
+        archive_deleted_jobs_from_stream=False
+    )
+    xml_job_node_list = action.pull()
+
+    assert len(xml_job_node_list) == 3
+    job_node_1, job_node_2, job_node_3 = xml_job_node_list
+
+    name_1, reference_1 = list(job_node_1)
+    assert job_node_1.attrib['data-id'] == "1"
+    assert name_1.text == "Data scientist"
+    assert reference_1.text == "ds42"
+
+    name_2, reference_2 = list(job_node_2)
+    assert job_node_2.attrib['data-id'] == "2"
+    assert name_2.text == "Software Engineer"
+    assert reference_2.text == "se18"
+
+    name_3, reference_3 = list(job_node_3)
+    assert job_node_3.attrib['data-id'] == "3"
+    assert name_3.text == "Painter"
+    assert reference_3.text == "pt56"
