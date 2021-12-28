@@ -73,17 +73,16 @@ class SmartCandidate(ProfileDestinationAction, HTTPStream):
 
             for education_entity in educations:
                 formated_education = format_project(education_enity)
-                formated_education.update(
-                    {
-                        "institution": education_entity.get("school")
-                        if education_entity.get("school")
-                        else "NaN",
-                        "degree": education_entity.get("title")
-                        if education_entity.get("title")
-                        else "NaN",
-                        "major": "NaN",
-                    }
-                )
+                if education_entity.get("school") is None:
+                    formated_education["instituion"] = "NaN"
+                else:
+                    formated_education["institution"] = education_entity.get("school")
+
+                if education_entity.get("title") is None:
+                    formated_education["degree"] = "Nan"
+                else:
+                    formated_education["degree"] = education_entity.get("title")
+                formated_education["major"] = "NaN"
 
                 formated_education_list.append(formated_education)
 
