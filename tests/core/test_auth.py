@@ -1,6 +1,8 @@
 import responses
-import pytest
-from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody, SmartToken
+
+from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
+from hrflow_connectors.core.auth import APIKeyAuth
+from hrflow_connectors.core.auth import SmartToken
 
 OAuth2PasswordCredentialsBody_JSON_RESPONSE = {
     "access_token": "ABC.TOKEN.EFD",
@@ -10,6 +12,19 @@ OAuth2PasswordCredentialsBody_JSON_RESPONSE = {
     "issued_at": "1638442809550",
     "signature": "wp1jFqVjffN2gLP3O9NvK93VBYFdgHD/FtwiYEhPrlQ=",
 }
+
+
+@responses.activate
+def test_APIKeyAuth():
+
+    APIKey = "im_bond_james_bond"
+    auth = APIKeyAuth(api_key=APIKey)
+
+    headers = dict(test="abc")
+    auth.update(headers=headers)
+
+    assert headers.get("test") == "abc"
+    assert headers.get("Authorization") == APIKey
 
 
 @responses.activate
@@ -63,6 +78,4 @@ def test_SmartToken():
 
     headers = dict(test="smart")
     auth.update(headers=headers)
-    assert headers == {"test":"smart", "X-SmartToken":"abc"}
-
-    
+    assert headers == {"test": "smart", "X-SmartToken": "abc"}
