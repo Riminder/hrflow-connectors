@@ -52,3 +52,24 @@ class OAuth2PasswordCredentialsBody(Auth):
             headers.update(
                 {"Authorization": "OAuth {}".format(self.get_access_token())}
             )
+
+
+class SmartToken(Auth):
+    """
+    Authorization to access and use smartrecruiters static token
+    """
+
+    access_token: str
+
+    def get_access_token(self):
+        return self.access_token
+
+    def update(
+        self,
+        params: Union[Dict[str, str], None] = None,
+        headers: Union[Dict[str, str], None] = None,
+        payload: Union[Dict[str, str], None] = None,
+        cookies: Union[Dict[str, str], None] = None,
+    ):
+        if headers is not None:
+            headers.update({"X-SmartToken": "{}".format(self.get_access_token())})
