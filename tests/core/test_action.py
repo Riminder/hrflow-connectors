@@ -76,6 +76,49 @@ def test_apply_logics_single_filter_without_interaction(generated_data_list):
     assert dict(element1="value2", element2="value2") in filtered_list
 
 
+def test_extern_format_function():
+    def extern_format(data):
+        return dict(c=data["a"], d=data["a"] + data["b"])
+
+    action = Action(
+        format_function_name="extern_format",
+        global_scope=globals(),
+        local_scope=locals(),
+    )
+
+    job_to_transform = dict(a="aaa", b="bbb", f="fff")
+    transformed_job = action.format(job_to_transform)
+    assert transformed_job == dict(c="aaa", d="aaabbb")
+
+
+def test_default_format_without_extern_format_function():
+    action = Action(
+        format_function_name=None,
+    )
+    job_to_transform = dict(a="aaa", b="bbb", f="fff")
+    transformed_job = action.format(job_to_transform)
+    assert transformed_job == dict(a="aaa", b="bbb", f="fff")
+
+
+def test_overwritten_format_with_extern_format_function():
+    def extern_format(data):
+        return dict(c=data["a"], d=data["a"] + data["b"])
+
+    class TestAction(Action):
+        def format(self, data):
+            return dict(f=data["f"], g=data["a"] + data["b"])
+
+    action = TestAction(
+        format_function_name="extern_format",
+        global_scope=globals(),
+        local_scope=locals(),
+    )
+
+    job_to_transform = dict(a="aaa", b="bbb", f="fff")
+    transformed_job = action.format(job_to_transform)
+    assert transformed_job == dict(f="fff", g="aaabbb")
+
+
 @responses.activate
 def test_Action_connect_and_execute(generated_data_list):
     # Build a connector from `generated_data_list` to `http://test.test/push`
@@ -222,7 +265,7 @@ def test_BoardAction_hydrate_job_with_parsing(generated_parsing_text_response):
 @pytest.fixture
 def generate_indexing_get_response():
     def indexing_get_response_func(code, message, archived_at):
-        job = dict(archived_at=archived_at)
+        job = dict(key="klm", archived_at=archived_at)
         response = dict(code=code, message=message, data=job)
         return response
 
@@ -344,12 +387,22 @@ def test_BoardAction_check_reference_in_board_for_archived_job_in_board(
         json=generated_response,
     )
 
-    # create a matcher to check if the JSON Body sent by the Connector is in the right shape and has the right values
+    ## create a matcher to check if the JSON Body sent by the Connector is in the right shape and has the right values
     expected_body = dict(board_key="abc", reference="REF1", is_archive=False)
     match = [responses.matchers.json_params_matcher(expected_body)]
     responses.add(
         responses.PATCH,
         "https://api.hrflow.ai/v1/job/indexing/archive",
+        status=200,
+        match=match,
+    )
+
+    ## create a matcher to check if the JSON Body sent by the Connector is in the right shape and has the right values
+    expected_body = dict(board_key="abc", key="klm", reference="REF1")
+    match = [responses.matchers.json_params_matcher(expected_body)]
+    responses.add(
+        responses.PUT,
+        "https://api.hrflow.ai/v1/job/indexing",
         status=200,
         match=match,
     )

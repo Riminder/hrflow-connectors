@@ -3,15 +3,12 @@ import json
 import pytest
 from hrflow import Hrflow
 
-import hrflow_connectors as hc
 from hrflow_connectors.connectors.boards.indeed.actions import IndeedFeed
-
-ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(hc.__file__), "../../"))
 
 
 @pytest.fixture
-def credentials():
-    with open(os.path.join(ROOT_PATH, "credentials.json"), "r") as f:
+def credentials(pytestconfig):
+    with open(os.path.join(pytestconfig.rootpath, "credentials.json"), "r") as f:
         credentials = json.loads(f.read())
     return credentials
 
@@ -24,11 +21,14 @@ def hrflow_client(credentials):
     return client
 
 
-def test_IndeedFeed(hrflow_client):
-    executable_path = os.path.join(ROOT_PATH, "src/hrflow_connectors/connectors/boards/indeed/chromedriver_linux64/chromedriver")
+def test_IndeedFeed(hrflow_client, pytestconfig):
+    executable_path = os.path.join(
+        pytestconfig.rootpath,
+        "src/hrflow_connectors/connectors/boards/indeed/chromedriver_linux64/chromedriver",
+    )
     action = IndeedFeed(
         executable_path=executable_path,
-        max_page = 2,
+        max_page=2,
         subdomain="fr",
         hrflow_client=hrflow_client,
         job_search="Software Engineer",
