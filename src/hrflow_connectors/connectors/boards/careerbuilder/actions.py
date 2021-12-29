@@ -55,12 +55,14 @@ class CareerJobs(BoardAction):
 
         if self.binary_location is not None:
             chrome_options.binary_location = self.binary_location
-
+            
         if self.executable_path is None:
             driver = webdriver.Chrome(chrome_options)
-        driver = webdriver.Chrome(
-            executable_path=self.executable_path, chrome_options=chrome_options
-        )
+        else:
+            driver = webdriver.Chrome(
+                executable_path=self.executable_path, chrome_options=chrome_options
+            )
+
 
         return driver
 
