@@ -1,9 +1,14 @@
 from typing import Dict, Any, Iterator, Optional
-from ....core.action import BoardAction
 from pydantic import Field
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from re import search
+
+from ....core.action import BoardAction
+from ....utils.logger import get_logger
+
+logger = get_logger()
+
 
 class CraigslistJobs(BoardAction):
 
@@ -21,6 +26,8 @@ class CraigslistJobs(BoardAction):
         description="Location of the binary chromium, usually in HrFlow workflows it equals `/opt/bin/headless-chromium`",
     )
 
+    jobs_per_page: int = Field(120, const=True)
+
     @property
     def base_url(self):
 
@@ -31,6 +38,7 @@ class CraigslistJobs(BoardAction):
         """
         Selenium Crawler function
         """
+        logger.info("Configuring Chrome Webdriver...")
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
@@ -59,41 +67,54 @@ class CraigslistJobs(BoardAction):
     def pull(self) -> Iterator[str]:
         """
         Pull job links
-        
+
         The role of this function is to scrap and retrieve each job offer link for each job posted
 
         Returns:
             Iterator[str]: list of scrapped job links
         """
-        job_link_list = list()
+        job_link_list = []
+
         driver = self.Crawler
+
         try:
+            logger.info(f"Crawler get page : url=`{self.base_url}`")
             driver.get(self.base_url)
-        except WebDriverException:
-            print(
-                "This site in not available, check if {}.craiglist.org is a valid subdomain".format(
-                    self.subdomain
-                )
-            )
+        except WebDriverException as e:
+            logger.error(f"Fail to get page : url=`{self.base_url}`")
+            logger.error(e)
+            error_message = f"This site in not available, check if {self.subdomain}.craiglist.org is a valid subdomain"
+            raise ConnectionError(error_message)
+
         driver.maximize_window()
         total_jobs = int(driver.find_element_by_xpath("//*[@class='totalcount']").text)
-        count_jobs = 120  # count jobs per Page
-        total_pages = total_jobs // count_jobs + 1
+        logger.info(f"Total jobs to find : {total_jobs}")
+        total_pages = total_jobs // self.jobs_per_page + 1
+        logger.info(f"Total pages to crawl : {total_pages}")
+
         for page in range(0, total_pages):
-            driver.get(self.base_url + "s=%s" % ((page + 1) * count_jobs))
-            #jobs rows
-            jobs = driver.find_elements_by_xpath("//*[@id='search-results']/li")
-            #retrieve job link from each job row
+            logger.info(f"Crawling page=`{page + 1}` ...")
+            driver.get(self.base_url + "s=%s" % ((page + 1) * self.jobs_per_page))
+            # jobs rows
+            currant_page_job_list = driver.find_elements_by_xpath(
+                "//*[@id='search-results']/li"
+            )
+            current_page_job_count = len(currant_page_job_list)
+            logger.info(f"Number of jobs on this page : {current_page_job_count}")
+            # retrieve job link from each job row
             job_link_list += [
-                job.find_element_by_tag_name("a").get_attribute("href") for job in jobs
+                job.find_element_by_tag_name("a").get_attribute("href")
+                for job in currant_page_job_list
             ]
 
+        job_link_count = len(job_link_list)
+        logger.info(f"Total job links found on all pages : {job_link_count}")
         return job_link_list
 
     def format(self, job_link: str) -> Dict[str, Any]:
         """
         Format job
-        
+
         Generates a dictionary of a job attributes, for each job link the function scraps with selenium and parse useful attributes
 
         Args:
@@ -104,6 +125,7 @@ class CraigslistJobs(BoardAction):
         """
         job = dict()
 
+        logger.info(f"Format job : {job_link}")
         driver = self.Crawler
         driver.get(job_link)
 
@@ -147,7 +169,7 @@ class CraigslistJobs(BoardAction):
             dict(name="craigslist_compensation", value=tags[0].text),
             dict(name="craigslist_employment_type", value=tags[1].text),
         ]
-        
+
         job["ranges_date"] = []
         job["ranges_float"] = []
         job["metadatas"] = []
