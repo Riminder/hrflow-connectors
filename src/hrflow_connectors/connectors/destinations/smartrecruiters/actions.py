@@ -39,56 +39,72 @@ class SmartCandidate(ProfileDestinationAction, HTTPStream):
             Dict[str, Any]: [profile in the SmartRecruiters candidate application format]
         """
 
-        xstr = lambda s: s or " "
+        value_or_empty = lambda s: s or " "
 
         def format_project(project):
+            formated_project_dict = dict()
+            # current
+            formated_project_dict["current"] = False
+            # start date
+            start_datetime_str = project.get("date_start")
+            if start_datetime_str is None:
+                start_date_str = "NaN"
+            else:
+                start_date_str = start_datetime_str.split()[0]
 
-            return {
-                "current": False,
-                "startDate": project["date_start"].split("T")[0]
-                if project["date_start"]
-                else "NaN",
-                "endDate": project["date_end"].split("T")[0]
-                if project["date_end"]
-                else "Nan",
-                "location": xstr(project["location"]["text"]),
-                "description": project["description"],
-            }
+            formated_project_dict["startDate"] = start_date_str
+
+            end_datetime_str = project.get("date_end")
+            if end_datetime_str is None:
+                end_date_str = "NaN"
+            else:
+                end_date_str = end_datetime_str.split()[0]
+
+            formated_project_dict["endDate"] = end_date_str
+            formated_project_dict["location"] = value_or_empty(
+                project["location"]["text"]
+            )
+            formated_project_dict["description"] = project["description"]
+
+            return formatted_project_dict
 
         def format_educations(educations):
-            _educations = []
+            formated_education_list = []
 
-            for edu in educations:
-                _edu = format_project(edu)
-                _edu.update(
-                    {
-                        "institution": edu.get("school")
-                        if edu.get("school")
-                        else "NaN",
-                        "degree": edu.get("title") if edu.get("title") else "NaN",
-                        "major": "NaN",
-                    }
-                )
+            for education_entity in educations:
+                formated_education = format_project(education_enity)
+                if education_entity.get("school") is None:
+                    formated_education["instituion"] = "NaN"
+                else:
+                    formated_education["institution"] = education_entity.get("school")
 
-                _educations.append(_edu)
+                if education_entity.get("title") is None:
+                    formated_education["degree"] = "Nan"
+                else:
+                    formated_education["degree"] = education_entity.get("title")
+                formated_education["major"] = "NaN"
 
-            return _educations
+                formated_education_list.append(formated_education)
+
+            return formated_education_list
 
         def format_experiences(experiences):
-            _experiences = []
+            formated_experience_list = []
 
             for exp in experiences:
-                _exp = format_project(exp)
-                _exp.update(
-                    {
-                        "title": exp["title"] if exp["title"] else "NaN",
-                        "company": exp["company"] if exp["company"] else "NaN",
-                    }
-                )
+                formated_exp = format_project(exp)
+                if exp["title"] is None:
+                    formated_exp["title"] = "NaN"
+                else:
+                    formated_exp["title"] = exp["title"]
+                if exp["company"] is None:
+                    formated_exp["company"] = "NaN"
+                else:
+                    formated_exp["company"] = exp["company"]
 
-                _experiences.append(_exp)
+                formated_experience_list.append(formated_exp)
 
-            return _experiences
+            return formated_experience_list
 
         info = profile["info"]
         smart_candidate = dict()
@@ -96,15 +112,30 @@ class SmartCandidate(ProfileDestinationAction, HTTPStream):
         smart_candidate["lastName"] = info["last_name"]
         smart_candidate["email"] = info["email"]
         smart_candidate["phoneNumber"] = info["phone"]
-        smart_candidate["location"] = dict(
-            country=xstr(info["location"]["fields"]["country"]),
-            countryCode="No",
-            region=xstr(info["location"]["fields"]["state"]),
-            regionCode="NaN",
-            city=xstr(info["location"]["fields"]["city"]),
-            lat=info["location"]["lat"] if info["location"]["lat"] else "NaN",
-            lng=info["location"]["lng"] if info["location"]["lng"] else "NaN",
-        )
+
+        if info["location"]["fields"] not in [
+            [],
+            None,
+        ]:  # check if fields is not an empty list
+            smart_candidate["location"] = dict(
+                country=value_or_empty(info["location"]["fields"].get("country", {})),
+                countryCode="NaN",
+                region=value_or_empty(info["location"]["fields"].get("state", {})),
+                regionCode="NaN",
+                city=value_or_empty(info["location"]["fields"].get("city", {})),
+                lat=info["location"]["lat"] if info["location"]["lat"] else "NaN",
+                lng=info["location"]["lng"] if info["location"]["lng"] else "NaN",
+            )
+        else:
+            smart_candidate["location"] = dict(
+                country="Not shown",
+                countryCode="NaN",
+                regionCode="Not shown",
+                City="Not shown",
+                lat="Nan",
+                lng="Nan",
+            )
+
         smart_candidate["web"] = dict(info["urls"])
         smart_candidate["tags"] = []
         smart_candidate["education"] = format_educations(profile.get("educations"))
