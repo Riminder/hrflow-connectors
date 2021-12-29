@@ -108,7 +108,7 @@ class CareerJobs(BoardAction):
                 f"Failed to get offers for '{self.job_search}` in `{self.job_location}`"
             )
             logger.error(e)
-            error_message = f"Could not find any jobs on the page, check that your search keys are valid!"
+            error_message = f"Could not find any jobs on the page, check that your search keys: `{self.job_search}`, `{self.job_location}` are valid!"
             raise Exception(error_message)
 
         # get the list of the links of job cards
