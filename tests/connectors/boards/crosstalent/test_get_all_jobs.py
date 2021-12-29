@@ -3,16 +3,13 @@ import json
 import pytest
 from hrflow import Hrflow
 
-import hrflow_connectors as hc
 from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
 from hrflow_connectors.connectors.boards.crosstalent.actions import GetAllJobs
 
-ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(hc.__file__), "../../"))
-
 
 @pytest.fixture
-def credentials():
-    with open(os.path.join(ROOT_PATH, "credentials.json"), "r") as f:
+def credentials(pytestconfig):
+    with open(os.path.join(pytestconfig.rootpath, "credentials.json"), "r") as f:
         credentials = json.loads(f.read())
     return credentials
 
