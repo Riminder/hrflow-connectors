@@ -5,10 +5,13 @@ from hrflow import Hrflow
 
 import hrflow_connectors as hc
 from hrflow_connectors.core.auth import SmartToken
-from hrflow_connectors.connectors.destinations.smartrecruiters.actions import SmartCandidate
+from hrflow_connectors.connectors.destinations.smartrecruiters.actions import (
+    SmartCandidate,
+)
 from hrflow_connectors.utils.hrflow import Profile, Source
 
 ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(hc.__file__), "../../"))
+
 
 @pytest.fixture
 def credentials():
@@ -16,12 +19,14 @@ def credentials():
         credentials = json.loads(f.read())
     return credentials
 
+
 @pytest.fixture
 def auth(credentials):
     auth = SmartToken(
         access_token=credentials["smartrecruiters"]["oauth2"]["X-SmartToken"]
     )
     return auth
+
 
 @pytest.fixture
 def hrflow_client(credentials):
@@ -37,8 +42,8 @@ def hrflow_client(credentials):
 def test_SmartCandidate(auth, hrflow_client):
 
     profile = Profile(
-        key="",
-        source=Source(key=""),
+        key="89ddf5f18768747011a06b8921607cb54a4274a5",
+        source=Source(key="6d68a20b2dd7c2bfdcb232b9234c38eada0fdcb4"),
     )
     action = SmartCandidate(
         auth=auth,
