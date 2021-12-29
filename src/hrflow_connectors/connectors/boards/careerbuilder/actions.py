@@ -91,14 +91,13 @@ class CareerJobs(BoardAction):
         search_key[1].send_keys(self.job_location)
         # click on the search button after sending our keys
         driver.find_element_by_class_name("submit-text").click()
-        # get all the jobcards available on the page
 
         try:  # In case there are more results than those shown so we need to load more jobs on the page
             driver.find_element_by_id("load_more_jobs").click()
 
         except NoSuchElementException:  # Except if the driver don't need to scroll down to get all jobs we pass
             pass
-        try: #get all job cards web elements
+        try: #get all job cards web elements available on the page
 
             jobs = driver.find_elements_by_xpath(
                 "//*[@class='data-results-content-parent relative']"
