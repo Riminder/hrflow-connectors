@@ -66,13 +66,13 @@ class SmartCandidate(ProfileDestinationAction, HTTPStream):
             )
             formated_project_dict["description"] = project["description"]
 
-            return formatted_project_dict
+            return formated_project_dict
 
         def format_educations(educations):
             formated_education_list = []
 
             for education_entity in educations:
-                formated_education = format_project(education_enity)
+                formated_education = format_project(education_entity)
                 if education_entity.get("school") is None:
                     formated_education["instituion"] = "NaN"
                 else:
