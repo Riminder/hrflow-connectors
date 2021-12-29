@@ -18,6 +18,22 @@ class NoAuth(Auth):
     pass
 
 
+class APIKeyAuth(Auth):
+    api_key: str
+
+    def update(
+        self,
+        params: Union[Dict[str, str], None] = None,
+        headers: Union[Dict[str, str], None] = None,
+        payload: Union[Dict[str, str], None] = None,
+        cookies: Union[Dict[str, str], None] = None,
+    ):
+        if headers is not None:
+            headers.update(
+                {"Authorization": self.api_key}
+            )
+
+
 class OAuth2PasswordCredentialsBody(Auth):
     access_token_url: str
     client_id: str
