@@ -1,6 +1,7 @@
 from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
 import itertools
+import requests
 
 from ....core.action import BoardAction
 from ....core.http import HTTPStream
@@ -61,14 +62,14 @@ class SmartJobs(HTTPStream, BoardAction):
             job_list = None
             while job_list != []:
                 self.params["pageId"] = next_page_id
-                logger.info(f"Get page of jobs : pageId=`{next_page_id}`")
                 response = self.send_request()
 
                 if response.status_code >= 400:
+                    logger.error(f"Fail to get page of jobs : pageId=`{next_page_id}`")
                     error_message = "Unable to pull the data ! Reason : `{}`"
                     raise ConnectionError(error_message.format(response.content))
 
-                logger.info(f"Success to get page of jobs : pageId=`{next_page_id}`")
+                logger.info(f"Get page of jobs : pageId=`{next_page_id}`")
                 response_json = response.json()
                 total_found = response_json["totalFound"]  # total jobs found
                 next_page_id = response_json["nextPageId"]
@@ -78,141 +79,161 @@ class SmartJobs(HTTPStream, BoardAction):
                 yield job_list
 
         # Chain all jobs of each page in an Iterator
-        all_chained_job_iter = itertools.chain.from_iterable(get_page())
+        chained_light_job_iter = itertools.chain.from_iterable(get_page())
 
-        return all_chained_job_iter
+        # `all_chained_job_iter` contains data-reduced jobs.
+        # This is a feature of the `GET /jobs` search request.
+        # We will retrieve all the information for each job by requesting it
+        # from SmartRecruiter `GET /jobs/{jobId}`.
+
+        def get_full_job(light_job_dict: Dict[str, Any]) -> Dict[str, Any]:
+            """
+            Get full job with all information available for the job  `light_job_dict`
+
+            This function use `id` in `light_job_dict` to send request to SmartRecuiter and
+            get all information of this job.
+
+            Args:
+                light_job_dict (Dict[str, Any]): light job
+
+            Returns:
+                Dict[str, Any]: full job
+            """
+            job_id = light_job_dict["id"]
+            hearders = dict()
+            self.auth.update(headers=hearders)
+            get_job_url = f"https://api.smartrecruiters.com/jobs/{job_id}"
+            response = requests.get(get_job_url, headers=hearders)
+
+            if response.status_code >= 400:
+                logger.error(f"Fail to get full job id=`{job_id}`")
+                error_message = f"Unable to pull the job id=`{job_id}` ! Reason : `{response.content}`"
+                raise ConnectionError(error_message)
+
+            logger.info(f"Get full job id=`{job_id}`")
+            return response.json()
+
+        chained_full_job_iter = map(get_full_job, chained_light_job_iter)
+
+        return chained_full_job_iter
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        `format`[generates a dictionary of a job attributes, for each job content data]
+        Format a job from SmartRecruiter job format to Hrflow job format
 
         Args:
-            data (Dict[str, Any]): [unique job offer content data yielded after the function `pull` is executed.]
+            data (Dict[str, Any]): Job offer
 
         Returns:
-            Dict[str, Any]: [a job in the HrFlow job object format]
+            Dict[str, Any]: Job in the HrFlow job object format
         """
         job = dict()
+
         # job Title
-        job["name"] = data.get("title")
+        job["name"] = data.get("title", "Undefined")
+
         # job Reference
         job["reference"] = data.get("refNumber")
+
         # job Url
         job["url"] = None
-        # creation date and -update- of the offer
+
+        # creation date and update date of the offer
         job["created_at"] = data.get("createdon")
         job["updated_at"] = data.get("updatedon")
-        job["summary"] = ""
+        job["summary"] = None
+
         # location
         lat = data.get("location", {}).get("latitude")
+        if lat is not None:
+            lat = float(lat)
+
         lng = data.get("location", {}).get("longitude")
+        if lng is not None:
+            lng = float(lng)
+
         location_field_list = ["country", "region", "city", "address"]
         location_field_name_list = []
         for field_name in location_field_list:
-            if data.get("location", "").get(field_name):
-                location_field_name_list.append(
-                    data.get("location", "").get(field_name)
-                )
+            field = data.get("location", {}).get(field_name)
+            if field is not None:
+                location_field_name_list.append(field)
 
         text = " ".join(location_field_name_list)
 
         job["location"] = dict(lat=lat, lng=lng, text=text)
+
         # job sections: descriptions and qualifications
-        companyDescription = (
-            data.get("jobAd", {})
-            .get("sections", {})
-            .get("companyDescription", {})
-            .get("text")
-        )
-        jobDescription = (
-            data.get("jobAd", {})
-            .get("sections", {})
-            .get("jobDescription", {})
-            .get("text")
-        )
-        qualification = (
-            data.get("jobAd", {})
-            .get("sections", {})
-            .get("qualifications", {})
-            .get("text")
-        )
-        additional_information = (
-            data.get("jobAd", {})
-            .get("sections", {})
-            .get("additionalInformation", {})
-            .get("text")
-        )
-        job["sections"] = [
-            dict(
-                name="smartrecruiters_company_description",
-                title="smartrecruiters_companyDescription",
-                description=companyDescription,
-            ),
-            dict(
-                name="smartrecruiters_job_description",
-                title="smartrecruiters_jobDescription",
-                description=jobDescription,
-            ),
-            dict(
-                name="smartrecruiters_qualifications",
-                title="smartrecruiters_qualifications",
-                description=qualification,
-            ),
-            dict(
-                name="smartrecruiters_additional_information",
-                title="smartrecruiters_additionalInformation",
-                description=additional_information,
-            ),
-        ]
+        job["sections"] = []
+        job_ad_section_list = data.get("jobAd", {}).get("sections", {})
+
+        def add_section(section_name: str):
+            """
+            Add section in Hrflow job
+
+            Args:
+                section_name (str): section name
+            """
+            name_prefix = "smartrecruiters_jobAd-sections"
+            job_ad_section = job_ad_section_list.get(section_name)
+            if job_ad_section is not None:
+                name = f"{name_prefix}-{section_name}"
+                title = job_ad_section.get("title")
+                description = job_ad_section.get("text")
+                section = dict(name=name, title=title, description=description)
+                job["sections"].append(section)
+
+        add_section("companyDescription")
+        add_section("jobDescription")
+        add_section("qualifications")
+        add_section("additionalInformation")
+
         # job tags
         status = data.get("status")
         posting_status = data.get("postingStatus")
-        job_uuid = data.get("id")
-        experience_level = data.get("experienceLevel", {}).get("id")
-        employmentType = data.get("typeOfEmployment", {}).get("id")
-        industry = data.get("industry", {}).get("id")
-        creator = data.get(
-            "creator",
-        )
-        function = data.get("function", {}).get("id")
-        department = data.get("department", {}).get("id")
+        job_id = data.get("id")
+        experience_level_id = data.get("experienceLevel", {}).get("id")
+        employmentType_id = data.get("typeOfEmployment", {}).get("id")
+        industry_id = data.get("industry", {}).get("id")
+        creator = data.get("creator", {})
+        function_id = data.get("function", {}).get("id")
+        department_id = data.get("department", {}).get("id")
         manual = data.get("location", {}).get("manual")
         remote = data.get("location", {}).get("remote")
-        eeo_category = data.get("eeoCategory", {}).get("id")
-        compensation = data.get("compensation", None)
+        eeo_category_id = data.get("eeoCategory", {}).get("id")
+        compensation = data.get("compensation", {})
         job["tags"] = [
             dict(name="smartrecruiters_status", value=status),
             dict(name="smartrecruiters_postingStatus", value=posting_status),
-            dict(name="job_uuid", value=job_uuid),
-            dict(name="smartrecruiters_experience_level", value=experience_level),
-            dict(name="type_of_employment", value=employmentType),
-            dict(name="smartrecruiters_compensation", value=compensation),
-            dict(name="smartrecruiters_industry", value=industry),
-            dict(name="smartrecruiters_creator", value=creator),
-            dict(name="smartrecruiters_function", value=function),
-            dict(name="smartrecruiters_department-id", value=department),
+            dict(name="smartrecruiters_id", value=job_id),
+            dict(name="smartrecruiters_experienceLevel-id", value=experience_level_id),
+            dict(name="smartrecruiters_typeOfEmployment-id", value=employmentType_id),
+            dict(
+                name="smartrecruiters_compensation-min", value=compensation.get("min")
+            ),
+            dict(
+                name="smartrecruiters_compensation-max", value=compensation.get("max")
+            ),
+            dict(
+                name="smartrecruiters_compensation-currency",
+                value=compensation.get("currency"),
+            ),
+            dict(name="smartrecruiters_industry-id", value=industry_id),
+            dict(
+                name="smartrecruiters_creator-firstName", value=creator.get("firstName")
+            ),
+            dict(
+                name="smartrecruiters_creator-lastName", value=creator.get("lastName")
+            ),
+            dict(name="smartrecruiters_function-id", value=function_id),
+            dict(name="smartrecruiters_department-id", value=department_id),
             dict(name="smartrecruiters_location-manual", value=manual),
-            dict(name="smartrecruiters_job-remote", value=remote),
-            dict(name="equal_employment_opportunity_category", value=eeo_category),
-        ]
-        # ranges of duration and salary
-        ranges_date = [
+            dict(name="smartrecruiters_location-remote", value=remote),
+            dict(name="smartrecruiters_eeoCategory-id", value=eeo_category_id),
             dict(
-                name="targetHiringDate",
-                value_min=None,
-                value_max=data.get("targetHiringDate"),
-            )
+                name="smartrecruiters_targetHiringDate",
+                value=data.get("targetHiringDate"),
+            ),
         ]
-        ranges_float = [
-            dict(
-                name="compensation",
-                value_min=data.get("compensation", {}).get("min"),
-                value_max=data.get("compensation", {}).get("max"),
-                unit=data.get("compensation", {}).get("currency"),
-            )
-        ]
-        job["metadatas"] = dict(
-            smartrecruiters_date=ranges_date, smartrecruiters_float=ranges_float
-        )
 
         return job
