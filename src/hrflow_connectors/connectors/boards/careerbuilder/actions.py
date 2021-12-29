@@ -98,7 +98,7 @@ class CareerJobs(BoardAction):
 
         except NoSuchElementException:  # Except if the driver don't need to scroll down to get all jobs we pass
             pass
-        try:
+        try: #get all job cards web elements
 
             jobs = driver.find_elements_by_xpath(
                 "//*[@class='data-results-content-parent relative']"
