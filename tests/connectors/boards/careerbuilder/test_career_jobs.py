@@ -27,7 +27,7 @@ def hrflow_client(credentials):
 
 def test_CareerJobs(hrflow_client):
     logger = get_logger_with_basic_config()
-    action = JobsBuilder(
+    action = CareerJobs(
         executable_path=ChromeDriverManager().install(),
         domain='fr',
         hrflow_client=hrflow_client("dev-demo"),
