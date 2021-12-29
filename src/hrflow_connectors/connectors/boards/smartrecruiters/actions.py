@@ -1,21 +1,37 @@
 from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
+import itertools
+
 from ....core.action import BoardAction
 from ....core.http import HTTPStream
 from ....core.auth import SmartToken
+from ....utils.logger import get_logger
+
+
+logger = get_logger()
 
 
 class SmartJobs(HTTPStream, BoardAction):
     auth: SmartToken
+    query: Optional[str] = Field(
+        None,
+        description="Full-text search query based on a job title; case insensitive; e.g. java developer",
+    )
     updated_after: Optional[str] = Field(
-        None, description="custom pulling of jobs only updated after a certain date"
+        None, description="ISO8601-formatted time boundaries for the job update time"
     )
-    offset: int = Field(
-        ...,
-        description="if offset is 0 and limit is 10 and `totalFound` resources are 130, our response will contain the first 10",
+    posting_status: Optional[str] = Field(
+        None,
+        description="Posting status of a job. Available values : PUBLIC, INTERNAL, NOT_PUBLISHED, PRIVATE",
     )
-    posting_status: str = Field("PUBLIC", description="Job offers availability")
-    limit: int = Field(..., description="see `offset` description")
+    job_status: Optional[str] = Field(
+        None,
+        description="Status of a job. Available values : CREATED, SOURCING, FILLED, INTERVIEW, OFFER, CANCELLED, ON_HOLD",
+    )
+    limit: int = Field(
+        10,
+        description="Number of elements to return per page. max value is 100. Default value : 10",
+    )
 
     @property
     def base_url(self):
@@ -27,34 +43,44 @@ class SmartJobs(HTTPStream, BoardAction):
 
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
-        `pull` [send tokenized requests to SmartRecruiters to pull job offers content]
+        Pull all jobs from SmartRecruiters
 
         Returns:
-            [jobs_content]: Iterator[Dict[str, Any] [a list of jobs content in json format]
+            Iterator[Dict[str, Any]]: an iterator of jobs
         """
-        jobs_content = []
+        # If param value is `None`, `requests` in `HTTPStream` ignores the param
+        self.params["q"] = self.query
+        self.params["updatedAfter"] = self.updated_after
         self.params["postingStatus"] = self.posting_status
+        self.params["status"] = self.job_status
         self.params["limit"] = self.limit
-        self.params["offset"] = self.offset
 
-        if self.updated_after:
-            self.params["updatedAfter"] = self.updated_after
+        # Define page generator
+        def get_page():
+            next_page_id = None
+            job_list = None
+            while job_list != []:
+                self.params["pageId"] = next_page_id
+                logger.info(f"Get page of jobs : pageId=`{next_page_id}`")
+                response = self.send_request()
 
-        response = self.send_request()
-        if response.status_code == 200:
+                if response.status_code >= 400:
+                    error_message = "Unable to pull the data ! Reason : `{}`"
+                    raise ConnectionError(error_message.format(response.content))
 
-            total_found = response.json()["totalFound"]  # total offers found
-            for i in range(self.offset, self.limit, total_found):
-                self.params.update({"offset": i})
-                response_update = self.send_request()
-                jobs_content = response_update.__dict__[
-                    "content"
-                ]  # get list of job offers contents
-                yield jobs_content
+                logger.info(f"Success to get page of jobs : pageId=`{next_page_id}`")
+                response_json = response.json()
+                total_found = response_json["totalFound"]  # total jobs found
+                next_page_id = response_json["nextPageId"]
+                job_list = response_json["content"]
+                job_number = len(job_list)
+                logger.info(f"{job_number} job(s) got. Total found : {total_found}")
+                yield job_list
 
-        else:
-            error_message = "Unable to pull the data ! Reason : `{}`"
-            raise ConnectionError(error_message.format(response.content))
+        # Chain all jobs of each page in an Iterator
+        all_chained_job_iter = itertools.chain.from_iterable(get_page())
+
+        return all_chained_job_iter
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -128,7 +154,9 @@ class SmartJobs(HTTPStream, BoardAction):
                 description=jobDescription,
             ),
             dict(
-                name="smartrecruiters_qualifications", title="smartrecruiters_qualifications", description=qualification
+                name="smartrecruiters_qualifications",
+                title="smartrecruiters_qualifications",
+                description=qualification,
             ),
             dict(
                 name="smartrecruiters_additional_information",
