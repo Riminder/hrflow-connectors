@@ -58,10 +58,12 @@ class CraigslistJobs(BoardAction):
 
     def pull(self) -> Iterator[str]:
         """
-        `pull`[The role of this function is to scrap and retrieve each job offer link for each job posted]
+        Pull job links
+        
+        The role of this function is to scrap and retrieve each job offer link for each job posted
 
         Returns:
-            Iterator[str]: [list of scrapped jobLinks]
+            Iterator[str]: list of scrapped job links
         """
         job_link_list = list()
         driver = self.Crawler
@@ -90,42 +92,62 @@ class CraigslistJobs(BoardAction):
 
     def format(self, job_link: str) -> Dict[str, Any]:
         """
-        `format`[generates a dictionary of a job attributes, for each job link the function scraps with selenium and parse useful attributes.]
+        Format job
+        
+        Generates a dictionary of a job attributes, for each job link the function scraps with selenium and parse useful attributes
 
         Args:
-            job_link (str): [job_link parsed after the function pull is executed. each job link is retrieved from the job_links_list scrapped in the pull function]
+            job_link (str): job link parsed after the function pull is executed
 
         Returns:
-            Dict[str, Any]: [a job in the HrFlow job object format]
+            Dict[str, Any]: Job in the HrFlow job object format
         """
         job = dict()
+
         driver = self.Crawler
         driver.get(job_link)
 
+        # job name
         job["name"] = driver.find_element_by_xpath("//*[@id='titletextonly']").text
-        m = search("7(.+?).html", job_link) #searching for a match to get the reference to the job
+
+        # job reference
+        # Searching for a match to get the reference to the job
+        m = search("7(.+?).html", job_link)
         if m is not None:
             job["reference"] = m.group(1)
+
+        # job url
         job["url"] = job_link
+
+        # job create_at
         job["created_at"] = (
             driver.find_elements_by_xpath("//*[@class='postinginfo reveal']")[0]
             .find_element_by_tag_name("time")
             .get_attribute("datetime")
         )
+
+        # job summary
         job["summary"] = None
+
+        # job location
         job["location"] = dict(text=self.subdomain, lat=None, lng=None)
+
+        # job sections
         job["sections"] = [
             dict(
-                name="description",
+                name="craigslist_description",
                 title="Description",
                 description=driver.find_element_by_xpath("//*[@id='postingbody']").text,
             )
         ]
+
+        # tags
         tags = driver.find_elements_by_tag_name("b")
         job["tags"] = [
             dict(name="craigslist_compensation", value=tags[0].text),
             dict(name="craigslist_employment_type", value=tags[1].text),
         ]
+        
         job["ranges_date"] = []
         job["ranges_float"] = []
         job["metadatas"] = []
