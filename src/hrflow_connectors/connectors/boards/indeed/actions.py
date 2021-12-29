@@ -174,14 +174,7 @@ class IndeedFeed(BoardAction):
         job["created_at"] = None
         job["updated_at"] = None
         # location
-        try:
-            location = driver.find_element_by_xpath(
-                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[3]/div[1]/div[2]/div/div/div[2]"
-            ).text
-        except NoSuchElementException:
-            location = driver.find_element_by_xpath(
-                "/html/body/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div[2]/div/div/div[2]"
-            ).text
+        location = driver.find_element_by_class_name("jobsearch-DesktopStickyContainer-subtitle").text.split('\n')[2]
         job["location"] = dict(text=location, lat=None, lng=None)
         # url
         job["url"] = job_link
