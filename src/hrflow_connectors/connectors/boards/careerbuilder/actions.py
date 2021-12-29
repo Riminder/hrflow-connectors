@@ -8,7 +8,7 @@ from ....utils.logger import get_logger
 logger = get_logger()
 
 
-class JobsBuilder(BoardAction):
+class CareerJobs(BoardAction):
 
     domain: str = Field(
         ...,

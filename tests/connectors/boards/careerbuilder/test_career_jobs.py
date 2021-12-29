@@ -3,7 +3,7 @@ import json
 import pytest
 from hrflow import Hrflow
 import hrflow_connectors as hc
-from hrflow_connectors.connectors.boards.careerbuilder.actions import JobsBuilder
+from hrflow_connectors.connectors.boards.careerbuilder.actions import CareerJobs
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 #adding web driver manager as a DEV dependency to make testing easier for users
 from webdriver_manager.chrome import ChromeDriverManager
@@ -25,7 +25,7 @@ def hrflow_client(credentials):
 
     return hrflow_client_func
 
-def test_JobsBuilder(hrflow_client):
+def test_CareerJobs(hrflow_client):
     logger = get_logger_with_basic_config()
     action = JobsBuilder(
         executable_path=ChromeDriverManager().install(),
