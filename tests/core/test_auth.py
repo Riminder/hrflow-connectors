@@ -1,6 +1,6 @@
 import responses
-
-from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
+import pytest
+from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody, SmartToken
 
 OAuth2PasswordCredentialsBody_JSON_RESPONSE = {
     "access_token": "ABC.TOKEN.EFD",
@@ -55,3 +55,14 @@ def test_OAuth2PasswordCredentialsBody_get_access_token():
 
     assert headers.get("test") == "abc"
     assert headers.get("Authorization") == "OAuth {}".format(access_token)
+
+
+def test_SmartToken():
+    auth = SmartToken(access_token="abc")
+    assert auth.get_access_token() == "abc"
+
+    headers = dict(test="smart")
+    auth.update(headers=headers)
+    assert headers == {"test":"smart", "X-SmartToken":"abc"}
+
+    
