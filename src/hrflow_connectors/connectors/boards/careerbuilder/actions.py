@@ -2,10 +2,10 @@ from typing import Dict, Any, Iterator, Optional
 from ....core.action import BoardAction
 from pydantic import Field
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, WebDriverException
 from ....utils.logger import get_logger
 
-logger = "get_logger()"
+logger = get_logger()
 
 
 class JobsBuilder(BoardAction):
@@ -75,7 +75,14 @@ class JobsBuilder(BoardAction):
         """
         job_link_list = []
         driver = self.Crawler
-        driver.get(self.base_url)
+        try:
+            logger.info(f"Crawler get page : url=`{self.base_url}`")
+            driver.get(self.base_url)
+        except WebDriverException as e:
+            logger.error(f"Failed to get page : url=`{self.base_url}`")
+            logger.error(e)
+            error_message = f"This website in not available, check if `carrerbuilder.{self.domain}` is a valid domain"
+            raise ConnectionError(error_message)
         # search job search and job location cases
         search_key = driver.find_elements_by_class_name(
             "autocomplete-accessibility-input"
@@ -85,6 +92,12 @@ class JobsBuilder(BoardAction):
         # click on the search button after sending our keys
         driver.find_element_by_class_name("submit-text").click()
         # get all the jobcards available on the page
+
+        try:  # In case there are more results than those shown so we need to load more jobs on the page
+            driver.find_element_by_id("load_more_jobs").click()
+
+        except NoSuchElementException:  # Except if the driver don't need to scroll down to get all jobs we pass
+            pass
         try:
 
             jobs = driver.find_elements_by_xpath(
@@ -116,7 +129,7 @@ class JobsBuilder(BoardAction):
             Dict[str, Any]: a job in the HrFlow job object format
         """
         job = dict()
-
+        logger.info(f"Format job : {job_link}")
         driver = self.Crawler
         driver.get(job_link)
 
