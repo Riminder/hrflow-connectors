@@ -34,7 +34,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 
 ## List of Connectors
 - **ADP** (soon)
-- **Craigslist** (soon)
+- **Craigslist** : [`CraigslistJobs`](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/boards/craigslist/)
 - **Careerbuilder** (soon)
 - **Cegid(Meta4)** (soon)
 - **Ceridian** (soon)
