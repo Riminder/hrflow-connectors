@@ -5,6 +5,7 @@ from hrflow import Hrflow
 import hrflow_connectors as hc
 from hrflow_connectors.core.auth import SmartToken
 from hrflow_connectors.connectors.boards.smartrecruiters.actions import SmartJobs
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(hc.__file__), "../../"))
 
@@ -42,14 +43,14 @@ def test_Auth(auth):
 
 
 def test_SmartJobs(auth, hrflow_client):
+    logger = get_logger_with_basic_config()
     action = SmartJobs(
         auth=auth,
         hrflow_client=hrflow_client("dev-demo"),
-        offset=0,
         limit=2,
         board_key="8ebdea98768dfc04d15f76afab70415ed280ea90",
-        hydrate_with_parsing=True,
+        hydrate_with_parsing=False,
         archive_deleted_jobs_from_stream=False,
+        posting_status="PUBLIC"
     )
-
     action.execute()
