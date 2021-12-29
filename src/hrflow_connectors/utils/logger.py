@@ -7,6 +7,7 @@ LOGGER_NAME = "hrflow_connectors"
 def get_logger() -> logging.Logger:
     """
     Get logger with `NullHandler` by default
+    
     Returns:
         logging.Logger: logger
     """

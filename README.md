@@ -49,7 +49,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 - **Oracle** (soon)
 - **SAP Successfactors** (soon)
 - **Salesforce** (soon)
-- **Smartrecruiters** (soon)
+- **Smartrecruiters** : [`SmartJobs`](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/boards/smartrecruiters/)
 - **Staffme** (soon)
 - **Talentsoft** (soon)
 - **Twilio** (soon)
