@@ -1,9 +1,14 @@
+from logging import log
 import requests
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any, Union, TypeVar
 
 
 from .auth import Auth, NoAuth
+from ..utils.logger import get_logger
+
+
+logger = get_logger()
 
 
 class HTTPStream(BaseModel):
@@ -61,29 +66,42 @@ class HTTPStream(BaseModel):
                 return value
 
     def send_request(self) -> requests.Response:
+        """
+        Send a HTTP request
+
+        Returns:
+            requests.Response: request response
+        """
         if self.base_url is None:
+            logger.error("Base URL `base_url` (property function) is not defined !")
             raise ConnectionError(
                 "Base URL `base_url` (property function) is not defined !"
             )
 
         # Build the request
         url = self.base_url + self.path()
+        logger.debug(f"URL use in HTTPStream : `{url}`")
+
+        logger.debug("Preparing request...")
+        logger.debug("Preparing request params")
         self.build_request_params()
+        logger.debug("Preparing request headers")
         self.build_request_headers()
+        logger.debug("Preparing request payload")
         self.build_request_payload()
+        logger.debug("Preparing request cookies")
         self.build_request_cookies()
+        logger.debug("The request has been prepared")
 
         # Add the auth property in the different sections
+        logger.debug("Adding auth properties in the different request fields...")
         self.auth.update(
             params=self.params,
             headers=self.headers,
             cookies=self.cookies,
             payload=self.payload,
         )
-
-        payload = self.payload
-        if payload == dict():
-            payload = None
+        logger.debug("Auth properties have been added in the request fields")
 
         params = dict()
         params["method"] = self.http_method
@@ -92,6 +110,8 @@ class HTTPStream(BaseModel):
         params["headers"] = self.headers
         params["cookies"] = self.cookies
 
+        logger.debug(f"A `{self.http_method}` request will be sent to this URL `{url}`")
+
         # Check if request is a JSON application
         content_type = self.get_content_type()
         if (
@@ -99,8 +119,11 @@ class HTTPStream(BaseModel):
             and "application/json" in content_type.lower()
             and isinstance(self.payload, dict)
         ):
+            logger.debug("The payload has been detected as JSON")
             params["json"] = self.payload
         else:
+            logger.debug("The payload has been detected as String or Dataform")
             params["data"] = self.payload
 
+        logger.debug("Sending the request now")
         return requests.request(**params)
