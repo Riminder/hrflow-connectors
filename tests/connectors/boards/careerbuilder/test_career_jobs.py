@@ -8,10 +8,9 @@ from hrflow_connectors.utils.logger import get_logger_with_basic_config
 #adding web driver manager as a DEV dependency to make testing easier for users
 from webdriver_manager.chrome import ChromeDriverManager
 
-ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(hc.__file__), "../../"))
 @pytest.fixture
-def credentials():
-    with open(os.path.join(ROOT_PATH, "credentials.json"), "r") as f:
+def credentials(pytestconfig):
+    with open(os.path.join(pytestconfig.rootpath, "credentials.json"), "r") as f:
         credentials = json.loads(f.read())
     return credentials
 
