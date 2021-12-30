@@ -19,10 +19,13 @@ def credentials(pytestconfig):
 
 @pytest.fixture
 def hrflow_client(credentials):
-    x_api_key = credentials["hrflow"]["x-api-key"]
-    x_user_email = credentials["hrflow"]["x-user-email"]
-    client = Hrflow(api_secret=x_api_key, api_user=x_user_email)
-    return client
+    def hrflow_client_func(portal_name="dev-demo"):
+        x_api_key = credentials["hrflow"][portal_name]["x-api-key"]
+        x_user_email = credentials["hrflow"][portal_name]["x-user-email"]
+        client = Hrflow(api_secret=x_api_key, api_user=x_user_email)
+        return client
+
+    return hrflow_client_func
 
 
 def test_IndeedFeed(hrflow_client):
@@ -31,7 +34,7 @@ def test_IndeedFeed(hrflow_client):
         executable_path=ChromeDriverManager().install(),
         max_page=2,
         subdomain="fr",
-        hrflow_client=hrflow_client,
+        hrflow_client=hrflow_client("dev-demo"),
         job_search="Software Engineer",
         job_location="Paris",
         board_key="5865a71e45b94e29f7c1c97d71479ef2757df414",
