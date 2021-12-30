@@ -4,6 +4,7 @@ import pytest
 from hrflow import Hrflow
 
 from hrflow_connectors.connectors.boards.indeed.actions import IndeedFeed
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 # Adding web driver manager as a DEV dependency to make testing easier for users
 from webdriver_manager.chrome import ChromeDriverManager
@@ -25,6 +26,7 @@ def hrflow_client(credentials):
 
 
 def test_IndeedFeed(hrflow_client):
+    logger = get_logger_with_basic_config()
     action = IndeedFeed(
         executable_path=ChromeDriverManager().install(),
         max_page=2,
@@ -33,6 +35,6 @@ def test_IndeedFeed(hrflow_client):
         job_search="Software Engineer",
         job_location="Paris",
         board_key="5865a71e45b94e29f7c1c97d71479ef2757df414",
-        hydrate_with_parsing=True
+        hydrate_with_parsing=True,
     )
     action.execute()

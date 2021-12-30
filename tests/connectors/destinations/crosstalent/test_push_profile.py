@@ -6,6 +6,7 @@ from hrflow import Hrflow
 from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
 from hrflow_connectors.connectors.destinations.crosstalent.actions import PushProfile
 from hrflow_connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 
 @pytest.fixture
@@ -41,7 +42,7 @@ def hrflow_client(credentials):
 
 
 def test_PushProfile(auth, hrflow_client):
-
+    logger = get_logger_with_basic_config()
     profile = Profile(
         key="ea5704b959c5e53aaef65c04ef5018ae1fee1a77",
         source=Source(key="15517d70b0870e4cf431eefd78f8b39cff5607e8"),
