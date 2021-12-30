@@ -36,6 +36,5 @@ def test_CraigslistJobs(hrflow_client):
         hrflow_client=hrflow_client("dev-demo"),
         board_key="fc197c369ed9a8d35041961b268076885b2ea6f2",
         hydrate_with_parsing=True,
-        archive_deleted_jobs_from_stream=False,
     )
     action.execute()

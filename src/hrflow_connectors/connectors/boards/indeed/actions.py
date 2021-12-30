@@ -12,7 +12,7 @@ from selenium.common.exceptions import NoSuchElementException
 
 
 class IndeedFeed(BoardAction):
-
+    archive_deleted_jobs_from_stream: bool = False
     subdomain: str = Field(
         ...,
         description="Subdomain just before 'indeed.com' for example subdomain ='fr' in 'https:/fr.indeed.com ",
@@ -174,7 +174,9 @@ class IndeedFeed(BoardAction):
         job["created_at"] = None
         job["updated_at"] = None
         # location
-        location = driver.find_element_by_class_name("jobsearch-DesktopStickyContainer-subtitle").text.split('\n')[2]
+        location = driver.find_element_by_class_name(
+            "jobsearch-DesktopStickyContainer-subtitle"
+        ).text.split("\n")[2]
         job["location"] = dict(text=location, lat=None, lng=None)
         # url
         job["url"] = job_link
