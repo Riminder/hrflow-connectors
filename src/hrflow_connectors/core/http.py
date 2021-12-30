@@ -6,9 +6,6 @@ from typing import Optional, Dict, Any, Union, TypeVar
 from .auth import Auth, NoAuth
 
 
-Session = TypeVar("Session")
-
-
 class HTTPStream(BaseModel):
     """
     HTTPStream
@@ -20,7 +17,6 @@ class HTTPStream(BaseModel):
 
     auth: Auth = NoAuth()
 
-    session: Session = requests.Session()
     params: Dict[str, str] = dict()
     headers: Dict[str, str] = dict()
     payload: Union[None, str, Dict[str, Any]] = None
@@ -107,4 +103,4 @@ class HTTPStream(BaseModel):
         else:
             params["data"] = self.payload
 
-        return self.session.request(**params)
+        return requests.request(**params)
