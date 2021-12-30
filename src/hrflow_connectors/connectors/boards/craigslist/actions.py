@@ -53,6 +53,7 @@ class CraigslistJobs(BoardAction):
         chrome_options.add_argument("--ignore-certificate-errors")
 
         if self.binary_location is not None:
+            logger.info(f"Chrome binary location : {self.binary_location}")
             chrome_options.binary_location = self.binary_location
 
         if self.executable_path is None:
@@ -125,9 +126,12 @@ class CraigslistJobs(BoardAction):
         """
         job = dict()
 
-        logger.info(f"Format job : {job_link}")
+        logger.debug("Extracting job from a web page")
         driver = self.Crawler
+
+        logger.debug(f"Crawler go to `{job_link}`")
         driver.get(job_link)
+        logger.debug(f"Scraping the web page...")
 
         # job name
         job["name"] = driver.find_element_by_xpath("//*[@id='titletextonly']").text
@@ -174,4 +178,5 @@ class CraigslistJobs(BoardAction):
         job["ranges_float"] = []
         job["metadatas"] = []
 
+        logger.debug(f"The web page has been scraped")
         return job
