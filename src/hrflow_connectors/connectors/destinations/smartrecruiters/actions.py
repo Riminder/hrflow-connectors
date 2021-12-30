@@ -48,7 +48,7 @@ class SmartCandidate(ProfileDestinationAction, HTTPStream):
             # start date
             start_datetime_str = project.get("date_start")
             if start_datetime_str is None:
-                start_date = "1980-01-01"
+                start_date = "XXXX"
             else:
                 start_date = start_datetime_str.split("T")[0]
 
@@ -56,7 +56,7 @@ class SmartCandidate(ProfileDestinationAction, HTTPStream):
 
             end_datetime_str = project.get("date_end")
             if end_datetime_str is None:
-                end_date = "2100-01-01"
+                end_date = "XXXX"
             else:
                 end_date = end_datetime_str.split("T")[0]
 
