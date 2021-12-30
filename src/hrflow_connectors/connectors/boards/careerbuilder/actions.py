@@ -107,7 +107,7 @@ class CareerJobs(BoardAction):
         ):  # Except if the driver don't need to scroll down to get all jobs we pass
             pass
         try:  # get all job cards web elements available on the page
-            logger.info("Getting all jobs cards")
+            logger.info("Getting all job cards")
             jobs = driver.find_elements_by_xpath(
                 "//*[@class='data-results-content-parent relative']"
             )
@@ -158,9 +158,7 @@ class CareerJobs(BoardAction):
         location = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[1].text
         job["location"] = dict(text=location, lat=None, lng=None)
         # JobType
-        employment_type = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[
-            2
-        ].text
+        employment_type = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[2].text
         # salary
         salary = driver.find_element_by_xpath('//*[@id="cb-salcom-info"]/div').text
         job["tags"] = [
