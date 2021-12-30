@@ -2,7 +2,11 @@ from typing import Dict, Any, Iterator, Optional
 from ....core.action import BoardAction
 from pydantic import Field
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, WebDriverException, ElementClickInterceptedException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    WebDriverException,
+    ElementClickInterceptedException,
+)
 from ....utils.logger import get_logger
 
 logger = get_logger()
@@ -14,18 +18,15 @@ class CareerJobs(BoardAction):
         ...,
         description="domain just after `https://www.careerbuilder.` for example domain = `fr` in `https://www.careerbuilder.fr`",
     )
-
     job_search: str = Field(
         ...,
         description="Name of the job position we want to search offers for in 'careerbuilder'",
     )
     job_location: str = Field(..., description="Location of the job offers")
-
     executable_path: Optional[str] = Field(
         None,
         description="A separate executable that Selenium WebDriver used to control Chrome. Make sure you install the chromedriver with the same version as your local Chrome navigator",
     )
-
     binary_location: Optional[str] = Field(
         None,
         description="Location of the binary chromium, usually in HrFlow workflows it equals `/opt/bin/headless-chromium`",
@@ -54,11 +55,13 @@ class CareerJobs(BoardAction):
         chrome_options.add_argument("--ignore-certificate-errors")
 
         if self.binary_location is not None:
+            logger.info(f"Chrome binary location : {self.binary_location}")
             chrome_options.binary_location = self.binary_location
 
         if self.executable_path is None:
             driver = webdriver.Chrome(chrome_options)
         else:
+            logger.info(f"Webdriver executable path : {self.executable_path}")
             driver = webdriver.Chrome(
                 executable_path=self.executable_path, chrome_options=chrome_options
             )
@@ -71,9 +74,7 @@ class CareerJobs(BoardAction):
 
         Returns:
           Iterator[str]:  list of scrapped job links
-
         """
-        job_link_list = []
         driver = self.Crawler
         try:
             logger.info(f"Crawler get page : url=`{self.base_url}`")
@@ -87,18 +88,26 @@ class CareerJobs(BoardAction):
         search_key = driver.find_elements_by_class_name(
             "autocomplete-accessibility-input"
         )
+        logger.info(f"Crawler send a query `{self.job_search}`")
         search_key[0].send_keys(self.job_search)
+        logger.info(f"Crawler send a query `{self.job_location}`")
         search_key[1].send_keys(self.job_location)
         # click on the search button after sending our keys
         driver.find_element_by_class_name("submit-text").click()
 
         try:  # In case there are more results than those shown so we need to load more jobs on the page
-            driver.find_element_by_class_name('btn-clear-blue').click()
+            logger.info(
+                "Crawler loading more jobs if there are more results than shown initially"
+            )
+            driver.find_element_by_class_name("btn-clear-blue").click()
 
-        except (NoSuchElementException, ElementClickInterceptedException):  # Except if the driver don't need to scroll down to get all jobs we pass
+        except (
+            NoSuchElementException,
+            ElementClickInterceptedException,
+        ):  # Except if the driver don't need to scroll down to get all jobs we pass
             pass
-        try: #get all job cards web elements available on the page
-
+        try:  # get all job cards web elements available on the page
+            logger.info("Getting all jobs cards")
             jobs = driver.find_elements_by_xpath(
                 "//*[@class='data-results-content-parent relative']"
             )
@@ -110,10 +119,18 @@ class CareerJobs(BoardAction):
             error_message = f"Could not find any matching jobs on the page, check that your search keys: `{self.job_search}`, `{self.job_location}` are valid!"
             raise Exception(error_message)
 
+        elements_count = len(jobs)
+        logger.info(
+            logger.info(f"Number of jobs found on this page : {elements_count}")
+        )
         # get the list of the links of job cards
+        logger.info("Getting list of job links")
         job_link_list = [
             job.find_element_by_tag_name("a").get_attribute("href") for job in jobs
         ]
+
+        job_link_count = len(job_link_list)
+        logger.info(f"Number of total job links found : {job_link_count}")
         return job_link_list
 
     def format(self, job_link: str) -> Dict[str, Any]:
@@ -127,9 +144,12 @@ class CareerJobs(BoardAction):
             Dict[str, Any]: a job in the HrFlow job object format
         """
         job = dict()
-        logger.info(f"Format job : {job_link}")
+
+        logger.debug("Extracting job from its link web page")
         driver = self.Crawler
+        logger.debug(f"Crawling `{job_link}`")
         driver.get(job_link)
+        logger.debug(f"Scraping the web page...")
 
         job["url"] = job_link
         # name
@@ -138,7 +158,9 @@ class CareerJobs(BoardAction):
         location = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[1].text
         job["location"] = dict(text=location, lat=None, lng=None)
         # JobType
-        employment_type = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[2].text
+        employment_type = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[
+            2
+        ].text
         # salary
         salary = driver.find_element_by_xpath('//*[@id="cb-salcom-info"]/div').text
         job["tags"] = [
@@ -158,4 +180,5 @@ class CareerJobs(BoardAction):
         job["reference"] = None
         job["metadata"] = []
         driver.quit()
+        logger.debug(f"The web page has been scraped")
         return job
