@@ -5,6 +5,7 @@ from hrflow import Hrflow
 
 from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
 from hrflow_connectors.connectors.boards.crosstalent.actions import GetAllJobs
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 
 @pytest.fixture
@@ -46,11 +47,12 @@ def test_Auth(auth):
 
 
 def test_GetAllJobs(auth, hrflow_client):
+    logger = get_logger_with_basic_config()
     action = GetAllJobs(
         auth=auth,
         subdomain="vulcain-eng--recette.my",
         hrflow_client=hrflow_client("dev-demo"),
         board_key="8eba188e1af123a9818d00974ff37b943b7d54f4",
-        hydrate_with_parsing=True,
+        hydrate_with_parsing=False,
     )
     action.execute()

@@ -6,6 +6,7 @@ from hrflow import Hrflow
 from hrflow_connectors.core.auth import APIKeyAuth
 from hrflow_connectors.connectors.destinations.flatchr.actions import PushProfile
 from hrflow_connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 
 @pytest.fixture
@@ -33,7 +34,7 @@ def hrflow_client(credentials):
 
 
 def test_PushProfile(auth, hrflow_client):
-
+    logger = get_logger_with_basic_config()
     profile = Profile(
         key="5746beca5e941a5a55706efd9adfce31f59e6e2b",
         source=Source(key="d42eed17626b7ae3dc05efca363788caef91d44b"),

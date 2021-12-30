@@ -1,5 +1,6 @@
 from hrflow_connectors.connectors.boards.xml.actions import XMLBoardAction
 from hrflow_connectors.utils.datetime_converter import from_str_to_datetime
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 import os
 import json
@@ -146,6 +147,8 @@ def test_get_all_jobs_from_samsic_xml_stream(hrflow_client):
 
     xml_stream_url = "https://cv.samsic-emploi.fr/media/flux/jobs.xml"
     job_list_xpath = "DataArea"
+
+    logger = get_logger_with_basic_config()
 
     action = XMLBoardAction(
         xml_stream_url=xml_stream_url,
