@@ -2,7 +2,7 @@ from typing import Dict, Any, Iterator, Optional
 from ....core.action import BoardAction
 from pydantic import Field
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, WebDriverException
+from selenium.common.exceptions import NoSuchElementException, WebDriverException, ElementClickInterceptedException
 from ....utils.logger import get_logger
 
 logger = get_logger()
@@ -93,9 +93,9 @@ class CareerJobs(BoardAction):
         driver.find_element_by_class_name("submit-text").click()
 
         try:  # In case there are more results than those shown so we need to load more jobs on the page
-            driver.find_element_by_id("load_more_jobs").click()
+            driver.find_element_by_class_name('btn-clear-blue').click()
 
-        except NoSuchElementException:  # Except if the driver don't need to scroll down to get all jobs we pass
+        except (NoSuchElementException, ElementClickInterceptedException):  # Except if the driver don't need to scroll down to get all jobs we pass
             pass
         try: #get all job cards web elements available on the page
 
