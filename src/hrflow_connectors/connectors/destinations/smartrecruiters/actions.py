@@ -48,19 +48,19 @@ class SmartCandidate(ProfileDestinationAction, HTTPStream):
             # start date
             start_datetime_str = project.get("date_start")
             if start_datetime_str is None:
-                start_date_str = "NaN"
+                start_date = "1980-01-01"
             else:
-                start_date_str = start_datetime_str.split()[0]
+                start_date = start_datetime_str.split("T")[0]
 
-            formated_project_dict["startDate"] = start_date_str
+            formated_project_dict["startDate"] = start_date
 
             end_datetime_str = project.get("date_end")
             if end_datetime_str is None:
-                end_date_str = "NaN"
+                end_date = "2100-01-01"
             else:
-                end_date_str = end_datetime_str.split()[0]
+                end_date = end_datetime_str.split("T")[0]
 
-            formated_project_dict["endDate"] = end_date_str
+            formated_project_dict["endDate"] = end_date
             formated_project_dict["location"] = value_or_empty(
                 project["location"]["text"]
             )
@@ -119,21 +119,21 @@ class SmartCandidate(ProfileDestinationAction, HTTPStream):
         ]:  # check if fields is not an empty list
             smart_candidate["location"] = dict(
                 country=value_or_empty(info["location"]["fields"].get("country", {})),
-                countryCode="NaN",
+                countryCode="No",
                 region=value_or_empty(info["location"]["fields"].get("state", {})),
                 regionCode="NaN",
                 city=value_or_empty(info["location"]["fields"].get("city", {})),
-                lat=info["location"]["lat"] if info["location"]["lat"] else "NaN",
-                lng=info["location"]["lng"] if info["location"]["lng"] else "NaN",
+                lat=info["location"]["lat"] if info["location"]["lat"] else 0,
+                lng=info["location"]["lng"] if info["location"]["lng"] else 0,
             )
         else:
             smart_candidate["location"] = dict(
                 country="Not shown",
-                countryCode="NaN",
+                countryCode="NO",
                 regionCode="Not shown",
                 City="Not shown",
-                lat="Nan",
-                lng="Nan",
+                lat=0,
+                lng=0,
             )
 
         smart_candidate["web"] = dict(info["urls"])
