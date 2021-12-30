@@ -3,26 +3,21 @@ import json
 import pytest
 from hrflow import Hrflow
 
-import hrflow_connectors as hc
 from hrflow_connectors.core.auth import APIKeyAuth
 from hrflow_connectors.connectors.destinations.flatchr.actions import PushProfile
 from hrflow_connectors.utils.hrflow import Profile, Source
 
-ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(hc.__file__), "../../"))
-
 
 @pytest.fixture
-def credentials():
-    with open(os.path.join(ROOT_PATH, "credentials.json"), "r") as f:
+def credentials(pytestconfig):
+    with open(os.path.join(pytestconfig.rootpath, "credentials.json"), "r") as f:
         credentials = json.loads(f.read())
     return credentials
 
 
 @pytest.fixture
 def auth(credentials):
-    auth = APIKeyAuth(
-        api_key=credentials["flatchr"]["x-api-key"]
-    )
+    auth = APIKeyAuth(api_key=credentials["flatchr"]["x-api-key"])
     return auth
 
 
