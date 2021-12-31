@@ -523,8 +523,8 @@ class BoardAction(Action):
 
 
 class ProfileDestinationAction(Action):
-    hrflow_client: Hrflow
-    profile: Profile
+    hrflow_client: Hrflow = Field(..., description="Hrflow client instance used to communicate with the Hrflow.ai API")
+    profile: Profile = Field(..., description="Profile to push")
 
     def pull(self) -> Iterator[TalentDataType]:
         """
