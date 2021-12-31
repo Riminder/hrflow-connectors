@@ -4,6 +4,12 @@ from pydantic import BaseModel, Field
 
 
 class Auth(BaseModel):
+    """
+    Auth
+
+    This generic class will propose a common interface to all Auth
+    """
+
     def update(
         self,
         params: Union[Dict[str, str], None] = None,
@@ -11,21 +17,48 @@ class Auth(BaseModel):
         payload: Union[Dict[str, str], None] = None,
         cookies: Union[Dict[str, str], None] = None,
     ):
+        """
+        Updating fields with authentication information
+
+        This class is responsible for placing the credentials in the right places
+
+        Args:
+            params (Union[Dict[str, str], None], optional): Params field. Defaults to None.
+            headers (Union[Dict[str, str], None], optional): Headers field. Defaults to None.
+            payload (Union[Dict[str, str], None], optional): Payload field. Defaults to None.
+            cookies (Union[Dict[str, str], None], optional): Cookies field. Defaults to None.
+        """
         pass
 
 
 class NoAuth(Auth):
+    """
+    No Auth
+
+    To be used if a class does not require authentication
+    """
+
     pass
 
 
 class OAuth2PasswordCredentialsBody(Auth):
+    """
+    OAuth2 by using a password and adding credentials in the body of the request used to get the "access token".
+    """
+
     access_token_url: str
     client_id: str
     client_secret: str
     username: str
     password: str
 
-    def get_access_token(self):
+    def get_access_token(self) -> str:
+        """
+        Get access token
+
+        Returns:
+            str: Access token
+        """
         payload = dict()
         payload["grant_type"] = "password"
         payload["client_id"] = self.client_id
