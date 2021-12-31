@@ -3,7 +3,7 @@ import json
 import pytest
 from hrflow import Hrflow
 
-from hrflow_connectors.connectors.boards.craigslist.actions import CraigslistJobs
+from hrflow_connectors.connectors.boards.craigslist.actions import CraigslistFeed
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 # Adding web driver manager as a DEV dependency to make testing easier for users
@@ -30,7 +30,7 @@ def hrflow_client(credentials):
 
 def test_CraigslistJobs(hrflow_client):
     logger = get_logger_with_basic_config()
-    action = CraigslistJobs(
+    action = CraigslistFeed(
         executable_path=ChromeDriverManager().install(),
         subdomain="Paris",
         hrflow_client=hrflow_client("dev-demo"),
