@@ -21,11 +21,11 @@ class IndeedFeed(BoardAction):
     archive_deleted_jobs_from_stream: bool = False
     subdomain: str = Field(
         ...,
-        description="Subdomain just before 'indeed.com' for example subdomain ='fr' in 'https:/fr.indeed.com ",
+        description="Subdomain just before `indeed.com` for example subdomain =`fr` in `https:/fr.indeed.com`",
     )
     job_search: str = Field(
         ...,
-        description="Name of the job position we want to search offers in 'fr.indeed.com'",
+        description="Name of the job position we want to search offers in `fr.indeed.com`",
     )
     job_location: str = Field(..., description="Location of the job offers")
 
@@ -40,7 +40,7 @@ class IndeedFeed(BoardAction):
     )
 
     max_page: Optional[int] = Field(
-        None, description="maximum number of pages to search"
+        None, description="Maximum number of pages to search"
     )
 
     job_per_page: int = Field(15, const=True)
