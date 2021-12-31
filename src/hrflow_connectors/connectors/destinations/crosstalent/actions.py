@@ -38,9 +38,3 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
             raise RuntimeError(
                 "Push profile to Crosstalent failed : `{}`".format(response.content)
             )
-
-    def execute(self):
-        super().execute()
-        return generate_workflow_response(
-            status_code=201, message="Profile successfully pushed"
-        )
