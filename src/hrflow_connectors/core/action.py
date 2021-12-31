@@ -1,6 +1,7 @@
 import logging
 from ..utils.clean_text import remove_html_tags
 from ..utils.hrflow import find_element_in_list, Profile
+from ..utils.hrflow import generate_workflow_response
 from ..utils.logger import get_logger
 
 from pydantic import BaseModel, Field
@@ -534,3 +535,9 @@ class ProfileDestinationAction(Action):
 
         profile = response["data"]
         return [profile]
+
+    def execute(self):
+        super().execute()
+        return generate_workflow_response(
+            status_code=201, message="Profile successfully pushed"
+        )
