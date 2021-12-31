@@ -12,7 +12,6 @@ from selenium.common.exceptions import (
 )
 
 
-
 logger = get_logger()
 
 
@@ -38,6 +37,10 @@ class CareerJobs(BoardAction):
     maximum_page_num: Optional[int] = Field(
         None,
         description="Maximum `number of pages` you want to scroll, `career builder`pagination is designed as an infinite scroller loading",
+    )
+    sort_by_date: bool = Field(
+        False,
+        description="by default, results are sorted by relevancy which gives the best results but may cause getting old results that are no longer available which causes `selenium Timeout erros` in `format: driver.get('job_link')`. To sort by date, switch this variable to True",
     )
 
     @property
@@ -103,6 +106,14 @@ class CareerJobs(BoardAction):
         # click on the search button after sending our keys
         driver.find_element_by_class_name("submit-text").click()
 
+        if self.sort_by_date:
+            try:
+                logger.info(f"sorting resuts by date: {self.sort_by_date}")
+                driver.find_element_by_name("date").click()
+
+            except NoSuchElementException:
+                pass
+        sleep(3)
         try:  # In case there are more results than those shown so we need to load more jobs on the page
             logger.info(
                 "Crawler loading more jobs if there are more results than shown initially"
@@ -110,26 +121,31 @@ class CareerJobs(BoardAction):
             load_more_jobs = driver.find_element_by_css_selector(
                 "#load_more_jobs > button"
             )
-            page_num = 0
+            page_num = 1  # first page of results
             while load_more_jobs:
                 if page_num == self.maximum_page_num:
+                    logger.info(
+                        f"reached maximum page limit set by customer {self.maximum_page_num}"
+                    )
                     break
                 try:
+                    sleep(4)
                     load_more_jobs.click()
                     page_num += 1
-                    logger.info(f"loading page number: {page_num}")
-                    sleep(4)
+                    logger.debug(f"loading page number: {page_num}")
+
                 except (
                     ElementNotInteractableException,
                     StaleElementReferenceException,
                 ):
                     load_more_jobs = False
         except NoSuchElementException:  # Except if the driver don't need to scroll down to get all jobs we pass
-            logger.info("There is only on page of results")
+            logger.info("There is only one page of results")
             pass
 
         # get all job cards web elements available on the page
         logger.info("Getting all job cards")
+        sleep(5)
         jobs = driver.find_elements_by_xpath(
             "//*[@class='data-results-content block job-listing-item']"
         )
@@ -173,9 +189,7 @@ class CareerJobs(BoardAction):
         location = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[1].text
         job["location"] = dict(text=location, lat=None, lng=None)
         # JobType
-        employment_type = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[
-            2
-        ].text
+        employment_type = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[2].text
         # salary
         salary = driver.find_element_by_xpath('//*[@id="cb-salcom-info"]/div').text
         job["tags"] = [
@@ -196,4 +210,5 @@ class CareerJobs(BoardAction):
         job["metadata"] = []
         driver.quit()
         logger.debug(f"The web page has been scraped")
+        
         return job
