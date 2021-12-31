@@ -8,7 +8,9 @@ from pydantic import Field
 
 
 class GetAllJobs(HTTPStream, BoardAction):
-    auth: OAuth2PasswordCredentialsBody
+    auth: OAuth2PasswordCredentialsBody = Field(
+        ..., description="Auth instance to identify and communicate with the platform"
+    )
     subdomain: str = Field(
         ...,
         description="Subdomain Crosstalent just before `salesforce.com`. For example subdomain=`my_subdomain.my` in `http://my_subdomain.my.salesforce.com/ABC`",
