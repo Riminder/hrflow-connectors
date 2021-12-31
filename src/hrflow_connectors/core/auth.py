@@ -1,6 +1,10 @@
 import requests
 from typing import Union, Dict, Optional
 from pydantic import BaseModel, Field
+from ..utils.logger import get_logger
+
+
+logger = get_logger()
 
 
 class Auth(BaseModel):
@@ -59,6 +63,7 @@ class OAuth2PasswordCredentialsBody(Auth):
         Returns:
             str: Access token
         """
+        logger.debug("Getting the access token...")
         payload = dict()
         payload["grant_type"] = "password"
         payload["client_id"] = self.client_id
@@ -66,12 +71,18 @@ class OAuth2PasswordCredentialsBody(Auth):
         payload["username"] = self.username
         payload["password"] = self.password
 
+        logger.debug(
+            f"Sending request to get access token (url=`{self.access_token_url}`)"
+        )
         response = requests.post(self.access_token_url, data=payload)
 
         if response.status_code != 200:
+            logger.error("OAuth2 failed for getting access token !")
             raise ConnectionError(
                 "OAuth2 failed ! Reason : `{}`".format(response.content)
             )
+
+        logger.debug("The access token has been got")
         return response.json()["access_token"]
 
     def update(
