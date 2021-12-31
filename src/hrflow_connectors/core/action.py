@@ -417,6 +417,11 @@ class BoardAction(Action):
                     # Get job key
                     job_response = response["data"]
                     job_key = job_response["key"]
+
+                    # Hydrate job with parsing if it is necessary
+                    if self.hydrate_with_parsing:
+                        job = self.hydrate_job_with_parsing(job)
+
                     # Edit job
                     logger.debug(f"Editing the job key=`{job_key}`")
                     edit_response = self.hrflow_client.job.indexing.edit(
@@ -480,14 +485,8 @@ class BoardAction(Action):
 
         # connect each filtered_data to the format accepted by the pull function (destination, source, board)
         logger.info("Mapping format function...")
-        output_data = map(self.format, filtered_data)
+        formated_data = map(self.format, filtered_data)
         logger.info("Format function has been mapped")
-
-        logger.info(f"Hydrate job with parsing : {self.hydrate_with_parsing}")
-        if self.hydrate_with_parsing:
-            logger.info("Mapping hydrate_job_with_parsing function...")
-            output_data = map(self.hydrate_job_with_parsing, output_data)
-            logger.info("hydrate_job_with_parsing function has been mapped")
 
         logger.info(
             f"Archive the deleted jobs from stream : {self.archive_deleted_jobs_from_stream}"
@@ -496,7 +495,15 @@ class BoardAction(Action):
             self.check_deletion_references_from_stream()
 
         logger.info("Filtering the job to push")
-        unique_data_to_push = filter(self.check_reference_in_board, output_data)
+        unique_data_to_push = filter(self.check_reference_in_board, formated_data)
+
+        logger.info(f"Hydrate job with parsing : {self.hydrate_with_parsing}")
+        if self.hydrate_with_parsing:
+            logger.info("Mapping hydrate_job_with_parsing function...")
+            unique_data_to_push = map(
+                self.hydrate_job_with_parsing, unique_data_to_push
+            )
+            logger.info("hydrate_job_with_parsing function has been mapped")
 
         logger.info("Pushing data...")
         self.push(unique_data_to_push)
