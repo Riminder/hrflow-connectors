@@ -1,6 +1,6 @@
 import requests
 from typing import Union, Dict, Optional
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, Field
 
 
 class Auth(BaseModel):
@@ -16,22 +16,6 @@ class Auth(BaseModel):
 
 class NoAuth(Auth):
     pass
-
-
-class APIKeyAuth(Auth):
-    api_key: str
-
-    def update(
-        self,
-        params: Union[Dict[str, str], None] = None,
-        headers: Union[Dict[str, str], None] = None,
-        payload: Union[Dict[str, str], None] = None,
-        cookies: Union[Dict[str, str], None] = None,
-    ):
-        if headers is not None:
-            headers.update(
-                {"Authorization": self.api_key}
-            )
 
 
 class OAuth2PasswordCredentialsBody(Auth):
@@ -70,15 +54,18 @@ class OAuth2PasswordCredentialsBody(Auth):
             )
 
 
-class SmartToken(Auth):
+class XAPIKeyAuth(Auth):
     """
-    Authorization to access and use smartrecruiters static token
+    X-API-Key Auth
+
+    Auth used to authenticate with an `X-API-Key` in the headers
     """
 
-    access_token: str
-
-    def get_access_token(self):
-        return self.access_token
+    name: str = Field(
+        "X-API-KEY",
+        description="Name of the API key that will be used as a header in the request. Default value : `X-API-KEY`",
+    )
+    value: str = Field(..., description="API key value")
 
     def update(
         self,
@@ -88,4 +75,24 @@ class SmartToken(Auth):
         cookies: Union[Dict[str, str], None] = None,
     ):
         if headers is not None:
-            headers.update({"X-SmartToken": "{}".format(self.get_access_token())})
+            headers.update({self.name: self.value})
+
+
+class AuthorizationAuth(XAPIKeyAuth):
+    """
+    Authorization Auth
+
+    Auth used to authenticate with an API key named `Authorization` in the headers
+    """
+
+    name: str = Field("Authorization", const=True)
+
+
+class XSmartTokenAuth(XAPIKeyAuth):
+    """
+    XSmart Token Auth
+
+    Auth used to authenticate to SmartRecruiter with a token
+    """
+
+    name: str = Field("X-SmartToken", const=True)
