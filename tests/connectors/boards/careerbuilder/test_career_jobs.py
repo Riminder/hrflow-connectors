@@ -31,9 +31,9 @@ def test_CareerJobs(hrflow_client):
         domain='fr',
         hrflow_client=hrflow_client("dev-demo"),
         job_search='Data Scientist',
-        job_location='Paris',
+        job_location='PARIS',
         hydrate_with_parsing=True,
         archive_deleted_jobs_from_stream=False,
-        board_key="34ac9c1f449ea94ca027882c68098fdb4efa987f",
+        board_key="4dda21ae8a3bd3817f0f98ee716dad590c4be87e",
         )
     action.execute()
