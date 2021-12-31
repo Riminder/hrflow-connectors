@@ -5,7 +5,7 @@ import requests
 
 from ....core.action import BoardAction
 from ....core.http import HTTPStream
-from ....core.auth import SmartToken
+from ....core.auth import XSmartTokenAuth
 from ....utils.logger import get_logger
 
 
@@ -13,7 +13,7 @@ logger = get_logger()
 
 
 class SmartJobs(HTTPStream, BoardAction):
-    auth: SmartToken
+    auth: XSmartTokenAuth
     query: Optional[str] = Field(
         None,
         description="Full-text search query based on a job title; case insensitive; e.g. java developer",

@@ -2,7 +2,7 @@ import os
 import json
 import pytest
 from hrflow import Hrflow
-from hrflow_connectors.core.auth import SmartToken
+from hrflow_connectors.core.auth import XSmartTokenAuth
 from hrflow_connectors.connectors.boards.smartrecruiters.actions import SmartJobs
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
@@ -16,8 +16,8 @@ def credentials(pytestconfig):
 
 @pytest.fixture
 def auth(credentials):
-    auth = SmartToken(
-        access_token=credentials["smartrecruiters"]["oauth2"]["X-SmartToken"]
+    auth = XSmartTokenAuth(
+        value=credentials["smartrecruiters"]["oauth2"]["X-SmartToken"]
     )
     return auth
 
@@ -31,12 +31,6 @@ def hrflow_client(credentials):
         return client
 
     return hrflow_client_func
-
-
-def test_Auth(auth):
-    access_token = auth.get_access_token()
-    assert isinstance(access_token, str)
-    assert access_token != ""
 
 
 def test_SmartJobs(auth, hrflow_client):

@@ -1,4 +1,4 @@
-from ....core.auth import APIKeyAuth
+from ....core.auth import AuthorizationAuth
 from ....core.action import ProfileDestinationAction
 from ....core.http import HTTPStream
 from ....utils.hrflow import generate_workflow_response
@@ -11,7 +11,7 @@ import requests
 
 class PushProfile(ProfileDestinationAction, HTTPStream):
     payload: Dict[str, Any] = dict()
-    auth: APIKeyAuth
+    auth: AuthorizationAuth
     subdomain: str = Field(
         ...,
         description="Subdomain flatchr just before `flatchr.io`. For example subdomain=`my_subdomain.my` in "
@@ -90,7 +90,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
 
 class EnrichProfile(ProfileDestinationAction, HTTPStream):
     payload: Dict[str, Any] = dict()
-    auth: APIKeyAuth
+    auth: AuthorizationAuth
     subdomain: str = Field(
         ...,
         description="Subdomain flatchr just before `flatchr.io`. For example subdomain=`my_subdomain.my` in "

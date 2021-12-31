@@ -3,7 +3,7 @@ import json
 import pytest
 from hrflow import Hrflow
 
-from hrflow_connectors.core.auth import APIKeyAuth
+from hrflow_connectors.core.auth import AuthorizationAuth
 from hrflow_connectors.connectors.destinations.flatchr.actions import EnrichProfile
 from hrflow_connectors.utils.hrflow import Profile, Source
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
@@ -18,7 +18,7 @@ def credentials(pytestconfig):
 
 @pytest.fixture
 def auth(credentials):
-    auth = APIKeyAuth(api_key=credentials["flatchr"]["x-api-key"])
+    auth = AuthorizationAuth(value=credentials["flatchr"]["x-api-key"])
     return auth
 
 
