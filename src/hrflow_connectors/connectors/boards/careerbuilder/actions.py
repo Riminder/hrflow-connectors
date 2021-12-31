@@ -111,7 +111,7 @@ class CareerJobs(BoardAction):
                 logger.info(f"sorting resuts by date: {self.sort_by_date}")
                 driver.find_element_by_name("date").click()
 
-            except NoSuchElementException:
+            except NoSuchElementException: #case when there are no results, we pass to make it more explicit down
                 pass
         sleep(3)
         try:  # In case there are more results than those shown so we need to load more jobs on the page
@@ -123,13 +123,13 @@ class CareerJobs(BoardAction):
             )
             page_num = 1  # first page of results
             while load_more_jobs:
-                if page_num == self.maximum_page_num:
+                if page_num == self.maximum_page_num: #if page_num reaches limit se by user
                     logger.info(
                         f"reached maximum page limit set by customer {self.maximum_page_num}"
                     )
                     break
                 try:
-                    sleep(4)
+                    sleep(4) #give the driver time to find element and click
                     load_more_jobs.click()
                     page_num += 1
                     logger.debug(f"loading page number: {page_num}")
@@ -140,12 +140,12 @@ class CareerJobs(BoardAction):
                 ):
                     load_more_jobs = False
         except NoSuchElementException:  # Except if the driver don't need to scroll down to get all jobs we pass
-            logger.info("There is only one page of results")
+            logger.info("There is one or no page of results")
             pass
 
         # get all job cards web elements available on the page
         logger.info("Getting all job cards")
-        sleep(5)
+        sleep(5) #give the driver time to get all jobs, especially when there are thousands on one page
         jobs = driver.find_elements_by_xpath(
             "//*[@class='data-results-content block job-listing-item']"
         )
@@ -210,5 +210,5 @@ class CareerJobs(BoardAction):
         job["metadata"] = []
         driver.quit()
         logger.debug(f"The web page has been scraped")
-        
+
         return job
