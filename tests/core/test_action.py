@@ -367,7 +367,7 @@ def test_BoardAction_check_reference_in_board_fail(generate_indexing_get_respons
 
 
 @responses.activate
-def test_BoardAction_check_reference_in_board_for_archived_job_in_board(
+def test_BoardAction_check_reference_in_board_for_archived_job_in_board_without_parsing(
     generate_indexing_get_response,
 ):
     # Generate job
@@ -414,6 +414,77 @@ def test_BoardAction_check_reference_in_board_for_archived_job_in_board(
         hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
     )
     check_response = action.check_reference_in_board(job)
+    assert not check_response
+
+
+@responses.activate
+def test_BoardAction_check_reference_in_board_for_archived_job_in_board_with_parsing(
+    generate_indexing_get_response, generated_parsing_text_response
+):
+    # Generate job
+    section = dict(name="s", title=None, description="i speak english")
+    job = dict(reference="REF1", summary="I love Python", sections=[section])
+
+    assert len(job.get("skills", [])) == 0
+    assert len(job.get("language", [])) == 0
+
+    # generated response
+    message = "Job details"
+    generated_response = generate_indexing_get_response(
+        code=200, message=message, archived_at="2021-12-25T00:00:00"
+    )
+
+    # Catch request
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        status=200,
+        json=generated_response,
+    )
+
+    ## create a matcher to check if the JSON Body sent by the Connector is in the right shape and has the right values
+    expected_body = dict(board_key="abc", reference="REF1", is_archive=False)
+    match = [responses.matchers.json_params_matcher(expected_body)]
+    responses.add(
+        responses.PATCH,
+        "https://api.hrflow.ai/v1/job/indexing/archive",
+        status=200,
+        match=match,
+    )
+
+    # Catch parsing request
+    responses.add(
+        responses.POST,
+        "https://api.hrflow.ai/v1/document/parsing",
+        status=200,
+        json=generated_parsing_text_response,
+    )
+
+    ## create a matcher to check if the JSON Body sent by the Connector is in the right shape and has the right values
+    hydrated_job = dict(job)
+    hydrated_job["skills"] = [dict(name="Python", type="hard", value=None)]
+    hydrated_job["languages"] = [dict(name="english", value=None)]
+    hydrated_job["certifications"] = []
+    hydrated_job["courses"] = []
+    hydrated_job["tasks"] = []
+
+    expected_body = dict(board_key="abc", key="klm", **hydrated_job)
+    match = [responses.matchers.json_params_matcher(expected_body)]
+    responses.add(
+        responses.PUT,
+        "https://api.hrflow.ai/v1/job/indexing",
+        status=200,
+        match=match,
+    )
+
+    # Build Action
+    hrflow_client = Hrflow(api_user="", api_secret="")
+
+    action = BoardAction(
+        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=True
+    )
+    check_response = action.check_reference_in_board(job)
+
     assert not check_response
 
 
