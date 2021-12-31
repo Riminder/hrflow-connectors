@@ -1,13 +1,17 @@
 from typing import Dict, Any, Iterator, Optional
 from ....core.action import BoardAction
+from ....utils.logger import get_logger
 from pydantic import Field
+from time import sleep
 from selenium import webdriver
 from selenium.common.exceptions import (
     NoSuchElementException,
     WebDriverException,
-    ElementClickInterceptedException,
+    ElementNotInteractableException,
+    StaleElementReferenceException,
 )
-from ....utils.logger import get_logger
+
+
 
 logger = get_logger()
 
@@ -30,6 +34,10 @@ class CareerJobs(BoardAction):
     binary_location: Optional[str] = Field(
         None,
         description="Location of the binary chromium, usually in HrFlow workflows it equals `/opt/bin/headless-chromium`",
+    )
+    maximum_page_num: Optional[int] = Field(
+        None,
+        description="Maximum `number of pages` you want to scroll, `career builder`pagination is designed as an infinite scroller loading",
     )
 
     @property
@@ -99,35 +107,42 @@ class CareerJobs(BoardAction):
             logger.info(
                 "Crawler loading more jobs if there are more results than shown initially"
             )
-            driver.find_element_by_class_name("btn-clear-blue").click()
-
-        except (
-            NoSuchElementException,
-            ElementClickInterceptedException,
-        ):  # Except if the driver don't need to scroll down to get all jobs we pass
+            load_more_jobs = driver.find_element_by_css_selector(
+                "#load_more_jobs > button"
+            )
+            page_num = 0
+            while load_more_jobs:
+                if page_num == self.maximum_page_num:
+                    break
+                try:
+                    load_more_jobs.click()
+                    page_num += 1
+                    logger.info(f"loading page number: {page_num}")
+                    sleep(4)
+                except (
+                    ElementNotInteractableException,
+                    StaleElementReferenceException,
+                ):
+                    load_more_jobs = False
+        except NoSuchElementException:  # Except if the driver don't need to scroll down to get all jobs we pass
+            logger.info("There is only on page of results")
             pass
-        try:  # get all job cards web elements available on the page
-            logger.info("Getting all job cards")
-            jobs = driver.find_elements_by_xpath(
-                "//*[@class='data-results-content-parent relative']"
-            )
-        except NoSuchElementException as e:
-            logger.error(
-                f"Failed to get offers for '{self.job_search}` in `{self.job_location}`"
-            )
-            logger.error(e)
+
+        # get all job cards web elements available on the page
+        logger.info("Getting all job cards")
+        jobs = driver.find_elements_by_xpath(
+            "//*[@class='data-results-content block job-listing-item']"
+        )
+        if len(jobs) == 0:
             error_message = f"Could not find any matching jobs on the page, check that your search keys: `{self.job_search}`, `{self.job_location}` are valid!"
-            raise Exception(error_message)
+            raise NoSuchElementException(error_message)
 
         elements_count = len(jobs)
-        logger.info(
-            logger.info(f"Number of jobs found on this page : {elements_count}")
-        )
+        logger.info(f"Number of jobs found on this page : {elements_count}")
+
         # get the list of the links of job cards
         logger.info("Getting list of job links")
-        job_link_list = [
-            job.find_element_by_tag_name("a").get_attribute("href") for job in jobs
-        ]
+        job_link_list = [job.get_attribute("href") for job in jobs]
 
         job_link_count = len(job_link_list)
         logger.info(f"Number of total job links found : {job_link_count}")
@@ -158,7 +173,9 @@ class CareerJobs(BoardAction):
         location = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[1].text
         job["location"] = dict(text=location, lat=None, lng=None)
         # JobType
-        employment_type = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[2].text
+        employment_type = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[
+            2
+        ].text
         # salary
         salary = driver.find_element_by_xpath('//*[@id="cb-salcom-info"]/div').text
         job["tags"] = [
