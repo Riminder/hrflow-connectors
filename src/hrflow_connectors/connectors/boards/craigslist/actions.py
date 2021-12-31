@@ -10,7 +10,7 @@ from ....utils.logger import get_logger
 logger = get_logger()
 
 
-class CraigslistJobs(BoardAction):
+class CraigslistFeed(BoardAction):
     archive_deleted_jobs_from_stream: bool = False
     subdomain: str = Field(
         ...,
