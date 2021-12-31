@@ -14,7 +14,7 @@ class CraigslistFeed(BoardAction):
     archive_deleted_jobs_from_stream: bool = False
     subdomain: str = Field(
         ...,
-        description="Subdomain just before 'craigslist.org/d/emploi/search/jjj' for example subdomain =`paris` in `https://paris.craigslist.org/d/emploi/search/jjj`, it is also the localisation of the job offers ",
+        description="Subdomain just before `craigslist.org/d/emploi/search/jjj` for example subdomain = `paris` in `https://paris.craigslist.org/d/emploi/search/jjj`, it is also the localisation of the job offers",
     )
     executable_path: Optional[str] = Field(
         None,

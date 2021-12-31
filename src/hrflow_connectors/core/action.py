@@ -19,8 +19,12 @@ class Action(BaseModel):
     logics: List[str] = Field(
         [], description="Function names to apply as filter before pushing the data"
     )
-    global_scope: Dict[str, Any] = None
-    local_scope: Dict[str, Any] = None
+    global_scope: Optional[Dict[str, Any]] = Field(
+        None, description="A dictionary containing the current scope's global variables"
+    )
+    local_scope: Optional[Dict[str, Any]] = Field(
+        None, description="A dictionary containing the current scope's local variables"
+    )
 
     format_function_name: Optional[str] = Field(
         None, description="Function name to format job before pushing"
@@ -140,10 +144,15 @@ class Action(BaseModel):
 
 
 class BoardAction(Action):
-    hrflow_client: Hrflow
-    board_key: str
-    hydrate_with_parsing: bool = False
-    archive_deleted_jobs_from_stream: bool = True
+    hrflow_client: Hrflow = Field(
+        ...,
+        description="Hrflow client instance used to communicate with the Hrflow.ai API",
+    )
+    board_key: str = Field(
+        ..., description="Board key where the jobs to be added will be stored"
+    )
+    hydrate_with_parsing: bool = Field(False, description="Enrich the job with parsing")
+    archive_deleted_jobs_from_stream: bool = Field(True, description="Archive Board jobs when they are no longer in the incoming job stream")
 
     def get_all_job_pages_from_board(self) -> Iterator[Iterator[Dict[str, Any]]]:
         """
