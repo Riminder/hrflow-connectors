@@ -1,7 +1,7 @@
 # Flatchr Connector
 **Flatchr is an ATS.**
 
-`Hrflow.ai` :arrow_right: `Crosstalent`
+`Hrflow.ai` :arrow_right: `Flatchr`
 
 Lists of actions :
 * [**`PushProfile`**](#pushprofile)
