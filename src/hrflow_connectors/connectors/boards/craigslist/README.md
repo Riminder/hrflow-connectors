@@ -1,9 +1,9 @@
 # Craigslist Connector
 **Craigslist is a website listing ads.**
 
-## CraigslistFeed
 `Craigslist` :arrow_right: `Hrflow.ai`
 
+## CraigslistFeed
 `CraigslistFeed` scans the ***Craigslist*** site for job offers. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
 ### Parameters

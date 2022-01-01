@@ -1,9 +1,9 @@
 # Crosstalent Connector
 **Crosstalent designs and implements innovative solutions for human resources management.**
 
-## PushProfile
 `Hrflow.ai` :arrow_right: `Crosstalent`
 
+## PushProfile
 `PushProfile` pushes a Hrflow.ai profile to `Crosstalent` via their ***Salesforce API***.
 
 ### Parameters

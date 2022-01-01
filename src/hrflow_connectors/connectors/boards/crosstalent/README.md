@@ -1,9 +1,9 @@
 # Crosstalent Connector
 **Crosstalent designs and implements innovative solutions for human resources management.**
 
-## GetAllJobs
 `Crosstalent` :arrow_right: `Hrflow.ai`
 
+## GetAllJobs
 `GetAllJobs` gets all available jobs via their ***Salesforce API***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
 ### Parameters

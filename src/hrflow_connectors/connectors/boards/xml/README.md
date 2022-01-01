@@ -1,9 +1,9 @@
 # XML Connector
 **Many feeds use the XML format. This connector groups together all the `Actions` that process an XML stream to retrieve jobs.**
 
-## SmartJobs
 `XML Stream` :arrow_right: `Hrflow.ai`
 
+## SmartJobs
 `XMLBoardAction` retrieves all jobs via an ***XML stream*** API. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
 ### Parameters
