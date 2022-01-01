@@ -1,33 +1,10 @@
-from hrflow_connectors.connectors.boards.xml.actions import XMLBoardAction
-from hrflow_connectors.utils.datetime_converter import from_str_to_datetime
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
-
-import os
-import json
-import pytest
-from hrflow import Hrflow
 import responses
 
-
-@pytest.fixture
-def credentials(pytestconfig):
-    with open(os.path.join(pytestconfig.rootpath, "credentials.json"), "r") as f:
-        credentials = json.loads(f.read())
-    return credentials
+from hrflow_connectors.connectors.boards.xml import XMLBoardAction
+from hrflow_connectors.utils.datetime_converter import from_str_to_datetime
 
 
-@pytest.fixture
-def hrflow_client(credentials):
-    def hrflow_client_func(portal_name="dev-demo"):
-        x_api_key = credentials["hrflow"][portal_name]["x-api-key"]
-        x_user_email = credentials["hrflow"][portal_name]["x-user-email"]
-        client = Hrflow(api_secret=x_api_key, api_user=x_user_email)
-        return client
-
-    return hrflow_client_func
-
-
-def test_get_all_jobs_from_samsic_xml_stream(hrflow_client):
+def test_get_all_jobs_from_samsic_xml_stream(logger, hrflow_client):
     def samsic_format(data):
         job = dict()
 
@@ -148,8 +125,6 @@ def test_get_all_jobs_from_samsic_xml_stream(hrflow_client):
     xml_stream_url = "https://cv.samsic-emploi.fr/media/flux/jobs.xml"
     job_list_xpath = "DataArea"
 
-    logger = get_logger_with_basic_config()
-
     action = XMLBoardAction(
         xml_stream_url=xml_stream_url,
         job_list_xpath=job_list_xpath,
@@ -165,7 +140,7 @@ def test_get_all_jobs_from_samsic_xml_stream(hrflow_client):
 
 
 @responses.activate
-def test_XMLBoardAction_pull_generic_xml_stream(hrflow_client):
+def test_XMLBoardAction_pull_generic_xml_stream(logger, hrflow_client):
     xml_stream_url = "https://test.test/job/xml_stream"
 
     xml_stream_str = """<?xml version="1.0" encoding="UTF-8"?>
