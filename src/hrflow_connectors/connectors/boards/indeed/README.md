@@ -1,9 +1,9 @@
 # Indeed Connector
 **Indeed is a meta job search engine. It provides access to millions of job offers.**
 
-## IndeedFeed
 `Indeed` :arrow_right: `Hrflow.ai`
 
+## IndeedFeed
 `IndeedFeed` scans the ***Indeed*** site for job offers. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
 ### Parameters

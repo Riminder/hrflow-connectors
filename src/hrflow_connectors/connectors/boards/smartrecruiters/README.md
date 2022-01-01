@@ -1,9 +1,9 @@
 # Smart Recruiters Connector
 **Smart Recruiters is an ATS.**
 
-## SmartJobs
 `Smart Recruiters` :arrow_right: `Hrflow.ai`
 
+## SmartJobs
 `SmartJobs` retrieves all jobs via the ***SmartRecruiter*** API. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
 ### Parameters
