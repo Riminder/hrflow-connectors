@@ -131,7 +131,7 @@ def test_get_all_jobs_from_samsic_xml_stream(logger, hrflow_client):
         hrflow_client=hrflow_client("dev-demo"),
         board_key="ebf489eff6bef0e95ca03eb0d6ed8f8e030a634f",
         hydrate_with_parsing=False,
-        archive_deleted_jobs_from_stream=False,
+        archive_deleted_jobs_from_stream=True,
         format_function_name="samsic_format",
         global_scope=globals(),
         local_scope=locals(),
