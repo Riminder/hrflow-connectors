@@ -32,7 +32,7 @@
 ```python
 from hrflow import Hrflow
 
-from hrflow_connectors.connectors.boards.indeed.actions import IndeedFeed
+from hrflow_connectors.connectors.boards.indeed import IndeedFeed
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 # We add a basic configuration to our logger to see the messages displayed in the standard output
