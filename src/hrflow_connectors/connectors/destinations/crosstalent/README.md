@@ -64,4 +64,5 @@ def workflow(_request, settings):
             profile=profile,
         )
         response = action.execute()
+        return response
 ```
