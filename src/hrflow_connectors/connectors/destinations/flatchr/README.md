@@ -41,7 +41,7 @@ Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.a
 from hrflow import Hrflow
 
 from hrflow_connectors.core.auth import AuthorizationAuth
-from hrflow_connectors.connectors.destinations.flatchr.actions import PushProfile
+from hrflow_connectors.connectors.destinations.flatchr import PushProfile
 from hrflow_connectors.utils.hrflow import EventParser, Profile, Source
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 

@@ -33,7 +33,7 @@
 from hrflow import Hrflow
 
 from hrflow_connectors.core.auth import XSmartTokenAuth
-from hrflow_connectors.connectors.boards.smartrecruiters.actions import SmartJobs
+from hrflow_connectors.connectors.boards.smartrecruiters import SmartJobs
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 # We add a basic configuration to our logger to see the messages displayed in the standard output
