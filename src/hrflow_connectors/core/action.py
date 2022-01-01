@@ -77,15 +77,22 @@ class Action(BaseModel):
             filtered_list = filter(logic_function, filtered_list)
         return filtered_list
 
-    def format(self, data: TalentDataType) -> Dict[str, Any]:
+    def format_switcher(self, data: TalentDataType) -> Dict[str, Any]:
         """
-        Format `data` fields to another field format.
+        Choose the right function to format the data and format the input data into a push-ready data schema.
 
-        For example to select and transform only some fields from a database to Hrflow.
-        This function must adapt the data schema passed in (from the `pull`) to the expected data schema in output (ready to be used in the `pull` function)
+        This function will :
+        * Try to retrieve the external format function given in `format_function_name` and format the data with it
+        * In the case where no external format function is given `format_function_name=None`,
+          then the function will execute the internal format function `format` of the class.
+          The `format` function can be overloaded to give it a defined behaviour.
+        * If the `format` function of the class is not overloaded,
+          the default behaviour of this function is to return the input data.
 
-        If the `format_function_name` attribute is initialized with the name of a function,
-        then it will be executed instead of the `format` method of the connector.
+        WARNING: If you want to map the format function to rewrite a pipeline of an `Action` from a connector,
+        you should use this function, not the `format` of the parent class.
+        If you take `format` from the parent class, then `format_function_name` will be ignored
+        and only `format` will be used to format the data.
 
         Args:
             data (TalentDataType): Data we want to adapt to the output format
@@ -93,7 +100,11 @@ class Action(BaseModel):
         Returns:
             Dict[str, Any]: Data adapted to the input format of the pull function, ready to be sent
         """
-        if self.format_function_name is not None:
+        if self.format_function_name is None:
+            logger.debug("External format function is not defined")
+            logger.debug("Using internal `format` function")
+            return self.format(data)
+        else:
             logger.debug(
                 f"Evaluating the external format function `{self.format_function_name}` ..."
             )
@@ -104,8 +115,22 @@ class Action(BaseModel):
                 f"The external format function `{self.format_function_name}` has been evaluated"
             )
             return format_function(data)
-        else:
-            logger.debug("External format function is not defined")
+
+    def format(self, data: TalentDataType) -> Dict[str, Any]:
+        """
+        Format the input data into a push-ready data schema
+
+        WARNING: If you want to map the format function to rewrite a pipeline of an `Action` from a connector,
+        you should use the function `format_switcher`, not the `format` of the parent class.
+        If you take `format` from the parent class, then `format_function_name` will be ignored
+        and only `format` will be used to format the data.
+
+        Args:
+            data (TalentDataType): Data we want to adapt to the output format
+
+        Returns:
+            Dict[str, Any]: Data adapted to the input format of the pull function, ready to be sent
+        """
         return data
 
     def push(self, data: Iterator[Union[str, Dict[str, Any]]]):
@@ -133,7 +158,7 @@ class Action(BaseModel):
 
         # connect each filtered_data to the format accepted by the pull function (destination, source, board)
         logger.info("Mapping format function...")
-        output_data = map(self.format, filtered_data)
+        output_data = map(self.format_switcher, filtered_data)
         logger.info("Format function has been mapped")
 
         logger.info("Pushing data...")
@@ -152,7 +177,10 @@ class BoardAction(Action):
         ..., description="Board key where the jobs to be added will be stored"
     )
     hydrate_with_parsing: bool = Field(False, description="Enrich the job with parsing")
-    archive_deleted_jobs_from_stream: bool = Field(True, description="Archive Board jobs when they are no longer in the incoming job stream")
+    archive_deleted_jobs_from_stream: bool = Field(
+        True,
+        description="Archive Board jobs when they are no longer in the incoming job stream",
+    )
 
     def get_all_job_pages_from_board(self) -> Iterator[Iterator[Dict[str, Any]]]:
         """
@@ -495,7 +523,7 @@ class BoardAction(Action):
 
         # connect each filtered_data to the format accepted by the pull function (destination, source, board)
         logger.info("Mapping format function...")
-        formated_data = map(self.format, filtered_data)
+        formated_data = map(self.format_switcher, filtered_data)
         logger.info("Format function has been mapped")
 
         logger.info(
@@ -523,7 +551,10 @@ class BoardAction(Action):
 
 
 class ProfileDestinationAction(Action):
-    hrflow_client: Hrflow = Field(..., description="Hrflow client instance used to communicate with the Hrflow.ai API")
+    hrflow_client: Hrflow = Field(
+        ...,
+        description="Hrflow client instance used to communicate with the Hrflow.ai API",
+    )
     profile: Profile = Field(..., description="Profile to push")
 
     def pull(self) -> Iterator[TalentDataType]:
