@@ -33,7 +33,7 @@ def hrflow_client(credentials):
     return hrflow_client_func
 
 
-def test_PushProfile(auth, hrflow_client):
+def test_EnrichProfile(auth, hrflow_client):
     logger = get_logger_with_basic_config()
     profile = Profile(
         key="5746beca5e941a5a55706efd9adfce31f59e6e2b",
