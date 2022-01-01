@@ -488,6 +488,27 @@ def test_BoardAction_check_reference_in_board_for_archived_job_in_board_with_par
     assert not check_response
 
 
+def test_BoardAction_get_all_references_from_stream():
+    jobs_in_stream = [dict(reference="REF1"), dict(reference="REF2")]
+    references_in_stream = ["REF1", "REF2"]
+
+    class TestBoardAction(BoardAction):
+        def pull(self):
+            return jobs_in_stream
+
+    # Build Action
+    hrflow_client = Hrflow(api_user="", api_secret="")
+
+    action = TestBoardAction(
+        hrflow_client=hrflow_client,
+        board_key="abc",
+        hydrate_with_parsing=False,
+        archive_deleted_jobs_from_stream=True,
+    )
+    references_got = action.get_all_references_from_stream()
+    assert list(references_got) == references_in_stream
+
+
 @responses.activate
 def test_BoardAction_check_deletion_references_from_stream():
     references_in_stream = ["REF1", "REF2"]

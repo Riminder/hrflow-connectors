@@ -480,7 +480,20 @@ class BoardAction(Action):
         Yields:
             Iterator[str]: return all references
         """
-        raise NotImplementedError("`get_all_references_from_stream` is not implemented")
+        logger.info(f"Getting all references from the stream...")
+        logger.info(f"Pulling all references from the stream")
+        input_data = self.pull()
+        logger.info(f"Applying logics to all references from the stream")
+        filtered_data = self.apply_logics(input_data)
+        logger.info(f"Formating all references from the stream")
+        formated_data = map(self.format_switcher, filtered_data)
+        logger.info(f"Keeping only reference from the stream")
+        references_iter = map(lambda job: job.get("reference"), formated_data)
+        references_without_none_iter = filter(
+            lambda ref: ref is not None, references_iter
+        )
+        logger.info(f"All references from the stream have been got")
+        return references_without_none_iter
 
     def check_deletion_references_from_stream(self):
         """
