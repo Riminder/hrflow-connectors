@@ -29,7 +29,7 @@ class GetAllJobs(HTTPStream, BoardAction):
     def get_all_references_from_stream(self):
         input_data = self.pull()
         filtered_data = self.apply_logics(input_data)
-        formated_data = map(self.format, filtered_data)
+        formated_data = map(self.format_switcher, filtered_data)
         references_iter = map(lambda job: job.get("reference"), formated_data)
         references_without_none_iter = filter(
             lambda ref: ref is not None, references_iter

@@ -87,7 +87,7 @@ def test_extern_format_function():
     )
 
     job_to_transform = dict(a="aaa", b="bbb", f="fff")
-    transformed_job = action.format(job_to_transform)
+    transformed_job = action.format_switcher(job_to_transform)
     assert transformed_job == dict(c="aaa", d="aaabbb")
 
 
@@ -115,8 +115,8 @@ def test_overwritten_format_with_extern_format_function():
     )
 
     job_to_transform = dict(a="aaa", b="bbb", f="fff")
-    transformed_job = action.format(job_to_transform)
-    assert transformed_job == dict(f="fff", g="aaabbb")
+    transformed_job = action.format_switcher(job_to_transform)
+    assert transformed_job == dict(c="aaa", d="aaabbb")
 
 
 @responses.activate
