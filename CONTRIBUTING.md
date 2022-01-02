@@ -21,9 +21,7 @@ If you experience bugs or general issues with `hrflow-connectors`, please have a
 on the `issue tracker`. If you don't see anything useful there, please feel
 free to fire an issue report.
 
-:::info
 ℹ️ Please don't forget to include the closed issues in your search. Sometimes a solution was already reported, and the problem is considered **solved**.
-:::
 
 New issue reports should include information about your programming environment
 (e.g., operating system, Python version) and steps to reproduce the problem.
