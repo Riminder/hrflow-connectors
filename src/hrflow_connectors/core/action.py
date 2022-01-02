@@ -98,7 +98,7 @@ class Action(BaseModel):
             data (TalentDataType): Data we want to adapt to the output format
 
         Returns:
-            Dict[str, Any]: Data adapted to the input format of the pull function, ready to be sent
+            Dict[str, Any]: Data adapted to the input format of the push function, ready to be sent
         """
         if self.format_function_name is None:
             logger.debug("External format function is not defined")
@@ -129,7 +129,7 @@ class Action(BaseModel):
             data (TalentDataType): Data we want to adapt to the output format
 
         Returns:
-            Dict[str, Any]: Data adapted to the input format of the pull function, ready to be sent
+            Dict[str, Any]: Data adapted to the input format of the push function, ready to be sent
         """
         return data
 
