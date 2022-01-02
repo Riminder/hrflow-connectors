@@ -37,5 +37,7 @@ All notable changes to this project will be documented in this file.
 * `find_element_in_list` : Find element with some fields in list of elements
 * `generate_workflow_response` : Generate CATCH workflow response
 * Dependencies : `selenium`
+### Changed
+* Pipeline in Action and BoardAction to use `format_switcher` instead of `format`
 ### Fixed
 * HTTPStream : static private attributes become public attributes
