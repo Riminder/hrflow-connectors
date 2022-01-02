@@ -7,7 +7,7 @@
   HrFlow.ai connectors
 </h1>
 
-![](https://img.shields.io/github/v/release/Riminder/hrflow-connectors) ![](https://img.shields.io/github/license/Riminder/hrflow-connectors)
+![GitHub Repo stars](https://img.shields.io/github/stars/Riminder/hrflow-connectors?style=social) ![](https://img.shields.io/github/v/release/Riminder/hrflow-connectors) ![](https://img.shields.io/github/license/Riminder/hrflow-connectors)
 
 
 <p align="center">
@@ -37,8 +37,8 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 With Hrflow Connector, you can **synchronize** and **process** multiple **HR data streams** in just a few lines of code.
 
 You can do 3 types of actions:
-* `Job flow` :arrow_right: ***`Board Hrflow.ai`***
-* `Profile flow` :arrow_right: ***`Source Hrflow.ai`***
+* `Job flow` :arrow_right: ***`Hrflow.ai Board`***
+* `Profile flow` :arrow_right: ***`Hrflow.ai Source`***
 * ***`Hrflow.ai`*** :arrow_right: `External destination`
 
 The features offered by this package:
@@ -127,44 +127,44 @@ The project mainly uses 4 packages :
 - **Ultimate Software(UKG)** (soon)
 - **Workday** (soon)
 
-## 🧐 What"s inside?
-TODO
-A quick look at the top-level files of a **connector code structure**.
+## 🧐 What's inside ?
+**A quick look at the project structure.**
 
-* **`legacy/`** :
-* **`src/hrflow_connectors/connectors/`** : 
-  * **`boards/`** : 
-  * **`sources/`** :
-  * **`destinations/`** :
-
-* **`tests/`** :
-* **`.coveragerc`** :
+* **`legacy/`** : Folder containing the old code snippets that we used to connect the data streams in the workflows
+* **`src/hrflow_connectors/connectors/`** : Folder containing the connectors sorted according to the type of their actions
+  * **`boards/`** : `Job flow` :arrow_right: ***`Hrflow.ai Board`*** Folder containing the set of connectors that synchronise the job stream in a ***Hrflow.ai Board***.
+    * **`ConnectorName/`** : Connector folder named `ConnectorName`.
+      * **`actions.py`** : File containing all the actions of a connector.
+      * **`spec.py`** : File listing the available actions and the particularities of the connector (version, ...)
+      * **`README.md`** : File documenting the use of the connector.
+  * **`sources/`** : `Profile flow` :arrow_right: ***`Hrflow.ai Source`*** Folder containing the set of connectors that synchronise the profile stream in a ***Hrflow.ai Source***. The architecture is the same as for `boards/`.
+  * **`destinations/`** : ***`Hrflow.ai`*** :arrow_right: `External destination` Folder containing all the connectors that export talent data from Hrflow to an external destination. The architecture is the same as for `boards/`.
+* **`src/hrflow_connectors/core/`** : Containing the core of the connectors shared by all.
+* **`src/hrflow_connectors/utils/`** : Containing the useful out-of-context functions of the package.
+* **`tests/`** : Folder containing all unit and functional tests of the project.
+* **`.coveragerc`** : Configuration file for evaluating test coverage with `pytest-cov`.
 * **`.gitignore`** : This file tells git which files it should not track / not maintain a version history for.
-* **`AUTHORS.md`** :
-* **`CHANGELOG.md`** :
-* **`CONTRIBUTING.md`** :
-* **`LICENSE`** :
+* **`AUTHORS.md`** : File listing the authors who participated in the project code.
+* **`CHANGELOG.md`** : File listing the changes made for each version.
+* **`CONTRIBUTING.md`** : File describing how to participate in the project.
+* **`LICENSE`** : Project license.
 * **`README.md`**: A text file containing useful reference information about this project.
-* **`LICENSE`** :
-* **`VERSION`** :
-* **`poetry.lock`** :
-* **`pyproject.toml`** :
-* **`pytest.ini`** :
-* **`setup.cfg`** :
-* **`setup.py`** :
+* **`VERSION`** : File containing the project version.
+* **`poetry.lock`** : File containing the exact versions of the dependencies to ensure that the package versions are consistent for everyone working on your project.
+* **`pyproject.toml`** : File that orchestrates the project and its dependencies.
+* **`pytest.ini`** : The main configuration file of pytest, which can change the running mode of pytest.
+* **`setup.cfg`** : A Python package which supports providing all of a Python distribution's metadata and build configuration rather than in the `setup.py` script.
+* **`setup.py`** : The minimal setup.py which calls the configuration in `setup.cfg`.
 
 ## :woman_technologist: Contributions
 
-TODO: Rediriger vers CONTRIBUTING
-
 Please feel free to contribute to the quality of this content by
 submitting PRs for improvements to code, architecture, etc. 
-While typo fixes are welcomed, they will likely be caught through 
-normal editing/publishing processes, so please don"t worry about 
-them right now.
 
 Any contributions you make to this effort are of course greatly 
 appreciated.
+
+👉 **To find out more about how to proceed, the rules and conventions to follow, read carefully [`CONTRIBUTING.md`](CONTRIBUTING.md).**
 
 
 ## :page_with_curl: License
