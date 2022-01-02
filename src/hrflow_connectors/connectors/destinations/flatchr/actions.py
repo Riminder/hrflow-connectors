@@ -1,4 +1,4 @@
-from ....core.auth import APIKeyAuth
+from ....core.auth import AuthorizationAuth
 from ....core.action import ProfileDestinationAction
 from ....core.http import HTTPStream
 from ....utils.hrflow import generate_workflow_response
@@ -11,11 +11,11 @@ import requests
 
 class PushProfile(ProfileDestinationAction, HTTPStream):
     payload: Dict[str, Any] = dict()
-    auth: APIKeyAuth
+    auth: AuthorizationAuth
     subdomain: str = Field(
         ...,
         description="Subdomain flatchr just before `flatchr.io`. For example subdomain=`my_subdomain.my` in "
-                    "`http://my_subdomain.my.flatchr.io/ABC`",
+        "`http://my_subdomain.my.flatchr.io/ABC`",
     )
     vacancy: str = Field(
         ...,
@@ -25,13 +25,11 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
     def build_request_headers(self):
         super().build_request_headers()
         self.headers["content-type"] = "application/json"
-        self.headers['Accept'] = "*/*"
+        self.headers["Accept"] = "*/*"
 
     @property
     def base_url(self):
-        return "https://{}.flatchr.io/vacancy/candidate/json".format(
-            self.subdomain
-        )
+        return "https://{}.flatchr.io/vacancy/candidate/json".format(self.subdomain)
 
     @property
     def http_method(self):
@@ -48,7 +46,6 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
             )
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
-
         def get_candidate_attachments(hrflow_profile):
             attachments_list = hrflow_profile.get("attachments")
             # We try to find 'resume' (which is 'original' after traitments).
@@ -68,36 +65,36 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         info = data.get("info")
         email = info.get("email") if info else None
         if email == None:
-            raise Exception(f"No email for hrflow_profile {data.get('reference')} but one is mandatory")
+            raise Exception(
+                f"No email for hrflow_profile {data.get('reference')} but one is mandatory"
+            )
 
         profile = {
             "vacancy": self.vacancy,
-            "firstname": info.get("first_name") if info.get("first_name") is not None else "N/A",
-            "lastname": info.get("last_name") if info.get("last_name") is not None else "N/A",
+            "firstname": info.get("first_name")
+            if info.get("first_name") is not None
+            else "N/A",
+            "lastname": info.get("last_name")
+            if info.get("last_name") is not None
+            else "N/A",
             "type": "document",
             "email": email,
             "resume": {
                 "fileName": "resume.pdf",
                 "contentType": "application/octet-stream",
-                "data": get_candidate_attachments(data)
-            }
+                "data": get_candidate_attachments(data),
+            },
         }
         return profile
-
-    def execute(self):
-        super().execute()
-        return generate_workflow_response(
-            status_code=201, message="Profile successfully pushed"
-        )
 
 
 class EnrichProfile(ProfileDestinationAction, HTTPStream):
     payload: Dict[str, Any] = dict()
-    auth: APIKeyAuth
+    auth: AuthorizationAuth
     subdomain: str = Field(
         ...,
         description="Subdomain flatchr just before `flatchr.io`. For example subdomain=`my_subdomain.my` in "
-                    "`http://my_subdomain.my.flatchr.io/ABC`",
+        "`http://my_subdomain.my.flatchr.io/ABC`",
     )
     vacancy: str = Field(
         ...,
@@ -133,7 +130,6 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
             )
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
-
         def get_education_list(hr_flow_profile):
             hrflow_education_list = hr_flow_profile["educations"]
             flatchr_education_list = []
@@ -143,22 +139,26 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
                 flatchr_education = {
                     "institution": {
                         "communication": {
-                            "address": [{
-                                "formattedAddress": location.get("text") if location else None
-                            }]
+                            "address": [
+                                {
+                                    "formattedAddress": location.get("text")
+                                    if location
+                                    else None
+                                }
+                            ]
                         },
-                        "name": education.get("school")
+                        "name": education.get("school"),
                     },
-                    "educationLevelCodes": [{
-                        "name": education.get("title")
-                    }],
-                    "educationDegrees": [{
-                        "name": education.get("title"),
-                        "date": education.get("date_start"),
-                        "specializations": []
-                    }],
+                    "educationLevelCodes": [{"name": education.get("title")}],
+                    "educationDegrees": [
+                        {
+                            "name": education.get("title"),
+                            "date": education.get("date_start"),
+                            "specializations": [],
+                        }
+                    ],
                     "end": education.get("date_end"),
-                    "descriptions": [education.get("description")]
+                    "descriptions": [education.get("description")],
                 }
                 flatchr_education_list.append(flatchr_education)
             return flatchr_education_list
@@ -171,56 +171,55 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
                 location = experience.get("location")
                 flatchr_education = {
                     "title": experience.get("title"),
-                    "positionHistories": [{
-                        "organization": {
-                            "communication": {
-                                "address": [{
-                                    "countryCode": None,
-                                    "city": None,
-                                    "postalCode": None,
-                                    "geoLocation": {
-                                        "latitude": location.get("lat"),
-                                        "longitude": location.get("lng")
-                                    },
-                                    "formattedAddress": location.get("text") if location else None
-                                }]
+                    "positionHistories": [
+                        {
+                            "organization": {
+                                "communication": {
+                                    "address": [
+                                        {
+                                            "countryCode": None,
+                                            "city": None,
+                                            "postalCode": None,
+                                            "geoLocation": {
+                                                "latitude": location.get("lat"),
+                                                "longitude": location.get("lng"),
+                                            },
+                                            "formattedAddress": location.get("text")
+                                            if location
+                                            else None,
+                                        }
+                                    ]
+                                },
+                                "name": experience.get("company"),
                             },
-                            "name": experience.get("company")
-                        },
-                        "jobCategories": [],
-                        "jobLevels": [],
-                        "start": experience.get("date_start"),
-                        "current": None
-                    }],
+                            "jobCategories": [],
+                            "jobLevels": [],
+                            "start": experience.get("date_start"),
+                            "current": None,
+                        }
+                    ],
                     "start": experience.get("date_start"),
                     "current": None,
-                    "descriptions": [experience.get("description")]
+                    "descriptions": [experience.get("description")],
                 }
                 flatchr_experiences_list.append(flatchr_education)
             return flatchr_experiences_list
 
         def get_name():
-            name = {
-                "formattedName": "XXX XXXX",
-                "given": "XXXX",
-                "family": "XXXX"
-            }
+            name = {"formattedName": "XXX XXXX", "given": "XXXX", "family": "XXXX"}
             return name
 
         def get_phone(hr_flow_profile):
             info = hr_flow_profile.get("info")
-            phone = [{
-                "dialNumber": info.get("phone") if info else None,
-                "useCode": None
-            }]
+            phone = [
+                {"dialNumber": info.get("phone") if info else None, "useCode": None}
+            ]
             return phone
 
         def get_email(hr_flow_profile):
             info = hr_flow_profile.get("info")
 
-            email = [{
-                "address": info.get("email") if info else None
-            }]
+            email = [{"address": info.get("email") if info else None}]
             return email
 
         def get_position(hr_flow_profile):
@@ -238,7 +237,10 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
             employment_positions = []
 
             for experience in hrflow_experiences_list:
-                if experience.get("company") != None and experience.get("company") != "":
+                if (
+                    experience.get("company") != None
+                    and experience.get("company") != ""
+                ):
                     employment_positions.append(experience.get("company"))
 
             return employment_positions
@@ -247,7 +249,7 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
             "address": {
                 "administrative_area_level_1": data["info"]["location"].get("text"),
                 "location_lat": data["info"]["location"].get("lat"),
-                "location_lng": data["info"]["location"].get("lng")
+                "location_lng": data["info"]["location"].get("lng"),
             },
             "education": get_education_list(data),
             "employment": get_experiences_list(data),
@@ -256,7 +258,7 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
             "email": get_email(data),
             "position": get_position(data),
             "employment_positions": get_employment_positions(data),
-            "experience": int(data.get("experiences_duration"))
+            "experience": int(data.get("experiences_duration")),
         }
 
         profile = {
@@ -264,13 +266,7 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
             "reference": data["info"].get("email"),
             "name": "parsing",
             "type": "applicants",
-            "value": value
+            "value": value,
         }
 
         return profile
-
-    def execute(self):
-        super().execute()
-        return generate_workflow_response(
-            status_code=201, message="Profile successfully pushed"
-        )

@@ -1,32 +1,10 @@
-from hrflow_connectors.connectors.boards.xml.actions import XMLBoardAction
-from hrflow_connectors.utils.datetime_converter import from_str_to_datetime
-
-import os
-import json
-import pytest
-from hrflow import Hrflow
 import responses
 
-
-@pytest.fixture
-def credentials(pytestconfig):
-    with open(os.path.join(pytestconfig.rootpath, "credentials.json"), "r") as f:
-        credentials = json.loads(f.read())
-    return credentials
+from hrflow_connectors.connectors.boards.xml import XMLBoardAction
+from hrflow_connectors.utils.datetime_converter import from_str_to_datetime
 
 
-@pytest.fixture
-def hrflow_client(credentials):
-    def hrflow_client_func(portal_name="dev-demo"):
-        x_api_key = credentials["hrflow"][portal_name]["x-api-key"]
-        x_user_email = credentials["hrflow"][portal_name]["x-user-email"]
-        client = Hrflow(api_secret=x_api_key, api_user=x_user_email)
-        return client
-
-    return hrflow_client_func
-
-
-def test_get_all_jobs_from_samsic_xml_stream(hrflow_client):
+def test_get_all_jobs_from_samsic_xml_stream(logger, hrflow_client):
     def samsic_format(data):
         job = dict()
 
@@ -153,7 +131,7 @@ def test_get_all_jobs_from_samsic_xml_stream(hrflow_client):
         hrflow_client=hrflow_client("dev-demo"),
         board_key="ebf489eff6bef0e95ca03eb0d6ed8f8e030a634f",
         hydrate_with_parsing=False,
-        archive_deleted_jobs_from_stream=False,
+        archive_deleted_jobs_from_stream=True,
         format_function_name="samsic_format",
         global_scope=globals(),
         local_scope=locals(),
@@ -162,7 +140,7 @@ def test_get_all_jobs_from_samsic_xml_stream(hrflow_client):
 
 
 @responses.activate
-def test_XMLBoardAction_pull_generic_xml_stream(hrflow_client):
+def test_XMLBoardAction_pull_generic_xml_stream(logger, hrflow_client):
     xml_stream_url = "https://test.test/job/xml_stream"
 
     xml_stream_str = """<?xml version="1.0" encoding="UTF-8"?>

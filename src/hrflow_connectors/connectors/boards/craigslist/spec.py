@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from typing import Tuple
 
-from .actions import IndeedFeed
+from .actions import CraigslistFeed
 
 
 class Spec(BaseModel):
-    actions: Tuple[IndeedFeed]
+    actions: Tuple[CraigslistFeed]
