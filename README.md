@@ -53,7 +53,7 @@ The features offered by this package:
 * [🔑 Get your API Key](https://developers.hrflow.ai/docs/api-authentification)
 
 1. **`pip install hrflow-connectors`**
-2. **I configure the connector** that I want to use. Let's take for example Crosstalent [`GetAllJobs`](src/hrflow_connectors/connectors/destinations/crosstalent).
+2. **I configure the connector** that I want to use. Let's take for example Crosstalent [`GetAllJobs`](src/hrflow_connectors/connectors/boards/crosstalent).
 ```python
 from hrflow import Hrflow
 
