@@ -11,7 +11,7 @@ Lists of actions :
 
 `PushProfile` pushes a Hrflow.ai profile to `Flatchr` via their API.
 
-This connector sends **only basic informations**:
+This connector sends **only basic information**:
 * First name
 * Last name
 * Email
