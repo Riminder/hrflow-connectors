@@ -45,7 +45,7 @@ The features offered by this package:
 * **Synchronize an entire data** stream with a ready-to-use solution
 *  **Synchronize only certain data** in a stream meeting a condition defined by you : [`logics`](DOCUMENTATION.md#logics)
 * **Format the data as you wish** or use the default formatting that we propose adapted to each connector : [`format` & `format_function_name`](DOCUMENTATION.md#format)
-* **Enrich the data processed with *Hrflow.ai's Parsing*** by activating only one option in the connector : [`hydrate_job_with_parsing=True`](DOCUMENTATION.md#using-parsing-to-enrich-a-job)
+* **Enrich the data processed with *Hrflow.ai's Parsing*** by activating only one option in the connector : [`hydrate_with_parsing=True`](DOCUMENTATION.md#using-parsing-to-enrich-a-job)
 
 ### How to use a connector ?
 **Prerequisites**
