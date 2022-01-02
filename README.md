@@ -18,22 +18,22 @@
 
 <br/>
 
-  `hrflow-connectors` is an open source project created by **HrFlow.ai** 
+  `hrflow-connectors` is an open-source project created by **HrFlow.ai** 
 to allow developers to connect easily HR ecosystem component.
 
-This project is basically designed to handle simply and easily,
+This project is designed to simply and easily handle,
 complex HR integrations by using [**workflows**](https://developers.hrflow.ai/docs/workflows) feature.
 <br/>
 
 ## About HrFlow.ai
-  https://www.HrFlow.ai is **an API first company that provides the most sophisticated AI Powered JOB & PROFILE API**. Corporates and Software vendors can leverage our technology layers to Parse, Enrich and Score both job and candidate data. The platform supports +200 apps, pipelines and code integrations so you can automate workflows with your favorite tools.
+  https://www.HrFlow.ai is **an API first company that provides the most sophisticated AI-Powered JOB & PROFILE API**. Corporates and Software vendors can leverage our technology layers to Parse, Enrich and Score both job and candidate data. The platform supports +200 apps, pipelines, and code integrations so you can automate workflows with your favorite tools.
   - Our Developers documentation : https://developers.hrflow.ai/
   - Our API list (Parsing, Revealing, Embedding, Searching, Scoring, Reasoning) : https://www.hrflow.ai/api
   - Our cool demos labs : https://labs.hrflow.ai
 
 
-## 🪄 Quick start
-### What I can do ?
+## 🪄 Quickstart
+### What I can do?
 With Hrflow Connector, you can **synchronize** and **process** multiple **HR data streams** in just a few lines of code.
 
 You can do 3 types of actions:
@@ -43,9 +43,9 @@ You can do 3 types of actions:
 
 The features offered by this package:
 * **Synchronise an entire data** stream with a ready-to-use solution
-*  **Synchronise only certain data** in a stream meeting a condition defined by you : [`logics`]()
-* **Format the data as you wish** or use the default formatting that we propose adapted to each connector : [`format` & `format_function_name`]()
-* **Enrich the data processed with *Hrflow.ai's Parsing*** by activating only one option in the connector: [`hydrate_job_with_parsing=True`]()
+*  **Synchronise only certain data** in a stream meeting a condition defined by you : [`logics`](DOCUMENTATION.md#logics)
+* **Format the data as you wish** or use the default formatting that we propose adapted to each connector : [`format` & `format_function_name`](DOCUMENTATION.md#format)
+* **Enrich the data processed with *Hrflow.ai's Parsing*** by activating only one option in the connector: [`hydrate_job_with_parsing=True`](DOCUMENTATION.md#using-parsing-to-enrich-a-job)
 
 ### How to use a connector ?
 **Prerequisites**
@@ -53,7 +53,7 @@ The features offered by this package:
 * [🔑 Get your API Key](https://developers.hrflow.ai/docs/api-authentification)
 
 1. **`pip install hrflow-connectors`**
-2. **I configure my connector** that I want to use. Let's take for example Crosstalent [`GetAllJobs`](src/hrflow_connectors/connectors/destinations/crosstalent).
+2. **I configure the connector** that I want to use. Let's take for example Crosstalent [`GetAllJobs`](src/hrflow_connectors/connectors/destinations/crosstalent).
 ```python
 from hrflow import Hrflow
 
@@ -84,7 +84,7 @@ action = GetAllJobs(
 ```
 3.  I write the line of code `action.execute()` to **run the connector.**
 
-🐇 **TADA ! You have just called your first connector.**
+🐇 **TADA! You have just called your first connector.**
 
 
 ## 📖 Documentation
@@ -127,7 +127,7 @@ The project mainly uses 4 packages :
 - **Ultimate Software(UKG)** (soon)
 - **Workday** (soon)
 
-## 🧐 What's inside ?
+## 🧐 What's inside?
 **A quick look at the project structure.**
 
 * **`legacy/`** : Folder containing the old code snippets that we used to connect the data streams in the workflows
@@ -153,7 +153,7 @@ The project mainly uses 4 packages :
 * **`poetry.lock`** : File containing the exact versions of the dependencies to ensure that the package versions are consistent for everyone working on your project.
 * **`pyproject.toml`** : File that orchestrates the project and its dependencies.
 * **`pytest.ini`** : The main configuration file of pytest, which can change the running mode of pytest.
-* **`setup.cfg`** : A Python package which supports providing all of a Python distribution's metadata and build configuration rather than in the `setup.py` script.
+* **`setup.cfg`** : A Python package that supports providing all of a Python distribution's metadata and build configuration rather than in the `setup.py` script.
 * **`setup.py`** : The minimal setup.py which calls the configuration in `setup.cfg`.
 
 ## :woman_technologist: Contributions
