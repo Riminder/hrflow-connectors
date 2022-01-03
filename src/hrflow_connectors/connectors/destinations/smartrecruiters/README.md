@@ -17,7 +17,7 @@
 | `hrflow_client` :red_circle: | `hrflow.Hrflow` | Hrflow client instance used to communicate with the Hrflow.ai API        |
 | `profile` :red_circle: | `Profile` | Profile to push        |
 | `auth` :red_circle: | `XSmartTokenAuth` | Auth instance to identify and communicate with the platform       |
-| `job_id` :red_circle: | `str` | Id of a Job to which you want to assign a candidate when it’s created. For example job_id=`78d3ef91-8868-4ff3-b35d-9debf9d6f31f` in `https://api.smartrecruiters.com/jobs/{job_id}/candidates`        |
+| `job_id` :red_circle: | `str` | Id of a Job to which you want to assign a candidate when it’s created. For example job_id=`78d3ef91-8868-4ff3-b35d-9debf9d6f31f` in `https://api.smartrecruiters.com/jobs/78d3ef91-8868-4ff3-b35d-9debf9d6f31f/candidates`        |
 
 :red_circle: : *required* 
 
