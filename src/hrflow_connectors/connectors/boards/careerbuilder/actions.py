@@ -15,8 +15,9 @@ from selenium.common.exceptions import (
 logger = get_logger()
 
 
-class CareerJobs(BoardAction):
+class CareerBuilderFeed(BoardAction):
 
+    archive_deleted_jobs_from_stream: bool = False
     domain: str = Field(
         ...,
         description="domain just after `https://www.careerbuilder.` for example domain = `fr` in `https://www.careerbuilder.fr`",
@@ -40,7 +41,7 @@ class CareerJobs(BoardAction):
     )
     sort_by_date: bool = Field(
         False,
-        description="by default, results are sorted by relevancy which gives the best results but may cause getting old results that are no longer available which causes `selenium Timeout erros` in `format: driver.get('job_link')`. To sort by date, switch this variable to True",
+        description="by default, results are sorted by relevancy which gives the best results but may cause getting old results that are no longer available which provokes `selenium Timeout erros` in `format: driver.get('job_link')`. To sort by date, switch this variable to True",
     )
 
     @property
@@ -52,6 +53,7 @@ class CareerJobs(BoardAction):
         """
         Selenium Crawler function
         """
+        logger.info("Configuring Chrome Webdriver...")
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
@@ -123,7 +125,7 @@ class CareerJobs(BoardAction):
             )
             page_num = 1  # first page of results
             while load_more_jobs:
-                if page_num == self.maximum_page_num: #if page_num reaches limit se by user
+                if page_num == self.maximum_page_num: #if page_num reaches limit set by user
                     logger.info(
                         f"reached maximum page limit set by customer {self.maximum_page_num}"
                     )
@@ -154,7 +156,7 @@ class CareerJobs(BoardAction):
             raise NoSuchElementException(error_message)
 
         elements_count = len(jobs)
-        logger.info(f"Number of jobs found on this page : {elements_count}")
+        logger.info(f"Number of jobs found for this search : {elements_count}")
 
         # get the list of the links of job cards
         logger.info("Getting list of job links")
@@ -185,14 +187,19 @@ class CareerJobs(BoardAction):
         job["url"] = job_link
         # name
         job["name"] = driver.find_element_by_class_name("jdp_title_header").text
+        #job_details : CompanyName|Location|EmploymentType, a list of three elements can be [name,"",Type] and so on...
+        job_detail = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')
         # location
-        location = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[1].text
+        location = job_detail[1].text
         job["location"] = dict(text=location, lat=None, lng=None)
         # JobType
-        employment_type = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')[2].text
+        employment_type = job_detail[2].text
+        #CompanyName
+        company_name = job_detail[0].text
         # salary
         salary = driver.find_element_by_xpath('//*[@id="cb-salcom-info"]/div').text
-        job["tags"] = [
+        job["tags"] = [ 
+            dict(name = "career_builder_companyName", value = company_name),
             dict(name="career_builder_compensation", value=salary),
             dict(name="career_builder_employment_type", value=employment_type),
         ]
