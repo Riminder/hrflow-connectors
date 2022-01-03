@@ -201,12 +201,15 @@ class CareerBuilderFeed(BoardAction):
         # name
         job["name"] = driver.find_element_by_class_name("jdp_title_header").text
         # job_details : CompanyName|Location|EmploymentType, a list of three elements can be [name,"",Type] and so on...
-        job_detail = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')
+        job_detail = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span') #can be a list of two or three elements
         # location
         location = job_detail[1].text
         job["location"] = dict(text=location, lat=None, lng=None)
         # JobType
-        employment_type = job_detail[2].text
+        if len(job_detail)==3:
+            employment_type = job_detail[2].text
+        else:
+            employment_type = None
         # CompanyName
         company_name = job_detail[0].text
         # salary
