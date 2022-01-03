@@ -113,7 +113,7 @@ class CareerBuilderFeed(BoardAction):
                 logger.info(f"sorting resuts by date: {self.sort_by_date}")
                 driver.find_element_by_name("date").click()
 
-            except NoSuchElementException: #case when there are no results, we pass to make it more explicit down
+            except NoSuchElementException:  # case when there are no results, we pass to make it more explicit down
                 pass
         sleep(3)
         try:  # In case there are more results than those shown so we need to load more jobs on the page
@@ -125,13 +125,15 @@ class CareerBuilderFeed(BoardAction):
             )
             page_num = 1  # first page of results
             while load_more_jobs:
-                if page_num == self.maximum_page_num: #if page_num reaches limit set by user
+                if (
+                    page_num == self.maximum_page_num
+                ):  # if page_num reaches limit set by user
                     logger.info(
                         f"reached maximum page limit set by customer {self.maximum_page_num}"
                     )
                     break
                 try:
-                    sleep(4) #give the driver time to find element and click
+                    sleep(4)  # give the driver time to find element and click
                     load_more_jobs.click()
                     page_num += 1
                     logger.debug(f"loading page number: {page_num}")
@@ -147,7 +149,9 @@ class CareerBuilderFeed(BoardAction):
 
         # get all job cards web elements available on the page
         logger.info("Getting all job cards")
-        sleep(5) #give the driver time to get all jobs, especially when there are thousands on one page
+        sleep(
+            5
+        )  # give the driver time to get all jobs, especially when there are thousands on one page
         jobs = driver.find_elements_by_xpath(
             "//*[@class='data-results-content block job-listing-item']"
         )
@@ -187,19 +191,19 @@ class CareerBuilderFeed(BoardAction):
         job["url"] = job_link
         # name
         job["name"] = driver.find_element_by_class_name("jdp_title_header").text
-        #job_details : CompanyName|Location|EmploymentType, a list of three elements can be [name,"",Type] and so on...
+        # job_details : CompanyName|Location|EmploymentType, a list of three elements can be [name,"",Type] and so on...
         job_detail = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span')
         # location
         location = job_detail[1].text
         job["location"] = dict(text=location, lat=None, lng=None)
         # JobType
         employment_type = job_detail[2].text
-        #CompanyName
+        # CompanyName
         company_name = job_detail[0].text
         # salary
         salary = driver.find_element_by_xpath('//*[@id="cb-salcom-info"]/div').text
-        job["tags"] = [ 
-            dict(name = "career_builder_companyName", value = company_name),
+        job["tags"] = [
+            dict(name="career_builder_companyName", value=company_name),
             dict(name="career_builder_compensation", value=salary),
             dict(name="career_builder_employment_type", value=employment_type),
         ]
