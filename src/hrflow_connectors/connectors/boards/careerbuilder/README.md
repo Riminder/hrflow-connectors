@@ -8,8 +8,6 @@
 
 ### Parameters
 
-### Parameters
-
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `logics`  | `List[str]` | Function names to apply as filter before pushing the data. Default value : `[]`        |
