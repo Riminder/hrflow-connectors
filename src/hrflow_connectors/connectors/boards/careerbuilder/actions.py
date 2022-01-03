@@ -48,8 +48,6 @@ class GetAllJobs(BoardAction):
     def base_url(self) -> str:
         if self.domain == "de":  # German Careerbuilder website
             return "https://www.jobs.de/"
-        elif self.domain == "gr":  # Greek Careerbuilder website
-            return "https://www.kariera.gr/"
         else:
             return "https://www.careerbuilder.{}".format(self.domain)
 
@@ -102,16 +100,18 @@ class GetAllJobs(BoardAction):
             logger.error(e)
             error_message = f"This website in not available, check if `carrerbuilder.{self.domain}` is a valid domain"
             raise ConnectionError(error_message)
+
         # search job search and job location cases
-        search_key = driver.find_elements_by_class_name(
-            "autocomplete-accessibility-input"
-        )
+        search_key = driver.find_element_by_xpath('//*[@id="Keywords"]')
         logger.info(f"Crawler send a query `{self.job_search}`")
-        search_key[0].send_keys(self.job_search)
+        search_key.send_keys(self.job_search)
+
+        location_key = driver.find_element_by_xpath('//*[@id="Location"]')
         logger.info(f"Crawler send a query `{self.job_location}`")
-        search_key[1].send_keys(self.job_location)
+        location_key.send_keys(self.job_location)
+        
         # click on the search button after sending our keys
-        driver.find_element_by_class_name("submit-text").click()
+        driver.find_element_by_xpath('//*[@id="sbmt"]').click()
 
         if self.sort_by_date:
             try:
