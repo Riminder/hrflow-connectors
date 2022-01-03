@@ -80,13 +80,13 @@ class CareerBuilderFeed(BoardAction):
             )
         return driver
 
-    def pull(self) -> Iterator[str]:
+    def pull(self) -> Iterator[Dict[str, Any]]:
         """
         Pull, the role of this function is to interact with careerbuilder webpage, click buttons and search offers based on job title and location.
-        it scraps all the job cards shown on the page, and for each job card it retrieves its individual link
+        it scraps all the job cards shown on the page, and for each job card it retrieves its individual link and reference
 
         Returns:
-          Iterator[str]:  list of scrapped job links
+          Iterator[Dict[str, Any]]:  list of dictionaries {job_ref:job_link}
         """
         driver = self.Crawler
         try:
@@ -162,24 +162,33 @@ class CareerBuilderFeed(BoardAction):
         elements_count = len(jobs)
         logger.info(f"Number of jobs found for this search : {elements_count}")
 
-        # get the list of the links of job cards
-        logger.info("Getting list of job links")
-        job_link_list = [job.get_attribute("href") for job in jobs]
+        # get the list of the links and references of job cards
+        # job ref                     :            job link
+        job_ref_link_list = [
+            {job.get_attribute("data-job-did"): job.get_attribute("href")}
+            for job in jobs
+        ]
 
-        job_link_count = len(job_link_list)
+        job_refs_count = len(job_ref_link_list)
+        job_link_count = len(job_ref_link_list)
+        logger.info(f"Number of total job references found : {job_refs_count}")
         logger.info(f"Number of total job links found : {job_link_count}")
-        return job_link_list
 
-    def format(self, job_link: str) -> Dict[str, Any]:
+        return job_ref_link_list
+
+    def format(self, data: Dict[str, str]) -> Dict[str, Any]:
         """
-        Format, generates a dictionary of a job attributes, for each job link the function scraps with selenium and parse useful attributes.
+        Format, generates a dictionary of a job attributes, for each job link(data value) the function scraps with selenium and parse useful attributes.
 
         Args:
-            data (str): job_link parsed after the function pull is executed. each job link is retrieved from the job_links_list scrapped in the pull function
+            data Dict[str, str]: a dictionary with job reference as key and job link as value generated after the function pull is executed.
 
         Returns:
             Dict[str, Any]: a job in the HrFlow job object format
         """
+        # getting job_ref and job_link from previously pulled data
+        ((job_ref, job_link),) = data.items()
+
         job = dict()
 
         logger.debug("Extracting job from its link web page")
@@ -217,7 +226,7 @@ class CareerBuilderFeed(BoardAction):
             }
         ]
         job["summary"] = None
-        job["reference"] = None
+        job["reference"] = job_ref
         job["metadata"] = []
         driver.quit()
         logger.debug(f"The web page has been scraped")
