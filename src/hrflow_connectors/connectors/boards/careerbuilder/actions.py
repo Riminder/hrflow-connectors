@@ -15,7 +15,7 @@ from selenium.common.exceptions import (
 logger = get_logger()
 
 
-class CareerBuilderFeed(BoardAction):
+class GetAllJobs(BoardAction):
 
     archive_deleted_jobs_from_stream: bool = False
     domain: str = Field(
@@ -46,7 +46,12 @@ class CareerBuilderFeed(BoardAction):
 
     @property
     def base_url(self) -> str:
-        return "https://www.careerbuilder.{}".format(self.domain)
+        if self.domain == "de":  # German Careerbuilder website
+            return "https://www.jobs.de/"
+        elif self.domain == "gr":  # Greek Careerbuilder website
+            return "https://www.kariera.gr/"
+        else:
+            return "https://www.careerbuilder.{}".format(self.domain)
 
     @property
     def Crawler(self):
