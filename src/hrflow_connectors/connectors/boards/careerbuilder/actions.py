@@ -141,7 +141,7 @@ class CareerBuilderFeed(BoardAction):
                 except (
                     ElementNotInteractableException,
                     StaleElementReferenceException,
-                ):
+                ):  # i.e (element is present in the DOM but interactions with that element will hit another element do to paint order, Thrown when a reference to an element is now “stale”) by order of exceptions
                     load_more_jobs = False
         except NoSuchElementException:  # Except if the driver don't need to scroll down to get all jobs we pass
             logger.info("There is one or no page of results")
@@ -201,12 +201,14 @@ class CareerBuilderFeed(BoardAction):
         # name
         job["name"] = driver.find_element_by_class_name("jdp_title_header").text
         # job_details : CompanyName|Location|EmploymentType, a list of three elements can be [name,"",Type] and so on...
-        job_detail = driver.find_elements_by_xpath('//*[@id="jdp-data"]//span') #can be a list of two or three elements
+        job_detail = driver.find_elements_by_xpath(
+            '//*[@id="jdp-data"]//span'
+        )  # can be a list of two or three elements
         # location
         location = job_detail[1].text
         job["location"] = dict(text=location, lat=None, lng=None)
         # JobType
-        if len(job_detail)==3:
+        if len(job_detail) == 3:
             employment_type = job_detail[2].text
         else:
             employment_type = None
