@@ -3,8 +3,8 @@
 
 `Hrflow.ai` :arrow_right: `Smart Recruiters`
 
-## SmartJobs
-`SmartJobs` pushes a HrFlow.ai profile from a ***Hrflow.ai Source*** to `SmartRecruiters` via the ***SmartRecruiter*** API.
+## SmartProfile
+`SmartProfile` pushes a HrFlow.ai profile from a ***Hrflow.ai Source*** to `SmartRecruiters` via the ***SmartRecruiter*** API.
 
 ### Parameters
 
