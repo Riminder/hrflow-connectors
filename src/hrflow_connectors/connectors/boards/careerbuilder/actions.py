@@ -37,7 +37,7 @@ class CareerBuilderFeed(BoardAction):
     )
     maximum_page_num: Optional[int] = Field(
         None,
-        description="Maximum `number of pages` you want to scroll, `career builder`pagination is designed as an infinite scroller loading",
+        description="Maximum `number of pages` you want to scroll, `careerbuilder` website pagination is designed as an infinite scroller loading",
     )
     sort_by_date: bool = Field(
         False,
