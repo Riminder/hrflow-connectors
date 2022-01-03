@@ -3,8 +3,8 @@
 
 `CareerBuilder`  :arrow_right:  `Hrflow.ai`
 
-## CareerBuilderFeed
-`CareerBuilderFeed` scans the ***CareerBuilder*** website for job offers. It adds all these **jobs** to a ***Hrflow.ai Board***
+## GetAllJobs
+`GetAllJobs` scans the ***CareerBuilder*** website for job offers. It adds all these **jobs** to a ***Hrflow.ai Board***
 
 ### Parameters
 
@@ -33,7 +33,7 @@
 ```python
 from hrflow import Hrflow
 
-from hrflow_connectors.connectors.boards.careerbuilder import CareerBuilderFeed
+from hrflow_connectors.connectors.boards.careerbuilder import GetAllJobs
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 # We add a basic configuration to our logger to see the messages displayed in the standard output
@@ -42,7 +42,7 @@ logger = get_logger_with_basic_config()
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
-action = CareerBuilderFeed(
+action = GetAllJobs(
     executable_path="/opt/webdriver",
     max_page=2,
     domain="com",

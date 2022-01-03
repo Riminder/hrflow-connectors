@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from typing import Tuple
 
-from .actions import CareerBuilderFeed
+from .actions import GetAllJobs
 
 
 class Spec(BaseModel):
-    actions: Tuple[CareerBuilderFeed]
+    actions: Tuple[GetAllJobs]
