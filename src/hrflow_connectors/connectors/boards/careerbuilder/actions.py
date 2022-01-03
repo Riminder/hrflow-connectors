@@ -207,7 +207,7 @@ class CareerBuilderFeed(BoardAction):
         location = job_detail[1].text
         job["location"] = dict(text=location, lat=None, lng=None)
         # JobType
-        if len(job_detail) == 3:
+        if len(job_detail) >= 3:
             employment_type = job_detail[2].text
         else:
             employment_type = None
