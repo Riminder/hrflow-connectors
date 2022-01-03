@@ -1,39 +1,15 @@
-import os
-import json
-import pytest
-from hrflow import Hrflow
-import hrflow_connectors as hc
-from hrflow_connectors.connectors.boards.careerbuilder.actions import CareerJobs
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
-#adding web driver manager as a DEV dependency to make testing easier for users
-from webdriver_manager.chrome import ChromeDriverManager
+from hrflow_connectors.connectors.boards.careerbuilder import CareerBuilderFeed
 
-@pytest.fixture
-def credentials(pytestconfig):
-    with open(os.path.join(pytestconfig.rootpath, "credentials.json"), "r") as f:
-        credentials = json.loads(f.read())
-    return credentials
 
-@pytest.fixture
-def hrflow_client(credentials):
-    def hrflow_client_func(portal_name="dev-demo"):
-        x_api_key = credentials["hrflow"][portal_name]["x-api-key"]
-        x_user_email = credentials["hrflow"][portal_name]["x-user-email"]
-        client = Hrflow(api_secret=x_api_key, api_user=x_user_email)
-        return client
-
-    return hrflow_client_func
-
-def test_CareerJobs(hrflow_client):
-    logger = get_logger_with_basic_config()
-    action = CareerJobs(
-        executable_path=ChromeDriverManager().install(),
+def test_CareerJobs(logger, hrflow_client, webdriver_path):
+    
+    action = CareerBuilderFeed(
+        executable_path=webdriver_path,
         domain='fr',
         hrflow_client=hrflow_client("dev-demo"),
         job_search='Data Scientist',
         job_location='PARIS',
         hydrate_with_parsing=True,
-        archive_deleted_jobs_from_stream=False,
         board_key="4dda21ae8a3bd3817f0f98ee716dad590c4be87e",
         )
     action.execute()
