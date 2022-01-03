@@ -86,7 +86,7 @@ class CareerBuilderFeed(BoardAction):
         it scraps all the job cards shown on the page, and for each job card it retrieves its individual link and reference
 
         Returns:
-          Iterator[Dict[str, Any]]:  list of dictionaries {job_ref:job_link}
+          Iterator[Dict[str, Any]]:  list of dictionaries iterator[{job_ref:job_link}]
         """
         driver = self.Crawler
         try:
@@ -162,8 +162,7 @@ class CareerBuilderFeed(BoardAction):
         elements_count = len(jobs)
         logger.info(f"Number of jobs found for this search : {elements_count}")
 
-        # get the list of the links and references of job cards
-        # job ref                     :            job link
+        # get the list of the links and references of job cards: [{job_ref:job_link} for job in jobs]
         job_ref_link_list = [
             {job.get_attribute("data-job-did"): job.get_attribute("href")}
             for job in jobs
