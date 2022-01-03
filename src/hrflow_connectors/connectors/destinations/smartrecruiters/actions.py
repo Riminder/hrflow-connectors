@@ -11,7 +11,7 @@ class SmartProfile(ProfileDestinationAction, HTTPStream):
     auth: XSmartTokenAuth
     job_id: str = Field(
         ...,
-        description="Id of a Job to which you want to assign a candidate when it’s created. A profile is sent to this URL `https://api.smartrecruiters.com/jobs/{jobId}/candidates` ",
+        description="Id of a Job to which you want to assign a candidate when it’s created. A profile is sent to this URL `https://api.smartrecruiters.com/jobs/{job_id}/candidates` ",
     )
 
     def build_request_headers(self):
