@@ -9,9 +9,9 @@ from ....utils.hrflow import generate_workflow_response
 class SmartProfile(ProfileDestinationAction, HTTPStream):
     payload: Dict[str, Any] = dict()
     auth: XSmartTokenAuth
-    job_uuid: str = Field(
+    job_id: str = Field(
         ...,
-        description="You need the `UUID` of the job to push the candidate, in hrflow smart jobs boards it is obtained in the `tags` section, you can also contact smartrecruiters to obtain the `UUID`, see `https://help.smartrecruiters.com/?title=Marketplace_Partners%2F4.Career_site_builders_%26_sourcing_tools%2FMethods_of_pushing_candidates_to_Smartrecruiters' for more",
+        description="Id of a Job to which you want to assign a candidate when it’s created. A profile is sent to this URL `https://api.smartrecruiters.com/jobs/{jobId}/candidates` ",
     )
 
     def build_request_headers(self):
@@ -20,9 +20,7 @@ class SmartProfile(ProfileDestinationAction, HTTPStream):
 
     @property
     def base_url(self):
-        return "https://api.smartrecruiters.com/jobs/{}/candidates".format(
-            self.job_uuid
-        )
+        return "https://api.smartrecruiters.com/jobs/{}/candidates".format(self.job_id)
 
     @property
     def http_method(self):
@@ -118,19 +116,16 @@ class SmartProfile(ProfileDestinationAction, HTTPStream):
             None,
         ]:  # check if fields is not an empty list
             smart_candidate["location"] = dict(
-                country=value_or_empty(info["location"]["fields"].get("country", {})),
-                countryCode="No",
-                region=value_or_empty(info["location"]["fields"].get("state", {})),
-                regionCode="NaN",
                 city=value_or_empty(info["location"]["fields"].get("city", {})),
+                country=value_or_empty(info["location"]["fields"].get("country", {})),
+                region=value_or_empty(info["location"]["fields"].get("state", {})),
                 lat=info["location"]["lat"] if info["location"]["lat"] else 0,
                 lng=info["location"]["lng"] if info["location"]["lng"] else 0,
             )
         else:
             smart_candidate["location"] = dict(
                 country="Not shown",
-                countryCode="NO",
-                regionCode="Not shown",
+                region="NotShown",
                 City="Not shown",
                 lat=0,
                 lng=0,
