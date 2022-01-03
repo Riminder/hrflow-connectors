@@ -29,6 +29,28 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
     def http_method(self):
         return "POST"
 
+    def format(self, data):
+        firstname = data["info"].get("first_name")
+        lastname = data["info"].get("last_name")
+        email = data["info"].get("email")
+        key = data["key"]
+
+        # Case if lastname is not defined after CV parsing
+        # This field is required for Crosstalent
+        if lastname is None or lastname == "":
+            data["info"]["last_name"] = "N/A"
+
+        # Case if email is not defined after CV parsing
+        # This field is required for Crosstalent
+        if email is None or email == "":
+            if firstname is not None and lastname is not None:
+                email = f"{firstname}.{lastname}@vulcain.com"
+            else:
+                email = f"{key}@vulcain.com"
+            data["info"]["email"] = email
+
+        return data
+
     def push(self, data):
         self.payload.clear()
         profile = next(data)
@@ -38,9 +60,3 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
             raise RuntimeError(
                 "Push profile to Crosstalent failed : `{}`".format(response.content)
             )
-
-    def execute(self):
-        super().execute()
-        return generate_workflow_response(
-            status_code=201, message="Profile successfully pushed"
-        )
