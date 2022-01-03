@@ -22,7 +22,7 @@ def test_SmartProfile(logger, auth, hrflow_client):
     )
     action = SmartProfile(
         auth=auth,
-        job_uuid="3696cad0-a9b0-4a40-9cd7-4cc5feb1a509",
+        job_id="3696cad0-a9b0-4a40-9cd7-4cc5feb1a509",
         hrflow_client=hrflow_client(),
         profile=profile,
     )
