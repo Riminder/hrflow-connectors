@@ -3,8 +3,8 @@
 
 `Hrflow.ai` :arrow_right: `Smart Recruiters`
 
-## SmartProfile
-`SmartProfile` pushes a HrFlow.ai profile from a ***Hrflow.ai Source*** to `SmartRecruiters` via the ***SmartRecruiter*** API.
+## PushProfile
+`PushProfile` pushes a HrFlow.ai profile from a ***Hrflow.ai Source*** to `SmartRecruiters` via the ***SmartRecruiter*** API.
 
 ### Parameters
 
@@ -27,7 +27,7 @@ Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.a
 from hrflow import Hrflow
 
 from hrflow_connectors.core.auth import XSmartTokenAuth
-from hrflow_connectors.connectors.destinations.smartrecruiters import SmartProfile
+from hrflow_connectors.connectors.destinations.smartrecruiters import PushProfile
 from hrflow_connectors.utils.hrflow import EventParser, Profile, Source
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
@@ -50,7 +50,7 @@ def workflow(_request, settings):
 
         auth = XSmartTokenAuth(value=settings["MY_SMART_TOKEN"])
 
-        action = SmartProfile(
+        action = PushProfile(
             auth=auth,
             job_id="3696cad0-a9b0-4a40-9cd7-4cc5feb1a509",
             hrflow_client=client,

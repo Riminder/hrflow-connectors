@@ -6,7 +6,7 @@ from ....core.auth import XSmartTokenAuth
 from ....utils.hrflow import generate_workflow_response
 
 
-class SmartProfile(ProfileDestinationAction, HTTPStream):
+class PushProfile(ProfileDestinationAction, HTTPStream):
     payload: Dict[str, Any] = dict()
     auth: XSmartTokenAuth
     job_id: str = Field(

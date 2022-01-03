@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from typing import Tuple
 
-from .actions import SmartProfile
+from .actions import PushProfile
 
 
 class Spec(BaseModel):
-    actions: Tuple[SmartProfile]
+    actions: Tuple[PushProfile]
