@@ -18,7 +18,7 @@
 | `board_key` :red_circle: | `str` | Board key where the jobs to be added will be stored        |
 | `hydrate_with_parsing`  | `bool` | Enrich the job with parsing. Default value : `False`        |
 | `archive_deleted_jobs_from_stream`  | `bool` | Archive Board jobs when they are no longer in the incoming job stream. Default value : `True`        |
-| `board_token` :red_circle: | `str` |  Job Board data in `Greenhouse` is publicly available, so authentication is not required for any GET endpoints. `board_token` is the identifier of a given board on greenhouse, for example `lyft` for the `Lyft Company`, for testing use board_token = `vaulttec`     |
+| `board_token` :red_circle: | `str` |  Job Board data in `Greenhouse` is publicly available, so authentication is not required for any GET endpoints. `board_token` is the identifier of a given board on greenhouse, for example `lyft` for the `Lyft Company`, for testing use board_token = `vaulttec`. It is inserted in the url: "https://boards-api.greenhouse.io/v1/boards/{board_token}/jobs/?content=true"     |
 
 :red_circle: : *required* 
 
