@@ -28,7 +28,8 @@ class GetAllJobs(HTTPStream, BoardAction):
         return "GET"
 
     def pull(self) -> Iterator[Dict[str, Any]]:
-        """pull : sends a request to get all jobs from a greenhouse job board
+        """
+        pull all jobs from a greenhouse job board
 
         Returns:
             Iterator[Dict[str, Any]]: list of all jobs with their content if available
@@ -49,7 +50,8 @@ class GetAllJobs(HTTPStream, BoardAction):
             raise ConnectionError(error_message.format(response.content))
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """format : convert every job pulled from greenhouse job board into a HrFlow job object
+        """
+        format : convert every job pulled from greenhouse job board into a HrFlow job object
 
         Returns:
             Dict[str, Any]: job in the HrFlow job object format

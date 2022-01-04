@@ -37,8 +37,7 @@ logger = get_logger_with_basic_config()
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 action = GetAllJobs(
-
-    board_token="MY_board_token",
+    board_token="MY_BOARD_TOKEN",
     hrflow_client=client,
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
