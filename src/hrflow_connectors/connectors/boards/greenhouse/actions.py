@@ -39,13 +39,13 @@ class GetAllJobs(HTTPStream, BoardAction):
         if response.status_code == 200:
             job_dict = response.json()
             total_info = job_dict["meta"]["total"]
+            logger.info(f"Total jobs found : {total_info}")
             job_list = job_dict["jobs"]
-            job_number = len(job_list)
-            logger.info(f"{job_number} job(s) got. Total found : {total_info}")
             return job_list
         else:
-            logger.error(f"Failed to get jobs from board: {self.board_token}")
-            logger.debug(f"Check that your board token: {self.board_token} is valid")
+            logger.error(
+                f"Failed to get jobs from board: {self.board_token}, Check that your board token is valid"
+            )
             error_message = "Unable to pull the data ! Reason : `{}`"
             raise ConnectionError(error_message.format(response.content))
 
