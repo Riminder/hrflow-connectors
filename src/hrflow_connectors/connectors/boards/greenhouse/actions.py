@@ -51,7 +51,7 @@ class GetAllJobs(HTTPStream, BoardAction):
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        format : convert every job pulled from greenhouse job board into a HrFlow job object
+        format each job pulled from greenhouse job board into a HrFlow job object
 
         Returns:
             Dict[str, Any]: job in the HrFlow job object format
