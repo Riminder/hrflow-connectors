@@ -130,8 +130,8 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
             )
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        def get_education_list(hr_flow_profile):
-            hrflow_education_list = hr_flow_profile["educations"]
+        def get_education_list(hrflow_profile):
+            hrflow_education_list = hrflow_profile["educations"]
             flatchr_education_list = []
 
             for education in hrflow_education_list:
@@ -163,8 +163,8 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
                 flatchr_education_list.append(flatchr_education)
             return flatchr_education_list
 
-        def get_experiences_list(hr_flow_profile):
-            hrflow_experiences_list = hr_flow_profile["experiences"]
+        def get_experiences_list(hrflow_profile):
+            hrflow_experiences_list = hrflow_profile["experiences"]
             flatchr_experiences_list = []
 
             for experience in hrflow_experiences_list:
@@ -206,24 +206,24 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
             return flatchr_experiences_list
 
         def get_name():
-            name = {"formattedName": "XXX XXXX", "given": "XXXX", "family": "XXXX"}
+            name = {"formattedName": "Undefined", "given": "Undefined", "family": "Undefined"}
             return name
 
-        def get_phone(hr_flow_profile):
-            info = hr_flow_profile.get("info")
+        def get_phone(hrflow_profile):
+            info = hrflow_profile.get("info")
             phone = [
                 {"dialNumber": info.get("phone") if info else None, "useCode": None}
             ]
             return phone
 
-        def get_email(hr_flow_profile):
-            info = hr_flow_profile.get("info")
+        def get_email(hrflow_profile):
+            info = hrflow_profile.get("info")
 
             email = [{"address": info.get("email") if info else None}]
             return email
 
-        def get_position(hr_flow_profile):
-            hrflow_experiences_list = hr_flow_profile["experiences"]
+        def get_position(hrflow_profile):
+            hrflow_experiences_list = hrflow_profile["experiences"]
             position = []
 
             for experience in hrflow_experiences_list:
@@ -232,8 +232,8 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
 
             return position
 
-        def get_employment_positions(hr_flow_profile):
-            hrflow_experiences_list = hr_flow_profile["experiences"]
+        def get_employment_positions(hrflow_profile):
+            hrflow_experiences_list = hrflow_profile["experiences"]
             employment_positions = []
 
             for experience in hrflow_experiences_list:
