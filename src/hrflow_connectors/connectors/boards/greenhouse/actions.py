@@ -86,7 +86,7 @@ class GetAllJobs(HTTPStream, BoardAction):
         # tags
         department_name = data.get("departments")
         office_name = data.get("offices")
-        education = data.get("education_optional")
+        education = data.get("education")
         employment = data.get("employment")
 
         job["tags"] = [
