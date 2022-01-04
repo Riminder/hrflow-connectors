@@ -61,7 +61,7 @@ class GetAllJobs(HTTPStream, BoardAction):
         # summary
         job["summary"] = None
         # reference
-        job["reference"] = str(data.get("internal_job_id"))
+        job["reference"] = str(data.get("id"))
         # url
         job["url"] = data.get("absolute_url")
         # location
