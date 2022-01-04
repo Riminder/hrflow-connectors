@@ -62,6 +62,23 @@ class Profile(BaseModel):
     source: Source
 
 
+class Board(BaseModel):
+    """
+    Hrflow board
+    """
+
+    key: str
+
+
+class Job(BaseModel):
+    """
+    Hrflow job
+    """
+
+    key: str
+    board: Board
+
+
 class EventParser(BaseModel):
     request: Dict[str, Any]
 
