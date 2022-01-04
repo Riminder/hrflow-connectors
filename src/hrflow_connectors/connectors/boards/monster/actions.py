@@ -48,7 +48,7 @@ class PushJob(BoardAction, HTTPStream):
         Pull data
         """
         response = self.hrflow_client.job.indexing.get(
-            board_key=self.job.source.key, key=self.job.key
+            board_key=self.job.board.key, key=self.job.key
         )
         if response["code"] >= 400:
             raise RuntimeError(
@@ -142,10 +142,6 @@ class PushJob(BoardAction, HTTPStream):
 
         def format_created_at(formater, hrflow_job):
             formater["today"] = hrflow_job["created_at"]
-
-        def format_credentials(formater, hrflow_job):
-            formater["username"] = "xrtpjobsx01"
-            formater["password"] = "rtp987654"
 
         def format_job_informations(formater, hrflow_job):
             formater["JobTitle"] = hrflow_job["name"]
@@ -248,7 +244,6 @@ class PushJob(BoardAction, HTTPStream):
 
         creation_pipeline = [format_job_informations,
                              format_created_at,
-                             format_credentials,
                              format_job_reference,
                              format_salary,
                              format_location,
