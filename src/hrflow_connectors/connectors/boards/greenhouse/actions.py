@@ -56,22 +56,22 @@ class GetAllJobs(HTTPStream, BoardAction):
         """
 
         job = dict()
-        #name
+        # name
         job["name"] = data.get("title")
-        #summary
+        # summary
         job["summary"] = None
-        #reference
+        # reference
         job["reference"] = str(data.get("internal_job_id"))
-        #url
+        # url
         job["url"] = data.get("absolute_url")
-        #location
+        # location
         location = data.get("location").get("name")
         job["location"] = dict(text=location, lat=None, lng=None)
-        #sections
+        # sections
         description_content = data.get("content")
-        #convert the escaped description content into html format
+        # convert the escaped description content into html format
         description_html = html.unescape(description_content)
-        #remove html tags to get clean text
+        # remove html tags to get clean text
         text = remove_html_tags(description_html)
 
         job["sections"] = [
@@ -81,9 +81,9 @@ class GetAllJobs(HTTPStream, BoardAction):
                 description=text,
             )
         ]
-        #metadata
+        # metadata
         job["metadatas"] = data.get("metadata")
-        #tags
+        # tags
         department_name = data.get("departments")
         office_name = data.get("offices")
         education = data.get("education_optional")
@@ -95,7 +95,7 @@ class GetAllJobs(HTTPStream, BoardAction):
             dict(name="greenhouse_education", value=education),
             dict(name="greenhouse_employment", value=employment),
         ]
-        #updated_at
+        # updated_at
         job["updated_at"] = data.get("updated_at")
 
         return job
