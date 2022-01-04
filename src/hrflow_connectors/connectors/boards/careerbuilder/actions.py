@@ -118,7 +118,7 @@ class GetAllJobs(BoardAction):
                 logger.info(f"sorting resuts by date: {self.sort_by_date}")
                 driver.find_element_by_name("date").click()
 
-            except NoSuchElementException:  # case when there are no results, we pass to make it more explicit down
+            except NoSuchElementException:  # case when there are no results, or this ain't an option on a specific website pass to make it more explicit down
                 pass
         sleep(3)
         try:  # In case there are more results than those shown so we need to load more jobs on the page
@@ -147,6 +147,7 @@ class GetAllJobs(BoardAction):
                     ElementNotInteractableException,
                     StaleElementReferenceException,
                 ):  # i.e (element is present in the DOM but interactions with that element will hit another element do to paint order, Thrown when a reference to an element is now “stale”) by order of exceptions
+                    logger.info(f"error loading page number: {page_num}, there are no more jobs to load or the element to click on is stale.")
                     load_more_jobs = False
         except NoSuchElementException:  # Except if the driver don't need to scroll down to get all jobs we pass
             logger.info("There is one or no page of results")
