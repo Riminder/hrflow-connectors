@@ -1,4 +1,4 @@
-from ....core.auth import AuthorizationAuth
+from ....core.auth import XMLAuth
 from ....core.action import BoardAction
 from ....core.http import HTTPStream
 from ....utils.hrflow import Job
@@ -11,7 +11,7 @@ import requests
 
 
 class PushJob(BoardAction, HTTPStream):
-    payload: Dict[str, Any] = dict()
+    payload: str = ""
     auth: XMLAuth
 
     job: Job = Field(..., description="Job to push")
@@ -35,13 +35,12 @@ class PushJob(BoardAction, HTTPStream):
         return "POST"
 
     def push(self, data):
-        self.payload.clear()
-        profile = next(data)
-        self.payload.update(profile)
+        job = next(data)
+        self.payload = job
         response = self.send_request()
         if response.status_code >= 400:
             raise RuntimeError(
-                "Push profile to flatchr failed : `{}`".format(response.content)
+                "Push job to monster failed : `{}`".format(response.content)
             )
 
     def pull(self) -> Iterator[Dict[str, Any]]:
