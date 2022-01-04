@@ -69,7 +69,10 @@ class GetAllJobs(HTTPStream, BoardAction):
         job["location"] = dict(text=location, lat=None, lng=None)
         #sections
         description_content = data.get("content")
-        text = remove_html_tags(html.unescape(description_content))
+        #convert the escaped description content into html format
+        description_html = html.unescape(description_content)
+        #remove html tags to get clean text
+        text = remove_html_tags(description_html)
 
         job["sections"] = [
             dict(
