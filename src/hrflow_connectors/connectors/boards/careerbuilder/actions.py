@@ -109,7 +109,7 @@ class GetAllJobs(BoardAction):
         location_key = driver.find_element_by_xpath('//*[@id="Location"]')
         logger.info(f"Crawler send a query `{self.job_location}`")
         location_key.send_keys(self.job_location)
-        
+
         # click on the search button after sending our keys
         driver.find_element_by_xpath('//*[@id="sbmt"]').click()
 
@@ -138,7 +138,7 @@ class GetAllJobs(BoardAction):
                         f"reached maximum page limit set by customer {self.maximum_page_num}"
                     )
                     break
-                try: 
+                try:
                     logger.info(f"Waiting 4 seconds to load more jobs.")
                     sleep(4)  # give the driver time to find element and click
                     load_more_jobs.click()
@@ -149,7 +149,9 @@ class GetAllJobs(BoardAction):
                     ElementNotInteractableException,
                     StaleElementReferenceException,
                 ):  # i.e (element is present in the DOM but interactions with that element will hit another element do to paint order, Thrown when a reference to an element is now “stale”) by order of exceptions
-                    logger.warning(f"error loading page number: {page_num}, there are no more jobs to load or the element to click on is stale.")
+                    logger.warning(
+                        f"error loading page number: {page_num}, there are no more jobs to load or the element to click on is stale."
+                    )
                     load_more_jobs = False
         except NoSuchElementException:  # Except if the driver don't need to scroll down to get all jobs we pass
             logger.info("There is one or no page of results")
@@ -157,9 +159,7 @@ class GetAllJobs(BoardAction):
 
         # get all job cards web elements available on the page
         logger.info(f"Give the driver 5 seconds to get all jobs.")
-        sleep(
-            5
-        )  # give the driver time to get all jobs, especially when there are thousands on one page
+        sleep(5)  # give the driver time to get all jobs, especially when there are thousands on one page
         logger.info("Getting all job cards")
         jobs = driver.find_elements_by_xpath(
             "//*[@class='data-results-content block job-listing-item']"
@@ -225,9 +225,9 @@ class GetAllJobs(BoardAction):
         # salary
         salary = driver.find_element_by_xpath('//*[@id="cb-salcom-info"]/div').text
         job["tags"] = [
-            dict(name="career_builder_companyName", value=company_name),
-            dict(name="career_builder_compensation", value=salary),
-            dict(name="career_builder_employment_type", value=employment_type),
+            dict(name="careerbuilder_companyName", value=company_name),
+            dict(name="careerbuilder_compensation", value=salary),
+            dict(name="careerbuilder_employment_type", value=employment_type),
         ]
         # description
         description = driver.find_element_by_class_name("jdp-description-details").text
