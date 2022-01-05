@@ -120,6 +120,7 @@ class GetAllJobs(BoardAction):
 
             except NoSuchElementException:  # case when there are no results, or this ain't an option on a specific website pass to make it more explicit down
                 pass
+        logger.info(f"Waiting 3 seconds for page to fully load.")
         sleep(3)
         try:  # In case there are more results than those shown so we need to load more jobs on the page
             logger.info(
@@ -137,7 +138,8 @@ class GetAllJobs(BoardAction):
                         f"reached maximum page limit set by customer {self.maximum_page_num}"
                     )
                     break
-                try:
+                try: 
+                    logger.info(f"Waiting 4 seconds to load more jobs.")
                     sleep(4)  # give the driver time to find element and click
                     load_more_jobs.click()
                     page_num += 1
@@ -147,17 +149,18 @@ class GetAllJobs(BoardAction):
                     ElementNotInteractableException,
                     StaleElementReferenceException,
                 ):  # i.e (element is present in the DOM but interactions with that element will hit another element do to paint order, Thrown when a reference to an element is now “stale”) by order of exceptions
-                    logger.info(f"error loading page number: {page_num}, there are no more jobs to load or the element to click on is stale.")
+                    logger.warning(f"error loading page number: {page_num}, there are no more jobs to load or the element to click on is stale.")
                     load_more_jobs = False
         except NoSuchElementException:  # Except if the driver don't need to scroll down to get all jobs we pass
             logger.info("There is one or no page of results")
             pass
 
         # get all job cards web elements available on the page
-        logger.info("Getting all job cards")
+        logger.info(f"Give the driver 5 seconds to get all jobs.")
         sleep(
             5
         )  # give the driver time to get all jobs, especially when there are thousands on one page
+        logger.info("Getting all job cards")
         jobs = driver.find_elements_by_xpath(
             "//*[@class='data-results-content block job-listing-item']"
         )

@@ -44,7 +44,7 @@ client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 action = GetAllJobs(
     executable_path="/opt/webdriver",
-    max_page=2,
+    maximum_page_num=2,
     domain="com",
     hrflow_client=client,
     job_search="Data Scientist",
