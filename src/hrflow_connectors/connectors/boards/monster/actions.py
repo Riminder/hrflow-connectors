@@ -1,6 +1,6 @@
-from ....core.auth import XMLAuth
-from ....core.action import BoardAction
+from ....core.action import JobDestinationAction
 from ....core.http import HTTPStream
+from ....utils.logger import get_logger
 from ....utils.hrflow import Job
 from ....utils.hrflow import generate_workflow_response
 
@@ -9,12 +9,21 @@ from typing import Dict, Any, Iterator
 import base64
 import requests
 
+logger = get_logger()
 
-class PushJob(BoardAction, HTTPStream):
+
+class PushJob(JobDestinationAction, HTTPStream):
     payload: str = ""
-    auth: XMLAuth
 
-    job: Job = Field(..., description="Job to push")
+    username: str = Field(
+        ...,
+        description="username which will be format in the XML",
+    )
+
+    password: str = Field(
+        ...,
+        description="password which will be format in the XML",
+    )
 
     subdomain: str = Field(
         ...,
@@ -39,92 +48,80 @@ class PushJob(BoardAction, HTTPStream):
         self.payload = job
         response = self.send_request()
         if response.status_code >= 400:
+            logger.info(response.content)
+            logger.info(self.payload)
+            logger.info(type(self.payload))
             raise RuntimeError(
                 "Push job to monster failed : `{}`".format(response.content)
             )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
-        """
-        Pull data
-        """
-        response = self.hrflow_client.job.indexing.get(
-            board_key=self.job.board.key, key=self.job.key
-        )
-        if response["code"] >= 400:
-            raise RuntimeError(
-                "Indexing job get failed : `{}`".format(response["message"])
-            )
-
-        job = response["data"]
-        return [job]
-
-    def format(self, data: Dict[str, Any]) -> str:
+    def format(self, data: Dict[str, Any]) -> bytes:
 
         xml_job_str = """<?xml version="1.0" encoding="UTF-8"?>
-        <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
-          <SOAP-ENV:Header>
-            <mh:MonsterHeader xmlns:mh="http://schemas.monster.com/MonsterHeader">
-              <mh:MessageData>
-                <mh:MessageId>Creating a job</mh:MessageId>
-                <mh:Timestamp>{today}</mh:Timestamp>
-              </mh:MessageData>
-            </mh:MonsterHeader>
-            <wsse:Security xmlns:wsse="http://schemas.xmlsoap.org/ws/2002/04/secext">
-              <wsse:UsernameToken>
-                <wsse:Username>{username}</wsse:Username>
-                <wsse:Password>{password}</wsse:Password>
-              </wsse:UsernameToken>
-            </wsse:Security>
-          </SOAP-ENV:Header>
-          <SOAP-ENV:Body>
-            <Job jobRefCode={jobRefCode} jobAction="addOrUpdate"
-            inventoryType="transactional" 
-            xmlns="http://schemas.monster.com/Monster"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://schemas.monster.com/Monster
-            http://schemas.monster.com/Current/xsd/Monster.xsd">
-              <RecruiterReference>
-                <UserName>{username}</UserName>
-              </RecruiterReference>
-              <JobInformation>
-                <JobTitle>Executive Officer </JobTitle>{JobLevel}{JobType}{JobStatus}
-                <Salary>{Currency}{SalaryMin}{SalaryMax}{CompensationType}
-                </Salary>
-                <PhysicalAddress>
-                  <StreetAddress>{StreetAddress}</StreetAddress>
-                </PhysicalAddress>
-                <HideCompanyInfo>false</HideCompanyInfo>
-                <JobBody>{JobBody}
-                </JobBody>
-                <ApplyWithMonster>
-                  <DeliveryMethod monsterId="5" />
-                  <DeliveryFormat monsterId="1" />
-                  <VendorText>This apply comes from a job on Monster</VendorText>
-                  <PostURL>https://webhook.site/360f0dec-c55b-4a29-92d9-210b70d14ad3</PostURL>
-                  <ApiKey>myAPIKEY</ApiKey>
-                </ApplyWithMonster>
-              </JobInformation>
-              <JobPostings>
-                <JobPosting{desiredDuration} bold="true">
-                 <InventoryPreference subscription="false">{Autorefresh}{CareerAdNetwork}
-                   </InventoryPreference>
-                  <Location>
-                    <City>Boston</City>
-                    <State>MA</State>
-                    <CountryCode>US</CountryCode>
-                    <PostalCode>02125</PostalCode>
-                  </Location>
-                  <JobCategory monsterId="{JobCategory}"/>
-                  <JobOccupations>
-                    <JobOccupation monsterId="{JobOccupation}"/>
-                  </JobOccupations>
-                  <BoardName monsterId="178"/>
-                  <DisplayTemplate monsterId="1"/>{Industry}
-                </JobPosting>
-              </JobPostings>
-            </Job>
-          </SOAP-ENV:Body>
-        </SOAP-ENV:Envelope>"""
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Header>
+    <mh:MonsterHeader xmlns:mh="http://schemas.monster.com/MonsterHeader">
+      <mh:MessageData>
+        <mh:MessageId>Creating a job</mh:MessageId>
+        <mh:Timestamp>{today}</mh:Timestamp>
+      </mh:MessageData>
+    </mh:MonsterHeader>
+    <wsse:Security xmlns:wsse="http://schemas.xmlsoap.org/ws/2002/04/secext">
+      <wsse:UsernameToken>
+        <wsse:Username>{username}</wsse:Username>
+        <wsse:Password>{password}</wsse:Password>
+      </wsse:UsernameToken>
+    </wsse:Security>
+  </SOAP-ENV:Header>
+  <SOAP-ENV:Body>
+    <Job jobRefCode={jobRefCode} jobAction="addOrUpdate"
+    inventoryType="transactional" 
+    xmlns="http://schemas.monster.com/Monster"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://schemas.monster.com/Monster
+    http://schemas.monster.com/Current/xsd/Monster.xsd">
+      <RecruiterReference>
+        <UserName>{username}</UserName>
+      </RecruiterReference>
+      <JobInformation>
+        <JobTitle>{JobTitle}</JobTitle>{JobLevel}{JobType}{JobStatus}
+        <Salary>{Currency}{SalaryMin}{SalaryMax}{CompensationType}
+        </Salary>
+        <PhysicalAddress>
+          <StreetAddress>{StreetAddress}</StreetAddress>
+        </PhysicalAddress>
+        <HideCompanyInfo>false</HideCompanyInfo>
+        <JobBody>{JobBody}
+        </JobBody>
+        <ApplyWithMonster>
+          <DeliveryMethod monsterId="5" />
+          <DeliveryFormat monsterId="1" />
+          <VendorText>This apply comes from a job on Monster</VendorText>
+          <PostURL>https://webhook.site/360f0dec-c55b-4a29-92d9-210b70d14ad3</PostURL>
+          <ApiKey>myAPIKEY</ApiKey>
+        </ApplyWithMonster>
+      </JobInformation>
+      <JobPostings>
+        <JobPosting{desiredDuration} bold="true">
+         <InventoryPreference subscription="false">{Autorefresh}{CareerAdNetwork}
+           </InventoryPreference>
+          <Location>
+            <City>Boston</City>
+            <State>MA</State>
+            <CountryCode>US</CountryCode>
+            <PostalCode>02125</PostalCode>
+          </Location>
+          <JobCategory monsterId="{JobCategory}"/>
+          <JobOccupations>
+            <JobOccupation monsterId="{JobOccupation}"/>
+          </JobOccupations>
+          <BoardName monsterId="178"/>
+          <DisplayTemplate monsterId="1"/>{Industry}
+        </JobPosting>
+      </JobPostings>
+    </Job>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>"""
 
         def find_in_tags(tag_list, keyword):
             if tag_list == None:
@@ -242,6 +239,10 @@ class PushJob(BoardAction, HTTPStream):
                     </Industry>
                   </Industries>""".format(IndustryName=Industry)
 
+        def format_credentials(formater, hrflow_job):
+            formater["username"] = self.username
+            formater["password"] = self.password
+
         creation_pipeline = [format_job_informations,
                              format_created_at,
                              format_job_reference,
@@ -253,6 +254,7 @@ class PushJob(BoardAction, HTTPStream):
                              format_careeradnetwork,
                              format_jobcategory,
                              format_joboccupation,
+                             format_credentials,
                              format_industries]
 
         formater = dict()
@@ -261,4 +263,4 @@ class PushJob(BoardAction, HTTPStream):
             function(formater, data)
 
         job = xml_job_str.format(**formater)
-        return str(job.encode('utf-8'))
+        return job.encode('utf-8')

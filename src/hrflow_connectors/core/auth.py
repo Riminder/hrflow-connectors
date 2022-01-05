@@ -98,26 +98,6 @@ class OAuth2PasswordCredentialsBody(Auth):
             )
 
 
-class XMLAuth(Auth):
-    """
-    XML Auth
-
-    Auth used to authenticate with credentials in an XML
-    """
-
-    username: str = Field(..., description="username to put in the XML")
-    password: str = Field(..., description="password to put in the XML")
-
-    def update(
-        self,
-        params: Union[Dict[str, str], None] = None,
-        headers: Union[Dict[str, str], None] = None,
-        payload: str = None,
-        cookies: Union[Dict[str, str], None] = None,
-    ):
-        payload.format(username=self.username, password=self.password)
-
-
 class XAPIKeyAuth(Auth):
     """
     X-API-Key Auth
