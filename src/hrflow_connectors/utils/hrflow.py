@@ -82,6 +82,25 @@ class Job(BaseModel):
 class EventParser(BaseModel):
     request: Dict[str, Any]
 
+    def get_job(self, board_to_listen: List[str] = None) -> Optional[Job]:
+        """
+        Get job
+
+        If the parser does not find `job` object, then it will return `None`
+
+        Args:
+            source_to_listen (List[str], optional): list of board keys to listen. Defaults to None if you want to listen all available board.
+
+        Returns:
+            Optional[Job]: `Job` object or `None` if not found
+        """
+        job_dict = self.request.get("job")
+        if job_dict is not None:
+            job_obj = Job.parse_obj(job_dict)
+            if board_to_listen is None or job_obj.board.key in board_to_listen:
+                return job_obj
+        return None
+
     def get_profile(self, source_to_listen: List[str] = None) -> Optional[Profile]:
         """
         Get profile
