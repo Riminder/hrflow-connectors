@@ -22,7 +22,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
 
     @property
     def base_url(self):
-        return "n"
+        return "https://api.greenhouse.io/v1/partner/candidates"
 
     @property
     def http_method(self):
@@ -54,5 +54,25 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         address = profile.get("info").get("location").get("text")
         profile["addresses"] = [dict(address=address, type="home")]
         profile["notes"] = data.get("text")
+
+        def get_social_media_urls():
+            urls=data['info']['urls']
+            website_list=[]
+            for url in urls:
+                if url['url'] not in [[], None]:
+                    website_list().append({'url':url['url']})
+            return website_list
+
+        if get_social_media_urls() not in [[], None]:
+            profile["social_media"]=get_social_media_urls()
+
+        if data['experiences'] not in [[], None]:
+            last_experience = data['experiences'][0]
+            profile['company'] = last_experience['company']
+            profile['title'] = last_experience['title']
+
+        
+        
+
 
         return profile
