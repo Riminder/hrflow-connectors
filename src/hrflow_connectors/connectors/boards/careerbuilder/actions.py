@@ -15,7 +15,7 @@ from selenium.common.exceptions import (
 logger = get_logger()
 
 
-class GetAllJobs(BoardAction):
+class CareerBuilderFeed(BoardAction):
 
     archive_deleted_jobs_from_stream: bool = False
     domain: str = Field(
