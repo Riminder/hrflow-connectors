@@ -28,7 +28,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
 
     def format(self, profile: Dict[str, Any]) -> Dict[str, Any]:
         """
-        format [converts a profile hrflow object into a smartrecruiters profile object]
+        Format a profile hrflow object to a smartrecruiters profile object
 
         Args:
             profile (Dict[str, Any]): [profile object in the hrflow profile format]
@@ -46,7 +46,8 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
             # start date
             start_datetime_str = project.get("date_start")
             if start_datetime_str is None:
-                #datetime is either in format YYYY or YYYY-MM... etc, if there is none we force this value to avoid conflict with smartrecruiters profile object
+                # datetime is either in format YYYY or YYYY-MM...
+                # if there is none we force this value to avoid conflict with smartrecruiters profile object
                 start_date = "XXXX"
             else:
                 start_date = start_datetime_str.split("T")[0]
@@ -118,10 +119,16 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         ]:  # check if fields is not an undefined list
             smart_candidate["location"] = dict(
                 city=value_or_undefined(info["location"]["fields"].get("city", {})),
-                country=value_or_undefined(info["location"]["fields"].get("country", {})),
+                country=value_or_undefined(
+                    info["location"]["fields"].get("country", {})
+                ),
                 region=value_or_undefined(info["location"]["fields"].get("state", {})),
-                lat=info["location"]["lat"] if info["location"]["lat"] is not None else 0,
-                lng=info["location"]["lng"] if info["location"]["lng"] is not None else 0,
+                lat=info["location"]["lat"]
+                if info["location"]["lat"] is not None
+                else 0,
+                lng=info["location"]["lng"]
+                if info["location"]["lng"] is not None
+                else 0,
             )
         else:
             smart_candidate["location"] = dict(
@@ -142,6 +149,12 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         return smart_candidate
 
     def push(self, data: Dict[str, Any]):
+        """
+        Push profile
+
+        Args:
+            data (Dict[str, Any]): Profile
+        """
         self.payload.clear()
         profile = next(data)
         self.payload.update(profile)
