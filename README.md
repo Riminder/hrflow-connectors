@@ -121,7 +121,7 @@ The project mainly uses 4 packages :
 - **Oracle** (soon)
 - **SAP Successfactors** (soon)
 - **Salesforce** (soon)
-- **Smartrecruiters** : [`SmartJobs`](src/hrflow_connectors/connectors/boards/smartrecruiters/)
+- **Smartrecruiters** : [`SmartJobs`](src/hrflow_connectors/connectors/boards/smartrecruiters/), [`PushProfile`](src/hrflow_connectors/connectors/destinations/smartrecruiters)
 - **Staffme** (soon)
 - **Talentsoft** (soon)
 - **Twilio** (soon)
