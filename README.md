@@ -105,7 +105,7 @@ The project mainly uses 4 packages :
 ## :electric_plug: List of Connectors
 - **ADP** (soon)
 - **Craigslist** : [`CraigslistFeed`](src/hrflow_connectors/connectors/boards/craigslist/)
-- **Careerbuilder** [`GetAllJobs`](src/hrflow_connectors/connectors/boards/careerbuilder)
+- **Careerbuilder** [`CareerBuilderFeed`](src/hrflow_connectors/connectors/boards/careerbuilder)
 - **Cegid(Meta4)** (soon)
 - **Ceridian** (soon)
 - **Cornerstone OnDemand** (soon)
@@ -121,7 +121,7 @@ The project mainly uses 4 packages :
 - **Oracle** (soon)
 - **SAP Successfactors** (soon)
 - **Salesforce** (soon)
-- **Smartrecruiters** : [`SmartJobs`](src/hrflow_connectors/connectors/boards/smartrecruiters/), [`PushProfile`](src/hrflow_connectors/connectors/destinations/smartrecruiters)
+- **Smartrecruiters** : [`GetAllJobs`](src/hrflow_connectors/connectors/boards/smartrecruiters/), [`PushProfile`](src/hrflow_connectors/connectors/destinations/smartrecruiters)
 - **Staffme** (soon)
 - **Talentsoft** (soon)
 - **Twilio** (soon)
