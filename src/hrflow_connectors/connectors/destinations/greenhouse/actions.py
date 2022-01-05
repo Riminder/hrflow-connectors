@@ -1,12 +1,14 @@
 from ....core.action import ProfileDestinationAction
 from ....core.http import HTTPStream
-
+from ....core.auth import OAuth2PasswordCredentialsBody, AuthorizationAuth
 from pydantic import Field
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Union
 
 
 class PushProfile(ProfileDestinationAction, HTTPStream):
-    payload : Dict[str, Any] = dict()
+    
+    auth: Union[OAuth2PasswordCredentialsBody, AuthorizationAuth]
+    payload: Dict[str, Any] = dict()
     prospect: bool = Field(
         True,
         description="True if this candidate should be a prospect. The organization must be able to create prospects to set this field. (Default: true)",
@@ -29,6 +31,13 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         return "POST"
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Format a profile hrflow object to a greenhouse profile object
+        Args:
+            profile (Dict[str, Any]): profile object in the hrflow profile format
+        Returns:
+            Dict[str, Any]: profile in the greenhouse candidate  format
+        """
         profile = dict()
         profile["prospect"] = self.prospect
         if self.job_id is not None:
@@ -56,23 +65,35 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         profile["notes"] = data.get("text")
 
         def get_social_media_urls():
-            urls=data['info']['urls']
-            website_list=[]
+            urls = data["info"]["urls"]
+            website_list = []
             for url in urls:
-                if url['url'] not in [[], None]:
-                    website_list().append({'url':url['url']})
+                if url["url"] not in [[], None]:
+                    website_list().append({"url": url["url"]})
             return website_list
 
         if get_social_media_urls() not in [[], None]:
-            profile["social_media"]=get_social_media_urls()
+            profile["social_media"] = get_social_media_urls()
 
-        if data['experiences'] not in [[], None]:
-            last_experience = data['experiences'][0]
-            profile['company'] = last_experience['company']
-            profile['title'] = last_experience['title']
-
-        
-        
-
+        if data["experiences"] not in [[], None]:
+            last_experience = data["experiences"][0]
+            profile["company"] = last_experience["company"]
+            profile["title"] = last_experience["title"]
 
         return profile
+
+    def push(self, data: Dict[str, Any]):
+        """
+        Push profile
+
+        Args:
+            data (Dict[str, Any]): Profile
+        """
+        self.payload.clear()
+        profile = next(data)
+        self.payload.update(profile)
+        response = self.send_request()
+        if response.status_code >= 400:
+            raise RuntimeError(
+                "Push profile to Greenhouse failed : `{}`".format(response.content)
+            )
