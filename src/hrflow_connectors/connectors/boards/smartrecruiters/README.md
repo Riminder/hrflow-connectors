@@ -3,8 +3,8 @@
 
 `Smart Recruiters` :arrow_right: `Hrflow.ai`
 
-## SmartJobs
-`SmartJobs` retrieves all jobs via the ***SmartRecruiter*** API. It adds all these **jobs** to a ***Hrflow.ai Board***.
+## GetAllJobs
+`GetAllJobs` retrieves all jobs via the ***SmartRecruiter*** API. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
 ### Parameters
 
@@ -33,7 +33,7 @@
 from hrflow import Hrflow
 
 from hrflow_connectors.core.auth import XSmartTokenAuth
-from hrflow_connectors.connectors.boards.smartrecruiters import SmartJobs
+from hrflow_connectors.connectors.boards.smartrecruiters import GetAllJobs
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 # We add a basic configuration to our logger to see the messages displayed in the standard output
@@ -46,7 +46,7 @@ auth = XSmartTokenAuth(
     value="MY_SMART_TOKEN"
 )
 
-action = SmartJobs(
+action = GetAllJobs(
     auth=auth,
     hrflow_client=client,
     limit=2,
