@@ -1,6 +1,6 @@
 import logging
 from ..utils.clean_text import remove_html_tags
-from ..utils.hrflow import find_element_in_list, Profile
+from ..utils.hrflow import find_element_in_list, Profile, Job
 from ..utils.hrflow import generate_workflow_response
 from ..utils.logger import get_logger
 
@@ -561,6 +561,35 @@ class BoardAction(Action):
         logger.info("Data has been pushed")
 
         logger.info("All has been done for this connector !")
+
+
+class JobDestinationAction(Action):
+    hrflow_client: Hrflow = Field(
+        ...,
+        description="Hrflow client instance used to communicate with the Hrflow.ai API",
+    )
+    job: Job = Field(..., description="Job to push")
+
+    def pull(self) -> Iterator[Dict[str, Any]]:
+        """
+        Pull data
+        """
+        response = self.hrflow_client.job.indexing.get(
+            board_key=self.job.board.key, key=self.job.key
+        )
+        if response["code"] >= 400:
+            raise RuntimeError(
+                "Indexing job get failed : `{}`".format(response["message"])
+            )
+
+        job = response["data"]
+        return [job]
+
+    def execute(self):
+        super().execute()
+        return generate_workflow_response(
+            status_code=201, message="Profile successfully pushed"
+        )
 
 
 class ProfileDestinationAction(Action):
