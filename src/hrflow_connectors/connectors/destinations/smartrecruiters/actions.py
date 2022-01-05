@@ -37,7 +37,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
             Dict[str, Any]: [profile in the SmartRecruiters candidate application format]
         """
 
-        value_or_empty = lambda s: s or " "
+        value_or_undefined = lambda s: s or "Undefined"
 
         def format_project(project):
             formated_project_dict = dict()
@@ -46,6 +46,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
             # start date
             start_datetime_str = project.get("date_start")
             if start_datetime_str is None:
+                #datetime is either in format YYYY or YYYY-MM... etc, if there is none we force this value to avoid conflict with smartrecruiters profile object
                 start_date = "XXXX"
             else:
                 start_date = start_datetime_str.split("T")[0]
@@ -59,7 +60,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
                 end_date = end_datetime_str.split("T")[0]
 
             formated_project_dict["endDate"] = end_date
-            formated_project_dict["location"] = value_or_empty(
+            formated_project_dict["location"] = value_or_undefined(
                 project["location"]["text"]
             )
             formated_project_dict["description"] = project["description"]
@@ -72,15 +73,15 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
             for education_entity in educations:
                 formated_education = format_project(education_entity)
                 if education_entity.get("school") is None:
-                    formated_education["instituion"] = "NaN"
+                    formated_education["instituion"] = "Undefined"
                 else:
                     formated_education["institution"] = education_entity.get("school")
 
                 if education_entity.get("title") is None:
-                    formated_education["degree"] = "Nan"
+                    formated_education["degree"] = "Undefined"
                 else:
                     formated_education["degree"] = education_entity.get("title")
-                formated_education["major"] = "NaN"
+                formated_education["major"] = "Undefined"
 
                 formated_education_list.append(formated_education)
 
@@ -92,11 +93,11 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
             for exp in experiences:
                 formated_exp = format_project(exp)
                 if exp["title"] is None:
-                    formated_exp["title"] = "NaN"
+                    formated_exp["title"] = "Undefined"
                 else:
                     formated_exp["title"] = exp["title"]
                 if exp["company"] is None:
-                    formated_exp["company"] = "NaN"
+                    formated_exp["company"] = "Undefined"
                 else:
                     formated_exp["company"] = exp["company"]
 
@@ -114,19 +115,19 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         if info["location"]["fields"] not in [
             [],
             None,
-        ]:  # check if fields is not an empty list
+        ]:  # check if fields is not an undefined list
             smart_candidate["location"] = dict(
-                city=value_or_empty(info["location"]["fields"].get("city", {})),
-                country=value_or_empty(info["location"]["fields"].get("country", {})),
-                region=value_or_empty(info["location"]["fields"].get("state", {})),
-                lat=info["location"]["lat"] if info["location"]["lat"] else 0,
-                lng=info["location"]["lng"] if info["location"]["lng"] else 0,
+                city=value_or_undefined(info["location"]["fields"].get("city", {})),
+                country=value_or_undefined(info["location"]["fields"].get("country", {})),
+                region=value_or_undefined(info["location"]["fields"].get("state", {})),
+                lat=info["location"]["lat"] if info["location"]["lat"] is not None else 0,
+                lng=info["location"]["lng"] if info["location"]["lng"] is not None else 0,
             )
         else:
             smart_candidate["location"] = dict(
-                country="Not shown",
-                region="NotShown",
-                City="Not shown",
+                country="Undefined",
+                region="Undefined",
+                City="Undefined",
                 lat=0,
                 lng=0,
             )
