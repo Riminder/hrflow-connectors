@@ -5,7 +5,6 @@
 
 Lists of actions : 
 * [**`PushJob`**](#PushJob)
-* [**`PullProfile`**](#PullProfile)
 
 ## PushJob
 
