@@ -86,14 +86,30 @@ class GetAllJobs(HTTPStream, BoardAction):
         # metadata
         job["metadatas"] = data.get("metadata")
         # tags
-        department_name = data.get("departments")
-        office_name = data.get("offices")
+        department = data.get("departments")
+        if department not in [None, []]:
+            department_name = department[0].get("name")
+            department_id = str(department[0].get("id"))
+        else:
+            department_name = "Undefined"
+            department_id = "Undefined"
+
+        office = data.get("offices")
+        if office not in [None, []]:
+            office_name = office[0].get("name")
+            office_id = str(office[0].get("id"))
+        else:
+            office_name = "Undefined"
+            office_id = "Undefined"
+
         education = data.get("education")
         employment = data.get("employment")
 
         job["tags"] = [
-            dict(name="greenhouse_department", value=department_name),
-            dict(name="greenhouse_office", value=office_name),
+            dict(name="greenhouse_department-name", value=department_name),
+            dict(name="greenhouse_department-id", value=department_id),
+            dict(name="greenhouse_office-location", value=office_name),
+            dict(name="greenhouse_office-id", value=office_id),
             dict(name="greenhouse_education", value=education),
             dict(name="greenhouse_employment", value=employment),
         ]
