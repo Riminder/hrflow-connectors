@@ -1,9 +1,9 @@
-from hrflow_connectors.connectors.boards.careerbuilder import GetAllJobs
+from hrflow_connectors.connectors.boards.careerbuilder import CareerBuilderFeed
 
 
 def test_CareerJobs(logger, hrflow_client, webdriver_path):
     
-    action = GetAllJobs(
+    action = CareerBuilderFeed(
         executable_path=webdriver_path,
         domain='fr',
         hrflow_client=hrflow_client("dev-demo"),

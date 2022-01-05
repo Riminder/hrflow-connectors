@@ -12,7 +12,7 @@ from ....utils.logger import get_logger
 logger = get_logger()
 
 
-class SmartJobs(HTTPStream, BoardAction):
+class GetAllJobs(HTTPStream, BoardAction):
     auth: XSmartTokenAuth
     query: Optional[str] = Field(
         None,
