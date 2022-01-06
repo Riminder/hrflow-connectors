@@ -2,11 +2,11 @@ from ....core.action import ProfileDestinationAction
 from ....core.http import HTTPStream
 from ....core.auth import OAuth2PasswordCredentialsBody, AuthorizationAuth
 from pydantic import Field
-from typing import Dict, Any, Optional, Union
+from typing import Dict, Any, Optional, Union, List
 
 
 class PushProfile(ProfileDestinationAction, HTTPStream):
-    
+
     auth: Union[OAuth2PasswordCredentialsBody, AuthorizationAuth]
     payload: Dict[str, Any] = dict()
     prospect: bool = Field(
@@ -40,14 +40,16 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         """
         profile = dict()
         profile["prospect"] = self.prospect
+
         if self.job_id is not None:
             profile["job_id"] = self.job_id
+
         profile["first_name"] = data.get("info").get("first_name")
         profile["last_name"] = data.get("info").get("last_name")
         profile["external_id"] = data.get("reference")
 
-        def get_attachment():
-            attachments_list = data.get("attachments")
+        def get_attachment(hrflow_profile) -> str:
+            attachments_list = hrflow_profile.get("attachments")
             fall_backs = ["resume", "original"]
             for file_name in fall_backs:
                 for attachment in attachments_list:
@@ -55,16 +57,21 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
                         resume_url = attachment["public_url"]
             return resume_url
 
-        profile["resume"] = get_attachment(data)
+        if get_attachment(data) is not None:
+            profile["resume"] = get_attachment(data)
+
         phone_number = data.get("info").get("phone")
         profile["phone_numbers"] = [dict(phone_number=phone_number, type="mobile")]
+
         email = data.get("info").get("email")
         profile["emails"] = [dict(email=email, type="other")]
+
         address = profile.get("info").get("location").get("text")
         profile["addresses"] = [dict(address=address, type="home")]
+
         profile["notes"] = data.get("text")
 
-        def get_social_media_urls():
+        def get_social_media_urls() -> List[dict(str, str)]:
             urls = data["info"]["urls"]
             website_list = []
             for url in urls:
