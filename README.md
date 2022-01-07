@@ -119,13 +119,14 @@ The project mainly uses 4 packages :
 - **Mailchimp** (soon)
 - **Monster** (soon)
 - **Oracle** (soon)
-- **SAP Successfactors** (soon)
+- **SAP Successfactors** [`PullJobs`](src/hrflow_connectors/connectors/boards/sapsuccessfactors)
 - **Salesforce** (soon)
 - **Smartrecruiters** : [`GetAllJobs`](src/hrflow_connectors/connectors/boards/smartrecruiters/), [`PushProfile`](src/hrflow_connectors/connectors/destinations/smartrecruiters)
 - **Staffme** (soon)
 - **Talentsoft** (soon)
 - **Twilio** (soon)
 - **Ultimate Software(UKG)** (soon)
+- **Workable** : [`PullJobs`](src/hrflow_connectors/connectors/boards/sapsuccessfactors)
 - **Workday** (soon)
 
 ## 🧐 What's inside?
