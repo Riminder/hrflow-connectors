@@ -187,6 +187,7 @@ def test_simple_date_in_HrFlow():
 def test_wrong_date_with_letter():
     try:
         from_str_to_datetime("2021-1H-01T12:59:05+0000")
+        assert False
     except DateFormatError:
         pass
 
@@ -194,6 +195,7 @@ def test_wrong_date_with_letter():
 def test_wrong_date_with_invalid_date():
     try:
         from_str_to_datetime("2021-10-32T12:59:05+0000")
+        assert False
     except DateFormatError:
         pass
 
@@ -201,6 +203,7 @@ def test_wrong_date_with_invalid_date():
 def test_wrong_date_with_invalid_format():
     try:
         from_str_to_datetime("2021-10sssss")
+        assert False
     except DateFormatError:
         pass
 
@@ -208,5 +211,6 @@ def test_wrong_date_with_invalid_format():
 def test_wrong_date_with_invalid_int():
     try:
         from_str_to_datetime("2021-ss-ss")
+        assert False
     except DateFormatError:
         pass
