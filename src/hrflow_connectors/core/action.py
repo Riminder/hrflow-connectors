@@ -20,6 +20,10 @@ class Action(BaseModel):
     Abstract class `Action`
     """
 
+    hrflow_client: Hrflow = Field(
+        ...,
+        description="Hrflow client instance used to communicate with the Hrflow.ai API",
+    )
     logics: List[str] = Field(
         [], description="Function names to apply as filter before pushing the data"
     )
