@@ -65,12 +65,14 @@ class PullJobs(HTTPStream, BoardAction):
         """
         job = dict()
         jobRequisition = data.get("jobRequisition")
+        # name
         if data.get("jobTitle") is not None:
             job["name"] = data.get("jobTitle")
         else:
             job["name"] = "Undefined"
-
+        # reference
         job["reference"] = data.get("jobReqId")
+        # location
         job["location"] = dict(
             text=jobRequisition.get("location"),
             city=jobRequisition.get("city"),
@@ -80,6 +82,7 @@ class PullJobs(HTTPStream, BoardAction):
             lat=None,
             lng=None,
         )
+        # description
         if data.get("jobDescription") is not None:
             description = (
                 remove_html_tags(data.get("jobDescription"))
@@ -96,28 +99,36 @@ class PullJobs(HTTPStream, BoardAction):
             )
         ]
         # tags
-
         annual_salary = jobRequisition.get("annual_SA")
         department = jobRequisition.get("department")
         division = jobRequisition.get("division")
         function = jobRequisition.get("function")
         industry = jobRequisition.get("industry")
         monthly_salary = jobRequisition.get("monthly_salary")
-        otherBonus = jobRequisition.get("otherBonus")
-        salaryBase = jobRequisition.get("salaryBase")
+        other_bonus = jobRequisition.get("otherBonus")
+        salary_base = jobRequisition.get("salaryBase")
+        salary_max = jobRequisition.get("salaryMax")
+        salary_min = jobRequisition.get("salaryMin")
+        job_start_date = jobRequisition.get("jobStartDate")
         job["tags"] = [
-            dict(name="annual_salary_sap", value=annual_salary),
+            dict(name="sap_annual_salary", value=annual_salary),
             dict(name="sap_department", value=department),
             dict(name="sap_function", value=function),
             dict(name="sap_division", value=division),
-            dict(name="industry", value=industry),
-            dict(name="monthly_salary", value=monthly_salary),
-            dict(name="otherBonus", value=otherBonus),
-            dict(name="salaryBase", value=salaryBase),
+            dict(name="sap_industry", value=industry),
+            dict(name="sap_monthly_salary", value=monthly_salary),
+            dict(name="sap_other_bonus", value=other_bonus),
+            dict(name="sap_salary_base", value=salary_base),
+            dict(name="sap_salary_max", value=salary_max),
+            dict(name="sap_salary_min", value=salary_min),
+            dict(name="sap_job_start_date", value=job_start_date),
         ]
         job["metadatas"] = [
-            dict(name="metadata", value=data.get("_metadata")),
-            dict(name="recruiter_team", value=jobRequisition.get("recruiterTeam")),
+            dict(name="sap_recruiter_team", value=jobRequisition.get("recruiterTeam")),
+            dict(name="sap_sourcer_team", value=jobRequisition.get("sourcerTeam")),
+            dict(
+                name="sap_hiring_manager_team",
+                value=jobRequisition.get("hiringManagerTeam"),
+            ),
         ]
-
         return job
