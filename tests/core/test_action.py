@@ -573,3 +573,28 @@ def test_PullAction_execute(hrflow_client):
         global_scope=globals(),
     )
     action.execute()
+
+
+def test_PushAction_execute(hrflow_client):
+    class MyPushAction(PushAction):
+        def pull(self):
+            return ["pullformat", "pulllogic"]
+
+        def format(self, data):
+            assert "pull" in data
+            return data.replace("pull", "")
+
+        def push(self, data):
+            data_list = list(data)
+            assert data_list == ["format"]
+
+    def my_logic(data):
+        return not data == "pulllogic"
+
+    action = MyPushAction(
+        hrflow_client=hrflow_client,
+        logics=["my_logic"],
+        local_scope=locals(),
+        global_scope=globals(),
+    )
+    action.execute()
