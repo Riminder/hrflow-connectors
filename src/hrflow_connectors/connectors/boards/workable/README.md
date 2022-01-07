@@ -1,5 +1,5 @@
 # Workable Connector
-**Workable is an recruiting software.**
+**Workable is a recruiting software.**
 
 `Workable` :arrow_right: `Hrflow.ai`
 
