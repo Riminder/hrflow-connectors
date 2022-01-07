@@ -15,3 +15,11 @@ def test_Connector_pull_profiles():
         assert False
     except NotImplementedError:
         assert True
+
+
+def test_Connector_push_job():
+    try:
+        Connector.push_job()
+        assert False
+    except NotImplementedError:
+        assert True
