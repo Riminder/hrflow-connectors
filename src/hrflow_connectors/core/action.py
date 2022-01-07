@@ -16,6 +16,9 @@ logger = get_logger()
 
 
 class Action(BaseModel):
+    """
+    Abstract class `Action`
+    """
     logics: List[str] = Field(
         [], description="Function names to apply as filter before pushing the data"
     )
