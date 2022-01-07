@@ -16,7 +16,9 @@ class PullJobs(HTTPStream, BoardAction):
 
     @property
     def base_url(self):
-        return "https://www.workable.com/api/accounts/{}?details=true".format(self.subdomain)
+        return "https://www.workable.com/api/accounts/{}?details=true".format(
+            self.subdomain
+        )
 
     @property
     def http_method(self):
@@ -64,20 +66,23 @@ class PullJobs(HTTPStream, BoardAction):
             Dict[str, Any]: a job into the hrflow job object format
         """
         job = dict()
-        #name and reference
+        # name and reference
         job["name"] = data.get("title")
         job["reference"] = data.get("shortcode")
-        #location
+        # location
         country = data.get("country")
         state = data.get("state")
         city = data.get("city")
         geojson = dict(country=country, state=state)
         job["location"] = dict(
-            text=city, lat=None, lng=None, geojson=geojson,
+            text=city,
+            lat=None,
+            lng=None,
+            geojson=geojson,
         )
-        #url
+        # url
         job["url"] = data.get("url")
-        #sections
+        # sections
         description = remove_html_tags(data.get("description"))
         job["sections"] = [
             dict(
@@ -86,9 +91,9 @@ class PullJobs(HTTPStream, BoardAction):
                 description=description,
             )
         ]
-        #creation_date
+        # creation_date
         job["created_at"] = data.get("created_at")
-        #tags
+        # tags
         employment_type = data.get("employment_type")
         industry = data.get("industry")
         function = data.get("function")
