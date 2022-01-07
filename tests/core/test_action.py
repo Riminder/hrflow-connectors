@@ -1,4 +1,4 @@
-from hrflow_connectors.core.action import Action, BoardAction
+from hrflow_connectors.core.action import Action, BoardAction, PullAction, PushAction
 import pytest
 import requests
 import responses
@@ -62,13 +62,17 @@ def test_apply_logics_two_filter(hrflow_client, generated_data_list):
     assert dict(element1="value1", element2="value1") in filtered_list
 
 
-def test_apply_logics_single_filter_without_interaction(hrflow_client, generated_data_list):
+def test_apply_logics_single_filter_without_interaction(
+    hrflow_client, generated_data_list
+):
     def filter_nothing(element):
         return True
 
     action = Action(
         hrflow_client=hrflow_client(),
-        logics=["filter_nothing"], global_scope=globals(), local_scope=locals()
+        logics=["filter_nothing"],
+        global_scope=globals(),
+        local_scope=locals(),
     )
     filtered_list = list(action.apply_logics(generated_data_list))
 
@@ -544,3 +548,28 @@ def test_BoardAction_check_deletion_references_from_stream():
         hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
     )
     action.check_deletion_references_from_stream()
+
+
+def test_PullAction_execute(hrflow_client):
+    class MyPullAction(PullAction):
+        def pull(self):
+            return ["pullformat", "pulllogic"]
+
+        def format(self, data):
+            assert "pull" in data
+            return data.replace("pull", "")
+
+        def push(self, data):
+            data_list = list(data)
+            assert data_list == ["logic"]
+
+    def my_logic(data):
+        return not data == "format"
+
+    action = MyPullAction(
+        hrflow_client=hrflow_client,
+        logics=["my_logic"],
+        local_scope=locals(),
+        global_scope=globals(),
+    )
+    action.execute()
