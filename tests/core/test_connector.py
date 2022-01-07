@@ -24,6 +24,7 @@ def test_Connector_push_job():
     except NotImplementedError:
         assert True
 
+
 def test_Connector_push_profile():
     try:
         Connector.push_profile()
