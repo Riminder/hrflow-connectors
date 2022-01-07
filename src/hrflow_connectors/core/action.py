@@ -19,6 +19,7 @@ class Action(BaseModel):
     """
     Abstract class `Action`
     """
+
     logics: List[str] = Field(
         [], description="Function names to apply as filter before pushing the data"
     )
@@ -598,6 +599,7 @@ class ProfileDestinationAction(Action):
         return generate_workflow_response(
             status_code=201, message="Profile successfully pushed"
         )
+
 
 class PullAction(Action):
     def execute(self) -> Optional[Dict[str, Any]]:
