@@ -69,3 +69,10 @@ def test_wrong_timedelta_with_days_hours_without_seconds():
         assert False
     except TimeDeltaFormatError:
         pass
+
+def test_wrong_timedelta_with_invalid_int():
+    try:
+        assert_datetime("1 days, 15:54:ss")
+        assert False
+    except TimeDeltaFormatError:
+        pass
