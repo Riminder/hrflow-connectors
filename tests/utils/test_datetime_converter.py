@@ -203,3 +203,10 @@ def test_wrong_date_with_invalid_format():
         from_str_to_datetime("2021-10sssss")
     except DateFormatError:
         pass
+
+
+def test_wrong_date_with_invalid_int():
+    try:
+        from_str_to_datetime("2021-ss-ss")
+    except DateFormatError:
+        pass
