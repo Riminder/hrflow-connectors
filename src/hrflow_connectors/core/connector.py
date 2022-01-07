@@ -2,26 +2,29 @@ class Connector:
     """
     Abstract class `Connector`
     """
-
-    def pull_jobs(self, *args, **kwargs):
+    @staticmethod
+    def pull_jobs(*args, **kwargs):
         """
         Pull jobs
         """
         raise NotImplementedError("`pull_jobs` method is not implemented !")
 
-    def pull_profiles(self, *args, **kwargs):
+    @staticmethod
+    def pull_profiles(*args, **kwargs):
         """
         Pull profiles
         """
         raise NotImplementedError("`pull_profiles` method is not implemented !")
 
-    def push_job(self, *args, **kwargs):
+    @staticmethod
+    def push_job(*args, **kwargs):
         """
         Push job
         """
         raise NotImplementedError("`push_job` method is not implemented !")
 
-    def push_profile(self, *args, **kwargs):
+    @staticmethod
+    def push_profile(*args, **kwargs):
         """
         Push profile
         """
