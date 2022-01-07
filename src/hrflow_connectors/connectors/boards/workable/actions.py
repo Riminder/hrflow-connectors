@@ -16,7 +16,7 @@ class PullJobs(HTTPStream, BoardAction):
 
     @property
     def base_url(self):
-        return "https://www.workable.com/api/accounts/{}".format(self.subdomain)
+        return "https://www.workable.com/api/accounts/{}?details=true".format(self.subdomain)
 
     @property
     def http_method(self):
@@ -71,8 +71,9 @@ class PullJobs(HTTPStream, BoardAction):
         country = data.get("country")
         state = data.get("state")
         city = data.get("city")
+        geojson = dict(country=country, state=state)
         job["location"] = dict(
-            text=city, country=country, state=state, lat=None, lng=None
+            text=city, lat=None, lng=None, geojson=geojson,
         )
         #url
         job["url"] = data.get("url")
