@@ -73,12 +73,16 @@ class PullJobs(HTTPStream, BoardAction):
         # reference
         job["reference"] = data.get("jobReqId")
         # location
-        job["location"] = dict(
-            text=jobRequisition.get("location"),
+        geojson = dict(
             city=jobRequisition.get("city"),
             country=jobRequisition.get("country"),
             facility=jobRequisition.get("facility"),
             province=jobRequisition.get("stateProvince"),
+        )
+        job["location"] = dict(
+            text=jobRequisition.get("location"),
+            city=jobRequisition.get("city"),
+            geojson=geojson,
             lat=None,
             lng=None,
         )
