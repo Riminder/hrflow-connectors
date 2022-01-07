@@ -622,3 +622,30 @@ class PullAction(Action):
         logger.info("Data has been pushed")
 
         logger.info("All has been done for this connector !")
+
+
+class PushAction(Action):
+    """
+    Push Action
+    """
+
+    def execute(self) -> Optional[Dict[str, Any]]:
+        logger.info("Start execution")
+
+        logger.info("Pulling data...")
+        input_data = self.pull()
+        logger.info("Data has been pulled")
+
+        logger.info("Applying logics...")
+        filtered_data = self.apply_logics(input_data)
+        logger.info("Logics have been applied")
+
+        logger.info("Mapping format function...")
+        formated_data = map(self.format_switcher, filtered_data)
+        logger.info("Format function has been mapped")
+
+        logger.info("Pushing data...")
+        self.push(formated_data)
+        logger.info("Data has been pushed")
+
+        logger.info("All has been done for this connector !")
