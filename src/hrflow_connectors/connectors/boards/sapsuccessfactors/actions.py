@@ -12,7 +12,7 @@ logger = get_logger()
 class PullJobs(HTTPStream, BoardAction):
     auth: Union[XAPIKeyAuth, OAuth2PasswordCredentialsBody]
     top: int = Field(
-        20, description="show ony the first n items, value by default = `20`"
+        20, description="show only the first n items, value by default = `20`"
     )
     subdomain: str = Field(
         ...,
