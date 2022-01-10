@@ -1,26 +1,29 @@
 from ....core.action import ProfileDestinationAction
 from ....core.http import HTTPStream
-from ....core.auth import OAuth2PasswordCredentialsBody, AuthorizationAuth
+from ....core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
 from pydantic import Field
 from typing import Dict, Any, Optional, Union, List
 
 
 class PushProfile(ProfileDestinationAction, HTTPStream):
 
-    auth: Union[OAuth2PasswordCredentialsBody, AuthorizationAuth]
+    auth: Union[OAuth2PasswordCredentialsBody, XAPIKeyAuth]
     payload: Dict[str, Any] = dict()
     prospect: bool = Field(
         True,
         description="True if this candidate should be a prospect. The organization must be able to create prospects to set this field. (Default: true)",
     )
     job_id: Optional[int] = Field(
-        ...,
+        None,
         description="Required only if prospect is false. The ID of the job to which this candidate or prospect should be added",
     )
+    on_behalf_of: Optional[str]
 
     def build_request_headers(self):
         super().build_request_headers()
         self.headers["content-type"] = "application/json"
+        if self.on_behalf_of is not None:
+            self.headers["On-Behalf-Of"] = self.on_behalf_of
 
     @property
     def base_url(self):
@@ -48,17 +51,9 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         profile["last_name"] = data.get("info").get("last_name")
         profile["external_id"] = data.get("reference")
 
-        def get_attachment(hrflow_profile) -> str:
-            attachments_list = hrflow_profile.get("attachments")
-            fall_backs = ["resume", "original"]
-            for file_name in fall_backs:
-                for attachment in attachments_list:
-                    if attachment["file_name"] == file_name:
-                        resume_url = attachment["public_url"]
-            return resume_url
 
-        if get_attachment(data) is not None:
-            profile["resume"] = get_attachment(data)
+        if data.get('attachments') not in [[], None]:
+            profile["resume"] = data.get("attachments")[0]['public_url']
 
         phone_number = data.get("info").get("phone")
         profile["phone_numbers"] = [dict(phone_number=phone_number, type="mobile")]
@@ -66,17 +61,17 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         email = data.get("info").get("email")
         profile["emails"] = [dict(email=email, type="other")]
 
-        address = profile.get("info").get("location").get("text")
+        address = data.get("info").get("location").get("text")
         profile["addresses"] = [dict(address=address, type="home")]
 
         profile["notes"] = data.get("text")
 
-        def get_social_media_urls() -> List[dict(str, str)]:
+        def get_social_media_urls():
             urls = data["info"]["urls"]
             website_list = []
             for url in urls:
-                if url["url"] not in [[], None]:
-                    website_list().append({"url": url["url"]})
+                if url not in ["", None,[]]:
+                    website_list.append({"url": url})
             return website_list
 
         if get_social_media_urls() not in [[], None]:
@@ -102,5 +97,5 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         response = self.send_request()
         if response.status_code >= 400:
             raise RuntimeError(
-                "Push profile to Greenhouse failed : `{}`".format(response.content)
+                "Push profile to Greenhouse failed : {}, `{}`".format(response.status_code, response.content)
             )
