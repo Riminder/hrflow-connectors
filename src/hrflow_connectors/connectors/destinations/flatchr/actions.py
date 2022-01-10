@@ -1,16 +1,14 @@
-from ....core.auth import AuthorizationAuth
-from ....core.action import ProfileDestinationAction
-from ....core.http import HTTPStream
-from ....utils.hrflow import generate_workflow_response
-
 from pydantic import Field
 from typing import Dict, Any, Iterator
 import base64
 import requests
 
+from ....core.auth import AuthorizationAuth
+from ....core.action import PushProfileAction
+from ....utils.hrflow import generate_workflow_response
 
-class PushProfile(ProfileDestinationAction, HTTPStream):
-    payload: Dict[str, Any] = dict()
+
+class FlatchrPushProfileAction(PushProfileAction):
     auth: AuthorizationAuth
     subdomain: str = Field(
         ...,
@@ -22,28 +20,25 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         description="The pool in which candidates will be placed. Findable in the URL",
     )
 
-    def build_request_headers(self):
-        super().build_request_headers()
-        self.headers["content-type"] = "application/json"
-        self.headers["Accept"] = "*/*"
-
-    @property
-    def base_url(self):
-        return "https://{}.flatchr.io/vacancy/candidate/json".format(self.subdomain)
-
-    @property
-    def http_method(self):
-        return "POST"
-
     def push(self, data):
-        self.payload.clear()
         profile = next(data)
-        self.payload.update(profile)
-        response = self.send_request()
-        if response.status_code >= 400:
-            raise RuntimeError(
-                "Push profile to flatchr failed : `{}`".format(response.content)
-            )
+
+        # Prepare request
+        session = requests.Session()
+        push_profile_request = requests.Request()
+        push_profile_request.method = "POST"
+        push_profile_request.url = (
+            f"https://{self.subdomain}.flatchr.io/vacancy/candidate/json"
+        )
+        push_profile_request.auth = self.auth
+        push_profile_request.json = profile
+        prepared_request = push_profile_request.prepare()
+
+        # Send request
+        response = session.send(prepared_request)
+
+        if not response.ok:
+            raise RuntimeError(f"Push profile to flatchr failed : `{response.content}`")
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         def get_candidate_attachments(hrflow_profile):
@@ -88,8 +83,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         return profile
 
 
-class EnrichProfile(ProfileDestinationAction, HTTPStream):
-    payload: Dict[str, Any] = dict()
+class FlatchrEnrichProfileAction(PushProfileAction):
     auth: AuthorizationAuth
     subdomain: str = Field(
         ...,
@@ -105,29 +99,23 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
         description="The id of the compagny",
     )
 
-    def build_request_headers(self):
-        super().build_request_headers()
-        self.headers["content-type"] = "application/json"
-
-    @property
-    def base_url(self):
-        return "https://{0}.flatchr.io/company/{1}/search/candidate".format(
-            self.subdomain, self.compagny
-        )
-
-    @property
-    def http_method(self):
-        return "POST"
-
     def push(self, data):
-        self.payload.clear()
         profile = next(data)
-        self.payload.update(profile)
-        response = self.send_request()
-        if response.status_code >= 400:
-            raise RuntimeError(
-                "Push profile to flatchr failed : `{}`".format(response.content)
-            )
+
+        # Prepare request
+        session = requests.Session()
+        push_profile_request = requests.Request()
+        push_profile_request.method = "POST"
+        push_profile_request.url = f"https://{self.subdomain}.flatchr.io/company/{self.compagny}/search/candidate"
+        push_profile_request.auth = self.auth
+        push_profile_request.json = profile
+        prepared_request = push_profile_request.prepare()
+
+        # Send request
+        response = session.send(prepared_request)
+
+        if not response.ok:
+            raise RuntimeError(f"Push profile to flatchr failed : `{response.content}`")
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         def get_education_list(hrflow_profile):
@@ -206,7 +194,11 @@ class EnrichProfile(ProfileDestinationAction, HTTPStream):
             return flatchr_experiences_list
 
         def get_name():
-            name = {"formattedName": "Undefined", "given": "Undefined", "family": "Undefined"}
+            name = {
+                "formattedName": "Undefined",
+                "given": "Undefined",
+                "family": "Undefined",
+            }
             return name
 
         def get_phone(hrflow_profile):

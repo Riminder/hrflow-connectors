@@ -1,53 +1,52 @@
 from typing import Iterator, Dict, Any
 from pydantic import Field
 import html
-from ....core.action import BoardAction
-from ....core.http import HTTPStream
+import requests
+
+from ....core.action import PullJobsAction
 from ....utils.logger import get_logger
 from ....utils.clean_text import remove_html_tags
 
 logger = get_logger()
 
 
-class GetAllJobs(HTTPStream, BoardAction):
+class GreenhousePullJobsAction(PullJobsAction):
     board_token: str = Field(
         ...,
         description="Job Board URL token, which is usually the company `name` -for example `lyft`- when it has job listings on greenhouse, mandatory to access job boards on `greenhouse.io`: `https://boards-api.greenhouse.io/v1/boards/{board_token}/jobs`, getting jobs doesn't require an API Key",
     )
 
-    @property
-    def base_url(self):
-        return (
-            "https://boards-api.greenhouse.io/v1/boards/{}/jobs/?content=true".format(
-                self.board_token
-            )
-        )
-
-    @property
-    def http_method(self):
-        return "GET"
-
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
-        pull all jobs from a greenhouse job board
+        Pull all jobs from a greenhouse job board
 
         Returns:
             Iterator[Dict[str, Any]]: list of all jobs with their content if available
         """
+        # Prepare request
+        session = requests.Session()
+        pull_jobs_request = requests.Request()
+        pull_jobs_request.method = "GET"
+        pull_jobs_request.url = f"https://boards-api.greenhouse.io/v1/boards/{self.board_token}/jobs/?content=true"
+        pull_jobs_request.auth = self.auth
+        prepared_request = pull_jobs_request.prepare()
 
-        response = self.send_request()
-        if response.status_code == 200:
-            job_dict = response.json()
-            total_info = job_dict["meta"]["total"]
-            logger.info(f"Total jobs found : {total_info}")
-            job_list = job_dict["jobs"]
-            return job_list
-        else:
+        # Send request
+        response = session.send(prepared_request)
+
+        if not response.ok:
             logger.error(
-                f"Failed to get jobs from board: {self.board_token}, Check that your board token is valid"
+                f"Failed to get jobs from board: `{self.board_token}`. Check that your board token is valid."
             )
             error_message = "Unable to pull the data ! Reason : `{}`"
             raise ConnectionError(error_message.format(response.content))
+
+        response_dict = response.json()
+        total_info = response_dict["meta"]["total"]
+        logger.info(f"Total jobs found : {total_info}")
+
+        job_list = response_dict["jobs"]
+        return job_list
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """

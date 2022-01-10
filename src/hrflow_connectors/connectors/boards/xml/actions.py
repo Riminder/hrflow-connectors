@@ -1,30 +1,30 @@
-from ....core.action import BoardAction
-from ....core.http import HTTPStream
-
-
 from pydantic import Field
 import xml.etree.ElementTree
 from typing import Iterator
+import requests
+
+from ....core.action import PullJobsAction
 
 
-class XMLBoardAction(BoardAction, HTTPStream):
+class XMLPullJobsAction(PullJobsAction):
     xml_stream_url: str = Field(..., description="URL to XML Stream")
     job_list_xpath: str = Field(
         ..., description="XPath pointing to the job list in the XML stream"
     )
 
-    @property
-    def base_url(self):
-        return self.xml_stream_url
-
-    @property
-    def http_method(self):
-        return "GET"
-
     def pull(self) -> Iterator[xml.etree.ElementTree.Element]:
-        response = self.send_request()
+        # Prepare request
+        session = requests.Session()
+        pull_jobs_request = requests.Request()
+        pull_jobs_request.method = "GET"
+        pull_jobs_request.url = self.xml_stream_url
+        pull_jobs_request.auth = self.auth
+        prepared_request = pull_jobs_request.prepare()
 
-        if response.status_code >= 400:
+        # Send request
+        response = session.send(prepared_request)
+
+        if not response.ok:
             error_message = "Unable to pull the data ! Reason : `{}`"
             raise ConnectionError(error_message.format(response.content))
 

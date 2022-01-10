@@ -1,7 +1,7 @@
 import pytest
 
 from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
-from hrflow_connectors.connectors.boards.crosstalent import GetAllJobs
+from hrflow_connectors.connectors.boards.crosstalent import CrosstalentPullJobsAction
 
 
 @pytest.fixture
@@ -25,7 +25,7 @@ def test_Auth(auth):
 
 
 def test_GetAllJobs(logger, auth, hrflow_client):
-    action = GetAllJobs(
+    action = CrosstalentPullJobsAction(
         auth=auth,
         subdomain="vulcain-eng--recette.my",
         hrflow_client=hrflow_client("dev-demo"),

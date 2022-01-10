@@ -1,7 +1,7 @@
 import pytest
 
 from hrflow_connectors.core.auth import XSmartTokenAuth
-from hrflow_connectors.connectors.boards.smartrecruiters import GetAllJobs
+from hrflow_connectors.connectors.boards.smartrecruiters import SmartRecruitersPullJobsAction
 
 
 @pytest.fixture
@@ -13,7 +13,7 @@ def auth(credentials):
 
 
 def test_GetAllJobs(logger, auth, hrflow_client):
-    action = GetAllJobs(
+    action = SmartRecruitersPullJobsAction(
         auth=auth,
         hrflow_client=hrflow_client("dev-demo"),
         limit=2,

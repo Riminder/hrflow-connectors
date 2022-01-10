@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from typing import Tuple
 
-from .actions import XMLBoardAction
+from .actions import XMLPullJobsAction
 
 
 class Spec(BaseModel):
-    actions: Tuple[XMLBoardAction]
+    actions: Tuple[XMLPullJobsAction]

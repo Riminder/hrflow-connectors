@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from typing import Tuple
 
-from .actions import PushProfile, EnrichProfile
+from .actions import FlatchrPushProfileAction, FlatchrEnrichProfileAction
 
 
 class Spec(BaseModel):
-    actions: Tuple[PushProfile, EnrichProfile]
+    actions: Tuple[FlatchrPushProfileAction, FlatchrEnrichProfileAction]

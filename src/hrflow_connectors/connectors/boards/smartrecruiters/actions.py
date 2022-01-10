@@ -3,8 +3,7 @@ from pydantic import Field
 import itertools
 import requests
 
-from ....core.action import BoardAction
-from ....core.http import HTTPStream
+from ....core.action import PullJobsAction
 from ....core.auth import XSmartTokenAuth
 from ....utils.logger import get_logger
 
@@ -12,7 +11,7 @@ from ....utils.logger import get_logger
 logger = get_logger()
 
 
-class GetAllJobs(HTTPStream, BoardAction):
+class SmartRecruitersPullJobsAction(PullJobsAction):
     auth: XSmartTokenAuth
     query: Optional[str] = Field(
         None,
@@ -34,14 +33,6 @@ class GetAllJobs(HTTPStream, BoardAction):
         description="Number of elements to return per page. max value is 100. Default value : 10",
     )
 
-    @property
-    def base_url(self):
-        return "https://api.smartrecruiters.com/jobs"
-
-    @property
-    def http_method(self):
-        return "GET"
-
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
         Pull all jobs from SmartRecruiters
@@ -49,22 +40,33 @@ class GetAllJobs(HTTPStream, BoardAction):
         Returns:
             Iterator[Dict[str, Any]]: an iterator of jobs
         """
-        # If param value is `None`, `requests` in `HTTPStream` ignores the param
-        self.params["q"] = self.query
-        self.params["updatedAfter"] = self.updated_after
-        self.params["postingStatus"] = self.posting_status
-        self.params["status"] = self.job_status
-        self.params["limit"] = self.limit
+        # Prepare request
+        session = requests.Session()
+        pull_jobs_request = requests.Request()
+        pull_jobs_request.method = "GET"
+        pull_jobs_request.url = "https://api.smartrecruiters.com/jobs"
+        pull_jobs_request.auth = self.auth
+
+        ## Set params
+        # If param value is `None`, `requests` ignores the param
+        pull_jobs_params = dict()
+        pull_jobs_params["q"] = self.query
+        pull_jobs_params["updatedAfter"] = self.updated_after
+        pull_jobs_params["postingStatus"] = self.posting_status
+        pull_jobs_params["status"] = self.job_status
+        pull_jobs_params["limit"] = self.limit
+        pull_jobs_request.params = pull_jobs_params
 
         # Define page generator
         def get_page():
             next_page_id = None
             job_list = None
             while job_list != []:
-                self.params["pageId"] = next_page_id
-                response = self.send_request()
+                pull_jobs_request.params["pageId"] = next_page_id
+                prepared_request = pull_jobs_request.prepare()
+                response = session.send(prepared_request)
 
-                if response.status_code >= 400:
+                if not response.ok:
                     logger.error(f"Fail to get page of jobs : pageId=`{next_page_id}`")
                     error_message = "Unable to pull the data ! Reason : `{}`"
                     raise ConnectionError(error_message.format(response.content))
@@ -100,12 +102,18 @@ class GetAllJobs(HTTPStream, BoardAction):
                 Dict[str, Any]: full job
             """
             job_id = light_job_dict["id"]
-            hearders = dict()
-            self.auth.update(headers=hearders)
-            get_job_url = f"https://api.smartrecruiters.com/jobs/{job_id}"
-            response = requests.get(get_job_url, headers=hearders)
 
-            if response.status_code >= 400:
+            # prepare `get_job` request
+            get_job_request = requests.Request()
+            get_job_request.method = "GET"
+            get_job_request.url = f"https://api.smartrecruiters.com/jobs/{job_id}"
+            get_job_request.auth = self.auth
+
+            # send request
+            prepared_request = pull_jobs_request.prepare()
+            response = session.send(prepared_request)
+
+            if not response.ok:
                 logger.error(f"Fail to get full job id=`{job_id}`")
                 error_message = f"Unable to pull the job id=`{job_id}` ! Reason : `{response.content}`"
                 raise ConnectionError(error_message)

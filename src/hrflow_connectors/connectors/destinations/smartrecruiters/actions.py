@@ -1,30 +1,18 @@
 from pydantic import Field
 from typing import Dict, Any
-from ....core.action import ProfileDestinationAction
-from ....core.http import HTTPStream
+import requests
+
+from ....core.action import PushProfileAction
 from ....core.auth import XSmartTokenAuth
 from ....utils.hrflow import generate_workflow_response
 
 
-class PushProfile(ProfileDestinationAction, HTTPStream):
-    payload: Dict[str, Any] = dict()
+class SmartRecruitersPushProfileAction(PushProfileAction):
     auth: XSmartTokenAuth
     job_id: str = Field(
         ...,
         description="Id of a Job to which you want to assign a candidate when it’s created. A profile is sent to this URL `https://api.smartrecruiters.com/jobs/{job_id}/candidates` ",
     )
-
-    def build_request_headers(self):
-        super().build_request_headers()
-        self.headers["content-type"] = "application/json"
-
-    @property
-    def base_url(self):
-        return "https://api.smartrecruiters.com/jobs/{}/candidates".format(self.job_id)
-
-    @property
-    def http_method(self):
-        return "POST"
 
     def format(self, profile: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -155,11 +143,23 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         Args:
             data (Dict[str, Any]): Profile
         """
-        self.payload.clear()
         profile = next(data)
-        self.payload.update(profile)
-        response = self.send_request()
-        if response.status_code >= 400:
+
+        # Prepare request
+        session = requests.Session()
+        push_profile_request = requests.Request()
+        push_profile_request.method = "POST"
+        push_profile_request.url = (
+            f"https://api.smartrecruiters.com/jobs/{self.job_id}/candidates"
+        )
+        push_profile_request.auth = self.auth
+        push_profile_request.json = profile
+        prepared_request = push_profile_request.prepare()
+
+        # Send request
+        response = session.send(prepared_request)
+
+        if not response.ok:
             raise RuntimeError(
-                "Push profile to SmartRecruiters failed : `{}`".format(response.content)
+                f"Push profile to SmartRecruiters failed : `{response.content}`"
             )
