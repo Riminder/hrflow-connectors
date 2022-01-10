@@ -3,6 +3,7 @@ from hrflow_connectors.core.action import (
     BoardAction,
     PullAction,
     PushAction,
+    PullJobsAction,
     PushProfileAction,
 )
 from hrflow_connectors.utils.hrflow import Profile, Source
@@ -582,6 +583,115 @@ def test_PullAction_execute(hrflow_client):
     action.execute()
 
 
+def test_PullJobsAction_execute_with_archiving_and_parsing(hrflow_client):
+    class MyPullJobsAction(PullJobsAction):
+        def pull(self):
+            return ["pullformat", "pulllogic", "pullcheckref"]
+
+        def format(self, data):
+            assert "pull" in data
+            return data.replace("pull", "")
+
+        def check_deletion_references_from_stream(self):
+            assert True
+
+        def check_reference_in_board(self, data):
+            return "checkref" != data
+
+        def hydrate_job_with_parsing(self, data):
+            return data + "_after_parsing"
+
+        def push(self, data):
+            data_list = list(data)
+            assert data_list == ["logic_after_parsing"]
+
+    def my_logic(data):
+        return not data == "format"
+
+    action = MyPullJobsAction(
+        hrflow_client=hrflow_client,
+        board_key="abc",
+        hydrate_with_parsing=True,
+        logics=["my_logic"],
+        local_scope=locals(),
+        global_scope=globals(),
+    )
+    action.execute()
+
+
+def test_PullJobsAction_execute_with_archiving_without_parsing(hrflow_client):
+    class MyPullJobsAction(PullJobsAction):
+        def pull(self):
+            return ["pullformat", "pulllogic", "pullcheckref"]
+
+        def format(self, data):
+            assert "pull" in data
+            return data.replace("pull", "")
+
+        def check_deletion_references_from_stream(self):
+            assert True
+
+        def check_reference_in_board(self, data):
+            return "checkref" != data
+
+        def hydrate_job_with_parsing(self, data):
+            return data + "_after_parsing"
+
+        def push(self, data):
+            data_list = list(data)
+            assert data_list == ["logic"]
+
+    def my_logic(data):
+        return not data == "format"
+
+    action = MyPullJobsAction(
+        hrflow_client=hrflow_client,
+        board_key="abc",
+        hydrate_with_parsing=False,
+        logics=["my_logic"],
+        local_scope=locals(),
+        global_scope=globals(),
+    )
+    action.execute()
+
+
+def test_PullJobsAction_execute_without_archiving_and_parsing(hrflow_client):
+    class MyPullJobsAction(PullJobsAction):
+        def pull(self):
+            return ["pullformat", "pulllogic", "pullcheckref"]
+
+        def format(self, data):
+            assert "pull" in data
+            return data.replace("pull", "")
+
+        def check_deletion_references_from_stream(self):
+            assert False
+
+        def check_reference_in_board(self, data):
+            return "checkref" != data
+
+        def hydrate_job_with_parsing(self, data):
+            return data + "_after_parsing"
+
+        def push(self, data):
+            data_list = list(data)
+            assert data_list == ["logic"]
+
+    def my_logic(data):
+        return not data == "format"
+
+    action = MyPullJobsAction(
+        hrflow_client=hrflow_client,
+        board_key="abc",
+        hydrate_with_parsing=False,
+        archive_deleted_jobs_from_stream=False,
+        logics=["my_logic"],
+        local_scope=locals(),
+        global_scope=globals(),
+    )
+    action.execute()
+
+
 def test_PushAction_execute(hrflow_client):
     class MyPushAction(PushAction):
         def pull(self):
@@ -666,7 +776,7 @@ def test_PushProfileAction_execute(hrflow_client):
     class MyPushProfileAction(PushProfileAction):
         def pull(self):
             return []
-        
+
         def push(self, data):
             return
 
