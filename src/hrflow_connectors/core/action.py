@@ -161,7 +161,6 @@ class Action(BaseModel):
         """
         Execute action
         """
-        # TODO : Remove -> raise NotImplem
         logger.info("Start execution")
 
         logger.info("Pulling data...")
@@ -172,7 +171,6 @@ class Action(BaseModel):
         filtered_data = self.apply_logics(input_data)
         logger.info("Logics have been applied")
 
-        # connect each filtered_data to the format accepted by the pull function (destination, source, board)
         logger.info("Mapping format function...")
         output_data = map(self.format_switcher, filtered_data)
         logger.info("Format function has been mapped")
