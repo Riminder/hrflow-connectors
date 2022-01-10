@@ -2,7 +2,7 @@ from typing import Optional, Union, List
 from pydantic import BaseModel, Field
 
 
-class Model(BaseModel):
+class MonsterProfile(BaseModel):
     City: str = Field(..., Description="City of the profile")
     CountryCode: str = Field(..., Description="CountryCode of the profile")
     EmailAddress: str = Field(..., Description="Email address of the profile")
