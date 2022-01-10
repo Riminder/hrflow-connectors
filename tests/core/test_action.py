@@ -1,4 +1,11 @@
-from hrflow_connectors.core.action import Action, BoardAction, PullAction, PushAction
+from hrflow_connectors.core.action import (
+    Action,
+    BoardAction,
+    PullAction,
+    PushAction,
+    PushProfileAction,
+)
+from hrflow_connectors.utils.hrflow import Profile, Source
 import pytest
 import requests
 import responses
@@ -598,3 +605,74 @@ def test_PushAction_execute(hrflow_client):
         global_scope=globals(),
     )
     action.execute()
+
+
+@responses.activate
+def test_PushProfileAction_pull_success(hrflow_client):
+    # Mock requests and check data sent
+    expected_params = dict(source_key="abc", key="efg")
+    returned_value = dict(code=200, data=dict(key="efg"))
+    match = [responses.matchers.query_param_matcher(expected_params)]
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/profile/indexing",
+        status=200,
+        match=match,
+        json=returned_value,
+    )
+
+    # Pull data
+    profile = Profile(key="efg", source=Source(key="abc"))
+    action = PushProfileAction(hrflow_client=hrflow_client(), profile=profile)
+    profile_list_got = action.pull()
+
+    # Check returned value
+    assert len(profile_list_got) == 1
+
+    profile_got = profile_list_got[0]
+    assert profile_got["key"] == "efg"
+
+
+@responses.activate
+def test_PushProfileAction_pull_failure(hrflow_client):
+    # Mock requests and check data sent
+    expected_params = dict(source_key="abc", key="efg")
+    returned_value = dict(code=400, message="Test", data=dict())
+    match = [responses.matchers.query_param_matcher(expected_params)]
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/profile/indexing",
+        status=400,
+        match=match,
+        json=returned_value,
+    )
+
+    # Pull data
+    profile = Profile(key="efg", source=Source(key="abc"))
+    action = PushProfileAction(hrflow_client=hrflow_client(), profile=profile)
+
+    try:
+        action.pull()
+        assert False
+    except RuntimeError:
+        pass
+
+
+@responses.activate
+def test_PushProfileAction_execute(hrflow_client):
+    profile = Profile(key="efg", source=Source(key="abc"))
+
+    # Mock the `pull` & `push` method to do nothing
+    class MyPushProfileAction(PushProfileAction):
+        def pull(self):
+            return []
+        
+        def push(self, data):
+            return
+
+    action = MyPushProfileAction(hrflow_client=hrflow_client(), profile=profile)
+
+    workflow_response = action.execute()
+
+    assert workflow_response["status_code"] == 201
+    assert workflow_response["message"] == "Profile successfully pushed"
