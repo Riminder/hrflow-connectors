@@ -1,6 +1,6 @@
 import responses
 
-from hrflow_connectors.connectors.boards.xml import XMLBoardAction
+from hrflow_connectors.connectors.boards.xml import XMLPullJobsAction
 from hrflow_connectors.utils.datetime_converter import from_str_to_datetime
 
 
@@ -125,7 +125,7 @@ def test_get_all_jobs_from_samsic_xml_stream(logger, hrflow_client):
     xml_stream_url = "https://cv.samsic-emploi.fr/media/flux/jobs.xml"
     job_list_xpath = "DataArea"
 
-    action = XMLBoardAction(
+    action = XMLPullJobsAction(
         xml_stream_url=xml_stream_url,
         job_list_xpath=job_list_xpath,
         hrflow_client=hrflow_client("dev-demo"),
@@ -170,7 +170,7 @@ def test_XMLBoardAction_pull_generic_xml_stream(logger, hrflow_client):
     responses.add(responses.GET, xml_stream_url, status=200, body=xml_stream_str)
 
     job_list_xpath = "board/jobs"
-    action = XMLBoardAction(
+    action = XMLPullJobsAction(
         xml_stream_url=xml_stream_url,
         job_list_xpath=job_list_xpath,
         hrflow_client=hrflow_client("dev-demo"),

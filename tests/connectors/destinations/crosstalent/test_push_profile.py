@@ -1,7 +1,9 @@
 import pytest
 
 from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
-from hrflow_connectors.connectors.destinations.crosstalent import PushProfile
+from hrflow_connectors.connectors.destinations.crosstalent import (
+    CrosstalentPushProfileAction,
+)
 from hrflow_connectors.utils.hrflow import Profile, Source
 
 
@@ -19,12 +21,12 @@ def auth(credentials):
     return auth
 
 
-def test_PushProfile(logger, auth, hrflow_client):
+def test_CrosstalentPushProfileAction(logger, auth, hrflow_client):
     profile = Profile(
         key="ea5704b959c5e53aaef65c04ef5018ae1fee1a77",
         source=Source(key="15517d70b0870e4cf431eefd78f8b39cff5607e8"),
     )
-    action = PushProfile(
+    action = CrosstalentPushProfileAction(
         auth=auth,
         subdomain="vulcain-eng--recette.my",
         hrflow_client=hrflow_client("vulcain"),

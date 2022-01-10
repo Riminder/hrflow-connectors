@@ -3,6 +3,7 @@ from ..utils.clean_text import remove_html_tags
 from ..utils.hrflow import find_element_in_list, Profile
 from ..utils.hrflow import generate_workflow_response
 from ..utils.logger import get_logger
+from ..core.auth import Auth, NoAuth
 
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Iterator, TypeVar, Optional, Union
@@ -24,6 +25,12 @@ class Action(BaseModel):
         ...,
         description="Hrflow client instance used to communicate with the Hrflow.ai API",
     )
+
+    auth: Auth = Field(
+        NoAuth(),
+        description="Auth instance to identify and communicate with the platform",
+    )
+
     logics: List[str] = Field(
         [], description="Function names to apply as filter before pushing the data"
     )

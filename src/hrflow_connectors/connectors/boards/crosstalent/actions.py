@@ -1,13 +1,12 @@
 from typing import Iterator, Dict, Any
+from pydantic import Field
+import requests
 
 from ....core.auth import OAuth2PasswordCredentialsBody
-from ....core.http import HTTPStream
-from ....core.action import BoardAction
-
-from pydantic import Field
+from ....core.action import PullJobsAction
 
 
-class GetAllJobs(HTTPStream, BoardAction):
+class CrosstalentPullJobsAction(PullJobsAction):
     auth: OAuth2PasswordCredentialsBody = Field(
         ..., description="Auth instance to identify and communicate with the platform"
     )
@@ -16,23 +15,23 @@ class GetAllJobs(HTTPStream, BoardAction):
         description="Subdomain Crosstalent just before `salesforce.com`. For example subdomain=`my_subdomain.my` in `http://my_subdomain.my.salesforce.com/ABC`",
     )
 
-    @property
-    def base_url(self):
-        return "https://{}.salesforce.com/services/apexrest/crta/HrFlowGetJobOffers/".format(
-            self.subdomain
-        )
-
-    @property
-    def http_method(self):
-        return "GET"
-
     def pull(self) -> Iterator[Dict[str, Any]]:
-        response = self.send_request()
-        if response.status_code == 200:
-            return response.json()
-        else:
+        # Prepare request
+        session = requests.Session()
+        pull_jobs_request = requests.Request()
+        pull_jobs_request.method = "GET"
+        pull_jobs_request.url = f"https://{self.subdomain}.salesforce.com/services/apexrest/crta/HrFlowGetJobOffers/"
+        pull_jobs_request.auth = self.auth
+        prepared_request = pull_jobs_request.prepare()
+
+        # Send request
+        response = session.send(prepared_request)
+
+        if not response.ok:
             error_message = "Unable to pull the data ! Reason : `{}`"
             raise ConnectionError(error_message.format(response.content))
+
+        return response.json()
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         job = dict()
@@ -269,7 +268,7 @@ class GetAllJobs(HTTPStream, BoardAction):
                 metadata = dict(name=metadata_name, value=metadata_value)
                 job["metadatas"].append(metadata)
 
-        ## TODO Add metadata
+        ## Add metadata
         create_metadata("crta__CT_Code__c")
         create_metadata("crta__CT_Designation__c")
         create_metadata("crta__CT_Support__c")
