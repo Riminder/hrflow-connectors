@@ -6,6 +6,9 @@
 ## PushProfile
 `PushProfile` gets all available jobs listed on ***Greenhouse board***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
+## SCHEMAS
+add `schemas.py` as ***basemodel*** for a ***Greenhouse profile object***.
+
 ### Parameters
 
 | Field | Type | Description |
