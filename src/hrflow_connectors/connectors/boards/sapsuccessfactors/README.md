@@ -19,7 +19,7 @@
 | `hydrate_with_parsing`  | `bool` | Enrich the job with parsing. Default value : `False`        |
 | `archive_deleted_jobs_from_stream`  | `bool` | Archive Board jobs when they are no longer in the incoming job stream. Default value : `True`        |
 | `auth` :red_circle: | `Union[XAPIKeyAuth, OAuth2PasswordCredentialsBody]` | Auth instance to identify and communicate with the platform        |
-| `subdomain` :red_circle: | `str` | Subdomain: the `api_server` in `https://{api-server}/odata/v2`. For example subdomain=`apisalesdemo8.successfactors.com` in `https://apisalesdemo8.successfactors.com/odata/v2`        |
+| `api_server` :red_circle: | `str` | api_server: the `api_server` in `https://{api-server}/odata/v2`. For example api_server=`apisalesdemo8.successfactors.com` in `https://apisalesdemo8.successfactors.com/odata/v2`        |
 | `top`  | `int` | show only the first n items, value by default = `20`
 
 :red_circle: : *required* 
@@ -47,7 +47,7 @@ auth = XAPIKeyAuth(
 action = PullJobs(
     auth=auth,
     top = 30,
-    subdomain="MY_API_SERVER",
+    api_server="MY_API_SERVER",
     hrflow_client=client,
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
