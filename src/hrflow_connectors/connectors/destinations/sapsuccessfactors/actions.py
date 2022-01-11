@@ -124,7 +124,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         logger.debug(f"{response.status_code}, {response.content}")
         if response.status_code >= 400:
             if response.content == profile_already_exist:
-                logger.warning(f"profile already exists")
+                logger.warning(f"Candidate already exists")
             else:
                 raise RuntimeError(
                     "Push profile to sapsuccesfactors api-server: {} failed : `{}`".format(
