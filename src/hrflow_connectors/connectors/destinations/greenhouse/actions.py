@@ -14,9 +14,9 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
     payload: Dict[str, Any] = dict()
     job_id: List[int] = Field(
         ...,
-        description="The internal ID of the job to which this candidate should be added can be a list of jobs",
+        description="List of jobs internal ids to which the candidate should be added",
     )
-    on_behalf_of: str
+    on_behalf_of: str = Field(..., description="The ID of the user sending the profile, or the person he is sending the profile on behalf of")
 
     def build_request_headers(self):
         super().build_request_headers()
