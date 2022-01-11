@@ -2,7 +2,20 @@ import responses
 import requests
 
 from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
-from hrflow_connectors.core.auth import XAPIKeyAuth, AuthorizationAuth, XSmartTokenAuth
+from hrflow_connectors.core.auth import (
+    Auth,
+    XAPIKeyAuth,
+    AuthorizationAuth,
+    XSmartTokenAuth,
+)
+
+
+def test_Auth():
+    auth = Auth()
+    updatable_object = dict(abc="def")
+    updated_object = auth(updatable_object)
+    assert updatable_object == updated_object
+
 
 @responses.activate
 def test_OAuth2PasswordCredentialsBody_get_access_token():
@@ -64,16 +77,72 @@ def test_OAuth2PasswordCredentialsBody_get_access_token():
 
     # Send authenticated request
     session = requests.Session()
-    request = requests.Request(method="GET", url="http://test.test/check_auth", auth=auth)
+    request = requests.Request(
+        method="GET", url="http://test.test/check_auth", auth=auth
+    )
     prepared_request = request.prepare()
     session.send(prepared_request)
-    
+
     prepared_request
     prepared_request.headers.update(dict(test="abc"))
     authenticated_prepared_request = auth(prepared_request)
 
     assert authenticated_prepared_request.headers.get("test") == "abc"
-    assert authenticated_prepared_request.headers.get("Authorization") == "OAuth {}".format(access_token)
+    assert authenticated_prepared_request.headers.get(
+        "Authorization"
+    ) == "OAuth {}".format(access_token)
+
+
+@responses.activate
+def test_OAuth2PasswordCredentialsBody_get_access_token_failure():
+
+    OAuth2PasswordCredentialsBody_JSON_RESPONSE = {
+        "access_token": "ABC.TOKEN.EFD",
+        "instance_url": "https://test.test/services/oauth2/token",
+        "id": "https://test.test/id/00D3N0000002eRJXAY/0055N000006PGpLQAW",
+        "token_type": "Bearer",
+        "issued_at": "1638442809550",
+        "signature": "wp1jFqVjffN2gLP3O9NvK93VBYFdgHD/FtwiYEhPrlQ=",
+    }
+
+    access_token_url = "https://test.test/services/oauth2/token"
+    check_auth_url = "http://test.test/check_auth"
+    client_id = "007"
+    client_secret = "double0"
+    username = "bond"
+    password = "jb"
+
+    # build Mock for get_access_token request
+    body = dict(
+        grant_type="password",
+        client_id=client_id,
+        client_secret=client_secret,
+        username=username,
+        password=password,
+    )
+    get_access_match = [responses.matchers.urlencoded_params_matcher(body)]
+    responses.add(
+        responses.POST,
+        access_token_url,
+        status=400,
+        json=OAuth2PasswordCredentialsBody_JSON_RESPONSE,
+        match=get_access_match,
+    )
+
+    # Instanciate Auth to test
+    auth = OAuth2PasswordCredentialsBody(
+        access_token_url=access_token_url,
+        client_id=client_id,
+        client_secret=client_secret,
+        username=username,
+        password=password,
+    )
+
+    try:
+        access_token = auth.get_access_token()
+        assert False
+    except RuntimeError:
+        pass
 
 
 @responses.activate
@@ -84,7 +153,9 @@ def test_XAPIKeyAuth():
 
     base_headers = dict(test="abc")
 
-    request = requests.Request(method="GET", url="http://test.test/check_auth", headers=base_headers)
+    request = requests.Request(
+        method="GET", url="http://test.test/check_auth", headers=base_headers
+    )
     prepared_request = request.prepare()
     authenticated_prepared_request = auth(prepared_request)
 
@@ -100,7 +171,9 @@ def test_AuthorizationAuth():
 
     base_headers = dict(test="abc")
 
-    request = requests.Request(method="GET", url="http://test.test/check_auth", headers=base_headers)
+    request = requests.Request(
+        method="GET", url="http://test.test/check_auth", headers=base_headers
+    )
     prepared_request = request.prepare()
     authenticated_prepared_request = auth(prepared_request)
 
@@ -115,7 +188,9 @@ def test_XSmartTokenAuth():
 
     base_headers = dict(test="abc")
 
-    request = requests.Request(method="GET", url="http://test.test/check_auth", headers=base_headers)
+    request = requests.Request(
+        method="GET", url="http://test.test/check_auth", headers=base_headers
+    )
     prepared_request = request.prepare()
     authenticated_prepared_request = auth(prepared_request)
 

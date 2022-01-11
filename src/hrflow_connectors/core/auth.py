@@ -71,11 +71,9 @@ class OAuth2PasswordCredentialsBody(Auth):
         )
         response = requests.post(self.access_token_url, data=payload)
 
-        if response.status_code != 200:
+        if not response.ok:
             logger.error("OAuth2 failed for getting access token !")
-            raise ConnectionError(
-                "OAuth2 failed ! Reason : `{}`".format(response.content)
-            )
+            raise RuntimeError("OAuth2 failed ! Reason : `{}`".format(response.content))
 
         logger.debug("The access token has been got")
         return response.json()["access_token"]
