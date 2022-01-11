@@ -118,7 +118,7 @@ The project mainly uses 4 packages :
 - **Laponi** (soon)
 - **Lever** (soon)
 - **Mailchimp** (soon)
-- **Monster** : [`PushJob`](src/hrflow_connectors/connectors/boards/monster), ['PullProfile'](src/hrflow_connectors/connectors/destinations/monster)
+- **Monster** : [`PushJob`](src/hrflow_connectors/connectors/boards/monster), [`PullProfile`](src/hrflow_connectors/connectors/destinations/monster)
 - **Oracle** (soon)
 - **SAP Successfactors** [`PullJobs`](src/hrflow_connectors/connectors/boards/sapsuccessfactors)
 - **Salesforce** (soon)
