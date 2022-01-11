@@ -11,6 +11,10 @@ import requests
 import responses
 from hrflow import Hrflow
 
+##############
+### Action ###
+##############
+
 
 @pytest.fixture
 def generated_data_list():
@@ -22,7 +26,7 @@ def generated_data_list():
     return list_to_filter
 
 
-def test_apply_logics_with_empty_logics_list(hrflow_client, generated_data_list):
+def test_Action_apply_logics_with_empty_logics_list(hrflow_client, generated_data_list):
     action = Action(hrflow_client=hrflow_client())
     filtered_list = action.apply_logics(generated_data_list)
 
@@ -33,7 +37,7 @@ def test_apply_logics_with_empty_logics_list(hrflow_client, generated_data_list)
     assert dict(element1="value2", element2="value2") in filtered_list
 
 
-def test_apply_logics_single_filter(hrflow_client, generated_data_list):
+def test_Action_apply_logics_single_filter(hrflow_client, generated_data_list):
     def filter_element1_with_value1(element):
         return element.get("element1") == "value1"
 
@@ -50,7 +54,7 @@ def test_apply_logics_single_filter(hrflow_client, generated_data_list):
     assert dict(element1="value1", element2="value1") in filtered_list
 
 
-def test_apply_logics_two_filter(hrflow_client, generated_data_list):
+def test_Action_apply_logics_two_filter(hrflow_client, generated_data_list):
     def filter_element1_with_value1(element):
         return element.get("element1") == "value1"
 
@@ -69,7 +73,7 @@ def test_apply_logics_two_filter(hrflow_client, generated_data_list):
     assert dict(element1="value1", element2="value1") in filtered_list
 
 
-def test_apply_logics_single_filter_without_interaction(
+def test_Action_apply_logics_single_filter_without_interaction(
     hrflow_client, generated_data_list
 ):
     def filter_nothing(element):
@@ -90,7 +94,7 @@ def test_apply_logics_single_filter_without_interaction(
     assert dict(element1="value2", element2="value2") in filtered_list
 
 
-def test_extern_format_function(hrflow_client):
+def test_Action_extern_format_function(hrflow_client):
     def extern_format(data):
         return dict(c=data["a"], d=data["a"] + data["b"])
 
@@ -106,7 +110,7 @@ def test_extern_format_function(hrflow_client):
     assert transformed_job == dict(c="aaa", d="aaabbb")
 
 
-def test_default_format_without_extern_format_function(hrflow_client):
+def test_Action_default_format_without_extern_format_function(hrflow_client):
     action = Action(
         hrflow_client=hrflow_client(),
         format_function_name=None,
@@ -116,7 +120,7 @@ def test_default_format_without_extern_format_function(hrflow_client):
     assert transformed_job == dict(a="aaa", b="bbb", f="fff")
 
 
-def test_overwritten_format_with_extern_format_function(hrflow_client):
+def test_Action_overwritten_format_with_extern_format_function(hrflow_client):
     def extern_format(data):
         return dict(c=data["a"], d=data["a"] + data["b"])
 
@@ -175,6 +179,71 @@ def test_Action_connect_and_execute(hrflow_client, generated_data_list):
     # Exec action
     action = TestConnectorAction(hrflow_client=hrflow_client())
     action.execute()
+
+
+##################
+### PullAction ###
+##################
+
+
+def test_PullAction_execute(hrflow_client):
+    class MyPullAction(PullAction):
+        def pull(self):
+            return ["pullformat", "pulllogic"]
+
+        def format(self, data):
+            assert "pull" in data
+            return data.replace("pull", "")
+
+        def push(self, data):
+            data_list = list(data)
+            assert data_list == ["logic"]
+
+    def my_logic(data):
+        return not data == "format"
+
+    action = MyPullAction(
+        hrflow_client=hrflow_client,
+        logics=["my_logic"],
+        local_scope=locals(),
+        global_scope=globals(),
+    )
+    action.execute()
+
+
+##################
+### PushAction ###
+##################
+
+
+def test_PushAction_execute(hrflow_client):
+    class MyPushAction(PushAction):
+        def pull(self):
+            return ["pullformat", "pulllogic"]
+
+        def format(self, data):
+            assert "pull" in data
+            return data.replace("pull", "")
+
+        def push(self, data):
+            data_list = list(data)
+            assert data_list == ["format"]
+
+    def my_logic(data):
+        return not data == "pulllogic"
+
+    action = MyPushAction(
+        hrflow_client=hrflow_client,
+        logics=["my_logic"],
+        local_scope=locals(),
+        global_scope=globals(),
+    )
+    action.execute()
+
+
+######################
+### PullJobsAction ###
+######################
 
 
 @pytest.fixture
@@ -545,31 +614,6 @@ def test_PullJobsAction_check_deletion_references_from_stream(hrflow_client):
     action.check_deletion_references_from_stream()
 
 
-def test_PullAction_execute(hrflow_client):
-    class MyPullAction(PullAction):
-        def pull(self):
-            return ["pullformat", "pulllogic"]
-
-        def format(self, data):
-            assert "pull" in data
-            return data.replace("pull", "")
-
-        def push(self, data):
-            data_list = list(data)
-            assert data_list == ["logic"]
-
-    def my_logic(data):
-        return not data == "format"
-
-    action = MyPullAction(
-        hrflow_client=hrflow_client,
-        logics=["my_logic"],
-        local_scope=locals(),
-        global_scope=globals(),
-    )
-    action.execute()
-
-
 def test_PullJobsAction_execute_with_archiving_and_parsing(hrflow_client):
     class MyPullJobsAction(PullJobsAction):
         def pull(self):
@@ -679,29 +723,9 @@ def test_PullJobsAction_execute_without_archiving_and_parsing(hrflow_client):
     action.execute()
 
 
-def test_PushAction_execute(hrflow_client):
-    class MyPushAction(PushAction):
-        def pull(self):
-            return ["pullformat", "pulllogic"]
-
-        def format(self, data):
-            assert "pull" in data
-            return data.replace("pull", "")
-
-        def push(self, data):
-            data_list = list(data)
-            assert data_list == ["format"]
-
-    def my_logic(data):
-        return not data == "pulllogic"
-
-    action = MyPushAction(
-        hrflow_client=hrflow_client,
-        logics=["my_logic"],
-        local_scope=locals(),
-        global_scope=globals(),
-    )
-    action.execute()
+#########################
+### PushProfileAction ###
+#########################
 
 
 @responses.activate
