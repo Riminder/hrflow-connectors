@@ -3,7 +3,7 @@ import pytest
 from hrflow_connectors.core.auth import AuthorizationAuth
 from hrflow_connectors.connectors.destinations.greenhouse import PushProfile
 from hrflow_connectors.utils.hrflow import Profile, Source
-import base64
+
 
 
 
@@ -26,7 +26,6 @@ def test_PushProfile(logger, auth, hrflow_client):
     action = PushProfile(
         job_id = ["4179714004"] ,
         on_behalf_of = "4249018004",
-        prospect = True,
         auth=auth,
         hrflow_client=hrflow_client(),
         profile=profile,
