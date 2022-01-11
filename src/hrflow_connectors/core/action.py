@@ -1,14 +1,14 @@
-import logging
+from pydantic import BaseModel, Field
+from typing import List, Dict, Any, Iterator, TypeVar, Optional, Union
+import itertools
+import xml.etree.ElementTree
+import html
+
 from ..utils.clean_text import remove_html_tags
 from ..utils.hrflow import find_element_in_list, Profile
 from ..utils.hrflow import generate_workflow_response
 from ..utils.logger import get_logger
 from ..core.auth import Auth, NoAuth
-
-from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Iterator, TypeVar, Optional, Union
-import itertools
-import xml.etree.ElementTree
 
 Hrflow = TypeVar("Hrflow")
 TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
@@ -379,6 +379,7 @@ class PullJobsAction(PullAction):
         # Clean the `concatenated_str` by removing htlm tags
         logger.debug("Removing HTML tags in concatenated texts...")
         cleaned_str = remove_html_tags(concatenated_str)
+        cleaned_str = html.unescape(cleaned_str)
         cleaned_str = cleaned_str.strip()
         logger.debug("HTML tags in concatenated texts have been removed")
 
