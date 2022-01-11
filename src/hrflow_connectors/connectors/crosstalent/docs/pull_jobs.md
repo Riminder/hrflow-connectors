@@ -1,12 +1,9 @@
-# Crosstalent Connector
-**Crosstalent designs and implements innovative solutions for human resources management.**
-
+# Pull Jobs
 `Crosstalent` :arrow_right: `Hrflow.ai`
 
-## GetAllJobs
-`GetAllJobs` gets all available jobs via their ***Salesforce API***. It adds all these **jobs** to a ***Hrflow.ai Board***.
+`PullJobsAction` gets all available jobs via their ***Salesforce API***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-### Parameters
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -21,15 +18,15 @@
 | `auth` :red_circle: | `OAuth2PasswordCredentialsBody` | Auth instance to identify and communicate with the platform        |
 | `subdomain` :red_circle: | `str` | Subdomain Crosstalent just before `salesforce.com`. For example subdomain=`my_subdomain.my` in `http://my_subdomain.my.salesforce.com/ABC`        |
 
-:red_circle: : *required* 
+:red_circle: : *required*
 
-### Example
+## Example
 
 ```python
-from hrflow import Hrflow
+from hrflow_connectors import Crosstalent
 
-from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
-from hrflow_connectors.connectors.boards.crosstalent import GetAllJobs
+from hrflow import Hrflow
+from hrflow_connectors import OAuth2PasswordCredentialsBody
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 # We add a basic configuration to our logger to see the messages displayed in the standard output
@@ -37,22 +34,19 @@ from hrflow_connectors.utils.logger import get_logger_with_basic_config
 logger = get_logger_with_basic_config()
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-
-access_token_url = "https://test.salesforce.com/services/oauth2/token"
 auth = OAuth2PasswordCredentialsBody(
-    access_token_url=access_token_url,
+    access_token_url="https://test.salesforce.com/services/oauth2/token",
     client_id="MY_CLIENT_ID",
     client_secret="MY_CLIENT_SECRET",
     username="MY_USERNAME",
     password="MY_PASSWORD",
 )
 
-action = GetAllJobs(
+Crosstalent.pull_jobs(
     auth=auth,
     subdomain="MY_SUBDOMAIN",
     hrflow_client=client,
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
 )
-action.execute()
 ```
