@@ -346,6 +346,35 @@ def test_PullJobsAction_hydrate_job_with_parsing(
 
 
 @responses.activate
+def test_PullJobsAction_hydrate_job_with_parsing_failure(
+    hrflow_client, generated_parsing_text_response
+):
+    # Catch request
+    responses.add(
+        responses.POST,
+        "https://api.hrflow.ai/v1/document/parsing",
+        status=400,
+        json=dict(code=400, message="Test fail to parse"),
+    )
+
+    # Build Action
+    action = PullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
+    )
+    section = dict(name="s", title=None, description="i speak english")
+    job = dict(reference="REF123", summary="I love Python", sections=[section])
+
+    assert len(job.get("skills", [])) == 0
+    assert len(job.get("language", [])) == 0
+
+    try:
+        action.hydrate_job_with_parsing(job)
+        assert False
+    except RuntimeError:
+        pass
+
+
+@responses.activate
 def test_PullJobsAction_hydrate_job_with_parsing_with_empty_summary_and_only_html(
     hrflow_client, generated_parsing_text_response
 ):
