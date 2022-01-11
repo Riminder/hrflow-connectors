@@ -1,13 +1,13 @@
-# Greenhouse Connector
-**Greenhouse is an ATS.**
+# SAP SuccessFactors Connector
+**SAP SuccessFactors is an ATS.**
 
-`Hrflow.ai` :arrow_right: `Greenhouse`
+`Hrflow.ai` :arrow_right: `SAP SuccessFactors`
 
 ## PushProfile
-`PushProfile` pushes a `Profile` from a ***HrFlow Source*** to a ***Greenhouse*** Jobs pool..
+`PushProfile` pushes a `Profile` from a ***HrFlow Source*** to a ***SAP SuccessFactors*** Jobs pool..
 
 ## SCHEMAS
-add `schemas.py` as ***basemodel*** for a ***Greenhouse profile object***.
+add `schemas.py` as ***basemodel*** for a ***SAP SuccessFactors candidate object***.
 
 ### Parameters
 
@@ -19,9 +19,8 @@ add `schemas.py` as ***basemodel*** for a ***Greenhouse profile object***.
 | `format_function_name`  | `Optional[str]` | Function name to format job before pushing. Default value : `None`        |
 | `hrflow_client` :red_circle: | `hrflow.Hrflow` | Hrflow client instance used to communicate with the Hrflow.ai API        |
 | `profile` :red_circle: | `Profile` | Profile to push        |
-| `auth` :red_circle: | `Union[AuthorizationAuth, OAuth2PasswordCredentialsBody`] | Auth instance to identify and communicate with the platform        |
-| `job_id` :red_circle: | `List[int]` | List of jobs internal ids to which the candidate should be added |
-| `on_behalf_of` :red_circle: | `str` | The ID of the user sending the profile, or the person he is sending the profile on behalf of |
+| `auth` :red_circle: | `Union[XAPIKeyAuth, OAuth2PasswordCredentialsBody`] | Auth instance to identify and communicate with the platform        |
+| `api_server` :red_circle: | `str` | api_server: the `api_server` in `https://{api-server}/odata/v2`. For example api_server=`apisalesdemo8.successfactors.com` in `https://apisalesdemo8.successfactors.com/odata/v2`        |
 
 :red_circle: : *required* 
 
@@ -30,8 +29,8 @@ add `schemas.py` as ***basemodel*** for a ***Greenhouse profile object***.
 ```python
 from hrflow import Hrflow
 
-from hrflow_connectors.connectors.destinations.greenhouse import PushProfile
-from hrflow_connectors.connectors.core.auth import OAuth2PasswordCredentialsBody, AuthorizationAuth
+from hrflow_connectors.connectors.destinations.sapsuccessfactors import PushProfile
+from hrflow_connectors.connectors.core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
 from hrflow_connectors.connectors.utils.hrflow import EventParser, Profile, Source
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
@@ -51,15 +50,13 @@ def workflow(_request, settings):
         client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
 
 
-        auth = AuthorizationAuth(
-        name = 'Authorization',
-        value= settings['AUTHORIZATION']
+        auth = XAPIKeyAuth(
+        value= settings['APIKey']
     )
 
         action = PushProfile(
             auth=auth,
-            job_id=settings["JOB_ID"],
-            on_behalf_of=settings["ON_BEHALF_OF"],
+            api_server="MY_API_SERVER",
             hrflow_client=client,
             profile=profile,
         )
