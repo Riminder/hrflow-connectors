@@ -27,7 +27,7 @@
 ```python
 from hrflow import Hrflow
 
-from hrflow_connectors.connectors.boards.Greenhouse import GetAllJobs
+from hrflow_connectors.connectors.boards.greenhouse import GetAllJobs
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 # We add a basic configuration to our logger to see the messages displayed in the standard output
