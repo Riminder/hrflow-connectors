@@ -53,7 +53,7 @@ def workflow(_request, settings):
 
         auth = AuthorizationAuth(
         name = 'Authorization',
-        value= settings['AUTHORIZATION']
+        value= settings['AUTHORIZATION'],
     )
 
         action = PushProfile(
