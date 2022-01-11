@@ -37,6 +37,20 @@ class ResultOutsideWorkExperience(BaseModel):
 class OutsideWorkExperience(BaseModel):
     results: List[ResultOutsideWorkExperience]
 
+class InsideWorkExperienceResult(BaseModel):
+    backgroundElementId: str
+    bgOrderPos: str
+    candidateId: str
+    department: str
+    endDate: str
+    lastModifiedDateTime: str
+    startDate: str
+    title: str
+    candidate: str
+
+
+class InsideWorkExperience(BaseModel):
+    results: List[InsideWorkExperienceResult]
 
 class TalentPoolResults(BaseModel):
     startDate: str
@@ -68,5 +82,6 @@ class SapCandidateModel(BaseModel):
     zip: Optional[str]
     education: Education
     languages: Languages
-    outsideWorkExperience: OutsideWorkExperience
+    outsideWorkExperience: Optional[OutsideWorkExperience]
+    insideWorkExperience: Optional[InsideWorkExperience]
     talentPool: Optional[TalentPool]
