@@ -345,6 +345,35 @@ def test_PullJobsAction_hydrate_job_with_parsing(
     assert hydrated_job["languages"][0] == dict(name="english", value=None)
 
 
+@responses.activate
+def test_PullJobsAction_hydrate_job_with_parsing_with_empty_summary_and_only_html(
+    hrflow_client, generated_parsing_text_response
+):
+    # Catch request
+    responses.add(
+        responses.POST,
+        "https://api.hrflow.ai/v1/document/parsing5",
+        status=200,
+        json=generated_parsing_text_response,
+    )
+
+    # Build Action
+    action = PullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
+    )
+    section = dict(name="s", title=None, description='<html attr="Python"></html>')
+    job = dict(reference="REF123", sections=[section])
+
+    assert "skills" not in job
+    assert "language" not in job
+
+    hydrated_job = action.hydrate_job_with_parsing(job)
+
+    assert "skills" not in hydrated_job
+    assert "language" not in hydrated_job
+    assert hydrated_job == job
+
+
 @pytest.fixture
 def generate_indexing_get_response():
     def indexing_get_response_func(code, message, archived_at):
@@ -464,7 +493,7 @@ def test_PullJobsAction_check_reference_in_board_fail(
 
 
 @responses.activate
-def test_PullJobsAction_check_reference_in_board_for_archived_job_in_board_without_parsing(
+def test_PullJobsAction_check_reference_in_board_for_archived_job_without_parsing(
     hrflow_client,
     generate_indexing_get_response,
 ):
@@ -493,6 +522,57 @@ def test_PullJobsAction_check_reference_in_board_for_archived_job_in_board_witho
         "https://api.hrflow.ai/v1/job/indexing/archive",
         status=200,
         match=match,
+    )
+
+    ## create a matcher to check if the JSON Body sent by the Connector is in the right shape and has the right values
+    expected_body = dict(board_key="abc", key="klm", reference="REF1")
+    match = [responses.matchers.json_params_matcher(expected_body)]
+    responses.add(
+        responses.PUT,
+        "https://api.hrflow.ai/v1/job/indexing",
+        status=200,
+        match=match,
+    )
+
+    # Build Action
+    action = PullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
+    )
+    check_response = action.check_reference_in_board(job)
+    assert not check_response
+
+
+@responses.activate
+def test_PullJobsAction_check_reference_in_board_for_archived_job_without_parsing_and_unarchiving_failed(
+    hrflow_client,
+    generate_indexing_get_response,
+):
+    # Generate job
+    job = dict(reference="REF1")
+
+    # generated response
+    message = "Job details"
+    generated_response = generate_indexing_get_response(
+        code=200, message=message, archived_at="2021-12-25T00:00:00"
+    )
+
+    # Catch request
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        status=200,
+        json=generated_response,
+    )
+
+    ## create a matcher to check if the JSON Body sent by the Connector is in the right shape and has the right values
+    expected_body = dict(board_key="abc", reference="REF1", is_archive=False)
+    match = [responses.matchers.json_params_matcher(expected_body)]
+    responses.add(
+        responses.PATCH,
+        "https://api.hrflow.ai/v1/job/indexing/archive",
+        status=400,
+        match=match,
+        json=dict(code=400, message="Test Unarchiving failed"),
     )
 
     ## create a matcher to check if the JSON Body sent by the Connector is in the right shape and has the right values
