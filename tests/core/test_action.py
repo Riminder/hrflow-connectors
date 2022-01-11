@@ -1,6 +1,5 @@
 from hrflow_connectors.core.action import (
     Action,
-    BoardAction,
     PullAction,
     PushAction,
     PullJobsAction,
@@ -196,7 +195,7 @@ def generate_hrflow_search_response(data, max_page=2):
 
 
 @responses.activate
-def test_BoardAction_get_all_references_from_board(generated_jobs):
+def test_PullJobsAction_get_all_references_from_board(hrflow_client, generated_jobs):
     # Generate pages of jobs
     page_1 = generated_jobs(page=1, jobs=30)
     page_2 = generated_jobs(page=2, jobs=29)
@@ -217,11 +216,8 @@ def test_BoardAction_get_all_references_from_board(generated_jobs):
     )
 
     # Catch requests sent to Hrflow
-
-    hrflow_client = Hrflow(api_user="", api_secret="")
-
-    action = BoardAction(
-        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
+    action = PullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     all_reference_iter = action.get_all_references_from_board()
     all_reference_list = list(all_reference_iter)
@@ -250,7 +246,9 @@ def generated_parsing_text_response():
 
 
 @responses.activate
-def test_BoardAction_hydrate_job_with_parsing(generated_parsing_text_response):
+def test_PullJobsAction_hydrate_job_with_parsing(
+    hrflow_client, generated_parsing_text_response
+):
     # Catch request
     responses.add(
         responses.POST,
@@ -260,10 +258,8 @@ def test_BoardAction_hydrate_job_with_parsing(generated_parsing_text_response):
     )
 
     # Build Action
-    hrflow_client = Hrflow(api_user="", api_secret="")
-
-    action = BoardAction(
-        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
+    action = PullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     section = dict(name="s", title=None, description="i speak english")
     job = dict(reference="REF123", summary="I love Python", sections=[section])
@@ -291,7 +287,8 @@ def generate_indexing_get_response():
 
 
 @responses.activate
-def test_BoardAction_check_reference_in_board_for_job_not_in_board(
+def test_PullJobsAction_check_reference_in_board_for_job_not_in_board(
+    hrflow_client,
     generate_indexing_get_response,
 ):
     # Generate job
@@ -312,17 +309,16 @@ def test_BoardAction_check_reference_in_board_for_job_not_in_board(
     )
 
     # Build Action
-    hrflow_client = Hrflow(api_user="", api_secret="")
-
-    action = BoardAction(
-        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
+    action = PullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     check_response = action.check_reference_in_board(job)
     assert check_response
 
 
 @responses.activate
-def test_BoardAction_check_reference_in_board_for_not_archived_job_in_board(
+def test_PullJobsAction_check_reference_in_board_for_not_archived_job_in_board(
+    hrflow_client,
     generate_indexing_get_response,
 ):
     # Generate job
@@ -343,17 +339,17 @@ def test_BoardAction_check_reference_in_board_for_not_archived_job_in_board(
     )
 
     # Build Action
-    hrflow_client = Hrflow(api_user="", api_secret="")
-
-    action = BoardAction(
-        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
+    action = PullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     check_response = action.check_reference_in_board(job)
     assert not check_response
 
 
 @responses.activate
-def test_BoardAction_check_reference_in_board_fail(generate_indexing_get_response):
+def test_PullJobsAction_check_reference_in_board_fail(
+    hrflow_client, generate_indexing_get_response
+):
     # Generate job
     job = dict(reference="REF1")
 
@@ -372,10 +368,8 @@ def test_BoardAction_check_reference_in_board_fail(generate_indexing_get_respons
     )
 
     # Build Action
-    hrflow_client = Hrflow(api_user="", api_secret="")
-
-    action = BoardAction(
-        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
+    action = PullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     try:
         action.check_reference_in_board(job)
@@ -385,7 +379,8 @@ def test_BoardAction_check_reference_in_board_fail(generate_indexing_get_respons
 
 
 @responses.activate
-def test_BoardAction_check_reference_in_board_for_archived_job_in_board_without_parsing(
+def test_PullJobsAction_check_reference_in_board_for_archived_job_in_board_without_parsing(
+    hrflow_client,
     generate_indexing_get_response,
 ):
     # Generate job
@@ -426,18 +421,16 @@ def test_BoardAction_check_reference_in_board_for_archived_job_in_board_without_
     )
 
     # Build Action
-    hrflow_client = Hrflow(api_user="", api_secret="")
-
-    action = BoardAction(
-        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
+    action = PullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     check_response = action.check_reference_in_board(job)
     assert not check_response
 
 
 @responses.activate
-def test_BoardAction_check_reference_in_board_for_archived_job_in_board_with_parsing(
-    generate_indexing_get_response, generated_parsing_text_response
+def test_PullJobsAction_check_reference_in_board_for_archived_job_in_board_with_parsing(
+    hrflow_client, generate_indexing_get_response, generated_parsing_text_response
 ):
     # Generate job
     section = dict(name="s", title=None, description="i speak english")
@@ -496,29 +489,25 @@ def test_BoardAction_check_reference_in_board_for_archived_job_in_board_with_par
     )
 
     # Build Action
-    hrflow_client = Hrflow(api_user="", api_secret="")
-
-    action = BoardAction(
-        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=True
+    action = PullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=True
     )
     check_response = action.check_reference_in_board(job)
 
     assert not check_response
 
 
-def test_BoardAction_get_all_references_from_stream():
+def test_PullJobsAction_get_all_references_from_stream(hrflow_client):
     jobs_in_stream = [dict(reference="REF1"), dict(reference="REF2")]
     references_in_stream = ["REF1", "REF2"]
 
-    class TestBoardAction(BoardAction):
+    class TestPullJobsAction(PullJobsAction):
         def pull(self):
             return jobs_in_stream
 
     # Build Action
-    hrflow_client = Hrflow(api_user="", api_secret="")
-
-    action = TestBoardAction(
-        hrflow_client=hrflow_client,
+    action = TestPullJobsAction(
+        hrflow_client=hrflow_client(),
         board_key="abc",
         hydrate_with_parsing=False,
         archive_deleted_jobs_from_stream=True,
@@ -528,11 +517,11 @@ def test_BoardAction_get_all_references_from_stream():
 
 
 @responses.activate
-def test_BoardAction_check_deletion_references_from_stream():
+def test_PullJobsAction_check_deletion_references_from_stream(hrflow_client):
     references_in_stream = ["REF1", "REF2"]
     references_in_board = ["REF1", "REF4"]
 
-    class TestBoardAction(BoardAction):
+    class TestPullJobsAction(PullJobsAction):
         def get_all_references_from_board(self):
             return references_in_board
 
@@ -550,10 +539,8 @@ def test_BoardAction_check_deletion_references_from_stream():
     )
 
     # Build Action
-    hrflow_client = Hrflow(api_user="", api_secret="")
-
-    action = TestBoardAction(
-        hrflow_client=hrflow_client, board_key="abc", hydrate_with_parsing=False
+    action = TestPullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     action.check_deletion_references_from_stream()
 
