@@ -140,7 +140,7 @@ def test_get_all_jobs_from_samsic_xml_stream(logger, hrflow_client):
 
 
 @responses.activate
-def test_XMLBoardAction_pull_generic_xml_stream(logger, hrflow_client):
+def test_XMLPullJobsAction_pull_generic_xml_stream(logger, hrflow_client):
     xml_stream_url = "https://test.test/job/xml_stream"
 
     xml_stream_str = """<?xml version="1.0" encoding="UTF-8"?>
