@@ -345,7 +345,7 @@ class PullJobsAction(PullAction):
             if response["code"] >= 400:
                 message = response["message"]
                 logger.error("Failed to push a job !")
-                raise ConnectionError("Failed to push ! Reason : `{}`".format(message))
+                raise RuntimeError("Failed to push ! Reason : `{}`".format(message))
 
     def hydrate_job_with_parsing(self, job: Dict[str, Any]) -> Dict[str, Any]:
         """

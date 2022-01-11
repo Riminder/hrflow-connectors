@@ -723,6 +723,50 @@ def test_PullJobsAction_execute_without_archiving_and_parsing(hrflow_client):
     action.execute()
 
 
+@responses.activate
+def test_PullJobsAction_push_success(hrflow_client):
+    # Mock requests and check data sent
+    job = dict(key="efg", reference="REF123")
+    expected_body = dict(board_key="abc", **job)
+    returned_value = dict(code=200, data=dict(key="efg"))
+    match = [responses.matchers.json_params_matcher(expected_body)]
+    responses.add(
+        responses.POST,
+        "https://api.hrflow.ai/v1/job/indexing",
+        status=200,
+        match=match,
+        json=returned_value,
+    )
+
+    # Pull data
+    action = PullJobsAction(board_key="abc", hrflow_client=hrflow_client())
+    action.push([job])
+
+
+@responses.activate
+def test_PullJobsAction_pull_failure(hrflow_client):
+    # Mock requests and check data sent
+    job = dict(key="efg", reference="REF123")
+    expected_body = dict(board_key="abc", **job)
+    returned_value = dict(code=400, message="Test")
+    match = [responses.matchers.json_params_matcher(expected_body)]
+    responses.add(
+        responses.POST,
+        "https://api.hrflow.ai/v1/job/indexing",
+        status=400,
+        match=match,
+        json=returned_value,
+    )
+
+    # Pull data
+    action = PullJobsAction(board_key="abc", hrflow_client=hrflow_client())
+    try:
+        action.push([job])
+        assert False
+    except RuntimeError:
+        pass
+
+
 #########################
 ### PushProfileAction ###
 #########################
