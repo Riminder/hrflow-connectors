@@ -51,7 +51,8 @@ def workflow(_request, settings):
 
 
         auth = XAPIKeyAuth(
-        value= settings['APIKey']
+            name = "APIKey",
+        value= settings['MY_API_KEY'],
     )
 
         action = PushProfile(
