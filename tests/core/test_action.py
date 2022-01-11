@@ -303,6 +303,76 @@ def test_PullJobsAction_get_all_references_from_board(hrflow_client, generated_j
     assert all_reference_list == reference_expected
 
 
+@responses.activate
+def test_PullJobsAction_get_all_references_from_board_failure(
+    hrflow_client, generated_jobs
+):
+    # Generate pages of jobs
+    page_1 = generated_jobs(page=1, jobs=30)
+    page_2 = generated_jobs(page=2, jobs=29)
+
+    # Generate responses return by Hrflow
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=1&sort_by=created_at",
+        status=400,
+        json=dict(code=400, message="Test get_job_page failed"),
+    )
+
+    # Catch requests sent to Hrflow
+    action = PullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
+    )
+    try:
+        all_reference_iter = action.get_all_references_from_board()
+        all_reference_list = list(all_reference_iter)
+        assert False
+    except RuntimeError:
+        pass
+
+
+@responses.activate
+def test_PullJobsAction_get_all_references_from_board_and_less_job_returned(
+    hrflow_client, generated_jobs
+):
+    # Generate pages of jobs
+    page_1 = generated_jobs(page=1, jobs=30)
+
+    # Generate responses return by Hrflow
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=1&sort_by=created_at",
+        status=200,
+        json=generate_hrflow_search_response(page_1, max_page=2),
+    )
+
+    # Empty job list
+    page_2_response = dict(code=200, message="Success", data=dict(jobs=[]))
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=2&sort_by=created_at",
+        status=200,
+        json=page_2_response,
+    )
+
+    # Catch requests sent to Hrflow
+    action = PullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
+    )
+    all_reference_iter = action.get_all_references_from_board()
+    all_reference_list = list(all_reference_iter)
+
+    assert len(all_reference_list) == 30
+
+    all_reference_list.sort()
+    page_1_expected = ["{}-{}".format(i, 1) for i in range(30)]
+
+    reference_expected = page_1_expected
+    reference_expected.sort()
+
+    assert all_reference_list == reference_expected
+
+
 @pytest.fixture
 def generated_parsing_text_response():
     text = "I love Python\ni speak english"
