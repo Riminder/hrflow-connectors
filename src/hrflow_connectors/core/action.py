@@ -182,39 +182,6 @@ class Action(BaseModel):
         logger.info("All has been done for this connector !")
 
 
-class ProfileDestinationAction(Action):
-    hrflow_client: Hrflow = Field(
-        ...,
-        description="Hrflow client instance used to communicate with the Hrflow.ai API",
-    )
-    profile: Profile = Field(..., description="Profile to push")
-
-    def pull(self) -> Iterator[TalentDataType]:
-        """
-        Pull data
-        """
-        logger.info(
-            f"Pulling a profile key=`{self.profile.key}` from a Source `{self.profile.source.key}`"
-        )
-        response = self.hrflow_client.profile.indexing.get(
-            source_key=self.profile.source.key, key=self.profile.key
-        )
-        if response["code"] >= 400:
-            logger.error("Fail to pull a profile")
-            raise RuntimeError(
-                "Indexing profile get failed : `{}`".format(response["message"])
-            )
-
-        profile = response["data"]
-        return [profile]
-
-    def execute(self):
-        super().execute()
-        return generate_workflow_response(
-            status_code=201, message="Profile successfully pushed"
-        )
-
-
 class PullAction(Action):
     """
     Pull Action
