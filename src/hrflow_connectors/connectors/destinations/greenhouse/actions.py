@@ -3,31 +3,28 @@ from ....core.http import HTTPStream
 from ....core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
 from pydantic import Field
 from typing import Dict, Any, Optional, Union, List
+from ....utils.logger import get_logger
+logger = get_logger()
 
 
 class PushProfile(ProfileDestinationAction, HTTPStream):
 
     auth: Union[OAuth2PasswordCredentialsBody, XAPIKeyAuth]
     payload: Dict[str, Any] = dict()
-    prospect: bool = Field(
-        True,
-        description="True if this candidate should be a prospect. The organization must be able to create prospects to set this field. (Default: true)",
+    job_id: List[int] = Field(
+        ...,
+        description="The internal ID of the job to which this candidate should be added can be a list of jobs",
     )
-    job_id: Optional[int] = Field(
-        None,
-        description="Required only if prospect is false. The ID of the job to which this candidate or prospect should be added",
-    )
-    on_behalf_of: Optional[str]
+    on_behalf_of: str
 
     def build_request_headers(self):
         super().build_request_headers()
         self.headers["content-type"] = "application/json"
-        if self.on_behalf_of is not None:
-            self.headers["On-Behalf-Of"] = self.on_behalf_of
+        self.headers["on-behalf-of"] = self.on_behalf_of
 
     @property
     def base_url(self):
-        return "https://api.greenhouse.io/v1/partner/candidates"
+        return "https://harvest.greenhouse.io/v1/candidates"
 
     @property
     def http_method(self):
@@ -42,7 +39,9 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
             Dict[str, Any]: profile in the greenhouse candidate  format
         """
         profile = dict()
-        profile["prospect"] = self.prospect
+        profile["applications"] = []
+        for id in self.job_id:
+            profile["applications"].append(dict(job_id=id))
 
         if self.job_id is not None:
             profile["job_id"] = self.job_id
@@ -56,13 +55,13 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
             profile["resume"] = data.get("attachments")[0]['public_url']
 
         phone_number = data.get("info").get("phone")
-        profile["phone_numbers"] = [dict(phone_number=phone_number, type="mobile")]
+        profile["phone_numbers"] = [dict(value=phone_number, type="mobile")]
 
         email = data.get("info").get("email")
-        profile["emails"] = [dict(email=email, type="other")]
+        profile["email_addresses"] = [dict(value=email, type="personal")]
 
         address = data.get("info").get("location").get("text")
-        profile["addresses"] = [dict(address=address, type="home")]
+        profile["addresses"] = [dict(value=address, type="home")]
 
         profile["notes"] = data.get("text")
 
@@ -71,7 +70,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
             website_list = []
             for url in urls:
                 if url not in ["", None,[]]:
-                    website_list.append({"url": url})
+                    website_list.append({"value": url})
             return website_list
 
         if get_social_media_urls() not in [[], None]:
@@ -95,6 +94,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         profile = next(data)
         self.payload.update(profile)
         response = self.send_request()
+        logger.debug(f"{response.status_code},{response.content}")
         if response.status_code >= 400:
             raise RuntimeError(
                 "Push profile to Greenhouse failed : {}, `{}`".format(response.status_code, response.content)

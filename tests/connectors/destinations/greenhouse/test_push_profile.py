@@ -11,8 +11,9 @@ import base64
 def auth(credentials):
     auth = AuthorizationAuth(
         name = 'Authorization',
-        value="Basic {}".format(base64.b64encode(b'a486aed6d051ac860db70f8d142d9868-4').decode("utf-8"))
+        value= credentials["greenhouse"]["oauth2"]["Authorization"]
     )
+    
     return auth
 
 
@@ -23,7 +24,8 @@ def test_PushProfile(logger, auth, hrflow_client):
         source=Source(key="6d68a20b2dd7c2bfdcb232b9234c38eada0fdcb4"),
     )
     action = PushProfile(
-        on_behalf_of = "limam.vadhel@hrflow.ai",
+        job_id = ["4179714004"] ,
+        on_behalf_of = "4249018004",
         prospect = True,
         auth=auth,
         hrflow_client=hrflow_client(),
