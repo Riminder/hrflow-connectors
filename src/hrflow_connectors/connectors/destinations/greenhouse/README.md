@@ -1,10 +1,10 @@
 # Greenhouse Connector
 **Greenhouse is an ATS.**
 
-`Greenhouse` :arrow_right: `Hrflow.ai`
+`Hrflow.ai` :arrow_right: `Greenhouse`
 
 ## PushProfile
-`PushProfile` gets all available jobs listed on ***Greenhouse board***. It adds all these **jobs** to a ***Hrflow.ai Board***.
+`PushProfile` pushes a `Profile` from a ***HrFlow Source*** to a ***Greenhouse*** Jobs pool..
 
 ## SCHEMAS
 add `schemas.py` as ***basemodel*** for a ***Greenhouse profile object***.
@@ -18,9 +18,8 @@ add `schemas.py` as ***basemodel*** for a ***Greenhouse profile object***.
 | `global_scope`  | `Optional[Dict[str, Any]]` | A dictionary containing the current scope's global variables. Default value : `None`       |
 | `format_function_name`  | `Optional[str]` | Function name to format job before pushing. Default value : `None`        |
 | `hrflow_client` :red_circle: | `hrflow.Hrflow` | Hrflow client instance used to communicate with the Hrflow.ai API        |
-| `board_key` :red_circle: | `str` | Board key where the jobs to be added will be stored        |
-| `hydrate_with_parsing`  | `bool` | Enrich the job with parsing. Default value : `False`        |
-| `archive_deleted_jobs_from_stream`  | `bool` | Archive Board jobs when they are no longer in the incoming job stream. Default value : `True`        |
+| `profile` :red_circle: | `Profile` | Profile to push        |
+| `auth` :red_circle: | `Union[AuthorizationAuth, OAuth2PasswordCredentialsBody`] | Auth instance to identify and communicate with the platform        |
 | `job_id` :red_circle: | `List[int]` | List of jobs internal ids to which the candidate should be added |
 :red_circle: : *required* 
 | `on_behalf_of` :red_circle: | `str` | The ID of the user sending the profile, or the person he is sending the profile on behalf of |
