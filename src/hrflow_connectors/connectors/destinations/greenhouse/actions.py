@@ -4,6 +4,7 @@ from ....core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
 from pydantic import Field
 from typing import Dict, Any, Optional, Union, List
 from ....utils.logger import get_logger
+
 logger = get_logger()
 
 
@@ -50,9 +51,8 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         profile["last_name"] = data.get("info").get("last_name")
         profile["external_id"] = data.get("reference")
 
-
-        if data.get('attachments') not in [[], None]:
-            profile["resume"] = data.get("attachments")[0]['public_url']
+        if data.get("attachments") not in [[], None]:
+            profile["resume"] = data.get("attachments")[0]["public_url"]
 
         phone_number = data.get("info").get("phone")
         profile["phone_numbers"] = [dict(value=phone_number, type="mobile")]
@@ -69,17 +69,32 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
             urls = data["info"]["urls"]
             website_list = []
             for url in urls:
-                if url not in ["", None,[]]:
-                    website_list.append({"value": url})
+                if url["url"] not in ["", None, []]:
+                    website_list.append(dict(value=url["url"]))
             return website_list
 
         if get_social_media_urls() not in [[], None]:
-            profile["social_media"] = get_social_media_urls()
+            profile["social_media_addresses"] = get_social_media_urls()
 
         if data["experiences"] not in [[], None]:
             last_experience = data["experiences"][0]
             profile["company"] = last_experience["company"]
             profile["title"] = last_experience["title"]
+            profile["employments"] = []
+            for experience in data["experiences"]:
+                if (
+                    experience["title"]
+                    and experience["company"]
+                    and experience["date_start"]
+                ) not in ["", None]:
+                    profile["employments"].append(
+                        dict(
+                            company_name=experience["company"],
+                            title=experience["title"],
+                            start_date=experience["date_start"],
+                            end_date=experience["date_end"],
+                        )
+                    )
 
         return profile
 
@@ -97,5 +112,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         logger.debug(f"{response.status_code},{response.content}")
         if response.status_code >= 400:
             raise RuntimeError(
-                "Push profile to Greenhouse failed : {}, `{}`".format(response.status_code, response.content)
+                "Push profile to Greenhouse failed : {}, `{}`".format(
+                    response.status_code, response.content
+                )
             )
