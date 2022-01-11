@@ -20,8 +20,8 @@ def auth(credentials):
 def test_PushProfile(logger, auth, hrflow_client):
 
     profile = Profile(
-        key="89ddf5f18768747011a06b8921607cb54a4274a5",
-        source=Source(key="6d68a20b2dd7c2bfdcb232b9234c38eada0fdcb4"),
+        key="65903f6989594e72ccf64a10875127b1293fdce3",
+        source=Source(key="762d2f25b855f7cfd13e5585ef727d8fb6e752cb"),
     )
     action = PushProfile(
         job_id = ["4179714004"] ,
