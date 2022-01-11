@@ -14,12 +14,12 @@ def auth(credentials):
 def test_PushProfile(logger,auth, hrflow_client):
 
     profile = Profile(
-        key = "4905d02723c363cb2fc55e7083921a28bb3de94f",
-        source = Source(key="130d125dae175cfe318d260194dd84a3ad04110a")
+        key = "a7e7fa4af68e7c450f2b708d14a3bda9b6ade5d9",
+        source = Source(key="762d2f25b855f7cfd13e5585ef727d8fb6e752cb")
     )
     action = PushProfile(
         auth = auth,
-        subdomain="sandbox.api.sap.com:443/successfactors",
+        api_server="sandbox.api.sap.com:443/successfactors",
         hrflow_client=hrflow_client("dev-demo"),
         profile=profile,
     )
