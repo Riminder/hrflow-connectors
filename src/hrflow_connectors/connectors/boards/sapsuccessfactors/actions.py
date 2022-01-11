@@ -14,7 +14,7 @@ class PullJobs(HTTPStream, BoardAction):
     top: int = Field(
         20, description="show only the first n items, value by default = `20`"
     )
-    subdomain: str = Field(
+    api_server: str = Field(
         ...,
         description="the API server for your company from the list of API servers for SAP SuccessFactors data centers",
     )
@@ -22,7 +22,7 @@ class PullJobs(HTTPStream, BoardAction):
     @property
     def base_url(self):
         return "https://{}/odata/v2/JobRequisitionLocale?$top={}&expand=jobRequisition".format(
-            self.subdomain, self.top
+            self.api_server, self.top
         )
 
     @property
