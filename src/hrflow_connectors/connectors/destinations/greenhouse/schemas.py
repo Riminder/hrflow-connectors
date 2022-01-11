@@ -69,11 +69,11 @@ class GreenhouseProfileModel(BaseModel):
     email_addresses: Optional[List[EmailAddress]] = Field(
         ..., description="Array of email addresses, passing an empty array will"
     )
-    website_addresses: List[WebsiteAddress] = Field(
+    website_addresses: Optional[List[WebsiteAddress]] = Field(
         ...,
         description="Array of website addresses, passing an empty array will clear all",
     )
-    social_media_addresses: List[SocialMediaAddress] = Field(
+    social_media_addresses: Optional[List[SocialMediaAddress]] = Field(
         ...,
         description="Array of social media addresses. Passing an empty array will clear all",
     )
