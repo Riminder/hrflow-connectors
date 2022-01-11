@@ -32,6 +32,12 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
         return "POST"
 
     def format(self, profile: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        formats a hrflow profile into a sap successfactors candidate
+
+        Returns:
+            Dict[str, Any]: a json respresentation of a SAP successfactors candidate
+        """
 
         candidate = dict()
         info = profile.get("info")
@@ -53,6 +59,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
             return "/Date({})/".format(int(dp.parse(date).timestamp()))
 
         def format_end_date(date):
+            # add 10 seconds to avoid that end_date is less or equal than start_date
             return "/Date({})/".format(int(dp.parse(date).timestamp() + 10))
 
         if profile.get("educations") is not None:
