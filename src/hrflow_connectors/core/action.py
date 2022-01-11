@@ -379,6 +379,7 @@ class PullJobsAction(PullAction):
         # Clean the `concatenated_str` by removing htlm tags
         logger.debug("Removing HTML tags in concatenated texts...")
         cleaned_str = remove_html_tags(concatenated_str)
+        cleaned_str = cleaned_str.strip()
         logger.debug("HTML tags in concatenated texts have been removed")
 
         # If text is empty, the parsing can return an error
