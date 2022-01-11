@@ -356,6 +356,22 @@ def generate_indexing_get_response():
 
 
 @responses.activate
+def test_PullJobsAction_check_reference_in_board_for_job_ref_none(
+    hrflow_client,
+    generate_indexing_get_response,
+):
+    # Generate job
+    job = dict(reference=None)
+
+    # Build Action
+    action = PullJobsAction(
+        hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
+    )
+    check_response = action.check_reference_in_board(job)
+    assert check_response
+
+
+@responses.activate
 def test_PullJobsAction_check_reference_in_board_for_job_not_in_board(
     hrflow_client,
     generate_indexing_get_response,
