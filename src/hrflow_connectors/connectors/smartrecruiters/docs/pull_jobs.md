@@ -1,12 +1,9 @@
-# Smart Recruiters Connector
-**Smart Recruiters is an ATS.**
-
+# Pull jobs
 `Smart Recruiters` :arrow_right: `Hrflow.ai`
 
-## GetAllJobs
-`GetAllJobs` retrieves all jobs via the ***SmartRecruiter*** API. It adds all these **jobs** to a ***Hrflow.ai Board***.
+`PullJobsAction` retrieves all jobs via the ***SmartRecruiter*** API. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-### Parameters
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -27,13 +24,13 @@
 
 :red_circle: : *required* 
 
-### Example
+## Example
 
 ```python
-from hrflow import Hrflow
+from hrflow_connectors import SmartRecruiter
 
-from hrflow_connectors.core.auth import XSmartTokenAuth
-from hrflow_connectors.connectors.boards.smartrecruiters import GetAllJobs
+from hrflow import Hrflow
+from hrflow_connectors import XSmartTokenAuth
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 # We add a basic configuration to our logger to see the messages displayed in the standard output
@@ -41,12 +38,9 @@ from hrflow_connectors.utils.logger import get_logger_with_basic_config
 logger = get_logger_with_basic_config()
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+auth = XSmartTokenAuth(value="MY_SMART_TOKEN")
 
-auth = XSmartTokenAuth(
-    value="MY_SMART_TOKEN"
-)
-
-action = GetAllJobs(
+SmartRecruiter.pull_jobs(
     auth=auth,
     hrflow_client=client,
     limit=2,
@@ -55,5 +49,4 @@ action = GetAllJobs(
     archive_deleted_jobs_from_stream=False,
     posting_status="PUBLIC",
 )
-action.execute()
 ```
