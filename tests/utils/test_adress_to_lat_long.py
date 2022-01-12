@@ -15,15 +15,15 @@ def test_departments_codes_lat_long_mapping():
     assert lat_long_map["54"] == ('48.88522', '6.04267')
     assert lat_long_map["60"] == ('49.46644', '2.11035')
     assert lat_long_map["76"] == ('49.49541', '0.11531')
-    assert lat_long_map["972"] == ('49.25382', '2.46689')
-    assert lat_long_map["974"] == ('44.29685', '0.11835')
+    assert lat_long_map["972"] == ('14.641528', '-61.024174')
+    assert lat_long_map["974"] == ('-21.028110', '55.027771')
 
 
 def test_cities_names_lat_long_mapping():
     lat_long_map = get_cities_names_lat_long_mapping()
     assert lat_long_map["name"] == "cities_name"
-    assert lat_long_map["abergement-clémenciat"] == ('46.1534255214', '4.92611354223')
-    assert lat_long_map["broué"] == ('48.7523989393', '1.52435606759')
+    assert lat_long_map["abergement-clemenciat"] == ('46.1534255214', '4.92611354223')
+    assert lat_long_map["broue"] == ('48.7523989393', '1.52435606759')
     assert lat_long_map["tombebœuf"] == ('44.5192333821', '0.45231261712399995')
     assert lat_long_map["bergerac"] == ('44.854375187200006', '0.486529423457')
     assert lat_long_map["hautefaye"] == ('45.5360605721', '0.508242554831')
@@ -47,3 +47,39 @@ def test_cities_code_lat_long_mapping():
     assert lat_long_map["72370"] == ('47.979285909', '0.46251459500799996')
     assert lat_long_map["97425"] == ('-21.208999429400002', '55.359148544700005')
     assert lat_long_map["98761"] == ('nan', 'nan')
+
+
+def test_get_lat_lng(credentials):
+    test_suite = [("Issy les Moulineaux", "cities_name"),
+                ("ISSY LES MOULINEAUX", "cities_name"),
+                ("Villaroche/Gennevilliers", "cities_name"),
+                ("Magny-les-Hameaux", "cities_name"),
+                ("MONTLUCON", "cities_name"),
+                ("X *** ** *'**** 59230 Sars et Rosières", "cities_codes"),
+                ("Colombes", "cities_name"),
+                ("Corbeil_Essonne", "cities_name"),
+                ("Corbeil(Essonne)", "cities_name"),
+                (" MOISSY-CRAMAYEL ", "cities_name"),
+                ("Valence", "cities_name"),
+                ("XXX *** ** ***** 91300 MASSY", "cities_codes"),
+                ("X *** ******* ********* 92130_Issy-les-Moulineaux", "cities_codes"),
+                ("****** ** X** *** 40220 Tarnos", "cities_codes"),
+                ("47 collège Didier La Moulie", "departments_codes"),
+                ("94 EPITA kremlin-bicêtre", "cities_name"),
+                ("94 EPITA", "departments_codes"),
+                ("EPITA;kremlin-bicêtre", "cities_name")]
+
+    cities_codes_dict = get_cities_code_lat_long_mapping()
+
+    cities_names_dict = get_cities_names_lat_long_mapping()
+
+    departments_codes_dict = get_departments_codes_lat_long_mapping()
+
+    for adress, expected in test_suite:
+        assert get_lat_lng(
+                    adress,
+                    credentials["here"]["HERE_API_KEY"],
+                    cities_codes_dict,
+                    cities_names_dict,
+                    departments_codes_dict,
+                ) == expected
