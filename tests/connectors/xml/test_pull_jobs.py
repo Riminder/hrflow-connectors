@@ -1,10 +1,11 @@
 import responses
 
-from hrflow_connectors.connectors.boards.xml import XMLPullJobsAction
+from hrflow_connectors import XML
+from hrflow_connectors.connectors.xml.actions import PullJobsAction
 from hrflow_connectors.utils.datetime_converter import from_str_to_datetime
 
 
-def test_get_all_jobs_from_samsic_xml_stream(logger, hrflow_client):
+def test_PullJobsAction_from_samsic_xml_stream(logger, hrflow_client):
     def samsic_format(data):
         job = dict()
 
@@ -124,8 +125,7 @@ def test_get_all_jobs_from_samsic_xml_stream(logger, hrflow_client):
 
     xml_stream_url = "https://cv.samsic-emploi.fr/media/flux/jobs.xml"
     job_list_xpath = "DataArea"
-
-    action = XMLPullJobsAction(
+    XML.pull_jobs(
         xml_stream_url=xml_stream_url,
         job_list_xpath=job_list_xpath,
         hrflow_client=hrflow_client("dev-demo"),
@@ -136,11 +136,10 @@ def test_get_all_jobs_from_samsic_xml_stream(logger, hrflow_client):
         global_scope=globals(),
         local_scope=locals(),
     )
-    action.execute()
 
 
 @responses.activate
-def test_XMLPullJobsAction_pull_generic_xml_stream(logger, hrflow_client):
+def test_PullJobsAction_pull_generic_xml_stream(logger, hrflow_client):
     xml_stream_url = "https://test.test/job/xml_stream"
 
     xml_stream_str = """<?xml version="1.0" encoding="UTF-8"?>
@@ -170,7 +169,7 @@ def test_XMLPullJobsAction_pull_generic_xml_stream(logger, hrflow_client):
     responses.add(responses.GET, xml_stream_url, status=200, body=xml_stream_str)
 
     job_list_xpath = "board/jobs"
-    action = XMLPullJobsAction(
+    action = PullJobsAction(
         xml_stream_url=xml_stream_url,
         job_list_xpath=job_list_xpath,
         hrflow_client=hrflow_client("dev-demo"),
