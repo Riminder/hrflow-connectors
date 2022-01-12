@@ -3,14 +3,14 @@ from pydantic import Field
 import html
 import requests
 
-from ....core.action import PullJobsAction
-from ....utils.logger import get_logger
-from ....utils.clean_text import remove_html_tags
+from ...core import action as core
+from ...utils.logger import get_logger
+from ...utils.clean_text import remove_html_tags
 
 logger = get_logger()
 
 
-class GreenhousePullJobsAction(PullJobsAction):
+class PullJobsAction(core.PullJobsAction):
     board_token: str = Field(
         ...,
         description="Job Board URL token, which is usually the company `name` -for example `lyft`- when it has job listings on greenhouse, mandatory to access job boards on `greenhouse.io`: `https://boards-api.greenhouse.io/v1/boards/{board_token}/jobs`, getting jobs doesn't require an API Key",

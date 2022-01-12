@@ -1,12 +1,9 @@
-# Greenhouse Connector
-**Greenhouse is an ATS.**
-
+# Pull jobs
 `Greenhouse` :arrow_right: `Hrflow.ai`
 
-## GetAllJobs
-`GetAllJobs` gets all available jobs listed on ***Greenhouse board***. It adds all these **jobs** to a ***Hrflow.ai Board***.
+`PullJobsAction` gets all available jobs listed on ***Greenhouse board***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-### Parameters
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -22,25 +19,22 @@
 
 :red_circle: : *required* 
 
-### Example
+## Example
 
 ```python
-from hrflow import Hrflow
+from hrflow_connectors import Greenhouse
 
-from hrflow_connectors.connectors.boards.Greenhouse import GetAllJobs
+from hrflow import Hrflow
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 # We add a basic configuration to our logger to see the messages displayed in the standard output
 # This is not mandatory. It allows you to see what the connector is doing.
 logger = get_logger_with_basic_config()
-
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-
-action = GetAllJobs(
+Greenhouse.pull_jobs(
     board_token="MY_BOARD_TOKEN",
     hrflow_client=client,
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
 )
-action.execute()
 ```
