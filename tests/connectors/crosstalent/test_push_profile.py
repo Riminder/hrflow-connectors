@@ -1,7 +1,7 @@
 import pytest
 
-from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
-from hrflow_connectors.connectors.crosstalent import Crosstalent
+from hrflow_connectors import OAuth2PasswordCredentialsBody
+from hrflow_connectors import Crosstalent
 from hrflow_connectors.utils.hrflow import Profile, Source
 
 

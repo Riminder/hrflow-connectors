@@ -1,6 +1,6 @@
 import pytest
 
-from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
+from hrflow_connectors import OAuth2PasswordCredentialsBody
 
 
 @pytest.fixture
