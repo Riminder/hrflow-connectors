@@ -1,7 +1,7 @@
 import pytest
 
-from hrflow_connectors.core.auth import AuthorizationAuth
-from hrflow_connectors.connectors.destinations.flatchr import FlatchrEnrichProfileAction
+from hrflow_connectors import AuthorizationAuth
+from hrflow_connectors import Flatchr
 from hrflow_connectors.utils.hrflow import Profile, Source
 
 
@@ -11,18 +11,16 @@ def auth(credentials):
     return auth
 
 
-def test_FlatchrEnrichProfileAction(logger, auth, hrflow_client):
+def test_PushProfileAction(logger, auth, hrflow_client):
     profile = Profile(
         key="5746beca5e941a5a55706efd9adfce31f59e6e2b",
         source=Source(key="d42eed17626b7ae3dc05efca363788caef91d44b"),
     )
-    action = FlatchrEnrichProfileAction(
+    response = Flatchr.push_profile(
         auth=auth,
-        subdomain="api",
         hrflow_client=hrflow_client(),
         profile=profile,
         vacancy="k0M5O9ylKZnxbQBy",
-        compagny="LEZBvp5b4LdMoVmg",
+        company="LEZBvp5b4LdMoVmg",
     )
-    response = action.execute()
     assert response.get("status_code") == 201
