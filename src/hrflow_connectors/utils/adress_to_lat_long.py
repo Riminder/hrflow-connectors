@@ -6,8 +6,10 @@ import re
 def accent_replacer(s):
     """
     Replace the accentuated characters by same character without accent.
+
     Args:
         s: the string we want to remove accentuated letters.
+
     Returns:
         The unaccentuated string.
     """
@@ -30,6 +32,7 @@ def accent_replacer(s):
 def get_cities_code_lat_long_mapping():
     """
     Get the dict of all postcode of french cities.
+
     Returns:
         exemple : ville_code = {"47380": ("44.525200649300004", "0.476034019359")}
     """
@@ -54,6 +57,7 @@ def get_cities_code_lat_long_mapping():
 def get_cities_names_lat_long_mapping():
     """
     Get the dict of all names of french cities.
+
     Returns:
         exemple : ville_name = {"bergerac": ("44.854375187200006", "0.486529423457")}
     """
@@ -76,6 +80,7 @@ def get_cities_names_lat_long_mapping():
 def get_departments_codes_lat_long_mapping():
     """
     Get the dict of all postcode of french departments.
+
     Returns:
         exemple : departement = {"47": ("44.34453", "0.94193")}
     """
@@ -103,12 +108,14 @@ def get_lat_lng(
         level 2: cities's name.
         level 3: departments postcode.
         level 4: call here API.
+
     Args:
         location: the string of the location we want to get latitude and longitude.
         api_key: Here's api_key permitting the last fall back.
         cities_codes_dict:
         cities_names_dict:
         departments_codes_dict:
+
     Returns:
         latitude, longitude of the location.
     """
