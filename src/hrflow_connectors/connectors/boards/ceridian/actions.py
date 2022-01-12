@@ -63,9 +63,9 @@ class PullJobs(HTTPStream, BoardAction):
         job["reference"] = str(data.get("ReferenceNumber")) + str(data.get("ParentRequisitionCode"))
         job["url"] = data.get("JobDetailsUrl")
         # location
-        location = data.get("city")
-        state = data.get("state")
-        country = data.get("country")
+        location = data.get("City")
+        state = data.get("State")
+        country = data.get("Country")
         postal_code = data.get("PostalCode")
         geojson = dict(state=state, country=country, postal_code=postal_code)
         job["location"] = dict(text=location, lat=None, lng=None, geojson=geojson)
@@ -79,7 +79,7 @@ class PullJobs(HTTPStream, BoardAction):
             )
         ]
         job["created_at"] = data.get("DatePosted")
-        job["updated_at"] = data.get("DatePosted")
+        job["updated_at"] = data.get("LastUpdated")
 
         # tags
         apply_url = str(data.get("ApplyUrl"))
