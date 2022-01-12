@@ -116,7 +116,8 @@ def get_lat_lng(
             if value:
                 name = fall_back["name"]
                 print(f"found {location} because {word} in {name}")
-                return value
+                lat, long = value
+                return name, lat, long
 
     print(f"not found {location}")
     URL = "https://geocode.search.hereapi.com/v1/geocode"
@@ -129,10 +130,5 @@ def get_lat_lng(
         latitude = data["items"][0]["position"]["lat"]
         longitude = data["items"][0]["position"]["lng"]
         print(f"found with here API: {location}")
-        return latitude, longitude
-    return None, None
-
-
-"""data = pkgutil.get_data(__name__, "data/french_departement_geo_mapping.csv")
-print(data)"""
-# get_departments_codes_dict()
+        return "here", latitude, longitude
+    return None, None, None
