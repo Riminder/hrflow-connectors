@@ -3,44 +3,31 @@ from typing import Dict, Any, Iterator
 import base64
 import requests
 
-from ....core.auth import AuthorizationAuth
-from ....core.action import PushProfileAction
-from ....utils.hrflow import generate_workflow_response
+from ...core.auth import AuthorizationAuth
+from ...core import action as core
+from ...utils.hrflow import generate_workflow_response
+from ...utils.logger import get_logger
+
+logger = get_logger()
 
 
-class FlatchrPushProfileAction(PushProfileAction):
+class PushProfileAction(core.PushProfileAction):
     auth: AuthorizationAuth
-    subdomain: str = Field(
-        ...,
-        description="Subdomain flatchr just before `flatchr.io`. For example subdomain=`my_subdomain.my` in "
-        "`http://my_subdomain.my.flatchr.io/ABC`",
-    )
     vacancy: str = Field(
         ...,
         description="The pool in which candidates will be placed. Findable in the URL",
     )
-
-    def push(self, data):
-        profile = next(data)
-
-        # Prepare request
-        session = requests.Session()
-        push_profile_request = requests.Request()
-        push_profile_request.method = "POST"
-        push_profile_request.url = (
-            f"https://{self.subdomain}.flatchr.io/vacancy/candidate/json"
-        )
-        push_profile_request.auth = self.auth
-        push_profile_request.json = profile
-        prepared_request = push_profile_request.prepare()
-
-        # Send request
-        response = session.send(prepared_request)
-
-        if not response.ok:
-            raise RuntimeError(f"Push profile to flatchr failed : `{response.content}`")
+    company: str = Field(
+        ...,
+        description="The id of the company",
+    )
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+
+        ######################
+        ### Create Profile ###
+        ######################
+
         def get_candidate_attachments(hrflow_profile):
             attachments_list = hrflow_profile.get("attachments")
             # We try to find 'resume' (which is 'original' after traitments).
@@ -64,7 +51,7 @@ class FlatchrPushProfileAction(PushProfileAction):
                 f"No email for hrflow_profile {data.get('reference')} but one is mandatory"
             )
 
-        profile = {
+        create_profile_body = {
             "vacancy": self.vacancy,
             "firstname": info.get("first_name")
             if info.get("first_name") is not None
@@ -80,44 +67,11 @@ class FlatchrPushProfileAction(PushProfileAction):
                 "data": get_candidate_attachments(data),
             },
         }
-        return profile
 
+        ######################
+        ### Enrich Profile ###
+        ######################
 
-class FlatchrEnrichProfileAction(PushProfileAction):
-    auth: AuthorizationAuth
-    subdomain: str = Field(
-        ...,
-        description="Subdomain flatchr just before `flatchr.io`. For example subdomain=`my_subdomain.my` in "
-        "`http://my_subdomain.my.flatchr.io/ABC`",
-    )
-    vacancy: str = Field(
-        ...,
-        description="The pool in which candidates will be placed. Findable in the URL",
-    )
-    compagny: str = Field(
-        ...,
-        description="The id of the compagny",
-    )
-
-    def push(self, data):
-        profile = next(data)
-
-        # Prepare request
-        session = requests.Session()
-        push_profile_request = requests.Request()
-        push_profile_request.method = "POST"
-        push_profile_request.url = f"https://{self.subdomain}.flatchr.io/company/{self.compagny}/search/candidate"
-        push_profile_request.auth = self.auth
-        push_profile_request.json = profile
-        prepared_request = push_profile_request.prepare()
-
-        # Send request
-        response = session.send(prepared_request)
-
-        if not response.ok:
-            raise RuntimeError(f"Push profile to flatchr failed : `{response.content}`")
-
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         def get_education_list(hrflow_profile):
             hrflow_education_list = hrflow_profile["educations"]
             flatchr_education_list = []
@@ -253,7 +207,7 @@ class FlatchrEnrichProfileAction(PushProfileAction):
             "experience": int(data.get("experiences_duration")),
         }
 
-        profile = {
+        enrich_profile_body = {
             "app_name": "HRMatch",
             "reference": data["info"].get("email"),
             "name": "parsing",
@@ -261,4 +215,51 @@ class FlatchrEnrichProfileAction(PushProfileAction):
             "value": value,
         }
 
-        return profile
+        # When the action needs to send several requests to push a profile
+        # We group the formats of the different requests in a `profile_body_dict`.
+        profile_body_dict = dict(
+            create_profile_body=create_profile_body,
+            enrich_profile_body=enrich_profile_body,
+        )
+        return profile_body_dict
+
+    def push(self, data):
+        profile_body_dict = next(data)
+        create_profile_body = profile_body_dict["create_profile_body"]
+        enrich_profile_body = profile_body_dict["enrich_profile_body"]
+
+        session = requests.Session()
+
+        # Prepare create request
+        logger.info("Preparing `create profile` request")
+        create_profile_request = requests.Request()
+        create_profile_request.method = "POST"
+        create_profile_request.url = "http://careers.flatchr.io/vacancy/candidate/json"
+
+        create_profile_request.auth = self.auth
+        create_profile_request.json = create_profile_body
+        prepared_create_profile_request = create_profile_request.prepare()
+
+        # Prepare enrich request
+        logger.info("Preparing `enrich profile` request")
+        enrich_profile_request = requests.Request()
+        enrich_profile_request.method = "POST"
+        enrich_profile_request.url = (
+            f"http://api.flatchr.io/company/{self.company}/search/candidate"
+        )
+        enrich_profile_request.auth = self.auth
+        enrich_profile_request.json = enrich_profile_body
+        prepared_enrich_profile_request = enrich_profile_request.prepare()
+
+        # Send requests
+        logger.info("Sending `create profile` request")
+        response = session.send(prepared_create_profile_request)
+        if not response.ok:
+            raise RuntimeError(
+                f"Create profile to Flatchr failed : `{response.content}`"
+            )
+
+        logger.info("Sending `enrich profile` request")
+        response = session.send(prepared_enrich_profile_request)
+        if not response.ok:
+            raise RuntimeError(f"Enrich Flatchr profile failed : `{response.content}`")
