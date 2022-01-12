@@ -73,6 +73,7 @@ class PushProfile(ProfileDestinationAction, HTTPStream):
 
         if urls() not in ["", None, []]:
             profile["links"] = urls()
+        #Recruitee profile format is in the following format dict(candidate = profile, offers = [offer_id1,...])
         output_data = dict(candidate = profile)
         if self.offer_id is not None:
             output_data["offers"] = self.offer_id
