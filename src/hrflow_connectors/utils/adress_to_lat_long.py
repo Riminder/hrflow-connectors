@@ -91,7 +91,7 @@ def get_departments_codes_lat_long_mapping():
 
 
 def get_lat_lng(
-    location, api_key, cities_codes_dict, cities_names_dict, departments_codes_dict
+    location, cities_codes_dict, cities_names_dict, departments_codes_dict, api_key=None
 ):
     """Get the tuple latitude, longitude of a location with a 4 level of fall back.
         level 1: cities's postcode.
@@ -118,6 +118,8 @@ def get_lat_lng(
                 lat, long = value
                 return name, lat, long
 
+    if api_key is None:
+        return None, None, None
     URL = "https://geocode.search.hereapi.com/v1/geocode"
     PARAMS = {"apikey": api_key, "q": location}
     # sending get request and saving the response as response object
