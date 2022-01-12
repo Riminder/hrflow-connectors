@@ -1,12 +1,9 @@
-# Smart Recruiters Connector
-**Smart Recruiters is an ATS.**
-
+# PushProfile
 `Hrflow.ai` :arrow_right: `Smart Recruiters`
 
-## PushProfile
-`PushProfile` pushes a HrFlow.ai profile from a ***Hrflow.ai Source*** to `SmartRecruiters` via the ***SmartRecruiter*** API.
+`PushProfileAction` pushes a HrFlow.ai profile from a ***Hrflow.ai Source*** to `SmartRecruiters` via the ***SmartRecruiter*** API.
 
-### Parameters
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -21,14 +18,14 @@
 
 :red_circle: : *required* 
 
-### Example
+## Example
 Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.ai/docs/workflows#catch-setup).
 ```python
-from hrflow import Hrflow
+from hrflow_connectors import SmartRecruiters
 
-from hrflow_connectors.core.auth import XSmartTokenAuth
-from hrflow_connectors.connectors.destinations.smartrecruiters import PushProfile
-from hrflow_connectors.utils.hrflow import EventParser, Profile, Source
+from hrflow import Hrflow
+from hrflow_connectors import XSmartTokenAuth
+from hrflow_connectors.utils.hrflow import EventParser
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 
@@ -47,15 +44,13 @@ def workflow(_request, settings):
         logger.info("Profile found !")
 
         client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
-
         auth = XSmartTokenAuth(value=settings["MY_SMART_TOKEN"])
-
-        action = PushProfile(
+        
+        response = SmartRecruiters.push_profile(
             auth=auth,
             job_id="3696cad0-a9b0-4a40-9cd7-4cc5feb1a509",
             hrflow_client=client,
             profile=profile,
         )
-        response = action.execute()
         return response
 ```
