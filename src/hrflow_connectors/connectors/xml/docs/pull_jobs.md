@@ -1,12 +1,9 @@
-# XML Connector
-**Many feeds use the XML format. This connector groups together all the `Actions` that process an XML stream to retrieve jobs.**
-
+# Pull jobs
 `XML Stream` :arrow_right: `Hrflow.ai`
 
-## SmartJobs
-`XMLBoardAction` retrieves all jobs via an ***XML stream*** API. It adds all these **jobs** to a ***Hrflow.ai Board***.
+`PullJobsAction` retrieves all jobs via an ***XML stream*** API. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-### Parameters
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -24,13 +21,13 @@
 
 :red_circle: : *required* 
 
-### Example
+## Example
 Let's take the ***Samsic*** job stream as an example of an XML stream.
 ```python
-from hrflow import Hrflow
+from hrflow_connectors import XML
 
-from hrflow_connectors.core.auth import XSmartTokenAuth
-from hrflow_connectors.connectors.boards.smartrecruiters import SmartJobs
+from hrflow_connectors import XSmartTokenAuth
+from hrflow import Hrflow
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 # We add a basic configuration to our logger to see the messages displayed in the standard output
@@ -155,14 +152,11 @@ def samsic_format(data):
 
     return job
 
-xml_stream_url = "https://cv.samsic-emploi.fr/media/flux/jobs.xml"
-job_list_xpath = "DataArea"
-
 logger = get_logger_with_basic_config()
 
-action = XMLBoardAction(
-    xml_stream_url=xml_stream_url,
-    job_list_xpath=job_list_xpath,
+XML.pull_jobs(
+    xml_stream_url="https://cv.samsic-emploi.fr/media/flux/jobs.xml",
+    job_list_xpath="DataArea",
     hrflow_client=client,
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=False,
@@ -171,5 +165,4 @@ action = XMLBoardAction(
     global_scope=globals(),
     local_scope=locals(),
 )
-action.execute()
 ```

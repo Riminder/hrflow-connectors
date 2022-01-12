@@ -3,10 +3,10 @@ import xml.etree.ElementTree
 from typing import Iterator
 import requests
 
-from ....core.action import PullJobsAction
+from ...core import action as core
 
 
-class XMLPullJobsAction(PullJobsAction):
+class PullJobsAction(core.PullJobsAction):
     xml_stream_url: str = Field(..., description="URL to XML Stream")
     job_list_xpath: str = Field(
         ..., description="XPath pointing to the job list in the XML stream"
