@@ -125,6 +125,7 @@ def get_lat_lng(
     # sending get request and saving the response as response object
     r = requests.get(url=URL, params=PARAMS)
     data = r.json()
+    print(r.json())
     if data.get("items"):
         # Acquiring the latitude and longitude from JSON
         latitude = data["items"][0]["position"]["lat"]

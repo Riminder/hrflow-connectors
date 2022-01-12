@@ -3,6 +3,8 @@ from hrflow_connectors.utils.adress_to_lat_long import get_cities_names_lat_long
 from hrflow_connectors.utils.adress_to_lat_long import get_cities_code_lat_long_mapping
 from hrflow_connectors.utils.adress_to_lat_long import get_lat_lng
 
+import responses
+
 
 def test_departments_codes_lat_long_mapping():
     lat_long_map = get_departments_codes_lat_long_mapping()
@@ -49,7 +51,22 @@ def test_cities_code_lat_long_mapping():
     assert lat_long_map["98761"] == ('nan', 'nan')
 
 
+@responses.activate
 def test_get_lat_lng(credentials):
+
+    request_url = "https://geocode.search.hereapi.com/v1/geocode"
+    body = {
+        "items": [{
+            "position": {
+                "lat": "666.666",
+                "lng": "666.666"
+            }
+        }]
+    }
+
+    # build Mock for request
+    responses.add(responses.GET, request_url, status=200, json=body)
+
     test_suite = [("Issy les Moulineaux", "cities_name"),
                 ("ISSY LES MOULINEAUX", "cities_name"),
                 ("Villaroche/Gennevilliers", "cities_name"),
@@ -67,7 +84,8 @@ def test_get_lat_lng(credentials):
                 ("47 collège Didier La Moulie", "departments_codes"),
                 ("94 EPITA kremlin-bicêtre", "cities_name"),
                 ("94 EPITA", "departments_codes"),
-                ("EPITA;kremlin-bicêtre", "cities_name")]
+                ("EPITA;kremlin-bicêtre", "cities_name"),
+                ("kremlin bicetre", "here")]
 
     cities_codes_dict = get_cities_code_lat_long_mapping()
 
@@ -76,10 +94,37 @@ def test_get_lat_lng(credentials):
     departments_codes_dict = get_departments_codes_lat_long_mapping()
 
     for adress, expected in test_suite:
-        assert get_lat_lng(
+        name, lat, long = get_lat_lng(
                     adress,
                     credentials["here"]["HERE_API_KEY"],
                     cities_codes_dict,
                     cities_names_dict,
                     departments_codes_dict,
-                ) == expected
+                )
+        assert name == expected
+
+
+@responses.activate
+def test_get_lat_lng_not_found_by_here(credentials):
+
+    cities_codes_dict = get_cities_code_lat_long_mapping()
+
+    cities_names_dict = get_cities_names_lat_long_mapping()
+
+    departments_codes_dict = get_departments_codes_lat_long_mapping()
+
+    request_url = "https://geocode.search.hereapi.com/v1/geocode"
+    body2 = {
+    }
+
+    # build Mock for request
+    responses.add(responses.GET, request_url, status=404, json=body2)
+
+    name, lat, long = get_lat_lng(
+        "kremlin bicetre",
+        credentials["here"]["HERE_API_KEY"],
+        cities_codes_dict,
+        cities_names_dict,
+        departments_codes_dict,
+    )
+    assert name is None
