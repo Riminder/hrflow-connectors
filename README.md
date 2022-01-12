@@ -120,7 +120,7 @@ The project mainly uses 4 packages :
 - **Mailchimp** (soon)
 - **Monster** : [`PushJob`](src/hrflow_connectors/connectors/boards/monster), [`PullProfile`](src/hrflow_connectors/connectors/destinations/monster)
 - **Oracle** (soon)
-- **Recruitee** : [`PullJobs`](src/hrflow_connectors/connectors/boards/recruitee)
+- **Recruitee** : [`PullJobs`](src/hrflow_connectors/connectors/boards/recruitee), [`PushProfile`](src/hrflow_connectors/connectors/destinations/recruitee)
 - **SAP Successfactors** [`PullJobs`](src/hrflow_connectors/connectors/boards/sapsuccessfactors), [`PushProfile`](src/hrflow_connectors/connectors/destinations/sapsuccessfactors)
 - **Salesforce** (soon)
 - **Smartrecruiters** : [`GetAllJobs`](src/hrflow_connectors/connectors/boards/smartrecruiters/), [`PushProfile`](src/hrflow_connectors/connectors/destinations/smartrecruiters)
