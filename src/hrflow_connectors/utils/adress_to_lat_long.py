@@ -115,21 +115,17 @@ def get_lat_lng(
             value = fall_back.get(word.lower())
             if value:
                 name = fall_back["name"]
-                print(f"found {location} because {word} in {name}")
                 lat, long = value
                 return name, lat, long
 
-    print(f"not found {location}")
     URL = "https://geocode.search.hereapi.com/v1/geocode"
     PARAMS = {"apikey": api_key, "q": location}
     # sending get request and saving the response as response object
     r = requests.get(url=URL, params=PARAMS)
     data = r.json()
-    print(r.json())
     if data.get("items"):
         # Acquiring the latitude and longitude from JSON
         latitude = data["items"][0]["position"]["lat"]
         longitude = data["items"][0]["position"]["lng"]
-        print(f"found with here API: {location}")
         return "here", latitude, longitude
     return None, None, None
