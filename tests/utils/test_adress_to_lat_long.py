@@ -96,10 +96,10 @@ def test_get_lat_lng(credentials):
     for adress, expected in test_suite:
         name, lat, long = get_lat_lng(
                     adress,
-                    credentials["here"]["HERE_API_KEY"],
                     cities_codes_dict,
                     cities_names_dict,
                     departments_codes_dict,
+                    credentials["here"]["HERE_API_KEY"]
                 )
         assert name == expected
 
@@ -114,17 +114,35 @@ def test_get_lat_lng_not_found_by_here(credentials):
     departments_codes_dict = get_departments_codes_lat_long_mapping()
 
     request_url = "https://geocode.search.hereapi.com/v1/geocode"
-    body2 = {
+    body = {
     }
 
     # build Mock for request
-    responses.add(responses.GET, request_url, status=404, json=body2)
+    responses.add(responses.GET, request_url, status=404, json=body)
 
     name, lat, long = get_lat_lng(
         "kremlin bicetre",
-        credentials["here"]["HERE_API_KEY"],
         cities_codes_dict,
         cities_names_dict,
         departments_codes_dict,
+        credentials["here"]["HERE_API_KEY"]
+    )
+    assert name is None
+
+
+@responses.activate
+def test_get_lat_lng_not_api_key_here(credentials):
+
+    cities_codes_dict = get_cities_code_lat_long_mapping()
+
+    cities_names_dict = get_cities_names_lat_long_mapping()
+
+    departments_codes_dict = get_departments_codes_lat_long_mapping()
+
+    name, lat, long = get_lat_lng(
+        "kremlin bicetre",
+        cities_codes_dict,
+        cities_names_dict,
+        departments_codes_dict
     )
     assert name is None
