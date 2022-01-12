@@ -107,7 +107,7 @@ The project mainly uses 4 packages :
 - **Craigslist** : [`CraigslistFeed`](src/hrflow_connectors/connectors/boards/craigslist/)
 - **Careerbuilder** [`CareerBuilderFeed`](src/hrflow_connectors/connectors/boards/careerbuilder)
 - **Cegid(Meta4)** (soon)
-- **Ceridian** (soon)
+- **Ceridian** [`PullJobs`](src/hrflow_connectors/connectors/boards/ceridian)
 - **Cornerstone OnDemand** (soon)
 - **Crosstalent** : [`GetAllJobs`](src/hrflow_connectors/connectors/boards/crosstalent), [`PushProfile`](src/hrflow_connectors/connectors/destinations/crosstalent)
 - **Digitalrecruiters** (soon)
