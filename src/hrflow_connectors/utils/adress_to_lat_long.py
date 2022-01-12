@@ -4,7 +4,8 @@ import re
 
 
 def accent_replacer(s):
-    """Replace the accentuated characters by same character without accent.
+    """
+    Replace the accentuated characters by same character without accent.
     Args:
         s: the string we want to remove accentuated letters.
     Returns:
@@ -27,7 +28,8 @@ def accent_replacer(s):
 
 
 def get_cities_code_lat_long_mapping():
-    """get the dict of all postcode of french cities.
+    """
+    Get the dict of all postcode of french cities.
     Returns:
         exemple : ville_code = {"47380": ("44.525200649300004", "0.476034019359")}
     """
@@ -50,7 +52,8 @@ def get_cities_code_lat_long_mapping():
 
 
 def get_cities_names_lat_long_mapping():
-    """Get the dict of all names of french cities.
+    """
+    Get the dict of all names of french cities.
     Returns:
         exemple : ville_name = {"bergerac": ("44.854375187200006", "0.486529423457")}
     """
@@ -71,7 +74,8 @@ def get_cities_names_lat_long_mapping():
 
 
 def get_departments_codes_lat_long_mapping():
-    """Get the dict of all postcode of french departments.
+    """
+    Get the dict of all postcode of french departments.
     Returns:
         exemple : departement = {"47": ("44.34453", "0.94193")}
     """
@@ -93,7 +97,8 @@ def get_departments_codes_lat_long_mapping():
 def get_lat_lng(
     location, cities_codes_dict, cities_names_dict, departments_codes_dict, api_key=None
 ):
-    """Get the tuple latitude, longitude of a location with a 4 level of fall back.
+    """
+    Get the tuple latitude, longitude of a location with a 4 level of fall back.
         level 1: cities's postcode.
         level 2: cities's name.
         level 3: departments postcode.
