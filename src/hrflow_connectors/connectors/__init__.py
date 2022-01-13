@@ -5,3 +5,4 @@ from .xml import *
 from .flatchr import *
 from .workable import *
 from .recruitee import *
+from .ceridian import *
