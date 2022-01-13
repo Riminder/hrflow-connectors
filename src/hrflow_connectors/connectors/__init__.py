@@ -4,3 +4,4 @@ from .greenhouse import *
 from .xml import *
 from .flatchr import *
 from .workable import *
+from .recruitee import *
