@@ -119,19 +119,18 @@ action.execute()
 ```
 
 ## Using parsing to enrich a job
-**All `Action` for connectors found in `connectors/boards` have an option to enrich a job with parsing.**
+**All `PullJobsAction`s have an option to enrich a job with parsing.**
 
 Parsing will parse all the text fields and extract the characteristics of the job and add them to the appropriate fields in ***Hrflow.ai***: `skills`, `languages`, `certifications`, `courses`, `tasks`, ...
 
 **To enable parsing, simply turn on the option `hydrate_with_parsing`.**
 ```python
-from hrflow_connectors.core.action import BoardAction
+from hrflow_connectors import MyConnector
 
-action = BoardAction(hydrate_with_parsing=True, ...)
-action.execute()
+MyConnector.pull_jobs(hydrate_with_parsing=True, ...)
 ```
 ## Automatically archive a job when it is deleted from the stream
-**All `Action` for connectors found in `connectors/boards` have an `archive_deleted_jobs_from_stream` option to automatically archive a Board job when it is deleted from the stream.**
+***All `PullJobsAction`s have an `archive_deleted_jobs_from_stream` option to automatically archive a Board job when it is deleted from the stream.**
 
 This can be useful for synchronizing a board with a job stream.
 In this case, you only need to enable the `archive_deleted_jobs_from_stream=True` option.
@@ -140,10 +139,9 @@ But in some cases, you may only want to add jobs without worrying that the job i
 
 Here is how it looks in an example :
 ```python
-from hrflow_connectors.core.action import BoardAction
+from hrflow_connectors import MyConnector
 
-action = BoardAction(archive_deleted_jobs_from_stream=True, ...)
-action.execute()
+MyConnector.pull_jobs(archive_deleted_jobs_from_stream=True, ...)
 ```
 
 ## Using `hrflow_connector` in a CATCH workflow to get a profile
@@ -156,7 +154,7 @@ This method retrieves information from a profile if it exists in `_request`.
 
 **Let's take a simple example:**
 ```python
-from hrflow_connectors.connectors.core.action import ProfileDestinationAction
+from hrflow_connectors import MyConnector
 from hrflow_connectors.utils.hrflow import EventParser
 
 def workflow(_request, settings):
@@ -166,15 +164,14 @@ def workflow(_request, settings):
     event = EventParser(request=_request)
     profile = event.get_profile()
     if profile is not None:
-        action = ProfileDestinationAction(profile=profile, ...)
-        response = action.execute()
+        response = MyConnector.push_profile(profile=profile, ...)
         return response
 ```
 
 If now you only want to process the profiles added **in the sources with the following keys `MY_SOURCE_KEY_1` and `MY_SOURCE_KEY_2`**.
 Then you just have to write :
 ```python
-from hrflow_connectors.connectors.core.action import ProfileDestinationAction
+from hrflow_connectors import MyConnector
 from hrflow_connectors.utils.hrflow import EventParser
 
 def workflow(_request, settings):
@@ -184,8 +181,7 @@ def workflow(_request, settings):
     event = EventParser(request=_request)
     profile = event.get_profile(source_to_listen=["MY_SOURCE_KEY_1", "MY_SOURCE_KEY_2"])
     if profile is not None:
-        action = ProfileDestinationAction(profile=profile, ...)
-        response = action.execute()
+        response = MyConnector.push_profile(profile=profile, ...)
         return response
 ```
 So **if a profile is added to the source with the key `OTHER_SOURCE_KEY`** then `get_profile` would return `None` and **that profile would be ignored** from the rest of the processing.
