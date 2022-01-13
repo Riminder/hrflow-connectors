@@ -6,3 +6,4 @@ from .flatchr import *
 from .workable import *
 from .recruitee import *
 from .ceridian import *
+from .sapsuccessfactors import *
