@@ -1,4 +1,4 @@
-from typing import Iterator, Dict, Any, Union
+from typing import Iterator, Dict, Any, Union, Optional
 from pydantic import Field
 import requests
 from ...utils.logger import get_logger
@@ -136,6 +136,7 @@ class PullJobsAction(core.PullJobsAction):
 
 class PushProfileAction(core.PushProfileAction):
 
+    profile_already_exists: Any = Field(None, description="profile already exists !")
     auth: Union[OAuth2PasswordCredentialsBody, XAPIKeyAuth]
     api_server: str = Field(
         ...,
@@ -234,8 +235,10 @@ class PushProfileAction(core.PushProfileAction):
 
         # Send request
         response = session.send(prepared_request)
-
-        if not response.ok:
-            raise RuntimeError(
-                    f"Push profile to sapsuccesfactors api-server: {self.api_server} failed : `{response.content}`"
-            )
+        if response.content == self.profile_already_exists:
+            logger.warning("Profile already exists")
+        else:
+            if not response.ok:
+                raise RuntimeError(
+                        f"Push profile to sapsuccesfactors api-server: {self.api_server} failed : `{response.content}`"
+                )
