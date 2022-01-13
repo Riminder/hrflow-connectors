@@ -1,8 +1,11 @@
 from hrflow import Hrflow
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Union, List
 
 from ...core.connector import Connector
-from .actions import PullJobsAction
+from ...core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
+
+from ...utils.hrflow import Profile
+from .actions import PullJobsAction, PushProfileAction
 
 
 class Greenhouse(Connector):
@@ -14,6 +17,25 @@ class Greenhouse(Connector):
             hrflow_client=hrflow_client,
             board_key=board_key,
             board_token=board_token,
+            **kwargs
+        )
+        return action.execute()
+
+    @staticmethod
+    def push_profile(
+        auth: Union[OAuth2PasswordCredentialsBody, XAPIKeyAuth],
+        job_id: List[int],
+        on_behalf_of: str,
+        hrflow_client: Hrflow,
+        profile: Profile,
+        **kwargs
+    ) -> Optional[Dict[str, Any]]:
+        action = PushProfileAction(
+            auth=auth,
+            hrflow_client=hrflow_client,
+            profile=profile,
+            job_id=job_id,
+            on_behalf_of=on_behalf_of,
             **kwargs
         )
         return action.execute()
