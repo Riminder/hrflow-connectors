@@ -1,41 +1,41 @@
 from hrflow import Hrflow
-from typing import Optional, Dict, Any, Union, List
+from typing import Optional, Dict, Any, List
 
 from ...core.connector import Connector
-from ...core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
-
+from ...core.auth import AuthorizationAuth
 from ...utils.hrflow import Profile
 from .actions import PullJobsAction, PushProfileAction
 
 
-class Greenhouse(Connector):
+class Recruitee(Connector):
     @staticmethod
     def pull_jobs(
-        hrflow_client: Hrflow, board_key: str, board_token: str, **kwargs
+        hrflow_client: Hrflow, board_key: str, subdomain: str, **kwargs
     ) -> Optional[Dict[str, Any]]:
+
         action = PullJobsAction(
             hrflow_client=hrflow_client,
             board_key=board_key,
-            board_token=board_token,
+            subdomain=subdomain,
             **kwargs
         )
         return action.execute()
 
     @staticmethod
     def push_profile(
-        auth: Union[OAuth2PasswordCredentialsBody, XAPIKeyAuth],
-        job_id: List[int],
-        on_behalf_of: str,
+        auth: AuthorizationAuth,
         hrflow_client: Hrflow,
         profile: Profile,
+        company_id: str,
+        offer_id: Optional[List[int]],
         **kwargs
     ) -> Optional[Dict[str, Any]]:
         action = PushProfileAction(
             auth=auth,
             hrflow_client=hrflow_client,
             profile=profile,
-            job_id=job_id,
-            on_behalf_of=on_behalf_of,
+            company_id=company_id,
+            offer_id=offer_id,
             **kwargs
         )
         return action.execute()

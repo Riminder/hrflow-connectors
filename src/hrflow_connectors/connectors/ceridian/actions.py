@@ -1,52 +1,41 @@
 from typing import Iterator, Dict, Any
 from pydantic import Field
-from ....core.action import BoardAction
-from ....core.http import HTTPStream
-from ....utils.logger import get_logger
-
-logger = get_logger()
+import requests
+from ...core import action as core
 
 
-class PullJobs(HTTPStream, BoardAction):
+class PullJobsAction(core.PullJobsAction):
+
     subdomain: str = Field(..., description="subdomain just before `dayforcehcm.com`")
     client_name_space: str = Field(
         ...,
         description="Uniquely identifies the client's Dayforce instance. Is needed to login",
     )
 
-    @property
-    def base_url(self):
-        return "https://{}.dayforcehcm.com/Api/{}/V1/JobFeeds".format(
-            self.subdomain, self.client_name_space
-        )
-
-    @property
-    def http_method(self):
-        return "GET"
-
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
         pull all jobs from a ceridian dayforce job feed space
-
         Raises:
             ConnectionError: if the request failed, you may want to check your subdomain or client name space
-
         Returns:
             Iterator[Dict[str, Any]]: a list of jobs dictionaries
         """
+        session = requests.Session()
+        pull_jobs_request = requests.Request()
+        pull_jobs_request.method = "GET"
+        pull_jobs_request.url = f"https://{self.subdomain}.dayforcehcm.com/Api/{self.client_name_space}/V1/JobFeeds"
+        prepared_request = pull_jobs_request.prepare()
 
-        response = self.send_request()
-        if response.ok:
-            job_dict_list = response.json()
-            return job_dict_list
-        else:
-            logger.error(
-                f"Failed to pull jobs, check that your subdomain: {self.subdomain}, and client name space: {self.client_name_space}"
-            )
+        # Send request
+        response = session.send(prepared_request)
+
+        if not response.ok:
+
             error_message = "Unable to pull the data ! Reason : `{}`, `{}`"
             raise ConnectionError(
                 error_message.format(response.status_code, response.content)
             )
+        return response.json()
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -57,10 +46,12 @@ class PullJobs(HTTPStream, BoardAction):
             Dict[str, Any]: a job into the hrflow job object format
         """
         job = dict()
-        #basic information
+        # basic information
         job["name"] = data.get("Title")
         job["summary"] = None
-        job["reference"] = str(data.get("ReferenceNumber")) + str(data.get("ParentRequisitionCode"))
+        job["reference"] = str(data.get("ReferenceNumber")) + str(
+            data.get("ParentRequisitionCode")
+        )
         job["url"] = data.get("JobDetailsUrl")
         # location
         location = data.get("City")
@@ -69,7 +60,7 @@ class PullJobs(HTTPStream, BoardAction):
         postal_code = data.get("PostalCode")
         geojson = dict(state=state, country=country, postal_code=postal_code)
         job["location"] = dict(text=location, lat=None, lng=None, geojson=geojson)
-        #sections
+        # sections
         description = data.get("Description")
         job["sections"] = [
             dict(
