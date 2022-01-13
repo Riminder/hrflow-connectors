@@ -2,7 +2,7 @@
 
 `Hrflow.ai` :arrow_right: `Greenhouse`
 
-`PushProfile` pushes a `Profile` from a ***HrFlow Source*** to a ***Greenhouse*** Jobs pool..
+`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Greenhouse*** Jobs pool..
 
 ### Parameters
 

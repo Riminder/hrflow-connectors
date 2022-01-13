@@ -166,6 +166,7 @@ class PushProfileAction(core.PushProfileAction):
         candidate["currentTitle"] = info.get("summary")
 
         def format_start_date(date):
+            #SAP SuccessFactors DATE FORMAT
             return "/Date({})/".format(int(dp.parse(date).timestamp()))
 
         def format_end_date(date):

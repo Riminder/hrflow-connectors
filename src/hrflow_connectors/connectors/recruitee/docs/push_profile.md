@@ -2,7 +2,7 @@
 
 `Hrflow.ai` :arrow_right: `Recruitee`
 
-`PushProfile` pushes a `Profile` from a ***HrFlow Source*** to a ***Recruitee*** company endpoint and a optionally a Jobs pool..
+`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Recruitee*** company endpoint and a optionally a Jobs pool..
 
 ### Parameters
 

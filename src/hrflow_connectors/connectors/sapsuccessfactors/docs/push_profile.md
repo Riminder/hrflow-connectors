@@ -2,7 +2,7 @@
 
 `Hrflow.ai` :arrow_right: `SAP SuccessFactors`
 
-`PushProfile` pushes a `Profile` from a ***HrFlow Source*** to a ***SAP SuccessFactors*** Jobs pool..
+`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***SAP SuccessFactors*** Jobs pool..
 
 
 ### Parameters

@@ -38,9 +38,9 @@ class PullJobsAction(core.PullJobsAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            """logger.error(
+            logger.error(
                 f"Failed to get jobs for company: {self.subdomain}, Check that the subdomain is a valid one"
-            )"""
+            )
             error_message = "Unable to pull the data ! Reason: `{}`, `{}`"
             raise ConnectionError(
                 error_message.format(response.status_code, response.content)
@@ -72,18 +72,18 @@ class PullJobsAction(core.PullJobsAction):
         geojson = dict(city=city, country=country, country_code=country_code)
         job["location"] = dict(text=location, geojson=geojson, lat=None, lng=None)
         # sections
-        # description = remove_html_tags(data.get("description"))
-        # requirements = remove_html_tags(data.get("requirements"))
+        description = remove_html_tags(data.get("description"))
+        requirements = remove_html_tags(data.get("requirements"))
         job["sections"] = [
             dict(
                 name="recruitee_description",
                 title="recruitee_description",
-                description="description",
+                description=description,
             ),
             dict(
                 name="recruitee_requirements",
                 title="recruitee_requirements",
-                description="requirements",
+                description=requirements,
             ),
         ]
         job["created_at"] = data.get("created_at")
