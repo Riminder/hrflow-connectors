@@ -1,6 +1,6 @@
 import pytest
-from hrflow_connectors.connectors.destinations.sapsuccessfactors import PushProfile
-from hrflow_connectors.core.auth import XAPIKeyAuth
+from hrflow_connectors import SapSuccessfactors
+from hrflow_connectors import XAPIKeyAuth
 from hrflow_connectors.utils.hrflow import Profile, Source
 
 @pytest.fixture
@@ -17,10 +17,10 @@ def test_PushProfile(logger,auth, hrflow_client):
         key = "65903f6989594e72ccf64a10875127b1293fdce3",
         source = Source(key="762d2f25b855f7cfd13e5585ef727d8fb6e752cb")
     )
-    action = PushProfile(
+    response = SapSuccessfactors.push_profile(
         auth = auth,
         api_server="sandbox.api.sap.com:443/successfactors",
         hrflow_client=hrflow_client("dev-demo"),
         profile=profile,
     )
-    action.execute()
+    assert response.get("status_code") == 201
