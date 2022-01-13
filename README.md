@@ -40,10 +40,10 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 | **Cegid (Meta4)** |  | :hourglass: |
 | **Ceridian** |  | :hourglass: |
 | **Cornerstone OnDemand** |  | :hourglass: |
-| [**Crosstalent**](src/hrflow_connectors/connectors/crosstalent) | ATS | ✅ |
+| [**Crosstalent**](src/hrflow_connectors/connectors/crosstalent) | ATS | :heavy_check_mark: |
 | **Digitalrecruiters** | ATS | :hourglass: |
-| [**Flatchr**](src/hrflow_connectors/connectors/flatchr/) | ATS | ✅ |
-| [**Greenhouse**](src/hrflow_connectors/connectors/greenhouse) | ATS | ✅ |
+| [**Flatchr**](src/hrflow_connectors/connectors/flatchr/) | ATS | :heavy_check_mark: |
+| [**Greenhouse**](src/hrflow_connectors/connectors/greenhouse) | ATS | :heavy_check_mark: |
 | **Kronos (UKG)** |  | :hourglass: |
 | **Laponi** | Job board | :hourglass: |
 | **Mailchimp** | Marketing tools | :hourglass: |
@@ -51,7 +51,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 | **Oracle** | Cloud Apps | :hourglass: |
 | **SAP Successfactors** |  | :hourglass: |
 | **Salesforce** |  | :hourglass: |
-| [**Smartrecruiters**](src/hrflow_connectors/connectors/smartrecruiters/) | ATS | ✅ |
+| [**Smartrecruiters**](src/hrflow_connectors/connectors/smartrecruiters/) | ATS | :heavy_check_mark: |
 | **Staffme** | Job board | :hourglass: |
 | **Talentsoft** |  | :hourglass: |
 | **Twilio** | Marketing tools | :hourglass: |
