@@ -38,24 +38,33 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 | - | - | - |
 | **ADP** |  | :hourglass: |
 | **Cegid (Meta4)** |  | :hourglass: |
-| **Ceridian** |  | :hourglass: |
+| [**Ceridian**](src/hrflow_connectors/connectors/ceridian) | HCM |:heavy_check_mark: |
 | **Cornerstone OnDemand** |  | :hourglass: |
 | [**Crosstalent**](src/hrflow_connectors/connectors/crosstalent) | ATS | :heavy_check_mark: |
 | **Digitalrecruiters** | ATS | :hourglass: |
+| **Fieldglass SAP** | Recruiting software | :hourglass: |
 | [**Flatchr**](src/hrflow_connectors/connectors/flatchr/) | ATS | :heavy_check_mark: |
 | [**Greenhouse**](src/hrflow_connectors/connectors/greenhouse) | ATS | :heavy_check_mark: |
+| **ICIMS** |  | :hourglass: |
+| **Jobvite** |  | :hourglass: |
 | **Kronos (UKG)** |  | :hourglass: |
 | **Laponi** | Job board | :hourglass: |
+| **Lever** |  | :hourglass:  |
 | **Mailchimp** | Marketing tools | :hourglass: |
+| **Microsoft Dynamics** | HCM CLoud | :hourglass: |
 | **Monster** | Job board | :hourglass: |
 | **Oracle** | Cloud Apps | :hourglass: |
-| **SAP Successfactors** |  | :hourglass: |
+| [**Recruitee**](src/hrflow_connectors/connectors/recruitee/) | ATS | :heavy_check_mark: |
+| **RecruitBox** |  | :hourglass: |
+| [**SAPSuccessfactors**](src/hrflow_connectors/connectors/sapsuccessfactors/) | Cloud Apps for HR | heavy_check_mark|
 | **Salesforce** |  | :hourglass: |
 | [**Smartrecruiters**](src/hrflow_connectors/connectors/smartrecruiters/) | ATS | :heavy_check_mark: |
 | **Staffme** | Job board | :hourglass: |
 | **Talentsoft** |  | :hourglass: |
+| **Talentlink** |  | :hourglass: |
 | **Twilio** | Marketing tools | :hourglass: |
 | **Ultimate Software (UKG)** |  | :hourglass: |
+| [**Workable**](src/hrflow_connectors/connectors/workable/) | ATS | :heavy_check_mark: |
 | **Workday** |  | :hourglass: |
 
 ## 🪄 Quickstart
