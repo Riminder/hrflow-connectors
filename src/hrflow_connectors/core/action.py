@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Iterator, TypeVar, Optional, Union
+from typing import List, Dict, Any, Iterator, TypeVar, Optional, Union, Tuple
 import itertools
 import xml.etree.ElementTree
 import html
@@ -638,7 +638,44 @@ class PullJobsAction(PullAction):
         logger.info("All has been done for this connector !")
 
 
+<<<<<<< HEAD
 class PushProfileAction(PushAction):
+=======
+class JobDestinationAction(Action):
+    hrflow_client: Hrflow = Field(
+        ...,
+        description="Hrflow client instance used to communicate with the Hrflow.ai API",
+    )
+    job: Job = Field(..., description="Job to push")
+
+    def pull(self) -> Iterator[Dict[str, Any]]:
+        """
+        Pull data
+        """
+        response = self.hrflow_client.job.indexing.get(
+            board_key=self.job.board.key, key=self.job.key
+        )
+        if response["code"] >= 400:
+            raise RuntimeError(
+                "Indexing job get failed : `{}`".format(response["message"])
+            )
+
+        job = response["data"]
+        return [job]
+
+    def execute(self):
+        super().execute()
+        return generate_workflow_response(
+            status_code=201, message="Profile successfully pushed"
+        )
+
+
+class ProfileDestinationAction(Action):
+    hrflow_client: Hrflow = Field(
+        ...,
+        description="Hrflow client instance used to communicate with the Hrflow.ai API",
+    )
+>>>>>>> origin/dev
     profile: Profile = Field(..., description="Profile to push")
 
     def pull(self) -> Iterator[TalentDataType]:
@@ -665,3 +702,65 @@ class PushProfileAction(PushAction):
         return generate_workflow_response(
             status_code=201, message="Profile successfully pushed"
         )
+
+
+class CatchProfile(Action):
+    hrflow_client: Hrflow = Field(
+        ...,
+        description="Hrflow client instance used to communicate with the Hrflow.ai API",
+    )
+
+    source_key: str = Field(
+        ..., description="Source key where the profiles to be added will be stored"
+    )
+
+    request: Dict[str, Any] = Field(
+        ..., description="Body to format in HrFlow Profile"
+    )
+
+    file_field: str = Field(
+        ..., description="Name of the field containing the file"
+    )
+
+    def execute(self):
+        """
+        Execute action
+        """
+        logger.info("Start execution")
+
+        # connect each filtered_data to the format accepted by the pull function (destination, source, board)
+        logger.info("Mapping format function...")
+        # self.body: json
+        # output_data: [json]
+        output_data = self.format_switcher(self.request)
+        logger.info("Format function has been mapped")
+
+        logger.info("Pushing data...")
+        self.push(output_data)
+        logger.info("Data has been pushed")
+
+        logger.info("All has been done for this connector !")
+
+        return generate_workflow_response(
+            status_code=201, message="Profile successfully pushed"
+        )
+
+    def format(self, request: str) -> Dict[str, Any]:
+        output_data = {
+            "source_key": self.source_key,
+            "profile_file": self.request[self.file_field]
+        }
+        return output_data
+
+    def push(self, data: Dict[str, Any]):
+        logger.debug(
+            f"Parsing a profile to Hrflow Source `{self.source_key}`"
+        )
+        response = self.hrflow_client.profile.parsing.add_file(**data)
+        if response["code"] >= 400:
+            message = response["message"]
+            logger.error("Failed to push a profile !")
+            raise ConnectionError("Failed to push ! Reason : `{}`".format(message))
+
+    def pull(self) -> Iterator[Dict[str, Any]]:
+        pass
