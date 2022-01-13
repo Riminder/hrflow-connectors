@@ -42,6 +42,7 @@ def test_simple_neg_timedelta_with_one_day_hours_millisecond():
 def test_wrong_timedelta_with_days_hours_millisecond_space_missing():
     try:
         assert_datetime("-1803days, 15:54:03.999990")
+        assert False
     except TimeDeltaFormatError:
         pass
 
@@ -49,6 +50,7 @@ def test_wrong_timedelta_with_days_hours_millisecond_space_missing():
 def test_wrong_timedelta_with_days_hours_millisecond_with_letter():
     try:
         assert_datetime("-HH days, 15:54:03.999990")
+        assert False
     except TimeDeltaFormatError:
         pass
 
@@ -56,6 +58,7 @@ def test_wrong_timedelta_with_days_hours_millisecond_with_letter():
 def test_wrong_timedelta_with_days_hours_millisecond_with_plus():
     try:
         assert_datetime("+01 days, 15:54:03.999990")
+        assert False
     except TimeDeltaFormatError:
         pass
 
@@ -63,5 +66,13 @@ def test_wrong_timedelta_with_days_hours_millisecond_with_plus():
 def test_wrong_timedelta_with_days_hours_without_seconds():
     try:
         assert_datetime("1 days, 15:54")
+        assert False
+    except TimeDeltaFormatError:
+        pass
+
+def test_wrong_timedelta_with_invalid_int():
+    try:
+        assert_datetime("1 days, 15:54:ss")
+        assert False
     except TimeDeltaFormatError:
         pass

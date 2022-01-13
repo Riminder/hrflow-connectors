@@ -163,6 +163,13 @@ def test_simple_date_with_colons_in_timezone():
     assert got == expected
 
 
+def test_simple_date_with_colons_hours_minutes_in_timezone():
+    got = from_str_to_datetime("2021-10-11T14:57:33+01:23")
+    tz = datetime.timezone(datetime.timedelta(hours=1, minutes=23))
+    expected = datetime.datetime(2021, 10, 11, 14, 57, 33, tzinfo=tz)
+    assert got == expected
+
+
 def test_simple_date_in_HrFlow_tag():
     got = from_str_to_datetime("2021-10-13T10:57:38+0200")
     tz = datetime.timezone(datetime.timedelta(hours=2))
@@ -180,6 +187,7 @@ def test_simple_date_in_HrFlow():
 def test_wrong_date_with_letter():
     try:
         from_str_to_datetime("2021-1H-01T12:59:05+0000")
+        assert False
     except DateFormatError:
         pass
 
@@ -187,6 +195,7 @@ def test_wrong_date_with_letter():
 def test_wrong_date_with_invalid_date():
     try:
         from_str_to_datetime("2021-10-32T12:59:05+0000")
+        assert False
     except DateFormatError:
         pass
 
@@ -194,5 +203,14 @@ def test_wrong_date_with_invalid_date():
 def test_wrong_date_with_invalid_format():
     try:
         from_str_to_datetime("2021-10sssss")
+        assert False
+    except DateFormatError:
+        pass
+
+
+def test_wrong_date_with_invalid_int():
+    try:
+        from_str_to_datetime("2021-ss-ss")
+        assert False
     except DateFormatError:
         pass
