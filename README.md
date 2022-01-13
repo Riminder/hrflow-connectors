@@ -56,7 +56,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 | **Oracle** | Cloud Apps | :hourglass: |
 | [**Recruitee**](src/hrflow_connectors/connectors/recruitee/) | ATS | :heavy_check_mark: |
 | **RecruitBox** |  | :hourglass: |
-| [**SAPSuccessfactors**](src/hrflow_connectors/connectors/sapsuccessfactors/) | Cloud Apps for HR | heavy_check_mark|
+| [**SAPSuccessfactors**](src/hrflow_connectors/connectors/sapsuccessfactors/) | Cloud Apps for HR | :heavy_check_mark: |
 | **Salesforce** |  | :hourglass: |
 | [**Smartrecruiters**](src/hrflow_connectors/connectors/smartrecruiters/) | ATS | :heavy_check_mark: |
 | **Staffme** | Job board | :hourglass: |
