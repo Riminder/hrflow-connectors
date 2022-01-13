@@ -1,2 +1,2 @@
-from .actions import *
-from .spec import *
+from .connector import *
+

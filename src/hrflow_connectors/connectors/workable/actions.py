@@ -28,7 +28,7 @@ class PullJobsAction(core.PullJobsAction):
         pull_jobs_request = requests.Request()
         pull_jobs_request.method = "GET"
         pull_jobs_request.url = (
-            f"https://www.workable.com/api/accounts/eurostar?details=True"
+            f"https://www.workable.com/api/accounts/{self.subdomain}?details=True"
         )
         prepared_request = pull_jobs_request.prepare()
 
