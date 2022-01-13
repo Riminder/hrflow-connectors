@@ -10,7 +10,6 @@ import json
 import logging
 from typing import Dict, Any, Callable
 from hrflow import Hrflow
-from webdriver_manager.chrome import ChromeDriverManager
 
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
@@ -48,17 +47,6 @@ def hrflow_client(credentials) -> Callable:
         return client
 
     return hrflow_client_func
-
-
-@pytest.fixture(scope="session")
-def webdriver_path() -> str:
-    """
-    Get the Chrome Web Driver path in using `webdriver_manager`
-
-    Returns:
-        str: Chrome Web Driver path
-    """
-    return ChromeDriverManager().install()
 
 
 @pytest.fixture(scope="session")

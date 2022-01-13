@@ -5,7 +5,7 @@ import xml.etree.ElementTree
 import html
 
 from ..utils.clean_text import remove_html_tags
-from ..utils.hrflow import find_element_in_list, Profile
+from ..utils.hrflow import find_element_in_list, Profile, Job
 from ..utils.hrflow import generate_workflow_response
 from ..utils.logger import get_logger
 from ..core.auth import Auth, NoAuth
@@ -637,10 +637,6 @@ class PullJobsAction(PullAction):
 
         logger.info("All has been done for this connector !")
 
-
-<<<<<<< HEAD
-class PushProfileAction(PushAction):
-=======
 class JobDestinationAction(Action):
     hrflow_client: Hrflow = Field(
         ...,
@@ -670,12 +666,7 @@ class JobDestinationAction(Action):
         )
 
 
-class ProfileDestinationAction(Action):
-    hrflow_client: Hrflow = Field(
-        ...,
-        description="Hrflow client instance used to communicate with the Hrflow.ai API",
-    )
->>>>>>> origin/dev
+class PushProfileAction(PushAction):
     profile: Profile = Field(..., description="Profile to push")
 
     def pull(self) -> Iterator[TalentDataType]:

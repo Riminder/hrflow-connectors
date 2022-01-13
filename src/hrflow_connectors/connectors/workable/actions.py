@@ -1,67 +1,57 @@
 from typing import Iterator, Dict, Any
 from pydantic import Field
-from ....core.action import BoardAction
-from ....core.http import HTTPStream
-from ....utils.logger import get_logger
-from ....utils.clean_text import remove_html_tags
+import html
+import requests
+from ...core import action as core
+from ...utils.logger import get_logger
+from ...utils.clean_text import remove_html_tags
 
 logger = get_logger()
 
 
-class PullJobs(HTTPStream, BoardAction):
+class PullJobsAction(core.PullJobsAction):
+
     subdomain: str = Field(
         ...,
         description="subdomain of a company endpoint in `https://www.workable.com/api/accounts/{subdomain}` for example subdomain=`eurostar` for eurostar company",
     )
 
-    @property
-    def base_url(self):
-        return "https://www.workable.com/api/accounts/{}?details=true".format(
-            self.subdomain
-        )
-
-    @property
-    def http_method(self):
-        return "GET"
-
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
         pull all jobs from a workable public endpoint jobs stream
-
-        Raises:
-            Exception: if there are no jobs posted
-            ConnectionError: if the request failed, you may want to check your subdomain
-
         Returns:
             Iterator[Dict[str, Any]]: a list of jobs dictionaries
         """
 
-        response = self.send_request()
-        if response.status_code == 200:
-            job_dict_list = response.json()["jobs"]
-            total_found = len(job_dict_list)
-            if total_found == 0:
-                logger.info(f"No jobs found for this request")
-                raise Exception(
-                    f"This company has no jobs available on their workable public endpoint"
-                )
-            else:
-                logger.info(f"Total jobs found for this request: {len(job_dict_list)}")
-                return job_dict_list
-        else:
+        # Prepare request
+        session = requests.Session()
+        pull_jobs_request = requests.Request()
+        pull_jobs_request.method = "GET"
+        pull_jobs_request.url = (
+            f"https://www.workable.com/api/accounts/{self.subdomain}?details=True"
+        )
+        prepared_request = pull_jobs_request.prepare()
+
+        # Send Request
+        response = session.send(prepared_request)
+
+        if not response.ok:
             logger.error(
                 f"Failed to get jobs from subdomain: {self.subdomain}. Check that the subdomain is a valid one"
             )
             error_message = "Unable to pull the data ! Reason : `{}`"
             raise ConnectionError(error_message.format(response.content))
 
+        response_dict = response.json()
+
+        job_list = response_dict["jobs"]
+        return job_list
+
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
         format a job into the hrflow job object format
-
         Args:
             data (Dict[str, Any]): a job object pulled from workable subdomain
-
         Returns:
             Dict[str, Any]: a job into the hrflow job object format
         """
