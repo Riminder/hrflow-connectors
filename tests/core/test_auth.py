@@ -1,7 +1,7 @@
 import responses
 import requests
 
-from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
+from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody, OAuth2EmailPasswordBody
 from hrflow_connectors.core.auth import (
     Auth,
     XAPIKeyAuth,
@@ -201,28 +201,20 @@ def test_XSmartTokenAuth():
 @responses.activate
 def test_OAuth2EmailPasswordBody_get_access_token():
 
-    OAuth2PasswordCredentialsBody_JSON_RESPONSE = {
+    OAuth2EmailPasswordBody_JSON_RESPONSE = {
         "access_token": "ABC.TOKEN.EFD",
-        "instance_url": "https://test.test/services/oauth2/token",
-        "id": "https://test.test/id/00D3N0000002eRJXAY/0055N000006PGpLQAW",
-        "token_type": "Bearer",
-        "issued_at": "1638442809550",
-        "signature": "wp1jFqVjffN2gLP3O9NvK93VBYFdgHD/FtwiYEhPrlQ=",
+        "instance_url": "https://test.test/services/signon/token",
+        "user": {'_id':'fhfh453f','email_address':'lemzo@hotemail.ww','name':'lemzo','usernme':'lemzo30','initial':'L'}
     }
 
-    access_token_url = "https://test.test/services/oauth2/token"
+    access_token_url = "https://test.test/services/signon/token"
     check_auth_url = "http://test.test/check_auth"
-    client_id = "007"
-    client_secret = "double0"
-    username = "bond"
+    email = "lemzo@hotemail.ww"
     password = "jb"
 
     # build Mock for get_access_token request
     body = dict(
-        grant_type="password",
-        client_id=client_id,
-        client_secret=client_secret,
-        username=username,
+        email=email,
         password=password,
     )
     get_access_match = [responses.matchers.urlencoded_params_matcher(body)]
@@ -230,24 +222,22 @@ def test_OAuth2EmailPasswordBody_get_access_token():
         responses.POST,
         access_token_url,
         status=200,
-        json=OAuth2PasswordCredentialsBody_JSON_RESPONSE,
+        json=OAuth2EmailPasswordBody_JSON_RESPONSE,
         match=get_access_match,
     )
 
     # Instanciate Auth to test
-    auth = OAuth2PasswordCredentialsBody(
+    auth = OAuth2EmailPasswordBody(
         access_token_url=access_token_url,
-        client_id=client_id,
-        client_secret=client_secret,
-        username=username,
+        email=email,
         password=password,
     )
 
     access_token = auth.get_access_token()
-    assert access_token == OAuth2PasswordCredentialsBody_JSON_RESPONSE["access_token"]
+    assert access_token == OAuth2EmailPasswordBody_JSON_RESPONSE["access_token"]
 
     # build Mock for check_auth request
-    header = dict(Authorization=f"OAuth {access_token}")
+    header = dict(Authorization=f"{access_token}")
     check_auth_match = [responses.matchers.header_matcher(header)]
     responses.add(
         responses.GET,
@@ -271,4 +261,44 @@ def test_OAuth2EmailPasswordBody_get_access_token():
     assert authenticated_prepared_request.headers.get("test") == "abc"
     assert authenticated_prepared_request.headers.get(
         "Authorization"
-    ) == "OAuth {}".format(access_token)
+    ) == "{}".format(access_token)
+
+@responses.activate
+def test_OAuth2EmailPasswordBody_get_access_token_failure():
+
+    OAuth2EmailPasswordBody_JSON_RESPONSE = {
+        "access_token": "ABC.TOKEN.EFD",
+        "instance_url": "https://test.test/services/signon/token",
+        "user": {'_id':'fhfh453f','email_address':'lemzo@hotemail.ww','name':'lemzo','usernme':'lemzo30','initial':'L'}
+    }
+
+    access_token_url = "https://test.test/services/signon/token"
+    check_auth_url = "http://test.test/check_auth"
+    email = "lemzo@hotemail.ww"
+    password = "jb"
+
+    # build Mock for get_access_token request
+    body = dict(
+        email=email,
+        password=password,
+    )
+    get_access_match = [responses.matchers.urlencoded_params_matcher(body)]
+    responses.add(
+        responses.POST,
+        access_token_url,
+        status=400,
+        json=OAuth2EmailPasswordBody_JSON_RESPONSE,
+        match=get_access_match,
+    )
+
+    # Instanciate Auth to test
+    auth = OAuth2EmailPasswordBody(
+        access_token_url=access_token_url,
+        email=email,
+        password=password,
+    )
+    try:
+        access_token = auth.get_access_token()
+        assert False
+    except RuntimeError:
+        pass
