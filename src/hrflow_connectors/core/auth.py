@@ -154,3 +154,21 @@ class OAuth2EmailPasswordBody(Auth):
         auth_header = {"Authorization": f"{access_token}"}
         request.headers.update(auth_header)
         return request
+
+class MonsterBodyAuth(Auth):
+    """
+    MonsterBodyAuth
+
+    Credentials are going to be stored on the body.
+    """
+    username: str = Field(description="Monster username")
+    password: str = Field(description="Monster password")
+
+    def __call__(
+        self, updatable_object: requests.PreparedRequest
+    ) -> requests.PreparedRequest:
+        string_body = updatable_object.body.decode()
+        formatted_body = string_body.format(username=self.username, password=self.password)
+        encoded_body = formatted_body.encode('utf-8')
+        updatable_object.body = encoded_body
+        return updatable_object
