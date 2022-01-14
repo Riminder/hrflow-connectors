@@ -5,9 +5,8 @@ from ...core import action as core
 from ...core.auth import XAPIKeyAuth
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
-from ...utils.datetime_converter import seconds_to_isoformat
 from ...utils.hrflow import generate_workflow_response
-
+from datetime import datetime
 
 logger = get_logger()
 
@@ -115,6 +114,16 @@ class PullJobsAction(core.PullJobsAction):
         create_tag("urlApplying")
         create_tag("currentStatus")
 
+        def seconds_to_isoformat(seconds:int) -> str:
+            """
+            seconds_to_iso8601 converts seconds to datetime ISOFORMAT
+
+            Args:
+                seconds : datetime in seconds since epoch
+
+            returns datetime in isoformat for example for 1642104049 secs returns '2022-01-13T20:00:49'
+            """
+            return datetime.utcfromtimestamp(seconds).isoformat()
         # datetime fields
         job["created_at"] = seconds_to_isoformat(data.get("dateCreation"))
         job["updated_at"] = seconds_to_isoformat(data.get("dateLastPublish"))

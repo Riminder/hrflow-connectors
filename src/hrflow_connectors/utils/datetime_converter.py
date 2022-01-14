@@ -85,14 +85,3 @@ def from_str_to_datetime(datetime_str: str) -> datetime.datetime:
         return datetime.datetime(year=year, month=month, day=day, hour=hour, minute=minute, second=second, microsecond=millisecond, tzinfo=timezone)
     except ValueError:
         raise DateFormatError(datetime_str)
-
-def seconds_to_isoformat(seconds:int) -> str:
-    """
-    seconds_to_iso8601 converts seconds to datetime ISOFORMAT
-
-    Args:
-        seconds : datetime in seconds since epoch
-
-    returns datetime in isoformat for example for 1642104049 secs returns '2022-01-13T20:00:49'
-    """
-    return datetime.datetime.utcfromtimestamp(seconds).isoformat()
