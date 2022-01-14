@@ -1,12 +1,12 @@
 import pytest
 
-from hrflow_connectors import XAPIKeyAuth
+from hrflow_connectors import XTaleezAuth
 from hrflow_connectors import Taleez
 
 
 @pytest.fixture
 def auth(credentials):
-    auth = XAPIKeyAuth(
+    auth = XTaleezAuth(
         name = 'X-taleez-api-secret',
         value=credentials["taleez"]["X-taleez-api-secret"]
     )

@@ -2,7 +2,7 @@ from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
 import requests
 from ...core import action as core
-from ...core.auth import XAPIKeyAuth
+from ...core.auth import XTaleezAuth
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
@@ -12,7 +12,7 @@ logger = get_logger()
 
 
 class PullJobsAction(core.PullJobsAction):
-    auth: XAPIKeyAuth
+    auth: XTaleezAuth
     page: int = Field(0, description="Page number. Start at '0'")
     page_size: int = Field(
         100, description="Page size. Max size of the list returned. Max value : 100"

@@ -14,7 +14,7 @@
 | `hrflow_client` :red_circle: | `hrflow.Hrflow` | Hrflow client instance used to communicate with the Hrflow.ai API        |
 | `board_key` :red_circle: | `str` | Board key where the jobs to be added will be stored        |
 | `hydrate_with_parsing`  | `bool` | Enrich the job with parsing. Default value : `False`        |
-| `Auth` | :red_circle: | `XAPIKeyAuth` | Required to access Taleez API.
+| `Auth` | :red_circle: | `XTaleezAuth` | Required to access Taleez API.
 | `archive_deleted_jobs_from_stream`  | `bool` | Archive Board jobs when they are no longer in the incoming job stream. Default value : `True`        |
 | `page` :red_circle: | `int` | page number, starts at 0, value by default is 0     |
 | `page_size` :red_circle: | `int` | Page size. Max size of the list returned. Max value : 100, default value is 100|
@@ -36,7 +36,7 @@ logger = get_logger_with_basic_config()
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
-auth = XAPIKeyAuth(
+auth = XTaleezAuth(
         name = 'X-taleez-api-secret',
         value=settings['MY_X_TALEEZ_API_KEY]
     )
