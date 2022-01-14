@@ -39,13 +39,13 @@ class PullJobsAction(core.PullJobsAction):
         if not response.ok:
             logger.error(f"Failed to get jobs from this endpoint")
             error_message = "Unable to pull the data ! Reason : `{}` `{}`"
-            raise ConnectionError(
+            raise RuntimeError(
                 error_message.format(response.status_code, response.content)
             )
 
         response_dict = response.json()
-        logger.info(f"Total found: {response_dict.get('listSize')}")
-        job_list = response_dict.get("list")
+        logger.info(f"Total found: {response_dict['listSize']}")
+        job_list = response_dict["list"]
 
         return job_list
 
@@ -64,7 +64,7 @@ class PullJobsAction(core.PullJobsAction):
 
         # Job basic information
         job["name"] = data.get("label")
-        job["reference"] = str(data.get("id"))
+        job["reference"] = str(data["id"])
         job["url"] = data.get("url")
         job["summary"] = None
 
@@ -136,14 +136,18 @@ class PushProfileAction(core.PushProfileAction):
         ..., description="ID of the person recruiting the candidate, mandatory"
     )
     add_candidate_to_job: bool = Field(
-        False, description="switch to true if you want to add a candidate to a job"
+        False, description="Switch to true if you want to add a candidate to a job"
     )
     job_id: Optional[int] = Field(
         None, description="ID of the job to add the candidate to"
     )
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Format a Hrflow profile object into a Taleez profile object
 
+        Returns: Dict[str, Any] a Taleez profile object form
+        """
         profile = dict()
         info = data.get("info")
         profile["firstName"] = info.get("first_name")
@@ -172,12 +176,21 @@ class PushProfileAction(core.PushProfileAction):
                     public_url = attachment.get("public_url")
                     if isinstance(public_url, str):
                         profile["socalLinks"][file_name] = public_url
-
         format_urls()
 
         return profile
 
     def push(self, data):
+        """
+        pushes a profile into a Taleez CVTheque or a Taleez job offer as a candidate
+
+        Args:
+            data ([type]): a Taleez profile form 
+
+        Raises:
+            RuntimeError: if profile pushes fail
+            Exception: if you want to add a candidate to a job without specifiying it
+        """
         profile = next(data)
 
         # Prepare request
