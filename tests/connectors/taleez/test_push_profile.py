@@ -23,7 +23,6 @@ def test_PushProfile(logger, auth, hrflow_client):
     response = Taleez.push_profile(
         job_id = None,
         auth=auth,
-        add_candidate_to_job=False,
         recruiter_id = 15886,
         hrflow_client=hrflow_client(),
         profile=profile,
