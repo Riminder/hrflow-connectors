@@ -118,7 +118,7 @@ class PullJobsAction(core.PullJobsAction):
 
         def seconds_to_isoformat(seconds: int) -> str:
             """
-            seconds_to_iso8601 converts seconds to datetime ISOFORMAT
+            Seconds_to_iso8601 converts seconds to datetime ISOFORMAT
 
             Args:
                 seconds : datetime in seconds since epoch
@@ -184,7 +184,7 @@ class PushProfileAction(core.PushProfileAction):
 
     def push(self, data):
         """
-        pushes a profile into a Taleez CVTheque or a Taleez job offer as a candidate
+        Push a profile into a Taleez CVTheque or a Taleez job offer as a candidate
 
         Args:
             data ([type]): a Taleez profile form
