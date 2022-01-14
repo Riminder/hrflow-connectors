@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Dict
 
 from pydantic import BaseModel, Field
 
@@ -30,16 +30,6 @@ class TaleezJobModel(BaseModel):
     profileDescription: str
     companyDescription: str
 
-class SocialLinks(BaseModel):
-    linkedin: str
-    viadeo: str
-    twitter: str
-    github: str
-    behance: str
-    other: str
-    website: str
-    dribble: str
-
 
 class TaleezCandidateModel(BaseModel):
     firstName: str
@@ -49,4 +39,4 @@ class TaleezCandidateModel(BaseModel):
     initialReferrer: Optional[str]
     lang: str
     recruiterId: int
-    socialLinks: Optional[SocialLinks]
+    socialLinks: Optional[Dict[str, str]]
