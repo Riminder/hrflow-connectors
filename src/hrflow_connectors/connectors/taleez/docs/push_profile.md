@@ -28,7 +28,7 @@ from hrflow_connectors import Taleez
 
 from hrflow import Hrflow
 from hrflow_connectors.connectors import XTaleezAuth
-from hrflow_connectors.utils.hrflow import EventParser, Profile, Source
+from hrflow_connectors.utils.hrflow import EventParser
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
 def workflow(_request, settings):
@@ -46,11 +46,9 @@ def workflow(_request, settings):
 
         client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
 
-
         auth = XTaleezAuth(
-        name = 'X-taleez-api-secret',
-        value=settings['MY_X_TALEEZ_API_KEY]
-    )
+            value=settings['MY_X_TALEEZ_API_KEY]
+        )
 
         response = Taleez.push_profile(
             auth=auth,
