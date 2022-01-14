@@ -156,6 +156,14 @@ class PushProfileAction(core.PushProfileAction):
                     link = url.get("url")
                     if isinstance(link, str):
                         profile["socialLinks"][type] = link
+            attachments = info.get("attachments")
+            if isinstance(attachments, list):
+                for attachment in attachments:
+                    file_name = attachment.get("file_name")
+                    public_url = attachment.get("public_url")
+                    if isinstance(public_url, str):
+                        profile["socalLinks"][file_name] = public_url
+
         format_urls()
 
         return profile
@@ -182,7 +190,7 @@ class PushProfileAction(core.PushProfileAction):
         if self.add_candidate_to_job is True:
             response_dict = response.json()
             candidate_id = response_dict["id"]
-            
+
             if self.job_id is None:
                 raise Exception(f"You must specify a job id to add the candidte to")
             # Prepare request
