@@ -124,6 +124,9 @@ class XSmartTokenAuth(XAPIKeyAuth):
     name: str = Field("X-SmartToken", const=True)
 
 class OAuth2EmailPasswordBody(Auth):
+    """
+    OAuth2 by using a password and email to send to a sginin endpoint used to get the "access token".
+    """
     access_token_url:str
     email: str
     password: SecretStr
