@@ -1,22 +1,28 @@
 import pytest
 
-from hrflow_connectors.connectors.boards.monster.actions import PushJob
+from hrflow_connectors import Monster
+from hrflow_connectors import MonsterBodyAuth
 from hrflow_connectors.utils.hrflow import Job, Board
 
 
-def test_PushJob(logger, hrflow_client, credentials):
+@pytest.fixture
+def auth(credentials):
+    auth = MonsterBodyAuth(
+        username=credentials["monster"]["username"],
+        password=credentials["monster"]["password"],
+    )
+    return auth
+
+
+def test_PushJobAction(logger, auth, hrflow_client):
     job = Job(
         key="230f841bc57774bde1ad67563d9f092a788364e0",
         board=Board(key="d31518949ed1f88ac61308670324f93bc0f9374d"),
     )
-    action = PushJob(
-        username=credentials["monster"]["job"]["username"],
-        password=credentials["monster"]["job"]["password"],
-        subdomain="gateway",
-        board_key=job.board.key,
+    response = Monster.push_job(
+        auth=auth,
         hrflow_client=hrflow_client(),
-        archive_deleted_jobs_from_stream=False,
         job=job,
+        subdomain="gateway",
     )
-    response = action.execute()
     assert response.get("status_code") == 201
