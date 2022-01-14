@@ -37,7 +37,6 @@ logger = get_logger_with_basic_config()
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 auth = XTaleezAuth(
-        name = 'X-taleez-api-secret',
         value=settings['MY_X_TALEEZ_API_KEY]
     )
 Taleez.pull_jobs(
