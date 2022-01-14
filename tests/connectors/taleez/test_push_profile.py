@@ -21,9 +21,9 @@ def test_PushProfile(logger, auth, hrflow_client):
         source=Source(key="762d2f25b855f7cfd13e5585ef727d8fb6e752cb"),
     )
     response = Taleez.push_profile(
-        company_id = "hrflowai",
-        offer_id = None,
+        job_id = None,
         auth=auth,
+        add_candidate_to_job=False,
         recruiter_id = 15886,
         hrflow_client=hrflow_client(),
         profile=profile,
