@@ -1,11 +1,11 @@
-from hrflow_connectors.connectors.destinations.monster.actions import PullProfile
+from hrflow_connectors import Monster
 
 import requests
 import pytest
 from typing import Dict, Any
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def monster_request(pytestconfig) -> Dict[str, Any]:
     """
     Get credentials from a file in the root of the project `credentials.json` (to be defined)
@@ -42,12 +42,10 @@ def monster_request(pytestconfig) -> Dict[str, Any]:
     }
 
 
-def test_PullProfile(logger, hrflow_client, monster_request):
-    action = PullProfile(
+def test_CatchProfileAction(logger, hrflow_client, monster_request):
+    response = Monster.catch_profile(
         hrflow_client=hrflow_client(),
         request=monster_request,
         source_key="8df6a1247b1a95e0b84f5226093ff2c58e60cdf1",
-        file_field="FileContents",
     )
-    response = action.execute()
     assert response.get("status_code") == 201
