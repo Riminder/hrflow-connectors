@@ -1,4 +1,4 @@
-from typing import Iterator, Dict, Any
+from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
 import requests
 from ...core import action as core
@@ -6,6 +6,8 @@ from ...core.auth import XAPIKeyAuth
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.datetime_converter import seconds_to_isoformat
+from ...utils.hrflow import generate_workflow_response
+
 
 logger = get_logger()
 
@@ -19,7 +21,7 @@ class PullJobsAction(core.PullJobsAction):
 
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
-        Pull jobs from a Taleez jobs owner endpoint 
+        Pull jobs from a Taleez jobs owner endpoint
 
         Returns list of all jobs that have been pulled
         """
@@ -120,4 +122,86 @@ class PullJobsAction(core.PullJobsAction):
         job["updated_at"] = seconds_to_isoformat(data.get("dateLastPublish"))
 
         return job
-    
+
+
+class PushProfileAction(core.PushProfileAction):
+    recruiter_id: int = Field(
+        ..., description="ID of the person recruiting the candidate, mandatory"
+    )
+    add_candidate_to_job: bool = Field(
+        False, description="switch to true if you want to add a candidate to a job"
+    )
+    job_id: Optional[int] = Field(
+        None, description="ID of the job to add the candidate to"
+    )
+
+    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+
+        profile = dict()
+        info = data.get("info")
+        profile["firstName"] = info.get("first_name")
+        profile["lastName"] = info.get("last_name")
+        profile["email"] = info.get("email")
+        profile["number"] = info.get("phone")
+        profile["lang"] = data.get("text_language")
+        profile["recruiterId"] = self.recruiter_id
+        profile["socialLinks"] = dict()
+
+        def format_urls() -> None:
+            """
+            format_urls, add links and websites to Taleez profile Social links
+            """
+            urls = info.get("urls")
+            if isinstance(urls, list):
+                for url in urls:
+                    type = url.get("type")
+                    link = url.get("url")
+                    if isinstance(link, str):
+                        profile["socialLinks"][type] = link
+
+        format_urls()
+
+        return profile
+
+    def push(self, data):
+        profile = next(data)
+
+        # Prepare request
+        session = requests.Session()
+        push_profile_request = requests.Request()
+        push_profile_request.method = "POST"
+        push_profile_request.url = f"https://api.taleez.com/0/candidates"
+        push_profile_request.auth = self.auth
+        push_profile_request.json = profile
+        prepared_request = push_profile_request.prepare()
+
+        # Send request
+        response = session.send(prepared_request)
+
+        if not response.ok:
+            raise RuntimeError(
+                f"Push profile to Taleez failed :`{response.status_code}` `{response.content}`"
+            )
+        if self.add_candidate_to_job is True:
+            response_dict = response.json()
+            candidate_id = response_dict["id"]
+
+            if self.job_id is None:
+                raise Exception(f"You must specify a job id to add the candidte to")
+            # Prepare request
+            add_profile_request = requests.Request()
+            add_profile_request.method = "POST"
+            add_profile_request.url = (
+                f"https://api.taleez.com/0/jobs/{self.job_id}/candidates"
+            )
+            add_profile_request.auth = self.auth
+            add_profile_request.json = dict(ids=[candidate_id])
+            prepared_add_request = add_profile_request.prepare()
+
+            # Send request
+            response_add = session.send(prepared_add_request)
+
+            if not response_add.ok:
+                raise RuntimeError(
+                    f"Add profile to Taleez job: `{self.job_id}` failed :`{response.status_code}` `{response.content}`"
+                )
