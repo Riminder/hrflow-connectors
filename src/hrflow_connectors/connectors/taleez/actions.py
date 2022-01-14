@@ -97,7 +97,6 @@ class PullJobsAction(core.PullJobsAction):
 
         # Job Tags
         job["tags"] = []
-
         def create_tag(field_name: str):
             tag_name = "taleez_{}".format(field_name)
             tag_value = data.get(field_name)
