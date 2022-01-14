@@ -637,11 +637,9 @@ class PullJobsAction(PullAction):
 
         logger.info("All has been done for this connector !")
 
-class JobDestinationAction(Action):
-    hrflow_client: Hrflow = Field(
-        ...,
-        description="Hrflow client instance used to communicate with the Hrflow.ai API",
-    )
+
+class PushJobAction(Action):
+
     job: Job = Field(..., description="Job to push")
 
     def pull(self) -> Iterator[Dict[str, Any]]:
