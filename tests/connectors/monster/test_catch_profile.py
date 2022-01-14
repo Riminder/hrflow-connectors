@@ -6,7 +6,7 @@ from typing import Dict, Any
 
 
 @pytest.fixture()
-def monster_request(pytestconfig) -> Dict[str, Any]:
+def monster_request() -> Dict[str, Any]:
     """
     Get credentials from a file in the root of the project `credentials.json` (to be defined)
 
