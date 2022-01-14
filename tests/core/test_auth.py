@@ -197,3 +197,78 @@ def test_XSmartTokenAuth():
     assert authenticated_prepared_request.headers.get("test") == "abc"
     assert authenticated_prepared_request.headers.get("X-SmartToken") == key
     assert len(authenticated_prepared_request.headers) == 2
+
+@responses.activate
+def test_OAuth2EmailPasswordBody_get_access_token():
+
+    OAuth2PasswordCredentialsBody_JSON_RESPONSE = {
+        "access_token": "ABC.TOKEN.EFD",
+        "instance_url": "https://test.test/services/oauth2/token",
+        "id": "https://test.test/id/00D3N0000002eRJXAY/0055N000006PGpLQAW",
+        "token_type": "Bearer",
+        "issued_at": "1638442809550",
+        "signature": "wp1jFqVjffN2gLP3O9NvK93VBYFdgHD/FtwiYEhPrlQ=",
+    }
+
+    access_token_url = "https://test.test/services/oauth2/token"
+    check_auth_url = "http://test.test/check_auth"
+    client_id = "007"
+    client_secret = "double0"
+    username = "bond"
+    password = "jb"
+
+    # build Mock for get_access_token request
+    body = dict(
+        grant_type="password",
+        client_id=client_id,
+        client_secret=client_secret,
+        username=username,
+        password=password,
+    )
+    get_access_match = [responses.matchers.urlencoded_params_matcher(body)]
+    responses.add(
+        responses.POST,
+        access_token_url,
+        status=200,
+        json=OAuth2PasswordCredentialsBody_JSON_RESPONSE,
+        match=get_access_match,
+    )
+
+    # Instanciate Auth to test
+    auth = OAuth2PasswordCredentialsBody(
+        access_token_url=access_token_url,
+        client_id=client_id,
+        client_secret=client_secret,
+        username=username,
+        password=password,
+    )
+
+    access_token = auth.get_access_token()
+    assert access_token == OAuth2PasswordCredentialsBody_JSON_RESPONSE["access_token"]
+
+    # build Mock for check_auth request
+    header = dict(Authorization=f"OAuth {access_token}")
+    check_auth_match = [responses.matchers.header_matcher(header)]
+    responses.add(
+        responses.GET,
+        check_auth_url,
+        status=200,
+        match=check_auth_match,
+    )
+
+    # Send authenticated request
+    session = requests.Session()
+    request = requests.Request(
+        method="GET", url="http://test.test/check_auth", auth=auth
+    )
+    prepared_request = request.prepare()
+    session.send(prepared_request)
+
+    prepared_request
+    prepared_request.headers.update(dict(test="abc"))
+    authenticated_prepared_request = auth(prepared_request)
+
+    assert authenticated_prepared_request.headers.get("test") == "abc"
+    assert authenticated_prepared_request.headers.get(
+        "Authorization"
+    ) == "OAuth {}".format(access_token)

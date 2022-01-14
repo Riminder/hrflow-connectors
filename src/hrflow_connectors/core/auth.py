@@ -122,3 +122,32 @@ class XSmartTokenAuth(XAPIKeyAuth):
     """
 
     name: str = Field("X-SmartToken", const=True)
+
+class OAuth2EmailPasswordBody(Auth):
+    access_token_url:str
+    email: str
+    password: SecretStr
+
+    def get_access_token(self):
+
+        payload = dict()
+        payload['email'] = self.email
+        payload['password'] = self.password.get_secret_value()
+        logger.debug(
+            f"Sending request to get access token (url=`{self.access_token_url}`)"
+        )
+        response = requests.post(self.access_token_url, data=payload)
+
+        if not response.ok:
+            logger.error("Sign in Failure !")
+            raise RuntimeError("Signin failed ! Reason : `{}`".format(response.content))
+
+        logger.debug("The access token has been got")
+        return response.json()["access_token"]
+
+    def __call__(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
+
+        access_token = self.get_access_token()
+        auth_header = {"Authorization": f"{access_token}"}
+        request.headers.update(auth_header)
+        return request
