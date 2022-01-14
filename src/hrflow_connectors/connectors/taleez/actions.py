@@ -80,7 +80,6 @@ class PullJobsAction(core.PullJobsAction):
 
         # Job Sections
         job["sections"] = []
-
         def create_section(field_name: str):
             section_name = "taleez_{}".format(field_name)
             section_tile = section_name
@@ -144,8 +143,8 @@ class PushProfileAction(core.PushProfileAction):
         profile["number"] = info.get("phone")
         profile["lang"] = data.get("text_language")
         profile["recruiterId"] = self.recruiter_id
-        profile["socialLinks"] = dict()
 
+        profile["socialLinks"] = dict()
         def format_urls() -> None:
             """
             format_urls, add links and websites to Taleez profile Social links
@@ -157,7 +156,6 @@ class PushProfileAction(core.PushProfileAction):
                     link = url.get("url")
                     if isinstance(link, str):
                         profile["socialLinks"][type] = link
-
         format_urls()
 
         return profile
@@ -184,7 +182,7 @@ class PushProfileAction(core.PushProfileAction):
         if self.add_candidate_to_job is True:
             response_dict = response.json()
             candidate_id = response_dict["id"]
-
+            
             if self.job_id is None:
                 raise Exception(f"You must specify a job id to add the candidte to")
             # Prepare request
