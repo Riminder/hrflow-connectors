@@ -33,3 +33,10 @@ class Connector:
         Push profile
         """
         raise NotImplementedError("`push_profile` method is not implemented !")
+
+    @staticmethod
+    def catch_profile(*args, **kwargs) -> Optional[Dict[str, Any]]:
+        """
+        Catch profile
+        """
+        raise NotImplementedError("`catch_profile` method is not implemented !")
