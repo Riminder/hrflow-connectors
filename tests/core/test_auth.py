@@ -7,6 +7,7 @@ from hrflow_connectors.core.auth import (
     XAPIKeyAuth,
     AuthorizationAuth,
     XSmartTokenAuth,
+    MonsterBodyAuth,
 )
 
 
@@ -197,3 +198,23 @@ def test_XSmartTokenAuth():
     assert authenticated_prepared_request.headers.get("test") == "abc"
     assert authenticated_prepared_request.headers.get("X-SmartToken") == key
     assert len(authenticated_prepared_request.headers) == 2
+
+
+def test_MonsterBodyAuth():
+
+    username = "efg"
+    password = "hij"
+    url = "http://test.test/check_auth"
+    auth = MonsterBodyAuth(username=username, password=password)
+    job = b"<username>{username}</username>\n<password>{password}</password>"
+
+    request = requests.Request(
+        method="GET", url=url
+    )
+    request.data = job
+
+    prepared_request = request.prepare()
+    authenticated_prepared_request = auth(prepared_request)
+
+    assert isinstance(authenticated_prepared_request.body, bytes)
+    assert authenticated_prepared_request.body == b"<username>efg</username>\n<password>hij</password>"
