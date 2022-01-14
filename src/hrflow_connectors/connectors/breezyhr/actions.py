@@ -50,5 +50,13 @@ class PullJobsAction(core.PullJobsAction):
         job["summary"] = None
 
         # Location
+        location = data.get("location")
+        country = location.get("country")
+        country_name = country.get("name")
+        city = location.get("city")
+        address = location.get("name")
+        gejson = dict(country=country_name, city=city)
+        
+        job["location"] = dict(text=address, lat=None, lng=None)
         
 
