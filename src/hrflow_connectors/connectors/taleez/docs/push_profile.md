@@ -15,8 +15,7 @@
 | `hrflow_client` :red_circle: | `hrflow.Hrflow` | Hrflow client instance used to communicate with the Hrflow.ai API        |
 | `profile` :red_circle: | `Profile` | Profile to push        |
 | `auth` :red_circle: | `XAPIKeyAuth` | Auth instance to identify and communicate with the platform        |
-| `job_id` :red_circle: | `Optional[int]` | ID of the job to add the candidate to |
-| `add_candidate_to_job` :red_circle: | `bool` | Value by default is false, switch to true if you want to add a candidate to a job |
+| `job_id` :red_circle: | `Optional[int]` | ID of the job to add a candidate to. Default value : `None` |
 | `recruiter_id` :red_circle: | `int` | ID of the person recruiting the candidate, mandatory|
 
 

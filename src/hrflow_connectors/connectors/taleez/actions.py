@@ -79,6 +79,7 @@ class PullJobsAction(core.PullJobsAction):
 
         # Job Sections
         job["sections"] = []
+
         def create_section(field_name: str):
             section_name = "taleez_{}".format(field_name)
             section_tile = section_name
@@ -95,6 +96,7 @@ class PullJobsAction(core.PullJobsAction):
 
         # Job Tags
         job["tags"] = []
+
         def create_tag(field_name: str):
             tag_name = "taleez_{}".format(field_name)
             tag_value = data.get(field_name)
@@ -114,7 +116,7 @@ class PullJobsAction(core.PullJobsAction):
         create_tag("urlApplying")
         create_tag("currentStatus")
 
-        def seconds_to_isoformat(seconds:int) -> str:
+        def seconds_to_isoformat(seconds: int) -> str:
             """
             seconds_to_iso8601 converts seconds to datetime ISOFORMAT
 
@@ -124,6 +126,7 @@ class PullJobsAction(core.PullJobsAction):
             returns datetime in isoformat for example for 1642104049 secs returns '2022-01-13T20:00:49'
             """
             return datetime.utcfromtimestamp(seconds).isoformat()
+
         # datetime fields
         job["created_at"] = seconds_to_isoformat(data.get("dateCreation"))
         job["updated_at"] = seconds_to_isoformat(data.get("dateLastPublish"))
@@ -135,11 +138,8 @@ class PushProfileAction(core.PushProfileAction):
     recruiter_id: int = Field(
         ..., description="ID of the person recruiting the candidate, mandatory"
     )
-    add_candidate_to_job: bool = Field(
-        False, description="Switch to true if you want to add a candidate to a job"
-    )
     job_id: Optional[int] = Field(
-        None, description="ID of the job to add the candidate to"
+        None, description="ID of the job to add a candidate to"
     )
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -158,6 +158,7 @@ class PushProfileAction(core.PushProfileAction):
         profile["recruiterId"] = self.recruiter_id
 
         profile["socialLinks"] = dict()
+
         def format_urls() -> None:
             """
             format_urls, add links and websites to Taleez profile Social links
@@ -176,6 +177,7 @@ class PushProfileAction(core.PushProfileAction):
                     public_url = attachment.get("public_url")
                     if isinstance(public_url, str):
                         profile["socalLinks"][file_name] = public_url
+
         format_urls()
 
         return profile
@@ -185,7 +187,7 @@ class PushProfileAction(core.PushProfileAction):
         pushes a profile into a Taleez CVTheque or a Taleez job offer as a candidate
 
         Args:
-            data ([type]): a Taleez profile form 
+            data ([type]): a Taleez profile form
 
         Raises:
             RuntimeError: if profile pushes fail
@@ -200,21 +202,21 @@ class PushProfileAction(core.PushProfileAction):
         push_profile_request.url = f"https://api.taleez.com/0/candidates"
         push_profile_request.auth = self.auth
         push_profile_request.json = profile
-        prepared_request = push_profile_request.prepare()
+        prepared_push_profile_request = push_profile_request.prepare()
 
         # Send request
-        response = session.send(prepared_request)
+        push_profile_response = session.send(prepared_push_profile_request)
 
-        if not response.ok:
+        if not push_profile_response.ok:
             raise RuntimeError(
-                f"Push profile to Taleez failed :`{response.status_code}` `{response.content}`"
+                f"Push profile to Taleez failed :`{push_profile_response.status_code}` `{push_profile_response.content}`"
             )
-        if self.add_candidate_to_job is True:
-            response_dict = response.json()
-            candidate_id = response_dict["id"]
 
-            if self.job_id is None:
-                raise Exception(f"You must specify a job id to add the candidte to")
+        response_dict = push_profile_response.json()
+        candidate_id = response_dict["id"]
+
+        if self.job_id is not None:
+
             # Prepare request
             add_profile_request = requests.Request()
             add_profile_request.method = "POST"
@@ -223,12 +225,12 @@ class PushProfileAction(core.PushProfileAction):
             )
             add_profile_request.auth = self.auth
             add_profile_request.json = dict(ids=[candidate_id])
-            prepared_add_request = add_profile_request.prepare()
+            prepared_add_profile_request = add_profile_request.prepare()
 
             # Send request
-            response_add = session.send(prepared_add_request)
+            add_profile_response = session.send(prepared_add_profile_request)
 
-            if not response_add.ok:
+            if not add_profile_response.ok:
                 raise RuntimeError(
-                    f"Add profile to Taleez job: `{self.job_id}` failed :`{response.status_code}` `{response.content}`"
+                    f"Add profile to Taleez job: `{self.job_id}` failed :`{add_profile_response.status_code}` `{add_profile_response.content}`"
                 )
