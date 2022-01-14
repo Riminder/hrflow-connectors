@@ -51,7 +51,7 @@ class PullJobsAction(core.PullJobsAction):
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        format a job into the hrflow job object format
+        Format a job into the hrflow job object format
 
         Args:
             data (Dict[str, Any]): a taleez job object form
