@@ -211,12 +211,9 @@ class PushProfileAction(core.PushProfileAction):
             raise RuntimeError(
                 f"Push profile to Taleez failed :`{push_profile_response.status_code}` `{push_profile_response.content}`"
             )
-
-        response_dict = push_profile_response.json()
-        candidate_id = response_dict["id"]
-
         if self.job_id is not None:
-
+            push_profile_response_dict = push_profile_response.json()
+            candidate_id = push_profile_response_dict["id"]
             # Prepare request
             add_profile_request = requests.Request()
             add_profile_request.method = "POST"
