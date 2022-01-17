@@ -1,11 +1,12 @@
-## Push profile
+# Push profile
 
 `Hrflow.ai` :arrow_right: `SAP SuccessFactors`
 
-`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***SAP SuccessFactors*** Jobs pool..
+`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***SAP SuccessFactors*** Jobs pool.
 
+🔗 [Documentation](https://api.sap.com/api/RCMCandidate/overview)
 
-### Parameters
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -20,7 +21,7 @@
 
 :red_circle: : *required* 
 
-### Example
+## Example
 Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.ai/docs/workflows#catch-setup).
 
 ```python

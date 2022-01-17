@@ -1,10 +1,12 @@
-## Pull jobs
+# Pull jobs
 
 `Recruitee` :arrow_right: `Hrflow.ai`
 
 `PullJobsAction` gets all available jobs listed on ***Recruitee company endpoints***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-### Parameters
+🔗 [Documentation](https://docs.recruitee.com/reference/offers)
+
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -20,7 +22,7 @@
 
 :red_circle: : *required* 
 
-### Example
+## Example
 
 ```python
 from hrflow_connectors import Recruitee

@@ -1,10 +1,12 @@
-## Push profile
+# Push profile
 
 `Hrflow.ai` :arrow_right: `Recruitee`
 
-`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Recruitee*** company endpoint and a optionally a Jobs pool..
+`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Recruitee*** company endpoint and a optionally a Jobs pool.
 
-### Parameters
+🔗 [Documentation](https://docs.recruitee.com/reference/candidates-post)
+
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -21,7 +23,7 @@
 
 :red_circle: : *required* 
 
-### Example
+## Example
 Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.ai/docs/workflows#catch-setup).
 
 ```python
