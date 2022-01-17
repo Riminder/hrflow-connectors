@@ -6,6 +6,7 @@ from ...core.auth import OAuth2EmailPasswordBody
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
+import dateutil.parser
 
 logger = get_logger()
 
@@ -125,7 +126,145 @@ class PullJobsAction(core.PullJobsAction):
         job["metadatas"] = data.get("tags")
         return job
 
-        
+class PushProfileAction(core.PushProfileAction):
+    auth: OAuth2EmailPasswordBody
+    company_id: Optional[int]= Field(None, description="ID of company to pull jobs from in Breezy HR database associated with the authenticated user")
+    company_name: Optional[str]= Field(None, description="the company associated with the authenticated user")
+    position_id: str=Field(None, description="Id of the position to create a new candidate for")
+    origin: Optional[str]=Field(None, description="will indicate in Breezy if the candidate should be marked as sourced or applied")
+    cover_letter: Optional[str]=None
+
+    def format(self, data:Dict[str, Any]) -> Dict[str, Any]:
+
+        profile = dict()
+        info = data.get('info') 
+        profile['name'] = info.get('full_name')
+        profile['address'] = info.get('location').get('text')
+        profile['email_address'] = info.get('email')
+        profile['phone_number'] = info.get('phone')
+        profile['summary'] = info.get('summary')
+        if self.origin is not None:
+            profile['origin'] = self.origin
+        profile['work_history'] = []
+        def format_experiences():
+
+            experiences = data.get('experiences')
+            for experience in experiences:
+                format_experience = dict()
+                format_experience['company_name'] = experience["company"] if experience["company"] not in ["", None] else "Undefined"
+                format_experience['title'] = experience["title"]
+                format_experience["summary"] = experience["description"]
+                if experience["date_start"] and experience["date_end"] is not None:
+                    date_iso = dateutil.parser.isoparse(experience['date_start'])
+                    date_end_iso = dateutil.parser.isoparse(experience['date_end'])
+                    format_experience['start_year'] = date_iso.year
+                    format_experience['end_year'] = date_end_iso.year
+                    format_experience['start_month'] = date_iso.month
+                    format_experience['end_month'] = date_end_iso.month
+                profile['work_history'].append(format_experience)
+        format_experiences()
+
+
+        profile['education'] = []
+        def format_educations():
+            educations = data.get('educations')
+            for education in educations:
+                format_education = dict()
+                format_education["school_name"] = education["school"]
+                format_education["field_of_study"] = education["title"]
+                format_education["start_year"] = education["date_start"]
+                format_education["end_year"] = education["date_end"]
+                profile['education'].append(format_education)
+
+        format_educations()
+
+        profile['social_profiles'] = []
+        def format_urls() -> None:
+            """
+            format_urls, add links and websites to Taleez profile Social links
+            """
+            urls = info.get("urls")
+            if isinstance(urls, list):
+                for url in urls:
+                    type = url.get("type")
+                    link = url.get("url")
+                    if isinstance(link, str):
+                        profile["social_profiles"][type] = link
+            attachments = info.get("attachments")
+            if isinstance(attachments, list):
+                for attachment in attachments:
+                    file_name = attachment.get("file_name")
+                    public_url = attachment.get("public_url")
+                    if isinstance(public_url, str):
+                        profile["social_profiles"][file_name] = public_url
+        format_urls()
+        if self.cover_letter is not None:
+            profile["cover_letter"] = self.cover_letter
+
+        profile["tags"] = []
+        def get_tags() -> None:
+            skills = data.get("skills")
+            if isinstance(skills, list):
+                for skill in skills:
+                    if isinstance(skill, dict):
+                        profile['tags'].append(skill["name"])
+        get_tags()
+
+        return profile
+
+
+    def push(self, data):
+        profile = next(data)
+
+        def get_company_id():
+            """
+            getting the company id associated with the authenticated user company
+
+            """
+            if self.company_id is not None:
+                return self.company_id
+            else:
+                get_company_id_request = requests.Request()
+                get_company_id_request.method = "GET"
+                get_company_id_request.url = "https://api.breezy.hr/v3/companies"
+                get_company_id_request.auth = self.auth
+                prepared_request = get_company_id_request.prepare()
+                response = session.send(prepared_request)
+                if not response.ok:
+                    error_message = "Couldn't get company id ! Reason : `{}`"
+                    raise RuntimeError(error_message.format(response.content))
+                company_list = response.json()
+                logger.debug("Retrieving company id")
+                for company in company_list:
+                    if company['name'] == self.company_name:
+                        return company["_id"]
+
+
+        # Prepare request
+        session = requests.Session()
+        push_profile_request = requests.Request()
+        push_profile_request.method = "POST"
+        push_profile_request.url = (
+            f"https://api.breezy.hr/v3/company/{get_company_id()}/position/{self.position_id}/candidates?"
+        )
+        push_profile_request.auth = self.auth
+        push_profile_request.json = profile
+        prepared_request = push_profile_request.prepare()
+
+        # Send request
+        response = session.send(prepared_request)
+        logger.info(f"{response.status_code},{response.content}")
+
+        if not response.ok:
+            raise RuntimeError(
+                f"Push profile to Breezy Hr failed :`{response.status_code}` `{response.content}`"
+            )
+
+
+
+
+
+
         
         
 
