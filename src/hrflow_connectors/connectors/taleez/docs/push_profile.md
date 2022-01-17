@@ -1,4 +1,4 @@
-## PushProfile
+## Push profile
 
 `Hrflow.ai` :arrow_right: `Taleez`
 
