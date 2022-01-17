@@ -1,5 +1,7 @@
 # Flatchr Connector
-**Flatchr is an ATS.**
+> Flatchr is a software company that offers recruitment and application management software for human resources.
+
+🔗 https://www.flatchr.io/
 
 | Actions |
 | ------- |

@@ -1,5 +1,7 @@
 # Workable Connector
-**Workable is a recruiting software.**
+> More than an applicant tracking system, Workable's talent acquisition software helps teams find candidates, evaluate applicants and make the right hire, faster.
+
+🔗 https://www.workable.com/
 
 | Actions |
 | ------- |

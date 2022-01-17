@@ -1,5 +1,7 @@
 # Taleez Connector
-**Taleez is an ATS Software.**
+> ATS recruitment management software, manage all your processes from A to Z and centralize all your recruitments: centralization, multi-distribution, career site, CV library...
+
+🔗 https://taleez.com/
 
 | Actions |
 | ------- |
