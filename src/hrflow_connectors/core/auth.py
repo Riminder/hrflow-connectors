@@ -154,6 +154,14 @@ class OAuth2EmailPasswordBody(Auth):
         auth_header = {"Authorization": f"{access_token}"}
         request.headers.update(auth_header)
         return request
+class XTaleezAuth(XAPIKeyAuth):
+    """
+    XTaleezAuth 
+
+    Auth used to authenticate to Taleez with a token
+    """
+
+    name: str = Field("X-taleez-api-secret", const=True)
 
 class MonsterBodyAuth(Auth):
     """

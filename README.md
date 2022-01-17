@@ -60,6 +60,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 | **Salesforce** |  | :hourglass: |
 | [**Smartrecruiters**](src/hrflow_connectors/connectors/smartrecruiters/) | ATS | :heavy_check_mark: |
 | **Staffme** | Job board | :hourglass: |
+| [**Taleez**](src/hrflow_connectors/connectors/taleez/)| ATS | :heavy_check_mark: |
 | **Talentsoft** |  | :hourglass: |
 | **Talentlink** |  | :hourglass: |
 | **Twilio** | Marketing tools | :hourglass: |
