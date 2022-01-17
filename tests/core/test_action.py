@@ -5,6 +5,7 @@ from hrflow_connectors.core.action import (
     PullJobsAction,
     PushProfileAction,
     PushJobAction,
+    CatchProfileAction,
 )
 from hrflow_connectors.utils.hrflow import Profile, Source, Job, Board
 import pytest
@@ -1113,3 +1114,40 @@ def test_PushJobAction_pull_failure(hrflow_client):
         assert False
     except RuntimeError:
         pass
+
+
+@responses.activate
+def test_CatchProfileAction_execute(hrflow_client):
+    request = {
+        "City": "xxx",
+        "CountryCode": "x",
+        "EmailAddress": "xxx",
+        "FileContents": "xxxx",
+        "FileExt": ".xx",
+        "FirstName": "xxxxx",
+        "JobRefID": "xxxx",
+        "LastName": "xx",
+        "PhoneNumber": "+xxxx",
+        "ResumeValue": "x",
+        "State": "x",
+        "VendorField": "xxx xx xxxxx xx",
+        "WorkAuthorization": 1,
+        "ZIPCode": "xxxxxx",
+    }
+
+    # Mock the `pull` & `push` method to do nothing
+    class MyCatchProfileAction(CatchProfileAction):
+        def format(self, data):
+            assert data.get("City") == "xxx"
+            data["ZIPCode"] = "X"
+            return data
+
+        def push(self, data):
+            assert data["ZIPCode"] == "X"
+
+    action = MyCatchProfileAction(hrflow_client=hrflow_client(), request=request, source_key="d31518949ed1f88ac61308670324f93bc0f9374d")
+
+    workflow_response = action.execute()
+
+    assert workflow_response["status_code"] == 201
+    assert workflow_response["message"] == "Profile successfully pushed"
