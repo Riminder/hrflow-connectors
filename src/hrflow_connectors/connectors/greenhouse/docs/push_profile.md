@@ -1,10 +1,12 @@
-## Push profile
+# Push profile
 
 `Hrflow.ai` :arrow_right: `Greenhouse`
 
-`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Greenhouse*** Jobs pool..
+`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Greenhouse*** Jobs pool.
 
-### Parameters
+🔗 [Documentation](https://developers.greenhouse.io/harvest.html#post-add-candidate)
+
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -20,7 +22,7 @@
 
 :red_circle: : *required* 
 
-### Example
+## Example
 
 ```python
 from hrflow_connectors import Greenhouse

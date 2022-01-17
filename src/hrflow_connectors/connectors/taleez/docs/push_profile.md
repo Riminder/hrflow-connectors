@@ -1,10 +1,12 @@
-## Push profile
+# Push profile
 
 `Hrflow.ai` :arrow_right: `Taleez`
 
-`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Taleez*** Jobs pool..
+`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Taleez*** Jobs pool.
 
-### Parameters
+🔗 [Documentation](https://api.taleez.com/swagger-ui/index.html?configUrl=/openapi.json/swagger-config#/candidates/create_1)
+
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -21,7 +23,7 @@
 
 :red_circle: : *required* 
 
-### Example
+## Example
 
 ```python
 from hrflow_connectors import Taleez

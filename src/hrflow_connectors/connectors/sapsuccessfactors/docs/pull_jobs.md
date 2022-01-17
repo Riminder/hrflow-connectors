@@ -1,10 +1,12 @@
-## Pull jobs
+# Pull jobs
 
 `SAP(SuccessFactors)` :arrow_right: `Hrflow.ai`
 
 `PullJobsAction` gets all available jobs from SAPSuccessFactors via their ***Job Requisition API***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-### Parameters
+🔗 [Documentation](https://api.sap.com/api/RCMJobRequisition/overview)
+
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -22,7 +24,7 @@
 
 :red_circle: : *required* 
 
-### Example
+## Example
 
 ```python
 from hrflow_connectors import SAPSuccessfactors
