@@ -1,7 +1,9 @@
-# PushProfile
+# Push profile
 `Hrflow.ai` :arrow_right: `Smart Recruiters`
 
 `PushProfileAction` pushes a HrFlow.ai profile from a ***Hrflow.ai Source*** to `SmartRecruiters` via the ***SmartRecruiter*** API.
+
+🔗 [Documentation](https://dev.smartrecruiters.com/customer-api/live-docs/candidate-api/)
 
 ## Parameters
 

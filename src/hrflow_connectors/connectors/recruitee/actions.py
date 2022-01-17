@@ -122,7 +122,6 @@ class PullJobsAction(core.PullJobsAction):
 class PushProfileAction(core.PushProfileAction):
 
     auth: AuthorizationAuth
-    payload: Dict[str, Any] = dict()
     company_id: str = Field(
         ..., description="Company ID. A company subdomain can also be used."
     )
