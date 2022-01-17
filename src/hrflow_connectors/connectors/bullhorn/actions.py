@@ -139,7 +139,7 @@ class PushProfileAction(core.PushProfileAction):
             push_profile_request.headers = {"content-type": "application/json"}
             prepared_request = push_profile_request.prepare()
 
-            # Send request
+            # Send request for enrichment
             response = session.send(prepared_request)
             if not response.ok:
                 error_message = "Unable to push the data ! Reason : `{}`,`{}`"
