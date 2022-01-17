@@ -3,6 +3,8 @@
 
 `PullJobsAction` gets all available jobs listed on ***Greenhouse board***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
+🔗 [Documentation](https://developers.greenhouse.io/job-board.html)
+
 ## Parameters
 
 | Field | Type | Description |
