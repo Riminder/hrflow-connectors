@@ -1,5 +1,7 @@
 # Crosstalent Connector
-**Crosstalent designs and implements innovative solutions for human resources management.**
+> Crosstalent designs and implements innovative solutions for human resources management.
+
+🔗 https://www.crosstalent.eu/fr/
 
 | Actions |
 | ------- |

@@ -1,5 +1,7 @@
 # Monster Connector
-**Monster is an ATS.**
+> Monster is your source for jobs and career opportunities. Search for jobs, read career advice from Monster's job experts, and find hiring and recruiting advice.
+
+🔗 https://www.monster.com/
 
 | Actions |
 | ------- |

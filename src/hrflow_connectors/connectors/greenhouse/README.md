@@ -1,5 +1,7 @@
 # Greenhouse Connector
-**Greenhouse is a recruiting software.**
+> Greenhouse's applicant tracking system and recruiting software is designed to help make companies great at hiring and hire for what's next.
+
+🔗 https://www.greenhouse.io/
 
 | Actions |
 | ------- |
