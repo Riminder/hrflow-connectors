@@ -1,5 +1,6 @@
-# Push Job
+# Push job
 `HrFlow.ai` :arrow_right: `Monster`
+
 `PushJobAction` pushes a Monster job to `Hrflow.ai`.
 
 ## Parameters

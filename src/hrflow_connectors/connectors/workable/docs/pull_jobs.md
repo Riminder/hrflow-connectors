@@ -1,4 +1,4 @@
-## PullJobs
+## Pull jobs
 
 `Workable` :arrow_right: `Hrflow.ai`
 

@@ -1,4 +1,4 @@
-## PullJobs
+## Pull jobs
 
 `SAP(SuccessFactors)` :arrow_right: `Hrflow.ai`
 
