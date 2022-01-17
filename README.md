@@ -52,7 +52,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 | **Lever** |  | :hourglass:  |
 | **Mailchimp** | Marketing tools | :hourglass: |
 | **Microsoft Dynamics** | HCM CLoud | :hourglass: |
-| **Monster** | Job board | :hourglass: |
+| [**Monster**](src/hrflow_connectors/connectors/monster/) | Job board | :heavy_check_mark: |
 | **Oracle** | Cloud Apps | :hourglass: |
 | [**Recruitee**](src/hrflow_connectors/connectors/recruitee/) | ATS | :heavy_check_mark: |
 | **RecruitBox** |  | :hourglass: |
