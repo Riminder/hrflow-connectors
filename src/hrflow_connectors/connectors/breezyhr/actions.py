@@ -326,15 +326,15 @@ class PushProfileAction(core.PushProfileAction):
                 update_candidate_request.json = profile
                 prepared_request = update_candidate_request.prepare()
                 response = session.send(prepared_request)
-                logger.info(f"`{response.content}`, `{response.status_code}`")
+                logger.info("Updating Candidate profile")
+                logger.debug(f"`{response.content}`, `{response.status_code}`")
                 if not response.ok:
-                    error_message = "Couldn't put candidate ! Reason :{}, `{}`"
+                    error_message = "Couldn't update candidate ! Reason :{}, `{}`"
                     raise RuntimeError(
                         error_message.format(response.status_code, response.content)
                     )
-
+            
             update_profile_request()
-            logger.info("Updating Candidate profile")
 
         else:
             # Post profile request
@@ -349,7 +349,7 @@ class PushProfileAction(core.PushProfileAction):
 
             # Send request
             response = session.send(prepared_request)
-            logger.info(f"`{response.status_code}`,`{response.content}`")
+            logger.debug(f"`{response.status_code}`,`{response.content}`")
             if not response.ok:
                 raise RuntimeError(
                     f"Push profile to Breezy Hr failed :`{response.status_code}` `{response.content}`"
