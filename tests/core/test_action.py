@@ -1073,7 +1073,7 @@ def test_PushJobAction_pull_success(hrflow_client):
     match = [responses.matchers.query_param_matcher(expected_params)]
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/job/indexing?",
+        "https://api.hrflow.ai/v1/job/indexing",
         status=200,
         match=match,
         json=returned_value,
@@ -1145,9 +1145,83 @@ def test_CatchProfileAction_execute(hrflow_client):
         def push(self, data):
             assert data["ZIPCode"] == "X"
 
-    action = MyCatchProfileAction(hrflow_client=hrflow_client(), request=request, source_key="d31518949ed1f88ac61308670324f93bc0f9374d")
+    action = MyCatchProfileAction(
+        hrflow_client=hrflow_client(),
+        request=request,
+        source_key="d31518949ed1f88ac61308670324f93bc0f9374d",
+    )
 
     workflow_response = action.execute()
 
     assert workflow_response["status_code"] == 201
     assert workflow_response["message"] == "Profile successfully pushed"
+
+
+@responses.activate
+def test_CatchProfileAction_push_success(hrflow_client):
+    # Mock requests and check data sent
+    returned_value = dict(code=200, message="ok", data=[])
+    data_expected = dict(
+        source_key="abc",
+        labels="[]",
+        tags="[]",
+        metadatas="[]",
+        sync_parsing=0,
+        sync_parsing_indexing=1,
+        webhook_parsing_sending=0,
+    )
+
+    files_expected = dict(file=b"base64")
+    match = [
+        responses.matchers.multipart_matcher(files=files_expected, data=data_expected)
+    ]
+    responses.add(
+        responses.POST,
+        "https://api.hrflow.ai/v1/profile/parsing/file",
+        status=200,
+        match=match,
+        json=returned_value,
+    )
+
+    # Push data
+    action = CatchProfileAction(
+        hrflow_client=hrflow_client(), source_key="abc", request=dict()
+    )
+    action.push(dict(source_key="abc", profile_file="base64"))
+
+
+@responses.activate
+def test_CatchProfileAction_push_success(hrflow_client):
+    # Mock requests and check data sent
+    returned_value = dict(code=400, message="Test", data=[])
+    data_expected = dict(
+        source_key="abc",
+        labels="[]",
+        tags="[]",
+        metadatas="[]",
+        sync_parsing=0,
+        sync_parsing_indexing=1,
+        webhook_parsing_sending=0,
+    )
+
+    files_expected = dict(file=b"base64")
+    match = [
+        responses.matchers.multipart_matcher(files=files_expected, data=data_expected)
+    ]
+    responses.add(
+        responses.POST,
+        "https://api.hrflow.ai/v1/profile/parsing/file",
+        status=400,
+        match=match,
+        json=returned_value,
+    )
+
+    # Push data
+    action = CatchProfileAction(
+        hrflow_client=hrflow_client(), source_key="abc", request=dict()
+    )
+    try:
+        action.push(dict(source_key="abc", profile_file="base64"))
+        assert False
+    except RuntimeError:
+        pass
