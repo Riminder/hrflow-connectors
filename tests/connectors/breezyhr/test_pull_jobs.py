@@ -1,7 +1,7 @@
 import pytest
 
 from hrflow_connectors import OAuth2EmailPasswordBody
-from hrflow_connectors import BreezyHr
+from hrflow_connectors import Breezyhr
 
 
 @pytest.fixture
@@ -15,7 +15,7 @@ def auth(credentials):
 
 
 def test_PullJobsAction(logger, auth, hrflow_client):
-    BreezyHr.pull_jobs(
+    Breezyhr.pull_jobs(
         auth=auth,
         hrflow_client=hrflow_client("dev-demo"),
         board_key="fa06643e19d811e8da472858c07f8bbbd954dfd0",
