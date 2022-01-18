@@ -6,7 +6,6 @@ from ...core.auth import OAuth2EmailPasswordBody
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
-import dateutil.parser
 from ...utils.datetime_converter import from_str_to_datetime
 
 logger = get_logger()
