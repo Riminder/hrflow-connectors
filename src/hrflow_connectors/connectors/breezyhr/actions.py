@@ -13,7 +13,7 @@ logger = get_logger()
 
 class PullJobsAction(core.PullJobsAction):
     auth: OAuth2EmailPasswordBody
-    company_id: Optional[int]= Field(None, description="ID of company to pull jobs from in Breezy HR database associated with the authenticated user")
+    company_id: Optional[str]= Field(None, description="ID of company to pull jobs from in Breezy HR database associated with the authenticated user")
     company_name: Optional[str]= Field(None, description="the company associated with the authenticated user")
 
     def pull(self) -> Iterator[Dict[str, Any]]:
@@ -128,7 +128,7 @@ class PullJobsAction(core.PullJobsAction):
 
 class PushProfileAction(core.PushProfileAction):
     auth: OAuth2EmailPasswordBody
-    company_id: Optional[int]= Field(None, description="ID of company to pull jobs from in Breezy HR database associated with the authenticated user")
+    company_id: Optional[str]= Field(None, description="ID of company to pull jobs from in Breezy HR database associated with the authenticated user")
     company_name: Optional[str]= Field(None, description="the company associated with the authenticated user")
     position_id: str=Field(None, description="Id of the position to create a new candidate for")
     origin: Optional[str]=Field(None, description="will indicate in Breezy if the candidate should be marked as sourced or applied")
@@ -214,13 +214,27 @@ class PushProfileAction(core.PushProfileAction):
 
 
     def push(self, data):
-        profile = next(data)
+        """
+        push [summary]
 
+        Args:
+            data ([type]): [description]
+
+        Raises:
+            RuntimeError: [description]
+            RuntimeError: [description]
+            RuntimeError: [description]
+            RuntimeError: [description]
+
+        Returns:
+            [type]: [description]
+        """
+        profile = next(data)
         session = requests.Session()
 
-        def get_company_id():
+        def get_company_id() -> str:
             """
-            getting the company id associated with the authenticated user company
+            Get the company id associated with the authenticated user company
 
             """
             if self.company_id is not None:
@@ -240,10 +254,15 @@ class PushProfileAction(core.PushProfileAction):
                 for company in company_list:
                     if company['name'] == self.company_name:
                         return company["_id"]
-        def verify_candidate_exist():
+        self.company_id = get_company_id()
+
+        def verify_candidate_exist() -> Optional[str]:
+            """ Verify that candidate a candidate already exists
+                Returns the candidate ID if that is the case, if candidate doesn't exist it returns None
+            """
             verify_candidate_request = requests.Request()
             verify_candidate_request.method = "GET"
-            verify_candidate_request.url = f"https://api.breezy.hr/v3/company/{get_company_id()}/candidates/search?email_address={profile['email_address']}"
+            verify_candidate_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/candidates/search?email_address={profile['email_address']}"
             verify_candidate_request.auth = self.auth
             prepared_request = verify_candidate_request.prepare()
             response = session.send(prepared_request)
@@ -255,43 +274,51 @@ class PushProfileAction(core.PushProfileAction):
             else:
                 candidate_exist = response.json()[0]
                 return candidate_exist
-        candidate_exist = verify_candidate_exist()   
+        candidate_exist = verify_candidate_exist()
+
         if candidate_exist is not None:
             candidate_id = candidate_exist["_id"]
             logger.info(f"Candidate Already exists with the id {candidate_id}")
+
             def update_profile_request():
+                """
+                update_profile_request send a put request to update the candidate profile
+                """
                 update_candidate_request = requests.Request()
                 update_candidate_request.method = "PUT"
-                update_candidate_request.url = f"https://api.breezy.hr/v3/company/{get_company_id()}/{self.position_id}/candidate/{candidate_id}"
+                update_candidate_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidate/{candidate_id}"
                 update_candidate_request.auth = self.auth
-                update_candidate_request.data = profile
+                update_candidate_request.headers = {'content-type': 'application/json'}
+                update_candidate_request.json = profile
                 prepared_request = update_candidate_request.prepare()
                 response = session.send(prepared_request)
                 if not response.ok:
                         error_message = "Couldn't put candidate ! Reason :{}, `{}`"
                         raise RuntimeError(error_message.format(response.status_code, response.content))
-            logger.info("Updating Candidate profile")
+
             update_profile_request()
+            logger.info("Updating Candidate profile")
         
-        #Push profile request
-        # Prepare request
-        push_profile_request = requests.Request()
-        push_profile_request.method = "POST"
-        push_profile_request.url = (
-            f"https://api.breezy.hr/v3/company/{get_company_id()}/position/{self.position_id}/candidates?"
-        )
-        push_profile_request.auth = self.auth
-        push_profile_request.json = profile
-        prepared_request = push_profile_request.prepare()
-
-        # Send request
-        response = session.send(prepared_request)
-        logger.info(f"{response.status_code},{response.content}")
-
-        if not response.ok:
-            raise RuntimeError(
-                f"Push profile to Breezy Hr failed :`{response.status_code}` `{response.content}`"
+        else:
+            #Post profile request
+            # Prepare request
+            push_profile_request = requests.Request()
+            push_profile_request.method = "POST"
+            push_profile_request.url = (
+                f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidates?"
             )
+            push_profile_request.auth = self.auth
+            push_profile_request.json = profile
+            prepared_request = push_profile_request.prepare()
+
+            # Send request
+            response = session.send(prepared_request)
+            logger.info(f"{response.status_code},{response.content}")
+
+            if not response.ok:
+                raise RuntimeError(
+                    f"Push profile to Breezy Hr failed :`{response.status_code}` `{response.content}`"
+                )
 
 
 
