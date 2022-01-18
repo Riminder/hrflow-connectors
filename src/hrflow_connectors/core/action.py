@@ -195,11 +195,11 @@ class PullAction(Action):
         logger.info("Data has been pulled")
 
         logger.info("Mapping format function...")
-        formated_data = map(self.format_switcher, input_data)
+        formatted_data = map(self.format_switcher, input_data)
         logger.info("Format function has been mapped")
 
         logger.info("Applying logics...")
-        filtered_data = self.apply_logics(formated_data)
+        filtered_data = self.apply_logics(formatted_data)
         logger.info("Logics have been applied")
 
         logger.info("Pushing data...")
@@ -226,11 +226,11 @@ class PushAction(Action):
         logger.info("Logics have been applied")
 
         logger.info("Mapping format function...")
-        formated_data = map(self.format_switcher, filtered_data)
+        formatted_data = map(self.format_switcher, filtered_data)
         logger.info("Format function has been mapped")
 
         logger.info("Pushing data...")
-        self.push(formated_data)
+        self.push(formatted_data)
         logger.info("Data has been pushed")
 
         logger.info("All has been done for this connector !")
@@ -556,10 +556,10 @@ class PullJobsAction(PullAction):
         input_data = self.pull()
 
         logger.info(f"Formating all references from the stream")
-        formated_data = map(self.format_switcher, input_data)
+        formatted_data = map(self.format_switcher, input_data)
 
         logger.info(f"Applying logics to all references from the stream")
-        filtered_data = self.apply_logics(formated_data)
+        filtered_data = self.apply_logics(formatted_data)
 
         logger.info(f"Keeping only reference from the stream")
         references_iter = map(lambda job: job.get("reference"), filtered_data)
@@ -607,11 +607,11 @@ class PullJobsAction(PullAction):
         logger.info("Data has been pulled")
 
         logger.info("Mapping format function...")
-        formated_data = map(self.format_switcher, input_data)
+        formatted_data = map(self.format_switcher, input_data)
         logger.info("Format function has been mapped")
 
         logger.info("Applying logics...")
-        filtered_data = self.apply_logics(formated_data)
+        filtered_data = self.apply_logics(formatted_data)
         logger.info("Logics have been applied")
 
         logger.info(
@@ -699,9 +699,7 @@ class CatchProfileAction(Action):
         ..., description="Source key where the profiles to be added will be stored"
     )
 
-    request: Dict[str, Any] = Field(
-        ..., description="Body to format in HrFlow Profile"
-    )
+    request: Dict[str, Any] = Field(..., description="Body to format in HrFlow Profile")
 
     def execute(self):
         """
@@ -723,9 +721,7 @@ class CatchProfileAction(Action):
         )
 
     def push(self, data: Dict[str, Any]):
-        logger.debug(
-            f"Parsing a profile to Hrflow Source `{self.source_key}`"
-        )
+        logger.debug(f"Parsing a profile to Hrflow Source `{self.source_key}`")
         response = self.hrflow_client.profile.parsing.add_file(**data)
         if response["code"] >= 400:
             message = response["message"]

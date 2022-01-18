@@ -268,9 +268,9 @@ class PushProfileAction(core.PushProfileAction):
         value_or_undefined = lambda s: s or "Undefined"
 
         def format_project(project):
-            formated_project_dict = dict()
+            formatted_project_dict = dict()
             # current
-            formated_project_dict["current"] = False
+            formatted_project_dict["current"] = False
             # start date
             start_datetime_str = project.get("date_start")
             if start_datetime_str is None:
@@ -280,7 +280,7 @@ class PushProfileAction(core.PushProfileAction):
             else:
                 start_date = start_datetime_str.split("T")[0]
 
-            formated_project_dict["startDate"] = start_date
+            formatted_project_dict["startDate"] = start_date
 
             end_datetime_str = project.get("date_end")
             if end_datetime_str is None:
@@ -288,51 +288,51 @@ class PushProfileAction(core.PushProfileAction):
             else:
                 end_date = end_datetime_str.split("T")[0]
 
-            formated_project_dict["endDate"] = end_date
-            formated_project_dict["location"] = value_or_undefined(
+            formatted_project_dict["endDate"] = end_date
+            formatted_project_dict["location"] = value_or_undefined(
                 project["location"]["text"]
             )
-            formated_project_dict["description"] = project["description"]
+            formatted_project_dict["description"] = project["description"]
 
-            return formated_project_dict
+            return formatted_project_dict
 
         def format_educations(educations):
-            formated_education_list = []
+            formatted_education_list = []
 
             for education_entity in educations:
-                formated_education = format_project(education_entity)
+                formatted_education = format_project(education_entity)
                 if education_entity.get("school") is None:
-                    formated_education["instituion"] = "Undefined"
+                    formatted_education["instituion"] = "Undefined"
                 else:
-                    formated_education["institution"] = education_entity.get("school")
+                    formatted_education["institution"] = education_entity.get("school")
 
                 if education_entity.get("title") is None:
-                    formated_education["degree"] = "Undefined"
+                    formatted_education["degree"] = "Undefined"
                 else:
-                    formated_education["degree"] = education_entity.get("title")
-                formated_education["major"] = "Undefined"
+                    formatted_education["degree"] = education_entity.get("title")
+                formatted_education["major"] = "Undefined"
 
-                formated_education_list.append(formated_education)
+                formatted_education_list.append(formatted_education)
 
-            return formated_education_list
+            return formatted_education_list
 
         def format_experiences(experiences):
-            formated_experience_list = []
+            formatted_experience_list = []
 
             for exp in experiences:
-                formated_exp = format_project(exp)
+                formatted_exp = format_project(exp)
                 if exp["title"] is None:
-                    formated_exp["title"] = "Undefined"
+                    formatted_exp["title"] = "Undefined"
                 else:
-                    formated_exp["title"] = exp["title"]
+                    formatted_exp["title"] = exp["title"]
                 if exp["company"] is None:
-                    formated_exp["company"] = "Undefined"
+                    formatted_exp["company"] = "Undefined"
                 else:
-                    formated_exp["company"] = exp["company"]
+                    formatted_exp["company"] = exp["company"]
 
-                formated_experience_list.append(formated_exp)
+                formatted_experience_list.append(formatted_exp)
 
-            return formated_experience_list
+            return formatted_experience_list
 
         info = profile["info"]
         smart_candidate = dict()
