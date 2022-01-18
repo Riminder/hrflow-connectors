@@ -28,7 +28,7 @@ class PullJobsAction(core.PullJobsAction):
         Returns list of all jobs that have been pulled
         """
 
-        def get_company_id():
+        def get_company_id() -> str:
             """
             Get the company id associated with the authenticated user company
             """
@@ -246,7 +246,7 @@ class PushProfileAction(core.PushProfileAction):
         format_urls()
         if self.cover_letter is not None:
             profile["cover_letter"] = self.cover_letter
-        
+
         # add profile skills to tags
         profile["tags"] = []
         skills = data.get("skills")
@@ -260,6 +260,9 @@ class PushProfileAction(core.PushProfileAction):
     def push(self, data: Dict[str, Any]) -> None:
         """
         Push a Hrflow profile object to a BreezyHr candidate pool for a position
+
+        Args:
+            data (Dict[str, Any]): profile to push
         """
         profile = next(data)
         auth = self.auth
@@ -269,6 +272,8 @@ class PushProfileAction(core.PushProfileAction):
             """
             Get the company id associated with the authenticated user company, required for authentification
 
+            Returns:
+                str: company id
             """
             if self.company_id is not None:
                 return self.company_id
@@ -290,9 +295,12 @@ class PushProfileAction(core.PushProfileAction):
 
         self.company_id = get_company_id()
 
-        def verify_candidate_exist() -> Optional[Dict[str, Any]]:
-            """Verify that candidate a candidate already exists
-            Returns a dictionary that contains candidate id and name, if candidate doesn't exist it returns None
+        def get_candidate() -> Optional[Dict[str, Any]]:
+            """
+            Get candidate. If candidate does not exists, return None.
+
+            Returns:
+                Optional[Dict[str, Any]]: a dictionary that contains candidate id and name, if candidate doesn't exist it returns None
             """
             verify_candidate_request = requests.Request()
             verify_candidate_request.method = "GET"
@@ -306,18 +314,18 @@ class PushProfileAction(core.PushProfileAction):
             if response.json() == []:
                 return None
             else:
-                candidate_exist = response.json()[0]
-                return candidate_exist
+                candidate = response.json()[0]
+                return candidate
 
-        candidate_exist = verify_candidate_exist()
+        candidate = get_candidate()
 
-        if candidate_exist is not None:
-            candidate_id = candidate_exist["_id"]
+        if candidate is not None:
+            candidate_id = candidate["_id"]
             logger.info(f"Candidate Already exists with the id {candidate_id}")
 
             def update_profile_request():
                 """
-                update_profile_request send a put request to update the candidate profile
+                Send a put request to update the candidate profile
                 """
                 update_candidate_request = requests.Request()
                 update_candidate_request.method = "PUT"
@@ -326,6 +334,7 @@ class PushProfileAction(core.PushProfileAction):
                 update_candidate_request.headers = {"content-type": "application/json"}
                 update_candidate_request.json = profile
                 prepared_request = update_candidate_request.prepare()
+
                 response = session.send(prepared_request)
                 logger.info("Updating Candidate profile")
                 logger.debug(f"`{response.content}`, `{response.status_code}`")
@@ -343,7 +352,7 @@ class PushProfileAction(core.PushProfileAction):
             logger.info("Preparing resuest to push candidate profile")
             push_profile_request = requests.Request()
             push_profile_request.method = "POST"
-            push_profile_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidates?"
+            push_profile_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidates"
             push_profile_request.auth = auth
             push_profile_request.json = profile
             prepared_request = push_profile_request.prepare()
