@@ -24,7 +24,7 @@ class PullJobsAction(core.PullJobsAction):
 
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
-        pull all jobs from a local database that uses SAP successfactors API
+        Pull all jobs from a local database that uses SAP successfactors API
         Raises:
             ConnectionError if the request fails with the error message
         Returns:
@@ -55,7 +55,7 @@ class PullJobsAction(core.PullJobsAction):
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        format retrieved jobs into a HrFlow job object
+        Format retrieved jobs into a HrFlow job object
         Returns:
             Dict[str, Any]: job in the HrFlow job object format
         """
@@ -148,7 +148,7 @@ class PushProfileAction(core.PushProfileAction):
 
     def format(self, profile: Dict[str, Any]) -> Dict[str, Any]:
         """
-        formats a hrflow profile into a sap successfactors candidate
+        Formats a hrflow profile into a sap successfactors candidate
         Returns:
             Dict[str, Any]: a json respresentation of a SAP successfactors candidate
         """
