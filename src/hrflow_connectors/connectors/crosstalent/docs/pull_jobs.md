@@ -1,4 +1,4 @@
-# Pull Jobs
+# Pull jobs
 `Crosstalent` :arrow_right: `Hrflow.ai`
 
 `PullJobsAction` gets all available jobs via their ***Salesforce API***. It adds all these **jobs** to a ***Hrflow.ai Board***.

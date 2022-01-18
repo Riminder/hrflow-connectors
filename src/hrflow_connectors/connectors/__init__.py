@@ -7,4 +7,5 @@ from .workable import *
 from .recruitee import *
 from .ceridian import *
 from .sapsuccessfactors import *
+from .taleez import *
 from .monster import *

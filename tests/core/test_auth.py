@@ -8,6 +8,7 @@ from hrflow_connectors.core.auth import (
     AuthorizationAuth,
     XSmartTokenAuth,
     MonsterBodyAuth,
+    XTaleezAuth,
 )
 
 
@@ -200,6 +201,7 @@ def test_XSmartTokenAuth():
     assert len(authenticated_prepared_request.headers) == 2
 
 
+
 def test_MonsterBodyAuth():
 
     username = "efg"
@@ -218,3 +220,21 @@ def test_MonsterBodyAuth():
 
     assert isinstance(authenticated_prepared_request.body, bytes)
     assert authenticated_prepared_request.body == b"<username>efg</username>\n<password>hij</password>"
+
+    
+def test_XTaleezAuth():
+    key = "abc"
+    auth = XTaleezAuth(value=key)
+
+    base_headers = dict(test="abc")
+
+    request = requests.Request(
+        method="GET", url="http://test.test/check_auth", headers=base_headers
+    )
+    prepared_request = request.prepare()
+    authenticated_prepared_request = auth(prepared_request)
+
+    assert authenticated_prepared_request.headers.get("test") == "abc"
+    assert authenticated_prepared_request.headers.get("X-taleez-api-secret") == key
+    assert len(authenticated_prepared_request.headers) == 2
+

@@ -123,6 +123,14 @@ class XSmartTokenAuth(XAPIKeyAuth):
 
     name: str = Field("X-SmartToken", const=True)
 
+class XTaleezAuth(XAPIKeyAuth):
+    """
+    XTaleezAuth 
+
+    Auth used to authenticate to Taleez with a token
+    """
+
+    name: str = Field("X-taleez-api-secret", const=True)
 
 class MonsterBodyAuth(Auth):
     """

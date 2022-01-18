@@ -1,10 +1,9 @@
 # Pull jobs
+`Taleez` :arrow_right: `Hrflow.ai`
 
-`Workable` :arrow_right: `Hrflow.ai`
+`PullJobsAction` gets all available jobs listed on a ***Taleez endpoint***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-`PullJobsAction` gets all available jobs listed on ***Workable public endpoints***. It adds all these **jobs** to a ***Hrflow.ai Board***.
-
-🔗 [Documentation](https://workable.readme.io/docs/jobs-1)
+🔗 [Documentation](https://api.taleez.com/swagger-ui/index.html?configUrl=/openapi.json/swagger-config#/jobs/list_2)
 
 ## Parameters
 
@@ -17,24 +16,35 @@
 | `hrflow_client` :red_circle: | `hrflow.Hrflow` | Hrflow client instance used to communicate with the Hrflow.ai API        |
 | `board_key` :red_circle: | `str` | Board key where the jobs to be added will be stored        |
 | `hydrate_with_parsing`  | `bool` | Enrich the job with parsing. Default value : `False`        |
+| `Auth` | :red_circle: | `XTaleezAuth` | Required to access Taleez API.
 | `archive_deleted_jobs_from_stream`  | `bool` | Archive Board jobs when they are no longer in the incoming job stream. Default value : `True`        |
-| `subdomain` :red_circle: | `str` | Companies have jobs listed on workable public endpoints, subdomain of a company endpoint in `https://www.workable.com/api/accounts/{subdomain}` for example subdomain=`eurostar` for ***Eurostar*** company      |
+| `page` :red_circle: | `int` | page number, starts at 0, value by default is 0     |
+| `page_size` :red_circle: | `int` | Page size. Max size of the list returned. Max value : 100, default value is 100|
+
 
 :red_circle: : *required* 
 
 ## Example
 
 ```python
-from hrflow_connectors import Workable
+from hrflow_connectors import Taleez
 
 from hrflow import Hrflow
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
+
 # We add a basic configuration to our logger to see the messages displayed in the standard output
 # This is not mandatory. It allows you to see what the connector is doing.
 logger = get_logger_with_basic_config()
+
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-Workable.pull_jobs(
-    subdomain="MY_SUBDOMAIN",
+
+auth = XTaleezAuth(
+        value=settings['MY_X_TALEEZ_API_KEY]
+    )
+Taleez.pull_jobs(
+    page=MY_START_PAGE,
+    page_size=MY_PAGE_SIZE_LIMIT,
+    auth=auth,
     hrflow_client=client,
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
