@@ -7,6 +7,7 @@ from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
 import dateutil.parser
+from ...utils.datetime_converter import from_str_to_datetime
 
 logger = get_logger()
 
@@ -191,11 +192,11 @@ class PushProfileAction(core.PushProfileAction):
                 format_experience["title"] = experience["title"]
                 format_experience["summary"] = experience["description"]
                 if experience["date_start"] is not None:
-                    date_iso = dateutil.parser.isoparse(experience["date_start"])
+                    date_iso = from_str_to_datetime((experience["date_start"]))
                     format_experience["start_year"] = date_iso.year
                     format_experience["start_month"] = date_iso.month
                 if experience["date_end"] is not None:
-                    date_end_iso = dateutil.parser.isoparse(experience["date_end"])
+                    date_end_iso = from_str_to_datetime((experience["date_end"]))
                     format_experience["end_year"] = date_end_iso.year
                     format_experience["end_month"] = date_end_iso.month
 
