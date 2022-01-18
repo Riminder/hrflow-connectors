@@ -292,7 +292,7 @@ class PushProfileAction(core.PushProfileAction):
 
         def verify_candidate_exist() -> Optional[Dict[str, Any]]:
             """Verify that candidate a candidate already exists
-            Returns the candidate ID if that is the case, if candidate doesn't exist it returns None
+            Returns a dictionary that contains candidate id and name, if candidate doesn't exist it returns None
             """
             verify_candidate_request = requests.Request()
             verify_candidate_request.method = "GET"
