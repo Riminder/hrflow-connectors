@@ -182,7 +182,7 @@ class BaseAction(BaseModel):
         logger.info("All has been done for this connector !")
 
 
-class PullAction(BaseAction):
+class PullBaseAction(BaseAction):
     """
     Pull Action
     """
@@ -236,7 +236,7 @@ class PushAction(BaseAction):
         logger.info("All has been done for this connector !")
 
 
-class PullJobsAction(PullAction):
+class PullJobsAction(PullBaseAction):
     """
     Pull jobs from an external stream to Hrflow.ai
     """
