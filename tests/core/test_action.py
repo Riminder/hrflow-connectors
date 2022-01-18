@@ -13,9 +13,9 @@ import requests
 import responses
 from hrflow import Hrflow
 
-##############
-### Action ###
-##############
+##################
+### BaseAction ###
+##################
 
 
 @pytest.fixture
@@ -185,9 +185,9 @@ def test_BaseAction_connect_and_execute(hrflow_client, generated_data_list):
     action.execute()
 
 
-##################
-### PullAction ###
-##################
+######################
+### PullBaseAction ###
+######################
 
 
 def test_PullBaseAction_execute(hrflow_client):
@@ -215,9 +215,9 @@ def test_PullBaseAction_execute(hrflow_client):
     action.execute()
 
 
-##################
-### PushAction ###
-##################
+######################
+### PushBaseAction ###
+######################
 
 
 def test_PushBaseAction_execute(hrflow_client):
@@ -245,9 +245,9 @@ def test_PushBaseAction_execute(hrflow_client):
     action.execute()
 
 
-######################
-### PullJobsAction ###
-######################
+##########################
+### PullJobsBaseAction ###
+##########################
 
 
 @pytest.fixture
@@ -998,9 +998,9 @@ def test_PullJobsAction_push_failure(hrflow_client):
         pass
 
 
-#########################
-### PushProfileAction ###
-#########################
+#############################
+### PushProfileBaseAction ###
+#############################
 
 
 @responses.activate
@@ -1072,6 +1072,11 @@ def test_PushProfileAction_execute(hrflow_client):
 
     assert workflow_response["status_code"] == 201
     assert workflow_response["message"] == "Profile successfully pushed"
+
+
+##########################
+### PushJobeBaseAction ###
+##########################
 
 
 @responses.activate
@@ -1148,6 +1153,11 @@ def test_PushJobAction_pull_failure(hrflow_client):
         assert False
     except RuntimeError:
         pass
+
+
+##############################
+### CatchProfileBaseAction ###
+##############################
 
 
 @responses.activate
