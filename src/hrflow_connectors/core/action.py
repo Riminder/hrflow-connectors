@@ -209,7 +209,7 @@ class PullBaseAction(BaseAction):
         logger.info("All has been done for this connector !")
 
 
-class PushAction(BaseAction):
+class PushBaseAction(BaseAction):
     """
     Push Action
     """
@@ -664,7 +664,7 @@ class PushJobAction(BaseAction):
         )
 
 
-class PushProfileAction(PushAction):
+class PushProfileAction(PushBaseAction):
     profile: Profile = Field(..., description="Profile to push")
 
     def pull(self) -> Iterator[TalentDataType]:
