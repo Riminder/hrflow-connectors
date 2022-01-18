@@ -62,6 +62,8 @@ def workflow(_request, settings):
             auth=auth,
             subdomain=settings["SUBDOMAIN"],
             hrflow_client=client,
+            company_name=settings["MY_COMPANY_NAME"],
+            position_id=settings["MY_POSITION_ID"]
             profile=profile,
         )
         return response

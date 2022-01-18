@@ -50,6 +50,7 @@ Breezyhr.pull_jobs(
     subdomain="MY_SUBDOMAIN",
     hrflow_client=client,
     board_key="MY_BOARD_KEY",
+    company_name=settings["MY_COMPANY_NAME"],
     hydrate_with_parsing=True,
 )
 ```
