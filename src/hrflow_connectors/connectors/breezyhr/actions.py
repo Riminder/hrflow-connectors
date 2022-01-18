@@ -190,13 +190,15 @@ class PushProfileAction(core.PushProfileAction):
                 )
                 format_experience["title"] = experience["title"]
                 format_experience["summary"] = experience["description"]
-                if experience["date_start"] and experience["date_end"] is not None:
+                if experience["date_start"] is not None:
                     date_iso = dateutil.parser.isoparse(experience["date_start"])
-                    date_end_iso = dateutil.parser.isoparse(experience["date_end"])
                     format_experience["start_year"] = date_iso.year
-                    format_experience["end_year"] = date_end_iso.year
                     format_experience["start_month"] = date_iso.month
+                if experience["date_end"] is not None:
+                    date_end_iso = dateutil.parser.isoparse(experience["date_end"])
+                    format_experience["end_year"] = date_end_iso.year
                     format_experience["end_month"] = date_end_iso.month
+
                 profile["work_history"].append(format_experience)
 
         format_experiences()
@@ -207,6 +209,8 @@ class PushProfileAction(core.PushProfileAction):
             educations = data.get("educations")
             for education in educations:
                 format_education = dict()
+                if education["school"] == "":
+                    education["school"] = "Undefined"
                 format_education["school_name"] = education["school"]
                 format_education["field_of_study"] = education["title"]
                 format_education["start_year"] = education["date_start"]
@@ -322,6 +326,7 @@ class PushProfileAction(core.PushProfileAction):
                 update_candidate_request.json = profile
                 prepared_request = update_candidate_request.prepare()
                 response = session.send(prepared_request)
+                logger.info(f"`{response.content}`, `{response.status_code}`")
                 if not response.ok:
                     error_message = "Couldn't put candidate ! Reason :{}, `{}`"
                     raise RuntimeError(
@@ -334,6 +339,7 @@ class PushProfileAction(core.PushProfileAction):
         else:
             # Post profile request
             # Prepare request
+            logger.info("Preparing resuest to push candidate profile")
             push_profile_request = requests.Request()
             push_profile_request.method = "POST"
             push_profile_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidates?"
@@ -343,8 +349,7 @@ class PushProfileAction(core.PushProfileAction):
 
             # Send request
             response = session.send(prepared_request)
-            logger.info(f"{response.status_code},{response.content}")
-
+            logger.info(f"`{response.status_code}`,`{response.content}`")
             if not response.ok:
                 raise RuntimeError(
                     f"Push profile to Breezy Hr failed :`{response.status_code}` `{response.content}`"
