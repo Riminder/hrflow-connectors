@@ -216,6 +216,8 @@ class PushProfileAction(core.PushProfileAction):
     def push(self, data):
         profile = next(data)
 
+        session = requests.Session()
+
         def get_company_id():
             """
             getting the company id associated with the authenticated user company
@@ -238,10 +240,41 @@ class PushProfileAction(core.PushProfileAction):
                 for company in company_list:
                     if company['name'] == self.company_name:
                         return company["_id"]
-
-
+        def verify_candidate_exist():
+            verify_candidate_request = requests.Request()
+            verify_candidate_request.method = "GET"
+            verify_candidate_request.url = f"https://api.breezy.hr/v3/company/{get_company_id()}/candidates/search?email_address={profile['email_address']}"
+            verify_candidate_request.auth = self.auth
+            prepared_request = verify_candidate_request.prepare()
+            response = session.send(prepared_request)
+            if not response.ok:
+                    error_message = "Couldn't get candidate ! Reason : `{}`"
+                    raise RuntimeError(error_message.format(response.content))
+            if response.json() == []:
+                return None
+            else:
+                candidate_exist = response.json()[0]
+                return candidate_exist
+        candidate_exist = verify_candidate_exist()   
+        if candidate_exist is not None:
+            candidate_id = candidate_exist["_id"]
+            logger.info(f"Candidate Already exists with the id {candidate_id}")
+            def update_profile_request():
+                update_candidate_request = requests.Request()
+                update_candidate_request.method = "PUT"
+                update_candidate_request.url = f"https://api.breezy.hr/v3/company/{get_company_id()}/{self.position_id}/candidate/{candidate_id}"
+                update_candidate_request.auth = self.auth
+                update_candidate_request.data = profile
+                prepared_request = update_candidate_request.prepare()
+                response = session.send(prepared_request)
+                if not response.ok:
+                        error_message = "Couldn't put candidate ! Reason :{}, `{}`"
+                        raise RuntimeError(error_message.format(response.status_code, response.content))
+            logger.info("Updating Candidate profile")
+            update_profile_request()
+        
+        #Push profile request
         # Prepare request
-        session = requests.Session()
         push_profile_request = requests.Request()
         push_profile_request.method = "POST"
         push_profile_request.url = (
