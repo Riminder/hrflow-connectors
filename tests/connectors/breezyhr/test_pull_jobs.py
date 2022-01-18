@@ -8,8 +8,8 @@ from hrflow_connectors import Breezyhr
 def auth(credentials):
     auth = OAuth2EmailPasswordBody(
         access_token_url = "https://api.breezy.hr/v3/signin",
-        email = 'limam.vadhel@hrflow.ai',
-        password="LIMAMok"
+        email = credentials["breezyhr"]["email"],
+        password= credentials["breezyhr"]["password"]
     )
     return auth
 
