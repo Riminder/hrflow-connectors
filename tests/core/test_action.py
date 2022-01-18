@@ -1,5 +1,5 @@
 from hrflow_connectors.core.action import (
-    Action,
+    BaseAction,
     PullAction,
     PushAction,
     PullJobsAction,
@@ -28,8 +28,10 @@ def generated_data_list():
     return list_to_filter
 
 
-def test_Action_apply_logics_with_empty_logics_list(hrflow_client, generated_data_list):
-    action = Action(hrflow_client=hrflow_client())
+def test_BaseAction_apply_logics_with_empty_logics_list(
+    hrflow_client, generated_data_list
+):
+    action = BaseAction(hrflow_client=hrflow_client())
     filtered_list = action.apply_logics(generated_data_list)
 
     assert len(filtered_list) == 4
@@ -39,11 +41,11 @@ def test_Action_apply_logics_with_empty_logics_list(hrflow_client, generated_dat
     assert dict(element1="value2", element2="value2") in filtered_list
 
 
-def test_Action_apply_logics_single_filter(hrflow_client, generated_data_list):
+def test_BaseAction_apply_logics_single_filter(hrflow_client, generated_data_list):
     def filter_element1_with_value1(element):
         return element.get("element1") == "value1"
 
-    action = Action(
+    action = BaseAction(
         hrflow_client=hrflow_client(),
         logics=["filter_element1_with_value1"],
         global_scope=globals(),
@@ -56,14 +58,14 @@ def test_Action_apply_logics_single_filter(hrflow_client, generated_data_list):
     assert dict(element1="value1", element2="value1") in filtered_list
 
 
-def test_Action_apply_logics_two_filter(hrflow_client, generated_data_list):
+def test_BaseAction_apply_logics_two_filter(hrflow_client, generated_data_list):
     def filter_element1_with_value1(element):
         return element.get("element1") == "value1"
 
     def filter_element2_with_value1(element):
         return element.get("element2") == "value1"
 
-    action = Action(
+    action = BaseAction(
         hrflow_client=hrflow_client(),
         logics=["filter_element1_with_value1", "filter_element2_with_value1"],
         global_scope=globals(),
@@ -75,13 +77,13 @@ def test_Action_apply_logics_two_filter(hrflow_client, generated_data_list):
     assert dict(element1="value1", element2="value1") in filtered_list
 
 
-def test_Action_apply_logics_single_filter_without_interaction(
+def test_BaseAction_apply_logics_single_filter_without_interaction(
     hrflow_client, generated_data_list
 ):
     def filter_nothing(element):
         return True
 
-    action = Action(
+    action = BaseAction(
         hrflow_client=hrflow_client(),
         logics=["filter_nothing"],
         global_scope=globals(),
@@ -96,11 +98,11 @@ def test_Action_apply_logics_single_filter_without_interaction(
     assert dict(element1="value2", element2="value2") in filtered_list
 
 
-def test_Action_extern_format_function(hrflow_client):
+def test_BaseAction_extern_format_function(hrflow_client):
     def extern_format(data):
         return dict(c=data["a"], d=data["a"] + data["b"])
 
-    action = Action(
+    action = BaseAction(
         hrflow_client=hrflow_client(),
         format_function_name="extern_format",
         global_scope=globals(),
@@ -112,8 +114,8 @@ def test_Action_extern_format_function(hrflow_client):
     assert transformed_job == dict(c="aaa", d="aaabbb")
 
 
-def test_Action_default_format_without_extern_format_function(hrflow_client):
-    action = Action(
+def test_BaseAction_default_format_without_extern_format_function(hrflow_client):
+    action = BaseAction(
         hrflow_client=hrflow_client(),
         format_function_name=None,
     )
@@ -122,11 +124,11 @@ def test_Action_default_format_without_extern_format_function(hrflow_client):
     assert transformed_job == dict(a="aaa", b="bbb", f="fff")
 
 
-def test_Action_overwritten_format_with_extern_format_function(hrflow_client):
+def test_BaseAction_overwritten_format_with_extern_format_function(hrflow_client):
     def extern_format(data):
         return dict(c=data["a"], d=data["a"] + data["b"])
 
-    class TestAction(Action):
+    class TestAction(BaseAction):
         def format(self, data):
             return dict(f=data["f"], g=data["a"] + data["b"])
 
@@ -143,9 +145,9 @@ def test_Action_overwritten_format_with_extern_format_function(hrflow_client):
 
 
 @responses.activate
-def test_Action_connect_and_execute(hrflow_client, generated_data_list):
+def test_BaseAction_connect_and_execute(hrflow_client, generated_data_list):
     # Build a connector from `generated_data_list` to `http://test.test/push`
-    class TestConnectorAction(Action):
+    class TestConnectorAction(BaseAction):
         def pull(self):
             return generated_data_list
 
