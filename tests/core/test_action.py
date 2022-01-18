@@ -4,8 +4,10 @@ from hrflow_connectors.core.action import (
     PushAction,
     PullJobsAction,
     PushProfileAction,
+    PushJobAction,
+    CatchProfileAction,
 )
-from hrflow_connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.hrflow import Profile, Source, Job, Board
 import pytest
 import requests
 import responses
@@ -939,7 +941,7 @@ def test_PullJobsAction_push_success(hrflow_client):
 
 
 @responses.activate
-def test_PullJobsAction_pull_failure(hrflow_client):
+def test_PullJobsAction_push_failure(hrflow_client):
     # Mock requests and check data sent
     job = dict(key="efg", reference="REF123")
     expected_body = dict(board_key="abc", **job)
@@ -1036,3 +1038,190 @@ def test_PushProfileAction_execute(hrflow_client):
 
     assert workflow_response["status_code"] == 201
     assert workflow_response["message"] == "Profile successfully pushed"
+
+
+@responses.activate
+def test_PushJobAction_execute(hrflow_client):
+    job = Job(key="efg", board=Board(key="abc"))
+
+    # Mock the `pull` & `push` method to do nothing
+    class MyPushJobAction(PushJobAction):
+        def pull(self):
+            return ["pullformat", "pulllogic"]
+
+        def format(self, data):
+            assert "pull" in data
+            return data.replace("pull", "")
+
+        def push(self, data):
+            data_list = list(data)
+            assert data_list == ["format", "logic"]
+
+    action = MyPushJobAction(hrflow_client=hrflow_client(), job=job)
+
+    workflow_response = action.execute()
+
+    assert workflow_response["status_code"] == 201
+    assert workflow_response["message"] == "Profile successfully pushed"
+
+
+@responses.activate
+def test_PushJobAction_pull_success(hrflow_client):
+    # Mock requests and check data sent
+    expected_params = dict(board_key="abc", key="efg")
+    returned_value = dict(code=200, data=dict(key="efg"))
+    match = [responses.matchers.query_param_matcher(expected_params)]
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/job/indexing",
+        status=200,
+        match=match,
+        json=returned_value,
+    )
+
+    # Pull data
+    job = Job(key="efg", board=Board(key="abc"))
+    action = PushJobAction(hrflow_client=hrflow_client(), job=job)
+    profile_list_got = action.pull()
+
+    # Check returned value
+    assert len(profile_list_got) == 1
+
+    profile_got = profile_list_got[0]
+    assert profile_got["key"] == "efg"
+
+
+@responses.activate
+def test_PushJobAction_pull_failure(hrflow_client):
+    # Mock requests and check data sent
+    expected_params = dict(board_key="abc", key="efg")
+    returned_value = dict(code=400, message="Test", data=dict())
+    match = [responses.matchers.query_param_matcher(expected_params)]
+    responses.add(
+        responses.GET,
+        "https://api.hrflow.ai/v1/job/indexing",
+        status=400,
+        match=match,
+        json=returned_value,
+    )
+
+    # Pull data
+    job = Job(key="efg", board=Board(key="abc"))
+    action = PushJobAction(hrflow_client=hrflow_client(), job=job)
+
+    try:
+        action.pull()
+        assert False
+    except RuntimeError:
+        pass
+
+
+@responses.activate
+def test_CatchProfileAction_execute(hrflow_client):
+    request = {
+        "City": "xxx",
+        "CountryCode": "x",
+        "EmailAddress": "xxx",
+        "FileContents": "xxxx",
+        "FileExt": ".xx",
+        "FirstName": "xxxxx",
+        "JobRefID": "xxxx",
+        "LastName": "xx",
+        "PhoneNumber": "+xxxx",
+        "ResumeValue": "x",
+        "State": "x",
+        "VendorField": "xxx xx xxxxx xx",
+        "WorkAuthorization": 1,
+        "ZIPCode": "xxxxxx",
+    }
+
+    # Mock the `pull` & `push` method to do nothing
+    class MyCatchProfileAction(CatchProfileAction):
+        def format(self, data):
+            assert data.get("City") == "xxx"
+            data["ZIPCode"] = "X"
+            return data
+
+        def push(self, data):
+            assert data["ZIPCode"] == "X"
+
+    action = MyCatchProfileAction(
+        hrflow_client=hrflow_client(),
+        request=request,
+        source_key="d31518949ed1f88ac61308670324f93bc0f9374d",
+    )
+
+    workflow_response = action.execute()
+
+    assert workflow_response["status_code"] == 201
+    assert workflow_response["message"] == "Profile successfully pushed"
+
+
+@responses.activate
+def test_CatchProfileAction_push_success(hrflow_client):
+    # Mock requests and check data sent
+    returned_value = dict(code=200, message="ok", data=[])
+    data_expected = dict(
+        source_key="abc",
+        labels="[]",
+        tags="[]",
+        metadatas="[]",
+        sync_parsing=0,
+        sync_parsing_indexing=1,
+        webhook_parsing_sending=0,
+    )
+
+    files_expected = dict(file=b"base64")
+    match = [
+        responses.matchers.multipart_matcher(files=files_expected, data=data_expected)
+    ]
+    responses.add(
+        responses.POST,
+        "https://api.hrflow.ai/v1/profile/parsing/file",
+        status=200,
+        match=match,
+        json=returned_value,
+    )
+
+    # Push data
+    action = CatchProfileAction(
+        hrflow_client=hrflow_client(), source_key="abc", request=dict()
+    )
+    action.push(dict(source_key="abc", profile_file="base64"))
+
+
+@responses.activate
+def test_CatchProfileAction_push_success(hrflow_client):
+    # Mock requests and check data sent
+    returned_value = dict(code=400, message="Test", data=[])
+    data_expected = dict(
+        source_key="abc",
+        labels="[]",
+        tags="[]",
+        metadatas="[]",
+        sync_parsing=0,
+        sync_parsing_indexing=1,
+        webhook_parsing_sending=0,
+    )
+
+    files_expected = dict(file=b"base64")
+    match = [
+        responses.matchers.multipart_matcher(files=files_expected, data=data_expected)
+    ]
+    responses.add(
+        responses.POST,
+        "https://api.hrflow.ai/v1/profile/parsing/file",
+        status=400,
+        match=match,
+        json=returned_value,
+    )
+
+    # Push data
+    action = CatchProfileAction(
+        hrflow_client=hrflow_client(), source_key="abc", request=dict()
+    )
+    try:
+        action.push(dict(source_key="abc", profile_file="base64"))
+        assert False
+    except RuntimeError:
+        pass
