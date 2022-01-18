@@ -10,6 +10,7 @@ from ...utils.hrflow import generate_workflow_response
 
 logger = get_logger()
 
+
 class PullJobsAction(core.PullJobsAction):
 
     auth: Union[XAPIKeyAuth, OAuth2PasswordCredentialsBody]
@@ -23,7 +24,7 @@ class PullJobsAction(core.PullJobsAction):
 
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
-        pull all jobs from a local database that uses SAP successfactors API
+        Pull all jobs from a local database that uses SAP successfactors API
         Raises:
             ConnectionError if the request fails with the error message
         Returns:
@@ -52,10 +53,9 @@ class PullJobsAction(core.PullJobsAction):
         job_list = response_dict["d"]["results"]
         return job_list
 
-
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        format retrieved jobs into a HrFlow job object
+        Format retrieved jobs into a HrFlow job object
         Returns:
             Dict[str, Any]: job in the HrFlow job object format
         """
@@ -92,7 +92,7 @@ class PullJobsAction(core.PullJobsAction):
                 .replace("quo;s", "")
             )
         else:
-            description = 'Null'
+            description = "Null"
         job["sections"] = [
             dict(
                 name="sap_description", title="sap_description", description=description
@@ -136,7 +136,10 @@ class PullJobsAction(core.PullJobsAction):
 
 class PushProfileAction(core.PushProfileAction):
 
-    profile_already_exists: Any = Field(None, description="profile already exists !")
+    profile_already_exists: Any = Field(
+        "COE0019",
+        description="an error code that indicates the candidate is already present and to update we need to update each attribute with a unique request",
+    )
     auth: Union[OAuth2PasswordCredentialsBody, XAPIKeyAuth]
     api_server: str = Field(
         ...,
@@ -145,7 +148,7 @@ class PushProfileAction(core.PushProfileAction):
 
     def format(self, profile: Dict[str, Any]) -> Dict[str, Any]:
         """
-        formats a hrflow profile into a sap successfactors candidate
+        Formats a hrflow profile into a sap successfactors candidate
         Returns:
             Dict[str, Any]: a json respresentation of a SAP successfactors candidate
         """
@@ -167,7 +170,7 @@ class PushProfileAction(core.PushProfileAction):
         candidate["currentTitle"] = info.get("summary")
 
         def format_start_date(date):
-            #SAP SuccessFactors DATE FORMAT
+            # SAP SuccessFactors DATE FORMAT
             return "/Date({})/".format(int(dp.parse(date).timestamp()))
 
         def format_end_date(date):
@@ -235,10 +238,10 @@ class PushProfileAction(core.PushProfileAction):
 
         # Send request
         response = session.send(prepared_request)
-        if response.content == self.profile_already_exists:
+        if self.profile_already_exists in response.content.decode("utf-8"):
             logger.warning("Profile already exists")
         else:
             if not response.ok:
                 raise RuntimeError(
-                        f"Push profile to sapsuccesfactors api-server: {self.api_server} failed : `{response.content}`"
+                    f"Push profile to sapsuccesfactors api-server: {self.api_server} failed : `{response.content}`"
                 )
