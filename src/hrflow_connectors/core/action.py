@@ -16,7 +16,7 @@ TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
 logger = get_logger()
 
 
-class Action(BaseModel):
+class BaseAction(BaseModel):
     """
     Abstract class `Action`
     """
@@ -182,7 +182,7 @@ class Action(BaseModel):
         logger.info("All has been done for this connector !")
 
 
-class PullAction(Action):
+class PullAction(BaseAction):
     """
     Pull Action
     """
@@ -209,7 +209,7 @@ class PullAction(Action):
         logger.info("All has been done for this connector !")
 
 
-class PushAction(Action):
+class PushAction(BaseAction):
     """
     Push Action
     """
@@ -638,7 +638,7 @@ class PullJobsAction(PullAction):
         logger.info("All has been done for this connector !")
 
 
-class PushJobAction(Action):
+class PushJobAction(BaseAction):
 
     job: Job = Field(..., description="Job to push")
 
@@ -693,7 +693,7 @@ class PushProfileAction(PushAction):
         )
 
 
-class CatchProfileAction(Action):
+class CatchProfileAction(BaseAction):
 
     source_key: str = Field(
         ..., description="Source key where the profiles to be added will be stored"
