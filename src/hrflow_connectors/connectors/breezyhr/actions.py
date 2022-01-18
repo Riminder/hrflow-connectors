@@ -246,17 +246,14 @@ class PushProfileAction(core.PushProfileAction):
         format_urls()
         if self.cover_letter is not None:
             profile["cover_letter"] = self.cover_letter
-
+        
+        # add profile skills to tags
         profile["tags"] = []
-
-        def get_tags() -> None:
-            skills = data.get("skills")
-            if isinstance(skills, list):
-                for skill in skills:
-                    if isinstance(skill, dict):
-                        profile["tags"].append(skill["name"])
-
-        get_tags()
+        skills = data.get("skills")
+        if isinstance(skills, list):
+            for skill in skills:
+                if isinstance(skill, dict):
+                    profile["tags"].append(skill["name"])
 
         return profile
 
