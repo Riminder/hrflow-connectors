@@ -262,6 +262,7 @@ class PushProfileAction(core.PushProfileAction):
         Push a Hrflow profile object to a BreezyHr candidate pool for a position
         """
         profile = next(data)
+        auth = self.auth
         session = requests.Session()
 
         def get_company_id() -> str:
@@ -275,7 +276,7 @@ class PushProfileAction(core.PushProfileAction):
                 get_company_id_request = requests.Request()
                 get_company_id_request.method = "GET"
                 get_company_id_request.url = "https://api.breezy.hr/v3/companies"
-                get_company_id_request.auth = self.auth
+                get_company_id_request.auth = auth
                 prepared_request = get_company_id_request.prepare()
                 response = session.send(prepared_request)
                 if not response.ok:
@@ -296,7 +297,7 @@ class PushProfileAction(core.PushProfileAction):
             verify_candidate_request = requests.Request()
             verify_candidate_request.method = "GET"
             verify_candidate_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/candidates/search?email_address={profile['email_address']}"
-            verify_candidate_request.auth = self.auth
+            verify_candidate_request.auth = auth
             prepared_request = verify_candidate_request.prepare()
             response = session.send(prepared_request)
             if not response.ok:
@@ -321,7 +322,7 @@ class PushProfileAction(core.PushProfileAction):
                 update_candidate_request = requests.Request()
                 update_candidate_request.method = "PUT"
                 update_candidate_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidate/{candidate_id}"
-                update_candidate_request.auth = self.auth
+                update_candidate_request.auth = auth
                 update_candidate_request.headers = {"content-type": "application/json"}
                 update_candidate_request.json = profile
                 prepared_request = update_candidate_request.prepare()
@@ -343,7 +344,7 @@ class PushProfileAction(core.PushProfileAction):
             push_profile_request = requests.Request()
             push_profile_request.method = "POST"
             push_profile_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidates?"
-            push_profile_request.auth = self.auth
+            push_profile_request.auth = auth
             push_profile_request.json = profile
             prepared_request = push_profile_request.prepare()
 
