@@ -1,6 +1,9 @@
 # Recruitee Connector
-**Recruitee is an ATS Software.**
+> Collaborative hiring software and modern applicant tracking system with easy setup, great UI, and top-rated customer support. Try free for 18 days!
 
-Lists of actions :
-* [**Pull jobs**](docs/pull_jobs.md)
-* [**Push profile**](docs/push_profile.md)
+🔗 https://recruitee.com/
+
+| Actions |
+| ------- |
+| [**Pull jobs**](docs/pull_jobs.md) |
+| [**Push profile**](docs/push_profile.md) |

@@ -1,26 +1,29 @@
 from hrflow import Hrflow
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, Union, List
 
 from ...core.connector import Connector
-from ...core.auth import AuthorizationAuth
+from ...core.auth import OAuth2EmailPasswordBody
+
 from ...utils.hrflow import Profile
 from .actions import PullJobsAction, PushProfileAction
 
 
-class Recruitee(Connector):
+class Breezyhr(Connector):
     @staticmethod
     def pull_jobs(
-        hrflow_client: Hrflow, board_key: str, subdomain: str, **kwargs
+        hrflow_client: Hrflow, board_key: str, auth: OAuth2EmailPasswordBody, **kwargs
     ) -> Optional[Dict[str, Any]]:
         """
-        `PullJobsAction` gets all available jobs listed on Recruitee company endpoints. It adds all these jobs to a Hrflow.ai Board.
+        `PullJobsAction` gets all your company available jobs in Breezyhr via their Breezy API. It adds all these jobs to a Hrflow.ai Board.
 
-        `Recruitee` -> `Hrflow.ai`
+        `Breezyhr` -> `Hrflow.ai`
 
         Args:
             hrflow_client (Hrflow): Hrflow client instance used to communicate with the Hrflow.ai API
+            auth (OAuth2EmailPasswordBody): Auth instance to identify and communicate with the platform
             board_key (str): Board key where the jobs to be added will be stored
-            subdomain (str): the subdomain of your company's careers site.
+            company_name Optional[str]: Name of the company associated with the authenticated user, required if you haven't specified your company id. Default value `None`
+            company_id Optional[str] : Id of the company associated with the authenticated user, Default value `None`
             logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
@@ -32,37 +35,36 @@ class Recruitee(Connector):
             Optional[Dict[str, Any]]: Workflow response or `None`
         """
         action = PullJobsAction(
-            hrflow_client=hrflow_client,
-            board_key=board_key,
-            subdomain=subdomain,
-            **kwargs
+            hrflow_client=hrflow_client, board_key=board_key, auth=auth, **kwargs
         )
         return action.execute()
 
     @staticmethod
     def push_profile(
-        auth: AuthorizationAuth,
+        auth: OAuth2EmailPasswordBody,
         hrflow_client: Hrflow,
         profile: Profile,
-        company_id: str,
-        offer_id: Optional[List[int]],
+        position_id: str,
         **kwargs
     ) -> Optional[Dict[str, Any]]:
         """
-        `PushProfileAction` pushes a `Profile` from a HrFlow Source to a Recruitee company endpoint and a optionally a Jobs pool.
+        `PushProfileAction` pushes a Hrflow.ai profile to `Breezyhr` via their Salesforce API.
 
-        `Hrflow.ai` -> `Recruitee`
+        `Hrflow.ai` -> `Breezyhr`
 
         Args:
             hrflow_client (Hrflow): Hrflow client instance used to communicate with the Hrflow.ai API
-            auth (AuthorizationAuth): Auth instance to identify and communicate with the platform
+            auth (OAuth2EmailPasswordBody): Auth instance to identify and communicate with the platform
             profile (Profile): Profile to push
-            company_id (str): Company ID. A company subdomain can also be used.
+            position_id str: Id of the position to create a new candidate for, required.
+            company_name Optional[str]: Name of the company associated with the authenticated user, required if you haven't specified your company id. Default value `None`
+            company_id Optional[str] : Id of the company associated with the authenticated user, Default value `None`
+            origin Optional[str]: Indicates if the candidate is `sourced` or `applied`, Default value `sourced`
+            cover_letter Optional[str]: Candidate's cover letter, default value `None`
             logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
-            offer_id (Optional[List[int]], optional): Offers to which the candidate will be assigned with default stage. You can also pass one ID as offer_id. Default value `None`
 
         Returns:
             Optional[Dict[str, Any]]: Workflow response or `None`
@@ -71,8 +73,7 @@ class Recruitee(Connector):
             auth=auth,
             hrflow_client=hrflow_client,
             profile=profile,
-            company_id=company_id,
-            offer_id=offer_id,
+            position_id=position_id,
             **kwargs
         )
         return action.execute()
