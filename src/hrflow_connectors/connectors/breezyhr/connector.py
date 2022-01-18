@@ -14,7 +14,7 @@ class Breezyhr(Connector):
         hrflow_client: Hrflow, board_key: str, auth: OAuth2EmailPasswordBody, **kwargs
     ) -> Optional[Dict[str, Any]]:
         """
-        `PullJobsAction` gets all your company available jobs in BreezyHr via their Breezy API. It adds all these jobs to a Hrflow.ai Board.
+        `PullJobsAction` gets all your company available jobs in Breezyhr via their Breezy API. It adds all these jobs to a Hrflow.ai Board.
 
         `Breezyhr` -> `Hrflow.ai`
 
@@ -48,9 +48,9 @@ class Breezyhr(Connector):
         **kwargs
     ) -> Optional[Dict[str, Any]]:
         """
-        `PushProfileAction` pushes a Hrflow.ai profile to `Crosstalent` via their Salesforce API.
+        `PushProfileAction` pushes a Hrflow.ai profile to `Breezyhr` via their Salesforce API.
 
-        `Hrflow.ai` -> `Crosstalent`
+        `Hrflow.ai` -> `Breezyhr`
 
         Args:
             hrflow_client (Hrflow): Hrflow client instance used to communicate with the Hrflow.ai API
