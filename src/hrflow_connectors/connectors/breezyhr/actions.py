@@ -31,8 +31,7 @@ class PullJobsAction(core.PullJobsAction):
 
         def get_company_id():
             """
-            getting the company id associated with the authenticated user company
-
+            Get the company id associated with the authenticated user company
             """
             if self.company_id is not None:
                 return self.company_id
@@ -47,7 +46,7 @@ class PullJobsAction(core.PullJobsAction):
                     error_message = "Couldn't get company id ! Reason : `{}`"
                     raise RuntimeError(error_message.format(response.content))
                 company_list = response.json()
-                logger.debug("CRetrieving company id")
+                logger.debug("Retrieving company id")
                 for company in company_list:
                     if company["name"] == self.company_name:
                         return company["_id"]
@@ -164,8 +163,12 @@ class PushProfileAction(core.PushProfileAction):
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Format a Hrflow profile object into a breezy hr profile object
-
-        Returns a BreezyHr formatted profile object
+        
+        Args:
+            data (Dict[str, Any]): Hrflow Profile to format
+        
+        Returns:
+            Dict[str, Any]: a BreezyHr formatted profile object
         """
 
         profile = dict()
@@ -177,8 +180,8 @@ class PushProfileAction(core.PushProfileAction):
         profile["summary"] = info.get("summary")
         if self.origin is not None:
             profile["origin"] = self.origin
+        
         profile["work_history"] = []
-
         def format_experiences():
 
             experiences = data.get("experiences")
