@@ -7,6 +7,7 @@ from ...core.auth import OAuth2EmailPasswordBody
 from ...utils.hrflow import Profile
 from .actions import PullJobsAction, PushProfileAction
 
+
 class BreezyHr(Connector):
     @staticmethod
     def pull_jobs(
