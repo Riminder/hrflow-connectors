@@ -274,17 +274,25 @@ def test_PullJobsAction_get_all_references_from_board(hrflow_client, generated_j
     page_2 = generated_jobs(page=2, jobs=29)
 
     # Generate responses return by Hrflow
+    expected_page_1_params = dict(
+        board_keys='["abc"]', limit="30", page="1", sort_by="created_at"
+    )
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=1&sort_by=created_at",
+        "https://api.hrflow.ai/v1/jobs/searching",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_page_1_params)],
         json=generate_hrflow_search_response(page_1, max_page=2),
     )
 
+    expected_page_2_params = dict(
+        board_keys='["abc"]', limit="30", page="2", sort_by="created_at"
+    )
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=2&sort_by=created_at",
+        "https://api.hrflow.ai/v1/jobs/searching",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_page_2_params)],
         json=generate_hrflow_search_response(page_2, max_page=2),
     )
 
@@ -316,10 +324,14 @@ def test_PullJobsAction_get_all_references_from_board_failure(
     page_2 = generated_jobs(page=2, jobs=29)
 
     # Generate responses return by Hrflow
+    expected_page_1_params = dict(
+        board_keys='["abc"]', limit="30", page="1", sort_by="created_at"
+    )
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=1&sort_by=created_at",
+        "https://api.hrflow.ai/v1/jobs/searching",
         status=400,
+        match=[responses.matchers.query_param_matcher(expected_page_1_params)],
         json=dict(code=400, message="Test get_job_page failed"),
     )
 
@@ -343,19 +355,27 @@ def test_PullJobsAction_get_all_references_from_board_and_less_job_returned(
     page_1 = generated_jobs(page=1, jobs=30)
 
     # Generate responses return by Hrflow
+    expected_page_1_params = dict(
+        board_keys='["abc"]', limit="30", page="1", sort_by="created_at"
+    )
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=1&sort_by=created_at",
+        "https://api.hrflow.ai/v1/jobs/searching",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_page_1_params)],
         json=generate_hrflow_search_response(page_1, max_page=2),
     )
 
     # Empty job list
+    expected_page_2_params = dict(
+        board_keys='["abc"]', limit="30", page="2", sort_by="created_at"
+    )
     page_2_response = dict(code=200, message="Success", data=dict(jobs=[]))
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=2&sort_by=created_at",
+        "https://api.hrflow.ai/v1/jobs/searching",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_page_2_params)],
         json=page_2_response,
     )
 
@@ -518,10 +538,12 @@ def test_PullJobsAction_check_reference_in_board_for_job_not_in_board(
     )
 
     # Catch request
+    expected_params = dict(board_key="abc", reference="REF1")
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        "https://api.hrflow.ai/v1/job/indexing",
         status=400,
+        match=[responses.matchers.query_param_matcher(expected_params)],
         json=generated_response,
     )
 
@@ -548,10 +570,12 @@ def test_PullJobsAction_check_reference_in_board_for_not_archived_job_in_board(
     )
 
     # Catch request
+    expected_params = dict(board_key="abc", reference="REF1")
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        "https://api.hrflow.ai/v1/job/indexing",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_params)],
         json=generated_response,
     )
 
@@ -577,10 +601,12 @@ def test_PullJobsAction_check_reference_in_board_fail(
     )
 
     # Catch request
+    expected_params = dict(board_key="abc", reference="REF1")
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        "https://api.hrflow.ai/v1/job/indexing",
         status=400,
+        match=[responses.matchers.query_param_matcher(expected_params)],
         json=generated_response,
     )
 
@@ -610,10 +636,12 @@ def test_PullJobsAction_check_reference_in_board_for_archived_job_without_parsin
     )
 
     # Catch request
+    expected_params = dict(board_key="abc", reference="REF1")
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        "https://api.hrflow.ai/v1/job/indexing",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_params)],
         json=generated_response,
     )
 
@@ -660,10 +688,12 @@ def test_PullJobsAction_check_reference_in_board_for_archived_job_without_parsin
     )
 
     # Catch request
+    expected_params = dict(board_key="abc", reference="REF1")
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        "https://api.hrflow.ai/v1/job/indexing",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_params)],
         json=generated_response,
     )
 
@@ -714,10 +744,12 @@ def test_PullJobsAction_check_reference_in_board_for_archived_job_in_board_with_
     )
 
     # Catch request
+    expected_params = dict(board_key="abc", reference="REF1")
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        "https://api.hrflow.ai/v1/job/indexing",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_params)],
         json=generated_response,
     )
 
