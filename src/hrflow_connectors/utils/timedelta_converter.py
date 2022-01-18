@@ -44,7 +44,7 @@ def from_str_to_timedelta(timedelta_str: str) -> datetime.timedelta:
     The date must respect the format `[[-]DD days, ]HH:MM:SS[.mmmmmm]`.
     Examples : `-1804 days, 15:54:03.999990` or `8:02:12`
     Args:
-        datetime_str (str): formated timedelta
+        datetime_str (str): formatted timedelta
     Raises:
         TimeDeltaFormatError: Le format de la durée ne respecte pas le format `[[-]DD days, ]HH:MM:SS[.mmmmmm]`. Example : `-1804 days, 15:54:03.999990` or `8:02:12` : ..."
     Returns:
