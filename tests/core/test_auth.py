@@ -1,7 +1,7 @@
 import responses
 import requests
 
-from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
+from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody, OAuth2EmailPasswordBody
 from hrflow_connectors.core.auth import (
     Auth,
     XAPIKeyAuth,
@@ -200,6 +200,110 @@ def test_XSmartTokenAuth():
     assert authenticated_prepared_request.headers.get("X-SmartToken") == key
     assert len(authenticated_prepared_request.headers) == 2
 
+@responses.activate
+def test_OAuth2EmailPasswordBody_get_access_token():
+
+    OAuth2EmailPasswordBody_JSON_RESPONSE = {
+        "access_token": "ABC.TOKEN.EFD",
+        "instance_url": "https://test.test/services/signon/token",
+        "user": {'_id':'fhfh453f','email_address':'lemzo@hotemail.ww','name':'lemzo','usernme':'lemzo30','initial':'L'}
+    }
+
+    access_token_url = "https://test.test/services/signon/token"
+    check_auth_url = "http://test.test/check_auth"
+    email = "lemzo@hotemail.ww"
+    password = "jb"
+
+    # build Mock for get_access_token request
+    body = dict(
+        email=email,
+        password=password,
+    )
+    get_access_match = [responses.matchers.urlencoded_params_matcher(body)]
+    responses.add(
+        responses.POST,
+        access_token_url,
+        status=200,
+        json=OAuth2EmailPasswordBody_JSON_RESPONSE,
+        match=get_access_match,
+    )
+
+    # Instanciate Auth to test
+    auth = OAuth2EmailPasswordBody(
+        access_token_url=access_token_url,
+        email=email,
+        password=password,
+    )
+
+    access_token = auth.get_access_token()
+    assert access_token == OAuth2EmailPasswordBody_JSON_RESPONSE["access_token"]
+
+    # build Mock for check_auth request
+    header = dict(Authorization=f"{access_token}")
+    check_auth_match = [responses.matchers.header_matcher(header)]
+    responses.add(
+        responses.GET,
+        check_auth_url,
+        status=200,
+        match=check_auth_match,
+    )
+
+    # Send authenticated request
+    session = requests.Session()
+    request = requests.Request(
+        method="GET", url="http://test.test/check_auth", auth=auth
+    )
+    prepared_request = request.prepare()
+    session.send(prepared_request)
+
+    prepared_request
+    prepared_request.headers.update(dict(test="abc"))
+    authenticated_prepared_request = auth(prepared_request)
+
+    assert authenticated_prepared_request.headers.get("test") == "abc"
+    assert authenticated_prepared_request.headers.get(
+        "Authorization"
+    ) == "{}".format(access_token)
+
+@responses.activate
+def test_OAuth2EmailPasswordBody_get_access_token_failure():
+
+    OAuth2EmailPasswordBody_JSON_RESPONSE = {
+        "access_token": "ABC.TOKEN.EFD",
+        "instance_url": "https://test.test/services/signon/token",
+        "user": {'_id':'fhfh453f','email_address':'lemzo@hotemail.ww','name':'lemzo','usernme':'lemzo30','initial':'L'}
+    }
+
+    access_token_url = "https://test.test/services/signon/token"
+    check_auth_url = "http://test.test/check_auth"
+    email = "lemzo@hotemail.ww"
+    password = "jb"
+
+    # build Mock for get_access_token request
+    body = dict(
+        email=email,
+        password=password,
+    )
+    get_access_match = [responses.matchers.urlencoded_params_matcher(body)]
+    responses.add(
+        responses.POST,
+        access_token_url,
+        status=400,
+        json=OAuth2EmailPasswordBody_JSON_RESPONSE,
+        match=get_access_match,
+    )
+
+    # Instanciate Auth to test
+    auth = OAuth2EmailPasswordBody(
+        access_token_url=access_token_url,
+        email=email,
+        password=password,
+    )
+    try:
+        access_token = auth.get_access_token()
+        assert False
+    except RuntimeError:
+        pass
 
 
 def test_MonsterBodyAuth():
