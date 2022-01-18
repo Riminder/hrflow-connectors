@@ -1,10 +1,9 @@
 # Pull jobs
+`Breezyhr` :arrow_right: `Hrflow.ai`
 
-`Workable` :arrow_right: `Hrflow.ai`
+`PullJobsAction` gets all your company available jobs in Breezy.hr via their ***Breezyhr API***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-`PullJobsAction` gets all available jobs listed on ***Workable public endpoints***. It adds all these **jobs** to a ***Hrflow.ai Board***.
-
-🔗 [Documentation](https://workable.readme.io/docs/jobs-1)
+🔗 [Documentation](https://developer.breezy.hr/docs/company-positions)
 
 ## Parameters
 
@@ -18,25 +17,40 @@
 | `board_key` :red_circle: | `str` | Board key where the jobs to be added will be stored        |
 | `hydrate_with_parsing`  | `bool` | Enrich the job with parsing. Default value : `False`        |
 | `archive_deleted_jobs_from_stream`  | `bool` | Archive Board jobs when they are no longer in the incoming job stream. Default value : `True`        |
-| `subdomain` :red_circle: | `str` | Companies have jobs listed on workable public endpoints, subdomain of a company endpoint in `https://www.workable.com/api/accounts/{subdomain}` for example subdomain=`eurostar` for ***Eurostar*** company      |
+| `auth` :red_circle: | `OAuth2EmailPasswordBody` | Auth instance to identify and communicate with the platform        |
+| `company_name` | `Optional[str]` | Name of the company associated with the authenticated user, required if you haven't specified your company id. Default value `None`       |
+| `company_id` | `Optional[str]` | Id of the company associated with the authenticated user, Default value `None`      |
 
-:red_circle: : *required* 
+:red_circle: : *required*
 
 ## Example
 
 ```python
-from hrflow_connectors import Workable
+from hrflow_connectors import Breezyhr
 
 from hrflow import Hrflow
+from hrflow_connectors import OAuth2EmailPasswordBody
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
+
 # We add a basic configuration to our logger to see the messages displayed in the standard output
 # This is not mandatory. It allows you to see what the connector is doing.
 logger = get_logger_with_basic_config()
+
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-Workable.pull_jobs(
+
+auth = OAuth2EmailPasswordBody(
+            access_token_url="https://api.breezy.hr/v3/signin",
+            email = settings["EMAIL"]
+            password=settings["PASSWORD"],
+        )
+
+
+Breezyhr.pull_jobs(
+    auth=auth,
     subdomain="MY_SUBDOMAIN",
     hrflow_client=client,
     board_key="MY_BOARD_KEY",
+    company_name=settings["MY_COMPANY_NAME"],
     hydrate_with_parsing=True,
 )
 ```

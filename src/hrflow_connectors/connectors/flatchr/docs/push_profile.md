@@ -3,6 +3,8 @@
 
 `PushProfileAction` pushes a Hrflow.ai profile to `Flatchr` via their API.
 
+🔗 [Documentation](https://developers.flatchr.io/?python#formulaire-de-candidature)
+
 ## Parameters
 
 | Field | Type | Description |
