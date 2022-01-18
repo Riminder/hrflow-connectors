@@ -3,6 +3,8 @@
 
 `PullJobsAction` gets all available jobs listed on a ***Taleez endpoint***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
+🔗 [Documentation](https://api.taleez.com/swagger-ui/index.html?configUrl=/openapi.json/swagger-config#/jobs/list_2)
+
 ## Parameters
 
 | Field | Type | Description |

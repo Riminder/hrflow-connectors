@@ -1,5 +1,8 @@
 # Ceridian Dayforce Connector
-**Ceridian Dayforce is a comprehensive cloud platform that combines HR, payroll, benefits, workforce management, and talent management in a single application.**
+> Cloud HCM software that brings together real-time payroll, HR, benefits, time reporting, talent and workforce management to deliver intelligence at work.
 
-Lists of actions :
-* [**Pull jobs**](docs/pull_jobs.md)
+🔗 https://www.ceridian.com/
+
+| Actions |
+| ------- |
+| [**Pull jobs**](docs/pull_jobs.md) |
