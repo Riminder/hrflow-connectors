@@ -1,7 +1,7 @@
 from hrflow_connectors.core.action import (
     BaseAction,
     PullBaseAction,
-    PushAction,
+    PushBaseAction,
     PullJobsAction,
     PushProfileAction,
     PushJobAction,
@@ -220,8 +220,8 @@ def test_PullBaseAction_execute(hrflow_client):
 ##################
 
 
-def test_PushAction_execute(hrflow_client):
-    class MyPushAction(PushAction):
+def test_PushBaseAction_execute(hrflow_client):
+    class MyPushAction(PushBaseAction):
         def pull(self):
             return ["pullformat", "pulllogic"]
 
