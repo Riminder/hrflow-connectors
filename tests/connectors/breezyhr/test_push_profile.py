@@ -18,7 +18,7 @@ def auth(credentials):
 
 def test_PushProfileAction(logger, auth, hrflow_client):
     profile = Profile(
-        key="65903f6989594e72ccf64a10875127b1293fdce3",
+        key="a7e7fa4af68e7c450f2b708d14a3bda9b6ade5d9",
         source=Source(key="762d2f25b855f7cfd13e5585ef727d8fb6e752cb"),
     )
     response = Breezyhr.push_profile(
