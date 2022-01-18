@@ -7,7 +7,7 @@ from ...utils.logger import get_logger
 
 from typing import Union, Dict, Any
 import requests
-import pprint
+import base64
 import json
 
 TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
@@ -69,34 +69,75 @@ class PushProfileAction(core.PushProfileAction):
             "skillSet": get_skills(data) if data.get("skills") else None
         }
 
-
         def get_education(education_list):
             educations_json = []
-            for education in education_list:
-                location = education["location"]
+            for hrflow_education in education_list:
+                location = hrflow_education["location"]
                 education = {
                     "id": "0",
                     "candidate": {
-                        "id": "None"
+                        "id": None
                     },
-                    "school": education.get("school"),
-                    "degree": education.get("title"),
-                    "comments": education.get("description"),
+                    "school": hrflow_education.get("school"),
+                    "degree": hrflow_education.get("title"),
+                    "comments": hrflow_education.get("description"),
                     "city": location.get("text") if location else None,
-                    "startDate": int(from_str_to_datetime(education.get("date_start")).timestamp()) if education.get(
+                    "startDate": int(from_str_to_datetime(hrflow_education.get("date_start")).timestamp()) if hrflow_education.get(
                         "date_start") else None,
-                    "endDate": int(from_str_to_datetime(education.get("date_end")).timestamp()) if education.get(
+                    "endDate": int(from_str_to_datetime(hrflow_education.get("date_end")).timestamp()) if hrflow_education.get(
                         "date_start") else None
                 }
                 educations_json.append(education)
             return educations_json
 
+        def get_experience(experience_list):
+            experience_json = []
+            for hrflow_experience in experience_list:
+                experience = {
+                    "id": "0",
+                    "candidate": {
+                        "id": None
+                    },
+                    "companyName": hrflow_experience.get("company"),
+                    "title": hrflow_experience.get("title"),
+                    "comments": hrflow_experience.get("description"),
+                    "startDate": int(from_str_to_datetime(hrflow_experience.get("date_start")).timestamp()) if hrflow_experience.get(
+                        "date_start") else None,
+                    "endDate": int(from_str_to_datetime(hrflow_experience.get("date_end")).timestamp()) if hrflow_experience.get(
+                        "date_end") else None
+                }
+                experience_json.append(experience)
+            return experience_json
+
+        def get_attachments(attachment_list):
+            attachments_json = []
+            for hrflow_attachment in attachment_list:
+                url = hrflow_attachment["public_url"]
+                response = requests.get(url)
+                b64 = base64.b64encode(response.content)
+
+                attachment = {
+                    "externalID": "portfolio",
+                    "fileContent": b64.decode(),
+                    "fileType": "SAMPLE",
+                    "name": hrflow_attachment["file_name"],
+                    "contentType": "text/plain",
+                    "description": "Resume file for candidate.",
+                    "type": "cover"
+                }
+                attachments_json.append(attachment)
+            return attachments_json
+
         enrich_profile_education = get_education(data.get("educations"))
+        enrich_profile_experience = get_experience(data.get("experiences"))
+        enrich_profile_attachment = get_attachments(data.get("attachments"))
         # When the action needs to send several requests to push a profile
         # We group the formats of the different requests in a `profile_body_dict`.
         profile_body_dict = dict(
             create_profile_body=create_profile_body,
             enrich_profile_education=enrich_profile_education,
+            enrich_profile_experience=enrich_profile_experience,
+            enrich_profile_attachment=enrich_profile_attachment,
         )
         return profile_body_dict
 
@@ -104,6 +145,8 @@ class PushProfileAction(core.PushProfileAction):
         profile_body_dict = next(data)
         create_profile_body = profile_body_dict["create_profile_body"]
         enrich_profile_education = profile_body_dict["enrich_profile_education"]
+        enrich_profile_experience = profile_body_dict["enrich_profile_experience"]
+        enrich_profile_attachment = profile_body_dict["enrich_profile_attachment"]
 
         # Preparing the request to push the profile
         session = requests.Session()
@@ -143,4 +186,42 @@ class PushProfileAction(core.PushProfileAction):
             response = session.send(prepared_request)
             if not response.ok:
                 error_message = "Unable to push the data ! Reason : `{}`,`{}`"
-                raise RuntimeError(error_message.format(response.status_code,response.content))
+                raise RuntimeError(error_message.format(response.status_code, response.content))
+
+        # Preparing the request to enrich education
+        for experience in enrich_profile_experience:
+
+            # Set the Id of the candidate to enrich to the Id of the candidate whom have just been created
+            experience["candidate"]["id"] = candidate_id
+            session = requests.Session()
+            push_profile_request = requests.Request()
+            push_profile_request.method = "PUT"
+            push_profile_request.url = f"https://{self.subdomain}.bullhornstaffing.com/rest-services/7zwdd0/entity/CandidateWorkHistory"
+            push_profile_request.auth = self.auth
+            push_profile_request.json = experience
+            push_profile_request.headers = {"content-type": "application/json"}
+            prepared_request = push_profile_request.prepare()
+
+            # Send request for enrichment
+            response = session.send(prepared_request)
+            if not response.ok:
+                error_message = "Unable to push the data ! Reason : `{}`,`{}`"
+                raise RuntimeError(error_message.format(response.status_code, response.content))
+
+        # Preparing the request to enrich attachment
+        for attachment in enrich_profile_attachment:
+
+            session = requests.Session()
+            push_profile_request = requests.Request()
+            push_profile_request.method = "PUT"
+            push_profile_request.url = f"https://{self.subdomain}.bullhornstaffing.com/rest-services/7zwdd0/file/Candidate/{candidate_id}"
+            push_profile_request.auth = self.auth
+            push_profile_request.json = attachment
+            push_profile_request.headers = {"content-type": "application/json"}
+            prepared_request = push_profile_request.prepare()
+
+            # Send request for enrichment
+            response = session.send(prepared_request)
+            if not response.ok:
+                error_message = "Unable to push the data ! Reason : `{}`,`{}`"
+                raise RuntimeError(error_message.format(response.status_code, response.content))
