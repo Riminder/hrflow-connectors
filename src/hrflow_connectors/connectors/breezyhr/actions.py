@@ -12,6 +12,7 @@ logger = get_logger()
 
 
 class PullJobsAction(core.PullJobsAction):
+
     auth: OAuth2EmailPasswordBody
     company_id: Optional[str] = Field(
         None,
@@ -141,6 +142,7 @@ class PullJobsAction(core.PullJobsAction):
 
 
 class PushProfileAction(core.PushProfileAction):
+
     auth: OAuth2EmailPasswordBody
     company_id: Optional[str] = Field(
         None,
@@ -150,10 +152,10 @@ class PushProfileAction(core.PushProfileAction):
         None, description="the company associated with the authenticated user"
     )
     position_id: str = Field(
-        None, description="Id of the position to create a new candidate for"
+        ..., description="Id of the position to create a new candidate for"
     )
     origin: Optional[str] = Field(
-        None,
+        'sourced',
         description="will indicate in Breezy if the candidate should be marked as sourced or applied",
     )
     cover_letter: Optional[str] = None
