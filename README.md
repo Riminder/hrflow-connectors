@@ -27,10 +27,12 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 
 
 ## About HrFlow.ai
-  https://www.HrFlow.ai is **an API first company that provides the most sophisticated AI-Powered JOB & PROFILE API**. Corporates and Software vendors can leverage our technology layers to Parse, Enrich and Score both job and candidate data. The platform supports +200 apps, pipelines, and code integrations so you can automate workflows with your favorite tools.
-  - Our Developers documentation : https://developers.hrflow.ai/
-  - Our API list (Parsing, Revealing, Embedding, Searching, Scoring, Reasoning) : https://www.hrflow.ai/api
-  - Our cool demos labs : https://labs.hrflow.ai
+[HrFlow.ai](https://hrflow.ai/) is **an API first company that provides the most sophisticated AI-Powered Job & Profile API**. We help HR Tech, Staffing Agencies, and Large employers to thrive in a high-frequency labor market.
+
+**[HrFlow.ai](https://hrflow.ai/) is on a mission to make AI and data integration pipelines a commodity in the HR Industry:**
+  1. **Unify**: Link your Talent Data channels with a few clicks, so they can share data.
+  2. **Understand**: Leverage our AI solutions to process your Talent Data.
+  3. **Automate**: Sync data between your tools and build workflows that meet your business logic.
 
 ## :electric_plug: List of Connectors
 
@@ -60,6 +62,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 | **Salesforce** |  | :hourglass: |
 | [**Smartrecruiters**](src/hrflow_connectors/connectors/smartrecruiters/) | ATS | :heavy_check_mark: |
 | **Staffme** | Job board | :hourglass: |
+| [**Taleez**](src/hrflow_connectors/connectors/taleez/)| ATS | :heavy_check_mark: |
 | **Talentsoft** |  | :hourglass: |
 | **Talentlink** |  | :hourglass: |
 | **Twilio** | Marketing tools | :hourglass: |
@@ -129,6 +132,10 @@ appreciated.
 
 👉 **To find out more about how to proceed, the rules and conventions to follow, read carefully [`CONTRIBUTING.md`](CONTRIBUTING.md).**
 
+## 🔗 Resources
+* Our Developers documentation : https://developers.hrflow.ai/
+* Our API list (Parsing, Revealing, Embedding, Searching, Scoring, Reasoning) : https://www.hrflow.ai/api
+* Our cool demos labs : https://labs.hrflow.ai
 
 ## :page_with_curl: License
 

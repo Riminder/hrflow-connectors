@@ -1,9 +1,12 @@
-## PullJobs
+# Pull jobs
 
 `Ceridian Dayforce` :arrow_right: `Hrflow.ai`
-`PullJobs` gets all available jobs listed on ***Ceridian Dayforce specific endpoints***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-### Parameters
+`PullJobsAction` gets all available jobs listed on ***Ceridian Dayforce specific endpoints***. It adds all these **jobs** to a ***Hrflow.ai Board***.
+
+🔗 [Documentation](https://developers.dayforce.com/Build/API-Explorer/Recruiting/Get-Job-Postings.aspx)
+
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -19,7 +22,7 @@
 | `client_name_space` :red_circle: | `str` | Uniquely identifies the client's Dayforce instance for example. Is needed to login |
 :red_circle: : *required* 
 
-### Example
+## Example
 
 ```python
 from hrflow_connectors import Ceridian
