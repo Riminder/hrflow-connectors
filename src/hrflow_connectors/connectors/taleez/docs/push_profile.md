@@ -28,22 +28,26 @@
 
 ```python
 from hrflow_connectors import Taleez
-
+from hrflow import Hrflow
 from hrflow_connectors import XTaleezAuth
 from hrflow_connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
+
+# We add a basic configuration to our logger to see the messages displayed in the standard output
+# This is not mandatory. It allows you to see what the connector is doing.
+logger = get_logger_with_basic_config()
+
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 
-auth = XTaleezAuth(
-    value=settings['MY_X_TALEEZ_API_KEY]
-    )
+auth = XTaleezAuth(value='MY_X_TALEEZ_API_KEY')
 
 Taleez.push_profile(
     auth=auth,
     add_candidate_to_job=False,
-    recruiter_id=MY_RECRUITER_ID
-    hrflow_email="MY_EMAIL",
-    hrflow_secret="MY_X_API_KEY",
+    recruiter_id="MY_RECRUITER_ID",
+    hrflow_client=client,
     profile=profile,
     )
 ```

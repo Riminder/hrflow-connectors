@@ -26,9 +26,17 @@
 
 ```python
 from hrflow_connectors import SapSuccessfactors
-
+from hrflow import Hrflow
 from hrflow_connectors import OAuth2PasswordCredentialsBody, XAPIKeyAuth
 from hrflow_connectors.connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
+
+
+# We add a basic configuration to our logger to see the messages displayed in the standard output
+# This is not mandatory. It allows you to see what the connector is doing.
+logger = get_logger_with_basic_config()
+
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 
@@ -40,8 +48,7 @@ auth = XAPIKeyAuth(
 SapSuccessfactors.push_profile(
     auth=auth,
     api_server="MY_API_SERVER",
-    hrflow_email="MY_EMAIL",
-    hrflow_secret="MY_X_API_KEY",
+    hrflow_client=client,
     profile=profile,
     )
 ```

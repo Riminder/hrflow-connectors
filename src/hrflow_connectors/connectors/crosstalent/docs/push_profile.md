@@ -22,26 +22,30 @@
 Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.ai/docs/workflows#catch-setup).
 ```python
 from hrflow_connectors import Crosstalent
-
 from hrflow import Hrflow
 from hrflow_connectors import OAuth2PasswordCredentialsBody
 from hrflow_connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
+
+# We add a basic configuration to our logger to see the messages displayed in the standard output
+# This is not mandatory. It allows you to see what the connector is doing.
+logger = get_logger_with_basic_config()
+
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 
-client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
-
 auth = OAuth2PasswordCredentialsBody(
     access_token_url="https://test.salesforce.com/services/oauth2/token",
-    client_id=settings["CLIENT_ID"],
-    client_secret=settings["CLIENT_SECRET"],
-    username=settings["USERNAME"],
-    password=settings["PASSWORD"],
+    client_id="CLIENT_ID",
+    client_secret="CLIENT_SECRET",
+    username="USERNAME",
+    password="PASSWORD",
 )
 
 Crosstalent.push_profile(
     auth=auth,
-    subdomain=settings["SUBDOMAIN"],
+    subdomain="SUBDOMAIN",
     hrflow_client=client,
     profile=profile,
     )

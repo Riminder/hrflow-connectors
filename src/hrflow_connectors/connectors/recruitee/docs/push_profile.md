@@ -30,9 +30,17 @@ Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.a
 
 ```python
 from hrflow_connectors import Recruitee
-
+from hrflow import Hrflow
 from hrflow_connectors import AuthorizationAuth
 from hrflow_connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
+
+
+# We add a basic configuration to our logger to see the messages displayed in the standard output
+# This is not mandatory. It allows you to see what the connector is doing.
+logger = get_logger_with_basic_config()
+
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 
@@ -44,8 +52,7 @@ auth = AuthorizationAuth(
 Recruitee.push_profile(
     company_id = settings['MY_COMPANY_ID'],
     auth=auth,
-    hrflow_email="MY_EMAIL",
-    hrflow_secret="MY_X_API_KEY",
+    hrflow_client=client,
     profile=profile,
     )
 ```

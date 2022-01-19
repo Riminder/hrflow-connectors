@@ -30,23 +30,28 @@
 
 ```python
 from hrflow_connectors import Breezyhr
-
 from hrflow import Hrflow
 from hrflow_connectors import OAuth2EmailPasswordBody
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
+
+# We add a basic configuration to our logger to see the messages displayed in the standard output
+# This is not mandatory. It allows you to see what the connector is doing.
+logger = get_logger_with_basic_config()
+
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 auth = OAuth2EmailPasswordBody(
             access_token_url="https://api.breezy.hr/v3/signin",
-            email = settings["EMAIL"]
-            password=settings["PASSWORD"],
+            email="EMAIL",
+            password="PASSWORD",
         )
 
 Breezyhr.pull_jobs(
     auth=auth,
     subdomain="MY_SUBDOMAIN",
-    hrflow_email="MY_EMAIL",
-    hrflow_secret="MY_X_API_KEY",
+    hrflow_client=client,
     board_key="MY_BOARD_KEY",
-    company_name=settings["MY_COMPANY_NAME"],
+    company_name="MY_COMPANY_NAME",
     hydrate_with_parsing=True,
 )
 ```

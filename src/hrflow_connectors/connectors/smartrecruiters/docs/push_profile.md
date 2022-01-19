@@ -27,10 +27,16 @@
 
 ```python
 from hrflow_connectors import SmartRecruiters
-
 from hrflow import Hrflow
 from hrflow_connectors import XSmartTokenAuth
 from hrflow_connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
+
+# We add a basic configuration to our logger to see the messages displayed in the standard output
+# This is not mandatory. It allows you to see what the connector is doing.
+logger = get_logger_with_basic_config()
+
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 auth = XSmartTokenAuth(value=settings["MY_SMART_TOKEN"])
 profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
@@ -38,8 +44,7 @@ profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 SmartRecruiters.push_profile(
     auth=auth,
     job_id="3696cad0-a9b0-4a40-9cd7-4cc5feb1a509",
-    hrflow_email="MY_EMAIL",
-    hrflow_secret="MY_X_API_KEY",
+    hrflow_client=client,
     profile=profile,
 )
 ```
