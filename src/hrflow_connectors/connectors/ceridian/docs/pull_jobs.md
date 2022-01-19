@@ -31,7 +31,6 @@
 from hrflow_connectors import Ceridian
 from hrflow import Hrflow
 
-
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 Ceridian.pull_jobs(

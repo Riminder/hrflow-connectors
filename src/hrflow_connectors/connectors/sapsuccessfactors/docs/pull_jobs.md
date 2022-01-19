@@ -35,7 +35,6 @@ from hrflow_connectors import SAPSuccessfactors
 from hrflow import Hrflow
 from hrflow_connectors import OAuth2PasswordCredentialsBody, XAPIKeyAuth
 
-
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 auth = XAPIKeyAuth(name = "APIKey", value = "MY_API_KEY")

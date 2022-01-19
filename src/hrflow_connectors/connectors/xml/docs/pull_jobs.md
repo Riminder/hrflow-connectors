@@ -28,7 +28,6 @@ from hrflow_connectors import XML
 from hrflow import hrflow
 from hrflow_connectors import XSmartTokenAuth
 
-
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 def samsic_format(data):

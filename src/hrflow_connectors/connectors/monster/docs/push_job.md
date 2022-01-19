@@ -27,7 +27,6 @@ from hrflow_connectors import Monster
 from hrflow import Hrflow
 from hrflow.utils.hrflow import Job, Board
 
-
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 job = Job(key="MY_JOB_KEY", board=Board("MY_BOARD_KEY"))

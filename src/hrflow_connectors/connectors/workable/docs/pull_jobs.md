@@ -32,7 +32,6 @@
 from hrflow_connectors import Workable
 from hrflow import Hrflow
 
-
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 Workable.pull_jobs(

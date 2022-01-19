@@ -28,7 +28,6 @@
 from hrflow_connectors import Monster
 from hrflow import Hrflow
 
-
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 Monster.catch_profile(
