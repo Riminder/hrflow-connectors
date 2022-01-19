@@ -4,7 +4,7 @@
 
 `PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Taleez*** Jobs pool.
 
-# Links to Taleez documentation on the endpoints used :
+**Links to Taleez documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |

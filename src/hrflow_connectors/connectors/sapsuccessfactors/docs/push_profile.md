@@ -4,7 +4,7 @@
 
 `PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***SAP SuccessFactors*** Jobs pool.
 
-# Links to SAP documentation on the endpoints used :
+**Links to SAP documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |

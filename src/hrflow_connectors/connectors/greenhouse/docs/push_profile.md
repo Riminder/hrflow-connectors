@@ -4,7 +4,7 @@
 
 `PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Greenhouse*** Jobs pool.
 
-# Links to Greenhouse documentation on the endpoints used :
+**Links to Greenhouse documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |

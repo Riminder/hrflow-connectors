@@ -3,7 +3,7 @@
 
 `PullJobsAction` retrieves all jobs via the ***SmartRecruiter*** API. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-# Links to SmartRecruiters documentation on the endpoints used :
+**Links to SmartRecruiters documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |

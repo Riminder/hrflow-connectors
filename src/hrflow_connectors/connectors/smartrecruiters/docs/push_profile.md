@@ -3,7 +3,7 @@
 
 `PushProfileAction` pushes a HrFlow.ai profile from a ***Hrflow.ai Source*** to `SmartRecruiters` via the ***SmartRecruiter*** API.
 
-# Links to SmartRecruiters documentation on the endpoints used :
+**Links to SmartRecruiters documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |

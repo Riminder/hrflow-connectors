@@ -3,7 +3,7 @@
 
 `PushProfileAction` pushes a Hrflow.ai profile to `Flatchr` via their API.
 
-# Links to Flatchr documentation on the endpoints used :
+**Links to Flatchr documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |

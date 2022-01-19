@@ -3,7 +3,7 @@
 
 `PullJobsAction` gets all available jobs listed on a ***Taleez endpoint***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-# Links to Taleez documentation on the endpoints used :
+**Links to Taleez documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |
