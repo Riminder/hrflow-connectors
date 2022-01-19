@@ -27,7 +27,6 @@ from hrflow_connectors import Crosstalent
 from hrflow import Hrflow
 from hrflow_connectors import OAuth2PasswordCredentialsBody
 
-
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 auth = OAuth2PasswordCredentialsBody(

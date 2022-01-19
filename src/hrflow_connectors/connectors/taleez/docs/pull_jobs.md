@@ -34,7 +34,6 @@
 from hrflow_connectors import Taleez
 from hrflow import Hrflow
 
-
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 auth = XTaleezAuth(value='MY_X_TALEEZ_API_KEY')
