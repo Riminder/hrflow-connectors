@@ -32,11 +32,7 @@ from hrflow_connectors import Flatchr
 from hrflow import Hrflow
 from hrflow_connectors import AuthorizationAuth
 from hrflow_connectors.utils.hrflow import Profile, Source
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
-# We add a basic configuration to our logger to see the messages displayed in the standard output
-# This is not mandatory. It allows you to see what the connector is doing.
-logger = get_logger_with_basic_config()
 
 profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 
