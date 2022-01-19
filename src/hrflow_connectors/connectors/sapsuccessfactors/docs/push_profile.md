@@ -4,6 +4,8 @@
 
 `PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***SAP SuccessFactors*** Jobs pool.
 
+# Links to SAP documentation on the endpoints used :
+
 | Endpoints | Description |
 | --------- | ----------- |
 |[Post Candidate](https://api.sap.com/api/RCMCandidate/overview) | Endpoint to post a candidate with background information and profile, an api server is required, the request method is `POST`|

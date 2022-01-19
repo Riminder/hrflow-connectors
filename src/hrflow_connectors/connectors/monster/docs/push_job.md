@@ -3,7 +3,8 @@
 
 `PushJobAction` pushes a Monster job to `Hrflow.ai`.
 
-🔗 [Documentation](https://partner.monster.com/real-time-posting-devguide)
+# Links to Monster documentation on the endpoints used :
+
 | Endpoints | Description |
 | --------- | ----------- |
 |[`Push Jobs`](https://partner.monster.com/real-time-posting-devguide)|Endpoint to real time posting of jobs in Monster  |

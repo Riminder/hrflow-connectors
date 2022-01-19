@@ -19,7 +19,6 @@
 :red_circle: : *required*
 
 ## Example
-Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.ai/docs/workflows#catch-setup).
 ```python
 from hrflow_connectors import Crosstalent
 from hrflow import Hrflow

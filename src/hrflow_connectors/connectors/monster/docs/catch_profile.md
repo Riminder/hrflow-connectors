@@ -3,6 +3,8 @@
 
 `CatchProfileAction` catches a Monster profile to `Hrflow.ai`.
 
+# Links to Monster documentation on the endpoints used :
+
 | Endpoints | Description |
 | --------- | ----------- |
 |[`Catch Profile`](https://partner.monster.com/apply-with-monster-implementing)|Endpoint to catch a profile application |

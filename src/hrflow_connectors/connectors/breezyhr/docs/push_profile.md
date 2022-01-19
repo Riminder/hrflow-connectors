@@ -3,6 +3,8 @@
 
 `PushProfileAction` pushes a Hrflow.ai profile to your company's `Breezyhr` candidate pool via their ***Breezy API***.
 
+# Links to Breezy.hr documentation on the endpoints used :
+
 | Endpoints | Description |
 | --------- | ----------- |
 | [Get company_id](https://developer.breezy.hr/docs/companies)          | Endpoint to retrieve the companies associated with the authenticated user in case the user didn't specify his company ID required to `PushProfileAction`, the request method is `GET`           |

@@ -3,6 +3,8 @@
 
 `PullJobsAction` gets all your company available jobs in Breezy.hr via their ***Breezyhr API***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
+# Links to Breezy.hr documentation on the endpoints used :
+
 | Endpoints | Description |
 | --------- | ----------- |
 | [Get company_id](https://developer.breezy.hr/docs/companies)          | Endpoint to retrieve the companies associated with the authenticated user in case the user didn't specify his company ID required to `PullJobsAction`, the request method is `GET`            |

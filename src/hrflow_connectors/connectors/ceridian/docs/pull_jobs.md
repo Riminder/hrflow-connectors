@@ -4,6 +4,8 @@
 
 `PullJobsAction` gets all available jobs listed on ***Ceridian Dayforce specific endpoints***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
+# Links to Ceridian Dayforce documentation on the endpoints used :
+
 | Endpoints | Description |
 | --------- | ----------- |
 |[Get Job Feeds](https://developers.dayforce.com/Build/API-Explorer/Recruiting/Get-Job-Postings.aspx)         | Endpoint to get job postings that have been posted externally and are available through the candidate portal, a clientNamespace parameter is required, the reauest method is `Get`            |

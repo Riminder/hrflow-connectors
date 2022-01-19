@@ -4,6 +4,8 @@
 
 `PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Recruitee*** company endpoint and a optionally a Jobs pool.
 
+# Links to Recruitee documentation on the endpoints used :
+
 | Endpoints | Description |
 | --------- | ----------- |
 | [Create Candidate](https://docs.recruitee.com/reference/candidates-post) | Create a candidate with provided details,a company id is required however you can also use a company subdomain instead, the request method is `POST`|
@@ -26,7 +28,6 @@
 :red_circle: : *required* 
 
 ## Example
-Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.ai/docs/workflows#catch-setup).
 
 ```python
 from hrflow_connectors import Recruitee
@@ -34,7 +35,6 @@ from hrflow import Hrflow
 from hrflow_connectors import AuthorizationAuth
 from hrflow_connectors.utils.hrflow import Profile, Source
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
-
 
 # We add a basic configuration to our logger to see the messages displayed in the standard output
 # This is not mandatory. It allows you to see what the connector is doing.
