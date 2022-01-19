@@ -30,7 +30,6 @@ from hrflow.utils.hrflow import Job, Board
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 job = Job(key="MY_JOB_KEY", board=Board("MY_BOARD_KEY"))
-
 auth = MonsterBodyAuth(username="MY_USER_NAME",password="MY_PASSWORD")
 
 Monster.catch_profile(

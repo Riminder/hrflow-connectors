@@ -36,7 +36,6 @@ from hrflow_connectors.connectors.utils.hrflow import Profile, Source
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
-
 auth = XAPIKeyAuth(
     name = "APIKey",
     value= settings['MY_API_KEY'],
