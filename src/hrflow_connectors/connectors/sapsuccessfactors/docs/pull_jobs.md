@@ -51,5 +51,5 @@ SapSuccessfactors.pull_jobs(
     hrflow_client=client,
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
-    )
+)
 ```

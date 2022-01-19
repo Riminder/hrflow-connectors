@@ -45,12 +45,12 @@ profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 auth = XAPIKeyAuth(
     name = "APIKey",
     value= settings['MY_API_KEY'],
-    )
+)
 
 SapSuccessfactors.push_profile(
     auth=auth,
     api_server="MY_API_SERVER",
     hrflow_client=client,
     profile=profile,
-    )
+)
 ```

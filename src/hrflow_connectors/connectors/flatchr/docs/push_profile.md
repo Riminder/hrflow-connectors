@@ -49,5 +49,5 @@ Flatchr.push_profile(
     profile=profile,
     vacancy="k0M5O9ylKZnxbQBy",
     company="LEZBvp5b4LdMoVmg",
-    )
+)
 ```

@@ -46,7 +46,7 @@ auth = OAuth2EmailPasswordBody(
             access_token_url="https://api.breezy.hr/v3/signin",
             email="EMAIL",
             password="PASSWORD",
-        )
+)
 
 Breezyhr.pull_jobs(
     auth=auth,

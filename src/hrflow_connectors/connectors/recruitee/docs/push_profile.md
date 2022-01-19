@@ -47,12 +47,12 @@ profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 auth = AuthorizationAuth(
     name = 'Authorization',
     value= settings['BEARER_TOKEN'],
-    )
+)
 
 Recruitee.push_profile(
     company_id = settings['MY_COMPANY_ID'],
     auth=auth,
     hrflow_client=client,
     profile=profile,
-    )
+)
 ```
