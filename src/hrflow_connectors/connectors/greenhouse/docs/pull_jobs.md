@@ -3,7 +3,7 @@
 
 `PullJobsAction` gets all available jobs listed on ***Greenhouse board***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-# Links to Greenhouse documentation on the endpoints used :
+**Links to Greenhouse documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |

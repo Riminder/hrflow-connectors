@@ -4,7 +4,7 @@
 
 `PullJobsAction` gets all available jobs listed on ***Ceridian Dayforce specific endpoints***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-# Links to Ceridian Dayforce documentation on the endpoints used :
+**Links to Ceridian Dayforce documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |

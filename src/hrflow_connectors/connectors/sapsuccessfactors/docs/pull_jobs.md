@@ -4,7 +4,7 @@
 
 `PullJobsAction` gets all available jobs from SAPSuccessFactors via their ***Job Requisition API***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-# Links to SAP documentation on the endpoints used :
+**Links to SAP documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |

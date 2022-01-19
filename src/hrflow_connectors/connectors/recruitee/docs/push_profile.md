@@ -4,7 +4,7 @@
 
 `PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Recruitee*** company endpoint and a optionally a Jobs pool.
 
-# Links to Recruitee documentation on the endpoints used :
+**Links to Recruitee documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |

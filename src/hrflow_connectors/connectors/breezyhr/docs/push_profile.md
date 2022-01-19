@@ -3,7 +3,7 @@
 
 `PushProfileAction` pushes a Hrflow.ai profile to your company's `Breezyhr` candidate pool via their ***Breezy API***.
 
-# Links to Breezy.hr documentation on the endpoints used :
+**Links to Breezy.hr documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |

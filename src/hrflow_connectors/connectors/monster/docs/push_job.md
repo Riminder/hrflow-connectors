@@ -3,7 +3,7 @@
 
 `PushJobAction` pushes a Monster job to `Hrflow.ai`.
 
-# Links to Monster documentation on the endpoints used :
+**Links to Monster documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |
