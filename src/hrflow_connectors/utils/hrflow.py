@@ -86,10 +86,10 @@ class EventParser(BaseModel):
         """
         Get job
 
-        If the parser does not find `job` object, then it will return `None`
+        If the parser does not find `Job` object, then it will return `None`
 
         Args:
-            source_to_listen (List[str], optional): list of board keys to listen. Defaults to None if you want to listen all available board.
+            board_to_listen (List[str], optional): list of board keys to listen. Defaults to None if you want to listen all available boards.
 
         Returns:
             Optional[Job]: `Job` object or `None` if not found

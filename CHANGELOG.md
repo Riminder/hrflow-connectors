@@ -41,3 +41,33 @@ All notable changes to this project will be documented in this file.
 * Pipeline in Action and BoardAction to use `format_switcher` instead of `format`
 ### Fixed
 * HTTPStream : static private attributes become public attributes
+
+## Version 1.0.0 - 2022/01/19
+### Added
+* Add `Connector` interface
+* add `PullBaseAction` class
+* add `PullBaseAction` class
+* Breezy.hr Connector
+* Ceridian Connector
+* Greenhouse Connector
+* Monster Connector
+* Recruitee Connector
+* SAPSuccessfactors Connector
+* Smartrecruiters Connector : `PushProfileAction`
+* Taleez Connector
+* Workable Connector
+### Changed
+* Facilitate `import`
+* Rename `Action` -> `BaseAction`
+* Rename `BoardAction` -> `PullJobsBaseAction`
+* Rename `ProfileDestinationAction` -> `PushProfileBaseAction`
+* Rename `JobDestinationAction` -> `PushJobBaseAction`
+* `Auth` is compatible with `requests` auth
+* Change the package architecture
+* Move docs of each action into `docs/`
+* Improve documentation
+### Fixed
+* Unescape HTML in Hrflow.ai fields `summary` & `sections`
+### Removed
+* Remove `HTTPStream` and replace with `requests.Request`
+* Remove all crawlers : Craigslist and Indeed

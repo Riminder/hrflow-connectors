@@ -25,21 +25,62 @@ This project is designed to simply and easily handle,
 complex HR integrations by using [**workflows**](https://developers.hrflow.ai/docs/workflows) feature.
 <br/>
 
-## About HrFlow.ai
-  https://www.HrFlow.ai is **an API first company that provides the most sophisticated AI-Powered JOB & PROFILE API**. Corporates and Software vendors can leverage our technology layers to Parse, Enrich and Score both job and candidate data. The platform supports +200 apps, pipelines, and code integrations so you can automate workflows with your favorite tools.
-  - Our Developers documentation : https://developers.hrflow.ai/
-  - Our API list (Parsing, Revealing, Embedding, Searching, Scoring, Reasoning) : https://www.hrflow.ai/api
-  - Our cool demos labs : https://labs.hrflow.ai
 
+## About HrFlow.ai
+[HrFlow.ai](https://hrflow.ai/) is **an API first company that provides the most sophisticated AI-Powered Job & Profile API**. We help HR Tech, Staffing Agencies, and Large employers to thrive in a high-frequency labor market.
+
+**[HrFlow.ai](https://hrflow.ai/) is on a mission to make AI and data integration pipelines a commodity in the HR Industry:**
+  1. **Unify**: Link your Talent Data channels with a few clicks, so they can share data.
+  2. **Understand**: Leverage our AI solutions to process your Talent Data.
+  3. **Automate**: Sync data between your tools and build workflows that meet your business logic.
+
+## :electric_plug: List of Connectors
+
+| Name | Type | Available |
+| - | - | - |
+| **ADP** |  | :hourglass: |
+| [**Breezy.hr**](src/hrflow_connectors/connectors/breezyhr) | ATS | :heavy_check_mark: |
+| **Cegid (Meta4)** |  | :hourglass: |
+| [**Ceridian**](src/hrflow_connectors/connectors/ceridian) | HCM |:heavy_check_mark: |
+| **Cornerstone OnDemand** |  | :hourglass: |
+| [**Crosstalent**](src/hrflow_connectors/connectors/crosstalent) | ATS | :heavy_check_mark: |
+| **Digitalrecruiters** | ATS | :hourglass: |
+| **Fieldglass SAP** | Recruiting software | :hourglass: |
+| [**Flatchr**](src/hrflow_connectors/connectors/flatchr/) | ATS | :heavy_check_mark: |
+| [**Greenhouse**](src/hrflow_connectors/connectors/greenhouse) | ATS | :heavy_check_mark: |
+| **ICIMS** |  | :hourglass: |
+| **Jobvite** |  | :hourglass: |
+| **Kronos (UKG)** |  | :hourglass: |
+| **Laponi** | Job board | :hourglass: |
+| **Lever** |  | :hourglass:  |
+| **Mailchimp** | Marketing tools | :hourglass: |
+| **Microsoft Dynamics** | HCM CLoud | :hourglass: |
+| [**Monster**](src/hrflow_connectors/connectors/monster/) | Job board | :heavy_check_mark: |
+| **Oracle** | Cloud Apps | :hourglass: |
+| [**Recruitee**](src/hrflow_connectors/connectors/recruitee/) | ATS | :heavy_check_mark: |
+| **RecruitBox** |  | :hourglass: |
+| [**SAPSuccessfactors**](src/hrflow_connectors/connectors/sapsuccessfactors/) | Cloud Apps for HR | :heavy_check_mark: |
+| **Salesforce** |  | :hourglass: |
+| [**Smartrecruiters**](src/hrflow_connectors/connectors/smartrecruiters/) | ATS | :heavy_check_mark: |
+| **Staffme** | Job board | :hourglass: |
+| [**Taleez**](src/hrflow_connectors/connectors/taleez/)| ATS | :heavy_check_mark: |
+| **Talentsoft** |  | :hourglass: |
+| **Talentlink** |  | :hourglass: |
+| **Twilio** | Marketing tools | :hourglass: |
+| **Ultimate Software (UKG)** |  | :hourglass: |
+| [**Workable**](src/hrflow_connectors/connectors/workable/) | ATS | :heavy_check_mark: |
+| **Workday** |  | :hourglass: |
+| [**XML**](src/hrflow_connectors/connectors/xml/) | Job board | :heavy_check_mark: |
 
 ## 🪄 Quickstart
 ### What I can do?
 With Hrflow Connector, you can **synchronize** and **process** multiple **HR data streams** in just a few lines of code.
 
-You can do 3 types of actions:
-* `Job flow` :arrow_right: ***`Hrflow.ai Board`***
-* `Profile flow` :arrow_right: ***`Hrflow.ai Source`***
-* ***`Hrflow.ai`*** :arrow_right: `External destination`
+You can do 4 types of actions:
+* Pull jobs : `Job flow` :arrow_right: ***`Hrflow.ai Board`***
+* Pull profiles : `Profile flow` :arrow_right: ***`Hrflow.ai Source`***
+* Push job : ***`Hrflow.ai Board`*** :arrow_right: `External destination`
+* Push profile : ***`Hrflow.ai Source`*** :arrow_right: `External destination`
 
 The features offered by this package:
 * **Synchronize an entire data** stream with a ready-to-use solution
@@ -53,36 +94,18 @@ The features offered by this package:
 * [🔑 Get your API Key](https://developers.hrflow.ai/docs/api-authentification)
 
 1. **`pip install hrflow-connectors`**
-2. **I configure the connector** that I want to use. Let's take for example Crosstalent [`GetAllJobs`](src/hrflow_connectors/connectors/boards/crosstalent).
+2. **Configure the connector**. Let's take for example Greenhouse [Pull jobs](src/hrflow_connectors/connectors/greenhouse).
 ```python
+from hrflow_connectors import Greenhouse
 from hrflow import Hrflow
 
-from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody
-from hrflow_connectors.connectors.boards.crosstalent import GetAllJobs
-
-# 2.1 Hrflow client configuration
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-
-# 2.2 Configuring authentication to Crosstalent via the Salesforce API
-access_token_url = "https://test.salesforce.com/services/oauth2/token"
-auth = OAuth2PasswordCredentialsBody(
-    access_token_url=access_token_url,
-    client_id="MY_CLIENT_ID",
-    client_secret="MY_CLIENT_SECRET",
-    username="MY_USERNAME",
-    password="MY_PASSWORD",
-)
-
-# 2.3 General connector configuration
-action = GetAllJobs(
-    auth=auth,
-    subdomain="MY_SUBDOMAIN",
+Greenhouse.pull_jobs(
+    board_token="MY_GREENHOUSE_BOARD_TOKEN",
     hrflow_client=client,
-    board_key="MY_BOARD_KEY",
-    hydrate_with_parsing=True,
+    board_key="MY_HRFLOW_BOARD_KEY"
 )
 ```
-3.  I write the line of code `action.execute()` to **run the connector.**
 
 🐇 **TADA! You have just called your first connector.**
 
@@ -98,67 +121,8 @@ The project mainly uses 4 packages :
 * `requests=="2.26.0"`
 * `hrflow=="1.9.0"`
 * `pydantic=="1.7.4"`
-* `selenium=="3.141.0"`
 
 **To find the list of dependencies, you can look at the [`pyproject.toml`](pyproject.toml) file**
-
-## :electric_plug: List of Connectors
-- **ADP** (soon)
-- **Craigslist** : [`CraigslistFeed`](src/hrflow_connectors/connectors/boards/craigslist/)
-- **Careerbuilder** [`CareerBuilderFeed`](src/hrflow_connectors/connectors/boards/careerbuilder)
-- **Cegid(Meta4)** (soon)
-- **Ceridian** [`PullJobs`](src/hrflow_connectors/connectors/boards/ceridian)
-- **Cornerstone OnDemand** (soon)
-- **Crosstalent** : [`GetAllJobs`](src/hrflow_connectors/connectors/boards/crosstalent), [`PushProfile`](src/hrflow_connectors/connectors/destinations/crosstalent)
-- **Digitalrecruiters** (soon)
-- **Flatchr** : [`PushProfile`](src/hrflow_connectors/connectors/destinations/flatchr/), [`EnrichProfile`](src/hrflow_connectors/connectors/destinations/flatchr/)
-- **Greenhouse** : [`GetAllJobs`](src/hrflow_connectors/connectors/boards/greenhouse), [`PushProfile`](src/hrflow_connectors/connectors/destinations/greenhouse)
-- **Indeed** : [`IndeedFeed`](src/hrflow_connectors/connectors/boards/indeed)
-- **Kronos(UKG)** (soon)
-- **Laponi** (soon)
-- **Lever** (soon)
-- **Mailchimp** (soon)
-- **Monster** : [`PushJob`](src/hrflow_connectors/connectors/boards/monster), [`PullProfile`](src/hrflow_connectors/connectors/destinations/monster)
-- **Oracle** (soon)
-- **Recruitee** : [`PullJobs`](src/hrflow_connectors/connectors/boards/recruitee), [`PushProfile`](src/hrflow_connectors/connectors/destinations/recruitee)
-- **SAP Successfactors** [`PullJobs`](src/hrflow_connectors/connectors/boards/sapsuccessfactors), [`PushProfile`](src/hrflow_connectors/connectors/destinations/sapsuccessfactors)
-- **Salesforce** (soon)
-- **Smartrecruiters** : [`GetAllJobs`](src/hrflow_connectors/connectors/boards/smartrecruiters/), [`PushProfile`](src/hrflow_connectors/connectors/destinations/smartrecruiters)
-- **Staffme** (soon)
-- **Talentsoft** (soon)
-- **Twilio** (soon)
-- **Ultimate Software(UKG)** (soon)
-- **Workable** : [`PullJobs`](src/hrflow_connectors/connectors/boards/workable)
-- **Workday** (soon)
-
-## 🧐 What's inside?
-**A quick look at the project structure.**
-
-* **`legacy/`** : Folder containing the old code snippets that we used to connect the data streams in the workflows
-* **`src/hrflow_connectors/connectors/`** : Folder containing the connectors sorted according to the type of their actions
-  * **`boards/`** : `Job flow` :arrow_right: ***`Hrflow.ai Board`*** Folder containing the set of connectors that synchronise the job stream in a ***Hrflow.ai Board***.
-    * **`ConnectorName/`** : Connector folder named `ConnectorName`.
-      * **`actions.py`** : File containing all the actions of a connector.
-      * **`spec.py`** : File listing the available actions and the particularities of the connector (version, ...)
-      * **`README.md`** : File documenting the use of the connector.
-  * **`sources/`** : `Profile flow` :arrow_right: ***`Hrflow.ai Source`*** Folder containing the set of connectors that synchronise the profile stream in a ***Hrflow.ai Source***. The architecture is the same as for `boards/`.
-  * **`destinations/`** : ***`Hrflow.ai`*** :arrow_right: `External destination` Folder containing all the connectors that export talent data from Hrflow to an external destination. The architecture is the same as for `boards/`.
-* **`src/hrflow_connectors/core/`** : Containing the core of the connectors shared by all.
-* **`src/hrflow_connectors/utils/`** : Containing the useful out-of-context functions of the package.
-* **`tests/`** : Folder containing all unit and functional tests of the project.
-* **`.coveragerc`** : Configuration file for evaluating test coverage with `pytest-cov`.
-* **`.gitignore`** : This file tells git which files it should not track / not maintain a version history for.
-* **`AUTHORS.md`** : File listing the authors who participated in the project code.
-* **`CHANGELOG.md`** : File listing the changes made for each version.
-* **`CONTRIBUTING.md`** : File describing how to participate in the project.
-* **`LICENSE`** : Project license.
-* **`README.md`**: A text file containing useful reference information about this project.
-* **`VERSION`** : File containing the project version.
-* **`poetry.lock`** : File containing the exact versions of the dependencies to ensure that the package versions are consistent for everyone working on your project.
-* **`pyproject.toml`** : File that orchestrates the project and its dependencies.
-* **`pytest.ini`** : The main configuration file of pytest, which can change the running mode of pytest.
-* **`setup.cfg`** : A Python package that supports providing all of a Python distribution's metadata and build configuration rather than in the `setup.py` script.
-* **`setup.py`** : The minimal setup.py which calls the configuration in `setup.cfg`.
 
 ## :woman_technologist: Contributions
 
@@ -170,6 +134,10 @@ appreciated.
 
 👉 **To find out more about how to proceed, the rules and conventions to follow, read carefully [`CONTRIBUTING.md`](CONTRIBUTING.md).**
 
+## 🔗 Resources
+* Our Developers documentation : https://developers.hrflow.ai/
+* Our API list (Parsing, Revealing, Embedding, Searching, Scoring, Reasoning) : https://www.hrflow.ai/api
+* Our cool demos labs : https://labs.hrflow.ai
 
 ## :page_with_curl: License
 
