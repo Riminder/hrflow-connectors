@@ -1,9 +1,13 @@
 # Pull jobs
-`Smart Recruiters` :arrow_right: `Hrflow.ai`
+`SmartRecruiters` :arrow_right: `Hrflow.ai`
 
 `PullJobsAction` retrieves all jobs via the ***SmartRecruiter*** API. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-🔗 [Documentation](https://dev.smartrecruiters.com/customer-api/live-docs/job-api/)
+
+| Endpoints | Description |
+| --------- | ----------- |
+|[Get all jobs](https://dev.smartrecruiters.com/customer-api/live-docs/job-api/#/jobs/jobs.all) | Endpoint to search jobs by traditional params (offset, limit...) and get the list of all jobs with their ids, the request method is `GET`|
+|[Get job content](https://dev.smartrecruiters.com/customer-api/live-docs/job-api/#/jobs/jobs.get) | Endpoint to get the content of a job with a given id, a jobId parameter is required, the request method is `GET`|
 
 ## Parameters
 
@@ -31,20 +35,14 @@
 ```python
 from hrflow_connectors import SmartRecruiter
 
-from hrflow import Hrflow
 from hrflow_connectors import XSmartTokenAuth
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
-# We add a basic configuration to our logger to see the messages displayed in the standard output
-# This is not mandatory. It allows you to see what the connector is doing.
-logger = get_logger_with_basic_config()
-
-client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-auth = XSmartTokenAuth(value="MY_SMART_TOKEN")
+auth = XSmartTokenAuth(value=smart_token)
 
 SmartRecruiter.pull_jobs(
-    auth=auth,
-    hrflow_client=client,
+    smart_token="MY_SMART_TOKEN",
+    hrflow_email="MY_EMAIL",
+    hrflow_secret="MY_X_API_KEY",
     limit=2,
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=False,

@@ -37,12 +37,10 @@
 ```python
 from hrflow_connectors import Breezyhr
 
-from hrflow import Hrflow
-from hrflow_connectors.core.auth import OAuth2EmailPasswordBody
+from hrflow_connectors import OAuth2EmailPasswordBody
 from hrflow_connectors.utils.hrflow import Profile, Source
 
 profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
-client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
 
 auth = OAuth2EmailPasswordBody(
             access_token_url="https://api.breezy.hr/v3/signin",
@@ -53,7 +51,8 @@ auth = OAuth2EmailPasswordBody(
 Breezyhr.push_profile(
     auth=auth,
     subdomain=settings["SUBDOMAIN"],
-    hrflow_client=client,
+    hrflow_email="MY_EMAIL",
+    hrflow_secret="MY_X_API_KEY",
     company_name=settings["MY_COMPANY_NAME"],
     position_id=settings["MY_POSITION_ID"]
     profile=profile,

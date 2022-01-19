@@ -27,6 +27,7 @@ from hrflow import Hrflow
 from hrflow_connectors import OAuth2PasswordCredentialsBody
 from hrflow_connectors.utils.hrflow import Profile, Source
 
+profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 
 client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
 

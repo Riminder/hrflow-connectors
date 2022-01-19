@@ -4,7 +4,9 @@
 
 `PullJobsAction` gets all available jobs listed on ***Recruitee company endpoints***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-🔗 [Documentation](https://docs.recruitee.com/reference/offers)
+| Endpoints | Description |
+| --------- | ----------- |
+| [Get offers](https://docs.recruitee.com/reference/offers) | Endpoint that returns a collection of published company jobs, a company subdomain parameter is required, the request method is `GET`|
 
 ## Parameters
 
@@ -27,18 +29,10 @@
 ```python
 from hrflow_connectors import Recruitee
 
-from hrflow import Hrflow
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
-
-# We add a basic configuration to our logger to see the messages displayed in the standard output
-# This is not mandatory. It allows you to see what the connector is doing.
-logger = get_logger_with_basic_config()
-
-client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-
 action = Recruitee.PullJobs(
     subdomain="MY_SUBDOMAIN",
-    hrflow_client=client,
+    hrflow_email="MY_EMAIL",
+    hrflow_secret="MY_X_API_KEY",
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
 )

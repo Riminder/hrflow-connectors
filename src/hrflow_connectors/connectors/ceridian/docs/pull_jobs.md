@@ -4,8 +4,6 @@
 
 `PullJobsAction` gets all available jobs listed on ***Ceridian Dayforce specific endpoints***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-🔗 [Documentation](https://developers.dayforce.com/Build/API-Explorer/Recruiting/Get-Job-Postings.aspx)
-
 | Endpoints | Description |
 | --------- | ----------- |
 |[Get Job Feeds](https://developers.dayforce.com/Build/API-Explorer/Recruiting/Get-Job-Postings.aspx)         | Endpoint to get job postings that have been posted externally and are available through the candidate portal, a clientNamespace parameter is required, the reauest method is `Get`            |
@@ -30,14 +28,11 @@
 ```python
 from hrflow_connectors import Ceridian
 
-from hrflow import Hrflow
-
-client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-
 Ceridian.pull_jobs(
     subdomain="MY_SUBDOMAIN",
     client_name_space="MY_CLIENT_NAME_SPACE"
-    hrflow_client=client,
+    hrflow_email="MY_EMAIL",
+    hrflow_secret="MY_X_API_KEY",
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
 )

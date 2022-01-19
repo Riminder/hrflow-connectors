@@ -4,7 +4,10 @@
 
 `PullJobsAction` gets all available jobs from SAPSuccessFactors via their ***Job Requisition API***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-🔗 [Documentation](https://api.sap.com/api/RCMJobRequisition/overview)
+
+| Endpoints | Description |
+| --------- | ----------- |
+| [Get Job Requisitions](https://api.sap.com/api/RCMJobRequisition/overview)| Endpoint to access job requisition data, an api_server is required, the request method is `GET` |
 
 ## Parameters
 
@@ -28,29 +31,20 @@
 
 ```python
 from hrflow_connectors import SAPSuccessfactors
-
-from hrflow import Hrflow
-
-from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
-
-# We add a basic configuration to our logger to see the messages displayed in the standard output
-# This is not mandatory. It allows you to see what the connector is doing.
-logger = get_logger_with_basic_config()
-
-client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+from hrflow_connectors import OAuth2PasswordCredentialsBody, XAPIKeyAuth
 
 auth = XAPIKeyAuth(
     name = "APIKey",
     value = "MY_API_KEY",
-)
+    )
 
 SapSuccessfactors.pull_jobs(
     auth=auth,
     top = 30,
     api_server="MY_API_SERVER",
-    hrflow_client=client,
+    hrflow_email="MY_EMAIL",
+    hrflow_secret="MY_X_API_KEY",
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
-)
+    )
 ```
