@@ -3,7 +3,7 @@ from pydantic import Field
 import itertools
 import requests
 
-from ...core import action as core
+from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...core.auth import XSmartTokenAuth
 from ...utils.logger import get_logger
 
@@ -11,7 +11,7 @@ from ...utils.logger import get_logger
 logger = get_logger()
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
     auth: XSmartTokenAuth
     query: Optional[str] = Field(
         None,
@@ -247,7 +247,7 @@ class PullJobsAction(core.PullJobsAction):
         return job
 
 
-class PushProfileAction(core.PushProfileAction):
+class PushProfileAction(PushProfileBaseAction):
     auth: XSmartTokenAuth
     job_id: str = Field(
         ...,

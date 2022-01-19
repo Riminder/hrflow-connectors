@@ -5,18 +5,17 @@ from hrflow_connectors import Breezyhr
 from hrflow_connectors.utils.hrflow import Profile, Source
 
 
-
 @pytest.fixture
 def auth(credentials):
     auth = OAuth2EmailPasswordBody(
-        access_token_url = "https://api.breezy.hr/v3/signin",
-        email = credentials["breezyhr"]["email"],
-        password= credentials["breezyhr"]["password"]
+        access_token_url="https://api.breezy.hr/v3/signin",
+        email=credentials["breezyhr"]["email"],
+        password=credentials["breezyhr"]["password"],
     )
     return auth
 
 
-def test_PushProfileAction(logger, auth, hrflow_client):
+def test_PushProfileBaseAction(logger, auth, hrflow_client):
     profile = Profile(
         key="a7e7fa4af68e7c450f2b708d14a3bda9b6ade5d9",
         source=Source(key="762d2f25b855f7cfd13e5585ef727d8fb6e752cb"),

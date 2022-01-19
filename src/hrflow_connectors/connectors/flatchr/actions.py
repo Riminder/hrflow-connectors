@@ -4,14 +4,15 @@ import base64
 import requests
 
 from ...core.auth import AuthorizationAuth
-from ...core import action as core
+
+from ...core.action import PushProfileBaseAction
 from ...utils.hrflow import generate_workflow_response
 from ...utils.logger import get_logger
 
 logger = get_logger()
 
 
-class PushProfileAction(core.PushProfileAction):
+class PushProfileAction(PushProfileBaseAction):
     auth: AuthorizationAuth
     vacancy: str = Field(
         ...,
