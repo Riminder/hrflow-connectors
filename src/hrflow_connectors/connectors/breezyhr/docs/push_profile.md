@@ -36,7 +36,7 @@
 
 ```python
 from hrflow_connectors import Breezyhr
-form hrflow import Hrflow
+from hrflow import Hrflow
 from hrflow_connectors import OAuth2EmailPasswordBody
 from hrflow_connectors.utils.hrflow import Profile, Source
 
