@@ -236,7 +236,7 @@ class PushBaseAction(BaseAction):
         logger.info("All has been done for this connector !")
 
 
-class PullJobsAction(PullBaseAction):
+class PullJobsBaseAction(PullBaseAction):
     """
     Pull jobs from an external stream to Hrflow.ai
     """
@@ -638,7 +638,7 @@ class PullJobsAction(PullBaseAction):
         logger.info("All has been done for this connector !")
 
 
-class PushJobAction(BaseAction):
+class PushJobBaseAction(PushBaseAction):
 
     job: Job = Field(..., description="Job to push")
 
@@ -664,7 +664,7 @@ class PushJobAction(BaseAction):
         )
 
 
-class PushProfileAction(PushBaseAction):
+class PushProfileBaseAction(PushBaseAction):
     profile: Profile = Field(..., description="Profile to push")
 
     def pull(self) -> Iterator[TalentDataType]:
@@ -693,7 +693,7 @@ class PushProfileAction(PushBaseAction):
         )
 
 
-class CatchProfileAction(BaseAction):
+class CatchProfileBaseAction(BaseAction):
 
     source_key: str = Field(
         ..., description="Source key where the profiles to be added will be stored"

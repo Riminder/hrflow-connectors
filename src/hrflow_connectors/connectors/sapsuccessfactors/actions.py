@@ -1,17 +1,19 @@
 from typing import Iterator, Dict, Any, Union, Optional
 from pydantic import Field
 import requests
+
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
-from ...core import action as core
+from ...core.action import PullJobsBaseAction, PushProfileBaseAction
+
 import dateutil.parser as dp
 from ...utils.hrflow import generate_workflow_response
 
 logger = get_logger()
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
 
     auth: Union[XAPIKeyAuth, OAuth2PasswordCredentialsBody]
     top: int = Field(
@@ -134,7 +136,7 @@ class PullJobsAction(core.PullJobsAction):
         return job
 
 
-class PushProfileAction(core.PushProfileAction):
+class PushProfileAction(PushProfileBaseAction):
 
     profile_already_exists: Any = Field(
         "COE0019",

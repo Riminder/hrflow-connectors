@@ -1,10 +1,11 @@
 from typing import Iterator, Dict, Any
 from pydantic import Field
 import requests
-from ...core import action as core
+
+from ...core.action import PullJobsBaseAction
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
 
     subdomain: str = Field(..., description="subdomain just before `dayforcehcm.com`")
     client_name_space: str = Field(
