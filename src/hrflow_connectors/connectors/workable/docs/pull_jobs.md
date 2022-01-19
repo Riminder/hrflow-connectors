@@ -4,8 +4,6 @@
 
 `PullJobsAction` gets all available jobs listed on ***Workable public endpoints***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-🔗 [Documentation](https://workable.readme.io/docs/jobs-1)
-
 | Endpoints | Description |
 | --------- | ----------- |
 | [subdomain](https://workable.readme.io/docs/jobs-1) | Endpoint to get a collection of the public jobs for an account subdomain, the request method is `GET` |
