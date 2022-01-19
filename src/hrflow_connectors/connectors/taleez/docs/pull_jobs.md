@@ -41,7 +41,7 @@ Taleez.pull_jobs(
     page=MY_START_PAGE,
     page_size=MY_PAGE_SIZE_LIMIT,
     auth=auth,
-    hrflow_client=client,,
+    hrflow_client=client,
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
 )
