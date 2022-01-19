@@ -36,7 +36,6 @@ from hrflow_connectors.utils.hrflow import Profile, Source
 
 profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 client = Hrflow(api_secret="X-API-KEY", api_user="X-USER-EMAIL")
-
 auth = AuthorizationAuth(value="FLATCHR_KEY")
 Flatchr.push_profile(
     auth=auth,

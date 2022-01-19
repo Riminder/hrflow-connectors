@@ -33,7 +33,6 @@ from hrflow_connectors import XSmartTokenAuth
 from hrflow_connectors.utils.hrflow import Profile, Source
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-
 auth = XSmartTokenAuth(value=settings["MY_SMART_TOKEN"])
 profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 

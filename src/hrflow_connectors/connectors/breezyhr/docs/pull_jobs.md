@@ -36,7 +36,6 @@ from hrflow import Hrflow
 from hrflow_connectors import OAuth2EmailPasswordBody
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-
 auth = OAuth2EmailPasswordBody(
             access_token_url="https://api.breezy.hr/v3/signin",
             email="EMAIL",

@@ -39,7 +39,6 @@ from hrflow import Hrflow
 from hrflow_connectors import XSmartTokenAuth
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-
 auth = XSmartTokenAuth(value=smart_token)
 
 SmartRecruiter.pull_jobs(
