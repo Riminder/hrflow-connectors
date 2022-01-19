@@ -5,6 +5,13 @@
 
 🔗 [Documentation](https://developer.breezy.hr/docs/company-position-candidates-add)
 
+| Endpoints | Description |
+| --------- | ----------- |
+| [Get company_id](https://developer.breezy.hr/docs/companies)          | Endpoint to retrieve the companies associated with the authenticated user in case the user didn't specify his company ID required to `PushProfileAction`, the request method is `GET`           |
+| [Post candidate](https://developer.breezy.hr/docs/company-position-candidates-add)         |   Endpoint to Add a new candidate to a poisition, required parameters are company id and position id, the request method is `POST`    |
+|[Update a candidate on a position](https://developer.breezy.hr/docs/company-position-candidate-update)           | Endpoint to update a candidate on a position,in case the candidate already exists, required parameters are company id, position id and candidate id, the request method is `PUT`|
+|[Get candidate id](https://developer.breezy.hr/docs/company-candidates-search)| Endpoint to search that a candidate already exists to retrieve his id, required parameters are company id and candidate's email address, the request method is `GET`|
+
 ## Parameters
 
 | Field | Type | Description |
@@ -26,45 +33,29 @@
 :red_circle: : *required*
 
 ## Example
-Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.ai/docs/workflows#catch-setup).
+
 ```python
 from hrflow_connectors import Breezyhr
 
 from hrflow import Hrflow
-from hrflow_connectors import OAuth2EmailPasswordBody
-from hrflow_connectors.utils.hrflow import Profile
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
+from hrflow_connectors.core.auth import OAuth2EmailPasswordBody
+from hrflow_connectors.utils.hrflow import Profile, Source
 
+profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
+client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
 
-
-def workflow(_request, settings):
-    """
-    CATCH Workflow
-    """    
-    # We add a basic configuration to our logger to see the messages displayed in the standard output
-    # This is not mandatory. It allows you to see what the connector is doing.
-    logger = get_logger_with_basic_config()
-
-    event = EventParser(request=_request)
-    profile = event.get_profile()
-    if profile is not None:
-        logger.info("Profile found !")
-
-        client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
-
-        auth = OAuth2EmailPasswordBody(
+auth = OAuth2EmailPasswordBody(
             access_token_url="https://api.breezy.hr/v3/signin",
             email = settings["EMAIL"]
             password=settings["PASSWORD"],
         )
 
-        response = Breezyhr.push_profile(
-            auth=auth,
-            subdomain=settings["SUBDOMAIN"],
-            hrflow_client=client,
-            company_name=settings["MY_COMPANY_NAME"],
-            position_id=settings["MY_POSITION_ID"]
-            profile=profile,
-        )
-        return response
+Breezyhr.push_profile(
+    auth=auth,
+    subdomain=settings["SUBDOMAIN"],
+    hrflow_client=client,
+    company_name=settings["MY_COMPANY_NAME"],
+    position_id=settings["MY_POSITION_ID"]
+    profile=profile,
+    )
 ```
