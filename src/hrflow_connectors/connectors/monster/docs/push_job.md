@@ -25,12 +25,8 @@
 ```python
 from hrflow_connectors import Monster
 from hrflow import Hrflow
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
 from hrflow.utils.hrflow import Job, Board
 
-# We add a basic configuration to our logger to see the messages displayed in the standard output
-# This is not mandatory. It allows you to see what the connector is doing.
-logger = get_logger_with_basic_config()
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
