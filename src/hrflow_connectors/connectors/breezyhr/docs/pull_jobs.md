@@ -32,9 +32,7 @@
 from hrflow_connectors import Breezyhr
 
 from hrflow import Hrflow
-from hrflow_connectors.core.auth import OAuth2EmailPasswordBody
-
-client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+from hrflow_connectors import OAuth2EmailPasswordBody
 
 auth = OAuth2EmailPasswordBody(
             access_token_url="https://api.breezy.hr/v3/signin",
@@ -45,7 +43,8 @@ auth = OAuth2EmailPasswordBody(
 Breezyhr.pull_jobs(
     auth=auth,
     subdomain="MY_SUBDOMAIN",
-    hrflow_client=client,
+    hrflow_email="MY_EMAIL",
+    hrflow_secret="MY_X_API_KEY",
     board_key="MY_BOARD_KEY",
     company_name=settings["MY_COMPANY_NAME"],
     hydrate_with_parsing=True,

@@ -4,7 +4,9 @@
 
 `PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Greenhouse*** Jobs pool.
 
-🔗 [Documentation](https://developers.greenhouse.io/harvest.html#post-add-candidate)
+| Endpoints | Description |
+| --------- | ----------- |
+| [Push profile](https://developers.greenhouse.io/harvest.html#post-add-candidate) | Endpoint to add candidate using greenhouse harvest API, the request method is `POST` |
 
 ## Parameters
 
@@ -27,38 +29,23 @@
 ```python
 from hrflow_connectors import Greenhouse
 
-from hrflow import Hrflow
 from hrflow_connectors.connectors import OAuth2PasswordCredentialsBody, AuthorizationAuth
-from hrflow_connectors.utils.hrflow import EventParser, Profile, Source
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
+from hrflow_connectors.utils.hrflow import Profile, Source
 
-def workflow(_request, settings):
-    """
-    CATCH Workflow
-    """    
-    # We add a basic configuration to our logger to see the messages displayed in the standard output
-    # This is not mandatory. It allows you to see what the connector is doing.
-    logger = get_logger_with_basic_config()
+profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 
-    event = EventParser(request=_request)
-    profile = event.get_profile()
-    if profile is not None:
-        logger.info("Profile found !")
+auth = AuthorizationAuth(
+name = 'Authorization',
+value= settings['AUTHORIZATION'],
+)
 
-        client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
-
-
-        auth = AuthorizationAuth(
-        name = 'Authorization',
-        value= settings['AUTHORIZATION'],
-    )
-
-        response = Greenhouse.push_profile(
-            auth=auth,
-            job_id=settings["JOB_ID"],
-            on_behalf_of=settings["ON_BEHALF_OF"],
-            hrflow_client=client,
-            profile=profile,
-        )
-        return response
+response = Greenhouse.push_profile(
+    auth=auth,
+    job_id=settings["JOB_ID"],
+    on_behalf_of=settings["ON_BEHALF_OF"],
+    hrflow_email="MY_EMAIL",
+    hrflow_secret="MY_X_API_KEY",
+    profile=profile,
+)
+return response
 ```

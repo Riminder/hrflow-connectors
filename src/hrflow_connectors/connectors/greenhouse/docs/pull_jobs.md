@@ -5,6 +5,11 @@
 
 🔗 [Documentation](https://developers.greenhouse.io/job-board.html)
 
+Links to Greenhouse documentation on the endpoints used :
+| Endpoints | Description |
+| --------- | ----------- |
+﻿| [Job Board](https://developers.greenhouse.io/job-board.html) | Endpoint to retrieve all jobs from a greenhouse job board which is publicly available, only required parameter is a board token or board name, the request method is `GET`|
+
 ## Parameters
 
 | Field | Type | Description |
@@ -26,16 +31,10 @@
 ```python
 from hrflow_connectors import Greenhouse
 
-from hrflow import Hrflow
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
-
-# We add a basic configuration to our logger to see the messages displayed in the standard output
-# This is not mandatory. It allows you to see what the connector is doing.
-logger = get_logger_with_basic_config()
-client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 Greenhouse.pull_jobs(
+    hrflow_email="MY_EMAIL",
+    hrflow_secret="MY_X_API_KEY",
     board_token="MY_BOARD_TOKEN",
-    hrflow_client=client,
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
 )
