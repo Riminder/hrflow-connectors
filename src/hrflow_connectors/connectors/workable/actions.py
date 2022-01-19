@@ -1,15 +1,15 @@
 from typing import Iterator, Dict, Any
 from pydantic import Field
-import html
 import requests
-from ...core import action as core
+
+from ...core.action import PullJobsBaseAction
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 
 logger = get_logger()
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
 
     subdomain: str = Field(
         ...,
