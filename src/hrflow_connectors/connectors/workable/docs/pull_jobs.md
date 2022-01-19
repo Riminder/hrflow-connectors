@@ -6,6 +6,10 @@
 
 🔗 [Documentation](https://workable.readme.io/docs/jobs-1)
 
+| Endpoints | Description |
+| --------- | ----------- |
+| [subdomain](https://workable.readme.io/docs/jobs-1) | Endpoint to get a collection of the public jobs for an account subdomain, the request method is `GET` |
+
 ## Parameters
 
 | Field | Type | Description |
@@ -27,15 +31,10 @@
 ```python
 from hrflow_connectors import Workable
 
-from hrflow import Hrflow
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
-# We add a basic configuration to our logger to see the messages displayed in the standard output
-# This is not mandatory. It allows you to see what the connector is doing.
-logger = get_logger_with_basic_config()
-client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 Workable.pull_jobs(
     subdomain="MY_SUBDOMAIN",
-    hrflow_client=client,
+    hrflow_email="MY_EMAIL",
+    hrflow_secret="MY_X_API_KEY",
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
 )
