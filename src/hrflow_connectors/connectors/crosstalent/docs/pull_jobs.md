@@ -27,13 +27,8 @@ from hrflow_connectors import Crosstalent
 
 from hrflow import Hrflow
 from hrflow_connectors import OAuth2PasswordCredentialsBody
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
-# We add a basic configuration to our logger to see the messages displayed in the standard output
-# This is not mandatory. It allows you to see what the connector is doing.
-logger = get_logger_with_basic_config()
-
-client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+client = Hrflow(api_secret=hrflow_secret, api_user=hrflow_email)
 auth = OAuth2PasswordCredentialsBody(
     access_token_url="https://test.salesforce.com/services/oauth2/token",
     client_id="MY_CLIENT_ID",
@@ -45,7 +40,8 @@ auth = OAuth2PasswordCredentialsBody(
 Crosstalent.pull_jobs(
     auth=auth,
     subdomain="MY_SUBDOMAIN",
-    hrflow_client=client,
+    hrflow_email="MY_EMAIL",
+    hrflow_secret="MY_X_API_KEY",
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
 )
