@@ -47,5 +47,5 @@ Crosstalent.push_profile(
     subdomain="SUBDOMAIN",
     hrflow_client=client,
     profile=profile,
-    )
+)
 ```

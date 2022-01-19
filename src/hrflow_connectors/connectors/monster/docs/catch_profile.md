@@ -39,5 +39,5 @@ Monster.catch_profile(
     hrflow_client=client,
     request=_request,
     source_key="8df6a1247b1a95e0b84f5226093ff2c58e60cdf1",
-    )
+)
 ```

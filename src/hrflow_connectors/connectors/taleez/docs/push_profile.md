@@ -51,5 +51,5 @@ Taleez.push_profile(
     recruiter_id="MY_RECRUITER_ID",
     hrflow_client=client,
     profile=profile,
-    )
+)
 ```

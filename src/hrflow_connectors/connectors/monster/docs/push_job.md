@@ -43,4 +43,4 @@ Monster.catch_profile(
     subdomain="gateway",
     hrflow_client=client,
     job=job,
-    )
+)

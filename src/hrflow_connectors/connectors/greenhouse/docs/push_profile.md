@@ -47,7 +47,7 @@ profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 auth = AuthorizationAuth(
     name = 'Authorization',
     value= 'MY_AUTHORIZATION',
-    )
+)
 
 response = Greenhouse.push_profile(
     auth=auth,

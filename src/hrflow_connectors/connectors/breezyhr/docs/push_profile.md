@@ -53,7 +53,7 @@ auth = OAuth2EmailPasswordBody(
             access_token_url="https://api.breezy.hr/v3/signin",
             email="EMAIL",
             password="PASSWORD",
-        )
+)
 
 Breezyhr.push_profile(
     auth=auth,
@@ -62,5 +62,5 @@ Breezyhr.push_profile(
     company_name="MY_COMPANY_NAME",
     position_id="MY_POSITION_ID",
     profile=profile,
-    )
+)
 ```
