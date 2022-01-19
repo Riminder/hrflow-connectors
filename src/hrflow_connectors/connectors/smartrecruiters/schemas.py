@@ -23,6 +23,7 @@ class Location(BaseModel):
 class Industry(BaseModel):
     id: str
 
+
 class Function(BaseModel):
     id: str
 
@@ -30,8 +31,10 @@ class Function(BaseModel):
 class TypeOfEmployment(BaseModel):
     id: str
 
+
 class ExperienceLevel(BaseModel):
     id: Optional[str]
+
 
 class EeoCategory(BaseModel):
     id: str
@@ -67,12 +70,12 @@ class AdditionalInformation(BaseModel):
     title: str
     text: str
 
+
 class Sections(BaseModel):
     companyDescription: CompanyDescription
     jobDescription: JobDescription
     qualifications: Qualifications
     additionalInformation: AdditionalInformation
-
 
 
 class JobAd(BaseModel):
@@ -100,6 +103,7 @@ class SmartRecruitersModel(BaseModel):
 
 
 # Profile Model
+
 
 class Location(BaseModel):
     country: str
