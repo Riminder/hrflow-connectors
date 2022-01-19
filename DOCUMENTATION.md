@@ -12,7 +12,7 @@ In the action execution pipeline, here is where the `logics` are located:
 3. Apply `format` to each element
 4. `push` the data
 
-**All `Action`s have the following parameters:**
+**All actions have the following parameters:**
 * `logics` which is a list of function names. This will be used to filter the elements returned by `pull`.
 * `global_scope` is a dictionary containing the current scope's global variables.
 * `local_scope` is a dictionary containing the current scope's local variables.
@@ -30,12 +30,12 @@ Most of the time, you would just write `global_scope=globals()` and `local_scope
 
 ### Example
 ```python
-from hrflow_connectors.core.action import Action
+from hrflow_connectors.core.action import BaseAction
 
 def filter_element1_with_value1(element):
     return element.get("element1") == "value1"
 
-action = Action(
+action = BaseAction(
     logics=["filter_element1_with_value1"],
     global_scope=globals(),
     local_scope=locals(),
@@ -75,9 +75,9 @@ By default, all connectors have a `format` provided and ready to use. If you wan
 
 ### By inheriting & overriding `format`
 ```python
-from hrflow_connectors.core.action import Action
+from hrflow_connectors.core.action import BaseAction
 
-class ActionWithMyFormat(Action)
+class ActionWithMyFormat(BaseAction)
     def format(data):
         # my format
         job = dict(my_ref=data["id"])
@@ -88,7 +88,7 @@ action.execute()
 ```
 ### By using a format function external
 
-**All `Action`s have the following parameters:**
+**All actions have the following parameters:**
 * `format_function_name` which is the function name. This will be used to format each element returned by `pull`.
 * `global_scope` is a dictionary containing the current scope's global variables.
 * `local_scope` is a dictionary containing the current scope's local variables.
@@ -103,14 +103,14 @@ Most of the time, you would just write `global_scope=globals()` and `local_scope
 ℹ️ To find out more about the scopes and how the `eval` function works: https://docs.python.org/3/library/functions.html#eval
 
 ```python
-from hrflow_connectors.core.action import Action
+from hrflow_connectors.core.action import BaseAction
 
 def my_format(data):
     # my format
     job = dict(my_ref=data["id"])
     return job
 
-action = Action(
+action = BaseAction(
     format_function_name="my_format",
     global_scope=globals(),
     local_scope=locals(),
@@ -119,19 +119,18 @@ action.execute()
 ```
 
 ## Using parsing to enrich a job
-**All `Action` for connectors found in `connectors/boards` have an option to enrich a job with parsing.**
+**All `PullJobsAction`s have an option to enrich a job with parsing.**
 
 Parsing will parse all the text fields and extract the characteristics of the job and add them to the appropriate fields in ***Hrflow.ai***: `skills`, `languages`, `certifications`, `courses`, `tasks`, ...
 
 **To enable parsing, simply turn on the option `hydrate_with_parsing`.**
 ```python
-from hrflow_connectors.core.action import BoardAction
+from hrflow_connectors import MyConnector
 
-action = BoardAction(hydrate_with_parsing=True, ...)
-action.execute()
+MyConnector.pull_jobs(hydrate_with_parsing=True, ...)
 ```
 ## Automatically archive a job when it is deleted from the stream
-**All `Action` for connectors found in `connectors/boards` have an `archive_deleted_jobs_from_stream` option to automatically archive a Board job when it is deleted from the stream.**
+***All `PullJobsAction`s have an `archive_deleted_jobs_from_stream` option to automatically archive a Board job when it is deleted from the stream.**
 
 This can be useful for synchronizing a board with a job stream.
 In this case, you only need to enable the `archive_deleted_jobs_from_stream=True` option.
@@ -140,10 +139,9 @@ But in some cases, you may only want to add jobs without worrying that the job i
 
 Here is how it looks in an example :
 ```python
-from hrflow_connectors.core.action import BoardAction
+from hrflow_connectors import MyConnector
 
-action = BoardAction(archive_deleted_jobs_from_stream=True, ...)
-action.execute()
+MyConnector.pull_jobs(archive_deleted_jobs_from_stream=True, ...)
 ```
 
 ## Using `hrflow_connector` in a CATCH workflow to get a profile
@@ -156,7 +154,7 @@ This method retrieves information from a profile if it exists in `_request`.
 
 **Let's take a simple example:**
 ```python
-from hrflow_connectors.connectors.core.action import ProfileDestinationAction
+from hrflow_connectors import MyConnector
 from hrflow_connectors.utils.hrflow import EventParser
 
 def workflow(_request, settings):
@@ -166,15 +164,14 @@ def workflow(_request, settings):
     event = EventParser(request=_request)
     profile = event.get_profile()
     if profile is not None:
-        action = ProfileDestinationAction(profile=profile, ...)
-        response = action.execute()
+        response = MyConnector.push_profile(profile=profile, ...)
         return response
 ```
 
 If now you only want to process the profiles added **in the sources with the following keys `MY_SOURCE_KEY_1` and `MY_SOURCE_KEY_2`**.
 Then you just have to write :
 ```python
-from hrflow_connectors.connectors.core.action import ProfileDestinationAction
+from hrflow_connectors import MyConnector
 from hrflow_connectors.utils.hrflow import EventParser
 
 def workflow(_request, settings):
@@ -184,8 +181,7 @@ def workflow(_request, settings):
     event = EventParser(request=_request)
     profile = event.get_profile(source_to_listen=["MY_SOURCE_KEY_1", "MY_SOURCE_KEY_2"])
     if profile is not None:
-        action = ProfileDestinationAction(profile=profile, ...)
-        response = action.execute()
+        response = MyConnector.push_profile(profile=profile, ...)
         return response
 ```
 So **if a profile is added to the source with the key `OTHER_SOURCE_KEY`** then `get_profile` would return `None` and **that profile would be ignored** from the rest of the processing.

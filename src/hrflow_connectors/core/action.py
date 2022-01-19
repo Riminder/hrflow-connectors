@@ -1,13 +1,14 @@
-import logging
-from ..utils.clean_text import remove_html_tags
-from ..utils.hrflow import find_element_in_list, Profile, Job
-from ..utils.hrflow import generate_workflow_response
-from ..utils.logger import get_logger
-
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Iterator, TypeVar, Optional, Union, Tuple
 import itertools
 import xml.etree.ElementTree
+import html
+
+from ..utils.clean_text import remove_html_tags
+from ..utils.hrflow import find_element_in_list, Profile, Job
+from ..utils.hrflow import generate_workflow_response
+from ..utils.logger import get_logger
+from ..core.auth import Auth, NoAuth
 
 Hrflow = TypeVar("Hrflow")
 TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
@@ -15,7 +16,21 @@ TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
 logger = get_logger()
 
 
-class Action(BaseModel):
+class BaseAction(BaseModel):
+    """
+    Abstract class `Action`
+    """
+
+    hrflow_client: Hrflow = Field(
+        ...,
+        description="Hrflow client instance used to communicate with the Hrflow.ai API",
+    )
+
+    auth: Auth = Field(
+        NoAuth(),
+        description="Auth instance to identify and communicate with the platform",
+    )
+
     logics: List[str] = Field(
         [], description="Function names to apply as filter before pushing the data"
     )
@@ -156,7 +171,6 @@ class Action(BaseModel):
         filtered_data = self.apply_logics(input_data)
         logger.info("Logics have been applied")
 
-        # connect each filtered_data to the format accepted by the pull function (destination, source, board)
         logger.info("Mapping format function...")
         output_data = map(self.format_switcher, filtered_data)
         logger.info("Format function has been mapped")
@@ -168,11 +182,65 @@ class Action(BaseModel):
         logger.info("All has been done for this connector !")
 
 
-class BoardAction(Action):
-    hrflow_client: Hrflow = Field(
-        ...,
-        description="Hrflow client instance used to communicate with the Hrflow.ai API",
-    )
+class PullBaseAction(BaseAction):
+    """
+    Pull Action
+    """
+
+    def execute(self) -> Optional[Dict[str, Any]]:
+        logger.info("Start execution")
+
+        logger.info("Pulling data...")
+        input_data = self.pull()
+        logger.info("Data has been pulled")
+
+        logger.info("Mapping format function...")
+        formatted_data = map(self.format_switcher, input_data)
+        logger.info("Format function has been mapped")
+
+        logger.info("Applying logics...")
+        filtered_data = self.apply_logics(formatted_data)
+        logger.info("Logics have been applied")
+
+        logger.info("Pushing data...")
+        self.push(filtered_data)
+        logger.info("Data has been pushed")
+
+        logger.info("All has been done for this connector !")
+
+
+class PushBaseAction(BaseAction):
+    """
+    Push Action
+    """
+
+    def execute(self) -> Optional[Dict[str, Any]]:
+        logger.info("Start execution")
+
+        logger.info("Pulling data...")
+        input_data = self.pull()
+        logger.info("Data has been pulled")
+
+        logger.info("Applying logics...")
+        filtered_data = self.apply_logics(input_data)
+        logger.info("Logics have been applied")
+
+        logger.info("Mapping format function...")
+        formatted_data = map(self.format_switcher, filtered_data)
+        logger.info("Format function has been mapped")
+
+        logger.info("Pushing data...")
+        self.push(formatted_data)
+        logger.info("Data has been pushed")
+
+        logger.info("All has been done for this connector !")
+
+
+class PullJobsBaseAction(PullBaseAction):
+    """
+    Pull jobs from an external stream to Hrflow.ai
+    """
+
     board_key: str = Field(
         ..., description="Board key where the jobs to be added will be stored"
     )
@@ -277,7 +345,7 @@ class BoardAction(Action):
             if response["code"] >= 400:
                 message = response["message"]
                 logger.error("Failed to push a job !")
-                raise ConnectionError("Failed to push ! Reason : `{}`".format(message))
+                raise RuntimeError("Failed to push ! Reason : `{}`".format(message))
 
     def hydrate_job_with_parsing(self, job: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -311,6 +379,8 @@ class BoardAction(Action):
         # Clean the `concatenated_str` by removing htlm tags
         logger.debug("Removing HTML tags in concatenated texts...")
         cleaned_str = remove_html_tags(concatenated_str)
+        cleaned_str = html.unescape(cleaned_str)
+        cleaned_str = cleaned_str.strip()
         logger.debug("HTML tags in concatenated texts have been removed")
 
         # If text is empty, the parsing can return an error
@@ -481,17 +551,23 @@ class BoardAction(Action):
             Iterator[str]: return all references
         """
         logger.info(f"Getting all references from the stream...")
+
         logger.info(f"Pulling all references from the stream")
         input_data = self.pull()
-        logger.info(f"Applying logics to all references from the stream")
-        filtered_data = self.apply_logics(input_data)
+
         logger.info(f"Formating all references from the stream")
-        formated_data = map(self.format_switcher, filtered_data)
+        formatted_data = map(self.format_switcher, input_data)
+
+        logger.info(f"Applying logics to all references from the stream")
+        filtered_data = self.apply_logics(formatted_data)
+
         logger.info(f"Keeping only reference from the stream")
-        references_iter = map(lambda job: job.get("reference"), formated_data)
+        references_iter = map(lambda job: job.get("reference"), filtered_data)
+
         references_without_none_iter = filter(
             lambda ref: ref is not None, references_iter
         )
+
         logger.info(f"All references from the stream have been got")
         return references_without_none_iter
 
@@ -530,14 +606,13 @@ class BoardAction(Action):
         input_data = self.pull()
         logger.info("Data has been pulled")
 
-        logger.info("Applying logics...")
-        filtered_data = self.apply_logics(input_data)
-        logger.info("Logics have been applied")
-
-        # connect each filtered_data to the format accepted by the pull function (destination, source, board)
         logger.info("Mapping format function...")
-        formated_data = map(self.format_switcher, filtered_data)
+        formatted_data = map(self.format_switcher, input_data)
         logger.info("Format function has been mapped")
+
+        logger.info("Applying logics...")
+        filtered_data = self.apply_logics(formatted_data)
+        logger.info("Logics have been applied")
 
         logger.info(
             f"Archive the deleted jobs from stream : {self.archive_deleted_jobs_from_stream}"
@@ -546,7 +621,7 @@ class BoardAction(Action):
             self.check_deletion_references_from_stream()
 
         logger.info("Filtering the job to push")
-        unique_data_to_push = filter(self.check_reference_in_board, formated_data)
+        unique_data_to_push = filter(self.check_reference_in_board, filtered_data)
 
         logger.info(f"Hydrate job with parsing : {self.hydrate_with_parsing}")
         if self.hydrate_with_parsing:
@@ -563,11 +638,8 @@ class BoardAction(Action):
         logger.info("All has been done for this connector !")
 
 
-class JobDestinationAction(Action):
-    hrflow_client: Hrflow = Field(
-        ...,
-        description="Hrflow client instance used to communicate with the Hrflow.ai API",
-    )
+class PushJobBaseAction(PushBaseAction):
+
     job: Job = Field(..., description="Job to push")
 
     def pull(self) -> Iterator[Dict[str, Any]]:
@@ -592,11 +664,7 @@ class JobDestinationAction(Action):
         )
 
 
-class ProfileDestinationAction(Action):
-    hrflow_client: Hrflow = Field(
-        ...,
-        description="Hrflow client instance used to communicate with the Hrflow.ai API",
-    )
+class PushProfileBaseAction(PushBaseAction):
     profile: Profile = Field(..., description="Profile to push")
 
     def pull(self) -> Iterator[TalentDataType]:
@@ -625,23 +693,13 @@ class ProfileDestinationAction(Action):
         )
 
 
-class CatchProfile(Action):
-    hrflow_client: Hrflow = Field(
-        ...,
-        description="Hrflow client instance used to communicate with the Hrflow.ai API",
-    )
+class CatchProfileBaseAction(BaseAction):
 
     source_key: str = Field(
         ..., description="Source key where the profiles to be added will be stored"
     )
 
-    request: Dict[str, Any] = Field(
-        ..., description="Body to format in HrFlow Profile"
-    )
-
-    file_field: str = Field(
-        ..., description="Name of the field containing the file"
-    )
+    request: Dict[str, Any] = Field(..., description="Body to format in HrFlow Profile")
 
     def execute(self):
         """
@@ -649,39 +707,23 @@ class CatchProfile(Action):
         """
         logger.info("Start execution")
 
-        # connect each filtered_data to the format accepted by the pull function (destination, source, board)
-        logger.info("Mapping format function...")
-        # self.body: json
-        # output_data: [json]
-        output_data = self.format_switcher(self.request)
-        logger.info("Format function has been mapped")
+        logger.info("Format request...")
+        formatted_data = self.format_switcher(self.request)
+        logger.info("Request has been formatted")
 
         logger.info("Pushing data...")
-        self.push(output_data)
+        self.push(formatted_data)
         logger.info("Data has been pushed")
 
         logger.info("All has been done for this connector !")
-
         return generate_workflow_response(
             status_code=201, message="Profile successfully pushed"
         )
 
-    def format(self, request: str) -> Dict[str, Any]:
-        output_data = {
-            "source_key": self.source_key,
-            "profile_file": self.request[self.file_field]
-        }
-        return output_data
-
     def push(self, data: Dict[str, Any]):
-        logger.debug(
-            f"Parsing a profile to Hrflow Source `{self.source_key}`"
-        )
+        logger.debug(f"Parsing a profile to Hrflow Source `{self.source_key}`")
         response = self.hrflow_client.profile.parsing.add_file(**data)
         if response["code"] >= 400:
             message = response["message"]
             logger.error("Failed to push a profile !")
-            raise ConnectionError("Failed to push ! Reason : `{}`".format(message))
-
-    def pull(self) -> Iterator[Dict[str, Any]]:
-        pass
+            raise RuntimeError("Failed to push ! Reason : `{}`".format(message))
