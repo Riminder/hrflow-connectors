@@ -35,12 +35,11 @@ from hrflow_connectors.utils.hrflow import Profile, Source
 auth = XSmartTokenAuth(value=settings["MY_SMART_TOKEN"])
 profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 
-response = SmartRecruiters.push_profile(
+SmartRecruiters.push_profile(
     auth=auth,
     job_id="3696cad0-a9b0-4a40-9cd7-4cc5feb1a509",
     hrflow_email="MY_EMAIL",
     hrflow_secret="MY_X_API_KEY",
     profile=profile,
 )
-return response
 ```

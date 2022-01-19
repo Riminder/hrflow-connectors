@@ -34,7 +34,6 @@ from hrflow_connectors.utils.logger import get_logger_with_basic_config
 # This is not mandatory. It allows you to see what the connector is doing.
 logger = get_logger_with_basic_config()
 
-client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
 def samsic_format(data):
     job = dict()
@@ -157,7 +156,8 @@ logger = get_logger_with_basic_config()
 XML.pull_jobs(
     xml_stream_url="https://cv.samsic-emploi.fr/media/flux/jobs.xml",
     job_list_xpath="DataArea",
-    hrflow_client=client,
+    hrflow_email="MY_EMAIL",
+    hrflow_secret="MY_X_API_KEY",
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=False,
     archive_deleted_jobs_from_stream=False,
