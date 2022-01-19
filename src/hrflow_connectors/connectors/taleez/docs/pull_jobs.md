@@ -30,17 +30,22 @@
 
 ```python
 from hrflow_connectors import Taleez
+from hrflow import Hrflow
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
 
-auth = XTaleezAuth(
-        value=settings['MY_X_TALEEZ_API_KEY]
-    )
+# We add a basic configuration to our logger to see the messages displayed in the standard output
+# This is not mandatory. It allows you to see what the connector is doing.
+logger = get_logger_with_basic_config()
+
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+
+auth = XTaleezAuth(value='MY_X_TALEEZ_API_KEY')
 
 Taleez.pull_jobs(
     page=MY_START_PAGE,
     page_size=MY_PAGE_SIZE_LIMIT,
     auth=auth,
-    hrflow_email="MY_EMAIL",
-    hrflow_secret="MY_X_API_KEY",
+    hrflow_client=client,,
     board_key="MY_BOARD_KEY",
     hydrate_with_parsing=True,
 )

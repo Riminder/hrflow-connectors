@@ -23,19 +23,23 @@
 
 ```python
 from hrflow_connectors import Monster
-
 from hrflow import Hrflow
+from hrflow_connectors.utils.logger import get_logger_with_basic_config
+from hrflow.utils.hrflow import Job, Board
 
-event = EventParser(request=_request)
-job = event.get_job()
+# We add a basic configuration to our logger to see the messages displayed in the standard output
+# This is not mandatory. It allows you to see what the connector is doing.
+logger = get_logger_with_basic_config()
 
-auth = MonsterBodyAuth(username=credentials["monster"]["username"],
-password=credentials["monster"]["password"])
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+
+job = Job(key="MY_JOB_KEY", board=Board("MY_BOARD_KEY"))
+
+auth = MonsterBodyAuth(username="MY_USER_NAME",password="MY_PASSWORD")
 
 Monster.catch_profile(
     auth=auth,
     subdomain="gateway",
-    hrflow_email="MY_EMAIL",
-    hrflow_secret="MY_X_API_KEY",
+    hrflow_client=client,
     job=job,
     )
