@@ -4,6 +4,8 @@
 
 `PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Greenhouse*** Jobs pool.
 
+# Links to Greenhouse documentation on the endpoints used :
+
 | Endpoints | Description |
 | --------- | ----------- |
 | [Push profile](https://developers.greenhouse.io/harvest.html#post-add-candidate) | Endpoint to add candidate using greenhouse harvest API, the request method is `POST` |

@@ -4,6 +4,8 @@
 
 `PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Taleez*** Jobs pool.
 
+# Links to Taleez documentation on the endpoints used :
+
 | Endpoints | Description |
 | --------- | ----------- |
 | [Add Candidate](https://api.taleez.com/swagger-ui/index.html?configUrl=/openapi.json/swagger-config#/candidates/create_1) | Endpoint for sourcing use case, to create a new candidate from his personal information, the request method is `Post` |

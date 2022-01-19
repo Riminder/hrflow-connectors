@@ -3,10 +3,11 @@
 
 `PushProfileAction` pushes a Hrflow.ai profile to `Flatchr` via their API.
 
+# Links to Flatchr documentation on the endpoints used :
+
 | Endpoints | Description |
 | --------- | ----------- |
 | [Push profile](https://developers.flatchr.io/?python#formulaire-de-candidature) | Push a candidate with minimum information + a CV, the request method is `POST` |
-
 
 ## Parameters
 
@@ -25,7 +26,7 @@
 :red_circle: : *required* 
 
 ## Example
-Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.ai/docs/workflows#catch-setup).
+
 ```python
 from hrflow_connectors import Flatchr
 from hrflow import Hrflow
