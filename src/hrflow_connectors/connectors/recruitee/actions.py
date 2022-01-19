@@ -3,7 +3,7 @@ from pydantic import Field
 import requests
 
 from ...core.auth import AuthorizationAuth
-from ...core import action as core
+from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...utils.hrflow import generate_workflow_response
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
@@ -11,7 +11,7 @@ from ...utils.clean_text import remove_html_tags
 logger = get_logger()
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
 
     subdomain: str = Field(
         ..., description="the subdomain of your company's careers site."
@@ -119,7 +119,7 @@ class PullJobsAction(core.PullJobsAction):
         return job
 
 
-class PushProfileAction(core.PushProfileAction):
+class PushProfileAction(PushProfileBaseAction):
 
     auth: AuthorizationAuth
     company_id: str = Field(

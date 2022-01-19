@@ -12,7 +12,7 @@ In the action execution pipeline, here is where the `logics` are located:
 3. Apply `format` to each element
 4. `push` the data
 
-**All `Action`s have the following parameters:**
+**All actions have the following parameters:**
 * `logics` which is a list of function names. This will be used to filter the elements returned by `pull`.
 * `global_scope` is a dictionary containing the current scope's global variables.
 * `local_scope` is a dictionary containing the current scope's local variables.
@@ -30,12 +30,12 @@ Most of the time, you would just write `global_scope=globals()` and `local_scope
 
 ### Example
 ```python
-from hrflow_connectors.core.action import Action
+from hrflow_connectors.core.action import BaseAction
 
 def filter_element1_with_value1(element):
     return element.get("element1") == "value1"
 
-action = Action(
+action = BaseAction(
     logics=["filter_element1_with_value1"],
     global_scope=globals(),
     local_scope=locals(),
@@ -75,9 +75,9 @@ By default, all connectors have a `format` provided and ready to use. If you wan
 
 ### By inheriting & overriding `format`
 ```python
-from hrflow_connectors.core.action import Action
+from hrflow_connectors.core.action import BaseAction
 
-class ActionWithMyFormat(Action)
+class ActionWithMyFormat(BaseAction)
     def format(data):
         # my format
         job = dict(my_ref=data["id"])
@@ -88,7 +88,7 @@ action.execute()
 ```
 ### By using a format function external
 
-**All `Action`s have the following parameters:**
+**All actions have the following parameters:**
 * `format_function_name` which is the function name. This will be used to format each element returned by `pull`.
 * `global_scope` is a dictionary containing the current scope's global variables.
 * `local_scope` is a dictionary containing the current scope's local variables.
@@ -103,14 +103,14 @@ Most of the time, you would just write `global_scope=globals()` and `local_scope
 ℹ️ To find out more about the scopes and how the `eval` function works: https://docs.python.org/3/library/functions.html#eval
 
 ```python
-from hrflow_connectors.core.action import Action
+from hrflow_connectors.core.action import BaseAction
 
 def my_format(data):
     # my format
     job = dict(my_ref=data["id"])
     return job
 
-action = Action(
+action = BaseAction(
     format_function_name="my_format",
     global_scope=globals(),
     local_scope=locals(),
