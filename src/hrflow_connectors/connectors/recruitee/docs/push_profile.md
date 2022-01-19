@@ -36,7 +36,6 @@ from hrflow_connectors import AuthorizationAuth
 from hrflow_connectors.utils.hrflow import Profile, Source
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-
 profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 auth = AuthorizationAuth(
     name = 'Authorization',
