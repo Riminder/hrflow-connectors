@@ -1,6 +1,5 @@
 from typing import Iterator, Dict, Any
 from pydantic import Field
-import html
 import requests
 
 from ...core.action import PullJobsBaseAction
