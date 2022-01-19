@@ -7,7 +7,7 @@
 
 | Endpoints | Description |
 | --------- | ----------- |
-|[`Catch Profile`](https://partner.monster.com/apply-with-monster-implementing)|Endpoint to catch a profile application |
+|[Catch Profile](https://partner.monster.com/apply-with-monster-implementing)|Endpoint to catch a profile application |
 
 ## Parameters
 

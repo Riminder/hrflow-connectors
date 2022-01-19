@@ -7,7 +7,7 @@
 
 | Endpoints | Description |
 | --------- | ----------- |
-|[`Push Jobs`](https://partner.monster.com/real-time-posting-devguide)|Endpoint to real time posting of jobs in Monster  |
+|[Push Jobs](https://partner.monster.com/real-time-posting-devguide)|Endpoint to real time posting of jobs in Monster  |
 
 ## Parameters
 
