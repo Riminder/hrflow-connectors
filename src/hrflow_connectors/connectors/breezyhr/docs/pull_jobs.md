@@ -3,7 +3,12 @@
 
 `PullJobsAction` gets all your company available jobs in Breezy.hr via their ***Breezyhr API***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-🔗 [Documentation](https://developer.breezy.hr/docs/company-positions)
+**Links to Breezy.hr documentation on the endpoints used :**
+
+| Endpoints | Description |
+| --------- | ----------- |
+| [Get company_id](https://developer.breezy.hr/docs/companies)          | Endpoint to retrieve the companies associated with the authenticated user in case the user didn't specify his company ID required to `PullJobsAction`, the request method is `GET`            |
+| [Get all positions](https://developer.breezy.hr/docs/company-positions)          | Endpoint to retirve all positions for given company, required paramter is the company id, the request method is `GET`             |
 
 ## Parameters
 
@@ -27,30 +32,22 @@
 
 ```python
 from hrflow_connectors import Breezyhr
-
 from hrflow import Hrflow
 from hrflow_connectors import OAuth2EmailPasswordBody
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
-
-# We add a basic configuration to our logger to see the messages displayed in the standard output
-# This is not mandatory. It allows you to see what the connector is doing.
-logger = get_logger_with_basic_config()
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-
 auth = OAuth2EmailPasswordBody(
             access_token_url="https://api.breezy.hr/v3/signin",
-            email = settings["EMAIL"]
-            password=settings["PASSWORD"],
-        )
-
+            email="EMAIL",
+            password="PASSWORD",
+)
 
 Breezyhr.pull_jobs(
     auth=auth,
     subdomain="MY_SUBDOMAIN",
     hrflow_client=client,
     board_key="MY_BOARD_KEY",
-    company_name=settings["MY_COMPANY_NAME"],
+    company_name="MY_COMPANY_NAME",
     hydrate_with_parsing=True,
 )
 ```
