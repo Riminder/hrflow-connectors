@@ -19,45 +19,26 @@
 :red_circle: : *required*
 
 ## Example
-Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.ai/docs/workflows#catch-setup).
 ```python
 from hrflow_connectors import Crosstalent
-
 from hrflow import Hrflow
 from hrflow_connectors import OAuth2PasswordCredentialsBody
-from hrflow_connectors.utils.hrflow import Profile
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
+from hrflow_connectors.utils.hrflow import Profile, Source
 
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
+auth = OAuth2PasswordCredentialsBody(
+    access_token_url="https://test.salesforce.com/services/oauth2/token",
+    client_id="CLIENT_ID",
+    client_secret="CLIENT_SECRET",
+    username="USERNAME",
+    password="PASSWORD",
+)
 
-
-def workflow(_request, settings):
-    """
-    CATCH Workflow
-    """    
-    # We add a basic configuration to our logger to see the messages displayed in the standard output
-    # This is not mandatory. It allows you to see what the connector is doing.
-    logger = get_logger_with_basic_config()
-
-    event = EventParser(request=_request)
-    profile = event.get_profile()
-    if profile is not None:
-        logger.info("Profile found !")
-
-        client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
-
-        auth = OAuth2PasswordCredentialsBody(
-            access_token_url="https://test.salesforce.com/services/oauth2/token",
-            client_id=settings["CLIENT_ID"],
-            client_secret=settings["CLIENT_SECRET"],
-            username=settings["USERNAME"],
-            password=settings["PASSWORD"],
-        )
-
-        response = Crosstalent.push_profile(
-            auth=auth,
-            subdomain=settings["SUBDOMAIN"],
-            hrflow_client=client,
-            profile=profile,
-        )
-        return response
+Crosstalent.push_profile(
+    auth=auth,
+    subdomain="SUBDOMAIN",
+    hrflow_client=client,
+    profile=profile,
+)
 ```

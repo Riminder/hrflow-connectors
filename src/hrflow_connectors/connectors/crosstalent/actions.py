@@ -3,11 +3,12 @@ from pydantic import Field
 import requests
 
 from ...core.auth import OAuth2PasswordCredentialsBody
-from ...core import action as core
+
+from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...utils.hrflow import generate_workflow_response
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
     auth: OAuth2PasswordCredentialsBody = Field(
         ..., description="Auth instance to identify and communicate with the platform"
     )
@@ -294,7 +295,7 @@ class PullJobsAction(core.PullJobsAction):
         return job
 
 
-class PushProfileAction(core.PushProfileAction):
+class PushProfileAction(PushProfileBaseAction):
     auth: OAuth2PasswordCredentialsBody
     subdomain: str = Field(
         ...,
