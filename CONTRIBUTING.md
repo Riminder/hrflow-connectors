@@ -32,13 +32,13 @@ There are several ways to contribute to the project, among others we state the f
  
     - Add the connector module name for example `myconnector` in the connectors directory, make sure it respects the architecture specified in the [**DOCUMENTATION.md**](https://github.com/Riminder/hrflow-connectors/blob/master/DOCUMENTATION.md) file i.e: 
 
-    - Contains an `actions.py` file which contains all the actions your connector will implement(`PullJobs`, `PullProfile`, `PushJobs`, `PushProfile`...etc)
+    - Contains an `actions.py` file which contains all the actions your connector will implement(`PullJobsAction`, `PullProfileAction`, `PushJobsAction`, `PushProfileAction`,...etc)
 
-    - Each action is a class that inherits from its corresponding action parent class in the [action.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/action.py) `core` file for example `PullJobs` inherits from the class `PullJobsAction` and has as parameters the specific attributes to the connector action like `subdomain` for `urls` and so on and the auth parameter which gives AUthorization to the client API if it is required, and the auth parameter, you can see the auth available classes and methods in the [auth.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/auth.py) `core` file, if you don't find there an Auth class that is compatible with your application, you can create a new one. You can also find in the utils module some interesting functions and debugging utilities that might help you with your contribution journey.
+    - Each action is a class that inherits from its corresponding action parent class in the [action.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/action.py) `core` file for example `PullJobsAction` inherits from the class `PullJobsBaseAction` and has as parameters the specific attributes to the connector action like `subdomain` for `urls` and so on and the auth parameter which gives AUthorization to the client API if it is required, and the auth parameter, you can see the auth available classes and methods in the [auth.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/auth.py) `core` file, if you don't find there an Auth class that is compatible with your application, you can create a new one. You can also find in the utils module some interesting functions and debugging utilities that might help you with your contribution journey.
 
-    - Contains a `connector.py` file which contains your actions executed in a class `MyConnector` that inherits the abstract class Connector in the core module and for each action the class implements a static method for example for `PullJobs` action your method is named `pull_jobs` takes as parameters your connector required parameters and `**kwargs` for other optional arguments and logics.
+    - Contains a `connector.py` file which contains your actions executed in a class `MyConnector` that inherits the abstract class Connector in the core module and for each action the class implements a static method for example for `PullJobsAction` action your method is named `pull_jobs` takes as parameters your connector required parameters and `**kwargs` for other optional arguments and logics.
 
-    - Contains a `__init__.py` file to make importing your connector easier from the package, you write in this file `from .connector import *`, don't also forget to write ` from myconnector import * ` in the [__init__.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/__init__.py) file inside the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) folder which is the parent to your connector folder.
+    - Contains a `__init__.py` file to make importing your connector easier from the package, you write in this file `from .connector import *`, don't also forget to write `from myconnector import *` in the [__init__.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/__init__.py) file inside the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) folder which is the parent to your connector folder.
 
     - Contains a `schemas.py` file which describes the model of your action data, see corresponding files for other connectors to get your ideas starting. Here is a brief example:
     ```Python
@@ -47,10 +47,10 @@ There are several ways to contribute to the project, among others we state the f
 
     class MyDataModel(BaseModel):
 
-        id: str=Field(..., description="my data id")
-        name: str=Field(..., description="my data name")
+        id: str=Field(..., description="My data id")
+        name: str=Field(..., description="My data name")
         WorkRemote: Optional[bool]=Field(False, description="Indicates if work is done remotely or not, default is false")
-        and_so_on: Any=Field(..., description="other parameters and models of your data model")
+        and_so_on: Any=Field(..., description="Other parameters and models of your data model")
     ```
 
     - Finally add a `README.md` file which contains a resume of your connector and list of action that points to each action documentation inside the folder you will create a folder `docs` in your connector folder.
@@ -77,8 +77,8 @@ We encourage that you write your code in the simplest and most readable way poss
         from typing import Dict, Any, Iterator, Optional
         
         class MyModel(BaseModel):
-            number: int=Field(5,description="a number, easy right?")
-            string: Optional[str]=Field(None, description="can be any  string and can be None")
+            number: int=Field(5,description="A number, easy right?")
+            string: Optional[str]=Field(None, description="Can be any string and can be None")
             reference: str
             name = 'John Does'
             
@@ -110,6 +110,8 @@ We encourage that you write your code in the simplest and most readable way poss
 
 - Make sure that you test every function function and action you create, there is a tests folder in the repo make sure you assign your test to the correct subfolder or file.
 
+- Install `Coverage Gutters` in vscode to display test coverage information.
+
 - Use logging in your code if you want to see what your code does in real time: 
    ```python 
     from ....utils.logger import get_logger
@@ -117,7 +119,9 @@ We encourage that you write your code in the simplest and most readable way poss
     ```
 - We use pytest in the terminal to run tests: 
         `pytest -s tests\path_to_scripts_i_want_to_test`
-        
+
+- Write a # TODO comment for features that aren't implemented and that you think would improve performance and quality so that other contributors may be aware of them and may have solutions to them.
+
 - For connectors, we recommend getting inspired from other [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) and [tests](https://github.com/Riminder/hrflow-connectors/tree/master/tests) as it won't differ too much unless you propose a more optimal and elegant alternative.
 
 - Always keep in mind that we don't want the code to use too much memory, so make sure if needed to use itertools and iterators in general to avoid huge memory consumption.
@@ -152,10 +156,10 @@ We encourage that you write your code in the simplest and most readable way poss
             job = dict()
             
             # formatting attributes of the data to the specific format 
-            # this is just an explanation, explain as you see fit.
+            # this is just an explanation, elaborate as you see fit.
             
-            job[key] = format(data[key])
-            .... and so on
+            job[key] = formatted_data[key]
+            #.... and so on
             
             return job
     ```
