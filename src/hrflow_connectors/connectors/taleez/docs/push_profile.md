@@ -4,8 +4,11 @@
 
 `PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Taleez*** Jobs pool.
 
-🔗 [Documentation](https://api.taleez.com/swagger-ui/index.html?configUrl=/openapi.json/swagger-config#/candidates/create_1)
+**Links to Taleez documentation on the endpoints used :**
 
+| Endpoints | Description |
+| --------- | ----------- |
+| [Add Candidate](https://api.taleez.com/swagger-ui/index.html?configUrl=/openapi.json/swagger-config#/candidates/create_1) | Endpoint for sourcing use case, to create a new candidate from his personal information, the request method is `Post` |
 ## Parameters
 
 | Field | Type | Description |
@@ -27,37 +30,19 @@
 
 ```python
 from hrflow_connectors import Taleez
-
 from hrflow import Hrflow
-from hrflow_connectors.connectors import XTaleezAuth
-from hrflow_connectors.utils.hrflow import EventParser
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
+from hrflow_connectors import XTaleezAuth
+from hrflow_connectors.utils.hrflow import Profile, Source
 
-def workflow(_request, settings):
-    """
-    CATCH Workflow
-    """    
-    # We add a basic configuration to our logger to see the messages displayed in the standard output
-    # This is not mandatory. It allows you to see what the connector is doing.
-    logger = get_logger_with_basic_config()
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
+auth = XTaleezAuth(value='MY_X_TALEEZ_API_KEY')
 
-    event = EventParser(request=_request)
-    profile = event.get_profile()
-    if profile is not None:
-        logger.info("Profile found !")
-
-        client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
-
-        auth = XTaleezAuth(
-            value=settings['MY_X_TALEEZ_API_KEY]
-        )
-
-        response = Taleez.push_profile(
-            auth=auth,
-            add_candidate_to_job=False,
-            recruiter_id=MY_RECRUITER_ID
-            hrflow_client=client,
-            profile=profile,
-        )
-        return response
+Taleez.push_profile(
+    auth=auth,
+    add_candidate_to_job=False,
+    recruiter_id="MY_RECRUITER_ID",
+    hrflow_client=client,
+    profile=profile,
+)
 ```

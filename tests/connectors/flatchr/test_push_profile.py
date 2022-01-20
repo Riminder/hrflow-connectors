@@ -11,7 +11,7 @@ def auth(credentials):
     return auth
 
 
-def test_PushProfileAction(logger, auth, hrflow_client):
+def test_PushProfileBaseAction(logger, auth, hrflow_client):
     profile = Profile(
         key="5746beca5e941a5a55706efd9adfce31f59e6e2b",
         source=Source(key="d42eed17626b7ae3dc05efca363788caef91d44b"),
