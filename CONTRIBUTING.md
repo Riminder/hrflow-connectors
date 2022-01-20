@@ -32,15 +32,26 @@ There are several ways to contribute to the project, among others we state the f
  
     - Add the connector module name for example `myconnector` in the connectors directory, make sure it respects the architecture specified in the [**DOCUMENTATION.md**](https://github.com/Riminder/hrflow-connectors/blob/master/DOCUMENTATION.md) file i.e: 
 
-    - contains an `actions.py` file which contains all the actions your connector will implement(`PullJobs`, `PullProfile`, `PushJobs`, `PushProfile`...etc)
+    - Contains an `actions.py` file which contains all the actions your connector will implement(`PullJobs`, `PullProfile`, `PushJobs`, `PushProfile`...etc)
 
-    - each action is a class that inherits from its corresponding action parent class in the [action.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/action.py) `core` file for example `PullJobs` inherits from the class `PullJobsAction` and has as parameters the specific attributes to the connector action like `subdomain` for `urls` and so on and the auth parameter which gives AUthorization to the client API if it is required, and the auth parameter, you can see the auth available classes and methods in the [auth.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/auth.py) `core` file, if you don't find there an Auth class that is compatible with your application, you can create a new one. You can also find in the utils module some interesting functions and debugging utilities that might help you with your contribution journey.
+    - Each action is a class that inherits from its corresponding action parent class in the [action.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/action.py) `core` file for example `PullJobs` inherits from the class `PullJobsAction` and has as parameters the specific attributes to the connector action like `subdomain` for `urls` and so on and the auth parameter which gives AUthorization to the client API if it is required, and the auth parameter, you can see the auth available classes and methods in the [auth.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/auth.py) `core` file, if you don't find there an Auth class that is compatible with your application, you can create a new one. You can also find in the utils module some interesting functions and debugging utilities that might help you with your contribution journey.
 
-    - contains a `connector.py` file which contains your actions executed in a class `MyConnector` that inherits the abstract class Connector in the core module and for each action the class implements a static method for example for `PullJobs` action your method is named `pull_jobs` takes as parameters your connector required parameters and `**kwargs` for other optional arguments and logics.
+    - Contains a `connector.py` file which contains your actions executed in a class `MyConnector` that inherits the abstract class Connector in the core module and for each action the class implements a static method for example for `PullJobs` action your method is named `pull_jobs` takes as parameters your connector required parameters and `**kwargs` for other optional arguments and logics.
 
-    - contains a `__init__.py` file to make importing your connector easier from the package, you write in this file `from .connector import *`, don't also forget to write ` from myconnector import * ` in the [__init__.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/__init__.py) file inside the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) folder which is the parent to your connector folder.
+    - Contains a `__init__.py` file to make importing your connector easier from the package, you write in this file `from .connector import *`, don't also forget to write ` from myconnector import * ` in the [__init__.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/__init__.py) file inside the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) folder which is the parent to your connector folder.
 
-    - contains a `schemas.py` file which describes the model of your action data, see corresponding files for other connectors to get your ideas starting.
+    - Contains a `schemas.py` file which describes the model of your action data, see corresponding files for other connectors to get your ideas starting. Here is a brief example:
+    ```Python
+    from pydantic import BaseModel, Field
+    from typing import Dict, Optional, List, Any
+
+    class MyDataModel(BaseModel):
+
+        id: str=Field(..., description="my data id")
+        name: str=Field(..., description="my data name")
+        WorkRemote: Optional[bool]=Field(False, description="Indicates if work is done remotely or not, default is false")
+        and_so_on: Any=Field(..., description="other parameters and models of your data model")
+    ```
 
     - Finally add a `README.md` file which contains a resume of your connector and list of action that points to each action documentation inside the folder you will create a folder `docs` in your connector folder.
 
@@ -154,8 +165,8 @@ We encourage that you write your code in the simplest and most readable way poss
 ### Commit conventions and review process
 
 - Make sur your commits are periodical and each commit points to a specific modification of feature and follow the commit type style that follow:
-    - for adding a new feature `feat: add function format in actions.py`
-    - for editing : `edit:.....`, for style: `style: reformat with black/add docstrings...`
+    - for adding a new feature, or editing a feature outcome: `feat: add function format in actions.py`
+    - for editing without changing outcome : `refacto:.....`, for style: `style: reformat with black/add docstrings...`
     - for testing: `test:.....`, for documenting: `doc:.....`, for bugs and fix: `fix...`
     - And so on, and so on
 
@@ -178,5 +189,4 @@ New issue reports should include information about your programming environment
 (e.g., operating system, Python version) and steps to reproduce the problem.
 Please try also to simplify the reproduction steps to a very minimal example
 that still illustrates the problem you are facing. By removing other factors,
-you help us to identify the root cause of the issue.
-            
+you help us to identify the root cause of the issue.         
