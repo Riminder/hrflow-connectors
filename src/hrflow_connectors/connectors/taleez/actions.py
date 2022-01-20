@@ -1,7 +1,8 @@
 from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
 import requests
-from ...core import action as core
+
+from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...core.auth import XTaleezAuth
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
@@ -11,7 +12,7 @@ from datetime import datetime
 logger = get_logger()
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
     auth: XTaleezAuth
     page: int = Field(0, description="Page number. Start at '0'")
     page_size: int = Field(
@@ -134,7 +135,7 @@ class PullJobsAction(core.PullJobsAction):
         return job
 
 
-class PushProfileAction(core.PushProfileAction):
+class PushProfileAction(PushProfileBaseAction):
     recruiter_id: int = Field(
         ..., description="ID of the person recruiting the candidate, mandatory"
     )

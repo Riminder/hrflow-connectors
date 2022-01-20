@@ -1,7 +1,8 @@
 from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
 import requests
-from ...core import action as core
+
+from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...core.auth import OAuth2EmailPasswordBody
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
@@ -11,7 +12,7 @@ from ...utils.datetime_converter import from_str_to_datetime
 logger = get_logger()
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
 
     auth: OAuth2EmailPasswordBody
     company_id: Optional[str] = Field(
@@ -140,7 +141,7 @@ class PullJobsAction(core.PullJobsAction):
         return job
 
 
-class PushProfileAction(core.PushProfileAction):
+class PushProfileAction(PushProfileBaseAction):
 
     auth: OAuth2EmailPasswordBody
     company_id: Optional[str] = Field(
@@ -154,7 +155,7 @@ class PushProfileAction(core.PushProfileAction):
         ..., description="Id of the position to create a new candidate for"
     )
     origin: Optional[str] = Field(
-        'sourced',
+        "sourced",
         description="will indicate in Breezy if the candidate should be marked as sourced or applied",
     )
     cover_letter: Optional[str] = None
@@ -162,10 +163,10 @@ class PushProfileAction(core.PushProfileAction):
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Format a Hrflow profile object into a breezy hr profile object
-        
+
         Args:
             data (Dict[str, Any]): Hrflow Profile to format
-        
+
         Returns:
             Dict[str, Any]: a BreezyHr formatted profile object
         """
@@ -179,8 +180,9 @@ class PushProfileAction(core.PushProfileAction):
         profile["summary"] = info.get("summary")
         if self.origin is not None:
             profile["origin"] = self.origin
-        
+
         profile["work_history"] = []
+
         def format_experiences():
 
             experiences = data.get("experiences")
@@ -343,7 +345,7 @@ class PushProfileAction(core.PushProfileAction):
                     raise RuntimeError(
                         error_message.format(response.status_code, response.content)
                     )
-            
+
             update_profile_request()
 
         else:
