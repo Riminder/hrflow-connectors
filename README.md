@@ -18,21 +18,15 @@
 
 <br/>
 
-  `hrflow-connectors` is an open-source project created by **HrFlow.ai** 
-to allow developers to connect easily HR ecosystem component.
-
-This project is designed to simply and easily handle,
-complex HR integrations by using [**workflows**](https://developers.hrflow.ai/docs/workflows) feature.
-<br/>
-
-
 ## About HrFlow.ai
-[HrFlow.ai](https://hrflow.ai/) is **an API first company that provides the most sophisticated AI-Powered Job & Profile API**. We help HR Tech, Staffing Agencies, and Large employers to thrive in a high-frequency labor market.
 
 **[HrFlow.ai](https://hrflow.ai/) is on a mission to make AI and data integration pipelines a commodity in the HR Industry:**
   1. **Unify**: Link your Talent Data channels with a few clicks, so they can share data.
   2. **Understand**: Leverage our AI solutions to process your Talent Data.
   3. **Automate**: Sync data between your tools and build workflows that meet your business logic.
+
+  `hrflow-connectors` is an open-source project created by **HrFlow.ai** 
+to democratize Talent Data integration within the HR Tech landscape.
 
 ## :electric_plug: List of Connectors
 
