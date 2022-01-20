@@ -4,7 +4,11 @@
 
 `PullJobsAction` gets all available jobs listed on ***Workable public endpoints***. It adds all these **jobs** to a ***Hrflow.ai Board***.
 
-🔗 [Documentation](https://workable.readme.io/docs/jobs-1)
+**Links to Workable documentation on the endpoints used :**
+
+| Endpoints | Description |
+| --------- | ----------- |
+| [subdomain](https://workable.readme.io/docs/jobs-1) | Endpoint to get a collection of the public jobs for an account subdomain, the request method is `GET` |
 
 ## Parameters
 
@@ -26,13 +30,10 @@
 
 ```python
 from hrflow_connectors import Workable
-
 from hrflow import Hrflow
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
-# We add a basic configuration to our logger to see the messages displayed in the standard output
-# This is not mandatory. It allows you to see what the connector is doing.
-logger = get_logger_with_basic_config()
+
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+
 Workable.pull_jobs(
     subdomain="MY_SUBDOMAIN",
     hrflow_client=client,

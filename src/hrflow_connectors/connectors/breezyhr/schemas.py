@@ -1,6 +1,7 @@
 from typing import Dict, Any, Optional, List
 from pydantic import BaseModel, Field
 
+
 class Type(BaseModel):
     id: str
     name: str
@@ -44,18 +45,25 @@ class ApplicationForm(BaseModel):
 
 
 class BreezyJobModel(BaseModel):
-    _id: str=Field(..., description="position id")
-    type: Type=Field(..., description="job type")
-    state: str=Field(..., description="state of the position posting, published or internal and so on")
-    name: str=Field(..., description="job title")
-    friendly_id: str=Field(..., description="another id of the job which combines its title and its id")
+    _id: str = Field(..., description="position id")
+    type: Type = Field(..., description="job type")
+    state: str = Field(
+        ...,
+        description="state of the position posting, published or internal and so on",
+    )
+    name: str = Field(..., description="job title")
+    friendly_id: str = Field(
+        ..., description="another id of the job which combines its title and its id"
+    )
     experience: Experience
     location: Location
     education: str
     department: str
-    description: str=Field(..., description="Job category")
+    description: str = Field(..., description="Job category")
     category: Category
-    application_form: Optional[ApplicationForm]=Field(..., description="job Application for")
+    application_form: Optional[ApplicationForm] = Field(
+        ..., description="job Application for"
+    )
     creator_id: Optional[str]
     creation_date: str
     updated_date: str
@@ -64,8 +72,6 @@ class BreezyJobModel(BaseModel):
     candidate_type: str
     tags: List
     org_type: str
-
-
 
 
 class WorkHistoryItem(BaseModel):

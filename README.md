@@ -39,6 +39,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 | Name | Type | Available |
 | - | - | - |
 | **ADP** |  | :hourglass: |
+| [**Breezy.hr**](src/hrflow_connectors/connectors/breezyhr) | ATS | :heavy_check_mark: |
 | **Cegid (Meta4)** |  | :hourglass: |
 | [**Ceridian**](src/hrflow_connectors/connectors/ceridian) | HCM |:heavy_check_mark: |
 | **Cornerstone OnDemand** |  | :hourglass: |
@@ -69,6 +70,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 | **Ultimate Software (UKG)** |  | :hourglass: |
 | [**Workable**](src/hrflow_connectors/connectors/workable/) | ATS | :heavy_check_mark: |
 | **Workday** |  | :hourglass: |
+| [**XML**](src/hrflow_connectors/connectors/xml/) | Job board | :heavy_check_mark: |
 
 ## 🪄 Quickstart
 ### What I can do?

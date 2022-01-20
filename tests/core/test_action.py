@@ -1,11 +1,11 @@
 from hrflow_connectors.core.action import (
-    Action,
-    PullAction,
-    PushAction,
-    PullJobsAction,
-    PushProfileAction,
-    PushJobAction,
-    CatchProfileAction,
+    BaseAction,
+    PullBaseAction,
+    PushBaseAction,
+    PullJobsBaseAction,
+    PushProfileBaseAction,
+    PushJobBaseAction,
+    CatchProfileBaseAction,
 )
 from hrflow_connectors.utils.hrflow import Profile, Source, Job, Board
 import pytest
@@ -13,9 +13,9 @@ import requests
 import responses
 from hrflow import Hrflow
 
-##############
-### Action ###
-##############
+##################
+### BaseAction ###
+##################
 
 
 @pytest.fixture
@@ -28,8 +28,10 @@ def generated_data_list():
     return list_to_filter
 
 
-def test_Action_apply_logics_with_empty_logics_list(hrflow_client, generated_data_list):
-    action = Action(hrflow_client=hrflow_client())
+def test_BaseAction_apply_logics_with_empty_logics_list(
+    hrflow_client, generated_data_list
+):
+    action = BaseAction(hrflow_client=hrflow_client())
     filtered_list = action.apply_logics(generated_data_list)
 
     assert len(filtered_list) == 4
@@ -39,11 +41,11 @@ def test_Action_apply_logics_with_empty_logics_list(hrflow_client, generated_dat
     assert dict(element1="value2", element2="value2") in filtered_list
 
 
-def test_Action_apply_logics_single_filter(hrflow_client, generated_data_list):
+def test_BaseAction_apply_logics_single_filter(hrflow_client, generated_data_list):
     def filter_element1_with_value1(element):
         return element.get("element1") == "value1"
 
-    action = Action(
+    action = BaseAction(
         hrflow_client=hrflow_client(),
         logics=["filter_element1_with_value1"],
         global_scope=globals(),
@@ -56,14 +58,14 @@ def test_Action_apply_logics_single_filter(hrflow_client, generated_data_list):
     assert dict(element1="value1", element2="value1") in filtered_list
 
 
-def test_Action_apply_logics_two_filter(hrflow_client, generated_data_list):
+def test_BaseAction_apply_logics_two_filter(hrflow_client, generated_data_list):
     def filter_element1_with_value1(element):
         return element.get("element1") == "value1"
 
     def filter_element2_with_value1(element):
         return element.get("element2") == "value1"
 
-    action = Action(
+    action = BaseAction(
         hrflow_client=hrflow_client(),
         logics=["filter_element1_with_value1", "filter_element2_with_value1"],
         global_scope=globals(),
@@ -75,13 +77,13 @@ def test_Action_apply_logics_two_filter(hrflow_client, generated_data_list):
     assert dict(element1="value1", element2="value1") in filtered_list
 
 
-def test_Action_apply_logics_single_filter_without_interaction(
+def test_BaseAction_apply_logics_single_filter_without_interaction(
     hrflow_client, generated_data_list
 ):
     def filter_nothing(element):
         return True
 
-    action = Action(
+    action = BaseAction(
         hrflow_client=hrflow_client(),
         logics=["filter_nothing"],
         global_scope=globals(),
@@ -96,11 +98,11 @@ def test_Action_apply_logics_single_filter_without_interaction(
     assert dict(element1="value2", element2="value2") in filtered_list
 
 
-def test_Action_extern_format_function(hrflow_client):
+def test_BaseAction_extern_format_function(hrflow_client):
     def extern_format(data):
         return dict(c=data["a"], d=data["a"] + data["b"])
 
-    action = Action(
+    action = BaseAction(
         hrflow_client=hrflow_client(),
         format_function_name="extern_format",
         global_scope=globals(),
@@ -112,8 +114,8 @@ def test_Action_extern_format_function(hrflow_client):
     assert transformed_job == dict(c="aaa", d="aaabbb")
 
 
-def test_Action_default_format_without_extern_format_function(hrflow_client):
-    action = Action(
+def test_BaseAction_default_format_without_extern_format_function(hrflow_client):
+    action = BaseAction(
         hrflow_client=hrflow_client(),
         format_function_name=None,
     )
@@ -122,11 +124,11 @@ def test_Action_default_format_without_extern_format_function(hrflow_client):
     assert transformed_job == dict(a="aaa", b="bbb", f="fff")
 
 
-def test_Action_overwritten_format_with_extern_format_function(hrflow_client):
+def test_BaseAction_overwritten_format_with_extern_format_function(hrflow_client):
     def extern_format(data):
         return dict(c=data["a"], d=data["a"] + data["b"])
 
-    class TestAction(Action):
+    class TestAction(BaseAction):
         def format(self, data):
             return dict(f=data["f"], g=data["a"] + data["b"])
 
@@ -143,9 +145,9 @@ def test_Action_overwritten_format_with_extern_format_function(hrflow_client):
 
 
 @responses.activate
-def test_Action_connect_and_execute(hrflow_client, generated_data_list):
+def test_BaseAction_connect_and_execute(hrflow_client, generated_data_list):
     # Build a connector from `generated_data_list` to `http://test.test/push`
-    class TestConnectorAction(Action):
+    class TestConnectorAction(BaseAction):
         def pull(self):
             return generated_data_list
 
@@ -183,13 +185,13 @@ def test_Action_connect_and_execute(hrflow_client, generated_data_list):
     action.execute()
 
 
-##################
-### PullAction ###
-##################
+######################
+### PullBaseAction ###
+######################
 
 
-def test_PullAction_execute(hrflow_client):
-    class MyPullAction(PullAction):
+def test_PullBaseAction_execute(hrflow_client):
+    class MyPullAction(PullBaseAction):
         def pull(self):
             return ["pullformat", "pulllogic"]
 
@@ -213,13 +215,13 @@ def test_PullAction_execute(hrflow_client):
     action.execute()
 
 
-##################
-### PushAction ###
-##################
+######################
+### PushBaseAction ###
+######################
 
 
-def test_PushAction_execute(hrflow_client):
-    class MyPushAction(PushAction):
+def test_PushBaseAction_execute(hrflow_client):
+    class MyPushAction(PushBaseAction):
         def pull(self):
             return ["pullformat", "pulllogic"]
 
@@ -243,9 +245,9 @@ def test_PushAction_execute(hrflow_client):
     action.execute()
 
 
-######################
-### PullJobsAction ###
-######################
+##########################
+### PullJobsBaseAction ###
+##########################
 
 
 @pytest.fixture
@@ -266,28 +268,38 @@ def generate_hrflow_search_response(data, max_page=2):
 
 
 @responses.activate
-def test_PullJobsAction_get_all_references_from_board(hrflow_client, generated_jobs):
+def test_PullJobsBaseAction_get_all_references_from_board(
+    hrflow_client, generated_jobs
+):
     # Generate pages of jobs
     page_1 = generated_jobs(page=1, jobs=30)
     page_2 = generated_jobs(page=2, jobs=29)
 
     # Generate responses return by Hrflow
+    expected_page_1_params = dict(
+        board_keys='["abc"]', limit="30", page="1", sort_by="created_at"
+    )
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=1&sort_by=created_at",
+        "https://api.hrflow.ai/v1/jobs/searching",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_page_1_params)],
         json=generate_hrflow_search_response(page_1, max_page=2),
     )
 
+    expected_page_2_params = dict(
+        board_keys='["abc"]', limit="30", page="2", sort_by="created_at"
+    )
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=2&sort_by=created_at",
+        "https://api.hrflow.ai/v1/jobs/searching",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_page_2_params)],
         json=generate_hrflow_search_response(page_2, max_page=2),
     )
 
     # Catch requests sent to Hrflow
-    action = PullJobsAction(
+    action = PullJobsBaseAction(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     all_reference_iter = action.get_all_references_from_board()
@@ -306,7 +318,7 @@ def test_PullJobsAction_get_all_references_from_board(hrflow_client, generated_j
 
 
 @responses.activate
-def test_PullJobsAction_get_all_references_from_board_failure(
+def test_PullJobsBaseAction_get_all_references_from_board_failure(
     hrflow_client, generated_jobs
 ):
     # Generate pages of jobs
@@ -314,15 +326,19 @@ def test_PullJobsAction_get_all_references_from_board_failure(
     page_2 = generated_jobs(page=2, jobs=29)
 
     # Generate responses return by Hrflow
+    expected_page_1_params = dict(
+        board_keys='["abc"]', limit="30", page="1", sort_by="created_at"
+    )
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=1&sort_by=created_at",
+        "https://api.hrflow.ai/v1/jobs/searching",
         status=400,
+        match=[responses.matchers.query_param_matcher(expected_page_1_params)],
         json=dict(code=400, message="Test get_job_page failed"),
     )
 
     # Catch requests sent to Hrflow
-    action = PullJobsAction(
+    action = PullJobsBaseAction(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     try:
@@ -334,31 +350,39 @@ def test_PullJobsAction_get_all_references_from_board_failure(
 
 
 @responses.activate
-def test_PullJobsAction_get_all_references_from_board_and_less_job_returned(
+def test_PullJobsBaseAction_get_all_references_from_board_and_less_job_returned(
     hrflow_client, generated_jobs
 ):
     # Generate pages of jobs
     page_1 = generated_jobs(page=1, jobs=30)
 
     # Generate responses return by Hrflow
+    expected_page_1_params = dict(
+        board_keys='["abc"]', limit="30", page="1", sort_by="created_at"
+    )
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=1&sort_by=created_at",
+        "https://api.hrflow.ai/v1/jobs/searching",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_page_1_params)],
         json=generate_hrflow_search_response(page_1, max_page=2),
     )
 
     # Empty job list
+    expected_page_2_params = dict(
+        board_keys='["abc"]', limit="30", page="2", sort_by="created_at"
+    )
     page_2_response = dict(code=200, message="Success", data=dict(jobs=[]))
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/jobs/searching?board_keys=%5B%22abc%22%5D&limit=30&page=2&sort_by=created_at",
+        "https://api.hrflow.ai/v1/jobs/searching",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_page_2_params)],
         json=page_2_response,
     )
 
     # Catch requests sent to Hrflow
-    action = PullJobsAction(
+    action = PullJobsBaseAction(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     all_reference_iter = action.get_all_references_from_board()
@@ -387,7 +411,7 @@ def generated_parsing_text_response():
 
 
 @responses.activate
-def test_PullJobsAction_hydrate_job_with_parsing(
+def test_PullJobsBaseAction_hydrate_job_with_parsing(
     hrflow_client, generated_parsing_text_response
 ):
     # Catch request
@@ -399,7 +423,7 @@ def test_PullJobsAction_hydrate_job_with_parsing(
     )
 
     # Build Action
-    action = PullJobsAction(
+    action = PullJobsBaseAction(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     section = dict(name="s", title=None, description="i speak english")
@@ -418,7 +442,7 @@ def test_PullJobsAction_hydrate_job_with_parsing(
 
 
 @responses.activate
-def test_PullJobsAction_hydrate_job_with_parsing_failure(
+def test_PullJobsBaseAction_hydrate_job_with_parsing_failure(
     hrflow_client, generated_parsing_text_response
 ):
     # Catch request
@@ -430,7 +454,7 @@ def test_PullJobsAction_hydrate_job_with_parsing_failure(
     )
 
     # Build Action
-    action = PullJobsAction(
+    action = PullJobsBaseAction(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     section = dict(name="s", title=None, description="i speak english")
@@ -447,7 +471,7 @@ def test_PullJobsAction_hydrate_job_with_parsing_failure(
 
 
 @responses.activate
-def test_PullJobsAction_hydrate_job_with_parsing_with_empty_summary_and_only_html(
+def test_PullJobsBaseAction_hydrate_job_with_parsing_with_empty_summary_and_only_html(
     hrflow_client, generated_parsing_text_response
 ):
     # Catch request
@@ -459,7 +483,7 @@ def test_PullJobsAction_hydrate_job_with_parsing_with_empty_summary_and_only_htm
     )
 
     # Build Action
-    action = PullJobsAction(
+    action = PullJobsBaseAction(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     section = dict(name="s", title=None, description='<html attr="Python"></html>')
@@ -486,7 +510,7 @@ def generate_indexing_get_response():
 
 
 @responses.activate
-def test_PullJobsAction_check_reference_in_board_for_job_ref_none(
+def test_PullJobsBaseAction_check_reference_in_board_for_job_ref_none(
     hrflow_client,
     generate_indexing_get_response,
 ):
@@ -494,7 +518,7 @@ def test_PullJobsAction_check_reference_in_board_for_job_ref_none(
     job = dict(reference=None)
 
     # Build Action
-    action = PullJobsAction(
+    action = PullJobsBaseAction(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     check_response = action.check_reference_in_board(job)
@@ -502,7 +526,7 @@ def test_PullJobsAction_check_reference_in_board_for_job_ref_none(
 
 
 @responses.activate
-def test_PullJobsAction_check_reference_in_board_for_job_not_in_board(
+def test_PullJobsBaseAction_check_reference_in_board_for_job_not_in_board(
     hrflow_client,
     generate_indexing_get_response,
 ):
@@ -516,15 +540,17 @@ def test_PullJobsAction_check_reference_in_board_for_job_not_in_board(
     )
 
     # Catch request
+    expected_params = dict(board_key="abc", reference="REF1")
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        "https://api.hrflow.ai/v1/job/indexing",
         status=400,
+        match=[responses.matchers.query_param_matcher(expected_params)],
         json=generated_response,
     )
 
     # Build Action
-    action = PullJobsAction(
+    action = PullJobsBaseAction(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     check_response = action.check_reference_in_board(job)
@@ -532,7 +558,7 @@ def test_PullJobsAction_check_reference_in_board_for_job_not_in_board(
 
 
 @responses.activate
-def test_PullJobsAction_check_reference_in_board_for_not_archived_job_in_board(
+def test_PullJobsBaseAction_check_reference_in_board_for_not_archived_job_in_board(
     hrflow_client,
     generate_indexing_get_response,
 ):
@@ -546,15 +572,17 @@ def test_PullJobsAction_check_reference_in_board_for_not_archived_job_in_board(
     )
 
     # Catch request
+    expected_params = dict(board_key="abc", reference="REF1")
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        "https://api.hrflow.ai/v1/job/indexing",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_params)],
         json=generated_response,
     )
 
     # Build Action
-    action = PullJobsAction(
+    action = PullJobsBaseAction(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     check_response = action.check_reference_in_board(job)
@@ -562,7 +590,7 @@ def test_PullJobsAction_check_reference_in_board_for_not_archived_job_in_board(
 
 
 @responses.activate
-def test_PullJobsAction_check_reference_in_board_fail(
+def test_PullJobsBaseAction_check_reference_in_board_fail(
     hrflow_client, generate_indexing_get_response
 ):
     # Generate job
@@ -575,15 +603,17 @@ def test_PullJobsAction_check_reference_in_board_fail(
     )
 
     # Catch request
+    expected_params = dict(board_key="abc", reference="REF1")
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        "https://api.hrflow.ai/v1/job/indexing",
         status=400,
+        match=[responses.matchers.query_param_matcher(expected_params)],
         json=generated_response,
     )
 
     # Build Action
-    action = PullJobsAction(
+    action = PullJobsBaseAction(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     try:
@@ -594,7 +624,7 @@ def test_PullJobsAction_check_reference_in_board_fail(
 
 
 @responses.activate
-def test_PullJobsAction_check_reference_in_board_for_archived_job_without_parsing(
+def test_PullJobsBaseAction_check_reference_in_board_for_archived_job_without_parsing(
     hrflow_client,
     generate_indexing_get_response,
 ):
@@ -608,10 +638,12 @@ def test_PullJobsAction_check_reference_in_board_for_archived_job_without_parsin
     )
 
     # Catch request
+    expected_params = dict(board_key="abc", reference="REF1")
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        "https://api.hrflow.ai/v1/job/indexing",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_params)],
         json=generated_response,
     )
 
@@ -636,7 +668,7 @@ def test_PullJobsAction_check_reference_in_board_for_archived_job_without_parsin
     )
 
     # Build Action
-    action = PullJobsAction(
+    action = PullJobsBaseAction(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     check_response = action.check_reference_in_board(job)
@@ -644,7 +676,7 @@ def test_PullJobsAction_check_reference_in_board_for_archived_job_without_parsin
 
 
 @responses.activate
-def test_PullJobsAction_check_reference_in_board_for_archived_job_without_parsing_and_unarchiving_failed(
+def test_PullJobsBaseAction_check_reference_in_board_for_archived_job_without_parsing_and_unarchiving_failed(
     hrflow_client,
     generate_indexing_get_response,
 ):
@@ -658,10 +690,12 @@ def test_PullJobsAction_check_reference_in_board_for_archived_job_without_parsin
     )
 
     # Catch request
+    expected_params = dict(board_key="abc", reference="REF1")
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        "https://api.hrflow.ai/v1/job/indexing",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_params)],
         json=generated_response,
     )
 
@@ -687,7 +721,7 @@ def test_PullJobsAction_check_reference_in_board_for_archived_job_without_parsin
     )
 
     # Build Action
-    action = PullJobsAction(
+    action = PullJobsBaseAction(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     check_response = action.check_reference_in_board(job)
@@ -695,7 +729,7 @@ def test_PullJobsAction_check_reference_in_board_for_archived_job_without_parsin
 
 
 @responses.activate
-def test_PullJobsAction_check_reference_in_board_for_archived_job_in_board_with_parsing(
+def test_PullJobsBaseAction_check_reference_in_board_for_archived_job_in_board_with_parsing(
     hrflow_client, generate_indexing_get_response, generated_parsing_text_response
 ):
     # Generate job
@@ -712,10 +746,12 @@ def test_PullJobsAction_check_reference_in_board_for_archived_job_in_board_with_
     )
 
     # Catch request
+    expected_params = dict(board_key="abc", reference="REF1")
     responses.add(
         responses.GET,
-        "https://api.hrflow.ai/v1/job/indexing?board_key=abc&reference=REF1",
+        "https://api.hrflow.ai/v1/job/indexing",
         status=200,
+        match=[responses.matchers.query_param_matcher(expected_params)],
         json=generated_response,
     )
 
@@ -755,7 +791,7 @@ def test_PullJobsAction_check_reference_in_board_for_archived_job_in_board_with_
     )
 
     # Build Action
-    action = PullJobsAction(
+    action = PullJobsBaseAction(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=True
     )
     check_response = action.check_reference_in_board(job)
@@ -763,11 +799,11 @@ def test_PullJobsAction_check_reference_in_board_for_archived_job_in_board_with_
     assert not check_response
 
 
-def test_PullJobsAction_get_all_references_from_stream(hrflow_client):
+def test_PullJobsBaseAction_get_all_references_from_stream(hrflow_client):
     jobs_in_stream = [dict(reference="REF1"), dict(reference="REF2")]
     references_in_stream = ["REF1", "REF2"]
 
-    class TestPullJobsAction(PullJobsAction):
+    class TestPullJobsAction(PullJobsBaseAction):
         def pull(self):
             return jobs_in_stream
 
@@ -783,11 +819,11 @@ def test_PullJobsAction_get_all_references_from_stream(hrflow_client):
 
 
 @responses.activate
-def test_PullJobsAction_check_deletion_references_from_stream(hrflow_client):
+def test_PullJobsBaseAction_check_deletion_references_from_stream(hrflow_client):
     references_in_stream = ["REF1", "REF2"]
     references_in_board = ["REF1", "REF4"]
 
-    class TestPullJobsAction(PullJobsAction):
+    class TestPullJobsAction(PullJobsBaseAction):
         def get_all_references_from_board(self):
             return references_in_board
 
@@ -811,8 +847,8 @@ def test_PullJobsAction_check_deletion_references_from_stream(hrflow_client):
     action.check_deletion_references_from_stream()
 
 
-def test_PullJobsAction_execute_with_archiving_and_parsing(hrflow_client):
-    class MyPullJobsAction(PullJobsAction):
+def test_PullJobsBaseAction_execute_with_archiving_and_parsing(hrflow_client):
+    class MyPullJobsAction(PullJobsBaseAction):
         def pull(self):
             return ["pullformat", "pulllogic", "pullcheckref"]
 
@@ -847,8 +883,8 @@ def test_PullJobsAction_execute_with_archiving_and_parsing(hrflow_client):
     action.execute()
 
 
-def test_PullJobsAction_execute_with_archiving_without_parsing(hrflow_client):
-    class MyPullJobsAction(PullJobsAction):
+def test_PullJobsBaseAction_execute_with_archiving_without_parsing(hrflow_client):
+    class MyPullJobsAction(PullJobsBaseAction):
         def pull(self):
             return ["pullformat", "pulllogic", "pullcheckref"]
 
@@ -883,8 +919,8 @@ def test_PullJobsAction_execute_with_archiving_without_parsing(hrflow_client):
     action.execute()
 
 
-def test_PullJobsAction_execute_without_archiving_and_parsing(hrflow_client):
-    class MyPullJobsAction(PullJobsAction):
+def test_PullJobsBaseAction_execute_without_archiving_and_parsing(hrflow_client):
+    class MyPullJobsAction(PullJobsBaseAction):
         def pull(self):
             return ["pullformat", "pulllogic", "pullcheckref"]
 
@@ -921,7 +957,7 @@ def test_PullJobsAction_execute_without_archiving_and_parsing(hrflow_client):
 
 
 @responses.activate
-def test_PullJobsAction_push_success(hrflow_client):
+def test_PullJobsBaseAction_push_success(hrflow_client):
     # Mock requests and check data sent
     job = dict(key="efg", reference="REF123")
     expected_body = dict(board_key="abc", **job)
@@ -936,12 +972,12 @@ def test_PullJobsAction_push_success(hrflow_client):
     )
 
     # Pull data
-    action = PullJobsAction(board_key="abc", hrflow_client=hrflow_client())
+    action = PullJobsBaseAction(board_key="abc", hrflow_client=hrflow_client())
     action.push([job])
 
 
 @responses.activate
-def test_PullJobsAction_push_failure(hrflow_client):
+def test_PullJobsBaseAction_push_failure(hrflow_client):
     # Mock requests and check data sent
     job = dict(key="efg", reference="REF123")
     expected_body = dict(board_key="abc", **job)
@@ -956,7 +992,7 @@ def test_PullJobsAction_push_failure(hrflow_client):
     )
 
     # Pull data
-    action = PullJobsAction(board_key="abc", hrflow_client=hrflow_client())
+    action = PullJobsBaseAction(board_key="abc", hrflow_client=hrflow_client())
     try:
         action.push([job])
         assert False
@@ -964,13 +1000,13 @@ def test_PullJobsAction_push_failure(hrflow_client):
         pass
 
 
-#########################
-### PushProfileAction ###
-#########################
+#############################
+### PushProfileBaseAction ###
+#############################
 
 
 @responses.activate
-def test_PushProfileAction_pull_success(hrflow_client):
+def test_PushProfileBaseAction_pull_success(hrflow_client):
     # Mock requests and check data sent
     expected_params = dict(source_key="abc", key="efg")
     returned_value = dict(code=200, data=dict(key="efg"))
@@ -985,7 +1021,7 @@ def test_PushProfileAction_pull_success(hrflow_client):
 
     # Pull data
     profile = Profile(key="efg", source=Source(key="abc"))
-    action = PushProfileAction(hrflow_client=hrflow_client(), profile=profile)
+    action = PushProfileBaseAction(hrflow_client=hrflow_client(), profile=profile)
     profile_list_got = action.pull()
 
     # Check returned value
@@ -996,7 +1032,7 @@ def test_PushProfileAction_pull_success(hrflow_client):
 
 
 @responses.activate
-def test_PushProfileAction_pull_failure(hrflow_client):
+def test_PushProfileBaseAction_pull_failure(hrflow_client):
     # Mock requests and check data sent
     expected_params = dict(source_key="abc", key="efg")
     returned_value = dict(code=400, message="Test", data=dict())
@@ -1011,7 +1047,7 @@ def test_PushProfileAction_pull_failure(hrflow_client):
 
     # Pull data
     profile = Profile(key="efg", source=Source(key="abc"))
-    action = PushProfileAction(hrflow_client=hrflow_client(), profile=profile)
+    action = PushProfileBaseAction(hrflow_client=hrflow_client(), profile=profile)
 
     try:
         action.pull()
@@ -1021,11 +1057,11 @@ def test_PushProfileAction_pull_failure(hrflow_client):
 
 
 @responses.activate
-def test_PushProfileAction_execute(hrflow_client):
+def test_PushProfileBaseAction_execute(hrflow_client):
     profile = Profile(key="efg", source=Source(key="abc"))
 
     # Mock the `pull` & `push` method to do nothing
-    class MyPushProfileAction(PushProfileAction):
+    class MyPushProfileAction(PushProfileBaseAction):
         def pull(self):
             return []
 
@@ -1040,12 +1076,17 @@ def test_PushProfileAction_execute(hrflow_client):
     assert workflow_response["message"] == "Profile successfully pushed"
 
 
+##########################
+### PushJobeBaseAction ###
+##########################
+
+
 @responses.activate
-def test_PushJobAction_execute(hrflow_client):
+def test_PushJobBaseAction_execute(hrflow_client):
     job = Job(key="efg", board=Board(key="abc"))
 
     # Mock the `pull` & `push` method to do nothing
-    class MyPushJobAction(PushJobAction):
+    class MyPushJobAction(PushJobBaseAction):
         def pull(self):
             return ["pullformat", "pulllogic"]
 
@@ -1066,7 +1107,7 @@ def test_PushJobAction_execute(hrflow_client):
 
 
 @responses.activate
-def test_PushJobAction_pull_success(hrflow_client):
+def test_PushJobBaseAction_pull_success(hrflow_client):
     # Mock requests and check data sent
     expected_params = dict(board_key="abc", key="efg")
     returned_value = dict(code=200, data=dict(key="efg"))
@@ -1081,7 +1122,7 @@ def test_PushJobAction_pull_success(hrflow_client):
 
     # Pull data
     job = Job(key="efg", board=Board(key="abc"))
-    action = PushJobAction(hrflow_client=hrflow_client(), job=job)
+    action = PushJobBaseAction(hrflow_client=hrflow_client(), job=job)
     profile_list_got = action.pull()
 
     # Check returned value
@@ -1092,7 +1133,7 @@ def test_PushJobAction_pull_success(hrflow_client):
 
 
 @responses.activate
-def test_PushJobAction_pull_failure(hrflow_client):
+def test_PushJobBaseAction_pull_failure(hrflow_client):
     # Mock requests and check data sent
     expected_params = dict(board_key="abc", key="efg")
     returned_value = dict(code=400, message="Test", data=dict())
@@ -1107,7 +1148,7 @@ def test_PushJobAction_pull_failure(hrflow_client):
 
     # Pull data
     job = Job(key="efg", board=Board(key="abc"))
-    action = PushJobAction(hrflow_client=hrflow_client(), job=job)
+    action = PushJobBaseAction(hrflow_client=hrflow_client(), job=job)
 
     try:
         action.pull()
@@ -1116,8 +1157,13 @@ def test_PushJobAction_pull_failure(hrflow_client):
         pass
 
 
+##############################
+### CatchProfileBaseAction ###
+##############################
+
+
 @responses.activate
-def test_CatchProfileAction_execute(hrflow_client):
+def test_CatchProfileBaseAction_execute(hrflow_client):
     request = {
         "City": "xxx",
         "CountryCode": "x",
@@ -1136,7 +1182,7 @@ def test_CatchProfileAction_execute(hrflow_client):
     }
 
     # Mock the `pull` & `push` method to do nothing
-    class MyCatchProfileAction(CatchProfileAction):
+    class MyCatchProfileAction(CatchProfileBaseAction):
         def format(self, data):
             assert data.get("City") == "xxx"
             data["ZIPCode"] = "X"
@@ -1158,7 +1204,7 @@ def test_CatchProfileAction_execute(hrflow_client):
 
 
 @responses.activate
-def test_CatchProfileAction_push_success(hrflow_client):
+def test_CatchProfileBaseAction_push_success(hrflow_client):
     # Mock requests and check data sent
     returned_value = dict(code=200, message="ok", data=[])
     data_expected = dict(
@@ -1184,14 +1230,14 @@ def test_CatchProfileAction_push_success(hrflow_client):
     )
 
     # Push data
-    action = CatchProfileAction(
+    action = CatchProfileBaseAction(
         hrflow_client=hrflow_client(), source_key="abc", request=dict()
     )
     action.push(dict(source_key="abc", profile_file="base64"))
 
 
 @responses.activate
-def test_CatchProfileAction_push_success(hrflow_client):
+def test_CatchProfileBaseAction_push_success(hrflow_client):
     # Mock requests and check data sent
     returned_value = dict(code=400, message="Test", data=[])
     data_expected = dict(
@@ -1217,7 +1263,7 @@ def test_CatchProfileAction_push_success(hrflow_client):
     )
 
     # Push data
-    action = CatchProfileAction(
+    action = CatchProfileBaseAction(
         hrflow_client=hrflow_client(), source_key="abc", request=dict()
     )
     try:
