@@ -30,7 +30,7 @@ There are several ways to contribute to the project, among others we state the f
 ### Explicit Code Contributions
 1. Building a new connector:
  
-    - Add the connector module name for example `myconnector` in the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/tests/connectors) directory, make sure it respects the architecture specified in the [**DOCUMENTATION.md**](https://github.com/Riminder/hrflow-connectors/blob/master/DOCUMENTATION.md) file i.e: 
+    - Add the connector module name for example `myconnector` in the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) directory, make sure it respects the architecture specified in the [**DOCUMENTATION.md**](https://github.com/Riminder/hrflow-connectors/blob/master/DOCUMENTATION.md) file i.e: 
 
     - Contains an `actions.py` file which contains all the actions your connector will implement(`PullJobsAction`, `PullProfileAction`, `PushJobsAction`, `PushProfileAction`,...etc)
 
