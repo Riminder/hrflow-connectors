@@ -1,19 +1,19 @@
-# *Contributing*
+# Contributing
 
 **Welcome to `hrflow-connectors` contributor's guide.**
 
 We thank you for your interest in contributing to our open source hrflow-connectors. Contribution guidelines are listed below. If you don't know where or how to start contributing, we recommend reading the project documentation and test for yourself the already existing connectors to get a grasp of the logic behind them and how they work. We also recommend reading and familiarizing with the hrflow developers documentation `https://developers.hrflow.ai/reference/authentication`. We welcome any contributions from the community big or small.
 
-## *Code of conduct*
+## Code of conduct
 Please notice, all users and contributors are expected to be **open,
 considerate, reasonable, and respectful**. When in doubt, *Python Software
 Foundation's Code of Conduct* is a good reference in terms of behavior
 guidelines.
 
 
-## *Code Contributions*
+## Code Contributions
 
-### *Environment setup*
+### Environment setup
 1. Git clone: type  `git clone https://github.com/Riminder/hrflow-connectors.git` on your shell or `Clone Git Repository` in VSCode
 2. `poetry install` in the repository shell to add all required dependencies to your virtual environment
 It creates a virtual environment `.venv` at the root of the project with all necessary dependencies installed and even the `hrflow-connectors` package installed in editable mode.
@@ -23,11 +23,11 @@ For more information about `poetry` and its usage, see the official documentatio
 Note: if you use another vitural environment tool like pip or others, you can add the required dependencies with their specific versions to a `requirements.txt` file and run `pip install -r requirements.txt` but we recommend using poetry, it is more practical and less confusing to use.
 
 
-## *Contributing to* *hrflow-connectors*
+## Contributing to* *hrflow-connectors
 Now, when your environment is set up, to test that everything is working properly use your testing tool to run the tests for core and utils modules functions or go to your terminal and run `pytest -s tests/core` use the same expression for utils by switching it with core.
 There are several ways to contribute to the project, among others we state the following:
 
-### *Code Contributions*
+### Code Contributions
 1. Building a new connector:
  
     - Add the connector module name for example `myconnector` in the connectors directory, make sure it respects the architecture specified in the [**DOCUMENTATION.md**](https://github.com/Riminder/hrflow-connectors/blob/master/DOCUMENTATION.md) file i.e: 
@@ -54,7 +54,7 @@ There are several ways to contribute to the project, among others we state the f
     - We encourage contributors to add util functions and methods that use has been proven unnescapable in creating most of their connectors to the [core](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/core) and [utils](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/utils) folders and files.
 
 
-### *Coding style and performance*
+### Coding style and performance
 
 We encourage that you write your code in the simplest and most readable way possible so that anyone can understand it and test it especially the package users, your viewers and more importantly yourself, the following coding behaviour helps you do that:
 
@@ -111,47 +111,47 @@ We encourage that you write your code in the simplest and most readable way poss
 
 - Always keep in mind that we don't want the code to use too much memory, so make sure if needed to use itertools and iterators in general to avoid huge memory consumption.
 
-- Use docstrings and type hints in your functions as much as you can, for example:
-  ```python
-        class MyConnector():        
+    - Use docstrings and type hints in your functions as much as you can, for example:
+    ```python
+    class MyConnector():        
+        
+        def pull(self) -> Iterator[Dict[str,Any]]:
+            """
+            Pulls all jobs from a specific endpoint
             
-            def pull(self) -> Iterator[Dict[str,Any]]:
-                """
-                Pulls all jobs from a specific endpoint
-                
-                Returns: list of all jobs pulled from specific endpoint 
-                """
-                operation
-                operation
-                .....
-                
-                return List_of_all_jobs
+            Returns: list of all jobs pulled from specific endpoint 
+            """
+            operation
+            operation
+            .....
             
-            def format(self, data:Dict[str,Any]) -> Dict[str, Any]:
-                """
-                Formats a job in the specific format
-                
-                Args data:Dict[str, Any]: a job in a specific 
-                from the list of jobs 
-                pulled in `pull` function
-                
-                Returns the job in the specific format
-                """
-                
-                job = dict()
-                
-                # formatting attributes of the data to the specific format 
-                # this is just an explanation, explain as you see fit.
-                
-                job[key] = format(data[key])
-                .... and so on
-                
-                return job
-  ```
+            return List_of_all_jobs
+        
+        def format(self, data:Dict[str,Any]) -> Dict[str, Any]:
+            """
+            Formats a job in the specific format
+            
+            Args data:Dict[str, Any]: a job in a specific 
+            from the list of jobs 
+            pulled in `pull` function
+            
+            Returns the job in the specific format
+            """
+            
+            job = dict()
+            
+            # formatting attributes of the data to the specific format 
+            # this is just an explanation, explain as you see fit.
+            
+            job[key] = format(data[key])
+            .... and so on
+            
+            return job
+    ```
 - Finally, we recommend reading, understanding and testing at least one of the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) and all its relative tests and docs and imports, it is a facilitating factor for building and implementing connectors and making them more performant and elegant.
 
 
-### *Commit conventions and review process*
+### Commit conventions and review process
 
 - Make sur your commits are periodical and each commit points to a specific modification of feature and follow the commit type style that follow:
     - for adding a new feature `feat: add function format in actions.py`
@@ -166,7 +166,7 @@ We encourage that you write your code in the simplest and most readable way poss
 
 If there are requested changes from the reviewer, you must consider them before your PR can be merged and rerequest review after your modifications. Once approved, your PR will be merged and your name added to the authros.
 
-## *Issue Reports*
+## Issue Reports
 
 If you experience bugs or general issues with `hrflow-connectors`, please have a look
 on the `issue tracker`. If you don't see anything useful there, please feel
