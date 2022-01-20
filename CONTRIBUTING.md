@@ -2,7 +2,7 @@
 
 **Welcome to `hrflow-connectors` contributor's guide.**
 
-We thank you for your interest in contributing to our open source project `hrflow-connectors`. Contribution guidelines are listed below. If you don't know where or how to start contributing, we recommend reading the project documentation and test for yourself the already existing connectors to get a grasp of the logic behind them and how they work. We also recommend reading and familiarizing with the hrflow developers documentation `https://developers.hrflow.ai/reference/authentication`. We welcome any contributions from the community big or small.
+We thank you for your interest in contributing to our open source project [hrflow-connectors](https://github.com/Riminder/hrflow-connectors). Contribution guidelines are listed below. If you don't know where or how to start contributing, we recommend reading the project [documentation](https://github.com/Riminder/hrflow-connectors/blob/master/DOCUMENTATION.md) and test for yourself the already existing connectors to get a grasp of the logic behind them and how they work. We also recommend reading and familiarizing with the [hrflow developers documentation](https://developers.hrflow.ai/reference/authentication). We welcome any contributions from the community big or small.
 
 ## Code of conduct
 Please notice, all users and contributors are expected to be **open,
@@ -15,7 +15,7 @@ guidelines.
 
 ### Environment setup
 1. Git clone: type  `git clone https://github.com/Riminder/hrflow-connectors.git` on your shell or `Clone Git Repository` in VSCode
-2. `poetry install` in the repository shell to add all required dependencies to your virtual environment
+2. `poetry install` in the repository shell to add all required dependencies in [pyproject.toml](https://github.com/Riminder/hrflow-connectors/blob/master/pyproject.toml) to your virtual environment
 It creates a virtual environment `.venv` at the root of the project with all necessary dependencies installed and even the `hrflow-connectors` package installed in editable mode.
 3. `poetry shell` in the repository
 This allows you to activate and use the virtual environment.
@@ -24,19 +24,19 @@ Note: if you use another vitural environment tool like pip or others, you can ad
 
 
 ## Contributing to *hrflow-connectors*
-Now, when your environment is set up, to test that everything is working properly use your testing tool to run the tests for core and utils modules functions or go to your terminal and run `pytest -s tests/core` use the same expression for utils by switching it with core.
+Now, when your environment is set up, to test that everything is working properly use your testing tool to run the [tests](https://github.com/Riminder/hrflow-connectors/tree/master/tests) for core and utils modules functions or go to your terminal and run `pytest -s tests/core` use the same expression for utils by switching it with core.
 There are several ways to contribute to the project, among others we state the following:
 
 ### Explicit Code Contributions
 1. Building a new connector:
  
-    - Add the connector module name for example `myconnector` in the connectors directory, make sure it respects the architecture specified in the [**DOCUMENTATION.md**](https://github.com/Riminder/hrflow-connectors/blob/master/DOCUMENTATION.md) file i.e: 
+    - Add the connector module name for example `myconnector` in the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/tests/connectors) directory, make sure it respects the architecture specified in the [**DOCUMENTATION.md**](https://github.com/Riminder/hrflow-connectors/blob/master/DOCUMENTATION.md) file i.e: 
 
     - Contains an `actions.py` file which contains all the actions your connector will implement(`PullJobsAction`, `PullProfileAction`, `PushJobsAction`, `PushProfileAction`,...etc)
 
     - Each action is a class that inherits from its corresponding action parent class in the [action.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/action.py) `core` file for example `PullJobsAction` inherits from the class `PullJobsBaseAction` and has as parameters the specific attributes to the connector action like `subdomain` for `urls` and so on and the auth parameter which gives AUthorization to the client API if it is required, and the auth parameter, you can see the auth available classes and methods in the [auth.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/auth.py) `core` file, if you don't find there an Auth class that is compatible with your application, you can create a new one. You can also find in the utils module some interesting functions and debugging utilities that might help you with your contribution journey.
 
-    - Contains a `connector.py` file which contains your actions executed in a class `MyConnector` that inherits the abstract class Connector in the core module and for each action the class implements a static method for example for `PullJobsAction` action your method is named `pull_jobs` takes as parameters your connector required parameters and `**kwargs` for other optional arguments and logics.
+    - Contains a `connector.py` file which contains your actions executed in a class `MyConnector` that inherits the abstract class [Connector](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/connector.py) in the [core](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/core) module and for each action the class implements a static method for example for `PullJobsAction` action your method is named `pull_jobs` takes as parameters your connector required parameters and `**kwargs` for other optional arguments and logics.
 
     - Contains a `__init__.py` file to make importing your connector easier from the package, you write in this file `from .connector import *`, don't also forget to write `from myconnector import *` in the [__init__.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/__init__.py) file inside the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) folder which is the parent to your connector folder.
 
@@ -60,7 +60,7 @@ There are several ways to contribute to the project, among others we state the f
 
     - You can also edit and improve the performance of an existing connector, track new bugs and correct them and most importantly propose a more optimal and elegant alternative.
 
-3. Editing and Creating in **core** and **utils** of the project:
+3. Editing and Creating in [core](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/core) and [utils](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/utils) of the project:
 
     - We encourage contributors to add util functions and methods that use has been proven unnescapable in creating most of their connectors to the [core](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/core) and [utils](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/utils) folders and files.
 
@@ -71,7 +71,7 @@ We encourage that you write your code in the simplest and most readable way poss
 
 - Avoid putting too many operations in one line, it doesn't optimize your code and makes it more complex to read and harder to find bugs origin.
 
-- Use pydantic for your data validation and settings management, it increases performance rapidly, makes sure there is not a type error or a validation error and points right to the line where the error is coming from which makes it easy to correct bugs. We recommend reading its documentation and we give here an easy example to see and grasp:
+- Use [pydantic](https://pydantic-docs.helpmanual.io/) for your data validation and settings management, it increases performance rapidly, makes sure there is not a type error or a validation error and points right to the line where the error is coming from which makes it easy to correct bugs. We recommend reading its documentation and we give here an easy example to see and grasp:
      ```python
         from pydantic import BaseModel, Field
         from typing import Dict, Any, Iterator, Optional
@@ -86,15 +86,10 @@ We encourage that you write your code in the simplest and most readable way poss
         print(john_doe)
         #> ValidationError: 1 validation error for MyModel reference, 
         #field required (type=balue_error.missing)
-        """Pydantic points to me that I missed to precise a required parameter `reference`
-        which is mandatory and doesn't have a default value.
-        However, there are no problems with other parameters, number already has an
-        existing default value Field, if I don't want to precise a default value,
-        I just input number: int=Field(..., description="a number, easy right?")
-        String is an optional parameter so I am not forced to precise it but i can
-        use it if needed and name is already a constant parameter so if I precise
-        print(john_doe(name="John Doe", reference='a')) a validation error will also
-        be raised
+        """Pydantic points to me that I missed to precise a required parameter `reference` which is mandatory and doesn't have a default value.
+        However, there are no problems with other parameters, number already has an existing default value Field, if I don't want to precise a default value, I need to just write number: int=Field(..., description="a number, easy right?")
+        String is an optional parameter so I am not forced to precise it but i can use it if needed and name is already a constant parameter so if I precise
+        print(john_doe(name="John Doe", reference='a')) a validation error will also be raised
         """
         # note that string here can take any type
         # number can be only an int other a validation and type error are raise
@@ -106,9 +101,9 @@ We encourage that you write your code in the simplest and most readable way poss
 
 - Use only the package dependecies which you can find on the [pyproject.toml](https://github.com/Riminder/hrflow-connectors/blob/master/pyproject.toml) file and their dependencies and evidently you are free to use any python builtin module if needed.
 
-- Always reformat your scripts with `black`
+- Always reformat your scripts with `black`, the uncompromised Python code formatter.
 
-- Make sure that you test every function function and action you create, there is a tests folder in the repo make sure you assign your test to the correct subfolder or file.
+- Make sure that you test every function and action you create, there is a [tests](https://github.com/Riminder/hrflow-connectors/tree/master/tests) folder in the repo make sure you assign your test to the correct subfolder or file.
 
 - Install `Coverage Gutters` in vscode to display test coverage information.
 
@@ -168,7 +163,7 @@ We encourage that you write your code in the simplest and most readable way poss
 
 ### Commit conventions and review process
 
-- Make sur your commits are periodical and each commit points to a specific modification of feature and follow the commit type style that follow:
+- Make sur your commits are periodical and each commit points to a specific modification of feature and follow the commit type style that follows:
     - for adding a new feature, or editing a feature outcome: `feat: add function format in actions.py`
     - for editing without changing outcome : `refacto:.....`, for style: `style: reformat with black/add docstrings...`
     - for testing: `test:.....`, for documenting: `doc:.....`, for bugs and fix: `fix...`
