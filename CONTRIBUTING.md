@@ -81,27 +81,27 @@ We encourage that you write your code in the simplest and most readable way poss
 
 - Use [pydantic](https://pydantic-docs.helpmanual.io/) for your data validation and settings management, it increases performance rapidly, makes sure there is not a type error or a validation error and points right to the line where the error is coming from which makes it easy to correct bugs. We recommend reading its documentation and we give here an easy example to see and grasp:
      ```python
-        from pydantic import BaseModel, Field
-        from typing import Dict, Any, Iterator, Optional
+    from pydantic import BaseModel, Field
+    from typing import Dict, Any, Iterator, Optional
+    
+    class MyModel(BaseModel):
+        number: int=Field(5,description="A number, easy right?")
+        string: Optional[str]=Field(None, description="Can be any string and can be None")
+        reference: str
+        name = 'John Does'
         
-        class MyModel(BaseModel):
-            number: int=Field(5,description="A number, easy right?")
-            string: Optional[str]=Field(None, description="Can be any string and can be None")
-            reference: str
-            name = 'John Does'
-            
-        john_doe = MyModel()
-        print(john_doe)
-        #> ValidationError: 1 validation error for MyModel reference, 
-        #field required (type=balue_error.missing)
-        """Pydantic points to me that I missed to precise a required parameter `reference` which is mandatory and doesn't have a default value.
-        However, there are no problems with other parameters, number already has an existing default value Field, if I don't want to precise a default value, I need to just write number: int=Field(..., description="a number, easy right?")
-        String is an optional parameter so I am not forced to precise it but i can use it if needed and name is already a constant parameter so if I precise
-        print(john_doe(name="John Doe", reference='a')) a validation error will also be raised
-        """
-        # note that string here can take any type
-        # number can be only an int other a validation and type error are raise
-        # same with reference           
+    john_doe = MyModel()
+    print(john_doe)
+    #> ValidationError: 1 validation error for MyModel reference, 
+    #field required (type=balue_error.missing)
+    """Pydantic points to me that I missed to precise a required parameter `reference` which is mandatory and doesn't have a default value.
+    However, there are no problems with other parameters, number already has an existing default value Field, if I don't want to precise a default value, I need to just write number: int=Field(..., description="a number, easy right?")
+    String is an optional parameter so I am not forced to precise it but i can use it if needed and name is already a constant parameter so if I precise
+    print(john_doe(name="John Doe", reference='a')) a validation error will also be raised
+    """
+    # note that string here can take any type
+    # number can be only an int other a validation and type error are raise
+    # same with reference           
      ```
 - Use snake_case for your variables and CamelCase for your classes, make sure every parameter and function name corresponds to its basic usage.
 
