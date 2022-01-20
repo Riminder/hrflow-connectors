@@ -2,7 +2,7 @@
 
 **Welcome to `hrflow-connectors` contributor's guide.**
 
-We thank you for your interest in contributing to our open source hrflow-connectors. Contribution guidelines are listed below. If you don't know where or how to start contributing, we recommend reading the project documentation and test for yourself the already existing connectors to get a grasp of the logic behind them and how they work. We also recommend reading and familiarizing with the hrflow developers documentation `https://developers.hrflow.ai/reference/authentication`. We welcome any contributions from the community big or small.
+We thank you for your interest in contributing to our open source project `hrflow-connectors`. Contribution guidelines are listed below. If you don't know where or how to start contributing, we recommend reading the project documentation and test for yourself the already existing connectors to get a grasp of the logic behind them and how they work. We also recommend reading and familiarizing with the hrflow developers documentation `https://developers.hrflow.ai/reference/authentication`. We welcome any contributions from the community big or small.
 
 ## Code of conduct
 Please notice, all users and contributors are expected to be **open,
@@ -23,7 +23,7 @@ For more information about `poetry` and its usage, see the official documentatio
 Note: if you use another vitural environment tool like pip or others, you can add the required dependencies with their specific versions to a `requirements.txt` file and run `pip install -r requirements.txt` but we recommend using poetry, it is more practical and less confusing to use.
 
 
-## Contributing to* *hrflow-connectors
+## Contributing to *hrflow-connectors*
 Now, when your environment is set up, to test that everything is working properly use your testing tool to run the tests for core and utils modules functions or go to your terminal and run `pytest -s tests/core` use the same expression for utils by switching it with core.
 There are several ways to contribute to the project, among others we state the following:
 
@@ -175,7 +175,7 @@ We encourage that you write your code in the simplest and most readable way poss
     - Is it tested? (unit tests)
     - Is it introducing security risks ?
 
-If there are requested changes from the reviewer, you must consider them before your PR can be merged and rerequest review after your modifications. Once approved, your PR will be merged and your name added to the authros.
+- If there are requested changes from the reviewer, you must consider them before your PR can be merged and rerequest review after your modifications. Once approved, your PR will be merged and your name added to the authors.
 
 ## Issue Reports
 
