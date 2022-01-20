@@ -27,7 +27,7 @@ Note: if you use another vitural environment tool like pip or others, you can ad
 Now, when your environment is set up, to test that everything is working properly use your testing tool to run the tests for core and utils modules functions or go to your terminal and run `pytest -s tests/core` use the same expression for utils by switching it with core.
 There are several ways to contribute to the project, among others we state the following:
 
-### Code Contributions
+### Explicit Code Contributions
 1. Building a new connector:
  
     - Add the connector module name for example `myconnector` in the connectors directory, make sure it respects the architecture specified in the [**DOCUMENTATION.md**](https://github.com/Riminder/hrflow-connectors/blob/master/DOCUMENTATION.md) file i.e: 
