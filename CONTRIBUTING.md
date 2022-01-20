@@ -38,7 +38,15 @@ There are several ways to contribute to the project, among others we state the f
 
     - Contains a `connector.py` file which contains your actions executed in a class `MyConnector` that inherits the abstract class [Connector](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/connector.py) in the [core](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/core) module and for each action the class implements a static method for example for `PullJobsAction` action your method is named `pull_jobs` takes as parameters your connector required parameters and `**kwargs` for other optional arguments and logics.
 
-    - Contains a `__init__.py` file to make importing your connector easier from the package, you write in this file `from .connector import *`, don't also forget to write `from myconnector import *` in the [__init__.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/__init__.py) file inside the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) folder which is the parent to your connector folder.
+    - Contains a `__init__.py` file to make importing your connector easier from the package, you write in this file:
+    ```Python 
+    from .connector import *
+    ```
+    Don't also forget to write:
+    ```Python 
+    from myconnector import *
+    ```
+    in the [__init__.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/__init__.py) file inside the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) folder which is the parent to your connector folder.
 
     - Contains a `schemas.py` file which describes the model of your action data, see corresponding files for other connectors to get your ideas starting. Here is a brief example:
     ```Python
