@@ -1,6 +1,8 @@
 import requests
 from typing import Union, Dict, Optional, Any
 from pydantic import BaseModel, Field, SecretStr
+
+from ..core.error import AuthError
 from ..utils.logger import get_logger
 
 
@@ -73,7 +75,7 @@ class OAuth2PasswordCredentialsBody(Auth):
 
         if not response.ok:
             logger.error("OAuth2 failed for getting access token !")
-            raise RuntimeError("OAuth2 failed ! Reason : `{}`".format(response.content))
+            raise AuthError("OAuth2 failed ! Reason : `{}`".format(response.content))
 
         logger.debug("The access token has been got")
         return response.json()["access_token"]
@@ -145,7 +147,7 @@ class OAuth2EmailPasswordBody(Auth):
 
         if not response.ok:
             logger.error("Sign in Failure !")
-            raise RuntimeError("Signin failed ! Reason : `{}`".format(response.content))
+            raise AuthError("Signin failed ! Reason : `{}`".format(response.content))
 
         logger.debug("The access token has been got")
         return response.json()["access_token"]
