@@ -1,6 +1,7 @@
 import responses
 import requests
 
+from hrflow_connectors.core.error import AuthError
 from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody, OAuth2EmailPasswordBody
 from hrflow_connectors.core.auth import (
     Auth,
@@ -143,7 +144,7 @@ def test_OAuth2PasswordCredentialsBody_get_access_token_failure():
     try:
         access_token = auth.get_access_token()
         assert False
-    except RuntimeError:
+    except AuthError:
         pass
 
 
@@ -302,7 +303,7 @@ def test_OAuth2EmailPasswordBody_get_access_token_failure():
     try:
         access_token = auth.get_access_token()
         assert False
-    except RuntimeError:
+    except AuthError:
         pass
 
 

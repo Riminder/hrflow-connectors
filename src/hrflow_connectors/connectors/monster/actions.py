@@ -3,6 +3,7 @@ from pydantic import Field
 from typing import Union, Dict, Any
 import requests
 
+from ...core.error import PushError
 from ...core.action import PushJobBaseAction, CatchProfileBaseAction
 from ...utils.logger import get_logger
 
@@ -290,5 +291,4 @@ class PushJobAction(PushJobBaseAction):
         # Send request
         response = session.send(prepared_request)
         if not response.ok:
-            error_message = "Unable to push the data ! Reason : `{}`"
-            raise RuntimeError(error_message.format(response.content))
+            raise PushError(response)
