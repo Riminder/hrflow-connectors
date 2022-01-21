@@ -333,7 +333,6 @@ class PushProfileAction(PushProfileBaseAction):
 
                 response = session.send(prepared_request)
                 logger.info("Updating Candidate profile")
-                logger.debug(f"`{response.content}`, `{response.status_code}`")
                 if not response.ok:
                     raise PushError(response, message="Couldn't update candidate")
 
@@ -352,6 +351,5 @@ class PushProfileAction(PushProfileBaseAction):
 
             # Send request
             response = session.send(prepared_request)
-            logger.debug(f"`{response.status_code}`,`{response.content}`")
             if not response.ok:
                 raise PushError(response)
