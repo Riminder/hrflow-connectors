@@ -3,6 +3,7 @@ from pydantic import Field
 import itertools
 import requests
 
+from ...core.error import PullError, PushError
 from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...core.auth import XSmartTokenAuth
 from ...utils.logger import get_logger
@@ -67,9 +68,11 @@ class PullJobsAction(PullJobsBaseAction):
                 response = session.send(prepared_request)
 
                 if not response.ok:
-                    logger.error(f"Fail to get page of jobs : pageId=`{next_page_id}`")
-                    error_message = "Unable to pull the data ! Reason : `{}`"
-                    raise ConnectionError(error_message.format(response.content))
+                    raise PullError(
+                        response,
+                        message="Fail to get page of jobs",
+                        page_id=next_page_id,
+                    )
 
                 logger.info(f"Get page of jobs : pageId=`{next_page_id}`")
                 response_json = response.json()
@@ -114,9 +117,7 @@ class PullJobsAction(PullJobsBaseAction):
             response = session.send(prepared_request)
 
             if not response.ok:
-                logger.error(f"Fail to get full job id=`{job_id}`")
-                error_message = f"Unable to pull the job id=`{job_id}` ! Reason : `{response.content}`"
-                raise ConnectionError(error_message)
+                raise PullError(response, message="Fail to get full job", job_id=job_id)
 
             logger.info(f"Get full job id=`{job_id}`")
             return response.json()
@@ -400,6 +401,4 @@ class PushProfileAction(PushProfileBaseAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            raise RuntimeError(
-                f"Push profile to SmartRecruiters failed : `{response.content}`"
-            )
+            raise PushError(response)

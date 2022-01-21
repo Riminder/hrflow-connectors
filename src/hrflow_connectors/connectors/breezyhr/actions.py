@@ -2,6 +2,7 @@ from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
 import requests
 
+from ...core.error import PullError, PushError
 from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...core.auth import OAuth2EmailPasswordBody
 from ...utils.logger import get_logger
@@ -43,8 +44,7 @@ class PullJobsAction(PullJobsBaseAction):
                 prepared_request = get_company_id_request.prepare()
                 response = session.send(prepared_request)
                 if not response.ok:
-                    error_message = "Couldn't get company id ! Reason : `{}`"
-                    raise RuntimeError(error_message.format(response.content))
+                    raise PullError(response, message="Couldn't get company id")
                 company_list = response.json()
                 logger.debug("Retrieving company id")
                 for company in company_list:
@@ -65,11 +65,7 @@ class PullJobsAction(PullJobsBaseAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            logger.error(f"Failed to get jobs from this endpoint")
-            error_message = "Unable to pull the data ! Reason : `{}` `{}`"
-            raise RuntimeError(
-                error_message.format(response.status_code, response.content)
-            )
+            raise PullError(response, message="Failed to get jobs from this endpoint")
 
         return response.json()
 
@@ -287,8 +283,7 @@ class PushProfileAction(PushProfileBaseAction):
                 prepared_request = get_company_id_request.prepare()
                 response = session.send(prepared_request)
                 if not response.ok:
-                    error_message = "Couldn't get company id ! Reason : `{}`"
-                    raise RuntimeError(error_message.format(response.content))
+                    raise PushError(response, message="Couldn't get company id")
                 company_list = response.json()
                 logger.debug("Retrieving company id")
                 for company in company_list:
@@ -311,8 +306,7 @@ class PushProfileAction(PushProfileBaseAction):
             prepared_request = verify_candidate_request.prepare()
             response = session.send(prepared_request)
             if not response.ok:
-                error_message = "Couldn't get candidate ! Reason : `{}`"
-                raise RuntimeError(error_message.format(response.content))
+                raise PushError(response, message="Couldn't get candidate")
             if response.json() == []:
                 return None
             else:
@@ -339,12 +333,8 @@ class PushProfileAction(PushProfileBaseAction):
 
                 response = session.send(prepared_request)
                 logger.info("Updating Candidate profile")
-                logger.debug(f"`{response.content}`, `{response.status_code}`")
                 if not response.ok:
-                    error_message = "Couldn't update candidate ! Reason :{}, `{}`"
-                    raise RuntimeError(
-                        error_message.format(response.status_code, response.content)
-                    )
+                    raise PushError(response, message="Couldn't update candidate")
 
             update_profile_request()
 
@@ -361,8 +351,5 @@ class PushProfileAction(PushProfileBaseAction):
 
             # Send request
             response = session.send(prepared_request)
-            logger.debug(f"`{response.status_code}`,`{response.content}`")
             if not response.ok:
-                raise RuntimeError(
-                    f"Push profile to Breezy Hr failed :`{response.status_code}` `{response.content}`"
-                )
+                raise PushError(response)
