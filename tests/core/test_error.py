@@ -1,7 +1,7 @@
 import requests
 import responses
 
-from hrflow_connectors.core.error import PullError, PushError
+from hrflow_connectors.core.error import PullError, PushError, HrflowError
 
 
 @responses.activate
@@ -39,4 +39,23 @@ def test_PushError():
     try:
         raise PushError(response, Message="My message")
     except PushError as e:
+        assert e.__str__() == expected_output
+
+
+def test_HrflowError():
+    # Create Hrflow response
+    response = dict(code=500, message="Internal error", data=[])
+
+    # Expected error output
+    expected_output = "Failed to communicate with Hrflow\n"
+    expected_output += "Message: `My message`\n"
+    expected_output += "Status code: `500`\n"
+    expected_output += "Hrflow message: `Internal error`"
+
+    # Test error
+    try:
+        raise HrflowError(
+            response, title="Failed to communicate with Hrflow", Message="My message"
+        )
+    except HrflowError as e:
         assert e.__str__() == expected_output
