@@ -1,5 +1,5 @@
 from hrflow import Hrflow
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 
 from ...core.connector import Connector
 from ...core.auth import AuthorizationAuth
