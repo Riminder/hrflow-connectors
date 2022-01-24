@@ -270,9 +270,6 @@ def test_OAuth2Session_get_access_token():
     auth_code = auth.get_auth_code()
     assert auth_code == OAuth2Session_JSON_RESPONSE["auth_code"]
 
-
-
-
     # build Mock for get_access_token request
     body_access_token = dict(
         grant_type="authorization_code",
@@ -293,11 +290,6 @@ def test_OAuth2Session_get_access_token():
     access_token = auth.get_access_token(auth_code)
     assert access_token == OAuth2Session_JSON_RESPONSE["access_token"]
 
-
-
-
-
-
     # build Mock for get_access_token request
     body_session_token = dict(
         version="*",
@@ -314,12 +306,7 @@ def test_OAuth2Session_get_access_token():
     )
 
     session_token = auth.get_session_token(access_token)
-    print(f"AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH {session_token}")
     assert session_token["BhRestToken"] == OAuth2Session_JSON_RESPONSE["BhRestToken"]
-
-
-
-
 
     # build Mock for check_auth request
     header = dict(BhRestToken=session_token["BhRestToken"])
@@ -343,6 +330,3 @@ def test_OAuth2Session_get_access_token():
     authenticated_prepared_request = auth(prepared_request)
 
     assert authenticated_prepared_request.headers.get("test") == "abc"
-    """assert authenticated_prepared_request.headers.get(
-        "Authorization"
-    ) == "OAuth {}".format(access_token)"""
