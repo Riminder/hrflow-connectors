@@ -1,4 +1,4 @@
-from typing import Iterator, Dict, Any, Union, List
+from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
 import requests
 
@@ -147,7 +147,7 @@ class PullJobsAction(PullJobsBaseAction):
 class PushProfileAction(PushProfileBaseAction):
 
     auth: AuthorizationAuth
-    sourced: bool = Field(
+    sourced: Optional[bool] = Field(
         False, description="True if added by a recruiter without applying"
     )
 
