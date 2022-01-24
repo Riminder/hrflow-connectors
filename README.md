@@ -60,6 +60,7 @@ to democratize Talent Data integration within the HR Tech landscape.
 | [**Taleez**](src/hrflow_connectors/connectors/taleez/)| ATS | :heavy_check_mark: |
 | **Talentsoft** |  | :hourglass: |
 | **Talentlink** |  | :hourglass: |
+| [**Teamtailor**](src/hrflow_connectors/connectors/teamtailor) | ATS | :heavy_check_mark: |
 | **Twilio** | Marketing tools | :hourglass: |
 | **Ultimate Software (UKG)** |  | :hourglass: |
 | [**Workable**](src/hrflow_connectors/connectors/workable/) | ATS | :heavy_check_mark: |
