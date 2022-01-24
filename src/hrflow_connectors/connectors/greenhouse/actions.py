@@ -3,6 +3,7 @@ from pydantic import Field
 import html
 import requests
 
+from ...core.error import PullError, PushError
 from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
@@ -37,11 +38,11 @@ class PullJobsAction(PullJobsBaseAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            logger.error(
-                f"Failed to get jobs from board: `{self.board_token}`. Check that your board token is valid."
+            raise PullError(
+                response,
+                message="Failed to get jobs from Greenhouse board. Check that your board token is valid.",
+                board_token=self.board_token,
             )
-            error_message = "Unable to pull the data ! Reason : `{}`"
-            raise ConnectionError(error_message.format(response.content))
 
         response_dict = response.json()
         total_info = response_dict["meta"]["total"]
@@ -222,8 +223,4 @@ class PushProfileAction(PushProfileBaseAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            raise RuntimeError(
-                "Push profile to Greenhouse failed : {}, `{}`".format(
-                    response.status_code, response.content
-                )
-            )
+            raise PushError(response)

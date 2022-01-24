@@ -8,6 +8,7 @@ from hrflow_connectors.core.action import (
     CatchProfileBaseAction,
 )
 from hrflow_connectors.utils.hrflow import Profile, Source, Job, Board
+from hrflow_connectors.core.error import HrflowError
 import pytest
 import requests
 import responses
@@ -343,9 +344,9 @@ def test_PullJobsBaseAction_get_all_references_from_board_failure(
     )
     try:
         all_reference_iter = action.get_all_references_from_board()
-        all_reference_list = list(all_reference_iter)
+        list(all_reference_iter)
         assert False
-    except RuntimeError:
+    except HrflowError:
         pass
 
 
@@ -466,7 +467,7 @@ def test_PullJobsBaseAction_hydrate_job_with_parsing_failure(
     try:
         action.hydrate_job_with_parsing(job)
         assert False
-    except RuntimeError:
+    except HrflowError:
         pass
 
 
@@ -619,8 +620,8 @@ def test_PullJobsBaseAction_check_reference_in_board_fail(
     try:
         action.check_reference_in_board(job)
         assert False
-    except RuntimeError:
-        assert True
+    except HrflowError:
+        pass
 
 
 @responses.activate
@@ -996,7 +997,7 @@ def test_PullJobsBaseAction_push_failure(hrflow_client):
     try:
         action.push([job])
         assert False
-    except RuntimeError:
+    except HrflowError:
         pass
 
 
@@ -1052,7 +1053,7 @@ def test_PushProfileBaseAction_pull_failure(hrflow_client):
     try:
         action.pull()
         assert False
-    except RuntimeError:
+    except HrflowError:
         pass
 
 
@@ -1153,7 +1154,7 @@ def test_PushJobBaseAction_pull_failure(hrflow_client):
     try:
         action.pull()
         assert False
-    except RuntimeError:
+    except HrflowError:
         pass
 
 
@@ -1269,5 +1270,5 @@ def test_CatchProfileBaseAction_push_success(hrflow_client):
     try:
         action.push(dict(source_key="abc", profile_file="base64"))
         assert False
-    except RuntimeError:
+    except HrflowError:
         pass

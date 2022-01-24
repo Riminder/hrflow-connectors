@@ -4,6 +4,7 @@ import itertools
 import xml.etree.ElementTree
 import html
 
+from ..core.error import HrflowError
 from ..utils.clean_text import remove_html_tags
 from ..utils.hrflow import find_element_in_list, Profile, Job
 from ..utils.hrflow import generate_workflow_response
@@ -265,9 +266,7 @@ class PullJobsBaseAction(PullBaseAction):
                 board_keys=[self.board_key], limit=30, page=page
             )
             if response["code"] >= 400:
-                raise RuntimeError(
-                    "Hrflow searching failed : `{}`".format(response["message"])
-                )
+                raise HrflowError(response, "Search Jobs failed")
             return response
 
         job_page = get_jobs_page(page=1)
@@ -343,9 +342,7 @@ class PullJobsBaseAction(PullBaseAction):
                 board_key=self.board_key, job_json=job
             )
             if response["code"] >= 400:
-                message = response["message"]
-                logger.error("Failed to push a job !")
-                raise RuntimeError("Failed to push ! Reason : `{}`".format(message))
+                raise HrflowError(response, "Index Job failed")
 
     def hydrate_job_with_parsing(self, job: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -392,8 +389,7 @@ class PullJobsBaseAction(PullBaseAction):
         logger.debug("Parsing the cleaned text...")
         response = self.hrflow_client.document.parsing.post(text=cleaned_str)
         if response["code"] >= 400:
-            logger.error("Fail to parse the cleaned text !")
-            raise RuntimeError("Parsing failed : `{}`".format(response["message"]))
+            raise HrflowError(response, "Parsing failed")
         logger.debug("Text has been parsed")
 
         entity_list = response["data"]["ents"]
@@ -499,8 +495,7 @@ class PullJobsBaseAction(PullBaseAction):
             logger.debug("Hrflow does not find this job reference")
             return True
         elif response_code >= 400:
-            logger.error("GET Indexing failed !")
-            raise RuntimeError("GET Indexing failed : {}".format(response["message"]))
+            raise HrflowError(response, "Get Job failed")
         elif response_code == 200:
             logger.debug("Hrflow got this job in the Board")
             job_in_board = response["data"]
@@ -650,9 +645,7 @@ class PushJobBaseAction(PushBaseAction):
             board_key=self.job.board.key, key=self.job.key
         )
         if response["code"] >= 400:
-            raise RuntimeError(
-                "Indexing job get failed : `{}`".format(response["message"])
-            )
+            raise HrflowError(response, "Get Job failed")
 
         job = response["data"]
         return [job]
@@ -678,10 +671,7 @@ class PushProfileBaseAction(PushBaseAction):
             source_key=self.profile.source.key, key=self.profile.key
         )
         if response["code"] >= 400:
-            logger.error("Fail to pull a profile")
-            raise RuntimeError(
-                "Indexing profile get failed : `{}`".format(response["message"])
-            )
+            raise HrflowError(response, "Get Profile failed")
 
         profile = response["data"]
         return [profile]
@@ -724,6 +714,4 @@ class CatchProfileBaseAction(BaseAction):
         logger.debug(f"Parsing a profile to Hrflow Source `{self.source_key}`")
         response = self.hrflow_client.profile.parsing.add_file(**data)
         if response["code"] >= 400:
-            message = response["message"]
-            logger.error("Failed to push a profile !")
-            raise RuntimeError("Failed to push ! Reason : `{}`".format(message))
+            raise HrflowError(response, "Parsing a profile failed")

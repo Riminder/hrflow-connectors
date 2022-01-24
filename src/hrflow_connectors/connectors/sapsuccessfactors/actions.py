@@ -3,6 +3,7 @@ from pydantic import Field
 import requests
 import datetime
 
+from ...core.error import PullError, PushError
 from ...core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
 from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...utils.logger import get_logger
@@ -43,9 +44,7 @@ class PullJobsAction(PullJobsBaseAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            logger.error(f"The request failed !")
-            error_message = "Unable to pull the data ! Reason : `{}`"
-            raise ConnectionError(error_message.format(response.content))
+            raise PullError(response)
 
         logger.info(f"All jobs have been pulled")
         response_dict = response.json()
@@ -317,6 +316,4 @@ class PushProfileAction(PushProfileBaseAction):
             logger.warning("Profile already exists")
         else:
             if not response.ok:
-                raise RuntimeError(
-                    f"Push profile to sapsuccesfactors api-server: {self.api_server} failed : `{response.content}`"
-                )
+                raise PushError(response, api_server=self.api_server)
