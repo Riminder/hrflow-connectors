@@ -27,7 +27,7 @@ class PullJobsAction(PullJobsBaseAction):
         pull_jobs_request.method = "GET"
         pull_jobs_request.url = "https://api.teamtailor.com/v1/jobs"
         pull_jobs_request.auth = self.auth
-        pull_jobs_request.headers = {'X-Api-Version': '20210218'}
+        pull_jobs_request.headers = {"X-Api-Version": "20210218"}
         prepared_request = pull_jobs_request.prepare()
 
         # Send request
@@ -68,17 +68,17 @@ class PullJobsAction(PullJobsBaseAction):
 
         def get_location() -> None:
             """
-             Get_location sends a request to get the job location from its API endpoint
+            Get_location sends a request to get the job location from its API endpoint
             """
             session = requests.Session()
             pull_job_location_request = requests.Request()
             pull_job_location_request.method = "GET"
-            id = job['reference']
+            id = job["reference"]
             pull_job_location_request.url = (
-                f'https://api.teamtailor.com/v1/jobs/{id}/location'
+                f"https://api.teamtailor.com/v1/jobs/{id}/location"
             )
 
-            pull_job_location_request.headers = {'X-Api-Version': '20210218'}
+            pull_job_location_request.headers = {"X-Api-Version": "20210218"}
             pull_job_location_request.auth = self.auth
             prepared_request = pull_job_location_request.prepare()
             response = session.send(prepared_request)
@@ -143,10 +143,13 @@ class PullJobsAction(PullJobsBaseAction):
 
         return job
 
+
 class PushProfileAction(PushProfileBaseAction):
 
     auth: AuthorizationAuth
-    sourced: bool = Field(False, description="True if added by a recruiter without applying")
+    sourced: bool = Field(
+        False, description="True if added by a recruiter without applying"
+    )
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -162,13 +165,13 @@ class PushProfileAction(PushProfileBaseAction):
         info = data.get("info")
         profile["first-name"] = info.get("first_name")
         profile["last-name"] = info.get("last_name")
-        profile["email-name"] = info.get("email")
-        profile["phone-name"] = info.get("phone")
-        profile["pitch-name"] = info.get("summary")
+        profile["email"] = info.get("email")
+        profile["phone"] = info.get("phone")
+        profile["pitch"] = info.get("summary")
         resume = data.get("attachments")[1]
-        profile['resume'] = resume.get('public_url')
-        profile['sourced'] = self.sourced
-        profile['tags'] = data.get("tags")
+        profile["resume"] = resume.get("public_url")
+        profile["sourced"] = self.sourced
+        profile["tags"] = data.get("tags")
 
         return profile
 
@@ -180,21 +183,80 @@ class PushProfileAction(PushProfileBaseAction):
             data (Dict[str, Any]): profile to push
         """
         profile = next(data)
-        # Prepare request
-        logger.info("Preparing resuest to push candidate profile")
-        session = requests.Session()
-        push_profile_request = requests.Request()
-        push_profile_request.method = "POST"
-        push_profile_request.url = "https://api.teamtailor.com/v1/candidates"
-        push_profile_request.headers = {'X-Api-Version': '20210218', 'content-type': 'application/vnd.api+json'}
-        push_profile_request.auth = self.auth
-        push_profile_request.json = dict(data=dict(type="candidates", attributes=profile))
-        prepared_request = push_profile_request.prepare()
+        profile_json = dict(data=dict(type="candidates", attributes=profile))
+        auth = self.auth
+        request_url = "https://api.teamtailor.com/v1/candidates"
 
-        # Send request
-        response = session.send(prepared_request)
-        if not response.ok:
-            raise PushError(
-                response,
-                message="Failed to push candidate profile"
+        session = requests.Session()
+
+        def send_request(
+            method: str,
+            url: str,
+            params=None,
+            json=None,
+            return_response=None,
+        ):
+            """
+            Sends a HTTPS request to the specified url using the specified paramters
+            Args:
+                method (str): request method: "GET", "PUT", "POST"...
+                url (str): url endpoint to receive the request
+                json (optional): data to be sent to the endpoint. Defaults to None.
+                params (optional): additional parameters to the request
+                return_response (optional): In case we want to the function to return the response. Defaults to None.
+            Returns:
+                Optional[Response]: if we want to retrieve some of the response data objects we swicth return_response to True
+            """
+            request = requests.Request()
+            request.method = method
+            request.url = url
+            request.auth = auth
+            request.headers = {
+                "X-Api-Version": "20210218",
+                "content-type": "application/vnd.api+json",
+            }
+            if json is not None:
+                request.json = json
+            if params is not None:
+                request.params = params
+            prepared_request = request.prepare()
+            response = session.send(prepared_request)
+            if not response.ok:
+                raise PushError(response)
+            if return_response is not None:
+                return response
+
+        # a request to verify if the candidate profile already exist
+        get_candidate_param = {"filter[email]": f'{profile["email"]}'}
+        get_candidate_response = send_request(
+            method="GET",
+            url=request_url,
+            params=get_candidate_param,
+            return_response=True,
+        )
+        candidate_list = get_candidate_response.json().get("data")
+        candidate = None
+        if candidate_list != []:
+            candidate = candidate_list[0]
+
+        # In case the candidate exists we retrieve his id to update his profile with a "PUT" request
+        if candidate is not None:
+            candidate_id = candidate["id"]
+            logger.info(f"Candidate Already exists with the id {candidate_id}")
+            update_profile_url = request_url + f"/{candidate_id}"
+            profile_json["data"]["id"] = candidate_id
+            logger.info("Updating Candidate profile")
+            update_profile_response = send_request(
+                method="PATCH",
+                url=update_profile_url,
+                json=profile_json,
+            )
+        # If the candidate doesn't already exist we "POST" his profile
+        else:
+            # Post profile request
+            logger.info("Preparing resuest to push candidate profile")
+            push_profile_response = send_request(
+                method="POST",
+                url=request_url,
+                json=profile_json,
             )
