@@ -8,7 +8,7 @@
 
 | Endpoints | Description |
 | --------- | ----------- |
-| [List Jobs](https://docs.teamtailor.com/#a0351972-8394-4646-95f0-56a4c4e3886d) | Endpoint that returns a list of your company jobs, the request method is `GET`|
+| [List Jobs](https://docs.teamtailor.com/#a0351972-8394-4646-95f0-56a4c4e3886d) | Endpoint to retrieve a list of your company jobs, the request method is `GET`|
 
 ## Parameters
 

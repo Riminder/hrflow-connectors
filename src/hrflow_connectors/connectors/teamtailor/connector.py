@@ -44,7 +44,7 @@ class Teamtailor(Connector):
             hrflow_client (Hrflow): Hrflow client instance used to communicate with the Hrflow.ai API
             auth (AuthorizationAuth): Auth instance to identify and communicate with the platform
             profile (Profile): Profile to push
-            sourced (bool): True if added by a recruiter without applying. Default value `False`
+            sourced (Optional[bool]): True if added by a recruiter without applying. Default value `False`
             logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
