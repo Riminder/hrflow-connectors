@@ -10,10 +10,7 @@ from .actions import PullJobsAction, PushProfileAction
 class Teamtailor(Connector):
     @staticmethod
     def pull_jobs(
-        auth: AuthorizationAuth, 
-        hrflow_client: Hrflow, 
-        board_key: str, 
-        **kwargs
+        auth: AuthorizationAuth, hrflow_client: Hrflow, board_key: str, **kwargs
     ) -> Optional[Dict[str, Any]]:
         """
         `PullJobsAction` gets all available jobs listed on Teamtailor company endpoints. It adds all these jobs to a Hrflow.ai Board.
@@ -32,18 +29,13 @@ class Teamtailor(Connector):
             Optional[Dict[str, Any]]: Workflow response or `None`
         """
         action = PullJobsAction(
-            auth=auth,
-            hrflow_client=hrflow_client,
-            board_key=board_key,
-            **kwargs
+            auth=auth, hrflow_client=hrflow_client, board_key=board_key, **kwargs
         )
         return action.execute()
+
     @staticmethod
     def push_profile(
-        auth: AuthorizationAuth, 
-        hrflow_client: Hrflow, 
-        profile: Profile, 
-        **kwargs
+        auth: AuthorizationAuth, hrflow_client: Hrflow, profile: Profile, **kwargs
     ) -> Optional[Dict[str, Any]]:
         """
         `PushProfileAction` pushes a Hrflow.ai profile to `Teamtailor` via their Teamtailor API.
@@ -61,9 +53,6 @@ class Teamtailor(Connector):
             Optional[Dict[str, Any]]: Workflow response or `None`
         """
         action = PushProfileAction(
-            auth=auth,
-            hrflow_client=hrflow_client,
-            profile=profile,
-            **kwargs
+            auth=auth, hrflow_client=hrflow_client, profile=profile, **kwargs
         )
         return action.execute()
