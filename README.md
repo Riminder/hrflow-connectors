@@ -37,6 +37,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 | Name | Type | Available |
 | - | - | - |
 | **ADP** |  | :hourglass: |
+| [**Bullhorn**](src/hrflow_connectors/connectors/bullhorn/) | ATS | :heavy_check_mark: |
 | **Cegid (Meta4)** |  | :hourglass: |
 | [**Ceridian**](src/hrflow_connectors/connectors/ceridian) | HCM |:heavy_check_mark: |
 | **Cornerstone OnDemand** |  | :hourglass: |
