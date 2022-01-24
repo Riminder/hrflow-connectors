@@ -23,13 +23,11 @@ class PullJobsAction(PullJobsBaseAction):
         """
         # Prepare request
         session = requests.Session()
-        headers = {'X-Api-Version': '20210218'}
         pull_jobs_request = requests.Request()
         pull_jobs_request.method = "GET"
         pull_jobs_request.url = "https://api.teamtailor.com/v1/jobs"
         pull_jobs_request.auth = self.auth
-        pull_jobs_request.headers = headers
-
+        pull_jobs_request.headers = {'X-Api-Version': '20210218'}
         prepared_request = pull_jobs_request.prepare()
 
         # Send request
@@ -144,3 +142,59 @@ class PullJobsAction(PullJobsBaseAction):
         create_tag("internal")
 
         return job
+
+class PushProfileAction(PushProfileBaseAction):
+
+    auth: AuthorizationAuth
+    sourced: bool = Field(False, description="True if added by a recruiter without applying")
+
+    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Format a Hrflow profile object into a Teamtailor profile object
+
+        Args:
+            data (Dict[str, Any]): Hrflow Profile to format
+
+        Returns:
+            Dict[str, Any]: a Teamtailor formatted profile object
+        """
+        profile = dict()
+        info = data.get("info")
+        profile["first-name"] = info.get("first_name")
+        profile["last-name"] = info.get("last_name")
+        profile["email-name"] = info.get("email")
+        profile["phone-name"] = info.get("phone")
+        profile["pitch-name"] = info.get("summary")
+        resume = data.get("attachments")[1]
+        profile['resume'] = resume.get('public_url')
+        profile['sourced'] = self.sourced
+        profile['tags'] = data.get("tags")
+
+        return profile
+
+    def push(self, data: Dict[str, Any]):
+        """
+        Push a Hrflow profile object to a Teamtailor candidate pool for a position
+
+        Args:
+            data (Dict[str, Any]): profile to push
+        """
+        profile = next(data)
+        # Prepare request
+        logger.info("Preparing resuest to push candidate profile")
+        session = requests.Session()
+        push_profile_request = requests.Request()
+        push_profile_request.method = "POST"
+        push_profile_request.url = "https://api.teamtailor.com/v1/candidates"
+        push_profile_request.headers = {'X-Api-Version': '20210218', 'content-type': 'application/vnd.api+json'}
+        push_profile_request.auth = self.auth
+        push_profile_request.json = dict(data=dict(type="candidates", attributes=profile))
+        prepared_request = push_profile_request.prepare()
+
+        # Send request
+        response = session.send(prepared_request)
+        if not response.ok:
+            raise PushError(
+                response,
+                message="Failed to push candidate profile"
+            )
