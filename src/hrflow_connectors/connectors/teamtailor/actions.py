@@ -254,7 +254,7 @@ class PushProfileAction(PushProfileBaseAction):
         # If the candidate doesn't already exist we "POST" his profile
         else:
             # Post profile request
-            logger.info("Preparing resuest to push candidate profile")
+            logger.info("Preparing request to push candidate profile")
             push_profile_response = send_request(
                 method="POST",
                 url=request_url,
