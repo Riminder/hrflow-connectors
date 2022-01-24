@@ -10,3 +10,4 @@ from .sapsuccessfactors import *
 from .taleez import *
 from .monster import *
 from .breezyhr import *
+from .teamtailor import *
