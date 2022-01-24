@@ -266,90 +266,86 @@ class PushProfileAction(PushProfileBaseAction):
         auth = self.auth
         session = requests.Session()
 
-        def get_company_id() -> str:
+        def send_request(
+            message: str,
+            method: str,
+            url: str,
+            json=None,
+            return_response=None,
+        ):
             """
-            Get the company id associated with the authenticated user company, required for authentification
+            Sends a HTTPS request to the specified url using the specified paramters
+
+            Args:
+                message (str): message to be displayed when a PushError is raised
+                method (str): request method: "GET", "PUT", "POST"...
+                url (str): url endpoint to receive the request
+                json (optional): data to be sent to the endpoint. Defaults to None.
+                return_response (optional): In case we want to the function to return the response. Defaults to None.
 
             Returns:
-                str: company id
+                Optional[Response]: if we want to retrieve some of the response data objects we swicth return_response to True
             """
-            if self.company_id is not None:
-                return self.company_id
-            else:
-                get_company_id_request = requests.Request()
-                get_company_id_request.method = "GET"
-                get_company_id_request.url = "https://api.breezy.hr/v3/companies"
-                get_company_id_request.auth = auth
-                prepared_request = get_company_id_request.prepare()
-                response = session.send(prepared_request)
-                if not response.ok:
-                    raise PushError(response, message="Couldn't get company id")
-                company_list = response.json()
-                logger.debug("Retrieving company id")
-                for company in company_list:
-                    if company["name"] == self.company_name:
-                        return company["_id"]
-
-        self.company_id = get_company_id()
-
-        def get_candidate() -> Optional[Dict[str, Any]]:
-            """
-            Get candidate. If candidate does not exists, return None.
-
-            Returns:
-                Optional[Dict[str, Any]]: a dictionary that contains candidate id and name, if candidate doesn't exist it returns None
-            """
-            verify_candidate_request = requests.Request()
-            verify_candidate_request.method = "GET"
-            verify_candidate_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/candidates/search?email_address={profile['email_address']}"
-            verify_candidate_request.auth = auth
-            prepared_request = verify_candidate_request.prepare()
+            request = requests.Request()
+            request.method = method
+            request.url = url
+            request.auth = auth
+            request.headers = {"content-type": "application/json"}
+            if json is not None:
+                request.json = json
+            prepared_request = request.prepare()
             response = session.send(prepared_request)
             if not response.ok:
-                raise PushError(response, message="Couldn't get candidate")
-            if response.json() == []:
-                return None
-            else:
-                candidate = response.json()[0]
-                return candidate
+                raise PushError(response, message=message)
+            if return_response is not None:
+                return response
 
-        candidate = get_candidate()
+        # if the user doesn't specify a company id, we send a request to retrieve it using company_name
+        if self.company_id is None:
+            get_company_id_response = send_request(
+                method="GET",
+                url="https://api.breezy.hr/v3/companies",
+                message="Couldn't get company id",
+                return_response=True,
+            )
+            company_list = get_company_id_response.json()
+            for company in company_list:
+                if company["name"] == self.company_name:
+                    self.company_id = company["_id"]
 
+        # a request to verify if the candidate profile already exist
+        get_candidate_url = f"https://api.breezy.hr/v3/company/{self.company_id}/candidates/search?email_address={profile['email_address']}"
+        get_candidate_response = send_request(
+            method="GET",
+            url=get_candidate_url,
+            message="Couldn't get candidate",
+            return_response=True,
+        )
+        candidate_list = get_candidate_response.json()
+        candidate = None
+        if candidate_list != []:
+            candidate = candidate_list[0]
+
+        # In case the candidate exists we retrieve his id to update his profile with a "PUT" request
         if candidate is not None:
             candidate_id = candidate["_id"]
             logger.info(f"Candidate Already exists with the id {candidate_id}")
-
-            def update_profile_request():
-                """
-                Send a put request to update the candidate profile
-                """
-                update_candidate_request = requests.Request()
-                update_candidate_request.method = "PUT"
-                update_candidate_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidate/{candidate_id}"
-                update_candidate_request.auth = auth
-                update_candidate_request.headers = {"content-type": "application/json"}
-                update_candidate_request.json = profile
-                prepared_request = update_candidate_request.prepare()
-
-                response = session.send(prepared_request)
-                logger.info("Updating Candidate profile")
-                if not response.ok:
-                    raise PushError(response, message="Couldn't update candidate")
-
-            update_profile_request()
-
+            update_profile_url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidate/{candidate_id}"
+            logger.info("Updating Candidate profile")
+            update_profile_response = send_request(
+                method="PUT",
+                url=update_profile_url,
+                json=profile,
+                message="Couldn't update candidate profile'",
+            )
+        # If the candidate doesn't already exist we "POST" his profile
         else:
             # Post profile request
-            # Prepare request
             logger.info("Preparing resuest to push candidate profile")
-            push_profile_request = requests.Request()
-            push_profile_request.method = "POST"
-            push_profile_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidates"
-            push_profile_request.auth = auth
-            push_profile_request.json = profile
-            prepared_request = push_profile_request.prepare()
-
-            # Send request
-            response = session.send(prepared_request)
-            if not response.ok:
-                raise PushError(response)
+            push_profile_url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidates"
+            push_profile_response = send_request(
+                method="POST",
+                url=push_profile_url,
+                json=profile,
+                message="Push Profile to BreezyHr failed",
+            )
