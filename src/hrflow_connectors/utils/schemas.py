@@ -4,14 +4,6 @@ from pydantic import BaseModel, Field
 
 # Hrflow Job model
 
-
-from typing import Union, Dict, Any, Optional, List
-from pydantic import BaseModel, Field
-
-
-# Hrflow Job model
-
-
 class HrflowJobSection(BaseModel):
     name: Optional[str] = Field(
         None, description="Identification name of a Section of the Job. Example: culture"
@@ -135,7 +127,6 @@ class HrflowJob(BaseModel):
     ranges_date: Optional[List[HrflowJobRangesDate]] = Field(
         None, description="List of ranges of dates"
     )
-
 
 
 # Hflow Profile model
