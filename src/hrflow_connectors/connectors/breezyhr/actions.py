@@ -214,8 +214,12 @@ class PushProfileAction(PushProfileBaseAction):
                     education["school"] = "Undefined"
                 format_education["school_name"] = education["school"]
                 format_education["field_of_study"] = education["title"]
-                format_education["start_year"] = education["date_start"]
-                format_education["end_year"] = education["date_end"]
+                if education['date_start'] is not None:
+                    date_iso = from_str_to_datetime((education["date_start"]))
+                    format_education["start_year"] = date_iso.year
+                if education['date_end'] is not None:
+                    date_end_iso = from_str_to_datetime((education["date_end"]))
+                    format_education["end_year"] = date_end_iso.year
                 profile["education"].append(format_education)
 
         format_educations()
