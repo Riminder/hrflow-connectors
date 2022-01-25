@@ -275,7 +275,7 @@ class PushProfileAction(PushProfileBaseAction):
             Send a HTTPS request to the specified url using the specified paramters
 
             Args:
-                message (str): message to be displayed when a PushError is raised
+                error_message (str): message to be displayed when a PushError is raised
                 method (str): request method: "GET", "PUT", "POST"...
                 url (str): url endpoint to receive the request
                 json (optional): data to be sent to the endpoint. Defaults to None.
