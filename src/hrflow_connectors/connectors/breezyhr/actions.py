@@ -184,11 +184,10 @@ class PushProfileAction(PushProfileBaseAction):
             experiences = data.get("experiences")
             for experience in experiences:
                 format_experience = dict()
-                format_experience["company_name"] = (
-                    experience["company"]
-                    if experience["company"] not in ["", None]
-                    else "Undefined"
-                )
+                if experience["company"] not in ["", None]:
+                    format_experience["company_name"] = experience["company"]
+                else:
+                    format_experience["company_name"] = "Undefined"
                 format_experience["title"] = experience["title"]
                 format_experience["summary"] = experience["description"]
                 if experience["date_start"] is not None:
@@ -271,7 +270,6 @@ class PushProfileAction(PushProfileBaseAction):
             method: str,
             url: str,
             json=None,
-            return_response=None,
         ):
             """
             Sends a HTTPS request to the specified url using the specified paramters
@@ -297,8 +295,7 @@ class PushProfileAction(PushProfileBaseAction):
             response = session.send(prepared_request)
             if not response.ok:
                 raise PushError(response, message=message)
-            if return_response is not None:
-                return response
+            return response
 
         # if the user doesn't specify a company id, we send a request to retrieve it using company_name
         if self.company_id is None:
@@ -306,7 +303,6 @@ class PushProfileAction(PushProfileBaseAction):
                 method="GET",
                 url="https://api.breezy.hr/v3/companies",
                 message="Couldn't get company id",
-                return_response=True,
             )
             company_list = get_company_id_response.json()
             for company in company_list:
@@ -319,7 +315,6 @@ class PushProfileAction(PushProfileBaseAction):
             method="GET",
             url=get_candidate_url,
             message="Couldn't get candidate",
-            return_response=True,
         )
         candidate_list = get_candidate_response.json()
         candidate = None
@@ -332,20 +327,20 @@ class PushProfileAction(PushProfileBaseAction):
             logger.info(f"Candidate Already exists with the id {candidate_id}")
             update_profile_url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidate/{candidate_id}"
             logger.info("Updating Candidate profile")
-            update_profile_response = send_request(
+            send_request(
                 method="PUT",
                 url=update_profile_url,
                 json=profile,
                 message="Couldn't update candidate profile'",
-            )
+                )
         # If the candidate doesn't already exist we "POST" his profile
         else:
             # Post profile request
             logger.info("Preparing request to push candidate profile")
             push_profile_url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidates"
-            push_profile_response = send_request(
+            send_request(
                 method="POST",
                 url=push_profile_url,
                 json=profile,
                 message="Push Profile to BreezyHr failed",
-            )
+                )
