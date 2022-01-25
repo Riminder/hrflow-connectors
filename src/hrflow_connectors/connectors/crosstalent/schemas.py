@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Dict, Any, Optional, List
+from typing import Optional
 
 
 class CrosstalentJob(BaseModel):
