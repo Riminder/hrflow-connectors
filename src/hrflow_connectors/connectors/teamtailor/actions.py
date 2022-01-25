@@ -192,19 +192,21 @@ class PushProfileAction(PushProfileBaseAction):
         def send_request(
             method: str,
             url: str,
-            params=None,
-            json=None,
-        ):
+            error_message: str,
+            params: Optional[Dict[str, Any]] = None,
+            json: Optional[Dict[str, Any]] = None,
+        ) -> requests.Response:
             """
-            Sends a HTTPS request to the specified url using the specified paramters
+            Send a HTTPS request to the specified url using the specified paramters
             Args:
                 method (str): request method: "GET", "PUT", "POST"...
                 url (str): url endpoint to receive the request
+                error_message (str): message to be displayed when a `PushError` error is raised
                 json (optional): data to be sent to the endpoint. Defaults to None.
                 params (optional): additional parameters to the request
                 return_response (optional): In case we want to the function to return the response. Defaults to None.
             Returns:
-                Response
+                Response (requests.Response)
             """
             request = requests.Request()
             request.method = method
@@ -221,7 +223,7 @@ class PushProfileAction(PushProfileBaseAction):
             prepared_request = request.prepare()
             response = session.send(prepared_request)
             if not response.ok:
-                raise PushError(response)
+                raise PushError(response, message=error_message)
 
             return response
 
@@ -231,6 +233,7 @@ class PushProfileAction(PushProfileBaseAction):
             method="GET",
             url=request_url,
             params=get_candidate_param,
+            error_message="Failed to get candidate",
         )
         candidate_list = get_candidate_response.json().get("data")
         candidate = None
@@ -248,6 +251,7 @@ class PushProfileAction(PushProfileBaseAction):
                 method="PATCH",
                 url=update_profile_url,
                 json=profile_json,
+                error_message="Failed to update candidate profile",
             )
         # If the candidate doesn't already exist we "POST" his profile
         else:
@@ -257,4 +261,5 @@ class PushProfileAction(PushProfileBaseAction):
                 method="POST",
                 url=request_url,
                 json=profile_json,
+                error_message="Failed to post candidate profile",
             )
