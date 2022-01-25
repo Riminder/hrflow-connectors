@@ -2,14 +2,17 @@ from typing import Union, Dict, Any, Optional, List
 from pydantic import BaseModel, Field
 
 
+# Hrflow Job model
+
+
 class HrflowJobSection(BaseModel):
-    name: str = Field(
+    name: Optional[str] = Field(
         ..., description="Identification name of a Section of the Job. Example: culture"
     )
-    title: str = Field(
+    title: Optional[str] = Field(
         ..., description="Display Title of a Section. Example: Corporate Culture"
     )
-    description: str = Field(
+    description: Optional[str] = Field(
         ..., description="Text description of a Section: Example: Our values are..."
     )
 
@@ -51,13 +54,13 @@ class HrflowJobRangesFloat(BaseModel):
     and follows the structure below
     """
 
-    name: str = Field(
+    name: Optional[str] = Field(
         ...,
         description="Identification name of a Range of floats attached to the Job. Example: salary",
     )
-    value_min: float = Field(..., description="Min value. Example: 500.")
-    value_max: float = Field(..., description="Max value. Example: 100.")
-    unit: str = Field(..., description="Unit of the value. Example: euros.")
+    value_min: Optional[float] = Field(..., description="Min value. Example: 500.")
+    value_max: Optional[float] = Field(..., description="Max value. Example: 100.")
+    unit: Optional[str] = Field(..., description="Unit of the value. Example: euros.")
 
 
 class HrflowJobRangesDate(BaseModel):
@@ -66,22 +69,22 @@ class HrflowJobRangesDate(BaseModel):
     and follows the structure below
     """
 
-    name: str = Field(
+    name: Optional[str] = Field(
         ...,
         description="Identification name of a Range of dates attached to the Job. Example: availability.",
     )
-    value_min: str = Field(
+    value_min: Optional[str] = Field(
         ..., description="Min value in datetime ISO 8601, Example: 500."
     )
-    value_max: str = Field(
+    value_max: Optional[str] = Field(
         ..., description="Max value in datetime ISO 8601, Example: 1000"
     )
 
 
 class HrflowJob(BaseModel):
-    """ The Hrflow Job Object """
+    """ Hrflow Job Object model """
 
-    key: Optional[str] = Field(..., description="Identification key of the Job.")
+    key: str = Field(..., description="Identification key of the Job.")
     reference: str = Field(..., description="Custom identifier of the Job.")
     name: str = Field(..., description="Job title.")
     location: HrflowJobLocation = Field(..., description="Job location object.")
@@ -124,4 +127,182 @@ class HrflowJob(BaseModel):
     )
     ranges_date: Optional[List[HrflowJobRangesDate]] = Field(
         ..., description="List of ranges of dates"
+    )
+
+
+# Hflow Profile model
+
+
+class FieldLocation(BaseModel):
+    """ Location for profile info, experience and education information"""
+
+    text: str = Field(..., description="Location text address.")
+    lat: Optional[float] = Field(
+        None, description="Geocentric latitude of the Location."
+    )
+    lng: Optional[float] = Field(
+        None, description="Geocentric longitude of the Location."
+    )
+    Fields: Optional[Dict[str, Any]] = Field(
+        ..., description="other location attributes like country, country_code...etc"
+    )
+
+
+class FieldSkill(BaseModel):
+    name: str = Field(..., description="Identification name of the skill")
+    type: str = Field(..., description="Type of the skill. hard or soft")
+    value: Optional[str] = Field(None, description="Value associated to the skill")
+
+
+class InfoUrls(BaseModel):
+    """ Porfile urls """
+
+    from_resume: Optional[List[str]]
+    linkedin: Optional[str]
+    twitter: Optional[str]
+    facebook: Optional[str]
+    github: Optional[str]
+
+
+class HrflowProfileField(BaseModel):
+    """
+    HrflowJobField: Languages, Certifications, Courses, Tasks, Interests, Metadatas, Tags
+    are arrays of objects following the JSON structure below
+    """
+
+    name: str = Field(..., description="Identification name of the Object")
+    value: Optional[str] = Field(
+        ..., description="Value associated to the Object's name"
+    )
+
+
+class HrflowProfileInfo(BaseModel):
+    """ Profile basic informations"""
+
+    full_name: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    email: Optional[str]
+    phone: Optional[str]
+    date_birth: Optional[str] = Field(..., description="Profile date of birth")
+    location: Optional[FieldLocation] = Field(
+        ..., description="Profile location object"
+    )
+    urls: Optional[InfoUrls] = Field(
+        ..., description="Profile social networks and URLs"
+    )
+    picture: Optional[str] = Field(..., description="Profile picture url")
+    gender: Optional[str] = Field(..., description="Profile gender")
+    summary: Optional[str] = Field(..., description="Profile summary text")
+
+
+class Experience(BaseModel):
+    key: Optional[str] = Field(..., description="Identification key of the Experience.")
+    company: Optional[str] = Field(..., description="Company name of the Experience.")
+    title: Optional[str] = Field(..., description="Title of the Experience.")
+    description: Optional[str] = Field(
+        ..., description="Description of the Experience."
+    )
+    location: Optional[FieldLocation] = Field(
+        ..., description="Location object of the Experience."
+    )
+    date_start: Optional[str] = Field(
+        ..., description="Start date of the experience. type: ('datetime ISO 8601')"
+    )
+    date_end: Optional[str] = Field(
+        ..., description="End date of the experience. type: ('datetime ISO 8601')"
+    )
+    skills: Optional[List[FieldSkill]] = Field(
+        ..., description="List of skills of the Experience."
+    )
+    certifications: Optional[List[HrflowProfileField]]
+    courses: Optional[List[HrflowProfileField]]
+    tasks: Optional[List[HrflowProfileField]]
+
+
+class Education(BaseModel):
+    key: Optional[str] = Field(..., description="Identification key of the Education.")
+    school: Optional[str] = Field(..., description="School name of the Education.")
+    title: Optional[str] = Field(..., description="Title of the Education.")
+    description: Optional[str] = Field(..., description="Description of the Education.")
+    location: Optional[FieldLocation] = Field(
+        ..., description="Location object of the Education."
+    )
+    date_start: Optional[str] = Field(
+        ..., description="Start date of the Education. type: ('datetime ISO 8601')"
+    )
+    date_end: Optional[str] = Field(
+        ..., description="End date of the Education. type: ('datetime ISO 8601')"
+    )
+    skills: Optional[List[FieldSkill]] = Field(
+        ..., description="List of skills of the Education."
+    )
+    certifications: Optional[List[HrflowProfileField]]
+    courses: Optional[List[HrflowProfileField]]
+    tasks: Optional[List[HrflowProfileField]]
+
+
+class HrflowProfile(BaseModel):
+    """ Hrflow Profile object model"""
+
+    key: str = Field(..., description="Identification key of the Profile.")
+    reference: str = Field(..., description="Custom identifier of the Profile.")
+    archieved_at: Optional[str] = Field(
+        ...,
+        description="type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+    )
+    updated_at: Optional[str] = Field(
+        ..., description="type: datetime ISO8601, Last update date of the Profile."
+    )
+    created_at: Optional[str] = Field(
+        ..., description="type: datetime ISO8601, Creation date of the Profile."
+    )
+    info: HrflowProfileInfo = Field(
+        ..., description="Object containing the Profile's info."
+    )
+    text_language: str = Field(
+        ..., description="Code language of the Profile. type: string code ISO 639-1"
+    )
+    text: str = Field(..., description="Full text of the Profile..")
+    experiences_duration: float = Field(
+        ..., description="Total number of years of experience."
+    )
+    educations_duration: float = Field(
+        ..., description="Total number of years of education."
+    )
+    experiences: Optional[List[Experience]] = Field(
+        ..., description="List of experiences of the Profile."
+    )
+    educations: Optional[List[Education]] = Field(
+        ..., description="List of educations of the Profile."
+    )
+    attachments: List = Field(
+        ..., description="List of documents attached to the Profile."
+    )
+    skills: Optional[List[FieldSkill]] = Field(
+        ..., description="List of skills of the Profile."
+    )
+    languages: Optional[List[HrflowProfileField]] = Field(
+        ..., description="List of spoken languages of the profile"
+    )
+    certifications: Optional[List[HrflowProfileField]] = Field(
+        ..., description="List of certifications of the Profile."
+    )
+    courses: Optional[List[HrflowProfileField]] = Field(
+        ..., description="List of courses of the Profile."
+    )
+    tasks: Optional[List[HrflowProfileField]] = Field(
+        ..., description="List of tasks of the Profile."
+    )
+    interests: Optional[List[HrflowProfileField]] = Field(
+        ..., description="List of interests of the Profile."
+    )
+    labels: Optional[List[HrflowProfileField]] = Field(
+        ..., description="List of labels of the Profile."
+    )
+    tags: Optional[List[HrflowProfileField]] = Field(
+        ..., description="List of tags of the Profile."
+    )
+    metadatas: Optional[List[HrflowProfileField]] = Field(
+        ..., description="List of metadatas of the Profile."
     )
