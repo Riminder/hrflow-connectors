@@ -1,4 +1,3 @@
-from lib2to3.pgen2.token import OP
 from pydantic import BaseModel, Field
 from typing import Dict, Any, Optional, List
 
