@@ -270,7 +270,7 @@ class PushProfileAction(PushProfileBaseAction):
             method: str,
             url: str,
             json: Optional[Dict[str, Any]] = None,
-        ):
+        ) -> requests.Response:
             """
             Send a HTTPS request to the specified url using the specified paramters
 
@@ -282,7 +282,7 @@ class PushProfileAction(PushProfileBaseAction):
                 return_response (optional): In case we want to the function to return the response. Defaults to None.
 
             Returns:
-                Optional[Response]: if we want to retrieve some of the response data objects we swicth return_response to True
+                response (requests.Response)
             """
             request = requests.Request()
             request.method = method
