@@ -32,8 +32,6 @@ class PullJobsAction(PullJobsBaseAction):
 
         if not response.ok:
             raise PullError(response)
-        for i in response.json():
-            print(i)
         return response.json()
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
