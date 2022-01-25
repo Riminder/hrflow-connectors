@@ -194,7 +194,6 @@ class PushProfileAction(PushProfileBaseAction):
             url: str,
             params=None,
             json=None,
-            return_response=None,
         ):
             """
             Sends a HTTPS request to the specified url using the specified paramters
@@ -205,7 +204,7 @@ class PushProfileAction(PushProfileBaseAction):
                 params (optional): additional parameters to the request
                 return_response (optional): In case we want to the function to return the response. Defaults to None.
             Returns:
-                Optional[Response]: if we want to retrieve some of the response data objects we swicth return_response to True
+                Response
             """
             request = requests.Request()
             request.method = method
@@ -223,8 +222,8 @@ class PushProfileAction(PushProfileBaseAction):
             response = session.send(prepared_request)
             if not response.ok:
                 raise PushError(response)
-            if return_response is not None:
-                return response
+
+            return response
 
         # a request to verify if the candidate profile already exist
         get_candidate_param = {"filter[email]": f'{profile["email"]}'}
@@ -232,7 +231,6 @@ class PushProfileAction(PushProfileBaseAction):
             method="GET",
             url=request_url,
             params=get_candidate_param,
-            return_response=True,
         )
         candidate_list = get_candidate_response.json().get("data")
         candidate = None
@@ -246,7 +244,7 @@ class PushProfileAction(PushProfileBaseAction):
             update_profile_url = request_url + f"/{candidate_id}"
             profile_json["data"]["id"] = candidate_id
             logger.info("Updating Candidate profile")
-            update_profile_response = send_request(
+            send_request(
                 method="PATCH",
                 url=update_profile_url,
                 json=profile_json,
@@ -255,7 +253,7 @@ class PushProfileAction(PushProfileBaseAction):
         else:
             # Post profile request
             logger.info("Preparing request to push candidate profile")
-            push_profile_response = send_request(
+            send_request(
                 method="POST",
                 url=request_url,
                 json=profile_json,
