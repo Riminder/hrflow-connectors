@@ -1,4 +1,4 @@
-from ...core import action as core
+from ...core.action import PushProfileBaseAction
 from ...core.auth import OAuth2Session
 from ...utils.datetime_converter import from_str_to_datetime
 import xml.etree.ElementTree
@@ -14,7 +14,7 @@ TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
 logger = get_logger()
 
 
-class PushProfileAction(core.PushProfileAction):
+class PushProfileAction(PushProfileBaseAction):
 
     subdomain: str = Field(
         ...,
