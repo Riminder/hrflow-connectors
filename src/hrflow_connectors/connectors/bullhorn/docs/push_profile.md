@@ -22,39 +22,25 @@
 Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.ai/docs/workflows#catch-setup).
 ```python
 from hrflow_connectors import Bullhorn
-
 from hrflow import Hrflow
-from hrflow_connectors.core.auth import OAuth2Session
-from hrflow_connectors.utils.hrflow import EventParser
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
+from hrflow_connectors import OAuth2Session
+from hrflow_connectors.utils.hrflow import Profile, Source
 
-def workflow(_request, settings):
-    """
-    CATCH Workflow
-    """    
-    # We add a basic configuration to our logger to see the messages displayed in the standard output
-    # This is not mandatory. It allows you to see what the connector is doing.
-    logger = get_logger_with_basic_config()
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
+auth = OAuth2Session(auth_code_url="https://auth.bullhornstaffing.com/oauth/authorize",
+                    access_token_url="https://auth.bullhornstaffing.com/oauth/token",
+                    session_token_url="https://rest.bullhornstaffing.com/rest-services/login",
+                    client_id="MY_CLIENT_ID",
+                    client_secret="MY_CLIENT_SECRET",
+                    username="MY_USERNAME",
+                    password="MY_PASSWORD",
+                    name="BhRestToken")
 
-    event = EventParser(request=_request)
-    profile = event.get_profile()
-    if profile is not None:
-        logger.info("Profile found !")
-
-        client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
-        auth = OAuth2Session(auth_code_url="https://auth.bullhornstaffing.com/oauth/authorize",
-                         access_token_url="https://auth.bullhornstaffing.com/oauth/token",
-                         session_token_url="https://rest.bullhornstaffing.com/rest-services/login",
-                         client_id=credentials["bullhorn"]["client_id"],
-                         client_secret=credentials["bullhorn"]["client_secret"],
-                         username=credentials["bullhorn"]["username"],
-                         password=credentials["bullhorn"]["password"],
-                         name="BhRestToken")
-        response = Bullhorn.push_profile(
-            auth=auth,
-            subdomain="rest91",
-            hrflow_client=hrflow_client(),
-            profile=profile,
-        )
-        return response
+Bullhorn.push_profile(
+    auth=auth,
+    subdomain="rest91",
+    hrflow_client=hrflow_client(),
+    profile=profile,
+)
 ```
