@@ -9,6 +9,8 @@ from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
 from ...core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import GreenhouseJobModel, GreenhouseProfileModel
 
 logger = get_logger()
 
@@ -19,7 +21,7 @@ class PullJobsAction(PullJobsBaseAction):
         description="Job Board URL token, which is usually the company `name` -for example `lyft`- when it has job listings on greenhouse, mandatory to access job boards on `greenhouse.io`: `https://boards-api.greenhouse.io/v1/boards/{board_token}/jobs`, getting jobs doesn't require an API Key",
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[GreenhouseJobModel]:
         """
         Pull all jobs from a greenhouse job board
 
@@ -48,10 +50,11 @@ class PullJobsAction(PullJobsBaseAction):
         total_info = response_dict["meta"]["total"]
         logger.info(f"Total jobs found : {total_info}")
 
-        job_list = response_dict["jobs"]
-        return job_list
+        job_json_list = response_dict["jobs"]
+        job_obj_iter = map(GreenhouseJobModel.parse_obj, job_json_list)
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: GreenhouseJobModel) -> HrflowJob:
         """
         format each job pulled from greenhouse job board into a HrFlow job object
 
@@ -60,6 +63,7 @@ class PullJobsAction(PullJobsBaseAction):
         """
 
         job = dict()
+        data = data.dict()
         # name
         job["name"] = data.get("title")
         # summary
@@ -117,8 +121,9 @@ class PullJobsAction(PullJobsBaseAction):
         ]
         # updated_at
         job["updated_at"] = data.get("updated_at")
+        job_obj = HrflowJob.parse_obj(job)
 
-        return job
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
