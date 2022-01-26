@@ -144,13 +144,14 @@ class PushProfileAction(PushProfileBaseAction):
         None, description="ID of the job to add a candidate to"
     )
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile) -> TaleezCandidateModel:
         """
         Format a Hrflow profile object into a Taleez profile object
 
         Returns: Dict[str, Any] a Taleez profile object form
         """
         profile = dict()
+        data = data.dict()
         info = data.get("info")
         profile["firstName"] = info.get("first_name")
         profile["lastName"] = info.get("last_name")
@@ -181,8 +182,8 @@ class PushProfileAction(PushProfileBaseAction):
                         profile["socalLinks"][file_name] = public_url
 
         format_urls()
-
-        return profile
+        profile_obj = TaleezCandidateModel.parse_obj(profile)
+        return profile_obj
 
     def push(self, data):
         """
@@ -199,7 +200,7 @@ class PushProfileAction(PushProfileBaseAction):
         push_profile_request.method = "POST"
         push_profile_request.url = f"https://api.taleez.com/0/candidates"
         push_profile_request.auth = self.auth
-        push_profile_request.json = profile
+        push_profile_request.json = profile.dict()
         prepared_push_profile_request = push_profile_request.prepare()
 
         # Send request
