@@ -53,9 +53,6 @@ class ResultLanguage(BaseModel):
     writingProf: str
 
 
-class Languages(BaseModel):
-    results: List[ResultLanguage]
-
 
 class ResultOutsideWorkExperience(BaseModel):
     employer: Optional[str]
@@ -80,9 +77,6 @@ class InsideWorkExperienceResult(BaseModel):
     candidate: Optional[str]
 
 
-class InsideWorkExperience(BaseModel):
-    results: List[InsideWorkExperienceResult]
-
 
 class TalentPoolResults(BaseModel):
     startDate: Optional[str]
@@ -101,19 +95,12 @@ class SapCandidateModel(BaseModel):
     city: Optional[str]
     contactEmail: Optional[str]
     country: Optional[str]
-    creationDateTime: Optional[str]
     currentTitle: Optional[str]
-    dateofAvailability: Optional[str]
     firstName: Optional[str]
     homePhone: Optional[str]
     lastName: Optional[str]
     middleName: Optional[str]
-    partnerMemberId: Optional[str]
-    partnerSource: Optional[str]
     primaryEmail: str
     zip: Optional[str]
     education: Optional[Education]
-    languages: Optional[Languages]
     outsideWorkExperience: Optional[OutsideWorkExperience]
-    insideWorkExperience: Optional[InsideWorkExperience]
-    talentPool: Optional[TalentPool]
