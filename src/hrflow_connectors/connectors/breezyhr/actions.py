@@ -9,8 +9,8 @@ from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
 from ...utils.datetime_converter import from_str_to_datetime
-from ...utils.schemas import HrflowJob
-from .schemas import BreezyJobModel
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import BreezyJobModel, BreezyProfileModel
 
 logger = get_logger()
 
@@ -161,7 +161,7 @@ class PushProfileAction(PushProfileBaseAction):
     )
     cover_letter: Optional[str] = None
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile) -> BreezyProfileModel:
         """
         Format a Hrflow profile object into a breezy hr profile object
 
@@ -173,6 +173,7 @@ class PushProfileAction(PushProfileBaseAction):
         """
 
         profile = dict()
+        data = data.dict()
         info = data.get("info")
         profile["name"] = info.get("full_name")
         profile["address"] = info.get("location").get("text")
@@ -261,9 +262,10 @@ class PushProfileAction(PushProfileBaseAction):
                 if isinstance(skill, dict):
                     profile["tags"].append(skill["name"])
 
-        return profile
+        profile_obj = BreezyProfileModel.parse_obj(profile)
+        return profile_obj
 
-    def push(self, data: Dict[str, Any]) -> None:
+    def push(self, data: BreezyProfileModel) -> None:
         """
         Push a Hrflow profile object to a BreezyHr candidate pool for a position
 
@@ -338,7 +340,7 @@ class PushProfileAction(PushProfileBaseAction):
             send_request(
                 method="PUT",
                 url=update_profile_url,
-                json=profile,
+                json=profile.dict(),
                 error_message="Couldn't update candidate profile'",
             )
         # If the candidate doesn't already exist we "POST" his profile
@@ -349,6 +351,6 @@ class PushProfileAction(PushProfileBaseAction):
             send_request(
                 method="POST",
                 url=push_profile_url,
-                json=profile,
+                json=profile.dict(),
                 error_message="Push Profile to BreezyHr failed",
             )
