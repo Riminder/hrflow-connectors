@@ -8,6 +8,8 @@ from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...utils.hrflow import generate_workflow_response
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import RecruiteeProfile, RecruiteJobModel
 
 logger = get_logger()
 
@@ -18,7 +20,7 @@ class PullJobsAction(PullJobsBaseAction):
         ..., description="the subdomain of your company's careers site."
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[RecruiteJobModel]:
         """
         pull all jobs from a recruitee subdomain endpoint
 
@@ -44,9 +46,10 @@ class PullJobsAction(PullJobsBaseAction):
             )
         response_dict = response.json()
         job_list = response_dict["offers"]
-        return job_list
+        job_obj_iter = map(RecruiteJobModel.parse_obj, job_list)
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: RecruiteJobModel) -> HrflowJob:
         """
         format a job into the hrflow job object format
         Args:
@@ -56,6 +59,7 @@ class PullJobsAction(PullJobsBaseAction):
         """
 
         job = dict()
+        data = data.dict()
         # basic information
         job["name"] = data.get("title")
         job["summary"] = data.get("slug")
@@ -112,8 +116,9 @@ class PullJobsAction(PullJobsBaseAction):
             dict(name="recruitee_department", value=department),
             dict(name="recruitee_apply_url", value=apply_url),
         ]
+        job_obj = HrflowJob.parse_obj(job)
 
-        return job
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
