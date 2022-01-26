@@ -48,7 +48,7 @@ class Breezyhr(Connector):
         **kwargs
     ) -> Optional[Dict[str, Any]]:
         """
-        `PushProfileAction` pushes a Hrflow.ai profile to `Breezyhr` via their Salesforce API.
+        `PushProfileAction` pushes a Hrflow.ai profile to `Breezyhr` via their Breezy API.
 
         `Hrflow.ai` -> `Breezyhr`
 
