@@ -307,7 +307,8 @@ class PushProfileAction(PushProfileBaseAction):
         description="Subdomain Crosstalent just before `salesforce.com`. For example subdomain=`my_subdomain.my` in `http://my_subdomain.my.salesforce.com/ABC`",
     )
 
-    def format(self, data):
+    def format(self, data:HrflowProfile) -> CrosstalentProfile:
+        data = data.dict()
         firstname = data["info"].get("first_name")
         lastname = data["info"].get("last_name")
         email = data["info"].get("email")
@@ -326,6 +327,7 @@ class PushProfileAction(PushProfileBaseAction):
             else:
                 email = f"{key}@vulcain.com"
             data["info"]["email"] = email
+        data = CrosstalentProfile.parse_obj(data)
 
         return data
 
@@ -338,7 +340,7 @@ class PushProfileAction(PushProfileBaseAction):
         push_profile_request.method = "POST"
         push_profile_request.url = f"https://{self.subdomain}.salesforce.com/services/apexrest/crta/HrFlowCreateProfile"
         push_profile_request.auth = self.auth
-        push_profile_request.json = profile
+        push_profile_request.json = profile.dict()
         prepared_request = push_profile_request.prepare()
 
         # Send request
