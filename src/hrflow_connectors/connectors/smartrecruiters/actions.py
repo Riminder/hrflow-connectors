@@ -113,13 +113,14 @@ class PullJobsAction(PullJobsBaseAction):
             get_job_request.auth = self.auth
 
             # send request
-            prepared_request = pull_jobs_request.prepare()
+            prepared_request = get_job_request.prepare()
             response = session.send(prepared_request)
 
             if not response.ok:
                 raise PullError(response, message="Fail to get full job", job_id=job_id)
 
             logger.info(f"Get full job id=`{job_id}`")
+            print(response.json())
             return response.json()
 
         chained_full_job_iter = map(get_full_job, chained_light_job_iter)
