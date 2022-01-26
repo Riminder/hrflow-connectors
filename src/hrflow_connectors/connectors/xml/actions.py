@@ -5,6 +5,7 @@ import requests
 
 from ...core.error import PullError
 from ...core.action import PullJobsBaseAction
+from ...utils.schemas import HrflowJob
 
 
 class PullJobsAction(PullJobsBaseAction):
@@ -32,4 +33,6 @@ class PullJobsAction(PullJobsBaseAction):
         root_element = xml.etree.ElementTree.fromstring(xml_stream)
         job_list_element = root_element.find(self.job_list_xpath)
         job_list = list(job_list_element)
-        return job_list
+
+        job_obj_iter = map(HrflowJob.parse_obj, job_list)
+        return job_obj_iter
