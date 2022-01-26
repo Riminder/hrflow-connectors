@@ -1,7 +1,9 @@
 from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
 import requests
-from ...core import action as core
+
+from ...core.error import PullError, PushError
+from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...core.auth import XTaleezAuth
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
@@ -11,7 +13,7 @@ from datetime import datetime
 logger = get_logger()
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
     auth: XTaleezAuth
     page: int = Field(0, description="Page number. Start at '0'")
     page_size: int = Field(
@@ -37,11 +39,7 @@ class PullJobsAction(core.PullJobsAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            logger.error(f"Failed to get jobs from this endpoint")
-            error_message = "Unable to pull the data ! Reason : `{}` `{}`"
-            raise RuntimeError(
-                error_message.format(response.status_code, response.content)
-            )
+            raise PullError(response, message="Failed to get jobs")
 
         response_dict = response.json()
         logger.info(f"Total found: {response_dict['listSize']}")
@@ -134,7 +132,7 @@ class PullJobsAction(core.PullJobsAction):
         return job
 
 
-class PushProfileAction(core.PushProfileAction):
+class PushProfileAction(PushProfileBaseAction):
     recruiter_id: int = Field(
         ..., description="ID of the person recruiting the candidate, mandatory"
     )
@@ -187,11 +185,7 @@ class PushProfileAction(core.PushProfileAction):
         Push a profile into a Taleez CVTheque or a Taleez job offer as a candidate
 
         Args:
-            data ([type]): a Taleez profile form
-
-        Raises:
-            RuntimeError: if profile pushes fail
-            Exception: if you want to add a candidate to a job without specifiying it
+            data (Dict[str, Any]): a Taleez profile form
         """
         profile = next(data)
 
@@ -208,9 +202,8 @@ class PushProfileAction(core.PushProfileAction):
         push_profile_response = session.send(prepared_push_profile_request)
 
         if not push_profile_response.ok:
-            raise RuntimeError(
-                f"Push profile to Taleez failed :`{push_profile_response.status_code}` `{push_profile_response.content}`"
-            )
+            raise PushError(push_profile_response)
+
         if self.job_id is not None:
             push_profile_response_dict = push_profile_response.json()
             candidate_id = push_profile_response_dict["id"]
@@ -228,6 +221,4 @@ class PushProfileAction(core.PushProfileAction):
             add_profile_response = session.send(prepared_add_profile_request)
 
             if not add_profile_response.ok:
-                raise RuntimeError(
-                    f"Add profile to Taleez job: `{self.job_id}` failed :`{add_profile_response.status_code}` `{add_profile_response.content}`"
-                )
+                raise PushError(add_profile_response, job_id=self.job_id)

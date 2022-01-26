@@ -4,14 +4,15 @@ import base64
 import requests
 
 from ...core.auth import AuthorizationAuth
-from ...core import action as core
+from ...core.error import PushError, ConnectorError
+from ...core.action import PushProfileBaseAction
 from ...utils.hrflow import generate_workflow_response
 from ...utils.logger import get_logger
 
 logger = get_logger()
 
 
-class PushProfileAction(core.PushProfileAction):
+class PushProfileAction(PushProfileBaseAction):
     auth: AuthorizationAuth
     vacancy: str = Field(
         ...,
@@ -47,8 +48,9 @@ class PushProfileAction(core.PushProfileAction):
         info = data.get("info")
         email = info.get("email") if info else None
         if email == None:
-            raise Exception(
-                f"No email for hrflow_profile {data.get('reference')} but one is mandatory"
+            reference = data.get("reference")
+            raise ConnectorError(
+                f"No email for hrflow_profile {reference} but one is mandatory"
             )
 
         create_profile_body = {
@@ -255,11 +257,9 @@ class PushProfileAction(core.PushProfileAction):
         logger.info("Sending `create profile` request")
         response = session.send(prepared_create_profile_request)
         if not response.ok:
-            raise RuntimeError(
-                f"Create profile to Flatchr failed : `{response.content}`"
-            )
+            raise PushError(response, message="Create profile to Flatchr failed")
 
         logger.info("Sending `enrich profile` request")
         response = session.send(prepared_enrich_profile_request)
         if not response.ok:
-            raise RuntimeError(f"Enrich Flatchr profile failed : `{response.content}`")
+            raise PushError(response, message="Enrich Flatchr profile failed")

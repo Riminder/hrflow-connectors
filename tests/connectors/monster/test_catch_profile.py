@@ -14,11 +14,13 @@ def monster_request() -> Dict[str, Any]:
         Dict[str, Any]: Credentials
     """
 
-    url = "https://riminder-documents" \
-          "-eu-2019-12.s3-eu-west-1.amazonaws.com/te" \
-          "ams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sourc" \
-          "es/8df6a1247b1a95e0b84f5226093ff2c58e60cdf1/profiles/64" \
-          "baf80a58f3c6e434d9517311fdfec5cf7c9996/parsing/resume.pdf"
+    url = (
+        "https://riminder-documents"
+        "-eu-2019-12.s3-eu-west-1.amazonaws.com/te"
+        "ams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sourc"
+        "es/8df6a1247b1a95e0b84f5226093ff2c58e60cdf1/profiles/64"
+        "baf80a58f3c6e434d9517311fdfec5cf7c9996/parsing/resume.pdf"
+    )
 
     r = requests.get(url)
     type(r.content)
@@ -42,7 +44,7 @@ def monster_request() -> Dict[str, Any]:
     }
 
 
-def test_CatchProfileAction(logger, hrflow_client, monster_request):
+def test_CatchProfileBaseAction(logger, hrflow_client, monster_request):
     response = Monster.catch_profile(
         hrflow_client=hrflow_client(),
         request=monster_request,

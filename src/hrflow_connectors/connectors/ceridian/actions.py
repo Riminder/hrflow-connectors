@@ -1,10 +1,12 @@
 from typing import Iterator, Dict, Any
 from pydantic import Field
 import requests
-from ...core import action as core
+
+from ...core.error import PullError
+from ...core.action import PullJobsBaseAction
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
 
     subdomain: str = Field(..., description="subdomain just before `dayforcehcm.com`")
     client_name_space: str = Field(
@@ -15,8 +17,7 @@ class PullJobsAction(core.PullJobsAction):
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
         pull all jobs from a ceridian dayforce job feed space
-        Raises:
-            ConnectionError: if the request failed, you may want to check your subdomain or client name space
+
         Returns:
             Iterator[Dict[str, Any]]: a list of jobs dictionaries
         """
@@ -30,11 +31,7 @@ class PullJobsAction(core.PullJobsAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-
-            error_message = "Unable to pull the data ! Reason : `{}`, `{}`"
-            raise ConnectionError(
-                error_message.format(response.status_code, response.content)
-            )
+            raise PullError(response)
         return response.json()
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:

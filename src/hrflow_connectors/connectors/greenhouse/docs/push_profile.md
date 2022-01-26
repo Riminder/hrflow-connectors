@@ -1,10 +1,16 @@
-## PushProfile
+# Push profile
 
 `Hrflow.ai` :arrow_right: `Greenhouse`
 
-`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Greenhouse*** Jobs pool..
+`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Greenhouse*** Jobs pool.
 
-### Parameters
+**Links to Greenhouse documentation on the endpoints used :**
+
+| Endpoints | Description |
+| --------- | ----------- |
+| [Push profile](https://developers.greenhouse.io/harvest.html#post-add-candidate) | Endpoint to add candidate using greenhouse harvest API, the request method is `POST` |
+
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -20,43 +26,28 @@
 
 :red_circle: : *required* 
 
-### Example
+## Example
 
 ```python
 from hrflow_connectors import Greenhouse
-
 from hrflow import Hrflow
 from hrflow_connectors.connectors import OAuth2PasswordCredentialsBody, AuthorizationAuth
-from hrflow_connectors.utils.hrflow import EventParser, Profile, Source
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
-
-def workflow(_request, settings):
-    """
-    CATCH Workflow
-    """    
-    # We add a basic configuration to our logger to see the messages displayed in the standard output
-    # This is not mandatory. It allows you to see what the connector is doing.
-    logger = get_logger_with_basic_config()
-
-    event = EventParser(request=_request)
-    profile = event.get_profile()
-    if profile is not None:
-        logger.info("Profile found !")
-
-        client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
+from hrflow_connectors.utils.hrflow import Profile, Source
 
 
-        auth = AuthorizationAuth(
-        name = 'Authorization',
-        value= settings['AUTHORIZATION'],
-    )
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
+auth = AuthorizationAuth(
+    name = 'Authorization',
+    value= 'MY_AUTHORIZATION',
+)
 
-        response = Greenhouse.push_profile(
-            auth=auth,
-            job_id=settings["JOB_ID"],
-            on_behalf_of=settings["ON_BEHALF_OF"],
-            hrflow_client=client,
-            profile=profile,
-        )
-        return response
+response = Greenhouse.push_profile(
+    auth=auth,
+    job_id="JOB_ID",
+    on_behalf_of="ON_BEHALF_OF",
+    hrflow_client=client,
+    profile=profile,
+)
+return response
 ```

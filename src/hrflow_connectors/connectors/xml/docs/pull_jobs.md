@@ -25,14 +25,8 @@
 Let's take the ***Samsic*** job stream as an example of an XML stream.
 ```python
 from hrflow_connectors import XML
-
+from hrflow import hrflow
 from hrflow_connectors import XSmartTokenAuth
-from hrflow import Hrflow
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
-
-# We add a basic configuration to our logger to see the messages displayed in the standard output
-# This is not mandatory. It allows you to see what the connector is doing.
-logger = get_logger_with_basic_config()
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
 
@@ -151,8 +145,6 @@ def samsic_format(data):
     job["metadatas"] = []
 
     return job
-
-logger = get_logger_with_basic_config()
 
 XML.pull_jobs(
     xml_stream_url="https://cv.samsic-emploi.fr/media/flux/jobs.xml",

@@ -4,6 +4,8 @@ import json
 from urllib.parse import unquote
 from typing import Union, Dict, Optional, Any
 from pydantic import BaseModel, Field, SecretStr
+
+from ..core.error import AuthError
 from ..utils.logger import get_logger
 
 
@@ -76,7 +78,7 @@ class OAuth2PasswordCredentialsBody(Auth):
 
         if not response.ok:
             logger.error("OAuth2 failed for getting access token !")
-            raise RuntimeError("OAuth2 failed ! Reason : `{}`".format(response.content))
+            raise AuthError("OAuth2 failed ! Reason : `{}`".format(response.content))
 
         logger.debug("The access token has been got")
         return response.json()["access_token"]
@@ -126,14 +128,50 @@ class XSmartTokenAuth(XAPIKeyAuth):
 
     name: str = Field("X-SmartToken", const=True)
 
+
+class OAuth2EmailPasswordBody(Auth):
+    """
+    OAuth2 by using a password and email to send to a sginin endpoint used to get the "access token".
+    """
+
+    access_token_url: str
+    email: str
+    password: SecretStr
+
+    def get_access_token(self):
+
+        payload = dict()
+        payload["email"] = self.email
+        payload["password"] = self.password.get_secret_value()
+        logger.debug(
+            f"Sending request to get access token (url=`{self.access_token_url}`)"
+        )
+        response = requests.post(self.access_token_url, data=payload)
+
+        if not response.ok:
+            logger.error("Sign in Failure !")
+            raise AuthError("Signin failed ! Reason : `{}`".format(response.content))
+
+        logger.debug("The access token has been got")
+        return response.json()["access_token"]
+
+    def __call__(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
+
+        access_token = self.get_access_token()
+        auth_header = {"Authorization": f"{access_token}"}
+        request.headers.update(auth_header)
+        return request
+
+
 class XTaleezAuth(XAPIKeyAuth):
     """
-    XTaleezAuth 
+    XTaleezAuth
 
     Auth used to authenticate to Taleez with a token
     """
 
     name: str = Field("X-taleez-api-secret", const=True)
+
 
 class MonsterBodyAuth(Auth):
     """
@@ -141,6 +179,7 @@ class MonsterBodyAuth(Auth):
 
     Credentials are going to be stored on the body.
     """
+
     username: str = Field(description="Monster username")
     password: str = Field(description="Monster password")
 
@@ -148,8 +187,10 @@ class MonsterBodyAuth(Auth):
         self, updatable_object: requests.PreparedRequest
     ) -> requests.PreparedRequest:
         string_body = updatable_object.body.decode()
-        formatted_body = string_body.format(username=self.username, password=self.password)
-        encoded_body = formatted_body.encode('utf-8')
+        formatted_body = string_body.format(
+            username=self.username, password=self.password
+        )
+        encoded_body = formatted_body.encode("utf-8")
         updatable_object.body = encoded_body
         return updatable_object
 

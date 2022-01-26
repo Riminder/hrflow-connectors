@@ -1,17 +1,17 @@
-from ...core import action as core
 import xml.etree.ElementTree
 from pydantic import Field
-from ...utils.logger import get_logger
-
 from typing import Union, Dict, Any
 import requests
 
-TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
+from ...core.error import PushError
+from ...core.action import PushJobBaseAction, CatchProfileBaseAction
+from ...utils.logger import get_logger
+
+
 logger = get_logger()
 
 
-class CatchProfileAction(core.CatchProfileAction):
-
+class CatchProfileAction(CatchProfileBaseAction):
     def format(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """
         Format the input data into a push-ready data schema
@@ -26,19 +26,16 @@ class CatchProfileAction(core.CatchProfileAction):
             binary_resume = bytes(byte_array)
             return binary_resume
 
-        hrflow_tags = [{
-                "name": "JobRefID",
-                "value": request["JobRefID"]
-            }]
+        hrflow_tags = [{"name": "JobRefID", "value": request["JobRefID"]}]
         output_data = {
             "source_key": self.source_key,
             "profile_file": get_binary_resume(self.request["FileContents"]),
-            "tags": hrflow_tags
+            "tags": hrflow_tags,
         }
         return output_data
 
 
-class PushJobAction(core.PushJobAction):
+class PushJobAction(PushJobBaseAction):
 
     subdomain: str = Field(
         ...,
@@ -147,7 +144,9 @@ class PushJobAction(core.PushJobAction):
 
             JobStatus = find_in_tags(hrflow_job["tags"], "JobStatus")
             if JobStatus != None:
-                formater["JobStatus"] = f'\n        <JobStatus monsterId="{JobStatus}"/>'
+                formater[
+                    "JobStatus"
+                ] = f'\n        <JobStatus monsterId="{JobStatus}"/>'
 
         def format_job_reference(formater, hrflow_job):
             formater["jobRefCode"] = f'"{hrflow_job["key"]}"'
@@ -166,13 +165,19 @@ class PushJobAction(core.PushJobAction):
 
             if Salary_range != None:
                 SalaryMin = Salary_range[0]
-                formater["SalaryMin"] = f'\n          <SalaryMin>{SalaryMin}</SalaryMin>'
+                formater[
+                    "SalaryMin"
+                ] = f"\n          <SalaryMin>{SalaryMin}</SalaryMin>"
                 SalaryMax = Salary_range[1]
-                formater["SalaryMax"] = f'\n          <SalaryMax>{SalaryMax}</SalaryMax>'
+                formater[
+                    "SalaryMax"
+                ] = f"\n          <SalaryMax>{SalaryMax}</SalaryMax>"
 
             CompensationType = find_in_tags(hrflow_job.get("tags"), "CompensationType")
             if CompensationType != None:
-                formater["CompensationType"] = f'\n          <CompensationType monsterId="{CompensationType}"/>'
+                formater[
+                    "CompensationType"
+                ] = f'\n          <CompensationType monsterId="{CompensationType}"/>'
 
         def format_location(formater, hrflow_job):
             formater["StreetAddress"] = ""
@@ -196,17 +201,25 @@ class PushJobAction(core.PushJobAction):
             formater["Autorefresh"] = ""
             Autorefresh = find_in_tags(hrflow_job.get("tags"), "Autorefresh")
             if Autorefresh != None:
-                formater["Autorefresh"] = """\n            <Autorefresh desired="true">
+                formater[
+                    "Autorefresh"
+                ] = """\n            <Autorefresh desired="true">
                       <Frequency>{frequency}</Frequency>
-                    </Autorefresh>""".format(frequency=Autorefresh)
+                    </Autorefresh>""".format(
+                    frequency=Autorefresh
+                )
 
         def format_careeradnetwork(formater, hrflow_job):
             formater["CareerAdNetwork"] = ""
             CareerAdNetwork = find_in_tags(hrflow_job.get("tags"), "CareerAdNetwork")
             if CareerAdNetwork != None:
-                formater["CareerAdNetwork"] = """\n            <CareerAdNetwork desired="true">
+                formater[
+                    "CareerAdNetwork"
+                ] = """\n            <CareerAdNetwork desired="true">
                       <Duration>{frequency}</Duration>
-                    </CareerAdNetwork>""".format(frequency=CareerAdNetwork)
+                    </CareerAdNetwork>""".format(
+                    frequency=CareerAdNetwork
+                )
 
         def format_jobcategory(formater, hrflow_job):
             formater["JobCategory"] = "11"
@@ -224,29 +237,35 @@ class PushJobAction(core.PushJobAction):
             formater["Industry"] = ""
             Industry = find_in_tags(hrflow_job.get("tags"), "Industry")
             if Industry != None:
-                formater["Industry"] = """\n          <Industries>
+                formater[
+                    "Industry"
+                ] = """\n          <Industries>
                     <Industry>
                       <IndustryName monsterId="{IndustryName}"/>
                     </Industry>
-                  </Industries>""".format(IndustryName=Industry)
+                  </Industries>""".format(
+                    IndustryName=Industry
+                )
 
-        def format_credentials(formater):
+        def format_credentials(formater, hrflow_job):
             formater["username"] = "{username}"
             formater["password"] = "{password}"
 
-        creation_pipeline = [format_job_informations,
-                             format_created_at,
-                             format_job_reference,
-                             format_salary,
-                             format_location,
-                             format_description,
-                             format_duration,
-                             format_autorefresh,
-                             format_careeradnetwork,
-                             format_jobcategory,
-                             format_joboccupation,
-                             format_credentials,
-                             format_industries]
+        creation_pipeline = [
+            format_job_informations,
+            format_created_at,
+            format_job_reference,
+            format_salary,
+            format_location,
+            format_description,
+            format_duration,
+            format_autorefresh,
+            format_careeradnetwork,
+            format_jobcategory,
+            format_joboccupation,
+            format_credentials,
+            format_industries,
+        ]
 
         formater = dict()
 
@@ -254,7 +273,7 @@ class PushJobAction(core.PushJobAction):
             function(formater, data)
 
         job = xml_job_str.format(**formater)
-        return job.encode('utf-8')
+        return job.encode("utf-8")
 
     def push(self, data):
         job = next(data)
@@ -272,5 +291,4 @@ class PushJobAction(core.PushJobAction):
         # Send request
         response = session.send(prepared_request)
         if not response.ok:
-            error_message = "Unable to push the data ! Reason : `{}`"
-            raise RuntimeError(error_message.format(response.content))
+            raise PushError(response)
