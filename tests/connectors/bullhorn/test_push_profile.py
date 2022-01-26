@@ -23,7 +23,6 @@ def test_PushProfile(logger, auth, hrflow_client):
         key="5574b4ebdfe0e52446eade74e87cfe04739d1c96",
         source=Source(key="af00e468b1cf0d5eda0bc6062f2e163d50b1872e"),
     )
-    print(type(profile))
     response = Bullhorn.push_profile(
         auth=auth,
         subdomain="rest91",
