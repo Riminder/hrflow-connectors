@@ -93,7 +93,7 @@ class HrflowJob(BaseModel):
 
     key: Optional[str] = Field(None, description="Identification key of the Job.")
     reference: Optional[str] = Field(None, description="Custom identifier of the Job.")
-    name: str = Field(..., description="Job title.")
+    name: Optional[str] = Field(None, description="Job title.")
     location: HrflowJobLocation = Field(..., description="Job location object.")
     sections: List[HrflowJobSection] = Field(..., description="Job custom sections.")
     url: Optional[str] = Field(None, description="Job post original URL.")
@@ -265,13 +265,13 @@ class HrflowProfile(BaseModel):
     created_at: Optional[str] = Field(
         None, description="type: datetime ISO8601, Creation date of the Profile."
     )
-    info: HrflowProfileInfo = Field(
+    info: Optional[HrflowProfileInfo] = Field(
         ..., description="Object containing the Profile's info."
     )
-    text_language: str = Field(
+    text_language: Optional[str] = Field(
         ..., description="Code language of the Profile. type: string code ISO 639-1"
     )
-    text: str = Field(None, description="Full text of the Profile..")
+    text: Optional[str] = Field(None, description="Full text of the Profile..")
     experiences_duration: float = Field(
         ..., description="Total number of years of experience."
     )
@@ -284,7 +284,7 @@ class HrflowProfile(BaseModel):
     educations: Optional[List[Education]] = Field(
         None, description="List of educations of the Profile."
     )
-    attachments: List = Field(
+    attachments: Optional[List] = Field(
         ..., description="List of documents attached to the Profile."
     )
     skills: Optional[List[FieldSkill]] = Field(
