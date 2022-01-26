@@ -7,6 +7,8 @@ from ...core.error import PullError, PushError
 from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...core.auth import XSmartTokenAuth
 from ...utils.logger import get_logger
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import SmartrecruitersProfileModel, SmartRecruitersModel
 
 
 logger = get_logger()
@@ -34,7 +36,7 @@ class PullJobsAction(PullJobsBaseAction):
         description="Number of elements to return per page. max value is 100. Default value : 10",
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[SmartRecruitersModel]:
         """
         Pull all jobs from SmartRecruiters
 
@@ -124,10 +126,11 @@ class PullJobsAction(PullJobsBaseAction):
             return response.json()
 
         chained_full_job_iter = map(get_full_job, chained_light_job_iter)
+        job_obj_iter = map(SmartRecruitersModel.parse_obj, chained_full_job_iter)
 
-        return chained_full_job_iter
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: SmartRecruitersModel) -> HrflowJob:
         """
         Format a job from SmartRecruiter job format to Hrflow job format
 
@@ -138,6 +141,7 @@ class PullJobsAction(PullJobsBaseAction):
             Dict[str, Any]: Job in the HrFlow job object format
         """
         job = dict()
+        data = data.dict()
 
         # job Title
         job["name"] = data.get("title", "Undefined")
@@ -245,8 +249,9 @@ class PullJobsAction(PullJobsBaseAction):
                 value=data.get("targetHiringDate"),
             ),
         ]
+        job_obj = HrflowJob.parse_obj(job)
 
-        return job
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
