@@ -677,7 +677,8 @@ class PushProfileBaseAction(PushBaseAction):
             raise HrflowError(response, "Get Profile failed")
 
         profile = response["data"]
-        return [profile]
+        profile_obj = HrflowProfile.parse_obj(profile)
+        return [profile_obj]
 
     def execute(self):
         super().execute()
