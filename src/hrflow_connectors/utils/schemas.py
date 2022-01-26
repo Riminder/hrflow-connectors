@@ -42,7 +42,7 @@ class HrflowJobField(BaseModel):
     """
 
     name: str = Field(None, description="Identification name of the Object")
-    value: Optional[str] = Field(
+    value: Union[Optional[str], Optional[int], Optional[bool], None] = Field(
         None, description="Value associated to the Object's name"
     )
 
