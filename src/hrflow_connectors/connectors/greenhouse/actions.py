@@ -138,7 +138,7 @@ class PushProfileAction(PushProfileBaseAction):
         description="The ID of the user sending the profile, or the person he is sending the profile on behalf of",
     )
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile) -> GreenhouseProfileModel:
         """
         Format a profile hrflow object to a greenhouse profile object
         Args:
@@ -147,6 +147,7 @@ class PushProfileAction(PushProfileBaseAction):
             Dict[str, Any]: profile in the greenhouse candidate  format
         """
         profile = dict()
+        data = data.dict()
         profile["applications"] = []
         for id in self.job_id:
             profile["applications"].append(dict(job_id=id))
@@ -176,8 +177,9 @@ class PushProfileAction(PushProfileBaseAction):
             urls = data["info"]["urls"]
             website_list = []
             for url in urls:
-                if url["url"] not in ["", None, []]:
-                    website_list.append(dict(value=url["url"]))
+                if isinstance(url, dict):
+                    if url["url"] not in ["", None, []]:
+                        website_list.append(dict(value=url["url"]))
             return website_list
 
         if get_social_media_urls() not in [[], None]:
@@ -202,10 +204,11 @@ class PushProfileAction(PushProfileBaseAction):
                             end_date=experience["date_end"],
                         )
                     )
+        profile_obj = GreenhouseProfileModel.parse_obj(profile)
 
-        return profile
+        return profile_obj
 
-    def push(self, data: Dict[str, Any]):
+    def push(self, data: GreenhouseProfileModel):
         """
         Push profile
         Args:
@@ -221,7 +224,7 @@ class PushProfileAction(PushProfileBaseAction):
         push_profile_request.url = "https://harvest.greenhouse.io/v1/candidates"
         push_profile_request.auth = self.auth
         push_profile_request.headers = {"on-behalf-of": self.on_behalf_of}
-        push_profile_request.json = profile
+        push_profile_request.json = profile.dict()
         prepared_request = push_profile_request.prepare()
 
         # Send request
