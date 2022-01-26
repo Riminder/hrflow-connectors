@@ -38,8 +38,8 @@ class HrflowJobLocation(BaseModel):
 
 
 class HrflowJobSKill(BaseModel):
-    name: str = Field(..., description="Identification name of the skill")
-    type: str = Field(..., description="Type of the skill. hard or soft")
+    name: str = Field(None, description="Identification name of the skill")
+    type: str = Field(None, description="Type of the skill. hard or soft")
     value: Optional[str] = Field(None, description="Value associated to the skill")
 
 
@@ -49,7 +49,7 @@ class HrflowJobField(BaseModel):
     are arrays of objects following the JSON structure below
     """
 
-    name: str = Field(..., description="Identification name of the Object")
+    name: str = Field(None, description="Identification name of the Object")
     value: Union[Optional[str], Optional[int], Optional[bool]] = Field(
         None, description="Value associated to the Object's name"
     )
@@ -94,8 +94,8 @@ class HrflowJob(BaseModel):
     key: Optional[str] = Field(None, description="Identification key of the Job.")
     reference: Optional[str] = Field(None, description="Custom identifier of the Job.")
     name: Optional[str] = Field(None, description="Job title.")
-    location: HrflowJobLocation = Field(..., description="Job location object.")
-    sections: List[HrflowJobSection] = Field(..., description="Job custom sections.")
+    location: HrflowJobLocation = Field(None, description="Job location object.")
+    sections: List[HrflowJobSection] = Field(None, description="Job custom sections.")
     url: Optional[str] = Field(None, description="Job post original URL.")
     summary: Optional[str] = Field(None, description="Brief summary of the Job.")
     archieved_at: Optional[str] = Field(
@@ -157,8 +157,8 @@ class FieldLocation(BaseModel):
 
 
 class FieldSkill(BaseModel):
-    name: str = Field(..., description="Identification name of the skill")
-    type: str = Field(..., description="Type of the skill. hard or soft")
+    name: str = Field(None, description="Identification name of the skill")
+    type: str = Field(None, description="Type of the skill. hard or soft")
     value: Optional[str] = Field(None, description="Value associated to the skill")
 
 
@@ -178,7 +178,7 @@ class HrflowProfileField(BaseModel):
     are arrays of objects following the JSON structure below
     """
 
-    name: str = Field(..., description="Identification name of the Object")
+    name: str = Field(None, description="Identification name of the Object")
     value: Optional[str] = Field(
         None, description="Value associated to the Object's name"
     )
@@ -266,17 +266,17 @@ class HrflowProfile(BaseModel):
         None, description="type: datetime ISO8601, Creation date of the Profile."
     )
     info: Optional[HrflowProfileInfo] = Field(
-        ..., description="Object containing the Profile's info."
+        None, description="Object containing the Profile's info."
     )
     text_language: Optional[str] = Field(
-        ..., description="Code language of the Profile. type: string code ISO 639-1"
+        None, description="Code language of the Profile. type: string code ISO 639-1"
     )
     text: Optional[str] = Field(None, description="Full text of the Profile..")
     experiences_duration: float = Field(
-        ..., description="Total number of years of experience."
+        None, description="Total number of years of experience."
     )
     educations_duration: float = Field(
-        ..., description="Total number of years of education."
+        None, description="Total number of years of education."
     )
     experiences: Optional[List[Experience]] = Field(
         None, description="List of experiences of the Profile."
@@ -285,7 +285,7 @@ class HrflowProfile(BaseModel):
         None, description="List of educations of the Profile."
     )
     attachments: Optional[List] = Field(
-        ..., description="List of documents attached to the Profile."
+        None, description="List of documents attached to the Profile."
     )
     skills: Optional[List[FieldSkill]] = Field(
         None, description="List of skills of the Profile."
