@@ -4,71 +4,71 @@ from pydantic import BaseModel
 
 # Job Model
 class Department(BaseModel):
-    id: str
+    id: Optional[str]
 
 
 class Location(BaseModel):
-    country: Optional[str]
-    countryCode: Optional[str]
-    regionCode: Optional[str]
-    region: Optional[str]
-    city: str
-    address: Optional[str]
-    longitude: Optional[str]
-    latitude: Optional[str]
+    country: Optional[Optional[str]]
+    countryCode: Optional[Optional[str]]
+    regionCode: Optional[Optional[str]]
+    region: Optional[Optional[str]]
+    city: Optional[str]
+    address: Optional[Optional[str]]
+    longitude: Optional[Optional[str]]
+    latitude: Optional[Optional[str]]
     remote: Optional[bool]
     manual: Optional[bool]
 
 
 class Industry(BaseModel):
-    id: str
-
-
-class Function(BaseModel):
-    id: str
-
-
-class TypeOfEmployment(BaseModel):
-    id: str
-
-
-class ExperienceLevel(BaseModel):
     id: Optional[str]
 
 
+class Function(BaseModel):
+    id: Optional[str]
+
+
+class TypeOfEmployment(BaseModel):
+    id: Optional[str]
+
+
+class ExperienceLevel(BaseModel):
+    id: Optional[Optional[str]]
+
+
 class EeoCategory(BaseModel):
-    id: str
+    id: Optional[str]
 
 
 class Creator(BaseModel):
-    firstName: str
-    lastName: str
+    firstName: Optional[str]
+    lastName: Optional[str]
 
 
 class Compensation(BaseModel):
     min: int
     max: int
-    currency: str
+    currency: Optional[str]
 
 
 class CompanyDescription(BaseModel):
-    title: str
-    text: str
+    title: Optional[str]
+    text: Optional[str]
 
 
 class JobDescription(BaseModel):
-    title: str
-    text: str
+    title: Optional[str]
+    text: Optional[str]
 
 
 class Qualifications(BaseModel):
-    title: str
-    text: str
+    title: Optional[str]
+    text: Optional[str]
 
 
 class AdditionalInformation(BaseModel):
-    title: str
-    text: str
+    title: Optional[str]
+    text: Optional[str]
 
 
 class Sections(BaseModel):
@@ -84,14 +84,14 @@ class JobAd(BaseModel):
 
 class SmartRecruitersModel(BaseModel):
     title: str
-    refNumber: str
-    createdOn: str
-    updatedOn: str
+    refNumber: Optional[str]
+    createdOn: Optional[str]
+    updatedOn: Optional[str]
     department: Optional[Department]
     location: Location
-    status: Optional[str]
-    postingStatus: Optional[str]
-    targetHiringDate: Optional[str]
+    status: Optional[Optional[str]]
+    postingStatus: Optional[Optional[str]]
+    targetHiringDate: Optional[Optional[str]]
     industry: Optional[Industry]
     function: Optional[Function]
     typeOfEmployment: Optional[TypeOfEmployment]
@@ -106,51 +106,51 @@ class SmartRecruitersModel(BaseModel):
 
 
 class Location(BaseModel):
-    country: str
-    countryCode: str
-    regionCode: str
-    region: str
-    city: str
-    lat: int
-    lng: int
+    country: Optional[str]
+    countryCode: Optional[str]
+    regionCode: Optional[str]
+    region: Optional[str]
+    city: Optional[str]
+    lat: Optional[int]
+    lng: Optional[int]
 
 
 class Web(BaseModel):
-    skype: str
-    linkedin: str
-    facebook: str
-    twitter: str
-    website: str
+    skype: Optional[str]
+    linkedin: Optional[str]
+    facebook: Optional[str]
+    twitter: Optional[str]
+    website: Optional[str]
 
 
 class EducationItem(BaseModel):
-    institution: str
-    degree: str
-    major: str
-    current: bool
-    location: str
-    startDate: str
-    endDate: str
-    description: str
+    institution: Optional[str]
+    degree: Optional[str]
+    major: Optional[str]
+    current: Optional[bool]
+    location: Optional[str]
+    startDate: Optional[str]
+    endDate: Optional[str]
+    description: Optional[str]
 
 
 class ExperienceItem(BaseModel):
-    title: str
-    company: str
-    current: bool
-    startDate: str
-    endDate: str
-    location: str
-    description: str
+    title: Optional[str]
+    company: Optional[str]
+    current: Optional[bool]
+    startDate: Optional[str]
+    endDate: Optional[str]
+    location: Optional[str]
+    description: Optional[str]
 
 
 class SmartrecruitersProfileModel(BaseModel):
     firstName: str
     lastName: str
-    email: str
-    phoneNumber: str
+    email: Optional[str]
+    phoneNumber: Optional[str]
     location: Location
-    web: Web
+    web: Optional[Web]
     tags: List[str]
     education: List[EducationItem]
     experience: List[ExperienceItem]
