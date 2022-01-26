@@ -17,7 +17,7 @@ def test_PullJobsAction(logger, auth, hrflow_client):
         auth=auth,
         hrflow_client=hrflow_client("dev-demo"),
         limit=2,
-        board_key="8ebdea98768dfc04d15f76afab70415ed280ea90",
+        board_key="1bed06c0123081959f830a920b3113d2540a02f7",
         hydrate_with_parsing=False,
         archive_deleted_jobs_from_stream=False,
         posting_status="PUBLIC",
