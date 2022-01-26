@@ -9,6 +9,8 @@ from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.datetime_converter import from_str_to_datetime
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import SAPSuccessFactorsJob, SapCandidateModel
 
 logger = get_logger()
 
@@ -24,7 +26,7 @@ class PullJobsAction(PullJobsBaseAction):
         description="the API server for your company from the list of API servers for SAP SuccessFactors data centers",
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[SAPSuccessFactorsJob]:
         """
         Pull all jobs from a local database that uses SAP successfactors API
 
@@ -49,9 +51,10 @@ class PullJobsAction(PullJobsBaseAction):
         logger.info(f"All jobs have been pulled")
         response_dict = response.json()
         job_list = response_dict["d"]["results"]
-        return job_list
+        job_obj_iter = map(SAPSuccessFactorsJob.parse_obj, job_list)
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: SAPSuccessFactorsJob) -> HrflowJob:
         """
         Format retrieved jobs into a HrFlow job object
 
@@ -62,6 +65,7 @@ class PullJobsAction(PullJobsBaseAction):
             Dict[str, Any]: job in the HrFlow job object format
         """
         job = dict()
+        data = data.dict()
 
         jobRequisition = data.get("jobRequisition")
 
@@ -139,7 +143,8 @@ class PullJobsAction(PullJobsBaseAction):
                 value=jobRequisition.get("hiringManagerTeam"),
             ),
         ]
-        return job
+        job_obj = HrflowJob.parse_obj(job)
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
