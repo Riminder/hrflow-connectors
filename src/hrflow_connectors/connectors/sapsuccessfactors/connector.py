@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any, Union
 
 from ...core.connector import Connector
 from ...core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
-from ...utils.hrflow import Profile
+from ...utils.schemas import HrflowProfile
 from .actions import PullJobsAction, PushProfileAction
 
 
@@ -52,7 +52,7 @@ class SapSuccessfactors(Connector):
     def push_profile(
         auth: Union[OAuth2PasswordCredentialsBody, XAPIKeyAuth],
         hrflow_client: Hrflow,
-        profile: Profile,
+        profile: HrflowProfile,
         api_server: str,
         **kwargs
     ) -> Optional[Dict[str, Any]]:

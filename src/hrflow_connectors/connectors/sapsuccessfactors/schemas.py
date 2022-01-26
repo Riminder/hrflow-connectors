@@ -96,17 +96,17 @@ class TalentPool(BaseModel):
 
 
 class SapCandidateModel(BaseModel):
-    address: str
+    address: Optional[str]
     cellPhone: Optional[str]
     city: Optional[str]
     contactEmail: Optional[str]
-    country: str
+    country: Optional[str]
     creationDateTime: Optional[str]
     currentTitle: Optional[str]
     dateofAvailability: Optional[str]
-    firstName: str
+    firstName: Optional[str]
     homePhone: Optional[str]
-    lastName: str
+    lastName: Optional[str]
     middleName: Optional[str]
     partnerMemberId: Optional[str]
     partnerSource: Optional[str]
