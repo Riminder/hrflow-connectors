@@ -257,17 +257,17 @@ class HrflowProfile(BaseModel):
         None, description="type: datetime ISO8601, Creation date of the Profile."
     )
     info: HrflowProfileInfo = Field(
-        None, description="Object containing the Profile's info."
+        ..., description="Object containing the Profile's info."
     )
     text_language: str = Field(
-        None, description="Code language of the Profile. type: string code ISO 639-1"
+        ..., description="Code language of the Profile. type: string code ISO 639-1"
     )
     text: str = Field(None, description="Full text of the Profile..")
     experiences_duration: float = Field(
-        None, description="Total number of years of experience."
+        ..., description="Total number of years of experience."
     )
     educations_duration: float = Field(
-        None, description="Total number of years of education."
+        ..., description="Total number of years of education."
     )
     experiences: Optional[List[Experience]] = Field(
         None, description="List of experiences of the Profile."
@@ -276,7 +276,7 @@ class HrflowProfile(BaseModel):
         None, description="List of educations of the Profile."
     )
     attachments: List = Field(
-        None, description="List of documents attached to the Profile."
+        ..., description="List of documents attached to the Profile."
     )
     skills: Optional[List[FieldSkill]] = Field(
         None, description="List of skills of the Profile."
