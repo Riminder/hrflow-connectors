@@ -258,10 +258,10 @@ class PushProfileAction(PushProfileBaseAction):
     auth: XSmartTokenAuth
     job_id: str = Field(
         ...,
-        description="Id of a Job to which you want to assign a candidate when it’s created. A profile is sent to this URL `https://api.smartrecruiters.com/jobs/{job_id}/candidates` ",
+        description="Id of a Job to which you want to assign a candidate when it's created. A profile is sent to this URL `https://api.smartrecruiters.com/jobs/{job_id}/candidates` ",
     )
 
-    def format(self, profile: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, profile: HrflowProfile) -> SmartrecruitersProfileModel:
         """
         Format a profile hrflow object to a smartrecruiters profile object
 
@@ -340,7 +340,7 @@ class PushProfileAction(PushProfileBaseAction):
                 formatted_experience_list.append(formatted_exp)
 
             return formatted_experience_list
-
+        profile = profile.dict()
         info = profile["info"]
         smart_candidate = dict()
         smart_candidate["firstName"] = info["first_name"]
@@ -348,7 +348,7 @@ class PushProfileAction(PushProfileBaseAction):
         smart_candidate["email"] = info["email"]
         smart_candidate["phoneNumber"] = info["phone"]
 
-        if info["location"]["fields"] not in [
+        if info["location"].get("fields") not in [
             [],
             None,
         ]:  # check if fields is not an undefined list
@@ -380,10 +380,10 @@ class PushProfileAction(PushProfileBaseAction):
         smart_candidate["experience"] = format_experiences(profile.get("experiences"))
         smart_candidate["attachments"] = profile.get("attachments")
         smart_candidate["consent"] = True
+        smart_candidate_obj = SmartrecruitersProfileModel.parse_obj(smart_candidate)
+        return smart_candidate_obj
 
-        return smart_candidate
-
-    def push(self, data: Dict[str, Any]):
+    def push(self, data: SmartrecruitersProfileModel):
         """
         Push profile
 
@@ -400,7 +400,7 @@ class PushProfileAction(PushProfileBaseAction):
             f"https://api.smartrecruiters.com/jobs/{self.job_id}/candidates"
         )
         push_profile_request.auth = self.auth
-        push_profile_request.json = profile
+        push_profile_request.json = profile.dict()
         prepared_request = push_profile_request.prepare()
 
         # Send request
