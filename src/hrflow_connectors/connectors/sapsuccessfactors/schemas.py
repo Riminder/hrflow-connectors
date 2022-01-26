@@ -5,13 +5,13 @@ from pydantic import BaseModel
 class SAPSuccessFactorsJobRequistion(BaseModel):
     annual_SA: str
     location: Optional[str]
-    city : Optional[str] = None
-    country : Optional[str] = None
-    department : Optional[str] = None
-    division : Optional[str] = None
-    facility : Optional[str] = None
-    function : Optional[str] = None
-    industry : Optional[str] = None
+    city: Optional[str] = None
+    country: Optional[str] = None
+    department: Optional[str] = None
+    division: Optional[str] = None
+    facility: Optional[str] = None
+    function: Optional[str] = None
+    industry: Optional[str] = None
     monthly_salary: Optional[str] = None
     salaryBase: Optional[str] = None
     otherBonus: Optional[str] = None
@@ -23,28 +23,27 @@ class SAPSuccessFactorsJobRequistion(BaseModel):
     hiringManagerTeam: Optional[Dict[str, Any]] = None
     sourcerTeam: Optional[Dict[str, Any]] = None
 
+
 class SAPSuccessFactorsJob(BaseModel):
-    jobDescription : str
-    jobTitle: str    
+    jobDescription: str
+    jobTitle: str
     jobReqId: str
     jobRequisition: SAPSuccessFactorsJobRequistion
 
 
 # Profile model
 
+
 class Result(BaseModel):
-  
-    
+
     endDate: str
     school: str
     schoolAddress: str
     startDate: str
 
 
-
 class Education(BaseModel):
     results: List[Result]
-
 
 
 class ResultLanguage(BaseModel):
@@ -68,6 +67,7 @@ class ResultOutsideWorkExperience(BaseModel):
 class OutsideWorkExperience(BaseModel):
     results: List[ResultOutsideWorkExperience]
 
+
 class InsideWorkExperienceResult(BaseModel):
     backgroundElementId: str
     bgOrderPos: str
@@ -83,6 +83,7 @@ class InsideWorkExperienceResult(BaseModel):
 class InsideWorkExperience(BaseModel):
     results: List[InsideWorkExperienceResult]
 
+
 class TalentPoolResults(BaseModel):
     startDate: str
     talentPoolComments: str
@@ -95,7 +96,7 @@ class TalentPool(BaseModel):
 
 
 class SapCandidateModel(BaseModel):
-    address: str    
+    address: str
     cellPhone: Optional[str]
     city: Optional[str]
     contactEmail: Optional[str]

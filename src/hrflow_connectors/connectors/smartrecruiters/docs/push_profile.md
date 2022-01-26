@@ -1,7 +1,13 @@
-# PushProfile
-`Hrflow.ai` :arrow_right: `Smart Recruiters`
+# Push profile
+`Hrflow.ai` :arrow_right: `SmartRecruiters`
 
 `PushProfileAction` pushes a HrFlow.ai profile from a ***Hrflow.ai Source*** to `SmartRecruiters` via the ***SmartRecruiter*** API.
+
+**Links to SmartRecruiters documentation on the endpoints used :**
+
+| Endpoints | Description |
+| --------- | ----------- |
+| [Post Candidate](https://dev.smartrecruiters.com/customer-api/live-docs/candidate-api/) | Endpoint to create a new candidate and assign to a talent pool, the request method is `POST` |
 
 ## Parameters
 
@@ -19,38 +25,21 @@
 :red_circle: : *required* 
 
 ## Example
-Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.ai/docs/workflows#catch-setup).
+
 ```python
 from hrflow_connectors import SmartRecruiters
-
 from hrflow import Hrflow
 from hrflow_connectors import XSmartTokenAuth
-from hrflow_connectors.utils.hrflow import EventParser
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
+from hrflow_connectors.utils.hrflow import Profile, Source
 
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+auth = XSmartTokenAuth(value=settings["MY_SMART_TOKEN"])
+profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
 
-
-def workflow(_request, settings):
-    """
-    CATCH Workflow
-    """    
-    # We add a basic configuration to our logger to see the messages displayed in the standard output
-    # This is not mandatory. It allows you to see what the connector is doing.
-    logger = get_logger_with_basic_config()
-
-    event = EventParser(request=_request)
-    profile = event.get_profile()
-    if profile is not None:
-        logger.info("Profile found !")
-
-        client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
-        auth = XSmartTokenAuth(value=settings["MY_SMART_TOKEN"])
-        
-        response = SmartRecruiters.push_profile(
-            auth=auth,
-            job_id="3696cad0-a9b0-4a40-9cd7-4cc5feb1a509",
-            hrflow_client=client,
-            profile=profile,
-        )
-        return response
+SmartRecruiters.push_profile(
+    auth=auth,
+    job_id="3696cad0-a9b0-4a40-9cd7-4cc5feb1a509",
+    hrflow_client=client,
+    profile=profile,
+)
 ```

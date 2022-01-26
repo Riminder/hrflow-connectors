@@ -18,19 +18,15 @@
 
 <br/>
 
-  `hrflow-connectors` is an open-source project created by **HrFlow.ai** 
-to allow developers to connect easily HR ecosystem component.
-
-This project is designed to simply and easily handle,
-complex HR integrations by using [**workflows**](https://developers.hrflow.ai/docs/workflows) feature.
-<br/>
-
-
 ## About HrFlow.ai
-  https://www.HrFlow.ai is **an API first company that provides the most sophisticated AI-Powered JOB & PROFILE API**. Corporates and Software vendors can leverage our technology layers to Parse, Enrich and Score both job and candidate data. The platform supports +200 apps, pipelines, and code integrations so you can automate workflows with your favorite tools.
-  - Our Developers documentation : https://developers.hrflow.ai/
-  - Our API list (Parsing, Revealing, Embedding, Searching, Scoring, Reasoning) : https://www.hrflow.ai/api
-  - Our cool demos labs : https://labs.hrflow.ai
+
+**[HrFlow.ai](https://hrflow.ai/) is on a mission to make AI and data integration pipelines a commodity in the HR Industry:**
+  1. **Unify**: Link your Talent Data channels with a few clicks, so they can share data.
+  2. **Understand**: Leverage our AI solutions to process your Talent Data.
+  3. **Automate**: Sync data between your tools and build workflows that meet your business logic.
+
+  `hrflow-connectors` is an open-source project created by **HrFlow.ai** 
+to democratize Talent Data integration within the HR Tech landscape.
 
 ## :electric_plug: List of Connectors
 
@@ -38,6 +34,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 | - | - | - |
 | **ADP** |  | :hourglass: |
 | [**Bullhorn**](src/hrflow_connectors/connectors/bullhorn/) | ATS | :heavy_check_mark: |
+| [**Breezy.hr**](src/hrflow_connectors/connectors/breezyhr) | ATS | :heavy_check_mark: |
 | **Cegid (Meta4)** |  | :hourglass: |
 | [**Ceridian**](src/hrflow_connectors/connectors/ceridian) | HCM |:heavy_check_mark: |
 | **Cornerstone OnDemand** |  | :hourglass: |
@@ -53,7 +50,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 | **Lever** |  | :hourglass:  |
 | **Mailchimp** | Marketing tools | :hourglass: |
 | **Microsoft Dynamics** | HCM CLoud | :hourglass: |
-| **Monster** | Job board | :hourglass: |
+| [**Monster**](src/hrflow_connectors/connectors/monster/) | Job board | :heavy_check_mark: |
 | **Oracle** | Cloud Apps | :hourglass: |
 | [**Recruitee**](src/hrflow_connectors/connectors/recruitee/) | ATS | :heavy_check_mark: |
 | **RecruitBox** |  | :hourglass: |
@@ -68,6 +65,7 @@ complex HR integrations by using [**workflows**](https://developers.hrflow.ai/do
 | **Ultimate Software (UKG)** |  | :hourglass: |
 | [**Workable**](src/hrflow_connectors/connectors/workable/) | ATS | :heavy_check_mark: |
 | **Workday** |  | :hourglass: |
+| [**XML**](src/hrflow_connectors/connectors/xml/) | Job board | :heavy_check_mark: |
 
 ## 🪄 Quickstart
 ### What I can do?
@@ -131,6 +129,10 @@ appreciated.
 
 👉 **To find out more about how to proceed, the rules and conventions to follow, read carefully [`CONTRIBUTING.md`](CONTRIBUTING.md).**
 
+## 🔗 Resources
+* Our Developers documentation : https://developers.hrflow.ai/
+* Our API list (Parsing, Revealing, Embedding, Searching, Scoring, Reasoning) : https://www.hrflow.ai/api
+* Our cool demos labs : https://labs.hrflow.ai
 
 ## :page_with_curl: License
 

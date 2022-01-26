@@ -4,6 +4,7 @@ import itertools
 import xml.etree.ElementTree
 import html
 
+from ..core.error import HrflowError
 from ..utils.clean_text import remove_html_tags
 from ..utils.hrflow import find_element_in_list, Profile, Job
 from ..utils.hrflow import generate_workflow_response
@@ -16,7 +17,7 @@ TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
 logger = get_logger()
 
 
-class Action(BaseModel):
+class BaseAction(BaseModel):
     """
     Abstract class `Action`
     """
@@ -182,7 +183,7 @@ class Action(BaseModel):
         logger.info("All has been done for this connector !")
 
 
-class PullAction(Action):
+class PullBaseAction(BaseAction):
     """
     Pull Action
     """
@@ -195,11 +196,11 @@ class PullAction(Action):
         logger.info("Data has been pulled")
 
         logger.info("Mapping format function...")
-        formated_data = map(self.format_switcher, input_data)
+        formatted_data = map(self.format_switcher, input_data)
         logger.info("Format function has been mapped")
 
         logger.info("Applying logics...")
-        filtered_data = self.apply_logics(formated_data)
+        filtered_data = self.apply_logics(formatted_data)
         logger.info("Logics have been applied")
 
         logger.info("Pushing data...")
@@ -209,7 +210,7 @@ class PullAction(Action):
         logger.info("All has been done for this connector !")
 
 
-class PushAction(Action):
+class PushBaseAction(BaseAction):
     """
     Push Action
     """
@@ -226,17 +227,17 @@ class PushAction(Action):
         logger.info("Logics have been applied")
 
         logger.info("Mapping format function...")
-        formated_data = map(self.format_switcher, filtered_data)
+        formatted_data = map(self.format_switcher, filtered_data)
         logger.info("Format function has been mapped")
 
         logger.info("Pushing data...")
-        self.push(formated_data)
+        self.push(formatted_data)
         logger.info("Data has been pushed")
 
         logger.info("All has been done for this connector !")
 
 
-class PullJobsAction(PullAction):
+class PullJobsBaseAction(PullBaseAction):
     """
     Pull jobs from an external stream to Hrflow.ai
     """
@@ -265,9 +266,7 @@ class PullJobsAction(PullAction):
                 board_keys=[self.board_key], limit=30, page=page
             )
             if response["code"] >= 400:
-                raise RuntimeError(
-                    "Hrflow searching failed : `{}`".format(response["message"])
-                )
+                raise HrflowError(response, "Search Jobs failed")
             return response
 
         job_page = get_jobs_page(page=1)
@@ -343,9 +342,7 @@ class PullJobsAction(PullAction):
                 board_key=self.board_key, job_json=job
             )
             if response["code"] >= 400:
-                message = response["message"]
-                logger.error("Failed to push a job !")
-                raise RuntimeError("Failed to push ! Reason : `{}`".format(message))
+                raise HrflowError(response, "Index Job failed")
 
     def hydrate_job_with_parsing(self, job: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -392,8 +389,7 @@ class PullJobsAction(PullAction):
         logger.debug("Parsing the cleaned text...")
         response = self.hrflow_client.document.parsing.post(text=cleaned_str)
         if response["code"] >= 400:
-            logger.error("Fail to parse the cleaned text !")
-            raise RuntimeError("Parsing failed : `{}`".format(response["message"]))
+            raise HrflowError(response, "Parsing failed")
         logger.debug("Text has been parsed")
 
         entity_list = response["data"]["ents"]
@@ -499,8 +495,7 @@ class PullJobsAction(PullAction):
             logger.debug("Hrflow does not find this job reference")
             return True
         elif response_code >= 400:
-            logger.error("GET Indexing failed !")
-            raise RuntimeError("GET Indexing failed : {}".format(response["message"]))
+            raise HrflowError(response, "Get Job failed")
         elif response_code == 200:
             logger.debug("Hrflow got this job in the Board")
             job_in_board = response["data"]
@@ -556,10 +551,10 @@ class PullJobsAction(PullAction):
         input_data = self.pull()
 
         logger.info(f"Formating all references from the stream")
-        formated_data = map(self.format_switcher, input_data)
+        formatted_data = map(self.format_switcher, input_data)
 
         logger.info(f"Applying logics to all references from the stream")
-        filtered_data = self.apply_logics(formated_data)
+        filtered_data = self.apply_logics(formatted_data)
 
         logger.info(f"Keeping only reference from the stream")
         references_iter = map(lambda job: job.get("reference"), filtered_data)
@@ -607,11 +602,11 @@ class PullJobsAction(PullAction):
         logger.info("Data has been pulled")
 
         logger.info("Mapping format function...")
-        formated_data = map(self.format_switcher, input_data)
+        formatted_data = map(self.format_switcher, input_data)
         logger.info("Format function has been mapped")
 
         logger.info("Applying logics...")
-        filtered_data = self.apply_logics(formated_data)
+        filtered_data = self.apply_logics(formatted_data)
         logger.info("Logics have been applied")
 
         logger.info(
@@ -638,7 +633,7 @@ class PullJobsAction(PullAction):
         logger.info("All has been done for this connector !")
 
 
-class PushJobAction(Action):
+class PushJobBaseAction(PushBaseAction):
 
     job: Job = Field(..., description="Job to push")
 
@@ -650,9 +645,7 @@ class PushJobAction(Action):
             board_key=self.job.board.key, key=self.job.key
         )
         if response["code"] >= 400:
-            raise RuntimeError(
-                "Indexing job get failed : `{}`".format(response["message"])
-            )
+            raise HrflowError(response, "Get Job failed")
 
         job = response["data"]
         return [job]
@@ -664,7 +657,7 @@ class PushJobAction(Action):
         )
 
 
-class PushProfileAction(PushAction):
+class PushProfileBaseAction(PushBaseAction):
     profile: Profile = Field(..., description="Profile to push")
 
     def pull(self) -> Iterator[TalentDataType]:
@@ -678,10 +671,7 @@ class PushProfileAction(PushAction):
             source_key=self.profile.source.key, key=self.profile.key
         )
         if response["code"] >= 400:
-            logger.error("Fail to pull a profile")
-            raise RuntimeError(
-                "Indexing profile get failed : `{}`".format(response["message"])
-            )
+            raise HrflowError(response, "Get Profile failed")
 
         profile = response["data"]
         return [profile]
@@ -693,15 +683,13 @@ class PushProfileAction(PushAction):
         )
 
 
-class CatchProfileAction(Action):
+class CatchProfileBaseAction(BaseAction):
 
     source_key: str = Field(
         ..., description="Source key where the profiles to be added will be stored"
     )
 
-    request: Dict[str, Any] = Field(
-        ..., description="Body to format in HrFlow Profile"
-    )
+    request: Dict[str, Any] = Field(..., description="Body to format in HrFlow Profile")
 
     def execute(self):
         """
@@ -723,11 +711,7 @@ class CatchProfileAction(Action):
         )
 
     def push(self, data: Dict[str, Any]):
-        logger.debug(
-            f"Parsing a profile to Hrflow Source `{self.source_key}`"
-        )
+        logger.debug(f"Parsing a profile to Hrflow Source `{self.source_key}`")
         response = self.hrflow_client.profile.parsing.add_file(**data)
         if response["code"] >= 400:
-            message = response["message"]
-            logger.error("Failed to push a profile !")
-            raise RuntimeError("Failed to push ! Reason : `{}`".format(message))
+            raise HrflowError(response, "Parsing a profile failed")

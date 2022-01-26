@@ -3,7 +3,8 @@ from pydantic import Field
 import html
 import requests
 
-from ...core import action as core
+from ...core.error import PullError, PushError
+from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
@@ -12,7 +13,7 @@ from ...core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
 logger = get_logger()
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
     board_token: str = Field(
         ...,
         description="Job Board URL token, which is usually the company `name` -for example `lyft`- when it has job listings on greenhouse, mandatory to access job boards on `greenhouse.io`: `https://boards-api.greenhouse.io/v1/boards/{board_token}/jobs`, getting jobs doesn't require an API Key",
@@ -37,11 +38,11 @@ class PullJobsAction(core.PullJobsAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            logger.error(
-                f"Failed to get jobs from board: `{self.board_token}`. Check that your board token is valid."
+            raise PullError(
+                response,
+                message="Failed to get jobs from Greenhouse board. Check that your board token is valid.",
+                board_token=self.board_token,
             )
-            error_message = "Unable to pull the data ! Reason : `{}`"
-            raise ConnectionError(error_message.format(response.content))
 
         response_dict = response.json()
         total_info = response_dict["meta"]["total"]
@@ -119,16 +120,18 @@ class PullJobsAction(core.PullJobsAction):
 
         return job
 
-class PushProfileAction(core.PushProfileAction):
+
+class PushProfileAction(PushProfileBaseAction):
 
     auth: Union[OAuth2PasswordCredentialsBody, XAPIKeyAuth]
     job_id: List[int] = Field(
         ...,
         description="List of jobs internal ids to which the candidate should be added",
     )
-    on_behalf_of: str = Field(..., description="The ID of the user sending the profile, or the person he is sending the profile on behalf of")
-
-
+    on_behalf_of: str = Field(
+        ...,
+        description="The ID of the user sending the profile, or the person he is sending the profile on behalf of",
+    )
 
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -197,7 +200,6 @@ class PushProfileAction(core.PushProfileAction):
 
         return profile
 
-
     def push(self, data: Dict[str, Any]):
         """
         Push profile
@@ -221,8 +223,4 @@ class PushProfileAction(core.PushProfileAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            raise RuntimeError(
-                "Push profile to Greenhouse failed : {}, `{}`".format(
-                    response.status_code, response.content
-                )
-            )
+            raise PushError(response)

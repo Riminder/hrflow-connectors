@@ -1,11 +1,15 @@
-## PushProfile
+# Push profile
 
 `Hrflow.ai` :arrow_right: `SAP SuccessFactors`
 
-`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***SAP SuccessFactors*** Jobs pool..
+`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***SAP SuccessFactors*** Jobs pool.
 
+**Links to SAP documentation on the endpoints used :**
 
-### Parameters
+| Endpoints | Description |
+| --------- | ----------- |
+|[Post Candidate](https://api.sap.com/api/RCMCandidate/overview) | Endpoint to post a candidate with background information and profile, an api server is required, the request method is `POST`|
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -20,43 +24,26 @@
 
 :red_circle: : *required* 
 
-### Example
-Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.ai/docs/workflows#catch-setup).
+## Example
 
 ```python
 from hrflow_connectors import SapSuccessfactors
-
 from hrflow import Hrflow
-from hrflow_connectors.connectors.core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
-from hrflow_connectors.connectors.utils.hrflow import Profile
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
-
-def workflow(_request, settings):
-    """
-    CATCH Workflow
-    """    
-    # We add a basic configuration to our logger to see the messages displayed in the standard output
-    # This is not mandatory. It allows you to see what the connector is doing.
-    logger = get_logger_with_basic_config()
-
-    event = EventParser(request=_request)
-    profile = event.get_profile()
-    if profile is not None:
-        logger.info("Profile found !")
-
-        client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
+from hrflow_connectors import OAuth2PasswordCredentialsBody, XAPIKeyAuth
+from hrflow_connectors.connectors.utils.hrflow import Profile, Source
 
 
-        auth = XAPIKeyAuth(
-            name = "APIKey",
-        value= settings['MY_API_KEY'],
-    )
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
+auth = XAPIKeyAuth(
+    name = "APIKey",
+    value= settings['MY_API_KEY'],
+)
 
-        response = SapSuccessfactors.push_profile(
-            auth=auth,
-            api_server="MY_API_SERVER",
-            hrflow_client=client,
-            profile=profile,
-        )
-        return response
+SapSuccessfactors.push_profile(
+    auth=auth,
+    api_server="MY_API_SERVER",
+    hrflow_client=client,
+    profile=profile,
+)
 ```

@@ -2,8 +2,9 @@ from typing import Iterator, Dict, Any, Optional, List
 from pydantic import Field
 import requests
 
+from ...core.error import PullError, PushError
 from ...core.auth import AuthorizationAuth
-from ...core import action as core
+from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...utils.hrflow import generate_workflow_response
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
@@ -11,7 +12,7 @@ from ...utils.clean_text import remove_html_tags
 logger = get_logger()
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
 
     subdomain: str = Field(
         ..., description="the subdomain of your company's careers site."
@@ -21,8 +22,6 @@ class PullJobsAction(core.PullJobsAction):
         """
         pull all jobs from a recruitee subdomain endpoint
 
-        Raises:
-            ConnectionError: if the request failed, you may want to check your subdomain
         Returns:
             Iterator[Dict[str, Any]]: a list of jobs dictionaries
         """
@@ -38,12 +37,10 @@ class PullJobsAction(core.PullJobsAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            logger.error(
-                f"Failed to get jobs for company: {self.subdomain}, Check that the subdomain is a valid one"
-            )
-            error_message = "Unable to pull the data ! Reason: `{}`, `{}`"
-            raise ConnectionError(
-                error_message.format(response.status_code, response.content)
+            raise PullError(
+                response,
+                message="Failed to get jobs for company. Check that the subdomain is a valid one.",
+                subdomain=self.subdomain,
             )
         response_dict = response.json()
         job_list = response_dict["offers"]
@@ -119,10 +116,9 @@ class PullJobsAction(core.PullJobsAction):
         return job
 
 
-class PushProfileAction(core.PushProfileAction):
+class PushProfileAction(PushProfileBaseAction):
 
     auth: AuthorizationAuth
-    payload: Dict[str, Any] = dict()
     company_id: str = Field(
         ..., description="Company ID. A company subdomain can also be used."
     )
@@ -179,6 +175,4 @@ class PushProfileAction(core.PushProfileAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            raise RuntimeError(
-                f"Push profile to Recruitee failed :`{response.status_code}` `{response.content}`"
-            )
+            raise PushError(response)

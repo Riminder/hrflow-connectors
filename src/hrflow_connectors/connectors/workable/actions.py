@@ -1,15 +1,16 @@
 from typing import Iterator, Dict, Any
 from pydantic import Field
-import html
 import requests
-from ...core import action as core
+
+from ...core.error import PullError
+from ...core.action import PullJobsBaseAction
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 
 logger = get_logger()
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
 
     subdomain: str = Field(
         ...,
@@ -36,11 +37,11 @@ class PullJobsAction(core.PullJobsAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            logger.error(
-                f"Failed to get jobs from subdomain: {self.subdomain}. Check that the subdomain is a valid one"
+            raise PullError(
+                response,
+                message="Failed to get jobs. Check that the subdomain is a valid one",
+                subdomain=self.subdomain,
             )
-            error_message = "Unable to pull the data ! Reason : `{}`"
-            raise ConnectionError(error_message.format(response.content))
 
         response_dict = response.json()
 

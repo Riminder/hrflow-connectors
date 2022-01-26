@@ -44,8 +44,8 @@ def get_cities_code_lat_long_mapping():
     ville_code["name"] = "cities_codes"
     data = pkgutil.get_data(__name__, "../data/french_citycode_geo_mapping.csv")
     str_data = data.decode("utf-8")
-    for line in str_data.split('\n'):
-        row = line.split(',')
+    for line in str_data.split("\n"):
+        row = line.split(",")
         code_str = str(row[0])
         # fill the uncompleted zip codes with zeros. (1 400 => 01 400)
         code = code_str.zfill(5)
@@ -69,9 +69,9 @@ def get_cities_names_lat_long_mapping():
     ville_name["name"] = "cities_name"
     data = pkgutil.get_data(__name__, "../data/french_cityname_geo_mapping.csv")
     str_data = data.decode("utf-8")
-    for line in str_data.split('\n'):
+    for line in str_data.split("\n"):
         # .lower() for case sensitivity and accent_replacer(s) for accents.
-        row = line.split(',')
+        row = line.split(",")
         ville_name[accent_replacer(row[0].lower())] = (row[1], row[2])
 
     return ville_name
@@ -92,8 +92,8 @@ def get_departments_codes_lat_long_mapping():
     departement["name"] = "departments_codes"
     data = pkgutil.get_data(__name__, "../data/french_departement_geo_mapping.csv")
     str_data = data.decode("utf-8")
-    for line in str_data.split('\n'):
-        row = line.split(',')
+    for line in str_data.split("\n"):
+        row = line.split(",")
         departement[row[0]] = (row[1], row[2])
 
     return departement

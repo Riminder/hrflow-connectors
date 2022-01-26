@@ -3,11 +3,12 @@ from pydantic import Field
 import requests
 
 from ...core.auth import OAuth2PasswordCredentialsBody
-from ...core import action as core
+from ...core.error import PullError, PushError
+from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...utils.hrflow import generate_workflow_response
 
 
-class PullJobsAction(core.PullJobsAction):
+class PullJobsAction(PullJobsBaseAction):
     auth: OAuth2PasswordCredentialsBody = Field(
         ..., description="Auth instance to identify and communicate with the platform"
     )
@@ -29,8 +30,7 @@ class PullJobsAction(core.PullJobsAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            error_message = "Unable to pull the data ! Reason : `{}`"
-            raise ConnectionError(error_message.format(response.content))
+            raise PullError(response)
 
         return response.json()
 
@@ -294,7 +294,7 @@ class PullJobsAction(core.PullJobsAction):
         return job
 
 
-class PushProfileAction(core.PushProfileAction):
+class PushProfileAction(PushProfileBaseAction):
     auth: OAuth2PasswordCredentialsBody
     subdomain: str = Field(
         ...,
@@ -339,6 +339,4 @@ class PushProfileAction(core.PushProfileAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            raise RuntimeError(
-                f"Push profile to Crosstalent failed : `{response.content}`"
-            )
+            raise PushError(response)

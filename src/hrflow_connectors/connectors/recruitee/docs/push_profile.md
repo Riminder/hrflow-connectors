@@ -1,10 +1,16 @@
-## PushProfile
+# Push profile
 
 `Hrflow.ai` :arrow_right: `Recruitee`
 
-`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Recruitee*** company endpoint and a optionally a Jobs pool..
+`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Recruitee*** company endpoint and a optionally a Jobs pool.
 
-### Parameters
+**Links to Recruitee documentation on the endpoints used :**
+
+| Endpoints | Description |
+| --------- | ----------- |
+| [Create Candidate](https://docs.recruitee.com/reference/candidates-post) | Create a candidate with provided details,a company id is required however you can also use a company subdomain instead, the request method is `POST`|
+
+## Parameters
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
@@ -21,43 +27,25 @@
 
 :red_circle: : *required* 
 
-### Example
-Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.ai/docs/workflows#catch-setup).
+## Example
 
 ```python
 from hrflow_connectors import Recruitee
-
 from hrflow import Hrflow
 from hrflow_connectors import AuthorizationAuth
-from hrflow_connectors.utils.hrflow import Profile
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
+from hrflow_connectors.utils.hrflow import Profile, Source
 
-def workflow(_request, settings):
-    """
-    CATCH Workflow
-    """    
-    # We add a basic configuration to our logger to see the messages displayed in the standard output
-    # This is not mandatory. It allows you to see what the connector is doing.
-    logger = get_logger_with_basic_config()
+client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
+auth = AuthorizationAuth(
+    name = 'Authorization',
+    value= settings['BEARER_TOKEN'],
+)
 
-    event = EventParser(request=_request)
-    profile = event.get_profile()
-    if profile is not None:
-        logger.info("Profile found !")
-
-        client = Hrflow(api_secret=settings["X-API-KEY"], api_user=settings["X-USER-EMAIL"])
-
-
-        auth = AuthorizationAuth(
-        name = 'Authorization',
-        value= settings['BEARER_TOKEN'],
-    )
-
-        response = Recruitee.push_profile(
-            company_id = settings['MY_COMPANY_ID'],
-            auth=auth,
-            hrflow_client=client,
-            profile=profile,
-        )
-        return response
+Recruitee.push_profile(
+    company_id = settings['MY_COMPANY_ID'],
+    auth=auth,
+    hrflow_client=client,
+    profile=profile,
+)
 ```
