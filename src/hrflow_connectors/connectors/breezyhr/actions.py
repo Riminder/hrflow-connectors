@@ -320,7 +320,7 @@ class PushProfileAction(PushProfileBaseAction):
                     self.company_id = company["_id"]
 
         # a request to verify if the candidate profile already exist
-        get_candidate_url = f"https://api.breezy.hr/v3/company/{self.company_id}/candidates/search?email_address={profile['email_address']}"
+        get_candidate_url = f"https://api.breezy.hr/v3/company/{self.company_id}/candidates/search?email_address={profile.email_address}"
         get_candidate_response = send_request(
             method="GET",
             url=get_candidate_url,
