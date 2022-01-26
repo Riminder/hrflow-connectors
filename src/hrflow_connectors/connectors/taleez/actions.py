@@ -9,6 +9,8 @@ from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
 from datetime import datetime
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import TaleezJobModel, TaleezCandidateModel
 
 logger = get_logger()
 
@@ -20,7 +22,7 @@ class PullJobsAction(PullJobsBaseAction):
         100, description="Page size. Max size of the list returned. Max value : 100"
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[TaleezJobModel]:
         """
         Pull jobs from a Taleez jobs owner endpoint
 
@@ -44,10 +46,11 @@ class PullJobsAction(PullJobsBaseAction):
         response_dict = response.json()
         logger.info(f"Total found: {response_dict['listSize']}")
         job_list = response_dict["list"]
+        job_obj_iter = map(TaleezJobModel.parse_obj, job_list)
 
-        return job_list
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: TaleezJobModel) -> HrflowJob:
         """
         Format a job into the hrflow job object format
 
@@ -59,6 +62,7 @@ class PullJobsAction(PullJobsBaseAction):
         """
 
         job = dict()
+        data = data.dict()
 
         # Job basic information
         job["name"] = data.get("label")
@@ -128,8 +132,8 @@ class PullJobsAction(PullJobsBaseAction):
         # datetime fields
         job["created_at"] = seconds_to_isoformat(data.get("dateCreation"))
         job["updated_at"] = seconds_to_isoformat(data.get("dateLastPublish"))
-
-        return job
+        job_obj = HrflowJob.parse_obj(job)
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
