@@ -1,5 +1,6 @@
 from ...core.action import PushProfileBaseAction
 from ...core.auth import OAuth2Session
+from ...core.error import PushError
 from ...utils.datetime_converter import from_str_to_datetime
 import xml.etree.ElementTree
 from pydantic import Field
@@ -28,43 +29,43 @@ class PushProfileAction(PushProfileBaseAction):
     def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
         info = data.get('info')
         def get_location():
-   
-            if info:
+            if info is not None :
                 location = info.get("location")
+                if location is None:
+                    location = dict()
                 location_dict = {
-                    "address1": location["fields"].get("text") if location else None,
-                    "city": location["fields"].get("city") if location else None,
-                    "state": location["fields"].get("country") if location else None,
-                    "zip": location["fields"].get("postcode") if location else None
+                    "address1": location.get("fields", {}).get("text"),
+                    "city": location.get("fields", {}).get("city"),
+                    "state": location.get("fields", {}).get("country"),
+                    "zip": location.get("fields", {}).get("postcode")
                 }
                 return location_dict
             return None
 
-        def get_certifications(data):
-            certification = ""
-            if data.get("certifications"):
-                for i in range(len(data["certifications"]) - 1):
-                    certification += data["certifications"][i]["value"] + ", "
-                certification += data["certifications"][-1]["value"]
-
         def get_skills(data):
             skills = ""
-            if data.get("skills"):
+            if data.get("skills") is not None :
                 for i in range(len(data["skills"]) - 1):
                     skills += data["skills"][i]["name"] + ", "
                 skills += data["skills"][-1]["name"]
             return skills
 
+        dateOfBirth = None
+        if info is not None and info.get("date_birth"):
+            date_birth_field = info.get("date_birth")
+            date_birth_timestamp = from_str_to_datetime(date_birth_field).timestamp()
+            dateOfBirth = int(date_birth_timestamp)
+
         create_profile_body = {
             "id": data.get("reference"),
             "address": get_location(),
-            "certifications": get_certifications(data) if data.get("certifications") else None,
+            "certifications": None,
             "name": info.get("full_name") if info else None,
             "firstName": info.get("first_name") if info else None,
             "lastName": info.get("last_name") if info else None,
             "email": info.get("email") if info else None,
             "mobile": info.get("phone") if info else None,
-            "dateOfBirth": int(from_str_to_datetime(info.get("date_birth")).timestamp()) if info and info.get("date_birth") else None,
+            "dateOfBirth": dateOfBirth,
             "experience": int(data.get('experiences_duration')),
             "skillSet": get_skills(data) if data.get("skills") else None
         }
@@ -161,11 +162,10 @@ class PushProfileAction(PushProfileBaseAction):
         # Send request
         response = session.send(prepared_request)
         if not response.ok:
-            error_message = "Unable to push the data ! Reason : `{}`,`{}`"
-            raise RuntimeError(error_message.format(response.status_code,response.content))
+            raise PushError(response)
 
         # Get the id of the candidate whom have been just created.
-        candidate_id = json.loads(response.text)
+        candidate_id = response.json()
         candidate_id = str(candidate_id["changedEntityId"])
 
         # Preparing the request to enrich education
@@ -185,8 +185,7 @@ class PushProfileAction(PushProfileBaseAction):
             # Send request for enrichment
             response = session.send(prepared_request)
             if not response.ok:
-                error_message = "Unable to push the data ! Reason : `{}`,`{}`"
-                raise RuntimeError(error_message.format(response.status_code, response.content))
+                raise PushError(response)
 
         # Preparing the request to enrich education
         for experience in enrich_profile_experience:
@@ -205,8 +204,7 @@ class PushProfileAction(PushProfileBaseAction):
             # Send request for enrichment
             response = session.send(prepared_request)
             if not response.ok:
-                error_message = "Unable to push the data ! Reason : `{}`,`{}`"
-                raise RuntimeError(error_message.format(response.status_code, response.content))
+                raise PushError(response)
 
         # Preparing the request to enrich attachment
         for attachment in enrich_profile_attachment:
@@ -223,5 +221,4 @@ class PushProfileAction(PushProfileBaseAction):
             # Send request for enrichment
             response = session.send(prepared_request)
             if not response.ok:
-                error_message = "Unable to push the data ! Reason : `{}`,`{}`"
-                raise RuntimeError(error_message.format(response.status_code, response.content))
+                raise PushError(response)
