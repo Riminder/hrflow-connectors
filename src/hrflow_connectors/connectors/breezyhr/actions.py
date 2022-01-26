@@ -81,11 +81,12 @@ class PullJobsAction(PullJobsBaseAction):
             Dict[str, Any]: a job object in the hrflow job format
         """
         data = data.dict()
+        print(data)
         job = dict()
         # Basic information
         job["name"] = data.get("name")
         logger.info(job["name"])
-        job["reference"] = data.get("_id")
+        job["reference"] = data.get("friendly_id")
         logger.info(job["reference"])
         job["summary"] = None
 
