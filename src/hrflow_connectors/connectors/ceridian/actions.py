@@ -4,6 +4,8 @@ import requests
 
 from ...core.error import PullError
 from ...core.action import PullJobsBaseAction
+from ...utils.schemas import HrflowJob
+from .schemas import CeridianDayforceJobModel
 
 
 class PullJobsAction(PullJobsBaseAction):
@@ -14,7 +16,7 @@ class PullJobsAction(PullJobsBaseAction):
         description="Uniquely identifies the client's Dayforce instance. Is needed to login",
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[CeridianDayforceJobModel]:
         """
         pull all jobs from a ceridian dayforce job feed space
 
@@ -32,9 +34,11 @@ class PullJobsAction(PullJobsBaseAction):
 
         if not response.ok:
             raise PullError(response)
-        return response.json()
+        job_json_list = response.json()
+        job_obj_iter = map(CeridianDayforceJobModel.parse_obj, job_json_list)
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: CeridianDayforceJobModel) -> HrflowJob:
         """
         format a job into the hrflow job object format
         Args:
@@ -42,6 +46,7 @@ class PullJobsAction(PullJobsBaseAction):
         Returns:
             Dict[str, Any]: a job into the hrflow job object format
         """
+        data = data.dict()
         job = dict()
         # basic information
         job["name"] = data.get("Title")
@@ -82,5 +87,6 @@ class PullJobsAction(PullJobsBaseAction):
             dict(name="dayforce_company_name", value=company_name),
             dict(name="dayforce_remote", value=remote),
         ]
+        job_obj = HrflowJob.parse_obj(job)
 
-        return job
+        return job_obj
