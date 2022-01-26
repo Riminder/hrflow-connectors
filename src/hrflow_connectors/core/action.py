@@ -340,12 +340,12 @@ class PullJobsBaseAction(PullBaseAction):
                 f"Pushing a job ref=`{reference}` to Hrflow Board `{self.board_key}`"
             )
             response = self.hrflow_client.job.indexing.add_json(
-                board_key=self.board_key, job_json=job
+                board_key=self.board_key, job_json=job.dict()
             )
             if response["code"] >= 400:
                 raise HrflowError(response, "Index Job failed")
 
-    def hydrate_job_with_parsing(self, job: TalentDataType) -> TalentDataType:
+    def hydrate_job_with_parsing(self, job_obj: TalentDataType) -> TalentDataType:
         """
         Hydrate job with parsing
 
@@ -357,19 +357,20 @@ class PullJobsBaseAction(PullBaseAction):
         Returns:
             Dict[str, Any]: hydrated job
         """
-        reference = job.reference
+        job = job_obj.dict()
+        reference = job.get("reference")
         logger.debug(f"Hydrating the current job with parsing... (ref=`{reference}`)")
 
         # Concat `summary` text and each `section` together
         logger.debug("Concatenating job summary with job sections...")
-        concatenated_str = job.summary
+        concatenated_str = job.get("summary")
         if concatenated_str is None:
             concatenated_str = ""
 
-        section_list = job.sections
+        section_list = job.get("sections")
         if section_list is not None:
             for section in section_list:
-                section_description = section.description
+                section_description = section.get("description")
                 if section_description is not None:
                     concatenated_str += "\n" + section_description
         logger.debug("Job summary with job sections have been concatenated")
@@ -402,7 +403,7 @@ class PullJobsBaseAction(PullBaseAction):
         logger.debug("Enriching the current job with parsing")
         ## Initialize each field that can be enrich (case of None type)
         logger.debug("Initializing `None` fields to enrich")
-        field_to_init = [job.skills, job.languages, job.certifications, job.courses, job.tasks]
+        field_to_init = ["skills", "languages", "certifications", "courses", "tasks"]
         for field_name in field_to_init:
             field_value = job.get(field_name)
             if field_value is None:
@@ -463,9 +464,10 @@ class PullJobsBaseAction(PullBaseAction):
                     )
 
         logger.debug("The job has been enriched !")
-        return job
+        job_obj = HrflowJob.parse_obj(job)
+        return job_obj
 
-    def check_reference_in_board(self, job: Dict[str, Any]) -> bool:
+    def check_reference_in_board(self, job: TalentDataType) -> bool:
         """
         Check if a job reference is in the Board.
         If the job reference is not in the Board, return `True` to add the job.
@@ -477,7 +479,7 @@ class PullJobsBaseAction(PullBaseAction):
         Returns:
             bool: Job is in the Board
         """
-        reference = job.get("reference")
+        reference = job.reference
         logger.debug(
             f"Checking if the reference `{reference}` is already in Hrflow Board `{self.board_key}`"
         )
@@ -529,7 +531,7 @@ class PullJobsBaseAction(PullBaseAction):
                     # Edit job
                     logger.debug(f"Editing the job key=`{job_key}`")
                     edit_response = self.hrflow_client.job.indexing.edit(
-                        board_key=self.board_key, key=job_key, job_json=job
+                        board_key=self.board_key, key=job_key, job_json=job.dict()
                     )
                     if edit_response["code"] >= 400:
                         error_message = edit_response["message"]
