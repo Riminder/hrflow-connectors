@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 # Job Model
 class Department(BaseModel):
@@ -106,21 +106,21 @@ class SmartRecruitersModel(BaseModel):
 
 
 class Location(BaseModel):
-    country: Optional[str]
-    countryCode: Optional[str]
-    regionCode: Optional[str]
-    region: Optional[str]
-    city: Optional[str]
-    lat: Optional[int]
-    lng: Optional[int]
+    country: Optional[str] = Field("Undefined")
+    countryCode: Optional[str] = Field("NO")
+    regionCode: Optional[str] =  Field("Undefined")
+    region: Optional[str] = Field("Undefined")
+    city: Optional[str] = Field("Undefined")
+    lat: Optional[int] = Field(0)
+    lng: Optional[int] = Field(0)
 
 
 class Web(BaseModel):
-    skype: Optional[str]
-    linkedin: Optional[str]
-    facebook: Optional[str]
-    twitter: Optional[str]
-    website: Optional[str]
+    skype: Optional[str] = Field("Undefined")
+    linkedin: Optional[str] = Field("Undefined")
+    facebook: Optional[str] = Field("Undefined")
+    twitter: Optional[str] = Field("Undefined")
+    website: Optional[str] = Field("Undefined")
 
 
 class EducationItem(BaseModel):
