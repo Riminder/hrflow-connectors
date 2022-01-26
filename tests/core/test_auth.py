@@ -1,5 +1,6 @@
 import responses
 import requests
+from unittest import mock
 
 from hrflow_connectors.core.error import AuthError
 from hrflow_connectors.core.auth import OAuth2PasswordCredentialsBody, OAuth2EmailPasswordBody
@@ -346,22 +347,108 @@ def test_XTaleezAuth():
 
 
 @responses.activate
-def test_OAuth2Session_get_access_token():
-
-    OAuth2Session_JSON_RESPONSE = {
-        "auth_code": "007",
-        "access_token": "ceciestlacesstoken",
-        "BhRestToken": "ceciestlesessiontoken",
-        "token_type": "Bearer",
-        "expires_in": 600,
-        "refresh_token": "refreshtoken"
+def test_OAuth2Session_get_auth_code_success():
+    get_auth_code_response = {
+        "auth_code": "ceciestlauthcode"
     }
-
-    auth_code_url = "https://www.site.com/"
+    auth_code_url = "http://test.test/auth_code"
     access_token_url = "http://test.test/access_token"
     session_token_url = "http://test.test/session_token"
 
-    check_auth_url = "http://test.test/check_auth"
+    auth_code = "007"
+    client_id = "007"
+    client_secret = "double0"
+    username = "bond"
+    password = "jb"
+
+    # Instanciate Auth to test
+    auth = OAuth2Session(
+        auth_code_url=auth_code_url,
+        access_token_url=access_token_url,
+        session_token_url=session_token_url,
+        client_id=client_id,
+        client_secret=client_secret,
+        username=username,
+        password=password,
+        name="BhRestToken",
+    )
+
+    with mock.patch('requests.post') as requests_post_mock:
+        # On demande au Mock `requests.get(...).url` de retourner le code
+        redirected_url = "http://test.test/login?code={}".format(get_auth_code_response["auth_code"])
+        requests_post_mock.return_value.url = redirected_url
+
+        auth_code = auth.get_auth_code()
+        assert auth_code == get_auth_code_response["auth_code"]
+
+        # Enfin, on vérifie que la requête envoyée était correcte
+        # Pour cela, on va vérifier les appels effectués au Mock
+        # `requests_get_mock.mock_calls` donne la liste des appels
+        # Par exemple : `[call('http://google.fr'), call().__str__()]`
+        # On doit donc vérifier que l'appel à l'api a utilisé les bons paramètres
+        body_auth_code = dict(
+                client_id=client_id,
+                response_type="code",
+                action="Login",
+                username=username,
+                password=password
+        )
+
+        expected_call = mock.call(auth_code_url, params=body_auth_code)
+        assert expected_call in requests_post_mock.mock_calls
+
+
+@responses.activate
+def test_OAuth2Session_get_auth_code_failure():
+    get_auth_code_response = {
+        "auth_code": "ceciestlauthcode"
+    }
+    auth_code_url = "http://test.test/auth_code"
+    access_token_url = "http://test.test/access_token"
+    session_token_url = "http://test.test/session_token"
+
+    auth_code = "007"
+    client_id = "007"
+    client_secret = "double0"
+    username = "bond"
+    password = "jb"
+
+    # Instanciate Auth to test
+    auth = OAuth2Session(
+        auth_code_url=auth_code_url,
+        access_token_url=access_token_url,
+        session_token_url=session_token_url,
+        client_id=client_id,
+        client_secret=client_secret,
+        username=username,
+        password=password,
+        name="BhRestToken",
+    )
+
+    with mock.patch('requests.post') as requests_post_mock:
+        # On demande au Mock `requests.get(...).url` de retourner le code
+        redirected_url = "http://test.test/login?notcode={}".format(get_auth_code_response["auth_code"])
+        requests_post_mock.return_value.url = redirected_url
+
+        try:
+            auth.get_auth_code()
+            assert False
+        except AuthError:
+            pass
+
+
+
+@responses.activate
+def test_OAuth2Session_get_access_token():
+    get_access_token_response = {
+        "access_token": "ceciestlacesstoken"
+    }
+
+    auth_code_url = "http://test.test/auth_code"
+    access_token_url = "http://test.test/access_token"
+    session_token_url = "http://test.test/session_token"
+
+    auth_code = "007"
     client_id = "007"
     client_secret = "double0"
     username = "bond"
@@ -380,80 +467,97 @@ def test_OAuth2Session_get_access_token():
     )
 
     # build Mock for get_access_token request
-    body_auth_code = dict(
-        client_id=client_id,
-        response_type="code",
-        action="Login",
-        username=username,
-        password=password
-    )
-    get_access_match = [responses.matchers.query_param_matcher(body_auth_code)]
-    responses.add(
-        responses.POST,
-        auth_code_url,
-        match=get_access_match,
-    )
-
-    auth_code = auth.get_auth_code()
-    assert auth_code == OAuth2Session_JSON_RESPONSE["auth_code"]
-
-    # build Mock for get_access_token request
-    body_access_token = dict(
+    get_access_token_request_body = dict(
         grant_type="authorization_code",
         code=auth_code,
         client_id=client_id,
         client_secret=client_secret,
     )
 
-    get_access_match = [responses.matchers.query_param_matcher(body_access_token)]
+    get_access_match = [responses.matchers.query_param_matcher(get_access_token_request_body)]
     responses.add(
         responses.POST,
         access_token_url,
         status=200,
-        json=OAuth2Session_JSON_RESPONSE,
+        json=get_access_token_response,
         match=get_access_match,
     )
 
     access_token = auth.get_access_token(auth_code)
-    assert access_token == OAuth2Session_JSON_RESPONSE["access_token"]
+    assert access_token == get_access_token_response["access_token"]
 
+
+
+@responses.activate
+def test_OAuth2Session_get_session_token():
+    get_access_token_response = {
+        "BhRestToken": "ceciestlesessiontoken"
+    }
+
+    auth_code_url = "https://www.site.com/"
+    access_token_url = "http://test.test/access_token"
+    session_token_url = "http://test.test/session_token"
+
+    client_id = "007"
+    client_secret = "double0"
+    username = "bond"
+    password = "jb"
+    access_token = "ceciestlacesstoken"
+
+    # Instanciate Auth to test
+    auth = OAuth2Session(
+        auth_code_url=auth_code_url,
+        access_token_url=access_token_url,
+        session_token_url=session_token_url,
+        client_id=client_id,
+        client_secret=client_secret,
+        username=username,
+        password=password,
+        name="BhRestToken",
+    )
     # build Mock for get_access_token request
-    body_session_token = dict(
+    session_token_request_body = dict(
         version="*",
         access_token=access_token
     )
 
-    get_access_match = [responses.matchers.query_param_matcher(body_session_token)]
+    get_access_match = [responses.matchers.query_param_matcher(session_token_request_body)]
     responses.add(
         responses.POST,
         session_token_url,
         status=200,
-        json=OAuth2Session_JSON_RESPONSE,
+        json=get_access_token_response,
         match=get_access_match,
     )
 
     session_token = auth.get_session_token(access_token)
-    assert session_token["BhRestToken"] == OAuth2Session_JSON_RESPONSE["BhRestToken"]
+    assert session_token == get_access_token_response["BhRestToken"]
 
-    # build Mock for check_auth request
-    header = dict(BhRestToken=session_token["BhRestToken"])
-    check_auth_match = [responses.matchers.header_matcher(header)]
-    responses.add(
-        responses.GET,
-        check_auth_url,
-        status=200,
-        match=check_auth_match,
+def test_OAuth2Session_call():
+    class MyOAuth2Session(OAuth2Session):
+        def get_auth_code(self):
+            return "auth_code"
+        
+        def get_access_token(self, auth_code):
+            assert auth_code == "auth_code"
+            return "access_token"
+        
+        def get_session_token(self, access_token):
+            assert access_token == "access_token"
+            return "session_token"
+
+    auth = MyOAuth2Session(
+        auth_code_url="auth_code_url",
+        access_token_url="access_token_url",
+        session_token_url="session_token_url",
+        client_id="client_id",
+        client_secret="client_secret",
+        username="username",
+        password="password",
+        name="BhRestToken",
     )
 
-    # Send authenticated request
-    session = requests.Session()
-    request = requests.Request(
-        method="GET", url=check_auth_url, auth=auth
-    )
+    request = requests.Request(method="POST", url="http://test.test/", headers=dict(abc="efg"))
     prepared_request = request.prepare()
-    session.send(prepared_request)
-
-    prepared_request.headers.update(dict(test="abc"))
-    authenticated_prepared_request = auth(prepared_request)
-
-    assert authenticated_prepared_request.headers.get("test") == "abc"
+    request_with_auth = auth(prepared_request)
+    assert request_with_auth.headers["BhRestToken"] == "session_token"
