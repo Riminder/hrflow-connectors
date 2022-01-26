@@ -86,8 +86,8 @@ class HrflowJob(BaseModel):
     key: Optional[str] = Field(None, description="Identification key of the Job.")
     reference: Optional[str] = Field(None, description="Custom identifier of the Job.")
     name: str = Field(..., description="Job title.")
-    location: HrflowJobLocation = Field(None, description="Job location object.")
-    sections: List[HrflowJobSection] = Field(None, description="Job custom sections.")
+    location: HrflowJobLocation = Field(..., description="Job location object.")
+    sections: List[HrflowJobSection] = Field(..., description="Job custom sections.")
     url: Optional[str] = Field(None, description="Job post original URL.")
     summary: Optional[str] = Field(None, description="Brief summary of the Job.")
     archieved_at: Optional[str] = Field(
