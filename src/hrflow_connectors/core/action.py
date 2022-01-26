@@ -638,7 +638,7 @@ class PullJobsBaseAction(PullBaseAction):
 
 class PushJobBaseAction(PushBaseAction):
 
-    job: Job = Field(..., description="Job to push")
+    job: HrflowJob = Field(..., description="Job to push")
 
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
@@ -661,7 +661,7 @@ class PushJobBaseAction(PushBaseAction):
 
 
 class PushProfileBaseAction(PushBaseAction):
-    profile: Profile = Field(..., description="Profile to push")
+    profile: HrflowProfile = Field(..., description="Profile to push")
 
     def pull(self) -> Iterator[TalentDataType]:
         """
