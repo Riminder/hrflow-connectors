@@ -13,13 +13,13 @@ class TaleezJobModel(BaseModel):
         ..., description="Job Profile Type, for example administration, HR..."
     )
     currentStatus: str = Field(
-        ..., description="status of the JOb whether it is Published, Draft or suspended"
+        ..., description="status of the Job whether it is Published, Draft or suspended"
     )
     contract: str = Field(..., description="Job Employment Type")
-    contractLength: int
+    contractLength: Optional[int]
     fullTime: bool
-    workHours: int
-    qualification: str
+    workHours: Optional[int]
+    qualification: Optional[str]
     remote: bool
     country: str
     city: str
