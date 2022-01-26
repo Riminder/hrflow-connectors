@@ -156,7 +156,6 @@ class PushProfileAction(PushProfileBaseAction):
         push_profile_request.url = f"https://{self.subdomain}.bullhornstaffing.com/rest-services/7zwdd0/entity/Candidate"
         push_profile_request.auth = self.auth
         push_profile_request.json = create_profile_body
-        push_profile_request.headers = {"content-type": "application/json"}
         prepared_request = push_profile_request.prepare()
 
         # Send request
@@ -179,7 +178,6 @@ class PushProfileAction(PushProfileBaseAction):
             push_profile_request.url = f"https://{self.subdomain}.bullhornstaffing.com/rest-services/7zwdd0/entity/CandidateEducation"
             push_profile_request.auth = self.auth
             push_profile_request.json = education
-            push_profile_request.headers = {"content-type": "application/json"}
             prepared_request = push_profile_request.prepare()
 
             # Send request for enrichment
@@ -198,7 +196,6 @@ class PushProfileAction(PushProfileBaseAction):
             push_profile_request.url = f"https://{self.subdomain}.bullhornstaffing.com/rest-services/7zwdd0/entity/CandidateWorkHistory"
             push_profile_request.auth = self.auth
             push_profile_request.json = experience
-            push_profile_request.headers = {"content-type": "application/json"}
             prepared_request = push_profile_request.prepare()
 
             # Send request for enrichment
@@ -215,7 +212,6 @@ class PushProfileAction(PushProfileBaseAction):
             push_profile_request.url = f"https://{self.subdomain}.bullhornstaffing.com/rest-services/7zwdd0/file/Candidate/{candidate_id}"
             push_profile_request.auth = self.auth
             push_profile_request.json = attachment
-            push_profile_request.headers = {"content-type": "application/json"}
             prepared_request = push_profile_request.prepare()
 
             # Send request for enrichment
