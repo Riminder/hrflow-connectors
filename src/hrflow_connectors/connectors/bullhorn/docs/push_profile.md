@@ -3,6 +3,15 @@
 
 `PushProfileAction` pushes a Hrflow.ai profile to `Bullhorn` via their API.
 
+**Links to Flatchr documentation on the endpoints used :**
+
+| Endpoints | Description |
+| --------- | ----------- |
+| [Push profile](http://bullhorn.github.io/rest-api-docs) | Push a candidate with minimum information, the request method is `POST` |
+| [Enrich profile Skills](http://bullhorn.github.io/rest-api-docs) | Enrich profile Skills `POST` |
+| [Enrich profile Expriences](http://bullhorn.github.io/rest-api-docs) | Enrich profile Expriences `POST` |
+| [Enrich profile Educations](http://bullhorn.github.io/rest-api-docs) | Enrich profile Educations `POST` |
+
 ## Parameters
 
 | Field | Type | Description |
