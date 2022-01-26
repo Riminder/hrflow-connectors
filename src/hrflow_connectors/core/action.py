@@ -10,9 +10,10 @@ from ..utils.hrflow import find_element_in_list, Profile, Job
 from ..utils.hrflow import generate_workflow_response
 from ..utils.logger import get_logger
 from ..core.auth import Auth, NoAuth
+from ..utils.schemas import HrflowJob, HrflowProfile
 
 Hrflow = TypeVar("Hrflow")
-TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
+TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any], HrflowJob, HrflowProfile, Any]
 
 logger = get_logger()
 
@@ -93,7 +94,7 @@ class BaseAction(BaseModel):
             filtered_list = filter(logic_function, filtered_list)
         return filtered_list
 
-    def format_switcher(self, data: TalentDataType) -> Dict[str, Any]:
+    def format_switcher(self, data: TalentDataType) -> TalentDataType:
         """
         Choose the right function to format the data and format the input data into a push-ready data schema.
 
@@ -132,7 +133,7 @@ class BaseAction(BaseModel):
             )
             return format_function(data)
 
-    def format(self, data: TalentDataType) -> Dict[str, Any]:
+    def format(self, data: TalentDataType) -> TalentDataType:
         """
         Format the input data into a push-ready data schema
 
@@ -149,7 +150,7 @@ class BaseAction(BaseModel):
         """
         return data
 
-    def push(self, data: Iterator[Union[str, Dict[str, Any]]]):
+    def push(self, data: Iterator[TalentDataType]):
         """
         Push data
 
@@ -332,9 +333,9 @@ class PullJobsBaseAction(PullBaseAction):
         logger.info("Iterator containing all references is ready !")
         return clean_iter
 
-    def push(self, data: Iterator[Union[str, Dict[str, Any]]]):
+    def push(self, data: Iterator[TalentDataType]):
         for job in data:
-            reference = job.get("reference")
+            reference = job.reference
             logger.debug(
                 f"Pushing a job ref=`{reference}` to Hrflow Board `{self.board_key}`"
             )
@@ -344,7 +345,7 @@ class PullJobsBaseAction(PullBaseAction):
             if response["code"] >= 400:
                 raise HrflowError(response, "Index Job failed")
 
-    def hydrate_job_with_parsing(self, job: Dict[str, Any]) -> Dict[str, Any]:
+    def hydrate_job_with_parsing(self, job: TalentDataType) -> TalentDataType:
         """
         Hydrate job with parsing
 
@@ -356,19 +357,19 @@ class PullJobsBaseAction(PullBaseAction):
         Returns:
             Dict[str, Any]: hydrated job
         """
-        reference = job.get("reference")
+        reference = job.reference
         logger.debug(f"Hydrating the current job with parsing... (ref=`{reference}`)")
 
         # Concat `summary` text and each `section` together
         logger.debug("Concatenating job summary with job sections...")
-        concatenated_str = job.get("summary")
+        concatenated_str = job.summary
         if concatenated_str is None:
             concatenated_str = ""
 
-        section_list = job.get("sections")
+        section_list = job.sections
         if section_list is not None:
             for section in section_list:
-                section_description = section.get("description")
+                section_description = section.description
                 if section_description is not None:
                     concatenated_str += "\n" + section_description
         logger.debug("Job summary with job sections have been concatenated")
@@ -401,7 +402,7 @@ class PullJobsBaseAction(PullBaseAction):
         logger.debug("Enriching the current job with parsing")
         ## Initialize each field that can be enrich (case of None type)
         logger.debug("Initializing `None` fields to enrich")
-        field_to_init = ["skills", "languages", "certifications", "courses", "tasks"]
+        field_to_init = [job.skills, job.languages, job.certifications, job.courses, job.tasks]
         for field_name in field_to_init:
             field_value = job.get(field_name)
             if field_value is None:
