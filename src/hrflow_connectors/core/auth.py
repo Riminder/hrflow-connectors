@@ -1,8 +1,7 @@
 import re
 import requests
-import json
-from urllib.parse import unquote
-from typing import Union, Dict, Optional, Any
+import urllib.parse
+from typing import Union, Dict, Any
 from pydantic import BaseModel, Field, SecretStr
 
 from ..core.error import AuthError
@@ -217,12 +216,12 @@ class OAuth2Session(Auth):
             "password": self.password
         }
         resp_auth = requests.post(self.auth_code_url, params=params)
-        url = unquote(resp_auth.url)
-        m = re.search(f'=(.+?)&', url)
-        if m:
-            found = m.group(1)
-            return found
-        return None
+        url = resp_auth.url
+        query = urllib.parse.urlparse(url).query
+        params_dict = urllib.parse.parse_qs(query)
+        if "code" not in params_dict:
+            raise AuthError("Can't find the auth_code.")
+        return params_dict["code"][0]
 
     def get_access_token(self, auth_code):
         params = {
@@ -232,22 +231,22 @@ class OAuth2Session(Auth):
             "client_secret": self.client_secret
         }
         resp_token = requests.post(self.access_token_url, params=params)
-        return json.loads(resp_token.text)["access_token"]
+        return resp_token.json()["access_token"]
 
     def get_session_token(self, access_token):
         params = {
-            "version": "*"
+            "version": "*",
+            "access_token": access_token
         }
-        session_token = requests.post(
-            f"{self.session_token_url}?access_token={access_token}", params=params)
-        return json.loads(session_token.text)
+        session_token = requests.post(self.session_token_url, params=params)
+        return session_token.json()["BhRestToken"]
 
     def __call__(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
         auth_code = self.get_auth_code()
         access_token = self.get_access_token(auth_code)
         session_token = self.get_session_token(access_token)
         auth_header = {
-            "BhRestToken": session_token["BhRestToken"]
+            "BhRestToken": session_token
         }
         request.headers.update(auth_header)
         return request
