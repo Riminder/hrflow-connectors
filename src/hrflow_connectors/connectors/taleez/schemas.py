@@ -38,9 +38,9 @@ class TaleezJobModel(BaseModel):
 class TaleezCandidateModel(BaseModel):
     firstName: str
     lastName: str
-    mail: str
-    phone: str
+    mail: Optional[str]
+    phone: Optional[str]
     initialReferrer: Optional[str]
-    lang: str
+    lang: Optional[str]
     recruiterId: int
     socialLinks: Optional[Dict[str, str]]
