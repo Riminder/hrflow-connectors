@@ -133,7 +133,6 @@ class PullJobsAction(PullJobsBaseAction):
         job["created_at"] = data.get("creation_date")
         job["updated_at"] = data.get("updated_date")
 
-        job["metadatas"] = data.get("tags")
         return job
 
 
