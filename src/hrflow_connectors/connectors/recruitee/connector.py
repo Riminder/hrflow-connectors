@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any, List
 
 from ...core.connector import Connector
 from ...core.auth import AuthorizationAuth
-from ...utils.hrflow import Profile
+from ...utils.schemas import HrflowProfile
 from .actions import PullJobsAction, PushProfileAction
 
 
@@ -43,7 +43,7 @@ class Recruitee(Connector):
     def push_profile(
         auth: AuthorizationAuth,
         hrflow_client: Hrflow,
-        profile: Profile,
+        profile: HrflowProfile,
         company_id: str,
         offer_id: Optional[List[int]],
         **kwargs

@@ -9,7 +9,7 @@ from ...utils.hrflow import generate_workflow_response
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.schemas import HrflowJob, HrflowProfile
-from .schemas import RecruiteeProfile, RecruiteJobModel
+from .schemas import RecruiteeCandidateModel, RecruiteJobModel
 
 logger = get_logger()
 
@@ -132,12 +132,13 @@ class PushProfileAction(PushProfileBaseAction):
         description="Offers to which the candidate will be assigned with default stage. You can also pass one ID as offer_id",
     )
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile) -> RecruiteeCandidateModel:
         """
         format a HrFlow Profile object into a Recruitee profile Object
         returns Dict[str, Any]: a profile in the format of Recruitee profiles
         """
         profile = dict()
+        data = data.dict()
         info = data.get("info")
         profile["name"] = info.get("full_name")
         if data.get("attachments") not in [None, []]:
@@ -149,8 +150,9 @@ class PushProfileAction(PushProfileBaseAction):
             urls = info.get("urls")
             website_list = []
             for url in urls:
-                if url["url"] not in ["", None, []]:
-                    website_list.append(url["url"])
+                if isinstance(url,dict):
+                    if url["url"] not in ["", None, []]:
+                        website_list.append(url["url"])
             return website_list
 
         if urls() not in ["", None, []]:
@@ -159,8 +161,8 @@ class PushProfileAction(PushProfileBaseAction):
         output_data = dict(candidate=profile)
         if self.offer_id is not None:
             output_data["offers"] = self.offer_id
-
-        return output_data
+        output_data_obj = RecruiteeCandidateModel.parse_obj(output_data)
+        return output_data_obj
 
     def push(self, data):
         profile = next(data)
@@ -173,7 +175,7 @@ class PushProfileAction(PushProfileBaseAction):
             f"https://api.recruitee.com/c/{self.company_id}/candidates"
         )
         push_profile_request.auth = self.auth
-        push_profile_request.json = profile
+        push_profile_request.json = profile.dict()
         prepared_request = push_profile_request.prepare()
 
         # Send request

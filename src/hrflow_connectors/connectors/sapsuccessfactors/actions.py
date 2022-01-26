@@ -159,7 +159,7 @@ class PushProfileAction(PushProfileBaseAction):
         description="the API server for your company from the list of API servers for SAP SuccessFactors data centers",
     )
 
-    def format(self, profile: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, profile: HrflowProfile) -> SapCandidateModel:
         """
         Formats a hrflow profile into a sap successfactors candidate
 
@@ -170,6 +170,7 @@ class PushProfileAction(PushProfileBaseAction):
             Dict[str, Any]: a SAP successfactors profile
         """
         sap_profile = dict()
+        profile = profile.dict()
 
         # Basic information
         info = profile.get("info")
@@ -300,8 +301,8 @@ class PushProfileAction(PushProfileBaseAction):
             for experience in profile.get("experiences", []):
                 sap_experience = format_experience(experience)
                 sap_profile["outsideWorkExperience"]["results"].append(sap_experience)
-
-        return sap_profile
+        sap_profile_obj = SapCandidateModel.parse_obj(sap_profile)
+        return sap_profile_obj
 
     def push(self, data):
         profile = next(data)
@@ -312,7 +313,7 @@ class PushProfileAction(PushProfileBaseAction):
         push_profile_request.method = "POST"
         push_profile_request.url = f"https://{self.api_server}/odata/v2/Candidate"
         push_profile_request.auth = self.auth
-        push_profile_request.json = profile
+        push_profile_request.json = profile.dict()
         prepared_request = push_profile_request.prepare()
 
         # Send request
