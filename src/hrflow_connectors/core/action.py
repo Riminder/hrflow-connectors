@@ -560,7 +560,7 @@ class PullJobsBaseAction(PullBaseAction):
         filtered_data = self.apply_logics(formatted_data)
 
         logger.info(f"Keeping only reference from the stream")
-        references_iter = map(lambda job: job.get("reference"), filtered_data)
+        references_iter = map(lambda job: job.reference, filtered_data)
 
         references_without_none_iter = filter(
             lambda ref: ref is not None, references_iter
