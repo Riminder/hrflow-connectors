@@ -9,6 +9,8 @@ from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
 from ...utils.datetime_converter import from_str_to_datetime
+from ...utils.schemas import HrflowJob
+from .schemas import BreezyJobModel
 
 logger = get_logger()
 
@@ -24,7 +26,7 @@ class PullJobsAction(PullJobsBaseAction):
         None, description="the company associated with the authenticated user"
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[BreezyJobModel]:
         """
         Pull jobs from a Taleez jobs owner endpoint
         Returns list of all jobs that have been pulled
@@ -66,18 +68,20 @@ class PullJobsAction(PullJobsBaseAction):
 
         if not response.ok:
             raise PullError(response, message="Failed to get jobs from this endpoint")
+        job_json_list = response.json()
+        job_obj_iter = map(BreezyJobModel.parse_obj, job_json_list)
 
-        return response.json()
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: BreezyJobModel) -> HrflowJob:
         """
         Format a Breezy Hr job object into a hrflow job object
 
         Returns:
             Dict[str, Any]: a job object in the hrflow job format
         """
+        data = data.dict()
         job = dict()
-
         # Basic information
         job["name"] = data.get("name")
         logger.info(job["name"])
@@ -132,9 +136,9 @@ class PullJobsAction(PullJobsBaseAction):
 
         job["created_at"] = data.get("creation_date")
         job["updated_at"] = data.get("updated_date")
+        job_obj = HrflowJob.parse_obj(job)
 
-        job["metadatas"] = data.get("tags")
-        return job
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
