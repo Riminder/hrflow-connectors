@@ -1,5 +1,8 @@
 # Bullhorn Connector
-**Bullhorn is an ATS.**
+> Bullhorn's recruitment software to grow your business. Bullhorn strengthens European recruitment agencies.
 
-Lists of actions :
-* [**Push profile**](docs/push_profile.md)
+🔗 https://www.bullhorn.com/
+
+| Actions |
+| ------- |
+| [**Push profile**](docs/push_profile.md) |
