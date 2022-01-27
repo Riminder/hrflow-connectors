@@ -16,19 +16,6 @@ from hrflow_connectors.utils.config import Config
 
 
 @pytest.fixture(scope="session")
-def credentials(pytestconfig) -> Dict[str, Any]:
-    """
-    Get credentials from a file in the root of the project `credentials.json` (to be defined)
-
-    Returns:
-        Dict[str, Any]: Credentials
-    """
-    with open(os.path.join(pytestconfig.rootpath, "credentials.json"), "r") as f:
-        credentials = json.loads(f.read())
-    return credentials
-
-
-@pytest.fixture(scope="session")
 def config() -> Config:
     """
     Get config from the `.env` file at the root of the project (to be defined)
@@ -40,7 +27,7 @@ def config() -> Config:
 
 
 @pytest.fixture(scope="session")
-def hrflow_client(credentials) -> Callable:
+def hrflow_client(config) -> Callable:
     """
     Get a function to generate an instance of Hrflow Client
 
@@ -53,10 +40,15 @@ def hrflow_client(credentials) -> Callable:
     """
 
     def hrflow_client_func(portal_name="dev-demo"):
-        x_api_key = credentials["hrflow"][portal_name]["x-api-key"]
-        x_user_email = credentials["hrflow"][portal_name]["x-user-email"]
-        client = Hrflow(api_secret=x_api_key, api_user=x_user_email)
-        return client
+        if portal_name == "dev-demo":
+            x_api_key = config.HRFLOW_DEVDEMO_XAPIKEY
+            x_user_email = config.HRFLOW_DEVDEMO_XUSEREMAIL
+        elif portal_name == "vulcain":
+            x_api_key = config.HRFLOW_VULCAIN_XAPIKEY
+            x_user_email = config.HRFLOW_VULCAIN_XUSEREMAIL
+        else:
+            raise RuntimeError(f"Hrflow Portal `{portal_name}` not found !")
+        return Hrflow(api_secret=x_api_key, api_user=x_user_email)
 
     return hrflow_client_func
 
