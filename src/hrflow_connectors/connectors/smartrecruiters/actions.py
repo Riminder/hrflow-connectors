@@ -201,54 +201,36 @@ class PullJobsAction(PullJobsBaseAction):
         add_section("jobDescription")
         add_section("qualifications")
         add_section("additionalInformation")
+        
+        job["tags"] = []
+        def create_tag(field_name:str, field_dict: Optional[str]=None) -> None:
+            name = "smartr_{}".format(field_name)
+            if field_dict is not None:
+                name = "smartr_{}-{}".format(field_dict, field_name)
+                if isinstance(data.get(field_dict), dict):
+                    field_value = data.get(field_dict).get(field_name)
+                    if field_value is not None:
+                        job["tags"].append(dict(name=name, value=field_value))
+            else:
+                field_value = data.get(field_name)
+                if field_value is not None:
+                    job["tags"].append(dict(name=name, value=field_value))
 
         # job tags
-        status = data.get("status")
-        posting_status = data.get("postingStatus")
-        job_id = data.get("id")
-        experience_level_id = data.get("experienceLevel", {}).get("id")
-        employmentType_id = data.get("typeOfEmployment", {}).get("id")
-        industry_id = data.get("industry", {}).get("id")
-        creator = data.get("creator", {})
-        function_id = data.get("function", {}).get("id")
-        department_id = data.get("department", {}).get("id")
-        manual = data.get("location", {}).get("manual")
-        remote = data.get("location", {}).get("remote")
-        eeo_category_id = data.get("eeoCategory", {}).get("id")
-        compensation = data.get("compensation", {})
-        job["tags"] = [
-            dict(name="smartrecruiters_status", value=status),
-            dict(name="smartrecruiters_postingStatus", value=posting_status),
-            dict(name="smartrecruiters_id", value=job_id),
-            dict(name="smartrecruiters_experienceLevel-id", value=experience_level_id),
-            dict(name="smartrecruiters_typeOfEmployment-id", value=employmentType_id),
-            dict(
-                name="smartrecruiters_compensation-min", value=compensation.get("min")
-            ),
-            dict(
-                name="smartrecruiters_compensation-max", value=compensation.get("max")
-            ),
-            dict(
-                name="smartrecruiters_compensation-currency",
-                value=compensation.get("currency"),
-            ),
-            dict(name="smartrecruiters_industry-id", value=industry_id),
-            dict(
-                name="smartrecruiters_creator-firstName", value=creator.get("firstName")
-            ),
-            dict(
-                name="smartrecruiters_creator-lastName", value=creator.get("lastName")
-            ),
-            dict(name="smartrecruiters_function-id", value=function_id),
-            dict(name="smartrecruiters_department-id", value=department_id),
-            dict(name="smartrecruiters_location-manual", value=manual),
-            dict(name="smartrecruiters_location-remote", value=remote),
-            dict(name="smartrecruiters_eeoCategory-id", value=eeo_category_id),
-            dict(
-                name="smartrecruiters_targetHiringDate",
-                value=data.get("targetHiringDate"),
-            ),
-        ]
+        create_tag(field_name="status")
+        create_tag(field_name="postingStatus")
+        create_tag(field_name="compensation")
+        create_tag(field_name="id")
+        create_tag(field_name="id", field_dict="experienceLevel")
+        create_tag(field_name="id", field_dict="typeOfEmployment")
+        create_tag(field_name="id", field_dict="industry")
+        create_tag(field_name="id", field_dict="creator")
+        create_tag(field_name="id", field_dict="function")
+        create_tag(field_name="id", field_dict="department")
+        create_tag(field_name="id", field_dict="eeoCategory")
+        create_tag(field_name="manual", field_dict="location")
+        create_tag(field_name="remote", field_dict="location")
+        
         job_obj = HrflowJob.parse_obj(job)
 
         return job_obj
