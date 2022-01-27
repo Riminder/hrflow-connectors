@@ -33,6 +33,7 @@ to democratize Talent Data integration within the HR Tech landscape.
 | Name | Type | Available |
 | - | - | - |
 | **ADP** |  | :hourglass: |
+| [**Bullhorn**](src/hrflow_connectors/connectors/bullhorn/) | ATS | :heavy_check_mark: |
 | [**Breezy.hr**](src/hrflow_connectors/connectors/breezyhr) | ATS | :heavy_check_mark: |
 | **Cegid (Meta4)** |  | :hourglass: |
 | [**Ceridian**](src/hrflow_connectors/connectors/ceridian) | HCM |:heavy_check_mark: |
@@ -60,6 +61,7 @@ to democratize Talent Data integration within the HR Tech landscape.
 | [**Taleez**](src/hrflow_connectors/connectors/taleez/)| ATS | :heavy_check_mark: |
 | **Talentsoft** |  | :hourglass: |
 | **Talentlink** |  | :hourglass: |
+| [**Teamtailor**](src/hrflow_connectors/connectors/teamtailor) | ATS | :heavy_check_mark: |
 | **Twilio** | Marketing tools | :hourglass: |
 | **Ultimate Software (UKG)** |  | :hourglass: |
 | [**Workable**](src/hrflow_connectors/connectors/workable/) | ATS | :heavy_check_mark: |
