@@ -23,6 +23,8 @@ class TeamtailorJobAttribute(BaseModel):
 
 class TeamtailorJob(BaseModel):
     attributes: TeamtailorJobAttribute
+    links: Optional[dict]
+    id: Any
 
 
 
