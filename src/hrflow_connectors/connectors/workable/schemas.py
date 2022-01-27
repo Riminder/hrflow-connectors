@@ -1,20 +1,21 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
 class WorkableJobModel(BaseModel):
-    title: str
-    shortcode: str
-    country: str
-    state: str
-    city: str
-    department: str
-    published_on: str
-    url: str
-    application_url: str
-    created_at: str
-    description: str
-    employment_type: str
-    industry: str
-    function: str
-    experience: str
-    education: str
+    title: Optional[str]
+    shortcode: Optional[str]
+    country: Optional[str]
+    state: Optional[str]
+    city: Optional[str]
+    department: Optional[str]
+    published_on: Optional[str]
+    url: Optional[str]
+    application_url: Optional[str]
+    created_at: Optional[str]
+    description: Optional[str]
+    employment_type: Optional[str]
+    industry: Optional[str]
+    function: Optional[str]
+    experience: Optional[str]
+    education: Optional[str]

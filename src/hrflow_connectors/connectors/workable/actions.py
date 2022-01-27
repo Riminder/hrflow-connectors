@@ -6,6 +6,8 @@ from ...core.error import PullError
 from ...core.action import PullJobsBaseAction
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
+from ...utils.schemas import HrflowJob
+from .schemas import WorkableJobModel
 
 logger = get_logger()
 
@@ -17,11 +19,11 @@ class PullJobsAction(PullJobsBaseAction):
         description="subdomain of a company endpoint in `https://www.workable.com/api/accounts/{subdomain}` for example subdomain=`eurostar` for eurostar company",
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[WorkableJobModel]:
         """
         pull all jobs from a workable public endpoint jobs stream
         Returns:
-            Iterator[Dict[str, Any]]: a list of jobs dictionaries
+            Iterator[WorkableJobModel]: a list of workable job models
         """
 
         # Prepare request
@@ -46,17 +48,19 @@ class PullJobsAction(PullJobsBaseAction):
         response_dict = response.json()
 
         job_list = response_dict["jobs"]
-        return job_list
+        job_obj_iter = map(WorkableJobModel.parse_obj,job_list)
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: WorkableJobModel) -> HrflowJob:
         """
         format a job into the hrflow job object format
         Args:
-            data (Dict[str, Any]): a job object pulled from workable subdomain
+            data (WorkableJobModel): a job object pulled from workable subdomain
         Returns:
-            Dict[str, Any]: a job into the hrflow job object format
+            HrflowJob: a job into the hrflow job object format
         """
         job = dict()
+        data = data.dict()
         # name and reference
         job["name"] = data.get("title")
         job["reference"] = data.get("shortcode")
@@ -102,5 +106,6 @@ class PullJobsAction(PullJobsBaseAction):
             dict(name="workable_department", value=department),
         ]
         job["metadatas"] = []
+        job_obj = HrflowJob.parse_obj(job)
 
-        return job
+        return job_obj
