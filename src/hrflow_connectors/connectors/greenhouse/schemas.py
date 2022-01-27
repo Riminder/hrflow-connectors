@@ -95,7 +95,8 @@ class GreenhouseProfileModel(BaseModel):
     company: Optional[str] = Field(None, description="The candidate's company'")
     title: Optional[str] = Field(None, description="The candidate's title'")
     phone_numbers: Optional[List[PhoneNumber]] = Field(
-        None, description="Array of phone numbers. Passing an empty array will clear all"
+        None,
+        description="Array of phone numbers. Passing an empty array will clear all",
     )
     addresses: Optional[List[Address]] = Field(
         None, description="Array of addresses, passing an empty array will clear all"
@@ -128,4 +129,4 @@ class GreenhouseProfileModel(BaseModel):
     recruiter: Optional[Recruiter] = Field(
         None, description="An object representing the candidate's recruiter"
     )
-    coordinator: Optional[coordinator] 
+    coordinator: Optional[coordinator]

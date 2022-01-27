@@ -144,7 +144,7 @@ class PullJobsAction(PullJobsBaseAction):
         create_tag("max-salary")
         create_tag("currency")
         create_tag("internal")
-        
+
         job_obj = HrflowJob.parse_obj(job)
         return job_obj
 
@@ -179,7 +179,7 @@ class PushProfileAction(PushProfileBaseAction):
         profile["sourced"] = self.sourced
         profile["tags"] = data.get("tags")
         profile_obj = TeamtailorCandidateAttribute.parse_obj(profile)
-        
+
         return profile_obj
 
     def push(self, data: TeamtailorCandidateAttribute):

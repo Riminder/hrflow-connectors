@@ -31,6 +31,7 @@ class PushProfileAction(PushProfileBaseAction):
         ### Create Profile ###
         ######################
         data = data.dict()
+
         def get_candidate_attachments(hrflow_profile):
             attachments_list = hrflow_profile.get("attachments")
             # We try to find 'resume' (which is 'original' after traitments).

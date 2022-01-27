@@ -108,7 +108,7 @@ class SmartRecruitersModel(BaseModel):
 class Location(BaseModel):
     country: Optional[str] = Field("Undefined")
     countryCode: Optional[str] = Field("NO")
-    regionCode: Optional[str] =  Field("Undefined")
+    regionCode: Optional[str] = Field("Undefined")
     region: Optional[str] = Field("Undefined")
     city: Optional[str] = Field("Undefined")
     lat: Optional[int] = Field(0)

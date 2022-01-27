@@ -3,19 +3,27 @@ from typing import Optional, List, Dict, Any
 
 
 class CrosstalentJob(BaseModel):
-    Name: str= Field("Undefined")
+    Name: str = Field("Undefined")
     Id: str = Field(..., description="ID d'enregistrement")
     createdDate: Optional[str]
-    crtarecr__URL_of_the_form_on_job_offer__c: Optional[str] = Field(None, description="URL of the job")
-    crta__Location__Latitude__s: Optional[float] = Field(None, description="Geolocation latitude")
-    crta__Location__Longitude__s: Optional[float] = Field(None, description="Geolocation longitude")
+    crtarecr__URL_of_the_form_on_job_offer__c: Optional[str] = Field(
+        None, description="URL of the job"
+    )
+    crta__Location__Latitude__s: Optional[float] = Field(
+        None, description="Geolocation latitude"
+    )
+    crta__Location__Longitude__s: Optional[float] = Field(
+        None, description="Geolocation longitude"
+    )
     Lieu__c: Optional[str] = Field(None, description="Address")
     crta__CT_City__c: Optional[str] = Field(None, description="City")
     crta__CT_Country__c: Optional[str] = Field(None, description="Country")
     crta__CT_Postal_code__c: Optional[str] = Field(None, description="Postal code")
     crta__Postal_Code__c: Optional[str] = Field(None, description="Postal code")
     crta__CT_Description__c: Optional[str] = Field(None, description="Job description")
-    crta__CT_Benefices_attendus__c: Optional[str] = Field(None, description="Job benefits")
+    crta__CT_Benefices_attendus__c: Optional[str] = Field(
+        None, description="Job benefits"
+    )
     crta__CT_Description__c: Optional[str] = Field(None, description="Job description")
     crta__CT_Detail_motif_recours_CDD__c: Optional[str]
     crta__CT_Horaires_particuliers__c: Optional[str]
@@ -140,7 +148,8 @@ class CrosstalentJob(BaseModel):
     crtarecr__Link_of_the_form_on_job_offer__c: Optional[str]
     crtarecr__Nb_of_applications_still_to_be_processed__c: Optional[int]
     Besoin_client__c: Optional[str]
-    crta__Entite__c: Optional[str]  
+    crta__Entite__c: Optional[str]
+
 
 class FieldLocation(BaseModel):
     """ Location for profile info, experience and education information"""
@@ -206,7 +215,9 @@ class CrosstalentProfileInfo(BaseModel):
 
 
 class Experience(BaseModel):
-    key: Optional[str] = Field(None, description="Identification key of the Experience.")
+    key: Optional[str] = Field(
+        None, description="Identification key of the Experience."
+    )
     company: Optional[str] = Field(None, description="Company name of the Experience.")
     title: Optional[str] = Field(None, description="Title of the Experience.")
     description: Optional[str] = Field(
@@ -233,7 +244,9 @@ class Education(BaseModel):
     key: Optional[str] = Field(None, description="Identification key of the Education.")
     school: Optional[str] = Field(None, description="School name of the Education.")
     title: Optional[str] = Field(None, description="Title of the Education.")
-    description: Optional[str] = Field(None, description="Description of the Education.")
+    description: Optional[str] = Field(
+        None, description="Description of the Education."
+    )
     location: Optional[FieldLocation] = Field(
         None, description="Location object of the Education."
     )
@@ -255,7 +268,9 @@ class CrosstalentProfile(BaseModel):
     """ Crosstalent Push Profile object model"""
 
     key: Optional[str] = Field(None, description="Identification key of the Profile.")
-    reference: Optional[str] = Field(None, description="Custom identifier of the Profile.")
+    reference: Optional[str] = Field(
+        None, description="Custom identifier of the Profile."
+    )
     archieved_at: Optional[str] = Field(
         None,
         description="type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
@@ -266,8 +281,8 @@ class CrosstalentProfile(BaseModel):
     created_at: Optional[str] = Field(
         None, description="type: datetime ISO8601, Creation date of the Profile."
     )
-    info: CrosstalentProfileInfo = Field(...
-    ,description="Object containing the Profile's info."
+    info: CrosstalentProfileInfo = Field(
+        ..., description="Object containing the Profile's info."
     )
     text_language: str = Field(
         ..., description="Code language of the Profile. type: string code ISO 639-1"

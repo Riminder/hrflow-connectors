@@ -53,7 +53,6 @@ class ResultLanguage(BaseModel):
     writingProf: str
 
 
-
 class ResultOutsideWorkExperience(BaseModel):
     employer: Optional[str]
     employerAddress: str
@@ -75,7 +74,6 @@ class InsideWorkExperienceResult(BaseModel):
     startDate: Optional[str]
     title: Optional[str]
     candidate: Optional[str]
-
 
 
 class TalentPoolResults(BaseModel):

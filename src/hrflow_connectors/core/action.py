@@ -13,7 +13,9 @@ from ..core.auth import Auth, NoAuth
 from ..utils.schemas import HrflowJob, HrflowProfile
 
 Hrflow = TypeVar("Hrflow")
-TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any], HrflowJob, HrflowProfile, Any]
+TalentDataType = Union[
+    str, xml.etree.ElementTree.Element, Dict[str, Any], HrflowJob, HrflowProfile, Any
+]
 
 logger = get_logger()
 
