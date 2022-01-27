@@ -4,14 +4,10 @@ from hrflow_connectors import AuthorizationAuth
 from hrflow_connectors import Teamtailor
 from hrflow_connectors.utils.hrflow import Profile, Source
 
+
 @pytest.fixture
-def auth(credentials):
-    auth = AuthorizationAuth(
-        name = 'Authorization',
-        value= credentials["teamtailor"]["Authorization"]
-    )
-    
-    return auth
+def auth(config):
+    return AuthorizationAuth(value=config.TEAMTAILOR_TOKEN)
 
 
 def test_PushProfile(logger, auth, hrflow_client):
@@ -21,7 +17,7 @@ def test_PushProfile(logger, auth, hrflow_client):
         source=Source(key="762d2f25b855f7cfd13e5585ef727d8fb6e752cb"),
     )
     response = Teamtailor.push_profile(
-        company_id = "hrflowai",
+        company_id="hrflowai",
         auth=auth,
         hrflow_client=hrflow_client("dev-demo"),
         profile=profile,
