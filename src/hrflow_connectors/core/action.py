@@ -1,12 +1,12 @@
 from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Iterator, TypeVar, Optional, Union, Tuple
+from typing import List, Dict, Any, Iterator, TypeVar, Optional, Union
 import itertools
 import xml.etree.ElementTree
 import html
 
 from ..core.error import HrflowError
 from ..utils.clean_text import remove_html_tags
-from ..utils.hrflow import find_element_in_list, Profile, Job
+from ..utils.hrflow import find_element_in_list
 from ..utils.hrflow import generate_workflow_response
 from ..utils.logger import get_logger
 from ..core.auth import Auth, NoAuth
