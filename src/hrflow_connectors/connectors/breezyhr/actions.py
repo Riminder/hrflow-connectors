@@ -78,7 +78,7 @@ class PullJobsAction(PullJobsBaseAction):
         Format a Breezy Hr job object into a hrflow job object
 
         Returns:
-            Dict[str, Any]: a job object in the hrflow job format
+            HrflowJob: a job object in the hrflow job format
         """
         data = data.dict()
         print(data)
@@ -166,10 +166,10 @@ class PushProfileAction(PushProfileBaseAction):
         Format a Hrflow profile object into a breezy hr profile object
 
         Args:
-            data (Dict[str, Any]): Hrflow Profile to format
+            data (HrflowProfile): Hrflow Profile to format
 
         Returns:
-            Dict[str, Any]: a BreezyHr formatted profile object
+            BreezyProfileModel: a BreezyHr formatted profile object
         """
 
         profile = dict()
@@ -270,7 +270,7 @@ class PushProfileAction(PushProfileBaseAction):
         Push a Hrflow profile object to a BreezyHr candidate pool for a position
 
         Args:
-            data (Dict[str, Any]): profile to push
+            data (BreezyProfileModel): profile to push
         """
         profile = next(data)
         auth = self.auth

@@ -41,7 +41,7 @@ class PullJobsAction(PullJobsBaseAction):
         Pull all jobs from SmartRecruiters
 
         Returns:
-            Iterator[Dict[str, Any]]: an iterator of jobs
+            Iterator[SmartRecruitersModel]: an iterator of jobs
         """
         # Prepare request
         session = requests.Session()
@@ -135,10 +135,10 @@ class PullJobsAction(PullJobsBaseAction):
         Format a job from SmartRecruiter job format to Hrflow job format
 
         Args:
-            data (Dict[str, Any]): Job offer
+            data (SmartRecruitersModel): Job offer
 
         Returns:
-            Dict[str, Any]: Job in the HrFlow job object format
+            HrflowJob: Job in the HrFlow job object format
         """
         job = dict()
         data = data.dict()
@@ -248,10 +248,10 @@ class PushProfileAction(PushProfileBaseAction):
         Format a profile hrflow object to a smartrecruiters profile object
 
         Args:
-            profile (Dict[str, Any]): [profile object in the hrflow profile format]
+            profile (HrflowProfile): [profile object in the hrflow profile format]
 
         Returns:
-            Dict[str, Any]: [profile in the SmartRecruiters candidate application format]
+            SmartRecruitersProfileModel: [profile in the SmartRecruiters candidate application format]
         """
 
         value_or_undefined = lambda s: s or "Undefined"
@@ -370,7 +370,7 @@ class PushProfileAction(PushProfileBaseAction):
         Push profile
 
         Args:
-            data (Dict[str, Any]): Profile
+            data (SmartRecruitersProfileModel): Profile
         """
         profile = next(data)
 

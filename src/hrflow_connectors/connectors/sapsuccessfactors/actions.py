@@ -31,7 +31,7 @@ class PullJobsAction(PullJobsBaseAction):
         Pull all jobs from a local database that uses SAP successfactors API
 
         Returns:
-            Iterator[Dict[str, Any]]: list of all job requisitions with their content
+            Iterator[SAPSuccessFactorsJob]: list of all job requisitions with their content
         """
         # Prepare request
         session = requests.Session()
@@ -59,10 +59,10 @@ class PullJobsAction(PullJobsBaseAction):
         Format retrieved jobs into a HrFlow job object
 
         Args:
-            data (Dict[str, Any]): job to format
+            data (SAPSuccessFactorsJob): job to format
 
         Returns:
-            Dict[str, Any]: job in the HrFlow job object format
+            HrflowJob: job in the HrFlow job object format
         """
         job = dict()
         data = data.dict()
@@ -164,10 +164,10 @@ class PushProfileAction(PushProfileBaseAction):
         Formats a hrflow profile into a sap successfactors candidate
 
         Args:
-            profile (Dict[str, Any]): profile to format
+            profile (HrflowProfile): profile to format
 
         Returns:
-            Dict[str, Any]: a SAP successfactors profile
+            SapCandidateModel: a SAP successfactors profile
         """
         sap_profile = dict()
         profile = profile.dict()

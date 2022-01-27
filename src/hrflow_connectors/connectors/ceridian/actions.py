@@ -21,7 +21,7 @@ class PullJobsAction(PullJobsBaseAction):
         pull all jobs from a ceridian dayforce job feed space
 
         Returns:
-            Iterator[Dict[str, Any]]: a list of jobs dictionaries
+            Iterator[CeridianDayforceJobModel]: a list of jobs dictionaries
         """
         session = requests.Session()
         pull_jobs_request = requests.Request()
@@ -42,9 +42,9 @@ class PullJobsAction(PullJobsBaseAction):
         """
         format a job into the hrflow job object format
         Args:
-            data (Dict[str, Any]): a job object pulled from a ceridian dayforce job fed space
+            data (CeridianDayforceJobModel): a job object pulled from a ceridian dayforce job fed space
         Returns:
-            Dict[str, Any]: a job into the hrflow job object format
+            HrflowJob: a job into the hrflow job object format
         """
         data = data.dict()
         job = dict()
