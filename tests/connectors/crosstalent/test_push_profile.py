@@ -6,14 +6,14 @@ from hrflow_connectors.utils.hrflow import Profile, Source
 
 
 @pytest.fixture
-def auth(credentials):
+def auth(config):
     access_token_url = "https://test.salesforce.com/services/oauth2/token"
     auth = OAuth2PasswordCredentialsBody(
         access_token_url=access_token_url,
-        client_id=credentials["crosstalent"]["oauth2"]["client_id"],
-        client_secret=credentials["crosstalent"]["oauth2"]["client_secret"],
-        username=credentials["crosstalent"]["oauth2"]["username"],
-        password=credentials["crosstalent"]["oauth2"]["password"],
+        client_id=config.CROSSTALENT_CLIENT_ID,
+        client_secret=config.CROSSTALENT_CLIENT_SECRET,
+        username=config.CROSSTALENT_USERNAME,
+        password=config.CROSSTALENT_PASSWORD,
     )
     return auth
 
