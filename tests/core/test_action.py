@@ -1135,12 +1135,12 @@ def test_PushJobBaseAction_pull_success(hrflow_client):
     # Pull data
     job = HrflowJob(key="efg", board=dict(key="abc"))
     action = PushJobBaseAction(hrflow_client=hrflow_client(), job=job)
-    profile_list_got = action.pull()
+    job_list_got = action.pull()
 
     # Check returned value
-    assert len(profile_list_got) == 1
+    assert len(job_list_got) == 1
 
-    profile_got = profile_list_got[0]
+    profile_got = job_list_got[0].dict()
     assert profile_got["key"] == "efg"
 
 
