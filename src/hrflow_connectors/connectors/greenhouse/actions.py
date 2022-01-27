@@ -26,7 +26,7 @@ class PullJobsAction(PullJobsBaseAction):
         Pull all jobs from a greenhouse job board
 
         Returns:
-            Iterator[Dict[str, Any]]: list of all jobs with their content if available
+            Iterator[GreenhouseJobModel]: list of all jobs with their content if available
         """
         # Prepare request
         session = requests.Session()
@@ -59,7 +59,7 @@ class PullJobsAction(PullJobsBaseAction):
         format each job pulled from greenhouse job board into a HrFlow job object
 
         Returns:
-            Dict[str, Any]: job in the HrFlow job object format
+            HrflowJob: job in the HrFlow job object format
         """
 
         job = dict()
@@ -142,9 +142,9 @@ class PushProfileAction(PushProfileBaseAction):
         """
         Format a profile hrflow object to a greenhouse profile object
         Args:
-            profile (Dict[str, Any]): profile object in the hrflow profile format
+            profile (HrflowProfile): profile object in the hrflow profile format
         Returns:
-            Dict[str, Any]: profile in the greenhouse candidate  format
+            GreenhouseProfileModel: profile in the greenhouse candidate  format
         """
         profile = dict()
         data = data.dict()
@@ -212,7 +212,7 @@ class PushProfileAction(PushProfileBaseAction):
         """
         Push profile
         Args:
-            data (Dict[str, Any]): Profile
+            data (GreenhouseProfileModel): Profile
         """
 
         profile = next(data)

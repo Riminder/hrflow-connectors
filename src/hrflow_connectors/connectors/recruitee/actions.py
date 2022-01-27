@@ -25,7 +25,7 @@ class PullJobsAction(PullJobsBaseAction):
         pull all jobs from a recruitee subdomain endpoint
 
         Returns:
-            Iterator[Dict[str, Any]]: a list of jobs dictionaries
+            Iterator[RecruiteeJobModel]: a list of jobs dictionaries
         """
         # Prepare request
         session = requests.Session()
@@ -53,9 +53,9 @@ class PullJobsAction(PullJobsBaseAction):
         """
         format a job into the hrflow job object format
         Args:
-            data (Dict[str, Any]): a job object pulled from a recruitee company subdomain
+            data (RecruiteeJobModel): a job object pulled from a recruitee company subdomain
         Returns:
-            Dict[str, Any]: a job into the hrflow job object format
+            HrflowJob: a job into the hrflow job object format
         """
 
         job = dict()
@@ -135,7 +135,7 @@ class PushProfileAction(PushProfileBaseAction):
     def format(self, data: HrflowProfile) -> RecruiteeCandidateModel:
         """
         format a HrFlow Profile object into a Recruitee profile Object
-        returns Dict[str, Any]: a profile in the format of Recruitee profiles
+        returns RecruiteeCandidateModel: a profile in the format of Recruitee profiles
         """
         profile = dict()
         data = data.dict()

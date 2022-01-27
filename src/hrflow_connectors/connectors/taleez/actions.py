@@ -55,10 +55,10 @@ class PullJobsAction(PullJobsBaseAction):
         Format a job into the hrflow job object format
 
         Args:
-            data (Dict[str, Any]): a taleez job object form
+            data (TaleezJobModel): a taleez job object form
 
         Returns:
-            Dict[str, Any]: a hrflow job object form
+            HrflowJob: a hrflow job object form
         """
 
         job = dict()
@@ -148,7 +148,7 @@ class PushProfileAction(PushProfileBaseAction):
         """
         Format a Hrflow profile object into a Taleez profile object
 
-        Returns: Dict[str, Any] a Taleez profile object form
+        Returns: TaleezCandidateModel a Taleez profile object form
         """
         profile = dict()
         data = data.dict()
@@ -190,7 +190,7 @@ class PushProfileAction(PushProfileBaseAction):
         Push a profile into a Taleez CVTheque or a Taleez job offer as a candidate
 
         Args:
-            data (Dict[str, Any]): a Taleez profile form
+            data (TaleezCandidateModel): a Taleez profile form
         """
         profile = next(data)
 
