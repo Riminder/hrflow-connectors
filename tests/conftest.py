@@ -12,6 +12,7 @@ from typing import Dict, Any, Callable
 from hrflow import Hrflow
 
 from hrflow_connectors.utils.logger import get_logger_with_basic_config
+from hrflow_connectors.utils.config import Config
 
 
 @pytest.fixture(scope="session")
@@ -25,6 +26,17 @@ def credentials(pytestconfig) -> Dict[str, Any]:
     with open(os.path.join(pytestconfig.rootpath, "credentials.json"), "r") as f:
         credentials = json.loads(f.read())
     return credentials
+
+
+@pytest.fixture(scope="session")
+def config() -> Config:
+    """
+    Get config from the `.env` file at the root of the project (to be defined)
+
+    Returns:
+        Config: Config instance
+    """
+    return Config()
 
 
 @pytest.fixture(scope="session")
