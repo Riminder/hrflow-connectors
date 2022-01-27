@@ -150,7 +150,7 @@ class PushProfileAction(PushProfileBaseAction):
             urls = info.get("urls")
             website_list = []
             for url in urls:
-                if isinstance(url,dict):
+                if isinstance(url, dict):
                     if url["url"] not in ["", None, []]:
                         website_list.append(url["url"])
             return website_list

@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 class HrflowSource(BaseModel):
     key: str = Field(..., description="Identification key of the source")
 
+
 # Hrflow board
 class HrflowBoard(BaseModel):
     key: str = Field(..., description="Identification key of the board")
@@ -12,9 +13,11 @@ class HrflowBoard(BaseModel):
 
 # Hrflow Job model
 
+
 class HrflowJobSection(BaseModel):
     name: Optional[str] = Field(
-        None, description="Identification name of a Section of the Job. Example: culture"
+        None,
+        description="Identification name of a Section of the Job. Example: culture",
     )
     title: Optional[str] = Field(
         None, description="Display Title of a Section. Example: Corporate Culture"
@@ -205,7 +208,9 @@ class HrflowProfileInfo(BaseModel):
 
 
 class Experience(BaseModel):
-    key: Optional[str] = Field(None, description="Identification key of the Experience.")
+    key: Optional[str] = Field(
+        None, description="Identification key of the Experience."
+    )
     company: Optional[str] = Field(None, description="Company name of the Experience.")
     title: Optional[str] = Field(None, description="Title of the Experience.")
     description: Optional[str] = Field(
@@ -232,7 +237,9 @@ class Education(BaseModel):
     key: Optional[str] = Field(None, description="Identification key of the Education.")
     school: Optional[str] = Field(None, description="School name of the Education.")
     title: Optional[str] = Field(None, description="Title of the Education.")
-    description: Optional[str] = Field(None, description="Description of the Education.")
+    description: Optional[str] = Field(
+        None, description="Description of the Education."
+    )
     location: Optional[FieldLocation] = Field(
         None, description="Location object of the Education."
     )
@@ -254,7 +261,9 @@ class HrflowProfile(BaseModel):
     """ Hrflow Profile object model"""
 
     key: Optional[str] = Field(None, description="Identification key of the Profile.")
-    reference: Optional[str] = Field(None, description="Custom identifier of the Profile.")
+    reference: Optional[str] = Field(
+        None, description="Custom identifier of the Profile."
+    )
     archieved_at: Optional[str] = Field(
         None,
         description="type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",

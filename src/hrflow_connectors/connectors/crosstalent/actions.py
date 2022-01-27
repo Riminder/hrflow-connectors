@@ -294,7 +294,7 @@ class PullJobsAction(PullJobsBaseAction):
         create_metadata("crtarecr__Link_of_the_form_on_job_offer__c")
         create_metadata("crtarecr__Nb_of_applications_still_to_be_processed__c")
         create_metadata("Besoin_client__c")
-        
+
         job_obj = HrflowJob.parse_obj(job)
 
         return job_obj
@@ -307,7 +307,7 @@ class PushProfileAction(PushProfileBaseAction):
         description="Subdomain Crosstalent just before `salesforce.com`. For example subdomain=`my_subdomain.my` in `http://my_subdomain.my.salesforce.com/ABC`",
     )
 
-    def format(self, data:HrflowProfile) -> CrosstalentProfile:
+    def format(self, data: HrflowProfile) -> CrosstalentProfile:
         data = data.dict()
         firstname = data["info"].get("first_name")
         lastname = data["info"].get("last_name")

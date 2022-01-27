@@ -48,7 +48,7 @@ class PullJobsAction(PullJobsBaseAction):
         response_dict = response.json()
 
         job_list = response_dict["jobs"]
-        job_obj_iter = map(WorkableJobModel.parse_obj,job_list)
+        job_obj_iter = map(WorkableJobModel.parse_obj, job_list)
         return job_obj_iter
 
     def format(self, data: WorkableJobModel) -> HrflowJob:

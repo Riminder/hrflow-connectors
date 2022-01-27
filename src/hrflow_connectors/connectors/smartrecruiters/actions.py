@@ -201,9 +201,10 @@ class PullJobsAction(PullJobsBaseAction):
         add_section("jobDescription")
         add_section("qualifications")
         add_section("additionalInformation")
-        
+
         job["tags"] = []
-        def create_tag(field_name:str, field_dict: Optional[str]=None) -> None:
+
+        def create_tag(field_name: str, field_dict: Optional[str] = None) -> None:
             name = "smartr_{}".format(field_name)
             if field_dict is not None:
                 name = "smartr_{}-{}".format(field_dict, field_name)
@@ -230,7 +231,7 @@ class PullJobsAction(PullJobsBaseAction):
         create_tag(field_name="id", field_dict="eeoCategory")
         create_tag(field_name="manual", field_dict="location")
         create_tag(field_name="remote", field_dict="location")
-        
+
         job_obj = HrflowJob.parse_obj(job)
 
         return job_obj
@@ -322,6 +323,7 @@ class PushProfileAction(PushProfileBaseAction):
                 formatted_experience_list.append(formatted_exp)
 
             return formatted_experience_list
+
         profile = profile.dict()
         info = profile["info"]
         smart_candidate = dict()
