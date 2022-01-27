@@ -651,6 +651,7 @@ class PushJobBaseAction(PushBaseAction):
             raise HrflowError(response, "Get Job failed")
 
         job = response["data"]
+        job = HrflowJob.parse_obj(job)
         return [job]
 
     def execute(self):
