@@ -5,11 +5,11 @@ from ...utils.datetime_converter import from_str_to_datetime
 import xml.etree.ElementTree
 from pydantic import Field
 from ...utils.logger import get_logger
-
+from ...utils.schemas import HrflowProfile
+from .schemas import BullhornProfileBody
 from typing import Union, Dict, Any
 import requests
 import base64
-import json
 
 TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
 logger = get_logger()
@@ -140,10 +140,12 @@ class PushProfileAction(PushProfileBaseAction):
             enrich_profile_experience=enrich_profile_experience,
             enrich_profile_attachment=enrich_profile_attachment,
         )
-        return profile_body_dict
+        profile_body_obj = BullhornProfileBody.parse_obj(profile_body_dict)
+        return profile_body_obj
 
     def push(self, data):
-        profile_body_dict = next(data)
+        profile_body_obj = next(data)
+        profile_body_dict = profile_body_obj.dict()
         create_profile_body = profile_body_dict["create_profile_body"]
         enrich_profile_education = profile_body_dict["enrich_profile_education"]
         enrich_profile_experience = profile_body_dict["enrich_profile_experience"]
