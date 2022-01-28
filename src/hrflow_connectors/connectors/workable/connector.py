@@ -26,8 +26,7 @@ class Workable(Connector):
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
             hydrate_with_parsing (bool, optional): Enrich the job with parsing. Default value `False`
             archive_deleted_jobs_from_stream (bool, optional): Archive Board jobs when they are no longer in the incoming job stream. Default value `True`
-            page (int, optional): Page number. Start at '0'. Default value `0`
-            page_size (int, optional): Page size. Max size of the list returned. Max value  100. Default value `100`
+            subdomain (str): subdomain of a company endpoint in `https://{self.subdomain}.workable.com/spi/v3/jobs`.
 
         Returns:
             Optional[Dict[str, Any]]: Workflow response or `None`
@@ -58,6 +57,8 @@ class Workable(Connector):
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
+            subdomain (str): subdomain of a company endpoint in `https://{self.subdomain}.workable.com/spi/v3/jobs`.
+            shortcode: (str): shortcode of the job you want to source the candidate for, job shortcodes can be found in hrflow job references
         Returns:
             Optional[Dict[str, Any]]: Workflow response or `None`
         """
