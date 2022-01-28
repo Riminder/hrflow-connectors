@@ -1,6 +1,6 @@
 from hrflow import Hrflow
-from typing import Optional, Dict, Any
-
+from typing import Optional, Dict, Any, Union
+from ...core.auth import AuthorizationAuth, OAuth2PasswordCredentialsBody
 from ...core.connector import Connector
 from .actions import PullJobsAction
 
@@ -8,7 +8,7 @@ from .actions import PullJobsAction
 class Workable(Connector):
     @staticmethod
     def pull_jobs(
-        hrflow_client: Hrflow, board_key: str, subdomain: str, **kwargs
+        hrflow_client: Hrflow, board_key: str,auth: Union[AuthorizationAuth, OAuth2PasswordCredentialsBody], subdomain: str, **kwargs,
     ) -> Optional[Dict[str, Any]]:
         """
         `PullJobsAction` gets all available jobs listed on Workable public endpoints. It adds all these jobs to a Hrflow.ai Board.
@@ -35,6 +35,7 @@ class Workable(Connector):
         action = PullJobsAction(
             hrflow_client=hrflow_client,
             board_key=board_key,
+            auth=auth,
             subdomain=subdomain,
             **kwargs
         )

@@ -117,6 +117,7 @@ class PullJobsAction(PullJobsBaseAction):
         create_tag("application_url")
         create_tag("shortlink")
         create_tag("employment_type")
+        
         job_obj = HrflowJob.parse_obj(job)
 
         return job_obj
