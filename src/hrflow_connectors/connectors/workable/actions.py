@@ -7,7 +7,7 @@ from ...core.action import PullJobsBaseAction
 from ...core.auth import AuthorizationAuth, OAuth2PasswordCredentialsBody
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
-from ...utils.schemas import HrflowJob
+from ...utils.schemas import HrflowJob, HrflowProfile
 from .schemas import WorkableJobModel
 
 logger = get_logger()
@@ -18,7 +18,7 @@ class PullJobsAction(PullJobsBaseAction):
     auth: Union[AuthorizationAuth, OAuth2PasswordCredentialsBody]
     subdomain: str = Field(
         ...,
-        description="subdomain of a company endpoint in `https://www.workable.com/api/accounts/{subdomain}` for example subdomain=`eurostar` for eurostar company",
+        description="subdomain of a company endpoint in `https://{self.subdomain}.workable.com/spi/v3/jobs` for example subdomain=`eurostar` for eurostar company",
     )
     def pull(self) -> Iterator[WorkableJobModel]:
         """
