@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 # Job model
 class SAPSuccessFactorsJobRequistion(BaseModel):
-    annual_SA: str
+    annual_SA: Optional[str]
     location: Optional[str]
     city: Optional[str] = None
     country: Optional[str] = None
@@ -25,9 +25,9 @@ class SAPSuccessFactorsJobRequistion(BaseModel):
 
 
 class SAPSuccessFactorsJob(BaseModel):
-    jobDescription: str
-    jobTitle: str
-    jobReqId: str
+    jobDescription: Optional[str]
+    jobTitle: Optional[str]
+    jobReqId: Optional[str]
     jobRequisition: SAPSuccessFactorsJobRequistion
 
 
@@ -36,10 +36,10 @@ class SAPSuccessFactorsJob(BaseModel):
 
 class Result(BaseModel):
 
-    endDate: str
+    endDate: Optional[str]
     school: str
     schoolAddress: str
-    startDate: str
+    startDate: Optional[str]
 
 
 class Education(BaseModel):
@@ -53,15 +53,11 @@ class ResultLanguage(BaseModel):
     writingProf: str
 
 
-class Languages(BaseModel):
-    results: List[ResultLanguage]
-
-
 class ResultOutsideWorkExperience(BaseModel):
-    employer: str
+    employer: Optional[str]
     employerAddress: str
-    endDate: str
-    startDate: str
+    endDate: Optional[str]
+    startDate: Optional[str]
 
 
 class OutsideWorkExperience(BaseModel):
@@ -69,26 +65,22 @@ class OutsideWorkExperience(BaseModel):
 
 
 class InsideWorkExperienceResult(BaseModel):
-    backgroundElementId: str
-    bgOrderPos: str
-    candidateId: str
-    department: str
-    endDate: str
-    lastModifiedDateTime: str
-    startDate: str
-    title: str
-    candidate: str
-
-
-class InsideWorkExperience(BaseModel):
-    results: List[InsideWorkExperienceResult]
+    backgroundElementId: Optional[str]
+    bgOrderPos: Optional[str]
+    candidateId: Optional[str]
+    department: Optional[str]
+    endDate: Optional[str]
+    lastModifiedDateTime: Optional[str]
+    startDate: Optional[str]
+    title: Optional[str]
+    candidate: Optional[str]
 
 
 class TalentPoolResults(BaseModel):
-    startDate: str
-    talentPoolComments: str
-    talentPoolStatus: str
-    talentPoolitem: str
+    startDate: Optional[str]
+    talentPoolComments: Optional[str]
+    talentPoolStatus: Optional[str]
+    talentPoolitem: Optional[str]
 
 
 class TalentPool(BaseModel):
@@ -96,24 +88,17 @@ class TalentPool(BaseModel):
 
 
 class SapCandidateModel(BaseModel):
-    address: str
+    address: Optional[str]
     cellPhone: Optional[str]
     city: Optional[str]
     contactEmail: Optional[str]
-    country: str
-    creationDateTime: str
+    country: Optional[str]
     currentTitle: Optional[str]
-    dateofAvailability: Optional[str]
-    firstName: str
+    firstName: Optional[str]
     homePhone: Optional[str]
-    lastName: str
+    lastName: Optional[str]
     middleName: Optional[str]
-    partnerMemberId: Optional[str]
-    partnerSource: Optional[str]
     primaryEmail: str
     zip: Optional[str]
-    education: Education
-    languages: Languages
+    education: Optional[Education]
     outsideWorkExperience: Optional[OutsideWorkExperience]
-    insideWorkExperience: Optional[InsideWorkExperience]
-    talentPool: Optional[TalentPool]

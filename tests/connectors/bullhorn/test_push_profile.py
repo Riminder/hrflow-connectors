@@ -2,7 +2,7 @@ import pytest
 
 from hrflow_connectors import OAuth2Session
 from hrflow_connectors import Bullhorn
-from hrflow_connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.schemas import HrflowProfile
 
 
 @pytest.fixture
@@ -19,9 +19,9 @@ def auth(credentials):
 
 
 def test_PushProfile(logger, auth, hrflow_client):
-    profile = Profile(
+    profile = HrflowProfile(
         key="5574b4ebdfe0e52446eade74e87cfe04739d1c96",
-        source=Source(key="af00e468b1cf0d5eda0bc6062f2e163d50b1872e"),
+        source=dict(key="af00e468b1cf0d5eda0bc6062f2e163d50b1872e"),
     )
     response = Bullhorn.push_profile(
         auth=auth,

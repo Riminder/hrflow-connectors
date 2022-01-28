@@ -9,6 +9,8 @@ from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
 from datetime import datetime
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import TaleezJobModel, TaleezCandidateModel
 
 logger = get_logger()
 
@@ -20,7 +22,7 @@ class PullJobsAction(PullJobsBaseAction):
         100, description="Page size. Max size of the list returned. Max value : 100"
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[TaleezJobModel]:
         """
         Pull jobs from a Taleez jobs owner endpoint
 
@@ -44,21 +46,23 @@ class PullJobsAction(PullJobsBaseAction):
         response_dict = response.json()
         logger.info(f"Total found: {response_dict['listSize']}")
         job_list = response_dict["list"]
+        job_obj_iter = map(TaleezJobModel.parse_obj, job_list)
 
-        return job_list
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: TaleezJobModel) -> HrflowJob:
         """
         Format a job into the hrflow job object format
 
         Args:
-            data (Dict[str, Any]): a taleez job object form
+            data (TaleezJobModel): a taleez job object form
 
         Returns:
-            Dict[str, Any]: a hrflow job object form
+            HrflowJob: a hrflow job object form
         """
 
         job = dict()
+        data = data.dict()
 
         # Job basic information
         job["name"] = data.get("label")
@@ -128,8 +132,8 @@ class PullJobsAction(PullJobsBaseAction):
         # datetime fields
         job["created_at"] = seconds_to_isoformat(data.get("dateCreation"))
         job["updated_at"] = seconds_to_isoformat(data.get("dateLastPublish"))
-
-        return job
+        job_obj = HrflowJob.parse_obj(job)
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
@@ -140,13 +144,14 @@ class PushProfileAction(PushProfileBaseAction):
         None, description="ID of the job to add a candidate to"
     )
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile) -> TaleezCandidateModel:
         """
         Format a Hrflow profile object into a Taleez profile object
 
-        Returns: Dict[str, Any] a Taleez profile object form
+        Returns: TaleezCandidateModel a Taleez profile object form
         """
         profile = dict()
+        data = data.dict()
         info = data.get("info")
         profile["firstName"] = info.get("first_name")
         profile["lastName"] = info.get("last_name")
@@ -177,15 +182,15 @@ class PushProfileAction(PushProfileBaseAction):
                         profile["socalLinks"][file_name] = public_url
 
         format_urls()
-
-        return profile
+        profile_obj = TaleezCandidateModel.parse_obj(profile)
+        return profile_obj
 
     def push(self, data):
         """
         Push a profile into a Taleez CVTheque or a Taleez job offer as a candidate
 
         Args:
-            data (Dict[str, Any]): a Taleez profile form
+            data (TaleezCandidateModel): a Taleez profile form
         """
         profile = next(data)
 
@@ -195,7 +200,7 @@ class PushProfileAction(PushProfileBaseAction):
         push_profile_request.method = "POST"
         push_profile_request.url = f"https://api.taleez.com/0/candidates"
         push_profile_request.auth = self.auth
-        push_profile_request.json = profile
+        push_profile_request.json = profile.dict()
         prepared_push_profile_request = push_profile_request.prepare()
 
         # Send request

@@ -8,6 +8,8 @@ from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
 from ...core.auth import AuthorizationAuth
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import TeamtailorJob, TeamtailorCandidateAttribute
 
 logger = get_logger()
 
@@ -15,11 +17,11 @@ logger = get_logger()
 class PullJobsAction(PullJobsBaseAction):
     auth: AuthorizationAuth
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[TeamtailorJob]:
         """
         Pull all jobs from a Teamtailor job board
         Returns:
-            Iterator[Dict[str, Any]]: list of all jobs with their content if available
+            Iterator[TeamtailorJob]: list of all jobs with their content if available
         """
         # Prepare request
         session = requests.Session()
@@ -42,19 +44,21 @@ class PullJobsAction(PullJobsBaseAction):
         response_dict = response.json()
 
         job_list = response_dict["data"]
-        return job_list
+        job_obj_list = map(TeamtailorJob.parse_obj, job_list)
+        return job_obj_list
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: TeamtailorJob) -> HrflowJob:
         """
         Format a Teamtailor job object into a Hrflow job object
 
         Args:
-            data (Dict[str, Any]): Teamtailor job object from the list of jobs pulled
+            data (TeamtailorJob): Teamtailor job object from the list of jobs pulled
 
         Returns:
-            Dict[str, Any]: a job in the HrFlow job object form
+            HrflowJob: a job in the HrFlow job object form
         """
         job = dict()
+        data = data.dict()
         attribute = data.get("attributes")
         job["name"] = attribute.get("title")
         job["reference"] = data.get("id")
@@ -141,7 +145,8 @@ class PullJobsAction(PullJobsBaseAction):
         create_tag("currency")
         create_tag("internal")
 
-        return job
+        job_obj = HrflowJob.parse_obj(job)
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
@@ -151,17 +156,18 @@ class PushProfileAction(PushProfileBaseAction):
         False, description="True if added by a recruiter without applying"
     )
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile) -> TeamtailorCandidateAttribute:
         """
         Format a Hrflow profile object into a Teamtailor profile object
 
         Args:
-            data (Dict[str, Any]): Hrflow Profile to format
+            data (HrflowProfile): Hrflow Profile to format
 
         Returns:
             Dict[str, Any]: a Teamtailor formatted profile object
         """
         profile = dict()
+        data = data.dict()
         info = data.get("info")
         profile["first-name"] = info.get("first_name")
         profile["last-name"] = info.get("last_name")
@@ -172,17 +178,21 @@ class PushProfileAction(PushProfileBaseAction):
         profile["resume"] = resume.get("public_url")
         profile["sourced"] = self.sourced
         profile["tags"] = data.get("tags")
+        profile_obj = TeamtailorCandidateAttribute.parse_obj(profile)
 
-        return profile
+        return profile_obj
 
-    def push(self, data: Dict[str, Any]):
+    def push(self, data: TeamtailorCandidateAttribute):
         """
         Push a Hrflow profile object to a Teamtailor candidate pool for a position
 
         Args:
-            data (Dict[str, Any]): profile to push
+            data (TeamtailorCandidateAttribute): profile to push
         """
         profile = next(data)
+        profile = profile.dict()
+        profile["first-name"] = profile.pop("first_name")
+        profile["last-name"] = profile.pop("last_name")
         profile_json = dict(data=dict(type="candidates", attributes=profile))
         auth = self.auth
         request_url = "https://api.teamtailor.com/v1/candidates"
@@ -228,7 +238,7 @@ class PushProfileAction(PushProfileBaseAction):
             return response
 
         # a request to verify if the candidate profile already exist
-        get_candidate_param = {"filter[email]": f'{profile["email"]}'}
+        get_candidate_param = {"filter[email]": f'{profile.get("email")}'}
         get_candidate_response = send_request(
             method="GET",
             url=request_url,

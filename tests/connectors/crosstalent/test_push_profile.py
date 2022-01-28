@@ -2,7 +2,7 @@ import pytest
 
 from hrflow_connectors import OAuth2PasswordCredentialsBody
 from hrflow_connectors import Crosstalent
-from hrflow_connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.schemas import HrflowProfile
 
 
 @pytest.fixture
@@ -19,14 +19,14 @@ def auth(credentials):
 
 
 def test_PushProfileBaseAction(logger, auth, hrflow_client):
-    profile = Profile(
-        key="ea5704b959c5e53aaef65c04ef5018ae1fee1a77",
-        source=Source(key="15517d70b0870e4cf431eefd78f8b39cff5607e8"),
+    profile = HrflowProfile(
+        key="a7e7fa4af68e7c450f2b708d14a3bda9b6ade5d9",
+        source=dict(key="762d2f25b855f7cfd13e5585ef727d8fb6e752cb"),
     )
     response = Crosstalent.push_profile(
         auth=auth,
         subdomain="vulcain-eng--recette.my",
-        hrflow_client=hrflow_client("vulcain"),
+        hrflow_client=hrflow_client("dev-demo"),
         profile=profile,
     )
     assert response.get("status_code") == 201

@@ -1,22 +1,23 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
 class CeridianDayforceJobModel(BaseModel):
     Title: str
-    Description: str
-    ClientSiteName: str
-    ClientSiteXRefCode: str
-    CompanyName: str
-    ParentCompanyName: str
+    Description: Optional[str]
+    ClientSiteName: Optional[str]
+    ClientSiteXRefCode: Optional[str]
+    CompanyName: Optional[str]
+    ParentCompanyName: Optional[str]
     JobDetailsUrl: str
-    ApplyUrl: str
-    AddressLine1: str
-    City: str
-    State: str
-    Country: str
-    PostalCode: str
-    DatePosted: str
-    LastUpdated: str
+    ApplyUrl: Optional[str]
+    AddressLine1: Optional[str]
+    City: Optional[str]
+    State: Optional[str]
+    Country: Optional[str]
+    PostalCode: Optional[str]
+    DatePosted: Optional[str]
+    LastUpdated: Optional[str]
     ReferenceNumber: int
-    ParentRequisitionCode: int
-    IsVirtualLocation: bool
+    ParentRequisitionCode: Optional[int]
+    IsVirtualLocation: Optional[bool]

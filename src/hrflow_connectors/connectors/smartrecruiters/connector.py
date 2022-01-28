@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any
 
 from ...core.connector import Connector
 from ...core.auth import XSmartTokenAuth
-from ...utils.hrflow import Profile
+from ...utils.schemas import HrflowProfile
 from .actions import PullJobsAction, PushProfileAction
 
 
@@ -45,7 +45,7 @@ class SmartRecruiters(Connector):
     def push_profile(
         auth: XSmartTokenAuth,
         hrflow_client: Hrflow,
-        profile: Profile,
+        profile: HrflowProfile,
         job_id: str,
         **kwargs
     ) -> Optional[Dict[str, Any]]:

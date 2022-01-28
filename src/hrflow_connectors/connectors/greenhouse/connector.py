@@ -4,7 +4,7 @@ from typing import Optional, Dict, Any, Union, List
 from ...core.connector import Connector
 from ...core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
 
-from ...utils.hrflow import Profile
+from ...utils.schemas import HrflowProfile
 from .actions import PullJobsAction, PushProfileAction
 
 
@@ -46,7 +46,7 @@ class Greenhouse(Connector):
         job_id: List[int],
         on_behalf_of: str,
         hrflow_client: Hrflow,
-        profile: Profile,
+        profile: HrflowProfile,
         **kwargs
     ) -> Optional[Dict[str, Any]]:
         """
