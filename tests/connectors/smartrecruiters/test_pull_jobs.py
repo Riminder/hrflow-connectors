@@ -5,11 +5,8 @@ from hrflow_connectors import SmartRecruiters
 
 
 @pytest.fixture
-def auth(credentials):
-    auth = XSmartTokenAuth(
-        value=credentials["smartrecruiters"]["oauth2"]["X-SmartToken"]
-    )
-    return auth
+def auth(config):
+    return XSmartTokenAuth(value=config.SMARTRECRUITERS_TOKEN)
 
 
 def test_PullJobsAction(logger, auth, hrflow_client):

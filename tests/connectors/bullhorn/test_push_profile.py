@@ -6,14 +6,14 @@ from hrflow_connectors.utils.schemas import HrflowProfile
 
 
 @pytest.fixture
-def auth(credentials):
+def auth(config):
     auth = OAuth2Session(auth_code_url="https://auth.bullhornstaffing.com/oauth/authorize",
                          access_token_url="https://auth.bullhornstaffing.com/oauth/token",
                          session_token_url="https://rest.bullhornstaffing.com/rest-services/login",
-                         client_id=credentials["bullhorn"]["client_id"],
-                         client_secret=credentials["bullhorn"]["client_secret"],
-                         username=credentials["bullhorn"]["username"],
-                         password=credentials["bullhorn"]["password"],
+                         client_id=config.BULLHORN_CLIENT_ID,
+                         client_secret=config.BULLHORN_CLIENT_SECRET,
+                         username=config.BULLHORN_USERNAME,
+                         password=config.BULLHORN_PASSWORD,
                          name="BhRestToken")
     return auth
 
