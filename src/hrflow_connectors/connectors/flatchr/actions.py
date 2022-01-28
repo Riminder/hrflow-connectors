@@ -8,6 +8,8 @@ from ...core.error import PushError, ConnectorError
 from ...core.action import PushProfileBaseAction
 from ...utils.hrflow import generate_workflow_response
 from ...utils.logger import get_logger
+from ...utils.schemas import HrflowProfile
+from .schemas import FlatchrEnrichmentProfile, FlatchrCreationProfile
 
 logger = get_logger()
 
@@ -23,11 +25,12 @@ class PushProfileAction(PushProfileBaseAction):
         description="The id of the company",
     )
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile):
 
         ######################
         ### Create Profile ###
         ######################
+        data = data.dict()
 
         def get_candidate_attachments(hrflow_profile):
             attachments_list = hrflow_profile.get("attachments")
@@ -160,7 +163,7 @@ class PushProfileAction(PushProfileBaseAction):
         def get_phone(hrflow_profile):
             info = hrflow_profile.get("info")
             phone = [
-                {"dialNumber": info.get("phone") if info else None, "useCode": None}
+                {"dialNumber": info.get("phone") if info else "XXXXX", "useCode": None}
             ]
             return phone
 
@@ -220,15 +223,15 @@ class PushProfileAction(PushProfileBaseAction):
         # When the action needs to send several requests to push a profile
         # We group the formats of the different requests in a `profile_body_dict`.
         profile_body_dict = dict(
-            create_profile_body=create_profile_body,
-            enrich_profile_body=enrich_profile_body,
+            create_profile_body=FlatchrCreationProfile.parse_obj(create_profile_body),
+            enrich_profile_body=FlatchrEnrichmentProfile.parse_obj(enrich_profile_body),
         )
         return profile_body_dict
 
     def push(self, data):
-        profile_body_dict = next(data)
-        create_profile_body = profile_body_dict["create_profile_body"]
-        enrich_profile_body = profile_body_dict["enrich_profile_body"]
+        profile_body_obj = next(data)
+        create_profile_body = profile_body_obj["create_profile_body"]
+        enrich_profile_body = profile_body_obj["enrich_profile_body"]
 
         session = requests.Session()
 
@@ -239,7 +242,7 @@ class PushProfileAction(PushProfileBaseAction):
         create_profile_request.url = "http://careers.flatchr.io/vacancy/candidate/json"
 
         create_profile_request.auth = self.auth
-        create_profile_request.json = create_profile_body
+        create_profile_request.json = create_profile_body.dict()
         prepared_create_profile_request = create_profile_request.prepare()
 
         # Prepare enrich request
@@ -250,7 +253,7 @@ class PushProfileAction(PushProfileBaseAction):
             f"http://api.flatchr.io/company/{self.company}/search/candidate"
         )
         enrich_profile_request.auth = self.auth
-        enrich_profile_request.json = enrich_profile_body
+        enrich_profile_request.json = enrich_profile_body.dict()
         prepared_enrich_profile_request = enrich_profile_request.prepare()
 
         # Send requests

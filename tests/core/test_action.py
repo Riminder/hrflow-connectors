@@ -7,7 +7,12 @@ from hrflow_connectors.core.action import (
     PushJobBaseAction,
     CatchProfileBaseAction,
 )
-from hrflow_connectors.utils.hrflow import Profile, Source, Job, Board
+from hrflow_connectors.utils.schemas import (
+    HrflowProfile,
+    HrflowSource,
+    HrflowJob,
+    HrflowBoard,
+)
 from hrflow_connectors.core.error import HrflowError
 import pytest
 import requests
@@ -428,18 +433,20 @@ def test_PullJobsBaseAction_hydrate_job_with_parsing(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     section = dict(name="s", title=None, description="i speak english")
-    job = dict(reference="REF123", summary="I love Python", sections=[section])
+    job = HrflowJob.parse_obj(
+        dict(reference="REF123", summary="I love Python", sections=[section])
+    )
 
-    assert len(job.get("skills", [])) == 0
-    assert len(job.get("language", [])) == 0
+    assert job.skills == None
+    assert job.languages == None
 
     hydrated_job = action.hydrate_job_with_parsing(job)
 
-    assert len(hydrated_job["skills"]) == 1
-    assert hydrated_job["skills"][0] == dict(name="Python", type="hard", value=None)
+    assert len(hydrated_job.skills) == 1
+    assert hydrated_job.skills[0] == dict(name="Python", type="hard", value=None)
 
-    assert len(hydrated_job["languages"]) == 1
-    assert hydrated_job["languages"][0] == dict(name="english", value=None)
+    assert len(hydrated_job.languages) == 1
+    assert hydrated_job.languages[0] == dict(name="english", value=None)
 
 
 @responses.activate
@@ -459,10 +466,12 @@ def test_PullJobsBaseAction_hydrate_job_with_parsing_failure(
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     section = dict(name="s", title=None, description="i speak english")
-    job = dict(reference="REF123", summary="I love Python", sections=[section])
+    job = HrflowJob.parse_obj(
+        dict(reference="REF123", summary="I love Python", sections=[section])
+    )
 
-    assert len(job.get("skills", [])) == 0
-    assert len(job.get("language", [])) == 0
+    assert job.skills == None
+    assert job.languages == None
 
     try:
         action.hydrate_job_with_parsing(job)
@@ -488,15 +497,17 @@ def test_PullJobsBaseAction_hydrate_job_with_parsing_with_empty_summary_and_only
         hrflow_client=hrflow_client(), board_key="abc", hydrate_with_parsing=False
     )
     section = dict(name="s", title=None, description='<html attr="Python"></html>')
-    job = dict(reference="REF123", sections=[section])
+    job = HrflowJob.parse_obj(
+        dict(reference="REF123", sections=[section], skills=None, languages=None)
+    )
 
-    assert "skills" not in job
-    assert "language" not in job
+    assert job.skills == None
+    assert job.languages == None
 
     hydrated_job = action.hydrate_job_with_parsing(job)
 
-    assert "skills" not in hydrated_job
-    assert "language" not in hydrated_job
+    assert hydrated_job.skills == None
+    assert hydrated_job.skills == None
     assert hydrated_job == job
 
 
@@ -516,7 +527,7 @@ def test_PullJobsBaseAction_check_reference_in_board_for_job_ref_none(
     generate_indexing_get_response,
 ):
     # Generate job
-    job = dict(reference=None)
+    job = HrflowJob(reference=None)
 
     # Build Action
     action = PullJobsBaseAction(
@@ -532,7 +543,7 @@ def test_PullJobsBaseAction_check_reference_in_board_for_job_not_in_board(
     generate_indexing_get_response,
 ):
     # Generate job
-    job = dict(reference="REF1")
+    job = HrflowJob(reference="REF1")
 
     # generated response
     message = "Invalid parameters. Unable to find object: job"
@@ -564,7 +575,7 @@ def test_PullJobsBaseAction_check_reference_in_board_for_not_archived_job_in_boa
     generate_indexing_get_response,
 ):
     # Generate job
-    job = dict(reference="REF1")
+    job = HrflowJob(reference="REF1")
 
     # generated response
     message = "Job details"
@@ -595,7 +606,7 @@ def test_PullJobsBaseAction_check_reference_in_board_fail(
     hrflow_client, generate_indexing_get_response
 ):
     # Generate job
-    job = dict(reference="REF1")
+    job = HrflowJob(reference="REF1")
 
     # generated response
     message = "Fail"
@@ -630,7 +641,7 @@ def test_PullJobsBaseAction_check_reference_in_board_for_archived_job_without_pa
     generate_indexing_get_response,
 ):
     # Generate job
-    job = dict(reference="REF1")
+    job = HrflowJob.parse_obj(dict(reference="REF1"))
 
     # generated response
     message = "Job details"
@@ -659,7 +670,8 @@ def test_PullJobsBaseAction_check_reference_in_board_for_archived_job_without_pa
     )
 
     ## create a matcher to check if the JSON Body sent by the Connector is in the right shape and has the right values
-    expected_body = dict(board_key="abc", key="klm", reference="REF1")
+    expected_body = HrflowJob(key="klm", reference="REF1").dict()
+    expected_body["board_key"] = "abc"
     match = [responses.matchers.json_params_matcher(expected_body)]
     responses.add(
         responses.PUT,
@@ -682,7 +694,7 @@ def test_PullJobsBaseAction_check_reference_in_board_for_archived_job_without_pa
     generate_indexing_get_response,
 ):
     # Generate job
-    job = dict(reference="REF1")
+    job = HrflowJob(reference="REF1")
 
     # generated response
     message = "Job details"
@@ -735,10 +747,10 @@ def test_PullJobsBaseAction_check_reference_in_board_for_archived_job_in_board_w
 ):
     # Generate job
     section = dict(name="s", title=None, description="i speak english")
-    job = dict(reference="REF1", summary="I love Python", sections=[section])
+    job = HrflowJob(reference="REF1", summary="I love Python", sections=[section])
 
-    assert len(job.get("skills", [])) == 0
-    assert len(job.get("language", [])) == 0
+    assert job.skills == None
+    assert job.languages == None
 
     # generated response
     message = "Job details"
@@ -775,14 +787,14 @@ def test_PullJobsBaseAction_check_reference_in_board_for_archived_job_in_board_w
     )
 
     ## create a matcher to check if the JSON Body sent by the Connector is in the right shape and has the right values
-    hydrated_job = dict(job)
+    hydrated_job = job.dict()
     hydrated_job["skills"] = [dict(name="Python", type="hard", value=None)]
     hydrated_job["languages"] = [dict(name="english", value=None)]
     hydrated_job["certifications"] = []
     hydrated_job["courses"] = []
     hydrated_job["tasks"] = []
-
-    expected_body = dict(board_key="abc", key="klm", **hydrated_job)
+    hydrated_job["key"] = "klm"
+    expected_body = dict(board_key="abc",**hydrated_job)
     match = [responses.matchers.json_params_matcher(expected_body)]
     responses.add(
         responses.PUT,
@@ -801,7 +813,7 @@ def test_PullJobsBaseAction_check_reference_in_board_for_archived_job_in_board_w
 
 
 def test_PullJobsBaseAction_get_all_references_from_stream(hrflow_client):
-    jobs_in_stream = [dict(reference="REF1"), dict(reference="REF2")]
+    jobs_in_stream = [HrflowJob(reference="REF1"), HrflowJob(reference="REF2")]
     references_in_stream = ["REF1", "REF2"]
 
     class TestPullJobsAction(PullJobsBaseAction):
@@ -960,8 +972,8 @@ def test_PullJobsBaseAction_execute_without_archiving_and_parsing(hrflow_client)
 @responses.activate
 def test_PullJobsBaseAction_push_success(hrflow_client):
     # Mock requests and check data sent
-    job = dict(key="efg", reference="REF123")
-    expected_body = dict(board_key="abc", **job)
+    job = HrflowJob(key="efg", reference="REF123")
+    expected_body = dict(board_key="abc", **job.dict())
     returned_value = dict(code=200, data=dict(key="efg"))
     match = [responses.matchers.json_params_matcher(expected_body)]
     responses.add(
@@ -980,8 +992,8 @@ def test_PullJobsBaseAction_push_success(hrflow_client):
 @responses.activate
 def test_PullJobsBaseAction_push_failure(hrflow_client):
     # Mock requests and check data sent
-    job = dict(key="efg", reference="REF123")
-    expected_body = dict(board_key="abc", **job)
+    job = HrflowJob(key="efg", reference="REF123")
+    expected_body = dict(board_key="abc", **job.dict())
     returned_value = dict(code=400, message="Test")
     match = [responses.matchers.json_params_matcher(expected_body)]
     responses.add(
@@ -1021,14 +1033,14 @@ def test_PushProfileBaseAction_pull_success(hrflow_client):
     )
 
     # Pull data
-    profile = Profile(key="efg", source=Source(key="abc"))
+    profile = HrflowProfile(key="efg", source=dict(key="abc"))
     action = PushProfileBaseAction(hrflow_client=hrflow_client(), profile=profile)
     profile_list_got = action.pull()
 
     # Check returned value
     assert len(profile_list_got) == 1
 
-    profile_got = profile_list_got[0]
+    profile_got = profile_list_got[0].dict()
     assert profile_got["key"] == "efg"
 
 
@@ -1047,7 +1059,7 @@ def test_PushProfileBaseAction_pull_failure(hrflow_client):
     )
 
     # Pull data
-    profile = Profile(key="efg", source=Source(key="abc"))
+    profile = HrflowProfile(key="efg", source=dict(key="abc"))
     action = PushProfileBaseAction(hrflow_client=hrflow_client(), profile=profile)
 
     try:
@@ -1059,8 +1071,7 @@ def test_PushProfileBaseAction_pull_failure(hrflow_client):
 
 @responses.activate
 def test_PushProfileBaseAction_execute(hrflow_client):
-    profile = Profile(key="efg", source=Source(key="abc"))
-
+    profile = HrflowProfile(key="efg", source=dict(key="abc"))
     # Mock the `pull` & `push` method to do nothing
     class MyPushProfileAction(PushProfileBaseAction):
         def pull(self):
@@ -1084,7 +1095,7 @@ def test_PushProfileBaseAction_execute(hrflow_client):
 
 @responses.activate
 def test_PushJobBaseAction_execute(hrflow_client):
-    job = Job(key="efg", board=Board(key="abc"))
+    job = HrflowJob(key="efg", board=dict(key="abc"))
 
     # Mock the `pull` & `push` method to do nothing
     class MyPushJobAction(PushJobBaseAction):
@@ -1122,14 +1133,14 @@ def test_PushJobBaseAction_pull_success(hrflow_client):
     )
 
     # Pull data
-    job = Job(key="efg", board=Board(key="abc"))
+    job = HrflowJob(key="efg", board=dict(key="abc"))
     action = PushJobBaseAction(hrflow_client=hrflow_client(), job=job)
-    profile_list_got = action.pull()
+    job_list_got = action.pull()
 
     # Check returned value
-    assert len(profile_list_got) == 1
+    assert len(job_list_got) == 1
 
-    profile_got = profile_list_got[0]
+    profile_got = job_list_got[0].dict()
     assert profile_got["key"] == "efg"
 
 
@@ -1148,7 +1159,7 @@ def test_PushJobBaseAction_pull_failure(hrflow_client):
     )
 
     # Pull data
-    job = Job(key="efg", board=Board(key="abc"))
+    job = HrflowJob(key="efg", board=dict(key="abc"))
     action = PushJobBaseAction(hrflow_client=hrflow_client(), job=job)
 
     try:

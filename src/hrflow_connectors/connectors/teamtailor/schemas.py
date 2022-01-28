@@ -21,9 +21,11 @@ class TeamtailorJobAttribute(BaseModel):
     start_date: Optional[str] = Field(None, alias="start-date")
     end_date: Optional[str] = Field(None, alias="end-date")
 
+
 class TeamtailorJob(BaseModel):
     attributes: TeamtailorJobAttribute
-
+    links: Optional[dict]
+    id: Any
 
 
 class TeamtailorCandidateAttribute(BaseModel):

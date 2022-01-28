@@ -3,15 +3,15 @@ from ...core.auth import OAuth2Session
 from ...core.error import PushError
 from ...utils.datetime_converter import from_str_to_datetime
 import xml.etree.ElementTree
-from pydantic import Field
+from pydantic import Field, BaseModel
 from ...utils.logger import get_logger
-
-from typing import Union, Dict, Any
+from ...utils.schemas import HrflowProfile
+from .schemas import BullhornEducationEnrichment, BullhornExperienceEnrichment, BullhornAttachmentEnrichment, BullhornProfile
+from typing import Union
 import requests
 import base64
-import json
 
-TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
+TalentDataType = Union[str, xml.etree.ElementTree.Element, BaseModel]
 logger = get_logger()
 
 
@@ -26,7 +26,8 @@ class PushProfileAction(PushProfileBaseAction):
 
     auth: OAuth2Session
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile) -> BaseModel:
+        data = data.dict()
         info = data.get('info')
         def get_location():
             if info is not None :
@@ -88,7 +89,8 @@ class PushProfileAction(PushProfileBaseAction):
                     "endDate": int(from_str_to_datetime(hrflow_education.get("date_end")).timestamp()) if hrflow_education.get(
                         "date_start") else None
                 }
-                educations_json.append(education)
+                education_obj = BullhornEducationEnrichment.parse_obj(education)
+                educations_json.append(education_obj)
             return educations_json
 
         def get_experience(experience_list):
@@ -107,7 +109,8 @@ class PushProfileAction(PushProfileBaseAction):
                     "endDate": int(from_str_to_datetime(hrflow_experience.get("date_end")).timestamp()) if hrflow_experience.get(
                         "date_end") else None
                 }
-                experience_json.append(experience)
+                experience_obj = BullhornExperienceEnrichment.parse_obj(experience)
+                experience_json.append(experience_obj)
             return experience_json
 
         def get_attachments(attachment_list):
@@ -126,7 +129,8 @@ class PushProfileAction(PushProfileBaseAction):
                     "description": "Resume file for candidate.",
                     "type": "cover"
                 }
-                attachments_json.append(attachment)
+                attachment_obj = BullhornAttachmentEnrichment.parse_obj(attachment)
+                attachments_json.append(attachment_obj)
             return attachments_json
 
         enrich_profile_education = get_education(data.get("educations"))
@@ -135,14 +139,16 @@ class PushProfileAction(PushProfileBaseAction):
         # When the action needs to send several requests to push a profile
         # We group the formats of the different requests in a `profile_body_dict`.
         profile_body_dict = dict(
-            create_profile_body=create_profile_body,
+            create_profile_body=BullhornProfile.parse_obj(create_profile_body),
             enrich_profile_education=enrich_profile_education,
             enrich_profile_experience=enrich_profile_experience,
             enrich_profile_attachment=enrich_profile_attachment,
         )
+
         return profile_body_dict
 
     def push(self, data):
+
         profile_body_dict = next(data)
         create_profile_body = profile_body_dict["create_profile_body"]
         enrich_profile_education = profile_body_dict["enrich_profile_education"]
@@ -155,7 +161,7 @@ class PushProfileAction(PushProfileBaseAction):
         push_profile_request.method = "PUT"
         push_profile_request.url = f"https://{self.subdomain}.bullhornstaffing.com/rest-services/7zwdd0/entity/Candidate"
         push_profile_request.auth = self.auth
-        push_profile_request.json = create_profile_body
+        push_profile_request.json = create_profile_body.dict()
         prepared_request = push_profile_request.prepare()
 
         # Send request
@@ -169,7 +175,7 @@ class PushProfileAction(PushProfileBaseAction):
 
         # Preparing the request to enrich education
         for education in enrich_profile_education:
-
+            education = education.dict()
             # Set the Id of the candidate to enrich to the Id of the candidate whom have just been created
             education["candidate"]["id"] = candidate_id
             session = requests.Session()
@@ -187,7 +193,7 @@ class PushProfileAction(PushProfileBaseAction):
 
         # Preparing the request to enrich education
         for experience in enrich_profile_experience:
-
+            experience = experience.dict()
             # Set the Id of the candidate to enrich to the Id of the candidate whom have just been created
             experience["candidate"]["id"] = candidate_id
             session = requests.Session()
@@ -205,7 +211,7 @@ class PushProfileAction(PushProfileBaseAction):
 
         # Preparing the request to enrich attachment
         for attachment in enrich_profile_attachment:
-
+            attachment = attachment.dict()
             session = requests.Session()
             push_profile_request = requests.Request()
             push_profile_request.method = "PUT"

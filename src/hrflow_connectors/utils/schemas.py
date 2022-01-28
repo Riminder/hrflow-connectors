@@ -1,12 +1,23 @@
 from typing import Union, Dict, Any, Optional, List
 from pydantic import BaseModel, Field
 
+# Hrflow source
+class HrflowSource(BaseModel):
+    key: str = Field(..., description="Identification key of the source")
+
+
+# Hrflow board
+class HrflowBoard(BaseModel):
+    key: str = Field(..., description="Identification key of the board")
+
 
 # Hrflow Job model
 
+
 class HrflowJobSection(BaseModel):
     name: Optional[str] = Field(
-        None, description="Identification name of a Section of the Job. Example: culture"
+        None,
+        description="Identification name of a Section of the Job. Example: culture",
     )
     title: Optional[str] = Field(
         None, description="Display Title of a Section. Example: Corporate Culture"
@@ -17,7 +28,7 @@ class HrflowJobSection(BaseModel):
 
 
 class HrflowJobLocation(BaseModel):
-    text: str = Field(None, description="Location text address.")
+    text: Optional[str] = Field(None, description="Location text address.")
     lat: Optional[float] = Field(
         None, description="Geocentric latitude of the Location."
     )
@@ -42,7 +53,7 @@ class HrflowJobField(BaseModel):
     """
 
     name: str = Field(None, description="Identification name of the Object")
-    value: Optional[str] = Field(
+    value: Union[Optional[str], Optional[int], Optional[bool]] = Field(
         None, description="Value associated to the Object's name"
     )
 
@@ -85,7 +96,7 @@ class HrflowJob(BaseModel):
 
     key: Optional[str] = Field(None, description="Identification key of the Job.")
     reference: Optional[str] = Field(None, description="Custom identifier of the Job.")
-    name: str = Field(..., description="Job title.")
+    name: Optional[str] = Field(None, description="Job title.")
     location: HrflowJobLocation = Field(None, description="Job location object.")
     sections: List[HrflowJobSection] = Field(None, description="Job custom sections.")
     url: Optional[str] = Field(None, description="Job post original URL.")
@@ -127,6 +138,7 @@ class HrflowJob(BaseModel):
     ranges_date: Optional[List[HrflowJobRangesDate]] = Field(
         None, description="List of ranges of dates"
     )
+    board: Optional[HrflowBoard]
 
 
 # Hflow Profile model
@@ -148,8 +160,8 @@ class FieldLocation(BaseModel):
 
 
 class FieldSkill(BaseModel):
-    name: str = Field(..., description="Identification name of the skill")
-    type: str = Field(..., description="Type of the skill. hard or soft")
+    name: str = Field(None, description="Identification name of the skill")
+    type: str = Field(None, description="Type of the skill. hard or soft")
     value: Optional[str] = Field(None, description="Value associated to the skill")
 
 
@@ -169,7 +181,7 @@ class HrflowProfileField(BaseModel):
     are arrays of objects following the JSON structure below
     """
 
-    name: str = Field(..., description="Identification name of the Object")
+    name: str = Field(None, description="Identification name of the Object")
     value: Optional[str] = Field(
         None, description="Value associated to the Object's name"
     )
@@ -196,7 +208,9 @@ class HrflowProfileInfo(BaseModel):
 
 
 class Experience(BaseModel):
-    key: Optional[str] = Field(None, description="Identification key of the Experience.")
+    key: Optional[str] = Field(
+        None, description="Identification key of the Experience."
+    )
     company: Optional[str] = Field(None, description="Company name of the Experience.")
     title: Optional[str] = Field(None, description="Title of the Experience.")
     description: Optional[str] = Field(
@@ -223,7 +237,9 @@ class Education(BaseModel):
     key: Optional[str] = Field(None, description="Identification key of the Education.")
     school: Optional[str] = Field(None, description="School name of the Education.")
     title: Optional[str] = Field(None, description="Title of the Education.")
-    description: Optional[str] = Field(None, description="Description of the Education.")
+    description: Optional[str] = Field(
+        None, description="Description of the Education."
+    )
     location: Optional[FieldLocation] = Field(
         None, description="Location object of the Education."
     )
@@ -245,7 +261,9 @@ class HrflowProfile(BaseModel):
     """ Hrflow Profile object model"""
 
     key: Optional[str] = Field(None, description="Identification key of the Profile.")
-    reference: Optional[str] = Field(None, description="Custom identifier of the Profile.")
+    reference: Optional[str] = Field(
+        None, description="Custom identifier of the Profile."
+    )
     archieved_at: Optional[str] = Field(
         None,
         description="type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
@@ -256,13 +274,13 @@ class HrflowProfile(BaseModel):
     created_at: Optional[str] = Field(
         None, description="type: datetime ISO8601, Creation date of the Profile."
     )
-    info: HrflowProfileInfo = Field(
+    info: Optional[HrflowProfileInfo] = Field(
         None, description="Object containing the Profile's info."
     )
-    text_language: str = Field(
+    text_language: Optional[str] = Field(
         None, description="Code language of the Profile. type: string code ISO 639-1"
     )
-    text: str = Field(None, description="Full text of the Profile..")
+    text: Optional[str] = Field(None, description="Full text of the Profile..")
     experiences_duration: float = Field(
         None, description="Total number of years of experience."
     )
@@ -275,7 +293,7 @@ class HrflowProfile(BaseModel):
     educations: Optional[List[Education]] = Field(
         None, description="List of educations of the Profile."
     )
-    attachments: List = Field(
+    attachments: Optional[List] = Field(
         None, description="List of documents attached to the Profile."
     )
     skills: Optional[List[FieldSkill]] = Field(
@@ -305,3 +323,4 @@ class HrflowProfile(BaseModel):
     metadatas: Optional[List[HrflowProfileField]] = Field(
         None, description="List of metadatas of the Profile."
     )
+    source: Optional[HrflowSource]

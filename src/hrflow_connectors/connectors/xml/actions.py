@@ -32,4 +32,5 @@ class PullJobsAction(PullJobsBaseAction):
         root_element = xml.etree.ElementTree.fromstring(xml_stream)
         job_list_element = root_element.find(self.job_list_xpath)
         job_list = list(job_list_element)
+
         return job_list

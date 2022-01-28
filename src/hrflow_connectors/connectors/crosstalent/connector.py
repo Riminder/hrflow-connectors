@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any
 
 from ...core.connector import Connector
 from ...core.auth import OAuth2PasswordCredentialsBody
-from ...utils.hrflow import Profile
+from ...utils.schemas import HrflowProfile
 from .actions import PullJobsAction, PushProfileAction
 
 
@@ -49,7 +49,7 @@ class Crosstalent(Connector):
     def push_profile(
         auth: OAuth2PasswordCredentialsBody,
         hrflow_client: Hrflow,
-        profile: Profile,
+        profile: HrflowProfile,
         subdomain: str,
         **kwargs
     ) -> Optional[Dict[str, Any]]:

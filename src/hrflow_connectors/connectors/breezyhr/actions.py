@@ -9,6 +9,8 @@ from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
 from ...utils.datetime_converter import from_str_to_datetime
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import BreezyJobModel, BreezyProfileModel
 
 logger = get_logger()
 
@@ -24,7 +26,7 @@ class PullJobsAction(PullJobsBaseAction):
         None, description="the company associated with the authenticated user"
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[BreezyJobModel]:
         """
         Pull jobs from a Taleez jobs owner endpoint
         Returns list of all jobs that have been pulled
@@ -66,22 +68,25 @@ class PullJobsAction(PullJobsBaseAction):
 
         if not response.ok:
             raise PullError(response, message="Failed to get jobs from this endpoint")
+        job_json_list = response.json()
+        job_obj_iter = map(BreezyJobModel.parse_obj, job_json_list)
 
-        return response.json()
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: BreezyJobModel) -> HrflowJob:
         """
         Format a Breezy Hr job object into a hrflow job object
 
         Returns:
-            Dict[str, Any]: a job object in the hrflow job format
+            HrflowJob: a job object in the hrflow job format
         """
+        data = data.dict()
+        print(data)
         job = dict()
-
         # Basic information
         job["name"] = data.get("name")
         logger.info(job["name"])
-        job["reference"] = data.get("_id")
+        job["reference"] = data.get("friendly_id")
         logger.info(job["reference"])
         job["summary"] = None
 
@@ -132,9 +137,9 @@ class PullJobsAction(PullJobsBaseAction):
 
         job["created_at"] = data.get("creation_date")
         job["updated_at"] = data.get("updated_date")
+        job_obj = HrflowJob.parse_obj(job)
 
-        job["metadatas"] = data.get("tags")
-        return job
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
@@ -156,18 +161,19 @@ class PushProfileAction(PushProfileBaseAction):
     )
     cover_letter: Optional[str] = None
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile) -> BreezyProfileModel:
         """
         Format a Hrflow profile object into a breezy hr profile object
 
         Args:
-            data (Dict[str, Any]): Hrflow Profile to format
+            data (HrflowProfile): Hrflow Profile to format
 
         Returns:
-            Dict[str, Any]: a BreezyHr formatted profile object
+            BreezyProfileModel: a BreezyHr formatted profile object
         """
 
         profile = dict()
+        data = data.dict()
         info = data.get("info")
         profile["name"] = info.get("full_name")
         profile["address"] = info.get("location").get("text")
@@ -213,8 +219,12 @@ class PushProfileAction(PushProfileBaseAction):
                     education["school"] = "Undefined"
                 format_education["school_name"] = education["school"]
                 format_education["field_of_study"] = education["title"]
-                format_education["start_year"] = education["date_start"]
-                format_education["end_year"] = education["date_end"]
+                if education["date_start"] is not None:
+                    date_iso = from_str_to_datetime((education["date_start"]))
+                    format_education["start_year"] = date_iso.year
+                if education["date_end"] is not None:
+                    date_end_iso = from_str_to_datetime((education["date_end"]))
+                    format_education["end_year"] = date_end_iso.year
                 profile["education"].append(format_education)
 
         format_educations()
@@ -252,14 +262,15 @@ class PushProfileAction(PushProfileBaseAction):
                 if isinstance(skill, dict):
                     profile["tags"].append(skill["name"])
 
-        return profile
+        profile_obj = BreezyProfileModel.parse_obj(profile)
+        return profile_obj
 
-    def push(self, data: Dict[str, Any]) -> None:
+    def push(self, data: BreezyProfileModel) -> None:
         """
         Push a Hrflow profile object to a BreezyHr candidate pool for a position
 
         Args:
-            data (Dict[str, Any]): profile to push
+            data (BreezyProfileModel): profile to push
         """
         profile = next(data)
         auth = self.auth
@@ -309,7 +320,7 @@ class PushProfileAction(PushProfileBaseAction):
                     self.company_id = company["_id"]
 
         # a request to verify if the candidate profile already exist
-        get_candidate_url = f"https://api.breezy.hr/v3/company/{self.company_id}/candidates/search?email_address={profile['email_address']}"
+        get_candidate_url = f"https://api.breezy.hr/v3/company/{self.company_id}/candidates/search?email_address={profile.email_address}"
         get_candidate_response = send_request(
             method="GET",
             url=get_candidate_url,
@@ -329,7 +340,7 @@ class PushProfileAction(PushProfileBaseAction):
             send_request(
                 method="PUT",
                 url=update_profile_url,
-                json=profile,
+                json=profile.dict(),
                 error_message="Couldn't update candidate profile'",
             )
         # If the candidate doesn't already exist we "POST" his profile
@@ -340,6 +351,6 @@ class PushProfileAction(PushProfileBaseAction):
             send_request(
                 method="POST",
                 url=push_profile_url,
-                json=profile,
+                json=profile.dict(),
                 error_message="Push Profile to BreezyHr failed",
             )

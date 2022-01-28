@@ -1,18 +1,26 @@
 from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Iterator, TypeVar, Optional, Union, Tuple
+from typing import List, Dict, Any, Iterator, TypeVar, Optional, Union
 import itertools
 import xml.etree.ElementTree
 import html
 
 from ..core.error import HrflowError
 from ..utils.clean_text import remove_html_tags
-from ..utils.hrflow import find_element_in_list, Profile, Job
+from ..utils.hrflow import find_element_in_list
 from ..utils.hrflow import generate_workflow_response
 from ..utils.logger import get_logger
 from ..core.auth import Auth, NoAuth
+from ..utils.schemas import HrflowJob, HrflowProfile
 
 Hrflow = TypeVar("Hrflow")
-TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
+TalentDataType = Union[
+    str,
+    xml.etree.ElementTree.Element,
+    Dict[str, Any],
+    HrflowJob,
+    HrflowProfile,
+    BaseModel,
+]
 
 logger = get_logger()
 
@@ -93,7 +101,7 @@ class BaseAction(BaseModel):
             filtered_list = filter(logic_function, filtered_list)
         return filtered_list
 
-    def format_switcher(self, data: TalentDataType) -> Dict[str, Any]:
+    def format_switcher(self, data: TalentDataType) -> TalentDataType:
         """
         Choose the right function to format the data and format the input data into a push-ready data schema.
 
@@ -132,7 +140,7 @@ class BaseAction(BaseModel):
             )
             return format_function(data)
 
-    def format(self, data: TalentDataType) -> Dict[str, Any]:
+    def format(self, data: TalentDataType) -> TalentDataType:
         """
         Format the input data into a push-ready data schema
 
@@ -149,7 +157,7 @@ class BaseAction(BaseModel):
         """
         return data
 
-    def push(self, data: Iterator[Union[str, Dict[str, Any]]]):
+    def push(self, data: Iterator[TalentDataType]):
         """
         Push data
 
@@ -332,19 +340,19 @@ class PullJobsBaseAction(PullBaseAction):
         logger.info("Iterator containing all references is ready !")
         return clean_iter
 
-    def push(self, data: Iterator[Union[str, Dict[str, Any]]]):
+    def push(self, data: Iterator[TalentDataType]):
         for job in data:
-            reference = job.get("reference")
+            reference = job.reference
             logger.debug(
                 f"Pushing a job ref=`{reference}` to Hrflow Board `{self.board_key}`"
             )
             response = self.hrflow_client.job.indexing.add_json(
-                board_key=self.board_key, job_json=job
+                board_key=self.board_key, job_json=job.dict()
             )
             if response["code"] >= 400:
                 raise HrflowError(response, "Index Job failed")
 
-    def hydrate_job_with_parsing(self, job: Dict[str, Any]) -> Dict[str, Any]:
+    def hydrate_job_with_parsing(self, job_obj: TalentDataType) -> TalentDataType:
         """
         Hydrate job with parsing
 
@@ -356,6 +364,7 @@ class PullJobsBaseAction(PullBaseAction):
         Returns:
             Dict[str, Any]: hydrated job
         """
+        job = job_obj.dict()
         reference = job.get("reference")
         logger.debug(f"Hydrating the current job with parsing... (ref=`{reference}`)")
 
@@ -383,7 +392,7 @@ class PullJobsBaseAction(PullBaseAction):
         # If text is empty, the parsing can return an error
         if cleaned_str == "":
             logger.debug("Cleaned text is empty")
-            return job
+            return HrflowJob.parse_obj(job)
 
         # Parse the `cleaned`
         logger.debug("Parsing the cleaned text...")
@@ -462,9 +471,10 @@ class PullJobsBaseAction(PullBaseAction):
                     )
 
         logger.debug("The job has been enriched !")
-        return job
+        job_obj = HrflowJob.parse_obj(job)
+        return job_obj
 
-    def check_reference_in_board(self, job: Dict[str, Any]) -> bool:
+    def check_reference_in_board(self, job: TalentDataType) -> bool:
         """
         Check if a job reference is in the Board.
         If the job reference is not in the Board, return `True` to add the job.
@@ -476,7 +486,7 @@ class PullJobsBaseAction(PullBaseAction):
         Returns:
             bool: Job is in the Board
         """
-        reference = job.get("reference")
+        reference = job.reference
         logger.debug(
             f"Checking if the reference `{reference}` is already in Hrflow Board `{self.board_key}`"
         )
@@ -528,7 +538,7 @@ class PullJobsBaseAction(PullBaseAction):
                     # Edit job
                     logger.debug(f"Editing the job key=`{job_key}`")
                     edit_response = self.hrflow_client.job.indexing.edit(
-                        board_key=self.board_key, key=job_key, job_json=job
+                        board_key=self.board_key, key=job_key, job_json=job.dict()
                     )
                     if edit_response["code"] >= 400:
                         error_message = edit_response["message"]
@@ -557,7 +567,7 @@ class PullJobsBaseAction(PullBaseAction):
         filtered_data = self.apply_logics(formatted_data)
 
         logger.info(f"Keeping only reference from the stream")
-        references_iter = map(lambda job: job.get("reference"), filtered_data)
+        references_iter = map(lambda job: job.reference, filtered_data)
 
         references_without_none_iter = filter(
             lambda ref: ref is not None, references_iter
@@ -635,7 +645,7 @@ class PullJobsBaseAction(PullBaseAction):
 
 class PushJobBaseAction(PushBaseAction):
 
-    job: Job = Field(..., description="Job to push")
+    job: HrflowJob = Field(..., description="Job to push")
 
     def pull(self) -> Iterator[Dict[str, Any]]:
         """
@@ -648,6 +658,7 @@ class PushJobBaseAction(PushBaseAction):
             raise HrflowError(response, "Get Job failed")
 
         job = response["data"]
+        job = HrflowJob.parse_obj(job)
         return [job]
 
     def execute(self):
@@ -658,7 +669,7 @@ class PushJobBaseAction(PushBaseAction):
 
 
 class PushProfileBaseAction(PushBaseAction):
-    profile: Profile = Field(..., description="Profile to push")
+    profile: HrflowProfile = Field(..., description="Profile to push")
 
     def pull(self) -> Iterator[TalentDataType]:
         """
@@ -674,7 +685,8 @@ class PushProfileBaseAction(PushBaseAction):
             raise HrflowError(response, "Get Profile failed")
 
         profile = response["data"]
-        return [profile]
+        profile_obj = HrflowProfile.parse_obj(profile)
+        return [profile_obj]
 
     def execute(self):
         super().execute()

@@ -9,6 +9,8 @@ from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.datetime_converter import from_str_to_datetime
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import SAPSuccessFactorsJob, SapCandidateModel
 
 logger = get_logger()
 
@@ -24,12 +26,12 @@ class PullJobsAction(PullJobsBaseAction):
         description="the API server for your company from the list of API servers for SAP SuccessFactors data centers",
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[SAPSuccessFactorsJob]:
         """
         Pull all jobs from a local database that uses SAP successfactors API
 
         Returns:
-            Iterator[Dict[str, Any]]: list of all job requisitions with their content
+            Iterator[SAPSuccessFactorsJob]: list of all job requisitions with their content
         """
         # Prepare request
         session = requests.Session()
@@ -49,19 +51,21 @@ class PullJobsAction(PullJobsBaseAction):
         logger.info(f"All jobs have been pulled")
         response_dict = response.json()
         job_list = response_dict["d"]["results"]
-        return job_list
+        job_obj_iter = map(SAPSuccessFactorsJob.parse_obj, job_list)
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: SAPSuccessFactorsJob) -> HrflowJob:
         """
         Format retrieved jobs into a HrFlow job object
 
         Args:
-            data (Dict[str, Any]): job to format
+            data (SAPSuccessFactorsJob): job to format
 
         Returns:
-            Dict[str, Any]: job in the HrFlow job object format
+            HrflowJob: job in the HrFlow job object format
         """
         job = dict()
+        data = data.dict()
 
         jobRequisition = data.get("jobRequisition")
 
@@ -139,7 +143,8 @@ class PullJobsAction(PullJobsBaseAction):
                 value=jobRequisition.get("hiringManagerTeam"),
             ),
         ]
-        return job
+        job_obj = HrflowJob.parse_obj(job)
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
@@ -154,17 +159,18 @@ class PushProfileAction(PushProfileBaseAction):
         description="the API server for your company from the list of API servers for SAP SuccessFactors data centers",
     )
 
-    def format(self, profile: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, profile: HrflowProfile) -> SapCandidateModel:
         """
         Formats a hrflow profile into a sap successfactors candidate
 
         Args:
-            profile (Dict[str, Any]): profile to format
+            profile (HrflowProfile): profile to format
 
         Returns:
-            Dict[str, Any]: a SAP successfactors profile
+            SapCandidateModel: a SAP successfactors profile
         """
         sap_profile = dict()
+        profile = profile.dict()
 
         # Basic information
         info = profile.get("info")
@@ -295,8 +301,8 @@ class PushProfileAction(PushProfileBaseAction):
             for experience in profile.get("experiences", []):
                 sap_experience = format_experience(experience)
                 sap_profile["outsideWorkExperience"]["results"].append(sap_experience)
-
-        return sap_profile
+        sap_profile_obj = SapCandidateModel.parse_obj(sap_profile)
+        return sap_profile_obj
 
     def push(self, data):
         profile = next(data)
@@ -307,7 +313,7 @@ class PushProfileAction(PushProfileBaseAction):
         push_profile_request.method = "POST"
         push_profile_request.url = f"https://{self.api_server}/odata/v2/Candidate"
         push_profile_request.auth = self.auth
-        push_profile_request.json = profile
+        push_profile_request.json = profile.dict()
         prepared_request = push_profile_request.prepare()
 
         # Send request

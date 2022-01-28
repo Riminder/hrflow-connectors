@@ -30,11 +30,11 @@
 from hrflow_connectors import SmartRecruiters
 from hrflow import Hrflow
 from hrflow_connectors import XSmartTokenAuth
-from hrflow_connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.schemas import HrflowProfile
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-auth = XSmartTokenAuth(value=settings["MY_SMART_TOKEN"])
-profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
+auth = XSmartTokenAuth(value="MY_SMART_TOKEN")
+profile = HrflowProfile(key="PROFILE_KEY", source=dict(key="SOURCE_KEY"))
 
 SmartRecruiters.push_profile(
     auth=auth,

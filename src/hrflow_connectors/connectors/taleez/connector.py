@@ -4,7 +4,7 @@ from typing import Optional, Dict, Any, Union, List
 from ...core.connector import Connector
 from ...core.auth import XTaleezAuth
 
-from ...utils.hrflow import Profile
+from ...utils.schemas import HrflowProfile
 from .actions import PullJobsAction, PushProfileAction
 
 
@@ -43,7 +43,7 @@ class Taleez(Connector):
     def push_profile(
         auth: XTaleezAuth,
         hrflow_client: Hrflow,
-        profile: Profile,
+        profile: HrflowProfile,
         recruiter_id: int,
         **kwargs
     ) -> Optional[Dict[str, Any]]:
