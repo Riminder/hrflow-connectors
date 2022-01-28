@@ -131,40 +131,48 @@ We encourage that you write your code in the simplest and most readable way poss
 
     - Use docstrings and type hints in your functions as much as you can, for example:
     ```python
+    from pydantic import Field
+    from typing import Iterator, Optional
+    from ...core.action import PullJobsBaseAction
+    from ...core.utils import HrflowJob
+    from .schemas import MyClientJobDataModel
+
     class MyConnector():        
         
-        def pull(self) -> Iterator[Dict[str,Any]]:
+        def pull(self) -> Iterator[MyClientJobDataModel]:
             """
-            Pulls all jobs from a specific endpoint
+            Pull all jobs from a specific endpoint
             
-            Returns: list of all jobs pulled from specific endpoint 
+            Returns:
+                Iterator[MyClientJobDataModel]: Iterator of all jobs pulled from specific endpoint in the client job basemodel defined in your schemas file
             """
-            operation
-            operation
+            operation_to_get_data
+            operation_to_get_data
             .....
-            
-            return List_of_all_jobs
+            List_of_all_jobs = response.json()
+            job_object_iter = map(MyClientJobDataModel.parse_job, List_of_all_jobs)
+            return job_object_iter
         
-        def format(self, data:Dict[str,Any]) -> Dict[str, Any]:
+        def format(self, data:MyClientJobDataModel) -> HrflowJob:
             """
-            Formats a job in the specific format
+            Format a MyClientJobDataModel object in a HrflowJob object
             
-            Args data:Dict[str, Any]: a job in a specific 
-            from the list of jobs 
-            pulled in `pull` function
+            Args data:MyClientJobDataModel: a job object in a specific client schema
             
-            Returns the job in the specific format
-            """
-            
+            Returns:
+                HrflowJob: a hrflow job object model defined in utils.schemas
+            """            
             job = dict()
+            data = data.dict() # converting the basemodel into a dict
             
             # formatting attributes of the data to the specific format 
             # this is just an explanation, elaborate as you see fit.
             
             job[key] = formatted_data[key]
             #.... and so on
+            job_obj = HrflowJob.parse_obj(job) # Parse a job dict to a HrflowJob model
             
-            return job
+            return job_obj
     ```
 - Finally, we recommend reading, understanding and testing at least one of the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) and all its relative tests and docs and imports, it is a facilitating factor for building and implementing connectors and making them more performant and elegant.
 
