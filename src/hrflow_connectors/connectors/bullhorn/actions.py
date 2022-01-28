@@ -3,7 +3,7 @@ from ...core.auth import OAuth2Session
 from ...core.error import PushError
 from ...utils.datetime_converter import from_str_to_datetime
 import xml.etree.ElementTree
-from pydantic import Field
+from pydantic import Field, BaseModel
 from ...utils.logger import get_logger
 from ...utils.schemas import HrflowProfile
 from .schemas import BullhornProfileBody
@@ -11,7 +11,7 @@ from typing import Union, Dict, Any
 import requests
 import base64
 
-TalentDataType = Union[str, xml.etree.ElementTree.Element, Dict[str, Any]]
+TalentDataType = Union[str, xml.etree.ElementTree.Element, BaseModel]
 logger = get_logger()
 
 
@@ -26,7 +26,8 @@ class PushProfileAction(PushProfileBaseAction):
 
     auth: OAuth2Session
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile) -> BullhornProfileBody:
+        data = data.dict()
         info = data.get('info')
         def get_location():
             if info is not None :
