@@ -14,7 +14,7 @@ from ..utils.schemas import HrflowJob, HrflowProfile
 
 Hrflow = TypeVar("Hrflow")
 TalentDataType = Union[
-    str, xml.etree.ElementTree.Element, Dict[str, Any], HrflowJob, HrflowProfile, Any
+    str, xml.etree.ElementTree.Element, Dict[str, Any], HrflowJob, HrflowProfile, BaseModel
 ]
 
 logger = get_logger()
