@@ -32,10 +32,10 @@
 from hrflow_connectors import Taleez
 from hrflow import Hrflow
 from hrflow_connectors import XTaleezAuth
-from hrflow_connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.schemas import HrflowProfile
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
+profile = HrflowProfile(key="PROFILE_KEY", source=dict(key="SOURCE_KEY"))
 auth = XTaleezAuth(value='MY_X_TALEEZ_API_KEY')
 
 Taleez.push_profile(
