@@ -57,7 +57,7 @@ class PullJobsAction(PullJobsBaseAction):
 
     def format(self, data: WorkableJobModel) -> HrflowJob:
         """
-        format a job into the hrflow job object format
+        Format a job into the hrflow job object format
         Args:
             data (WorkableJobModel): a job object pulled from workable subdomain
         Returns:
@@ -143,13 +143,13 @@ class PushProfileAction(PushProfileBaseAction):
 
     def format(self, data: HrflowProfile) -> WorkableCandidate:
         """
-        format [summary]
+        Format a HrflowProfile object into a WorkableCandidate object
 
         Args:
-            data (HrflowProfile): [description]
+            data (HrflowProfile): HrflowProfile object
 
         Returns:
-            WorkableCandidate: [description]
+            WorkableCandidate: WorkableCandidate object
         """
         data = data.dict()
         info = data.get("info")
@@ -172,12 +172,9 @@ class PushProfileAction(PushProfileBaseAction):
         candidate_profile_obj = WorkableCandidate.parse_obj(candidate_profile)
         return candidate_profile_obj
 
-    def push(self, data: WorkableJobModel):
+    def push(self, data: WorkableCandidate):
         """
-        push [summary]
-
-        Args:
-            data (WorkableJobModel): [description]
+        Push a HrflowProfile formatted to a WorkableCandidate object to a company workable endpoint
         """
         profile = next(data)
         profile = profile.dict()
