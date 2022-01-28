@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any
 
 from ...core.connector import Connector
 from ...core.auth import OAuth2Session
-from ...utils.hrflow import Profile
+from ...utils.schemas import HrflowProfile
 from .actions import PushProfileAction
 
 
@@ -12,7 +12,7 @@ class Bullhorn(Connector):
     def push_profile(auth: OAuth2Session,
                  hrflow_client: Hrflow,
                  subdomain: str,
-                 profile: Profile,
+                 profile: HrflowProfile,
                  **kwargs
             ) -> Optional[Dict[str, Any]]:
         """
@@ -23,7 +23,7 @@ class Bullhorn(Connector):
         Args:
             hrflow_client (Hrflow): Hrflow client instance used to communicate with the Hrflow.ai API
             auth (OAuth2Session): Auth instance to identify and communicate with the platform
-            profile (Profile): Profile to push
+            profile (HrflowProfile): Profile to push
             subdomain (str): Subdomain Bullhorn just before `bullhorn.com`. For example subdomain=`my_subdomain.my` in `http//my_subdomain.my.salesforce.com/ABC`
             logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
