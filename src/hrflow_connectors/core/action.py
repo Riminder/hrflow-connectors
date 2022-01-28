@@ -387,7 +387,7 @@ class PullJobsBaseAction(PullBaseAction):
         # If text is empty, the parsing can return an error
         if cleaned_str == "":
             logger.debug("Cleaned text is empty")
-            return job
+            return HrflowJob.parse_obj(job)
 
         # Parse the `cleaned`
         logger.debug("Parsing the cleaned text...")
