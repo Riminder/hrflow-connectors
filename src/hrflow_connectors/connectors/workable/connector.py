@@ -2,7 +2,8 @@ from hrflow import Hrflow
 from typing import Optional, Dict, Any, Union
 from ...core.auth import AuthorizationAuth, OAuth2PasswordCredentialsBody
 from ...core.connector import Connector
-from .actions import PullJobsAction
+from .actions import PullJobsAction, PushProfileAction
+from ...utils.schemas import HrflowProfile
 
 
 class Workable(Connector):
@@ -17,7 +18,7 @@ class Workable(Connector):
 
         Args:
             hrflow_client (Hrflow): Hrflow client instance used to communicate with the Hrflow.ai API
-            auth (XTaleezAuth): Auth instance to identify and communicate with the platform
+            auth (Union[AuthorizationAuth, OAuth2PasswordCredentialsBody]): Auth instance to identify and communicate with the platform
             board_key (str): Board key where the jobs to be added will be stored
             logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
@@ -38,5 +39,29 @@ class Workable(Connector):
             auth=auth,
             subdomain=subdomain,
             **kwargs
+        )
+        return action.execute()
+
+    @staticmethod
+    def push_profile(
+        auth: Union[AuthorizationAuth, OAuth2PasswordCredentialsBody], hrflow_client: Hrflow, profile: HrflowProfile, subdomain, shortcode, **kwargs
+    ) -> Optional[Dict[str, Any]]:
+        """
+        `PushProfileAction` pushes a Hrflow.ai profile to `Workable` via their Workable API.
+        `Hrflow.ai` -> `Workable`
+        Args:
+            hrflow_client (Hrflow): Hrflow client instance used to communicate with the Hrflow.ai API
+            auth (AuthorizationAuth): Auth instance to identify and communicate with the platform
+            profile (Profile): Profile to push
+            sourced (Optional[bool]): True if added by a recruiter without applying. Default value `False`
+            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
+            local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
+            format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
+        Returns:
+            Optional[Dict[str, Any]]: Workflow response or `None`
+        """
+        action = PushProfileAction(
+            auth=auth, hrflow_client=hrflow_client, profile=profile, subdomain=subdomain, shortcode=shortcode, **kwargs
         )
         return action.execute()
