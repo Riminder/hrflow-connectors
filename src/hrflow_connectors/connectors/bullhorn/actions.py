@@ -7,7 +7,7 @@ from pydantic import Field, BaseModel
 from ...utils.logger import get_logger
 from ...utils.schemas import HrflowProfile
 from .schemas import BullhornEducationEnrichment, BullhornExperienceEnrichment, BullhornAttachmentEnrichment, BullhornProfile
-from typing import Union, Dict, Any
+from typing import Union
 import requests
 import base64
 
@@ -26,7 +26,7 @@ class PushProfileAction(PushProfileBaseAction):
 
     auth: OAuth2Session
 
-    def format(self, data: HrflowProfile):
+    def format(self, data: HrflowProfile) -> BaseModel:
         data = data.dict()
         info = data.get('info')
         def get_location():
