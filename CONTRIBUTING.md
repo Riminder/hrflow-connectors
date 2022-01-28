@@ -40,6 +40,11 @@ Add the connector module name for example `myconnector` in the [connectors](http
     │   └── hrflow_connectors/
     │       ├── connectors/
     │       │   ├── crosstalent/
+                    ├── __init__.py
+                    ├──README.md
+                    ├── docs/
+                        ├──pull_jobs.md
+                        ├──push_profile.md
     │       │   │   ├── connector.py
     │       │   │   ├── actions.py
     │       │   │   └── schemas.py
