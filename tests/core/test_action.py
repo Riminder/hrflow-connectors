@@ -506,9 +506,9 @@ def test_PullJobsBaseAction_hydrate_job_with_parsing_with_empty_summary_and_only
 
     hydrated_job = action.hydrate_job_with_parsing(job)
 
-    assert hydrated_job["skills"] is None
-    assert hydrated_job["languages"] is None
-    assert hydrated_job == job.dict()
+    assert hydrated_job.skills == None
+    assert hydrated_job.skills == None
+    assert hydrated_job == job
 
 
 @pytest.fixture
