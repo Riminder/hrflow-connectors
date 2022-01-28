@@ -62,8 +62,4 @@ class BullhornEducationEnrichment(BaseModel):
     startDate: Optional[Optional[int]] = Field(None, Description="Date when Candidate began study")
     endDate: Optional[Optional[int]] = Field(None, Description="Date when Candidate finished this education")
 
-class BullhornProfileBody(BaseModel):
-    create_profile_body : BullhornProfile
-    enrich_profile_education : BullhornEducationEnrichment
-    enrich_profile_experience: BullhornExperienceEnrichment
-    enrich_profile_attachment: BullhornAttachmentEnrichment
+
