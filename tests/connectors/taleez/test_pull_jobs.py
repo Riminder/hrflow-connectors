@@ -5,12 +5,8 @@ from hrflow_connectors import Taleez
 
 
 @pytest.fixture
-def auth(credentials):
-    auth = XTaleezAuth(
-        name = 'X-taleez-api-secret',
-        value=credentials["taleez"]["X-taleez-api-secret"]
-    )
-    return auth
+def auth(config):
+    return XTaleezAuth(value=config.TALEEZ_TOKEN)
 
 
 def test_PullJobsAction(logger, auth, hrflow_client):

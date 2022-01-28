@@ -5,11 +5,8 @@ from hrflow_connectors import Teamtailor
 
 
 @pytest.fixture
-def auth(credentials):
-    auth = AuthorizationAuth(
-        value=credentials["teamtailor"]["Authorization"]
-    )
-    return auth
+def auth(config):
+    return AuthorizationAuth(value=config.TEAMTAILOR_TOKEN)
 
 
 def test_PullJobsAction(logger, auth, hrflow_client):

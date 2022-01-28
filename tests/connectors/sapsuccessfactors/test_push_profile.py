@@ -6,12 +6,13 @@ from hrflow_connectors.utils.schemas import HrflowProfile
 
 
 @pytest.fixture
-def auth(credentials):
+def auth(config):
     auth = XAPIKeyAuth(
         name='APIKey',
-        value=credentials["sapsuccessfactors"]["oauth2"]["APIKey"],
+        value=config.SAPSUCCESSFACTORS_TOKEN,
     )
     return auth
+
 
 def test_PushProfile(logger,auth, hrflow_client):
 
