@@ -14,61 +14,90 @@ guidelines.
 ## Code Contributions
 
 ### Environment setup
-1. Git clone: type  `git clone https://github.com/Riminder/hrflow-connectors.git` on your shell or `Clone Git Repository` in VSCode
-2. `poetry install` in the repository shell to add all required dependencies in [pyproject.toml](https://github.com/Riminder/hrflow-connectors/blob/master/pyproject.toml) to your virtual environment
-It creates a virtual environment `.venv` at the root of the project with all necessary dependencies installed and even the `hrflow-connectors` package installed in editable mode.
-3. `poetry shell` in the repository
-This allows you to activate and use the virtual environment.
-For more information about `poetry` and its usage, see the official documentation at `https://python-poetry.org/docs/`
-Note: if you use another vitural environment tool like pip or others, you can add the required dependencies with their specific versions to a `requirements.txt` file and run `pip install -r requirements.txt` but we recommend using poetry, it is more practical and less confusing to use.
+1. **Git clone**
+   * `git clone https://github.com/Riminder/hrflow-connectors.git` on your shell
+   * Or `Clone Git Repository` in VSCode
+2. **`poetry install` in the repository shell** to add all required dependencies in [pyproject.toml](https://github.com/Riminder/hrflow-connectors/blob/master/pyproject.toml) to your virtual environment. It creates a virtual environment `.venv` at the root of the project with all necessary dependencies installed and even the `hrflow-connectors` package installed in editable mode.
+3. **`poetry shell` in the repository**. This allows you to activate and use the virtual environment.
+
+ℹ️ For more information about `poetry` and its usage, see the official documentation at `https://python-poetry.org/docs/`
 
 
 ## Contributing to *hrflow-connectors*
-Now, when your environment is set up, to test that everything is working properly use your testing tool to run the [tests](https://github.com/Riminder/hrflow-connectors/tree/master/tests) for core and utils modules functions or go to your terminal and run `pytest -s tests/core` use the same expression for utils by switching it with core.
+Now, when your environment is set up, to test that everything is working properly use your testing tool to run the [tests](https://github.com/Riminder/hrflow-connectors/tree/master/tests) for core and utils modules functions. Run `pytest`  command.
+
 There are several ways to contribute to the project, among others we state the following:
 
 ### Explicit Code Contributions
-1. Building a new connector:
+#### Building a new connector
  
-    - Add the connector module name for example `myconnector` in the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) directory, make sure it respects the architecture specified in the [**DOCUMENTATION.md**](https://github.com/Riminder/hrflow-connectors/blob/master/DOCUMENTATION.md) file i.e: 
+Add the connector module name for example `myconnector` in the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) directory, make sure it respects the following architecture : 
 
-    - Contains an `actions.py` file which contains all the actions your connector will implement(`PullJobsAction`, `PullProfileAction`, `PushJobsAction`, `PushProfileAction`,...etc)
+```
+.
+└── hrflow-connectors/
+    ├── src/
+    │   └── hrflow_connectors/
+    │       ├── connectors/
+    │       │   ├── crosstalent/
+    │       │   │   ├── connector.py
+    │       │   │   ├── actions.py
+    │       │   │   └── schemas.py
+    │       │   ├── greenhouse/
+    │       │   ├── smartrecruiters/
+    │       │   ├── xml/
+    │       │   └── flatchr/
+    │       ├── core/
+    │       │   ├── connector.py
+    │       │   ├── action.py
+    │       │   ├── http.py
+    │       │   └── auth.py
+    │       └── utils/
+    └── tests/
+```
 
-    - Each action is a class that inherits from its corresponding action parent class in the [action.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/action.py) `core` file for example `PullJobsAction` inherits from the class `PullJobsBaseAction` and has as parameters the specific attributes to the connector action like `subdomain` for `urls` and so on and the auth parameter which gives AUthorization to the client API if it is required, and the auth parameter, you can see the auth available classes and methods in the [auth.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/auth.py) `core` file, if you don't find there an Auth class that is compatible with your application, you can create a new one. You can also find in the utils module some interesting functions and debugging utilities that might help you with your contribution journey.
+##### Action
+`actions.py` file contains all the actions your connector will implement(`PullJobsAction`, `PullProfileAction`, `PushJobsAction`, `PushProfileAction`,...etc)
 
-    - Contains a `connector.py` file which contains your actions executed in a class `MyConnector` that inherits the abstract class [Connector](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/connector.py) in the [core](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/core) module and for each action the class implements a static method for example for `PullJobsAction` action your method is named `pull_jobs` takes as parameters your connector required parameters and `**kwargs` for other optional arguments and logics.
+Each action is a class that inherits from its corresponding action parent class in the [action.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/action.py) `core` file. 
 
-    - Contains a `__init__.py` file to make importing your connector easier from the package, you write in this file:
-    ```Python 
-    from .connector import *
-    ```
-    Don't also forget to write:
-    ```Python 
-    from myconnector import *
-    ```
-    in the [__init__.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/__init__.py) file inside the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) folder which is the parent to your connector folder.
+For example `PullJobsAction` inherits from the class `PullJobsBaseAction` and has as parameters the specific attributes to the connector action like `subdomain` for `urls`, etc. 
 
-    - Contains a `schemas.py` file which describes the model of your action data, see corresponding files for other connectors to get your ideas starting. Here is a brief example:
-    ```Python
-    from pydantic import BaseModel, Field
-    from typing import Dict, Optional, List, Any
+The `auth` parameter which gives Authorization to the client API if it is required. The ``auth`` parameter, you can see the auth available classes and methods in the [auth.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/auth.py) `core` file, if you don't find there an Auth class that is compatible with your application, you can create a new one. You can also find in the utils module some interesting functions and debugging utilities that might help you with your contribution journey.
 
-    class MyDataModel(BaseModel):
+Contains a `connector.py` file which contains your actions executed in a class `MyConnector` that inherits the abstract class [Connector](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/core/connector.py) in the [core](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/core) module and for each action the class implements a static method for example for `PullJobsAction` action your method is named `pull_jobs` takes as parameters your connector required parameters and `**kwargs` for other optional arguments and logics.
 
-        id: str=Field(..., description="My data id")
-        name: str=Field(..., description="My data name")
-        WorkRemote: Optional[bool]=Field(False, description="Indicates if work is done remotely or not, default is false")
-        and_so_on: Any=Field(..., description="Other parameters and models of your data model")
-    ```
+Contains a `__init__.py` file to make importing your connector easier from the package, you write in this file:
+```Python 
+from .connector import *
+```
+Don't also forget to write:
+```Python 
+from myconnector import *
+```
+in the [__init__.py](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/__init__.py) file inside the [connectors](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors) folder which is the parent to your connector folder.
 
-    - Finally add a `README.md` file which contains a resume of your connector and list of action that points to each action documentation inside the folder you will create a folder `docs` in your connector folder.
+Contains a `schemas.py` file which describes the model of your action data, see corresponding files for other connectors to get your ideas starting. Here is a brief example:
+```Python
+from pydantic import BaseModel, Field
+from typing import Dict, Optional, List, Any
+
+class MyDataModel(BaseModel):
+
+   id: str=Field(..., description="My data id")
+   name: str=Field(..., description="My data name")
+   WorkRemote: Optional[bool]=Field(False, description="Indicates if work is done remotely or not, default is false")
+   and_so_on: Any=Field(..., description="Other parameters and models of your data model")
+```
+
+- Finally add a `README.md` file which contains a resume of your connector and list of action that points to each action documentation inside the folder you will create a folder `docs` in your connector folder.
 
 
-2. Maintaining a connector:
+1. Maintaining a connector:
 
     - You can also edit and improve the performance of an existing connector, track new bugs and correct them and most importantly propose a more optimal and elegant alternative.
 
-3. Editing and Creating in [core](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/core) and [utils](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/utils) of the project:
+2. Editing and Creating in [core](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/core) and [utils](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/utils) of the project:
 
     - We encourage contributors to add util functions and methods that use has been proven unnescapable in creating most of their connectors to the [core](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/core) and [utils](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/utils) folders and files.
 
