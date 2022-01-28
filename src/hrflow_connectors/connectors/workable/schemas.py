@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 class Location(BaseModel):
@@ -28,3 +28,16 @@ class WorkableJobModel(BaseModel):
     requirements: Optional[str]
     benefit: Optional[str]
     employment_type: Optional[str]
+
+class Profile(BaseModel):
+    name: str
+    summary: Optional[str]
+    address: Optional[str]
+    headline: Optional[str] = Field(None, description="One line description as provided by the candidate or you")
+    phone: Optional[str]
+    email: str
+    resume_url: Optional[str]
+
+class WorkableCandidate(BaseModel):
+    sourced: Optional[bool] = True
+    candidate: Profile
