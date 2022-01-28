@@ -32,8 +32,8 @@ class PullJobsAction(PullJobsBaseAction):
         pull_jobs_request = requests.Request()
         pull_jobs_request.method = "GET"
         pull_jobs_request.auth = self.auth
-        pull_jobs_request.params = {"include_fields": ["description, requirements, benefits, employment_type"]}
         pull_jobs_request.url = f"https://{self.subdomain}.workable.com/spi/v3/jobs"
+        pull_jobs_request.params = {"include_fields": ["description, requirements, benefits, employment_type"]}
         prepared_request = pull_jobs_request.prepare()
 
         # Send Request
@@ -88,11 +88,11 @@ class PullJobsAction(PullJobsBaseAction):
         # sections
         job["sections"] = []
         def create_section(field_name:str):
-            name = "workable_{}".format(field_name)
+            title_name = "workable_{}".format(field_name)
             field_value = data.get(field_name)
             if isinstance(field_value, str):
-                value = remove_html_tags(field_value)
-                section = dict(name=name, title=name, value=value)
+                description = remove_html_tags(field_value)
+                section = dict(name=title_name, title=title_name, description=description)
                 job["sections"].append(section)
 
         create_section("description")
