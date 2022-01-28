@@ -154,3 +154,5 @@ class SmartrecruitersProfileModel(BaseModel):
     tags: List[str]
     education: List[EducationItem]
     experience: List[ExperienceItem]
+    consent: Optional[bool]
+    attachments: Optional[list]
