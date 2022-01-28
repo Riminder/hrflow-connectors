@@ -292,7 +292,7 @@ class PushProfileAction(PushProfileBaseAction):
             for education_entity in educations:
                 formatted_education = format_project(education_entity)
                 if education_entity.get("school") is None:
-                    formatted_education["instituion"] = "Undefined"
+                    formatted_education["institution"] = "Undefined"
                 else:
                     formatted_education["institution"] = education_entity.get("school")
 
