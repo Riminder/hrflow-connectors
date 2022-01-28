@@ -192,7 +192,7 @@ class PushProfileAction(PushProfileBaseAction):
                 raise PushError(response)
 
         # Preparing the request to enrich education
-        for experience in enrich_profile_experience.dict():
+        for experience in enrich_profile_experience:
             experience = experience.dict()
             # Set the Id of the candidate to enrich to the Id of the candidate whom have just been created
             experience["candidate"]["id"] = candidate_id
@@ -210,7 +210,7 @@ class PushProfileAction(PushProfileBaseAction):
                 raise PushError(response)
 
         # Preparing the request to enrich attachment
-        for attachment in enrich_profile_attachment.dict():
+        for attachment in enrich_profile_attachment:
             attachment = attachment.dict()
             session = requests.Session()
             push_profile_request = requests.Request()
