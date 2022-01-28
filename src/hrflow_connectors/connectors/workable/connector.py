@@ -9,7 +9,11 @@ from ...utils.schemas import HrflowProfile
 class Workable(Connector):
     @staticmethod
     def pull_jobs(
-        hrflow_client: Hrflow, board_key: str,auth: Union[AuthorizationAuth, OAuth2PasswordCredentialsBody], subdomain: str, **kwargs,
+        hrflow_client: Hrflow,
+        board_key: str,
+        auth: Union[AuthorizationAuth, OAuth2PasswordCredentialsBody],
+        subdomain: str,
+        **kwargs,
     ) -> Optional[Dict[str, Any]]:
         """
         `PullJobsAction` gets all available jobs listed on Workable public endpoints. It adds all these jobs to a Hrflow.ai Board.
@@ -37,13 +41,18 @@ class Workable(Connector):
             board_key=board_key,
             auth=auth,
             subdomain=subdomain,
-            **kwargs
+            **kwargs,
         )
         return action.execute()
 
     @staticmethod
     def push_profile(
-        auth: Union[AuthorizationAuth, OAuth2PasswordCredentialsBody], hrflow_client: Hrflow, profile: HrflowProfile, subdomain, shortcode, **kwargs
+        auth: Union[AuthorizationAuth, OAuth2PasswordCredentialsBody],
+        hrflow_client: Hrflow,
+        profile: HrflowProfile,
+        subdomain,
+        shortcode,
+        **kwargs,
     ) -> Optional[Dict[str, Any]]:
         """
         `PushProfileAction` pushes a Hrflow.ai profile to `Workable` via their Workable API.
@@ -63,6 +72,11 @@ class Workable(Connector):
             Optional[Dict[str, Any]]: Workflow response or `None`
         """
         action = PushProfileAction(
-            auth=auth, hrflow_client=hrflow_client, profile=profile, subdomain=subdomain, shortcode=shortcode, **kwargs
+            auth=auth,
+            hrflow_client=hrflow_client,
+            profile=profile,
+            subdomain=subdomain,
+            shortcode=shortcode,
+            **kwargs,
         )
         return action.execute()
