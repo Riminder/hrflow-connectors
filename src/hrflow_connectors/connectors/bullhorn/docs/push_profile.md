@@ -33,10 +33,10 @@ Let's take as an example in a [***CATCH workflow***](https://developers.hrflow.a
 from hrflow_connectors import Bullhorn
 from hrflow import Hrflow
 from hrflow_connectors import OAuth2Session
-from hrflow_connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.schemas import HrflowProfile
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
+profile = Profile(key="PROFILE_KEY", source=dict(key="SOURCE_KEY"))
 auth = OAuth2Session(auth_code_url="https://auth.bullhornstaffing.com/oauth/authorize",
                     access_token_url="https://auth.bullhornstaffing.com/oauth/token",
                     session_token_url="https://rest.bullhornstaffing.com/rest-services/login",
