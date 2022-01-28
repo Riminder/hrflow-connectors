@@ -20,6 +20,7 @@ class PullJobsAction(PullJobsBaseAction):
         ...,
         description="subdomain of a company endpoint in `https://{self.subdomain}.workable.com/spi/v3/jobs` for example subdomain=`eurostar` for eurostar company",
     )
+
     def pull(self) -> Iterator[WorkableJobModel]:
         """
         pull all jobs from a workable public endpoint jobs stream
@@ -33,7 +34,9 @@ class PullJobsAction(PullJobsBaseAction):
         pull_jobs_request.method = "GET"
         pull_jobs_request.auth = self.auth
         pull_jobs_request.url = f"https://{self.subdomain}.workable.com/spi/v3/jobs"
-        pull_jobs_request.params = {"include_fields": ["description, requirements, benefits, employment_type"]}
+        pull_jobs_request.params = {
+            "include_fields": ["description, requirements, benefits, employment_type"]
+        }
         prepared_request = pull_jobs_request.prepare()
 
         # Send Request
@@ -74,9 +77,11 @@ class PullJobsAction(PullJobsBaseAction):
         if isinstance(location_str, str):
             text = location_str
         geojson = dict()
-        def get_geojson(field_name:str):
+
+        def get_geojson(field_name: str):
             if location.get(field_name) is not None:
                 geojson["field_name"] = location.get(field_name)
+
         get_geojson("country")
         get_geojson("country_code")
         get_geojson("region_code")
@@ -87,12 +92,15 @@ class PullJobsAction(PullJobsBaseAction):
         job["location"] = dict(text=text, geojson=geojson)
         # sections
         job["sections"] = []
-        def create_section(field_name:str):
+
+        def create_section(field_name: str):
             title_name = "workable_{}".format(field_name)
             field_value = data.get(field_name)
             if isinstance(field_value, str):
                 description = remove_html_tags(field_value)
-                section = dict(name=title_name, title=title_name, description=description)
+                section = dict(
+                    name=title_name, title=title_name, description=description
+                )
                 job["sections"].append(section)
 
         create_section("description")
@@ -102,12 +110,14 @@ class PullJobsAction(PullJobsBaseAction):
         job["created_at"] = data.get("created_at")
         # tags
         job["tags"] = []
+
         def create_tag(field_name):
             name = "workable_{}".format(field_name)
             field_value = data.get("field_name")
             if field_value is not None:
                 tag = dict(name=name, value=field_value)
                 job["tags"].append(tag)
+
         create_tag("employment_type")
         create_tag("full_title")
         create_tag("id")
@@ -117,10 +127,11 @@ class PullJobsAction(PullJobsBaseAction):
         create_tag("application_url")
         create_tag("shortlink")
         create_tag("employment_type")
-        
+
         job_obj = HrflowJob.parse_obj(job)
 
         return job_obj
+
 
 class PushProfileAction(PushProfileBaseAction):
     auth: Union[AuthorizationAuth, OAuth2PasswordCredentialsBody]
@@ -141,17 +152,17 @@ class PushProfileAction(PushProfileBaseAction):
             WorkableCandidate: [description]
         """
         data = data.dict()
-        info = data.get('info')
+        info = data.get("info")
         profile = dict()
-        profile["name"] = info.get('full_name')
-        profile["summary"] = info.get('summary')
-        profile["email"] = info.get('email')
-        profile["phone"] = info.get('phone')
-        location = info.get('location')
-        if isinstance(location.get('text'),str):
-            profile["address"] = location.get('text')
+        profile["name"] = info.get("full_name")
+        profile["summary"] = info.get("summary")
+        profile["email"] = info.get("email")
+        profile["phone"] = info.get("phone")
+        location = info.get("location")
+        if isinstance(location.get("text"), str):
+            profile["address"] = location.get("text")
         attachments = data.get("attachments")
-        if isinstance(attachments,list):
+        if isinstance(attachments, list):
             for attachment in attachments:
                 if isinstance(attachment, dict):
                     if attachment["type"] == "resume":
@@ -160,7 +171,7 @@ class PushProfileAction(PushProfileBaseAction):
 
         candidate_profile_obj = WorkableCandidate.parse_obj(candidate_profile)
         return candidate_profile_obj
-    
+
     def push(self, data: WorkableJobModel):
         """
         push [summary]
@@ -170,7 +181,7 @@ class PushProfileAction(PushProfileBaseAction):
         """
         profile = next(data)
         profile = profile.dict()
-        
+
         # Prepare request
         session = requests.Session()
         push_profile_request = requests.Request()
