@@ -49,7 +49,10 @@ def test_BaseAction_apply_logics_with_empty_logics_list(
 
 def test_BaseAction_apply_logics_single_filter(hrflow_client, generated_data_list):
     def filter_element1_with_value1(element):
-        return element.get("element1") == "value1"
+        if element.get("element1") == "value1":
+            return element
+        else:
+            return None
 
     action = BaseAction(
         hrflow_client=hrflow_client(),
@@ -66,10 +69,16 @@ def test_BaseAction_apply_logics_single_filter(hrflow_client, generated_data_lis
 
 def test_BaseAction_apply_logics_two_filter(hrflow_client, generated_data_list):
     def filter_element1_with_value1(element):
-        return element.get("element1") == "value1"
+        if element.get("element1") == "value1":
+            return element
+        else:
+            return None
 
     def filter_element2_with_value1(element):
-        return element.get("element2") == "value1"
+        if element.get("element2") == "value1":
+            return element
+        else:
+            return None
 
     action = BaseAction(
         hrflow_client=hrflow_client(),
@@ -87,7 +96,7 @@ def test_BaseAction_apply_logics_single_filter_without_interaction(
     hrflow_client, generated_data_list
 ):
     def filter_nothing(element):
-        return True
+        return element
 
     action = BaseAction(
         hrflow_client=hrflow_client(),
@@ -210,7 +219,10 @@ def test_PullBaseAction_execute(hrflow_client):
             assert data_list == ["logic"]
 
     def my_logic(data):
-        return not data == "format"
+        if "format" in data:
+            return None
+        else:
+            return data
 
     action = MyPullAction(
         hrflow_client=hrflow_client,
@@ -240,7 +252,10 @@ def test_PushBaseAction_execute(hrflow_client):
             assert data_list == ["format"]
 
     def my_logic(data):
-        return not data == "pulllogic"
+        if data == "pulllogic":
+            return None
+        else:
+            return data
 
     action = MyPushAction(
         hrflow_client=hrflow_client,
@@ -883,7 +898,10 @@ def test_PullJobsBaseAction_execute_with_archiving_and_parsing(hrflow_client):
             assert data_list == ["logic_after_parsing"]
 
     def my_logic(data):
-        return not data == "format"
+        if data == "format":
+            return None
+        else:
+            return data
 
     action = MyPullJobsAction(
         hrflow_client=hrflow_client,
@@ -919,7 +937,10 @@ def test_PullJobsBaseAction_execute_with_archiving_without_parsing(hrflow_client
             assert data_list == ["logic"]
 
     def my_logic(data):
-        return not data == "format"
+        if not data == "format":
+            return data
+        else:
+            return None
 
     action = MyPullJobsAction(
         hrflow_client=hrflow_client,
@@ -955,7 +976,10 @@ def test_PullJobsBaseAction_execute_without_archiving_and_parsing(hrflow_client)
             assert data_list == ["logic"]
 
     def my_logic(data):
-        return not data == "format"
+        if not data == "format":
+            return data
+        else:
+            return None
 
     action = MyPullJobsAction(
         hrflow_client=hrflow_client,
