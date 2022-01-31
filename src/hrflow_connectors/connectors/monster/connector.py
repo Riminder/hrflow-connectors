@@ -21,7 +21,7 @@ class Monster(Connector):
             hrflow_client (Hrflow): Hrflow client instance used to communicate with the Hrflow.ai API
             source_key (str): Source key where the profiles to be added will be stored
             request (Dict[str, Any]): Body to format in HrFlow Profile
-            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            logics (List[str], optional): Function names to apply as filter . Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
@@ -50,7 +50,7 @@ class Monster(Connector):
             hrflow_client (Hrflow): Hrflow client instance used to communicate with the Hrflow.ai API
             job (Job): Job to push
             subdomain (str): Subdomain monster just before `monster.com`. For example subdomain=`my_subdomain.my` in `https//my_subdomain.my.monster.com8443/bgwBroker`
-            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            logics (List[str], optional): Function names to apply as filter . Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`

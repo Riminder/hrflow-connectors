@@ -41,7 +41,7 @@ class BaseAction(BaseModel):
     )
 
     logics: List[str] = Field(
-        [], description="Function names to apply as filter before pushing the data"
+        [], description="Function names to apply as filter "
     )
     global_scope: Optional[Dict[str, Any]] = Field(
         None, description="A dictionary containing the current scope's global variables"
