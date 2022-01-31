@@ -1,5 +1,6 @@
 from typing import Dict, Any, List, Optional
 from pydantic import BaseModel
+from .schemas import HrflowJob, HrflowProfile
 
 
 def find_element_in_list(
@@ -45,44 +46,10 @@ def generate_workflow_response(status_code=201, **kwargs) -> Dict[str, Any]:
     return response
 
 
-class Source(BaseModel):
-    """
-    Hrflow Source
-    """
-
-    key: str
-
-
-class Profile(BaseModel):
-    """
-    Hrflow Profile
-    """
-
-    key: str
-    source: Source
-
-
-class Board(BaseModel):
-    """
-    Hrflow board
-    """
-
-    key: str
-
-
-class Job(BaseModel):
-    """
-    Hrflow job
-    """
-
-    key: str
-    board: Board
-
-
 class EventParser(BaseModel):
     request: Dict[str, Any]
 
-    def get_job(self, board_to_listen: List[str] = None) -> Optional[Job]:
+    def get_job(self, board_to_listen: List[str] = None) -> Optional[HrflowJob]:
         """
         Get job
 
@@ -96,12 +63,12 @@ class EventParser(BaseModel):
         """
         job_dict = self.request.get("job")
         if job_dict is not None:
-            job_obj = Job.parse_obj(job_dict)
+            job_obj = HrflowJob.parse_obj(job_dict)
             if board_to_listen is None or job_obj.board.key in board_to_listen:
                 return job_obj
         return None
 
-    def get_profile(self, source_to_listen: List[str] = None) -> Optional[Profile]:
+    def get_profile(self, source_to_listen: List[str] = None) -> Optional[HrflowProfile]:
         """
         Get profile
 
@@ -115,7 +82,7 @@ class EventParser(BaseModel):
         """
         profile_dict = self.request.get("profile")
         if profile_dict is not None:
-            profile_obj = Profile.parse_obj(profile_dict)
+            profile_obj = HrflowProfile.parse_obj(profile_dict)
             if source_to_listen is None or profile_obj.source.key in source_to_listen:
                 return profile_obj
         return None
