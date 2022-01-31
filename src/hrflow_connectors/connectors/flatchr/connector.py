@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any
 
 from ...core.connector import Connector
 from ...core.auth import AuthorizationAuth
-from ...utils.hrflow import Profile
+from ...utils.schemas import HrflowProfile
 from .actions import PushProfileAction
 
 
@@ -12,7 +12,7 @@ class Flatchr(Connector):
     def push_profile(
         auth: AuthorizationAuth,
         hrflow_client: Hrflow,
-        profile: Profile,
+        profile: HrflowProfile,
         vacancy: str,
         company: str,
         **kwargs

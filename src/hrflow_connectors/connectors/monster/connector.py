@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any
 
 from ...core.connector import Connector
 from ...core.auth import MonsterBodyAuth
-from ...utils.hrflow import Job
+from ...utils.schemas import HrflowJob
 from .actions import CatchProfileAction, PushJobAction
 
 
@@ -39,7 +39,7 @@ class Monster(Connector):
 
     @staticmethod
     def push_job(
-        auth: MonsterBodyAuth, hrflow_client: Hrflow, subdomain: str, job: Job, **kwargs
+        auth: MonsterBodyAuth, hrflow_client: Hrflow, subdomain: str, job: HrflowJob, **kwargs
     ) -> Optional[Dict[str, Any]]:
         """
         `PushJobAction` pushes a Monster job to `Hrflow.ai`.
