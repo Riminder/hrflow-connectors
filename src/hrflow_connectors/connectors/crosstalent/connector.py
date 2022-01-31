@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any
 
 from ...core.connector import Connector
 from ...core.auth import OAuth2PasswordCredentialsBody
-from ...utils.hrflow import Profile
+from ...utils.schemas import HrflowProfile
 from .actions import PullJobsAction, PushProfileAction
 
 
@@ -26,7 +26,7 @@ class Crosstalent(Connector):
             auth (OAuth2PasswordCredentialsBody): Auth instance to identify and communicate with the platform
             board_key (str): Board key where the jobs to be added will be stored
             subdomain (str): Subdomain Crosstalent just before `salesforce.com`. For example subdomain=`my_subdomain.my` in `http//my_subdomain.my.salesforce.com/ABC`
-            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            logics (List[str], optional): Function names to apply as filter . Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
@@ -49,7 +49,7 @@ class Crosstalent(Connector):
     def push_profile(
         auth: OAuth2PasswordCredentialsBody,
         hrflow_client: Hrflow,
-        profile: Profile,
+        profile: HrflowProfile,
         subdomain: str,
         **kwargs
     ) -> Optional[Dict[str, Any]]:
@@ -63,7 +63,7 @@ class Crosstalent(Connector):
             auth (OAuth2PasswordCredentialsBody): Auth instance to identify and communicate with the platform
             profile (Profile): Profile to push
             subdomain (str): Subdomain Crosstalent just before `salesforce.com`. For example subdomain=`my_subdomain.my` in `http//my_subdomain.my.salesforce.com/ABC`
-            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            logics (List[str], optional): Function names to apply as filter . Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`

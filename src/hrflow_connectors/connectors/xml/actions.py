@@ -3,6 +3,7 @@ import xml.etree.ElementTree
 from typing import Iterator
 import requests
 
+from ...core.error import PullError
 from ...core.action import PullJobsBaseAction
 
 
@@ -25,11 +26,11 @@ class PullJobsAction(PullJobsBaseAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            error_message = "Unable to pull the data ! Reason : `{}`"
-            raise ConnectionError(error_message.format(response.content))
+            raise PullError(response)
 
         xml_stream = response.content
         root_element = xml.etree.ElementTree.fromstring(xml_stream)
         job_list_element = root_element.find(self.job_list_xpath)
         job_list = list(job_list_element)
+
         return job_list

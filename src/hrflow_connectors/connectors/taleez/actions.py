@@ -2,12 +2,15 @@ from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
 import requests
 
+from ...core.error import PullError, PushError
 from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...core.auth import XTaleezAuth
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
 from datetime import datetime
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import TaleezJobModel, TaleezCandidateModel
 
 logger = get_logger()
 
@@ -19,7 +22,7 @@ class PullJobsAction(PullJobsBaseAction):
         100, description="Page size. Max size of the list returned. Max value : 100"
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[TaleezJobModel]:
         """
         Pull jobs from a Taleez jobs owner endpoint
 
@@ -38,30 +41,28 @@ class PullJobsAction(PullJobsBaseAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            logger.error(f"Failed to get jobs from this endpoint")
-            error_message = "Unable to pull the data ! Reason : `{}` `{}`"
-            raise RuntimeError(
-                error_message.format(response.status_code, response.content)
-            )
+            raise PullError(response, message="Failed to get jobs")
 
         response_dict = response.json()
         logger.info(f"Total found: {response_dict['listSize']}")
         job_list = response_dict["list"]
+        job_obj_iter = map(TaleezJobModel.parse_obj, job_list)
 
-        return job_list
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: TaleezJobModel) -> HrflowJob:
         """
         Format a job into the hrflow job object format
 
         Args:
-            data (Dict[str, Any]): a taleez job object form
+            data (TaleezJobModel): a taleez job object form
 
         Returns:
-            Dict[str, Any]: a hrflow job object form
+            HrflowJob: a hrflow job object form
         """
 
         job = dict()
+        data = data.dict()
 
         # Job basic information
         job["name"] = data.get("label")
@@ -131,8 +132,8 @@ class PullJobsAction(PullJobsBaseAction):
         # datetime fields
         job["created_at"] = seconds_to_isoformat(data.get("dateCreation"))
         job["updated_at"] = seconds_to_isoformat(data.get("dateLastPublish"))
-
-        return job
+        job_obj = HrflowJob.parse_obj(job)
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
@@ -143,13 +144,14 @@ class PushProfileAction(PushProfileBaseAction):
         None, description="ID of the job to add a candidate to"
     )
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile) -> TaleezCandidateModel:
         """
         Format a Hrflow profile object into a Taleez profile object
 
-        Returns: Dict[str, Any] a Taleez profile object form
+        Returns: TaleezCandidateModel a Taleez profile object form
         """
         profile = dict()
+        data = data.dict()
         info = data.get("info")
         profile["firstName"] = info.get("first_name")
         profile["lastName"] = info.get("last_name")
@@ -180,19 +182,15 @@ class PushProfileAction(PushProfileBaseAction):
                         profile["socalLinks"][file_name] = public_url
 
         format_urls()
-
-        return profile
+        profile_obj = TaleezCandidateModel.parse_obj(profile)
+        return profile_obj
 
     def push(self, data):
         """
         Push a profile into a Taleez CVTheque or a Taleez job offer as a candidate
 
         Args:
-            data ([type]): a Taleez profile form
-
-        Raises:
-            RuntimeError: if profile pushes fail
-            Exception: if you want to add a candidate to a job without specifiying it
+            data (TaleezCandidateModel): a Taleez profile form
         """
         profile = next(data)
 
@@ -202,16 +200,15 @@ class PushProfileAction(PushProfileBaseAction):
         push_profile_request.method = "POST"
         push_profile_request.url = f"https://api.taleez.com/0/candidates"
         push_profile_request.auth = self.auth
-        push_profile_request.json = profile
+        push_profile_request.json = profile.dict()
         prepared_push_profile_request = push_profile_request.prepare()
 
         # Send request
         push_profile_response = session.send(prepared_push_profile_request)
 
         if not push_profile_response.ok:
-            raise RuntimeError(
-                f"Push profile to Taleez failed :`{push_profile_response.status_code}` `{push_profile_response.content}`"
-            )
+            raise PushError(push_profile_response)
+
         if self.job_id is not None:
             push_profile_response_dict = push_profile_response.json()
             candidate_id = push_profile_response_dict["id"]
@@ -229,6 +226,4 @@ class PushProfileAction(PushProfileBaseAction):
             add_profile_response = session.send(prepared_add_profile_request)
 
             if not add_profile_response.ok:
-                raise RuntimeError(
-                    f"Add profile to Taleez job: `{self.job_id}` failed :`{add_profile_response.status_code}` `{add_profile_response.content}`"
-                )
+                raise PushError(add_profile_response, job_id=self.job_id)

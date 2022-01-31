@@ -3,8 +3,10 @@ from pydantic import Field
 from typing import Union, Dict, Any
 import requests
 
+from ...core.error import PushError
 from ...core.action import PushJobBaseAction, CatchProfileBaseAction
 from ...utils.logger import get_logger
+from ...utils.schemas import HrflowJob
 
 
 logger = get_logger()
@@ -42,7 +44,7 @@ class PushJobAction(PushJobBaseAction):
         "`https://my_subdomain.my.monster.com:8443/bgwBroker`",
     )
 
-    def format(self, data: Dict[str, Any]) -> bytes:
+    def format(self, data: HrflowJob) -> bytes:
 
         xml_job_str = """<?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
@@ -269,7 +271,7 @@ class PushJobAction(PushJobBaseAction):
         formater = dict()
 
         for function in creation_pipeline:
-            function(formater, data)
+            function(formater, data.dict())
 
         job = xml_job_str.format(**formater)
         return job.encode("utf-8")
@@ -290,5 +292,4 @@ class PushJobAction(PushJobBaseAction):
         # Send request
         response = session.send(prepared_request)
         if not response.ok:
-            error_message = "Unable to push the data ! Reason : `{}`"
-            raise RuntimeError(error_message.format(response.content))
+            raise PushError(response)

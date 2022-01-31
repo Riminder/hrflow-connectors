@@ -24,7 +24,7 @@ class Ceridian(Connector):
             board_key (str): Board key where the jobs to be added will be stored
             subdomain (str): subdomain just before `dayforcehcm.com`
             client_name_space (str): Uniquely identifies the client's Dayforce instance for example. Is needed to login
-            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            logics (List[str], optional): Function names to apply as filter . Default value `[]`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`

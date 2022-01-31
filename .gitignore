@@ -54,6 +54,7 @@ MANIFEST
 # Per-project virtualenvs
 .venv*/
 .conda*/
+.env
 
 # Credentials
 credentials

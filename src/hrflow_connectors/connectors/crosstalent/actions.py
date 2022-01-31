@@ -3,9 +3,11 @@ from pydantic import Field
 import requests
 
 from ...core.auth import OAuth2PasswordCredentialsBody
-
+from ...core.error import PullError, PushError
 from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...utils.hrflow import generate_workflow_response
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import CrosstalentJob, CrosstalentProfile
 
 
 class PullJobsAction(PullJobsBaseAction):
@@ -17,7 +19,7 @@ class PullJobsAction(PullJobsBaseAction):
         description="Subdomain Crosstalent just before `salesforce.com`. For example subdomain=`my_subdomain.my` in `http://my_subdomain.my.salesforce.com/ABC`",
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[CrosstalentJob]:
         # Prepare request
         session = requests.Session()
         pull_jobs_request = requests.Request()
@@ -30,13 +32,15 @@ class PullJobsAction(PullJobsBaseAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            error_message = "Unable to pull the data ! Reason : `{}`"
-            raise ConnectionError(error_message.format(response.content))
+            raise PullError(response)
+        job_json_list = response.json()
+        job_obj_iter = map(CrosstalentJob.parse_obj, job_json_list)
 
-        return response.json()
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: CrosstalentJob) -> HrflowJob:
         job = dict()
+        data = data.dict()
 
         # name
         job["name"] = data.get("Name", "Undefined")
@@ -279,7 +283,6 @@ class PullJobsAction(PullJobsBaseAction):
         create_metadata("crta__Entite__c")
         create_metadata("crta__Entity__c")
         create_metadata("crta__Fiche_de_poste__c")
-        create_metadata("crta__Location__c")
         create_metadata("crta__Nb_positionnements__c")
         create_metadata("crta__Rattachement_hierarchique__c")
         create_metadata("crta__Recruteur__c")
@@ -292,7 +295,9 @@ class PullJobsAction(PullJobsBaseAction):
         create_metadata("crtarecr__Nb_of_applications_still_to_be_processed__c")
         create_metadata("Besoin_client__c")
 
-        return job
+        job_obj = HrflowJob.parse_obj(job)
+
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
@@ -302,7 +307,8 @@ class PushProfileAction(PushProfileBaseAction):
         description="Subdomain Crosstalent just before `salesforce.com`. For example subdomain=`my_subdomain.my` in `http://my_subdomain.my.salesforce.com/ABC`",
     )
 
-    def format(self, data):
+    def format(self, data: HrflowProfile) -> CrosstalentProfile:
+        data = data.dict()
         firstname = data["info"].get("first_name")
         lastname = data["info"].get("last_name")
         email = data["info"].get("email")
@@ -321,6 +327,7 @@ class PushProfileAction(PushProfileBaseAction):
             else:
                 email = f"{key}@vulcain.com"
             data["info"]["email"] = email
+        data = CrosstalentProfile.parse_obj(data)
 
         return data
 
@@ -333,13 +340,11 @@ class PushProfileAction(PushProfileBaseAction):
         push_profile_request.method = "POST"
         push_profile_request.url = f"https://{self.subdomain}.salesforce.com/services/apexrest/crta/HrFlowCreateProfile"
         push_profile_request.auth = self.auth
-        push_profile_request.json = profile
+        push_profile_request.json = profile.dict()
         prepared_request = push_profile_request.prepare()
 
         # Send request
         response = session.send(prepared_request)
 
         if not response.ok:
-            raise RuntimeError(
-                f"Push profile to Crosstalent failed : `{response.content}`"
-            )
+            raise PushError(response)

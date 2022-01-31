@@ -9,4 +9,6 @@ from .ceridian import *
 from .sapsuccessfactors import *
 from .taleez import *
 from .monster import *
+from .bullhorn import *
 from .breezyhr import *
+from .teamtailor import *

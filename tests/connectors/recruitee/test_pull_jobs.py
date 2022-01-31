@@ -5,6 +5,6 @@ def test_PullJobs(logger, hrflow_client):
     Recruitee.pull_jobs(
         subdomain='testhr',
         hrflow_client=hrflow_client("dev-demo"),
-        board_key="c430a1fe111a4076605a8dee85448300bd40f890",
+        board_key="243ed7c3fef55e1bacee3ba71b6d589e2b21079a",
         hydrate_with_parsing=True,
     )
