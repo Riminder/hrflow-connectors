@@ -1,6 +1,9 @@
 import requests
-from typing import Union, Dict, Optional, Any
+import urllib.parse
+from typing import Union, Dict, Any
 from pydantic import BaseModel, Field, SecretStr
+
+from ..core.error import AuthError
 from ..utils.logger import get_logger
 
 
@@ -73,7 +76,7 @@ class OAuth2PasswordCredentialsBody(Auth):
 
         if not response.ok:
             logger.error("OAuth2 failed for getting access token !")
-            raise RuntimeError("OAuth2 failed ! Reason : `{}`".format(response.content))
+            raise AuthError("OAuth2 failed ! Reason : `{}`".format(response.content))
 
         logger.debug("The access token has been got")
         return response.json()["access_token"]
@@ -145,7 +148,7 @@ class OAuth2EmailPasswordBody(Auth):
 
         if not response.ok:
             logger.error("Sign in Failure !")
-            raise RuntimeError("Signin failed ! Reason : `{}`".format(response.content))
+            raise AuthError("Signin failed ! Reason : `{}`".format(response.content))
 
         logger.debug("The access token has been got")
         return response.json()["access_token"]
@@ -188,3 +191,57 @@ class MonsterBodyAuth(Auth):
         encoded_body = formatted_body.encode("utf-8")
         updatable_object.body = encoded_body
         return updatable_object
+
+
+class OAuth2Session(Auth):
+    """
+    OAuth2 by using a password and adding credentials in the body of the request used to get the "access token".
+    """
+
+    auth_code_url: str
+    access_token_url: str
+    session_token_url: str
+    client_id: str
+    client_secret: str
+    username: str
+    password: str
+    name: str
+
+    def get_auth_code(self):
+        params = {
+            "client_id": self.client_id,
+            "response_type": "code",
+            "action": "Login",
+            "username": self.username,
+            "password": self.password,
+        }
+        resp_auth = requests.post(self.auth_code_url, params=params)
+        url = resp_auth.url
+        query = urllib.parse.urlparse(url).query
+        params_dict = urllib.parse.parse_qs(query)
+        if "code" not in params_dict:
+            raise AuthError("Can't find the auth_code.")
+        return params_dict["code"][0]
+
+    def get_access_token(self, auth_code:str):
+        params = {
+            "grant_type": "authorization_code",
+            "code": auth_code,
+            "client_id": self.client_id,
+            "client_secret": self.client_secret,
+        }
+        resp_token = requests.post(self.access_token_url, params=params)
+        return resp_token.json()["access_token"]
+
+    def get_session_token(self, access_token:str):
+        params = {"version": "*", "access_token": access_token}
+        session_token = requests.post(self.session_token_url, params=params)
+        return session_token.json()["BhRestToken"]
+
+    def __call__(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
+        auth_code = self.get_auth_code()
+        access_token = self.get_access_token(auth_code)
+        session_token = self.get_session_token(access_token)
+        auth_header = {"BhRestToken": session_token}
+        request.headers.update(auth_header)
+        return request

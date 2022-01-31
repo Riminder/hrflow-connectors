@@ -13,7 +13,7 @@
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `logics`  | `List[str]` | Function names to apply as filter before pushing the data. Default value : `[]`        |
+| `logics`  | `List[str]` | Function names to apply as filter . Default value : `[]`        |
 | `local_scope`  | `Optional[Dict[str, Any]]` | A dictionary containing the current scope's local variables. Default value : `None`        |
 | `global_scope`  | `Optional[Dict[str, Any]]` | A dictionary containing the current scope's global variables. Default value : `None`       |
 | `format_function_name`  | `Optional[str]` | Function name to format job before pushing. Default value : `None`        |
@@ -30,14 +30,14 @@
 from hrflow_connectors import SapSuccessfactors
 from hrflow import Hrflow
 from hrflow_connectors import OAuth2PasswordCredentialsBody, XAPIKeyAuth
-from hrflow_connectors.connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.connectors.utils.schemas import HrflowProfile
 
 
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-profile = Profile(key="PROFILE_KEY", source=Source(key="SOURCE_KEY"))
+profile = HrflowProfile(key="PROFILE_KEY", source=dict(key="SOURCE_KEY"))
 auth = XAPIKeyAuth(
-    name = "APIKey",
-    value= settings['MY_API_KEY'],
+    name="APIKey",
+    value='MY_API_KEY',
 )
 
 SapSuccessfactors.push_profile(

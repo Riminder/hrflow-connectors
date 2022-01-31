@@ -3,9 +3,12 @@ from pydantic import Field
 import itertools
 import requests
 
+from ...core.error import PullError, PushError
 from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...core.auth import XSmartTokenAuth
 from ...utils.logger import get_logger
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import SmartrecruitersProfileModel, SmartRecruitersModel
 
 
 logger = get_logger()
@@ -33,12 +36,12 @@ class PullJobsAction(PullJobsBaseAction):
         description="Number of elements to return per page. max value is 100. Default value : 10",
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[SmartRecruitersModel]:
         """
         Pull all jobs from SmartRecruiters
 
         Returns:
-            Iterator[Dict[str, Any]]: an iterator of jobs
+            Iterator[SmartRecruitersModel]: an iterator of jobs
         """
         # Prepare request
         session = requests.Session()
@@ -67,9 +70,11 @@ class PullJobsAction(PullJobsBaseAction):
                 response = session.send(prepared_request)
 
                 if not response.ok:
-                    logger.error(f"Fail to get page of jobs : pageId=`{next_page_id}`")
-                    error_message = "Unable to pull the data ! Reason : `{}`"
-                    raise ConnectionError(error_message.format(response.content))
+                    raise PullError(
+                        response,
+                        message="Fail to get page of jobs",
+                        page_id=next_page_id,
+                    )
 
                 logger.info(f"Get page of jobs : pageId=`{next_page_id}`")
                 response_json = response.json()
@@ -110,32 +115,33 @@ class PullJobsAction(PullJobsBaseAction):
             get_job_request.auth = self.auth
 
             # send request
-            prepared_request = pull_jobs_request.prepare()
+            prepared_request = get_job_request.prepare()
             response = session.send(prepared_request)
 
             if not response.ok:
-                logger.error(f"Fail to get full job id=`{job_id}`")
-                error_message = f"Unable to pull the job id=`{job_id}` ! Reason : `{response.content}`"
-                raise ConnectionError(error_message)
+                raise PullError(response, message="Fail to get full job", job_id=job_id)
 
             logger.info(f"Get full job id=`{job_id}`")
+
             return response.json()
 
         chained_full_job_iter = map(get_full_job, chained_light_job_iter)
+        job_obj_iter = map(SmartRecruitersModel.parse_obj, chained_full_job_iter)
 
-        return chained_full_job_iter
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: SmartRecruitersModel) -> HrflowJob:
         """
         Format a job from SmartRecruiter job format to Hrflow job format
 
         Args:
-            data (Dict[str, Any]): Job offer
+            data (SmartRecruitersModel): Job offer
 
         Returns:
-            Dict[str, Any]: Job in the HrFlow job object format
+            HrflowJob: Job in the HrFlow job object format
         """
         job = dict()
+        data = data.dict()
 
         # job Title
         job["name"] = data.get("title", "Undefined")
@@ -196,73 +202,57 @@ class PullJobsAction(PullJobsBaseAction):
         add_section("qualifications")
         add_section("additionalInformation")
 
-        # job tags
-        status = data.get("status")
-        posting_status = data.get("postingStatus")
-        job_id = data.get("id")
-        experience_level_id = data.get("experienceLevel", {}).get("id")
-        employmentType_id = data.get("typeOfEmployment", {}).get("id")
-        industry_id = data.get("industry", {}).get("id")
-        creator = data.get("creator", {})
-        function_id = data.get("function", {}).get("id")
-        department_id = data.get("department", {}).get("id")
-        manual = data.get("location", {}).get("manual")
-        remote = data.get("location", {}).get("remote")
-        eeo_category_id = data.get("eeoCategory", {}).get("id")
-        compensation = data.get("compensation", {})
-        job["tags"] = [
-            dict(name="smartrecruiters_status", value=status),
-            dict(name="smartrecruiters_postingStatus", value=posting_status),
-            dict(name="smartrecruiters_id", value=job_id),
-            dict(name="smartrecruiters_experienceLevel-id", value=experience_level_id),
-            dict(name="smartrecruiters_typeOfEmployment-id", value=employmentType_id),
-            dict(
-                name="smartrecruiters_compensation-min", value=compensation.get("min")
-            ),
-            dict(
-                name="smartrecruiters_compensation-max", value=compensation.get("max")
-            ),
-            dict(
-                name="smartrecruiters_compensation-currency",
-                value=compensation.get("currency"),
-            ),
-            dict(name="smartrecruiters_industry-id", value=industry_id),
-            dict(
-                name="smartrecruiters_creator-firstName", value=creator.get("firstName")
-            ),
-            dict(
-                name="smartrecruiters_creator-lastName", value=creator.get("lastName")
-            ),
-            dict(name="smartrecruiters_function-id", value=function_id),
-            dict(name="smartrecruiters_department-id", value=department_id),
-            dict(name="smartrecruiters_location-manual", value=manual),
-            dict(name="smartrecruiters_location-remote", value=remote),
-            dict(name="smartrecruiters_eeoCategory-id", value=eeo_category_id),
-            dict(
-                name="smartrecruiters_targetHiringDate",
-                value=data.get("targetHiringDate"),
-            ),
-        ]
+        job["tags"] = []
 
-        return job
+        def create_tag(field_name: str, field_dict: Optional[str] = None) -> None:
+            name = "smartr_{}".format(field_name)
+            if field_dict is not None:
+                name = "smartr_{}-{}".format(field_dict, field_name)
+                if isinstance(data.get(field_dict), dict):
+                    field_value = data.get(field_dict).get(field_name)
+                    if field_value is not None:
+                        job["tags"].append(dict(name=name, value=field_value))
+            else:
+                field_value = data.get(field_name)
+                if field_value is not None:
+                    job["tags"].append(dict(name=name, value=field_value))
+
+        # job tags
+        create_tag(field_name="status")
+        create_tag(field_name="postingStatus")
+        create_tag(field_name="compensation")
+        create_tag(field_name="id")
+        create_tag(field_name="id", field_dict="experienceLevel")
+        create_tag(field_name="id", field_dict="typeOfEmployment")
+        create_tag(field_name="id", field_dict="industry")
+        create_tag(field_name="id", field_dict="creator")
+        create_tag(field_name="id", field_dict="function")
+        create_tag(field_name="id", field_dict="department")
+        create_tag(field_name="id", field_dict="eeoCategory")
+        create_tag(field_name="manual", field_dict="location")
+        create_tag(field_name="remote", field_dict="location")
+
+        job_obj = HrflowJob.parse_obj(job)
+
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
     auth: XSmartTokenAuth
     job_id: str = Field(
         ...,
-        description="Id of a Job to which you want to assign a candidate when it’s created. A profile is sent to this URL `https://api.smartrecruiters.com/jobs/{job_id}/candidates` ",
+        description="Id of a Job to which you want to assign a candidate when it's created. A profile is sent to this URL `https://api.smartrecruiters.com/jobs/{job_id}/candidates` ",
     )
 
-    def format(self, profile: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, profile: HrflowProfile) -> SmartrecruitersProfileModel:
         """
         Format a profile hrflow object to a smartrecruiters profile object
 
         Args:
-            profile (Dict[str, Any]): [profile object in the hrflow profile format]
+            profile (HrflowProfile): [profile object in the hrflow profile format]
 
         Returns:
-            Dict[str, Any]: [profile in the SmartRecruiters candidate application format]
+            SmartRecruitersProfileModel: [profile in the SmartRecruiters candidate application format]
         """
 
         value_or_undefined = lambda s: s or "Undefined"
@@ -302,7 +292,7 @@ class PushProfileAction(PushProfileBaseAction):
             for education_entity in educations:
                 formatted_education = format_project(education_entity)
                 if education_entity.get("school") is None:
-                    formatted_education["instituion"] = "Undefined"
+                    formatted_education["institution"] = "Undefined"
                 else:
                     formatted_education["institution"] = education_entity.get("school")
 
@@ -334,6 +324,7 @@ class PushProfileAction(PushProfileBaseAction):
 
             return formatted_experience_list
 
+        profile = profile.dict()
         info = profile["info"]
         smart_candidate = dict()
         smart_candidate["firstName"] = info["first_name"]
@@ -341,7 +332,7 @@ class PushProfileAction(PushProfileBaseAction):
         smart_candidate["email"] = info["email"]
         smart_candidate["phoneNumber"] = info["phone"]
 
-        if info["location"]["fields"] not in [
+        if info["location"].get("fields") not in [
             [],
             None,
         ]:  # check if fields is not an undefined list
@@ -373,15 +364,15 @@ class PushProfileAction(PushProfileBaseAction):
         smart_candidate["experience"] = format_experiences(profile.get("experiences"))
         smart_candidate["attachments"] = profile.get("attachments")
         smart_candidate["consent"] = True
+        smart_candidate_obj = SmartrecruitersProfileModel.parse_obj(smart_candidate)
+        return smart_candidate_obj
 
-        return smart_candidate
-
-    def push(self, data: Dict[str, Any]):
+    def push(self, data: SmartrecruitersProfileModel):
         """
         Push profile
 
         Args:
-            data (Dict[str, Any]): Profile
+            data (SmartRecruitersProfileModel): Profile
         """
         profile = next(data)
 
@@ -393,13 +384,11 @@ class PushProfileAction(PushProfileBaseAction):
             f"https://api.smartrecruiters.com/jobs/{self.job_id}/candidates"
         )
         push_profile_request.auth = self.auth
-        push_profile_request.json = profile
+        push_profile_request.json = profile.dict()
         prepared_request = push_profile_request.prepare()
 
         # Send request
         response = session.send(prepared_request)
 
         if not response.ok:
-            raise RuntimeError(
-                f"Push profile to SmartRecruiters failed : `{response.content}`"
-            )
+            raise PushError(response)

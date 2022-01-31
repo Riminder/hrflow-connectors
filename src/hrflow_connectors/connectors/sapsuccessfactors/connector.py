@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any, Union
 
 from ...core.connector import Connector
 from ...core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
-from ...utils.hrflow import Profile
+from ...utils.schemas import HrflowProfile
 from .actions import PullJobsAction, PushProfileAction
 
 
@@ -27,7 +27,7 @@ class SapSuccessfactors(Connector):
             auth (Union[OAuth2PasswordCredentialsBody, XAPIKeyAuth]): Auth instance to identify and communicate with the platform
             board_key (str): Board key where the jobs to be added will be stored
             api_server (str): the API server for your company from the list of API servers for SAP SuccessFactors data centers
-            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            logics (List[str], optional): Function names to apply as filter . Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
@@ -52,7 +52,7 @@ class SapSuccessfactors(Connector):
     def push_profile(
         auth: Union[OAuth2PasswordCredentialsBody, XAPIKeyAuth],
         hrflow_client: Hrflow,
-        profile: Profile,
+        profile: HrflowProfile,
         api_server: str,
         **kwargs
     ) -> Optional[Dict[str, Any]]:
@@ -66,7 +66,7 @@ class SapSuccessfactors(Connector):
             auth (Union[OAuth2PasswordCredentialsBody, XAPIKeyAuth]): Auth instance to identify and communicate with the platform
             profile (Profile): Profile to push
             api_server (str): the API server for your company from the list of API servers for SAP SuccessFactors data centers
-            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            logics (List[str], optional): Function names to apply as filter . Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
