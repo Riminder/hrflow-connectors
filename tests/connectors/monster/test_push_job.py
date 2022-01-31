@@ -6,10 +6,10 @@ from hrflow_connectors.utils.schemas import HrflowJob
 
 
 @pytest.fixture
-def auth(credentials):
+def auth(config):
     auth = MonsterBodyAuth(
-        username=credentials["monster"]["username"],
-        password=credentials["monster"]["password"],
+        username=config.MONSTER_USERNAME,
+        password=config.MONSTER_PASSWORD,
     )
     return auth
 
