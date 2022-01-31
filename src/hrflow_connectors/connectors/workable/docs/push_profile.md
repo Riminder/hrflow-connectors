@@ -1,14 +1,14 @@
-# Pull jobs
+# Push profile
 
-`Workable` :arrow_right: `Hrflow.ai`
+`Hrflow.ai` :arrow_right: `Workable`
 
-`PullJobsAction` gets all available jobs listed on a ***Workable account private endpoints***. It adds all these **jobs** to a ***Hrflow.ai Board***.
+`PushProfileAction` pushes a `Profile` from a ***HrFlow Source*** to a ***Workable*** company endpoint and a optionally a Jobs pool.
 
 **Links to Workable documentation on the endpoints used :**
 
 | Endpoints | Description |
 | --------- | ----------- |
-| [Pull Jobs](https://workable.readme.io/docs/jobs) | Endpoint to get a collection of the private jobs for an account subdomain, the request method is `GET` |
+| [Create Candidate](https://workable.readme.io/docs/job-candidates-create) | Create a candidate with provided details,a job shortcode is required the request method is `POST`|
 
 ## Parameters
 
@@ -23,7 +23,8 @@
 | `hydrate_with_parsing`  | `bool` | Enrich the job with parsing. Default value : `False`        |
 | `archive_deleted_jobs_from_stream`  | `bool` | Archive Board jobs when they are no longer in the incoming job stream. Default value : `True`        |
 | `auth` :red_circle: | `Union[AuthorizationAuth, OAuth2PasswordCredentialsBody`] | Auth instance to identify and communicate with the platform        |
-| `subdomain` :red_circle: | `str` | subdomain of a company endpoint in `https://{self.subdomain}.workable.com/spi/v3/jobs` for example subdomain=`eurostar` for eurostar company      |
+| `subdomain` :red_circle: | `str` | cubdomain of a company endpoint in `https://{self.subdomain}.workable.com/spi/v3/jobs` for example subdomain=`eurostar` for eurostar company     |
+| `shortcode` | `str` | Offer to which the candidate will be assigned.|
 
 :red_circle: : *required* 
 
@@ -31,17 +32,21 @@
 
 ```python
 from hrflow_connectors import Workable
-from hrflow_connectors import AuthorizationAuth
 from hrflow import Hrflow
+from hrflow_connectors import AuthorizationAuth
+from hrflow_connectors.utils.schemas import HrflowProfile
 
-auth = AuthorizationAuth(value="MY_BEARER_TOKEN")
 client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
+profile = Profile(key="PROFILE_KEY", source=dict(key="SOURCE_KEY"))
+auth = AuthorizationAuth(
+    value= "MY_BEARER_TOKEN",
+)
 
-Workable.pull_jobs(
+Workable.push_profile(
     subdomain="MY_SUBDOMAIN",
-    hrflow_client=client,
+    shortcode="MY_JOB_SHORTCODE",
     auth=auth,
-    board_key="MY_BOARD_KEY",
-    hydrate_with_parsing=True,
+    hrflow_client=client,
+    profile=profile,
 )
 ```
