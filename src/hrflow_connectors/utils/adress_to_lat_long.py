@@ -3,7 +3,7 @@ import pkgutil
 import re
 
 
-def accent_replacer(s):
+def accent_replacer(s:str) -> str:
     """
     Replace the accentuated characters by same character without accent.
 
@@ -29,7 +29,7 @@ def accent_replacer(s):
     return s
 
 
-def get_cities_code_lat_long_mapping():
+def get_cities_code_lat_long_mapping() -> dict:
     """
     Get the dict of all postcode of french cities.
 
@@ -54,7 +54,7 @@ def get_cities_code_lat_long_mapping():
     return ville_code
 
 
-def get_cities_names_lat_long_mapping():
+def get_cities_names_lat_long_mapping() -> dict:
     """
     Get the dict of all names of french cities.
 
@@ -77,7 +77,7 @@ def get_cities_names_lat_long_mapping():
     return ville_name
 
 
-def get_departments_codes_lat_long_mapping():
+def get_departments_codes_lat_long_mapping() -> dict:
     """
     Get the dict of all postcode of french departments.
 
@@ -100,7 +100,7 @@ def get_departments_codes_lat_long_mapping():
 
 
 def get_lat_lng(
-    location, cities_codes_dict, cities_names_dict, departments_codes_dict, api_key=None
+    location: str, cities_codes_dict:dict, cities_names_dict:dict, departments_codes_dict:dict, api_key=None
 ):
     """
     Get the tuple latitude, longitude of a location with a 4 level of fall back.
