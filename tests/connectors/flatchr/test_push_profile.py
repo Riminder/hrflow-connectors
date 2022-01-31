@@ -6,9 +6,8 @@ from hrflow_connectors.utils.schemas import HrflowProfile
 
 
 @pytest.fixture
-def auth(credentials):
-    auth = AuthorizationAuth(value=credentials["flatchr"]["x-api-key"])
-    return auth
+def auth(config):
+    return AuthorizationAuth(value=config.FLATCHR_TOKEN)
 
 
 def test_PushProfileBaseAction(logger, auth, hrflow_client):

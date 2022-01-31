@@ -4,14 +4,10 @@ from hrflow_connectors import AuthorizationAuth
 from hrflow_connectors import Recruitee
 from hrflow_connectors.utils.schemas import HrflowProfile
 
+
 @pytest.fixture
-def auth(credentials):
-    auth = AuthorizationAuth(
-        name = 'Authorization',
-        value= credentials["recruitee"]["oauth2"]["Bearer"]
-    )
-    
-    return auth
+def auth(config):
+    return AuthorizationAuth(value=config.RECRUITEE_TOKEN)
 
 
 def test_PushProfile(logger, auth, hrflow_client):
@@ -21,8 +17,8 @@ def test_PushProfile(logger, auth, hrflow_client):
         source=dict(key="762d2f25b855f7cfd13e5585ef727d8fb6e752cb"),
     )
     response = Recruitee.push_profile(
-        company_id = "hrflowai",
-        offer_id = None,
+        company_id="hrflowai",
+        offer_id=None,
         auth=auth,
         hrflow_client=hrflow_client(),
         profile=profile,

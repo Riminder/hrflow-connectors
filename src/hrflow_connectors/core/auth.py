@@ -193,6 +193,7 @@ class MonsterBodyAuth(Auth):
         updatable_object.body = encoded_body
         return updatable_object
 
+
 class OAuth2Session(Auth):
     """
     OAuth2 by using a password and adding credentials in the body of the request used to get the "access token".
@@ -213,7 +214,7 @@ class OAuth2Session(Auth):
             "response_type": "code",
             "action": "Login",
             "username": self.username,
-            "password": self.password
+            "password": self.password,
         }
         resp_auth = requests.post(self.auth_code_url, params=params)
         url = resp_auth.url
@@ -228,16 +229,13 @@ class OAuth2Session(Auth):
             "grant_type": "authorization_code",
             "code": auth_code,
             "client_id": self.client_id,
-            "client_secret": self.client_secret
+            "client_secret": self.client_secret,
         }
         resp_token = requests.post(self.access_token_url, params=params)
         return resp_token.json()["access_token"]
 
     def get_session_token(self, access_token):
-        params = {
-            "version": "*",
-            "access_token": access_token
-        }
+        params = {"version": "*", "access_token": access_token}
         session_token = requests.post(self.session_token_url, params=params)
         return session_token.json()["BhRestToken"]
 
@@ -245,8 +243,6 @@ class OAuth2Session(Auth):
         auth_code = self.get_auth_code()
         access_token = self.get_access_token(auth_code)
         session_token = self.get_session_token(access_token)
-        auth_header = {
-            "BhRestToken": session_token
-        }
+        auth_header = {"BhRestToken": session_token}
         request.headers.update(auth_header)
         return request

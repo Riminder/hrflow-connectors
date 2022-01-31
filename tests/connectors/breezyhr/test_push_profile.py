@@ -6,11 +6,11 @@ from hrflow_connectors.utils.schemas import HrflowProfile
 
 
 @pytest.fixture
-def auth(credentials):
+def auth(config):
     auth = OAuth2EmailPasswordBody(
         access_token_url="https://api.breezy.hr/v3/signin",
-        email=credentials["breezyhr"]["email"],
-        password=credentials["breezyhr"]["password"],
+        email=config.BREEZYHR_EMAIL,
+        password=config.BREEZYHR_PASSWORD,
     )
     return auth
 

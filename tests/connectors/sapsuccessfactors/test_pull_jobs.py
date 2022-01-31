@@ -4,10 +4,10 @@ from hrflow_connectors import XAPIKeyAuth
 
 
 @pytest.fixture
-def auth(credentials):
+def auth(config):
     auth = XAPIKeyAuth(
         name='APIKey',
-        value=credentials["sapsuccessfactors"]["oauth2"]["APIKey"],
+        value=config.SAPSUCCESSFACTORS_TOKEN,
     )
     return auth
 
