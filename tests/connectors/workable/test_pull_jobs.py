@@ -3,11 +3,8 @@ from hrflow_connectors import AuthorizationAuth
 import pytest
 
 @pytest.fixture
-def auth(credentials):
-    auth =AuthorizationAuth(
-        value=credentials["workable"]["authorization"]
-    )
-    return auth
+def auth(config):
+    return AuthorizationAuth(value=config.WORKABLE_TOKEN)
 
 def test_PullJobsAcrion(logger,auth, hrflow_client):
     Workable.pull_jobs(

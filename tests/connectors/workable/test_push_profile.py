@@ -4,11 +4,8 @@ from hrflow_connectors.utils.schemas import HrflowProfile
 import pytest
 
 @pytest.fixture
-def auth(credentials):
-    auth =AuthorizationAuth(
-        value=credentials["workable"]["authorization"]
-    )
-    return auth
+def auth(config):
+    return AuthorizationAuth(value=config.WORKABLE_TOKEN)
 
 def test_PushProfile(logger, auth, hrflow_client):
 
