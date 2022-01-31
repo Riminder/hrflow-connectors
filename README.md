@@ -113,7 +113,7 @@ To find out **how to use the connectors in detail**, you can take a look at the 
 Hrflow connector was initially developed to be integrated into [***workflows***](https://developers.hrflow.ai/docs/workflows).
 For this reason **it is compatible with Python 3.6+**.
 
-The project mainly uses 4 packages :
+The project mainly uses 3 packages :
 * `requests=="2.26.0"`
 * `hrflow=="1.9.0"`
 * `pydantic=="1.7.4"`
