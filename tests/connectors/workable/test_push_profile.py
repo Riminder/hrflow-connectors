@@ -14,7 +14,6 @@ def test_PushProfile(logger, auth, hrflow_client):
         source=dict(key="762d2f25b855f7cfd13e5585ef727d8fb6e752cb"),
     )
     response = Workable.push_profile(
-        company_id = "hrflowai",
         auth=auth,
         subdomain="arabeg",
         shortcode="EE2E1C5B15",
