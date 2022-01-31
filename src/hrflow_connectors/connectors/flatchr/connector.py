@@ -28,7 +28,7 @@ class Flatchr(Connector):
             profile (Profile): Profile to push
             vacancy (str): The pool in which candidates will be placed. Findable in the URL
             company (str): The id of the company
-            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            logics (List[str], optional): Function names to apply as filter 
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`

@@ -7,7 +7,7 @@
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `logics`  | `List[str]` | Function names to apply as filter before pushing the data. Default value : `[]`        |
+| `logics`  | `List[str]` | Function names to apply as filter . Default value : `[]`        |
 | `local_scope`  | `Optional[Dict[str, Any]]` | A dictionary containing the current scope's local variables. Default value : `None`        |
 | `global_scope`  | `Optional[Dict[str, Any]]` | A dictionary containing the current scope's global variables. Default value : `None`       |
 | `format_function_name`  | `Optional[str]` | Function name to format job before pushing. Default value : `None`        |

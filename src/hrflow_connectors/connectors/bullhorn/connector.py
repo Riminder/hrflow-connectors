@@ -25,7 +25,7 @@ class Bullhorn(Connector):
             auth (OAuth2Session): Auth instance to identify and communicate with the platform
             profile (HrflowProfile): Profile to push
             subdomain (str): Subdomain Bullhorn just before `bullhorn.com`. For example subdomain=`my_subdomain.my` in `http//my_subdomain.my.salesforce.com/ABC`
-            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            logics (List[str], optional): Function names to apply as filter . Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
