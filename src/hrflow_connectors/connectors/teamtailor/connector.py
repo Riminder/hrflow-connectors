@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any
 
 from ...core.connector import Connector
 from ...core.auth import AuthorizationAuth
-from ...utils.hrflow import Profile
+from ...utils.schemas import HrflowProfile
 from .actions import PullJobsAction, PushProfileAction
 
 
@@ -35,7 +35,7 @@ class Teamtailor(Connector):
 
     @staticmethod
     def push_profile(
-        auth: AuthorizationAuth, hrflow_client: Hrflow, profile: Profile, **kwargs
+        auth: AuthorizationAuth, hrflow_client: Hrflow, profile: HrflowProfile, **kwargs
     ) -> Optional[Dict[str, Any]]:
         """
         `PushProfileAction` pushes a Hrflow.ai profile to `Teamtailor` via their Teamtailor API.

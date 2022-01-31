@@ -1,4 +1,5 @@
-from hrflow_connectors.utils.hrflow import EventParser, Profile, Job
+from hrflow_connectors.utils.hrflow import EventParser
+from hrflow_connectors.utils.schemas import HrflowProfile, HrflowJob
 
 
 def test_event_with_profile():
@@ -6,7 +7,7 @@ def test_event_with_profile():
     event = EventParser(request=request)
     profile = event.get_profile()
     assert profile is not None
-    assert isinstance(profile, Profile)
+    assert isinstance(profile, HrflowProfile)
     assert profile.key == "abc"
     assert profile.source.key == "efg"
 
@@ -24,7 +25,7 @@ def test_event_with_profile_in_listened_source():
     source_to_listen = ["xyz", "efg"]
     profile = event.get_profile(source_to_listen=source_to_listen)
     assert profile is not None
-    assert isinstance(profile, Profile)
+    assert isinstance(profile, HrflowProfile)
     assert profile.key == "abc"
     assert profile.source.key == "efg"
 
@@ -42,7 +43,7 @@ def test_event_with_job():
     event = EventParser(request=request)
     job = event.get_job()
     assert job is not None
-    assert isinstance(job, Job)
+    assert isinstance(job, HrflowJob)
     assert job.key == "abc"
     assert job.board.key == "efg"
 
@@ -60,7 +61,7 @@ def test_event_with_job_in_listened_board():
     board_to_listen = ["xyz", "efg"]
     job = event.get_job(board_to_listen=board_to_listen)
     assert job is not None
-    assert isinstance(job, Job)
+    assert isinstance(job, HrflowJob)
     assert job.key == "abc"
     assert job.board.key == "efg"
 
