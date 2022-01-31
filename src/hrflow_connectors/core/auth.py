@@ -1,4 +1,3 @@
-import re
 import requests
 import urllib.parse
 from typing import Union, Dict, Any
@@ -224,7 +223,7 @@ class OAuth2Session(Auth):
             raise AuthError("Can't find the auth_code.")
         return params_dict["code"][0]
 
-    def get_access_token(self, auth_code):
+    def get_access_token(self, auth_code:str):
         params = {
             "grant_type": "authorization_code",
             "code": auth_code,
@@ -234,7 +233,7 @@ class OAuth2Session(Auth):
         resp_token = requests.post(self.access_token_url, params=params)
         return resp_token.json()["access_token"]
 
-    def get_session_token(self, access_token):
+    def get_session_token(self, access_token:str):
         params = {"version": "*", "access_token": access_token}
         session_token = requests.post(self.session_token_url, params=params)
         return session_token.json()["BhRestToken"]

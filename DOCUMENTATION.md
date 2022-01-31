@@ -19,9 +19,9 @@ In the action execution pipeline, here is where the `logics` are located:
   
 **The definition of a logical function:**
 * The function takes only one parameter. This is an element of the stream.
-* The function returns `bool` :
-  * `True` indicates that the element is kept for the rest of the processing
-  * `False` indicates that the element is not processed in the rest of the pipeline
+* The function returns ``Optional(element)` :
+  * `element` the modified element if a condition is fullfilled
+  * `None` indicates that the element does not fullfill the condition so the element is removed from the data stream and the function returns None.
 
 `global_scope` and `local_scope` are only used to tell the connector how to `eval` the function names given in `logics`.
 Most of the time, you would just write `global_scope=globals()` and `local_scope=locals()`.
@@ -33,7 +33,10 @@ Most of the time, you would just write `global_scope=globals()` and `local_scope
 from hrflow_connectors.core.action import BaseAction
 
 def filter_element1_with_value1(element):
-    return element.get("element1") == "value1"
+    if element.get("element1") == "value1":
+        return element
+    else:
+        return None
 
 action = BaseAction(
     logics=["filter_element1_with_value1"],

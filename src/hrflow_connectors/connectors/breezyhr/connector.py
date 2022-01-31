@@ -24,7 +24,7 @@ class Breezyhr(Connector):
             board_key (str): Board key where the jobs to be added will be stored
             company_name Optional[str]: Name of the company associated with the authenticated user, required if you haven't specified your company id. Default value `None`
             company_id Optional[str] : Id of the company associated with the authenticated user, Default value `None`
-            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            logics (List[str], optional): Function names to apply as filter . Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
@@ -61,7 +61,7 @@ class Breezyhr(Connector):
             company_id Optional[str] : Id of the company associated with the authenticated user, Default value `None`
             origin Optional[str]: Indicates if the candidate is `sourced` or `applied`, Default value `sourced`
             cover_letter Optional[str]: Candidate's cover letter, default value `None`
-            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            logics (List[str], optional): Function names to apply as filter . Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`

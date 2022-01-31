@@ -41,7 +41,8 @@ class BaseAction(BaseModel):
     )
 
     logics: List[str] = Field(
-        [], description="Function names to apply as filter before pushing the data"
+        [],
+        description="Function names to apply as filter that return a modified item if a condition is fullfilled, if not they remove the item from the list and return None ",
     )
     global_scope: Optional[Dict[str, Any]] = Field(
         None, description="A dictionary containing the current scope's global variables"
@@ -98,7 +99,8 @@ class BaseAction(BaseModel):
             logger.info(
                 f"The logic function named `{logic_function_name}` has been evaluated"
             )
-            filtered_list = filter(logic_function, filtered_list)
+            mapped_list = map(logic_function, filtered_list)
+            filtered_list = filter(lambda item: item is not None, mapped_list)
         return filtered_list
 
     def format_switcher(self, data: TalentDataType) -> TalentDataType:

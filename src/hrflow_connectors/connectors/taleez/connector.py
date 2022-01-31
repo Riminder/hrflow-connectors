@@ -22,7 +22,7 @@ class Taleez(Connector):
             hrflow_client (Hrflow): Hrflow client instance used to communicate with the Hrflow.ai API
             auth (XTaleezAuth): Auth instance to identify and communicate with the platform
             board_key (str): Board key where the jobs to be added will be stored
-            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            logics (List[str], optional): Function names to apply as filter . Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
@@ -56,7 +56,7 @@ class Taleez(Connector):
             hrflow_client (Hrflow): Hrflow client instance used to communicate with the Hrflow.ai API
             profile (Profile): Profile to push
             recruiter_id (int): ID of the person recruiting the candidate, mandatory
-            logics (List[str], optional): Function names to apply as filter before pushing the data. Default value `[]`
+            logics (List[str], optional): Function names to apply as filter . Default value `[]`
             global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
             local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
             format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
