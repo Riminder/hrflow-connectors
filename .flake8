@@ -1,0 +1,7 @@
+[flake8]
+select = F,W,E,BLK,I
+max-line-length = 88
+exclude = .pytest_cache,__pycache__
+application-import-names = hrflow_connectors
+import-order-style = google
+ignore = W503, E203, E731
