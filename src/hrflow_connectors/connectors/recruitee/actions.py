@@ -2,11 +2,14 @@ from typing import Iterator, Dict, Any, Optional, List
 from pydantic import Field
 import requests
 
+from ...core.error import PullError, PushError
 from ...core.auth import AuthorizationAuth
 from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...utils.hrflow import generate_workflow_response
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import RecruiteeCandidateModel, RecruiteJobModel
 
 logger = get_logger()
 
@@ -17,14 +20,12 @@ class PullJobsAction(PullJobsBaseAction):
         ..., description="the subdomain of your company's careers site."
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[RecruiteJobModel]:
         """
         pull all jobs from a recruitee subdomain endpoint
 
-        Raises:
-            ConnectionError: if the request failed, you may want to check your subdomain
         Returns:
-            Iterator[Dict[str, Any]]: a list of jobs dictionaries
+            Iterator[RecruiteeJobModel]: a list of jobs dictionaries
         """
         # Prepare request
         session = requests.Session()
@@ -38,27 +39,27 @@ class PullJobsAction(PullJobsBaseAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            logger.error(
-                f"Failed to get jobs for company: {self.subdomain}, Check that the subdomain is a valid one"
-            )
-            error_message = "Unable to pull the data ! Reason: `{}`, `{}`"
-            raise ConnectionError(
-                error_message.format(response.status_code, response.content)
+            raise PullError(
+                response,
+                message="Failed to get jobs for company. Check that the subdomain is a valid one.",
+                subdomain=self.subdomain,
             )
         response_dict = response.json()
         job_list = response_dict["offers"]
-        return job_list
+        job_obj_iter = map(RecruiteJobModel.parse_obj, job_list)
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: RecruiteJobModel) -> HrflowJob:
         """
         format a job into the hrflow job object format
         Args:
-            data (Dict[str, Any]): a job object pulled from a recruitee company subdomain
+            data (RecruiteeJobModel): a job object pulled from a recruitee company subdomain
         Returns:
-            Dict[str, Any]: a job into the hrflow job object format
+            HrflowJob: a job into the hrflow job object format
         """
 
         job = dict()
+        data = data.dict()
         # basic information
         job["name"] = data.get("title")
         job["summary"] = data.get("slug")
@@ -115,8 +116,9 @@ class PullJobsAction(PullJobsBaseAction):
             dict(name="recruitee_department", value=department),
             dict(name="recruitee_apply_url", value=apply_url),
         ]
+        job_obj = HrflowJob.parse_obj(job)
 
-        return job
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
@@ -130,12 +132,13 @@ class PushProfileAction(PushProfileBaseAction):
         description="Offers to which the candidate will be assigned with default stage. You can also pass one ID as offer_id",
     )
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile) -> RecruiteeCandidateModel:
         """
         format a HrFlow Profile object into a Recruitee profile Object
-        returns Dict[str, Any]: a profile in the format of Recruitee profiles
+        returns RecruiteeCandidateModel: a profile in the format of Recruitee profiles
         """
         profile = dict()
+        data = data.dict()
         info = data.get("info")
         profile["name"] = info.get("full_name")
         if data.get("attachments") not in [None, []]:
@@ -147,8 +150,9 @@ class PushProfileAction(PushProfileBaseAction):
             urls = info.get("urls")
             website_list = []
             for url in urls:
-                if url["url"] not in ["", None, []]:
-                    website_list.append(url["url"])
+                if isinstance(url, dict):
+                    if url["url"] not in ["", None, []]:
+                        website_list.append(url["url"])
             return website_list
 
         if urls() not in ["", None, []]:
@@ -157,8 +161,8 @@ class PushProfileAction(PushProfileBaseAction):
         output_data = dict(candidate=profile)
         if self.offer_id is not None:
             output_data["offers"] = self.offer_id
-
-        return output_data
+        output_data_obj = RecruiteeCandidateModel.parse_obj(output_data)
+        return output_data_obj
 
     def push(self, data):
         profile = next(data)
@@ -171,13 +175,11 @@ class PushProfileAction(PushProfileBaseAction):
             f"https://api.recruitee.com/c/{self.company_id}/candidates"
         )
         push_profile_request.auth = self.auth
-        push_profile_request.json = profile
+        push_profile_request.json = profile.dict()
         prepared_request = push_profile_request.prepare()
 
         # Send request
         response = session.send(prepared_request)
 
         if not response.ok:
-            raise RuntimeError(
-                f"Push profile to Recruitee failed :`{response.status_code}` `{response.content}`"
-            )
+            raise PushError(response)

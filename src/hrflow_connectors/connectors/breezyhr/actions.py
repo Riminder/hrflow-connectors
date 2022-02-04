@@ -2,12 +2,15 @@ from typing import Iterator, Dict, Any, Optional
 from pydantic import Field
 import requests
 
+from ...core.error import PullError, PushError
 from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...core.auth import OAuth2EmailPasswordBody
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
 from ...utils.datetime_converter import from_str_to_datetime
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import BreezyJobModel, BreezyProfileModel
 
 logger = get_logger()
 
@@ -23,7 +26,7 @@ class PullJobsAction(PullJobsBaseAction):
         None, description="the company associated with the authenticated user"
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[BreezyJobModel]:
         """
         Pull jobs from a Taleez jobs owner endpoint
         Returns list of all jobs that have been pulled
@@ -43,8 +46,7 @@ class PullJobsAction(PullJobsBaseAction):
                 prepared_request = get_company_id_request.prepare()
                 response = session.send(prepared_request)
                 if not response.ok:
-                    error_message = "Couldn't get company id ! Reason : `{}`"
-                    raise RuntimeError(error_message.format(response.content))
+                    raise PullError(response, message="Couldn't get company id")
                 company_list = response.json()
                 logger.debug("Retrieving company id")
                 for company in company_list:
@@ -65,27 +67,26 @@ class PullJobsAction(PullJobsBaseAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            logger.error(f"Failed to get jobs from this endpoint")
-            error_message = "Unable to pull the data ! Reason : `{}` `{}`"
-            raise RuntimeError(
-                error_message.format(response.status_code, response.content)
-            )
+            raise PullError(response, message="Failed to get jobs from this endpoint")
+        job_json_list = response.json()
+        job_obj_iter = map(BreezyJobModel.parse_obj, job_json_list)
 
-        return response.json()
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: BreezyJobModel) -> HrflowJob:
         """
         Format a Breezy Hr job object into a hrflow job object
 
         Returns:
-            Dict[str, Any]: a job object in the hrflow job format
+            HrflowJob: a job object in the hrflow job format
         """
+        data = data.dict()
+        print(data)
         job = dict()
-
         # Basic information
         job["name"] = data.get("name")
         logger.info(job["name"])
-        job["reference"] = data.get("_id")
+        job["reference"] = data.get("friendly_id")
         logger.info(job["reference"])
         job["summary"] = None
 
@@ -136,9 +137,9 @@ class PullJobsAction(PullJobsBaseAction):
 
         job["created_at"] = data.get("creation_date")
         job["updated_at"] = data.get("updated_date")
+        job_obj = HrflowJob.parse_obj(job)
 
-        job["metadatas"] = data.get("tags")
-        return job
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
@@ -160,18 +161,19 @@ class PushProfileAction(PushProfileBaseAction):
     )
     cover_letter: Optional[str] = None
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile) -> BreezyProfileModel:
         """
         Format a Hrflow profile object into a breezy hr profile object
 
         Args:
-            data (Dict[str, Any]): Hrflow Profile to format
+            data (HrflowProfile): Hrflow Profile to format
 
         Returns:
-            Dict[str, Any]: a BreezyHr formatted profile object
+            BreezyProfileModel: a BreezyHr formatted profile object
         """
 
         profile = dict()
+        data = data.dict()
         info = data.get("info")
         profile["name"] = info.get("full_name")
         profile["address"] = info.get("location").get("text")
@@ -188,11 +190,10 @@ class PushProfileAction(PushProfileBaseAction):
             experiences = data.get("experiences")
             for experience in experiences:
                 format_experience = dict()
-                format_experience["company_name"] = (
-                    experience["company"]
-                    if experience["company"] not in ["", None]
-                    else "Undefined"
-                )
+                if experience["company"] not in ["", None]:
+                    format_experience["company_name"] = experience["company"]
+                else:
+                    format_experience["company_name"] = "Undefined"
                 format_experience["title"] = experience["title"]
                 format_experience["summary"] = experience["description"]
                 if experience["date_start"] is not None:
@@ -218,8 +219,12 @@ class PushProfileAction(PushProfileBaseAction):
                     education["school"] = "Undefined"
                 format_education["school_name"] = education["school"]
                 format_education["field_of_study"] = education["title"]
-                format_education["start_year"] = education["date_start"]
-                format_education["end_year"] = education["date_end"]
+                if education["date_start"] is not None:
+                    date_iso = from_str_to_datetime((education["date_start"]))
+                    format_education["start_year"] = date_iso.year
+                if education["date_end"] is not None:
+                    date_end_iso = from_str_to_datetime((education["date_end"]))
+                    format_education["end_year"] = date_end_iso.year
                 profile["education"].append(format_education)
 
         format_educations()
@@ -257,112 +262,95 @@ class PushProfileAction(PushProfileBaseAction):
                 if isinstance(skill, dict):
                     profile["tags"].append(skill["name"])
 
-        return profile
+        profile_obj = BreezyProfileModel.parse_obj(profile)
+        return profile_obj
 
-    def push(self, data: Dict[str, Any]) -> None:
+    def push(self, data: BreezyProfileModel) -> None:
         """
         Push a Hrflow profile object to a BreezyHr candidate pool for a position
 
         Args:
-            data (Dict[str, Any]): profile to push
+            data (BreezyProfileModel): profile to push
         """
         profile = next(data)
         auth = self.auth
         session = requests.Session()
 
-        def get_company_id() -> str:
+        def send_request(
+            error_message: str,
+            method: str,
+            url: str,
+            json: Optional[Dict[str, Any]] = None,
+        ) -> requests.Response:
             """
-            Get the company id associated with the authenticated user company, required for authentification
+            Send a HTTPS request to the specified url using the specified paramters
+
+            Args:
+                error_message (str): message to be displayed when a PushError is raised
+                method (str): request method: "GET", "PUT", "POST"...
+                url (str): url endpoint to receive the request
+                json (optional): data to be sent to the endpoint. Defaults to None.
+                return_response (optional): In case we want to the function to return the response. Defaults to None.
 
             Returns:
-                str: company id
+                response (requests.Response)
             """
-            if self.company_id is not None:
-                return self.company_id
-            else:
-                get_company_id_request = requests.Request()
-                get_company_id_request.method = "GET"
-                get_company_id_request.url = "https://api.breezy.hr/v3/companies"
-                get_company_id_request.auth = auth
-                prepared_request = get_company_id_request.prepare()
-                response = session.send(prepared_request)
-                if not response.ok:
-                    error_message = "Couldn't get company id ! Reason : `{}`"
-                    raise RuntimeError(error_message.format(response.content))
-                company_list = response.json()
-                logger.debug("Retrieving company id")
-                for company in company_list:
-                    if company["name"] == self.company_name:
-                        return company["_id"]
-
-        self.company_id = get_company_id()
-
-        def get_candidate() -> Optional[Dict[str, Any]]:
-            """
-            Get candidate. If candidate does not exists, return None.
-
-            Returns:
-                Optional[Dict[str, Any]]: a dictionary that contains candidate id and name, if candidate doesn't exist it returns None
-            """
-            verify_candidate_request = requests.Request()
-            verify_candidate_request.method = "GET"
-            verify_candidate_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/candidates/search?email_address={profile['email_address']}"
-            verify_candidate_request.auth = auth
-            prepared_request = verify_candidate_request.prepare()
+            request = requests.Request()
+            request.method = method
+            request.url = url
+            request.auth = auth
+            if json is not None:
+                request.json = json
+            prepared_request = request.prepare()
             response = session.send(prepared_request)
             if not response.ok:
-                error_message = "Couldn't get candidate ! Reason : `{}`"
-                raise RuntimeError(error_message.format(response.content))
-            if response.json() == []:
-                return None
-            else:
-                candidate = response.json()[0]
-                return candidate
+                raise PushError(response, message=error_message)
+            return response
 
-        candidate = get_candidate()
+        # if the user doesn't specify a company id, we send a request to retrieve it using company_name
+        if self.company_id is None:
+            get_company_id_response = send_request(
+                method="GET",
+                url="https://api.breezy.hr/v3/companies",
+                error_message="Couldn't get company id",
+            )
+            company_list = get_company_id_response.json()
+            for company in company_list:
+                if company["name"] == self.company_name:
+                    self.company_id = company["_id"]
 
+        # a request to verify if the candidate profile already exist
+        get_candidate_url = f"https://api.breezy.hr/v3/company/{self.company_id}/candidates/search?email_address={profile.email_address}"
+        get_candidate_response = send_request(
+            method="GET",
+            url=get_candidate_url,
+            error_message="Couldn't get candidate",
+        )
+        candidate_list = get_candidate_response.json()
+        candidate = None
+        if candidate_list != []:
+            candidate = candidate_list[0]
+
+        # In case the candidate exists we retrieve his id to update his profile with a "PUT" request
         if candidate is not None:
             candidate_id = candidate["_id"]
             logger.info(f"Candidate Already exists with the id {candidate_id}")
-
-            def update_profile_request():
-                """
-                Send a put request to update the candidate profile
-                """
-                update_candidate_request = requests.Request()
-                update_candidate_request.method = "PUT"
-                update_candidate_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidate/{candidate_id}"
-                update_candidate_request.auth = auth
-                update_candidate_request.headers = {"content-type": "application/json"}
-                update_candidate_request.json = profile
-                prepared_request = update_candidate_request.prepare()
-
-                response = session.send(prepared_request)
-                logger.info("Updating Candidate profile")
-                logger.debug(f"`{response.content}`, `{response.status_code}`")
-                if not response.ok:
-                    error_message = "Couldn't update candidate ! Reason :{}, `{}`"
-                    raise RuntimeError(
-                        error_message.format(response.status_code, response.content)
-                    )
-
-            update_profile_request()
-
+            update_profile_url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidate/{candidate_id}"
+            logger.info("Updating Candidate profile")
+            send_request(
+                method="PUT",
+                url=update_profile_url,
+                json=profile.dict(),
+                error_message="Couldn't update candidate profile'",
+            )
+        # If the candidate doesn't already exist we "POST" his profile
         else:
             # Post profile request
-            # Prepare request
-            logger.info("Preparing resuest to push candidate profile")
-            push_profile_request = requests.Request()
-            push_profile_request.method = "POST"
-            push_profile_request.url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidates"
-            push_profile_request.auth = auth
-            push_profile_request.json = profile
-            prepared_request = push_profile_request.prepare()
-
-            # Send request
-            response = session.send(prepared_request)
-            logger.debug(f"`{response.status_code}`,`{response.content}`")
-            if not response.ok:
-                raise RuntimeError(
-                    f"Push profile to Breezy Hr failed :`{response.status_code}` `{response.content}`"
-                )
+            logger.info("Preparing request to push candidate profile")
+            push_profile_url = f"https://api.breezy.hr/v3/company/{self.company_id}/position/{self.position_id}/candidates"
+            send_request(
+                method="POST",
+                url=push_profile_url,
+                json=profile.dict(),
+                error_message="Push Profile to BreezyHr failed",
+            )

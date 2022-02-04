@@ -8,10 +8,10 @@ from typing import Dict, Any
 @pytest.fixture()
 def monster_request() -> Dict[str, Any]:
     """
-    Get credentials from a file in the root of the project `credentials.json` (to be defined)
+    Get monster request
 
     Returns:
-        Dict[str, Any]: Credentials
+        Dict[str, Any]: Monster request
     """
 
     url = (

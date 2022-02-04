@@ -1,105 +1,198 @@
-from typing import Iterator, Dict, Any
+from typing import Iterator, Union, Optional
 from pydantic import Field
 import requests
 
-from ...core.action import PullJobsBaseAction
+from ...core.error import PullError
+from ...core.action import PullJobsBaseAction, PushProfileBaseAction
+from ...core.auth import AuthorizationAuth, OAuth2PasswordCredentialsBody
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import WorkableJobModel, WorkableCandidate
 
 logger = get_logger()
 
 
 class PullJobsAction(PullJobsBaseAction):
 
+    auth: Union[AuthorizationAuth, OAuth2PasswordCredentialsBody]
     subdomain: str = Field(
         ...,
-        description="subdomain of a company endpoint in `https://www.workable.com/api/accounts/{subdomain}` for example subdomain=`eurostar` for eurostar company",
+        description="subdomain of a company endpoint in `https://{self.subdomain}.workable.com/spi/v3/jobs` for example subdomain=`eurostar` for eurostar company",
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[WorkableJobModel]:
         """
         pull all jobs from a workable public endpoint jobs stream
         Returns:
-            Iterator[Dict[str, Any]]: a list of jobs dictionaries
+            Iterator[WorkableJobModel]: a list of workable job models
         """
 
         # Prepare request
         session = requests.Session()
         pull_jobs_request = requests.Request()
         pull_jobs_request.method = "GET"
-        pull_jobs_request.url = (
-            f"https://www.workable.com/api/accounts/{self.subdomain}?details=True"
-        )
+        pull_jobs_request.auth = self.auth
+        pull_jobs_request.url = f"https://{self.subdomain}.workable.com/spi/v3/jobs"
+        pull_jobs_request.params = {
+            "include_fields": ["description, requirements, benefits, employment_type"]
+        }
         prepared_request = pull_jobs_request.prepare()
 
         # Send Request
         response = session.send(prepared_request)
 
         if not response.ok:
-            logger.error(
-                f"Failed to get jobs from subdomain: {self.subdomain}. Check that the subdomain is a valid one"
+            raise PullError(
+                response,
+                message="Failed to get jobs. Check that the subdomain is a valid one",
+                subdomain=self.subdomain,
             )
-            error_message = "Unable to pull the data ! Reason : `{}`"
-            raise ConnectionError(error_message.format(response.content))
 
         response_dict = response.json()
 
         job_list = response_dict["jobs"]
-        return job_list
+        job_obj_iter = map(WorkableJobModel.parse_obj, job_list)
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: WorkableJobModel) -> HrflowJob:
         """
-        format a job into the hrflow job object format
+        Format a job into the hrflow job object format
         Args:
-            data (Dict[str, Any]): a job object pulled from workable subdomain
+            data (WorkableJobModel): a job object pulled from workable subdomain
         Returns:
-            Dict[str, Any]: a job into the hrflow job object format
+            HrflowJob: a job into the hrflow job object format
         """
         job = dict()
+        data = data.dict()
         # name and reference
         job["name"] = data.get("title")
         job["reference"] = data.get("shortcode")
-        # location
-        country = data.get("country")
-        state = data.get("state")
-        city = data.get("city")
-        geojson = dict(country=country, state=state)
-        job["location"] = dict(
-            text=city,
-            lat=None,
-            lng=None,
-            geojson=geojson,
-        )
         # url
         job["url"] = data.get("url")
+        # location
+        location = data.get("location")
+        location_str = location.get("location_str")
+        text = None
+        if isinstance(location_str, str):
+            text = location_str
+        geojson = dict()
+
+        def get_geojson(field_name: str):
+            if location.get(field_name) is not None:
+                geojson["field_name"] = location.get(field_name)
+
+        get_geojson("country")
+        get_geojson("country_code")
+        get_geojson("region_code")
+        get_geojson("region")
+        get_geojson("city")
+        get_geojson("zip_code")
+        get_geojson("telecommuting")
+        job["location"] = dict(text=text, geojson=geojson)
         # sections
-        description = remove_html_tags(data.get("description"))
-        job["sections"] = [
-            dict(
-                name="workable_description",
-                title="workable_description",
-                description=description,
-            )
-        ]
+        job["sections"] = []
+
+        def create_section(field_name: str):
+            title_name = "workable_{}".format(field_name)
+            field_value = data.get(field_name)
+            if isinstance(field_value, str):
+                description = remove_html_tags(field_value)
+                section = dict(
+                    name=title_name, title=title_name, description=description
+                )
+                job["sections"].append(section)
+
+        create_section("description")
+        create_section("requirements")
+        create_section("benefits")
         # creation_date
         job["created_at"] = data.get("created_at")
         # tags
-        employment_type = data.get("employment_type")
-        industry = data.get("industry")
-        function = data.get("function")
-        experience = data.get("experience")
-        education = data.get("education")
-        application_url = data.get("application_url")
-        department = data.get("department")
-        job["tags"] = [
-            dict(name="workable_employment_type", value=employment_type),
-            dict(name="workable_indsutry", value=industry),
-            dict(name="workable_function", value=function),
-            dict(name="workable_experience", value=experience),
-            dict(name="workable_education", value=education),
-            dict(name="workable_application_url", value=application_url),
-            dict(name="workable_department", value=department),
-        ]
-        job["metadatas"] = []
+        job["tags"] = []
 
-        return job
+        def create_tag(field_name):
+            name = "workable_{}".format(field_name)
+            field_value = data.get("field_name")
+            if field_value is not None:
+                tag = dict(name=name, value=field_value)
+                job["tags"].append(tag)
+
+        create_tag("employment_type")
+        create_tag("full_title")
+        create_tag("id")
+        create_tag("code")
+        create_tag("state")
+        create_tag("department")
+        create_tag("application_url")
+        create_tag("shortlink")
+        create_tag("employment_type")
+
+        job_obj = HrflowJob.parse_obj(job)
+
+        return job_obj
+
+
+class PushProfileAction(PushProfileBaseAction):
+    auth: Union[AuthorizationAuth, OAuth2PasswordCredentialsBody]
+    subdomain: str = Field(
+        ...,
+        description="subdomain of a company endpoint in `https://{self.subdomain}.workable.com/spi/v3/jobs` for example subdomain=`eurostar` for eurostar company",
+    )
+    shortcode: str = Field(..., description="The job's shortcode")
+
+    def format(self, data: HrflowProfile) -> WorkableCandidate:
+        """
+        Format a HrflowProfile object into a WorkableCandidate object
+
+        Args:
+            data (HrflowProfile): HrflowProfile object
+
+        Returns:
+            WorkableCandidate: WorkableCandidate object
+        """
+        data = data.dict()
+        info = data.get("info")
+        profile = dict()
+        profile["name"] = info.get("full_name")
+        profile["summary"] = info.get("summary")
+        profile["email"] = info.get("email")
+        profile["phone"] = info.get("phone")
+        location = info.get("location")
+        if isinstance(location.get("text"), str):
+            profile["address"] = location.get("text")
+        attachments = data.get("attachments")
+        if isinstance(attachments, list):
+            for attachment in attachments:
+                if isinstance(attachment, dict):
+                    if attachment["type"] == "resume":
+                        profile["resume_url"] = attachment["public_url"]
+        candidate_profile = dict(sourced=True, candidate=profile)
+
+        candidate_profile_obj = WorkableCandidate.parse_obj(candidate_profile)
+        return candidate_profile_obj
+
+    def push(self, data: WorkableCandidate):
+        """
+        Push a HrflowProfile formatted to a WorkableCandidate object to a company workable endpoint
+        """
+        profile = next(data)
+        profile = profile.dict()
+
+        # Prepare request
+        session = requests.Session()
+        push_profile_request = requests.Request()
+        push_profile_request.method = "POST"
+        push_profile_request.auth = self.auth
+        push_profile_request.url = f"https://{self.subdomain}.workable.com/spi/v3/jobs/{self.shortcode}/candidates"
+        push_profile_request.json = profile
+        prepared_request = push_profile_request.prepare()
+
+        # Send Request
+        response = session.send(prepared_request)
+
+        if not response.ok:
+            raise PullError(
+                response,
+                message="Failed to Push profile.",
+            )
