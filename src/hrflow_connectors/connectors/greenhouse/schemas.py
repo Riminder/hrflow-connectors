@@ -85,49 +85,48 @@ class Recruiter(BaseModel):
 
 
 class coordinator(BaseModel):
-    id: Optional[int]
-    email: Optional[str]
+    id: int
+    email: str
 
 
 class GreenhouseProfileModel(BaseModel):
     first_name: str = Field(..., description="The candidate's first name")
     last_name: str = Field(..., description="The candidate's last name")
-    company: Optional[str] = Field(..., description="The candidate's company'")
-    title: Optional[str] = Field(..., description="The candidate's title'")
+    company: Optional[str] = Field(None, description="The candidate's company'")
+    title: Optional[str] = Field(None, description="The candidate's title'")
     phone_numbers: Optional[List[PhoneNumber]] = Field(
-        ..., description="Array of phone numbers. Passing an empty array will clear all"
+        None,
+        description="Array of phone numbers. Passing an empty array will clear all",
     )
     addresses: Optional[List[Address]] = Field(
-        ..., description="Array of addresses, passing an empty array will clear all"
+        None, description="Array of addresses, passing an empty array will clear all"
     )
     email_addresses: Optional[List[EmailAddress]] = Field(
-        ..., description="Array of email addresses, passing an empty array will"
+        None, description="Array of email addresses, passing an empty array will"
     )
     website_addresses: Optional[List[WebsiteAddress]] = Field(
-        ...,
+        None,
         description="Array of website addresses, passing an empty array will clear all",
     )
     social_media_addresses: Optional[List[SocialMediaAddress]] = Field(
-        ...,
+        None,
         description="Array of social media addresses. Passing an empty array will clear all",
     )
     educations: Optional[List[Education]] = Field(
-        ..., description="Array of education records"
+        None, description="Array of education records"
     )
     employments: Optional[List[Employment]] = Field(
-        ..., description="Array of employment records"
+        None, description="Array of employment records"
     )
     tags: Optional[List[str]] = Field(
-        ...,
+        None,
         description="Array of tags as strings. Passing an empty array will clear all",
     )
     applications: List[Application] = Field(
-        ...,
+        None,
         description="An array of application objects `dict(job_id=int)`. at least one is required",
     )
     recruiter: Optional[Recruiter] = Field(
-        ..., description="An object representing the candidate's recruiter"
+        None, description="An object representing the candidate's recruiter"
     )
-    coordinator: Optional[coordinator] = Field(
-        ..., description="An object representing the candidate's coordinator"
-    )
+    coordinator: Optional[coordinator]

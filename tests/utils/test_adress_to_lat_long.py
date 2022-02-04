@@ -52,7 +52,7 @@ def test_cities_code_lat_long_mapping():
 
 
 @responses.activate
-def test_get_lat_lng(credentials):
+def test_get_lat_lng():
 
     request_url = "https://geocode.search.hereapi.com/v1/geocode"
     body = {
@@ -99,13 +99,13 @@ def test_get_lat_lng(credentials):
                     cities_codes_dict,
                     cities_names_dict,
                     departments_codes_dict,
-                    credentials["here"]["HERE_API_KEY"]
+                    api_key="abc_here_key"
                 )
         assert name == expected
 
 
 @responses.activate
-def test_get_lat_lng_not_found_by_here(credentials):
+def test_get_lat_lng_not_found_by_here():
 
     cities_codes_dict = get_cities_code_lat_long_mapping()
 
@@ -125,13 +125,13 @@ def test_get_lat_lng_not_found_by_here(credentials):
         cities_codes_dict,
         cities_names_dict,
         departments_codes_dict,
-        credentials["here"]["HERE_API_KEY"]
+        api_key="abc_here_key"
     )
     assert name is None
 
 
 @responses.activate
-def test_get_lat_lng_not_api_key_here(credentials):
+def test_get_lat_lng_not_api_key_here():
 
     cities_codes_dict = get_cities_code_lat_long_mapping()
 

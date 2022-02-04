@@ -65,6 +65,43 @@ to democratize Talent Data integration within the HR Tech landscape.
 | [**Workable**](src/hrflow_connectors/connectors/workable/) | ATS | :heavy_check_mark: | *09/01/2021*   |  |
 | **Workday** |  | :hourglass: |  |  |
 | [**XML**](src/hrflow_connectors/connectors/xml/) | Job board | :heavy_check_mark: | *29/12/2021* |  |
+| Name | Type | Available |
+| - | - | - |
+| **ADP** |  | :hourglass: |
+| [**Bullhorn**](src/hrflow_connectors/connectors/bullhorn/) | ATS | :heavy_check_mark: |
+| [**Breezy.hr**](src/hrflow_connectors/connectors/breezyhr) | ATS | :heavy_check_mark: |
+| **Cegid (Meta4)** |  | :hourglass: |
+| [**Ceridian**](src/hrflow_connectors/connectors/ceridian) | HCM |:heavy_check_mark: |
+| **Cornerstone OnDemand** |  | :hourglass: |
+| [**Crosstalent**](src/hrflow_connectors/connectors/crosstalent) | ATS | :heavy_check_mark: |
+| **Digitalrecruiters** | ATS | :hourglass: |
+| **Fieldglass SAP** | Recruiting software | :hourglass: |
+| [**Flatchr**](src/hrflow_connectors/connectors/flatchr/) | ATS | :heavy_check_mark: |
+| [**Greenhouse**](src/hrflow_connectors/connectors/greenhouse) | ATS | :heavy_check_mark: |
+| **ICIMS** |  | :hourglass: |
+| **Jobvite** |  | :hourglass: |
+| **Kronos (UKG)** |  | :hourglass: |
+| **Laponi** | Job board | :hourglass: |
+| **Lever** |  | :hourglass:  |
+| **Mailchimp** | Marketing tools | :hourglass: |
+| **Microsoft Dynamics** | HCM CLoud | :hourglass: |
+| [**Monster**](src/hrflow_connectors/connectors/monster/) | Job board | :heavy_check_mark: |
+| **Oracle** | Cloud Apps | :hourglass: |
+| [**Recruitee**](src/hrflow_connectors/connectors/recruitee/) | ATS | :heavy_check_mark: |
+| **RecruitBox** |  | :hourglass: |
+| [**SAPSuccessfactors**](src/hrflow_connectors/connectors/sapsuccessfactors/) | Cloud Apps for HR | :heavy_check_mark: |
+| **Salesforce** |  | :hourglass: |
+| [**Smartrecruiters**](src/hrflow_connectors/connectors/smartrecruiters/) | ATS | :heavy_check_mark: |
+| **Staffme** | Job board | :hourglass: |
+| [**Taleez**](src/hrflow_connectors/connectors/taleez/)| ATS | :heavy_check_mark: |
+| **Talentsoft** |  | :hourglass: |
+| **Talentlink** |  | :hourglass: |
+| [**Teamtailor**](src/hrflow_connectors/connectors/teamtailor) | ATS | :heavy_check_mark: |
+| **Twilio** | Marketing tools | :hourglass: |
+| **Ultimate Software (UKG)** |  | :hourglass: |
+| [**Workable**](src/hrflow_connectors/connectors/workable/) | ATS | :heavy_check_mark: |
+| **Workday** |  | :hourglass: |
+| [**XML**](src/hrflow_connectors/connectors/xml/) | Job board | :heavy_check_mark: |
 
 ## 🪄 Quickstart
 ### What I can do?
@@ -111,7 +148,7 @@ To find out **how to use the connectors in detail**, you can take a look at the 
 Hrflow connector was initially developed to be integrated into [***workflows***](https://developers.hrflow.ai/docs/workflows).
 For this reason **it is compatible with Python 3.6+**.
 
-The project mainly uses 4 packages :
+The project mainly uses 3 packages :
 * `requests=="2.26.0"`
 * `hrflow=="1.9.0"`
 * `pydantic=="1.7.4"`

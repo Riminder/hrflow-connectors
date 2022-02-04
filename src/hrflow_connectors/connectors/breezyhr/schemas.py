@@ -20,7 +20,7 @@ class Country(BaseModel):
 class Location(BaseModel):
     country: Country
     city: str
-    is_remote: bool
+    is_remote: Optional[bool]
     name: str
 
 
@@ -55,7 +55,7 @@ class BreezyJobModel(BaseModel):
     friendly_id: str = Field(
         ..., description="another id of the job which combines its title and its id"
     )
-    experience: Experience
+    experience: Optional[Experience]
     location: Location
     education: str
     department: str
@@ -78,17 +78,17 @@ class WorkHistoryItem(BaseModel):
     company_name: str
     title: str
     summary: str
-    start_month: int
-    start_year: int
-    end_month: int
-    end_year: int
+    start_month: Optional[int]
+    start_year: Optional[int]
+    end_month: Optional[int]
+    end_year: Optional[int]
 
 
 class EducationItem(BaseModel):
     school_name: str
     field_of_study: str
-    start_year: int
-    end_year: int
+    start_year: Optional[int]
+    end_year: Optional[int]
 
 
 class BreezyProfileModel(BaseModel):

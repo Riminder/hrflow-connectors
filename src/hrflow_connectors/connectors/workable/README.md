@@ -6,3 +6,4 @@
 | Actions |
 | ------- |
 | [**Pull jobs**](docs/pull_jobs.md) |
+| [**Push Profile**](docs/pull_jobs.md) |

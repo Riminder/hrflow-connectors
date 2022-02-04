@@ -2,19 +2,18 @@ import pytest
 
 from hrflow_connectors import AuthorizationAuth
 from hrflow_connectors import Flatchr
-from hrflow_connectors.utils.hrflow import Profile, Source
+from hrflow_connectors.utils.schemas import HrflowProfile
 
 
 @pytest.fixture
-def auth(credentials):
-    auth = AuthorizationAuth(value=credentials["flatchr"]["x-api-key"])
-    return auth
+def auth(config):
+    return AuthorizationAuth(value=config.FLATCHR_TOKEN)
 
 
 def test_PushProfileBaseAction(logger, auth, hrflow_client):
-    profile = Profile(
+    profile = HrflowProfile(
         key="5746beca5e941a5a55706efd9adfce31f59e6e2b",
-        source=Source(key="d42eed17626b7ae3dc05efca363788caef91d44b"),
+        source=dict(key="d42eed17626b7ae3dc05efca363788caef91d44b"),
     )
     response = Flatchr.push_profile(
         auth=auth,

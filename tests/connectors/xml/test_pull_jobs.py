@@ -3,6 +3,7 @@ import responses
 from hrflow_connectors import XML
 from hrflow_connectors.connectors.xml.actions import PullJobsAction
 from hrflow_connectors.utils.datetime_converter import from_str_to_datetime
+from hrflow_connectors.utils.schemas import HrflowJob
 
 
 def test_PullJobsAction_from_samsic_xml_stream(logger, hrflow_client):
@@ -120,8 +121,8 @@ def test_PullJobsAction_from_samsic_xml_stream(logger, hrflow_client):
 
         # metadatas
         job["metadatas"] = []
-
-        return job
+        job_obj = HrflowJob.parse_obj(job)
+        return job_obj
 
     xml_stream_url = "https://cv.samsic-emploi.fr/media/flux/jobs.xml"
     job_list_xpath = "DataArea"

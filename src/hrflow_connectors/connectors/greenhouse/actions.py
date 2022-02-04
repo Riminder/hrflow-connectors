@@ -3,11 +3,14 @@ from pydantic import Field
 import html
 import requests
 
+from ...core.error import PullError, PushError
 from ...core.action import PullJobsBaseAction, PushProfileBaseAction
 from ...utils.logger import get_logger
 from ...utils.clean_text import remove_html_tags
 from ...utils.hrflow import generate_workflow_response
 from ...core.auth import OAuth2PasswordCredentialsBody, XAPIKeyAuth
+from ...utils.schemas import HrflowJob, HrflowProfile
+from .schemas import GreenhouseJobModel, GreenhouseProfileModel
 
 logger = get_logger()
 
@@ -18,12 +21,12 @@ class PullJobsAction(PullJobsBaseAction):
         description="Job Board URL token, which is usually the company `name` -for example `lyft`- when it has job listings on greenhouse, mandatory to access job boards on `greenhouse.io`: `https://boards-api.greenhouse.io/v1/boards/{board_token}/jobs`, getting jobs doesn't require an API Key",
     )
 
-    def pull(self) -> Iterator[Dict[str, Any]]:
+    def pull(self) -> Iterator[GreenhouseJobModel]:
         """
         Pull all jobs from a greenhouse job board
 
         Returns:
-            Iterator[Dict[str, Any]]: list of all jobs with their content if available
+            Iterator[GreenhouseJobModel]: list of all jobs with their content if available
         """
         # Prepare request
         session = requests.Session()
@@ -37,28 +40,30 @@ class PullJobsAction(PullJobsBaseAction):
         response = session.send(prepared_request)
 
         if not response.ok:
-            logger.error(
-                f"Failed to get jobs from board: `{self.board_token}`. Check that your board token is valid."
+            raise PullError(
+                response,
+                message="Failed to get jobs from Greenhouse board. Check that your board token is valid.",
+                board_token=self.board_token,
             )
-            error_message = "Unable to pull the data ! Reason : `{}`"
-            raise ConnectionError(error_message.format(response.content))
 
         response_dict = response.json()
         total_info = response_dict["meta"]["total"]
         logger.info(f"Total jobs found : {total_info}")
 
-        job_list = response_dict["jobs"]
-        return job_list
+        job_json_list = response_dict["jobs"]
+        job_obj_iter = map(GreenhouseJobModel.parse_obj, job_json_list)
+        return job_obj_iter
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: GreenhouseJobModel) -> HrflowJob:
         """
         format each job pulled from greenhouse job board into a HrFlow job object
 
         Returns:
-            Dict[str, Any]: job in the HrFlow job object format
+            HrflowJob: job in the HrFlow job object format
         """
 
         job = dict()
+        data = data.dict()
         # name
         job["name"] = data.get("title")
         # summary
@@ -116,8 +121,9 @@ class PullJobsAction(PullJobsBaseAction):
         ]
         # updated_at
         job["updated_at"] = data.get("updated_at")
+        job_obj = HrflowJob.parse_obj(job)
 
-        return job
+        return job_obj
 
 
 class PushProfileAction(PushProfileBaseAction):
@@ -132,15 +138,16 @@ class PushProfileAction(PushProfileBaseAction):
         description="The ID of the user sending the profile, or the person he is sending the profile on behalf of",
     )
 
-    def format(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def format(self, data: HrflowProfile) -> GreenhouseProfileModel:
         """
         Format a profile hrflow object to a greenhouse profile object
         Args:
-            profile (Dict[str, Any]): profile object in the hrflow profile format
+            profile (HrflowProfile): profile object in the hrflow profile format
         Returns:
-            Dict[str, Any]: profile in the greenhouse candidate  format
+            GreenhouseProfileModel: profile in the greenhouse candidate  format
         """
         profile = dict()
+        data = data.dict()
         profile["applications"] = []
         for id in self.job_id:
             profile["applications"].append(dict(job_id=id))
@@ -170,8 +177,9 @@ class PushProfileAction(PushProfileBaseAction):
             urls = data["info"]["urls"]
             website_list = []
             for url in urls:
-                if url["url"] not in ["", None, []]:
-                    website_list.append(dict(value=url["url"]))
+                if isinstance(url, dict):
+                    if url["url"] not in ["", None, []]:
+                        website_list.append(dict(value=url["url"]))
             return website_list
 
         if get_social_media_urls() not in [[], None]:
@@ -196,14 +204,15 @@ class PushProfileAction(PushProfileBaseAction):
                             end_date=experience["date_end"],
                         )
                     )
+        profile_obj = GreenhouseProfileModel.parse_obj(profile)
 
-        return profile
+        return profile_obj
 
-    def push(self, data: Dict[str, Any]):
+    def push(self, data: GreenhouseProfileModel):
         """
         Push profile
         Args:
-            data (Dict[str, Any]): Profile
+            data (GreenhouseProfileModel): Profile
         """
 
         profile = next(data)
@@ -215,15 +224,11 @@ class PushProfileAction(PushProfileBaseAction):
         push_profile_request.url = "https://harvest.greenhouse.io/v1/candidates"
         push_profile_request.auth = self.auth
         push_profile_request.headers = {"on-behalf-of": self.on_behalf_of}
-        push_profile_request.json = profile
+        push_profile_request.json = profile.dict()
         prepared_request = push_profile_request.prepare()
 
         # Send request
         response = session.send(prepared_request)
 
         if not response.ok:
-            raise RuntimeError(
-                "Push profile to Greenhouse failed : {}, `{}`".format(
-                    response.status_code, response.content
-                )
-            )
+            raise PushError(response)
