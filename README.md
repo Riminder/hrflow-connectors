@@ -30,7 +30,7 @@ to democratize Talent Data integration within the HR Tech landscape.
 
 ## :electric_plug: List of Connectors
 
-| Name | Type | Available | Release date | Update date
+| Name | Type | Available | Release date | Last update
 | - | - | - | - | - |
 | **ADP** |  | :hourglass: |  |  |
 | [**Bullhorn**](src/hrflow_connectors/connectors/bullhorn/) | ATS | :heavy_check_mark: | *24/01/2022*  |*31/01/2022*   |
