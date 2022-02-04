@@ -2,6 +2,7 @@
 *~
 *.py[cod]
 *.so
+*.env
 *.cfg
 !.isort.cfg
 !setup.cfg
