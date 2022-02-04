@@ -33,16 +33,16 @@ to democratize Talent Data integration within the HR Tech landscape.
 | Name | Type | Available | Release date | Update date
 | - | - | - | - | - |
 | **ADP** |  | :hourglass: |  |  |
-| [**Bullhorn**](src/hrflow_connectors/connectors/bullhorn/) | ATS | :heavy_check_mark: |  |  |
-| [**Breezy.hr**](src/hrflow_connectors/connectors/breezyhr) | ATS | :heavy_check_mark: |  |  |
+| [**Bullhorn**](src/hrflow_connectors/connectors/bullhorn/) | ATS | :heavy_check_mark: | *24/01/2022*  |*31/01/2022*   |
+| [**Breezy.hr**](src/hrflow_connectors/connectors/breezyhr) | ATS | :heavy_check_mark: | *18/01/2022*  |*31/01/2022*   |
 | **Cegid (Meta4)** |  | :hourglass: |  |  |
-| [**Ceridian**](src/hrflow_connectors/connectors/ceridian) | HCM |:heavy_check_mark: |  |  |
+| [**Ceridian**](src/hrflow_connectors/connectors/ceridian) | HCM |:heavy_check_mark: | *12/01/2022*   |*31/01/2022*   |
 | **Cornerstone OnDemand** |  | :hourglass: |  |  |
-| [**Crosstalent**](src/hrflow_connectors/connectors/crosstalent) | ATS | :heavy_check_mark: |  |  |
+| [**Crosstalent**](src/hrflow_connectors/connectors/crosstalent) | ATS | :heavy_check_mark: | *21/12/2021*  |*31/01/2022*   |
 | **Digitalrecruiters** | ATS | :hourglass: |  |  |
 | **Fieldglass SAP** | Recruiting software | :hourglass: |  |  |
-| [**Flatchr**](src/hrflow_connectors/connectors/flatchr/) | ATS | :heavy_check_mark: |  |  |
-| [**Greenhouse**](src/hrflow_connectors/connectors/greenhouse) | ATS | :heavy_check_mark: |  |  |
+| [**Flatchr**](src/hrflow_connectors/connectors/flatchr/) | ATS | :heavy_check_mark: | *29/12/2021*  |*31/01/2022*   |
+| [**Greenhouse**](src/hrflow_connectors/connectors/greenhouse) | ATS | :heavy_check_mark: |*04/01/2022*  | *31/01/2022*  |
 | **ICIMS** |  | :hourglass: |  |  |
 | **Jobvite** |  | :hourglass: |  |  |
 | **Kronos (UKG)** |  | :hourglass: |  |  |
@@ -50,23 +50,23 @@ to democratize Talent Data integration within the HR Tech landscape.
 | **Lever** |  | :hourglass:  |  |  |
 | **Mailchimp** | Marketing tools | :hourglass: |  |  |
 | **Microsoft Dynamics** | HCM CLoud | :hourglass: |  |  |
-| [**Monster**](src/hrflow_connectors/connectors/monster/) | Job board | :heavy_check_mark: |  |  |
+| [**Monster**](src/hrflow_connectors/connectors/monster/) | Job board | :heavy_check_mark: | *06/01/2022* |*31/01/2022*   |
 | **Oracle** | Cloud Apps | :hourglass: |  |  |
-| [**Recruitee**](src/hrflow_connectors/connectors/recruitee/) | ATS | :heavy_check_mark: |  |  |
+| [**Recruitee**](src/hrflow_connectors/connectors/recruitee/) | ATS | :heavy_check_mark: | *12/01/2022*  |*31/01/2022*   |
 | **RecruitBox** |  | :hourglass: |  |  |
-| [**SAPSuccessfactors**](src/hrflow_connectors/connectors/sapsuccessfactors/) | Cloud Apps for HR | :heavy_check_mark: |  |  |
+| [**SAPSuccessfactors**](src/hrflow_connectors/connectors/sapsuccessfactors/) | Cloud Apps for HR | :heavy_check_mark: | *07/01/2022* | *31/01/2022*  |
 | **Salesforce** |  | :hourglass: |  |  |
-| [**Smartrecruiters**](src/hrflow_connectors/connectors/smartrecruiters/) | ATS | :heavy_check_mark: |  |  |
+| [**Smartrecruiters**](src/hrflow_connectors/connectors/smartrecruiters/) | ATS | :heavy_check_mark: | *29/12/2021*  |*31/01/2022*   |
 | **Staffme** | Job board | :hourglass: |  |  |
-| [**Taleez**](src/hrflow_connectors/connectors/taleez/)| ATS | :heavy_check_mark: |  |  |
+| [**Taleez**](src/hrflow_connectors/connectors/taleez/)| ATS | :heavy_check_mark: |*12/01/2022*  |*31/01/2022*   |
 | **Talentsoft** |  | :hourglass: |  |  |
 | **Talentlink** |  | :hourglass: |  |  |
-| [**Teamtailor**](src/hrflow_connectors/connectors/teamtailor) | ATS | :heavy_check_mark: |  |  |
+| [**Teamtailor**](src/hrflow_connectors/connectors/teamtailor) | ATS | :heavy_check_mark: |*24/01/2022*   |*31/01/2022*   |
 | **Twilio** | Marketing tools | :hourglass: |  |  |
 | **Ultimate Software (UKG)** |  | :hourglass: |  |  |
-| [**Workable**](src/hrflow_connectors/connectors/workable/) | ATS | :heavy_check_mark: |  |  |
+| [**Workable**](src/hrflow_connectors/connectors/workable/) | ATS | :heavy_check_mark: | *07/01/2022*  |*31/01/2022*   |
 | **Workday** |  | :hourglass: |  |  |
-| [**XML**](src/hrflow_connectors/connectors/xml/) | Job board | :heavy_check_mark: |  |  |
+| [**XML**](src/hrflow_connectors/connectors/xml/) | Job board | :heavy_check_mark: | *29/12/2021*  | *31/01/2022*  |
 
 ## 🪄 Quickstart
 ### What I can do?
