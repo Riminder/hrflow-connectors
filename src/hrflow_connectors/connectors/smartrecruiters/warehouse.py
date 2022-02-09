@@ -1,23 +1,53 @@
 import enum
-from logging import LoggerAdapter
 import typing as t
+from logging import LoggerAdapter
 
-from pydantic import BaseModel, Field
 import requests
+from pydantic import BaseModel, Field
 
 from hrflow_connectors.connectors.smartrecruiters.schemas import (
     SmartRecruitersJob,
     SmartRecruitersProfile,
 )
 from hrflow_connectors.core import (
+    ActionEndpoints,
     Warehouse,
     WarehousePullAction,
     WarehousePushAction,
 )
 
-
 SMARTRECRUITERS_JOBS_ENDPOINT = "https://api.smartrecruiters.com/jobs"
 SMARTRECRUITERS_JOBS_ENDPOINT_LIMIT = 100
+
+GET_ALL_JOBS_ENDPOINT = ActionEndpoints(
+    name="Get all jobs",
+    description=(
+        "Endpoint to search jobs by traditional params (offset, limit...)"
+        " and get the list of all jobs with their ids, the request method"
+        " is `GET`"
+    ),
+    url=(
+        "https://dev.smartrecruiters.com/customer-api/live-docs/job-api/#/jobs/jobs.all"
+    ),
+)
+GET_JOB_ENDPOINT = ActionEndpoints(
+    name="Get job",
+    description=(
+        "Endpoint to get the content of a job with a given id, a jobId parameter is"
+        " required, the request method is `GET`"
+    ),
+    url=(
+        "https://dev.smartrecruiters.com/customer-api/live-docs/job-api/#/jobs/jobs.get"
+    ),
+)
+POST_CANDIDATE_ENDPOINT = ActionEndpoints(
+    name="Post Candidate",
+    description=(
+        "Endpoint to create a new candidate and assign to a talent pool, the request"
+        " method is `POST`"
+    ),
+    url="https://dev.smartrecruiters.com/customer-api/live-docs/candidate-api/",
+)
 
 
 class JobPostingStatus(str, enum.Enum):
@@ -43,9 +73,11 @@ class PushProfilesParameters(BaseModel):
     )
     job_id: str = Field(
         ...,
-        description="Id of a Job to which you want to assign a candidates "
-        "when it’s created. Profiles are sent to this "
-        "URL `https://api.smartrecruiters.com/jobs/{job_id}/candidates` ",
+        description=(
+            "Id of a Job to which you want to assign a candidates "
+            "when it’s created. Profiles are sent to this "
+            "URL `https://api.smartrecruiters.com/jobs/{job_id}/candidates` "
+        ),
     )
 
 
@@ -55,8 +87,9 @@ class PullJobsParameters(BaseModel):
     )
     query: t.Optional[str] = Field(
         None,
-        description="Case insensitive full-text query against "
-        "job title e.g. java developer",
+        description=(
+            "Case insensitive full-text query against job title e.g. java developer"
+        ),
     )
     updated_after: t.Optional[str] = Field(
         None, description="ISO8601-formatted time boundaries for the job update time"
@@ -156,11 +189,19 @@ def push(
 SmartRecruitersJobWarehouse = Warehouse(
     name="SmartRecruiters Jobs",
     data_schema=SmartRecruitersJob,
-    pull=WarehousePullAction(parameters=PullJobsParameters, function=pull),
+    pull=WarehousePullAction(
+        parameters=PullJobsParameters,
+        function=pull,
+        endpoints=[GET_ALL_JOBS_ENDPOINT, GET_JOB_ENDPOINT],
+    ),
 )
 
 SmartRecruitersProfileWarehouse = Warehouse(
     name="SmartRecruiters Profiles",
     data_schema=SmartRecruitersProfile,
-    push=WarehousePushAction(parameters=PushProfilesParameters, function=push),
+    push=WarehousePushAction(
+        parameters=PushProfilesParameters,
+        function=push,
+        endpoints=[POST_CANDIDATE_ENDPOINT],
+    ),
 )

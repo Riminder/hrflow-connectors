@@ -172,12 +172,23 @@ def format_profile(hrflow_profile: t.Dict) -> t.Dict:
     return profile
 
 
+DESCRIPTION = (
+    "Move beyond applicant tracking systems (ATS) with an enterprise-grade recruiting"
+    " platform designed for the modern workforce. SmartRecruiters' Talent Acquisition"
+    " Suite provides everything needed to attract, select, and hire great talent."
+)
 SmartRecruiters = Connector(
     name="SmartRecruiters",
+    description=DESCRIPTION,
+    url="https://www.smartrecruiters.com/",
     actions=[
         ConnectorAction(
             name="pull_jobs",
             type=WorkflowType.pull,
+            description=(
+                "Retrieves all jobs via the ***SmartRecruiter*** API and send them"
+                " to a ***Hrflow.ai Board***."
+            ),
             parameters=BaseActionParameters.with_default_format(
                 "PullJobsActionParameters", format=format_job
             ),
@@ -187,6 +198,10 @@ SmartRecruiters = Connector(
         ConnectorAction(
             name="push_profile",
             type=WorkflowType.catch,
+            description=(
+                "Push a profile from Hrflow.ai Source to SmartRecruiters via the API"
+                " for the given `job_id`."
+            ),
             parameters=BaseActionParameters.with_default_format(
                 "PushProfileActionParameters", format=format_profile
             ),

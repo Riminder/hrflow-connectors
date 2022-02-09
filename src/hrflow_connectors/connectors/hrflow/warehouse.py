@@ -1,17 +1,13 @@
 import html
-from logging import LoggerAdapter
 import re
 import typing as t
+from logging import LoggerAdapter
 
 from hrflow import Hrflow
 from pydantic import BaseModel, Field
 
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowJob, HrFlowProfile
-from hrflow_connectors.core import (
-    Warehouse,
-    WarehousePullAction,
-    WarehousePushAction,
-)
+from hrflow_connectors.core import Warehouse, WarehousePullAction, WarehousePushAction
 
 LIST_JOBS_LIMIT = 30
 
