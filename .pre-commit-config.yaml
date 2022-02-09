@@ -13,13 +13,20 @@ repos:
         language: system
         types: [python]
         args: [--config=.flake8]
+        stages: [commit]
 
       - id: hrflow_connectors_manifest
         name: hrflow_connectors_manifest
         entry: poetry run python -c 'from hrflow_connectors import __CONNECTORS__, hrflow_connectors_manifest as m; m(connectors=__CONNECTORS__)'
         language: system
+        stages: [push]
+        always_run: true
+        pass_filenames: false
 
       - id: hrflow_connectors_docs
         name: hrflow_connectors_docs
         entry: poetry run python -c 'from hrflow_connectors import __CONNECTORS__, generate_docs as m; m(connectors=__CONNECTORS__)'
         language: system
+        stages: [push]
+        always_run: true
+        pass_filenames: false
