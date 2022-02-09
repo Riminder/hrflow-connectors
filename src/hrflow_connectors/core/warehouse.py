@@ -1,10 +1,17 @@
-from logging import LoggerAdapter
 import typing as t
+from logging import LoggerAdapter
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+
+class ActionEndpoints(BaseModel):
+    name: str
+    description: str
+    url: str
 
 
 class WarehousePullAction(BaseModel):
+    endpoints: t.List[ActionEndpoints] = Field(default_factory=list)
     parameters: t.Type[BaseModel]
     function: t.Callable[[LoggerAdapter, BaseModel], t.Iterable[t.Dict]]
 
@@ -13,6 +20,7 @@ class WarehousePullAction(BaseModel):
 
 
 class WarehousePushAction(BaseModel):
+    endpoints: t.List[ActionEndpoints] = Field(default_factory=list)
     parameters: t.Type[BaseModel]
     function: t.Callable[[LoggerAdapter, BaseModel, t.Iterable[t.Dict]], None]
 

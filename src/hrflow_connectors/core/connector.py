@@ -1,15 +1,14 @@
 import enum
-from functools import partial
 import json
 import logging
 import typing as t
 import uuid
+from functools import partial
 
-from jinja2 import Template
-from pydantic import BaseModel, create_model, Field, ValidationError
+from pydantic import BaseModel, Field, ValidationError, create_model
 
+from hrflow_connectors.core.templates import WORKFLOW_TEMPLATE
 from hrflow_connectors.core.warehouse import Warehouse
-
 
 logger = logging.getLogger(__name__)
 
@@ -72,9 +71,11 @@ class BaseActionParameters(BaseModel):
             schema["properties"]["logics"] = (
                 {
                     "title": "logics",
-                    "description": "List of logic functions. Each function should have"
-                    " the following signature {}. The final list should be exposed "
-                    "in a variable named 'logics'.".format(LogicFunctionType),
+                    "description": (
+                        "List of logic functions. Each function should have"
+                        " the following signature {}. The final list should be exposed "
+                        "in a variable named 'logics'.".format(LogicFunctionType)
+                    ),
                     "template": LogicsTemplate,
                     "type": "code_editor",
                 },
@@ -82,9 +83,11 @@ class BaseActionParameters(BaseModel):
             schema["properties"]["format"] = (
                 {
                     "title": "format",
-                    "description": "Formatting function. You should expose a function"
-                    " named 'format' with following signature {}".format(
-                        FormatFunctionType
+                    "description": (
+                        "Formatting function. You should expose a function"
+                        " named 'format' with following signature {}".format(
+                            FormatFunctionType
+                        )
                     ),
                     "template": FormatTemplate,
                     "type": "code_editor",
@@ -110,66 +113,13 @@ class WorkflowType(str, enum.Enum):
     pull = "pull"
 
 
-WORKFLOW_TEMPLATE = Template(
-    """
-import typing as t
-
-from hrflow_connectors import {{ connector_name }}
-
-{{ format_placeholder }}
-
-{{ logics_placeholder }}
-
-def workflow(
-        {% if type == "catch" %}
-        _request: t.Dict,
-        {% endif %}
-        settings: t.Dict
-    ) -> None:
-    actions_parameters = dict()
-    try:
-        format
-    except NameError:
-        pass
-    else:
-        actions_parameters["format"] = format
-
-    try:
-        logics
-    except NameError:
-        pass
-    else:
-        actions_parameters["logics"] = logics
-
-    {% if type == "pull" %}
-    pull_parameters_from = settings
-    {% else %}
-    pull_parameters_from = {**settings, **_request}
-    {% endif %}
-
-    {{ connector_name }}.{{ action_name }}(
-        action_parameters=actions_parameters,
-        source_parameters=dict(
-            {% for parameter in source_parameters %}
-                {{ parameter }}=pull_parameters_from.get("{{ parameter }}"),
-            {% endfor %}
-        ),
-        destination_parameters=dict(
-            {% for parameter in destination_parameters %}
-                {{ parameter }}=pull_parameters_from.get("{{ parameter }}"),
-            {% endfor %}
-        ),
-    )
-"""
-)
-
-
 class ConnectorAction(BaseModel):
     WORKFLOW_FORMAT_PLACEHOLDER = "# << format_placeholder >>"
     WORKFLOW_LOGICS_PLACEHOLDER = "# << logics_placeholder >>"
 
     name: str
     type: WorkflowType
+    description: str
     parameters: t.Type[BaseModel]
     source: Warehouse
     destination: Warehouse
@@ -345,6 +295,8 @@ class ConnectorAction(BaseModel):
 
 class ConnectorModel(BaseModel):
     name: str
+    description: str
+    url: str
     actions: t.List[ConnectorAction]
 
 
@@ -378,11 +330,10 @@ class Connector:
 
 
 def hrflow_connectors_manifest(
-    version: str, connectors: t.List[Connector], directory_path: str
+    connectors: t.List[Connector], directory_path: str = "."
 ) -> None:
     manifest = dict(
         name="HrFlow.ai Connectors",
-        version=version,
         connectors=[connector.manifest() for connector in connectors],
     )
     with open("{}/manifest.json".format(directory_path), "w") as f:

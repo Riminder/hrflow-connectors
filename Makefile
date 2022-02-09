@@ -1,9 +1,15 @@
-DIR := $(PWD)/src/hrflow_connectors
+DIR := $(PWD)
 
 default: manifest
 
 manifest:
-	PYTHONPATH=./src/ poetry run python -c 'from hrflow_connectors import __CONNECTORS__, hrflow_connectors_manifest as m; m(version="test", connectors=__CONNECTORS__, directory_path="$(DIR)")'
+	poetry run python -c 'from hrflow_connectors import __CONNECTORS__, hrflow_connectors_manifest as m; m(connectors=__CONNECTORS__, directory_path="$(DIR)")'
+
+docs:
+	poetry run python -c 'from hrflow_connectors import __CONNECTORS__, generate_docs as m; m(connectors=__CONNECTORS__)'
+
+hooks:
+	poetry run pre-commit run --all-files
 
 ipython:
-	PYTHONPATH=./src/ poetry run ipython
+	poetry run ipython

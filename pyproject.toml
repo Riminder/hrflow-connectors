@@ -1,9 +1,19 @@
 [tool.poetry]
 name = "hrflow-connectors"
 version = "2.0.0"
-description = "hrflow-connectors is an open-source project created by HrFlow.ai to democratize Talent Data integration within the HR Tech landscape."
-authors = ["Your Name <you@example.com>"]
-license = "Apache Version 2.0"
+description = "hrflow-connectors is an open source project created by HrFlow.ai to allow developers to connect easily HR ecosystem component."
+license = "Apache-2.0"
+authors = ["HrFlow.ai <support+hrflow_connectors@hrflow.ai>"]
+readme = "README.md"
+homepage = "https://github.com/Riminder/hrflow-connectors"
+repository = "https://github.com/Riminder/hrflow-connectors"
+documentation = "https://github.com/Riminder/hrflow-connectors"
+exclude = ["Makefile", ".pre-commit-config.yaml", "manifest.json", "tests", "poetry.lock"]
+
+[tool.poetry.urls]
+"HrFlow.ai Documentation" = "https://developers.hrflow.ai/"
+"Changelog" = "https://github.com/Riminder/hrflow-connectors/releases/"
+
 
 [tool.poetry.dependencies]
 python = "^3.6.3"
@@ -13,14 +23,21 @@ hrflow = "^1.9.0"
 requests = "^2.27.1"
 
 [tool.poetry.dev-dependencies]
-black = "^22.1.0"
-flake8 = "^4.0.1"
-flake8-black = "^0.2.4"
-flake8-import-order = "^0.18.1"
+pytest = "^5.2"
 ipython = "^7.0"
+flake8 = "^4.0.1"
+flake8-isort = "^4.1.1"
+flake8-black = "^0.2.4"
+black = "^22.1.0"
+pre-commit = "^2.17.0"
 
 [tool.black]
 line-length = 88
+experimental-string-processing = true
+
+
+[tool.isort]
+profile = "black"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
