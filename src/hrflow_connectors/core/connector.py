@@ -29,8 +29,16 @@ class ConnectorActionAdapter(logging.LoggerAdapter):
 
 
 class ActionStatus(enum.Enum):
+    source_not_pullable_failure = enum.auto()
+    destination_not_pushable_failure = enum.auto()
+    bad_action_parameters = enum.auto()
+    bad_source_parameters = enum.auto()
+    bad_destination_parameters = enum.auto()
+    format_failure = enum.auto()
+    logics_failure = enum.auto()
+    pulling_failure = enum.auto()
+    pushing_failure = enum.auto()
     success = enum.auto()
-    failure = enum.auto()
 
 
 LogicFunctionType = t.Callable[[t.Dict], t.Union[t.Dict, None]]
@@ -159,13 +167,18 @@ class ConnectorAction(BaseModel):
         )
         adapter.info("Starting Action")
 
+        if self.source.is_pullable is False:
+            return ActionStatus.source_not_pullable_failure
+
+        if self.destination.is_pushable is False:
+            return ActionStatus.destination_not_pushable_failure
         try:
             parameters = self.parameters(**action_parameters)
         except ValidationError as e:
             adapter.warning(
                 "Failed to parse action_parameters with errors={}".format(e.errors())
             )
-            return ActionStatus.failure
+            return ActionStatus.bad_action_parameters
 
         try:
             source_parameters = self.source.pull.parameters(**source_parameters)
@@ -173,7 +186,7 @@ class ConnectorAction(BaseModel):
             adapter.warning(
                 "Failed to parse source_parameters with errors={}".format(e.errors())
             )
-            return ActionStatus.failure
+            return ActionStatus.bad_source_parameters
 
         try:
             destination_parameters = self.destination.push.parameters(
@@ -185,7 +198,7 @@ class ConnectorAction(BaseModel):
                     e.errors()
                 )
             )
-            return ActionStatus.failure
+            return ActionStatus.bad_destination_parameters
 
         adapter.info(
             "Starting pulling from source={} with parameters={}".format(
@@ -210,7 +223,7 @@ class ConnectorAction(BaseModel):
                     self.source.name, source_parameters, repr(e)
                 )
             )
-            return ActionStatus.failure
+            return ActionStatus.pulling_failure
         adapter.info(
             "Finished pulling from source={} n_items={}".format(
                 self.source.name, len(source_items)
@@ -231,7 +244,7 @@ class ConnectorAction(BaseModel):
                     "default" if using_default_format else "user defined", repr(e)
                 )
             )
-            return ActionStatus.failure
+            return ActionStatus.format_failure
         adapter.info("Finished formatting source items")
 
         if len(parameters.logics) > 0:
@@ -253,7 +266,7 @@ class ConnectorAction(BaseModel):
                 adapter.error(
                     "Failed to apply logic functions error={}".format(repr(e))
                 )
-                return ActionStatus.failure
+                return ActionStatus.logics_failure
             adapter.info(
                 "Logic functions applied: n_items={} after applying logics".format(
                     len(items_to_push)
@@ -288,7 +301,7 @@ class ConnectorAction(BaseModel):
                     self.destination.name, destination_parameters, repr(e)
                 )
             )
-            return ActionStatus.failure
+            return ActionStatus.pushing_failure
         adapter.info("Finished pushing to destination={}".format(self.destination.name))
         return ActionStatus.success
 
