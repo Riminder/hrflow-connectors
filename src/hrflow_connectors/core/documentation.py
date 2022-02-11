@@ -43,7 +43,7 @@ def field_example(field: ModelField) -> str:
     if field_type is str:
         return '"your_{}"'.format(field.name)
 
-    if callable(field_type):
+    if field_type in [int, float, bool]:
         return str(field_type())
 
     return "***"
@@ -82,7 +82,7 @@ def get_template_fields(
             name=field.name,
             type=field_type(field),
             required=field.required,
-            description=field.field_info.description,
+            description=field.field_info.description or "",
             example=field_example(field),
             default=field_default(field, documentation_path),
         )
@@ -90,10 +90,12 @@ def get_template_fields(
     ]
 
 
-def generate_docs(connectors: t.List[Connector]) -> None:
+def generate_docs(
+    connectors: t.List[Connector], connectors_directory: Path = CONNECTORS_DIRECTORY
+) -> None:
     for connector in connectors:
         model = connector.model
-        connector_directory = CONNECTORS_DIRECTORY / model.name.lower()
+        connector_directory = connectors_directory / model.name.lower()
         if not connector_directory.is_dir():
             logging.error(
                 "Skipping documentation for {}: no directory found at {}".format(

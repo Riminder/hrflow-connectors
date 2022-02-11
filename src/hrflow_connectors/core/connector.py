@@ -53,6 +53,7 @@ def logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:
 
 logics = [logic_1, logic_2]
 """
+LogicsDescription = "List of logic functions"
 FormatFunctionType = t.Callable[[t.Dict], t.Dict]
 FormatTemplate = """
 import typing as t
@@ -65,7 +66,7 @@ FormatDescription = "Formatting function"
 
 class BaseActionParameters(BaseModel):
     logics: t.List[LogicFunctionType] = Field(
-        default_factory=list, description="List of logic functions"
+        default_factory=list, description=LogicsDescription
     )
     format: FormatFunctionType = Field(lambda x: x, description=FormatDescription)
 
