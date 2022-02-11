@@ -11,5 +11,8 @@ docs:
 hooks:
 	poetry run pre-commit run --all-files
 
+pytest:
+	poetry run pytest
+
 ipython:
 	poetry run ipython
