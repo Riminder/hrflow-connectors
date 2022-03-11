@@ -29,16 +29,16 @@ class ConnectorActionAdapter(logging.LoggerAdapter):
 
 
 class ActionStatus(enum.Enum):
-    source_not_pullable_failure = enum.auto()
-    destination_not_pushable_failure = enum.auto()
-    bad_action_parameters = enum.auto()
-    bad_source_parameters = enum.auto()
-    bad_destination_parameters = enum.auto()
-    format_failure = enum.auto()
-    logics_failure = enum.auto()
-    pulling_failure = enum.auto()
-    pushing_failure = enum.auto()
-    success = enum.auto()
+    source_not_pullable_failure = "source_not_pullable_failure"
+    destination_not_pushable_failure = "destination_not_pushable_failure"
+    bad_action_parameters = "bad_action_parameters"
+    bad_source_parameters = "bad_source_parameters"
+    bad_destination_parameters = "bad_destination_parameters"
+    format_failure = "format_failure"
+    logics_failure = "logics_failure"
+    pulling_failure = "pulling_failure"
+    pushing_failure = "pushing_failure"
+    success = "success"
 
 
 LogicFunctionType = t.Callable[[t.Dict], t.Union[t.Dict, None]]

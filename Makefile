@@ -11,8 +11,11 @@ docs:
 hooks:
 	poetry run pre-commit run --all-files
 
-pytest:
+pytest-core:
 	poetry run pytest
+
+pytest:
+	poetry run pytest --allconnectors
 
 ipython:
 	poetry run ipython
