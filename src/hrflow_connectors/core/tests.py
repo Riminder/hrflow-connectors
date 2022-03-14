@@ -76,7 +76,7 @@ def actions(connector: Connector):
 
 @contextmanager
 def warehouses(connector_name: str, connectors_directory: Path):
-    if connectors_directory is CONNECTORS_DIRECTORY:
+    if connectors_directory is CONNECTORS_DIRECTORY:  # pragma: no cover
         warehouse_module = import_module(
             "hrflow_connectors.connectors.{}.warehouse".format(connector_name.lower())
         )
