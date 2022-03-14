@@ -18,24 +18,24 @@ CONNECTOR_README_TEMPLATE = Template(
 ACTION_DOCUMENTATION_TEMAPLTE = Template(
     """
 # {{ action_name | title | replace("_", " ") }}
-`{{ source_name }}` :arrow_right: `{{ destination_name }}`
+`{{ origin_name }}` :arrow_right: `{{ target_name }}`
 
 {{ description }}
 
-{% if source_endpoints %}
-**{{ source_name }} endpoints used :**
+{% if origin_endpoints %}
+**{{ origin_name }} endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
-{%- for endpoint in source_endpoints %}
+{%- for endpoint in origin_endpoints %}
 | [**{{ endpoint.name}}**]({{ endpoint.url }}) | {{ endpoint.description }} |
 {%- endfor %}
 
 {% endif %}
-{% if destination_endpoints %}
-**{{ destination_name }} endpoints used :**
+{% if target_endpoints %}
+**{{ target_name }} endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
-{%- for endpoint in destination_endpoints %}
+{%- for endpoint in target_endpoints %}
 | [**{{ endpoint.name}}**]({{ endpoint.url }}) | {{ endpoint.description }} |
 {%- endfor %}
 
@@ -52,7 +52,7 @@ ACTION_DOCUMENTATION_TEMAPLTE = Template(
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-{%- for field in source_fields %}
+{%- for field in origin_fields %}
 | `{{ field.name }}` {% if field.required %}:red_circle:{% endif %} | `{{ field.type }}` | {{ field.default }} | {{ field.description }} |
 {%- endfor %}
 
@@ -60,7 +60,7 @@ ACTION_DOCUMENTATION_TEMAPLTE = Template(
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-{%- for field in destination_fields %}
+{%- for field in target_fields %}
 | `{{ field.name }}` {% if field.required %}:red_circle:{% endif %} | `{{ field.type }}` | {{ field.default }} | {{ field.description }} |
 {%- endfor %}
 
@@ -82,13 +82,13 @@ logging.basicConfig(level=logging.INFO)
         {{ field.name }}={{ field.example }},
         {%- endfor %}
     ),
-    source_parameters=dict(
-        {%- for field in source_fields %}
+    origin_parameters=dict(
+        {%- for field in origin_fields %}
         {{ field.name }}={{ field.example }},
         {%- endfor %}
     ),
-    destination_parameters=dict(
-        {%- for field in destination_fields %}
+    target_parameters=dict(
+        {%- for field in target_fields %}
         {{ field.name }}={{ field.example }},
         {%- endfor %}
     )
@@ -136,13 +136,13 @@ def workflow(
 
     {{ connector_name }}.{{ action_name }}(
         action_parameters=actions_parameters,
-        source_parameters=dict(
-            {%- for parameter in source_parameters %}
+        origin_parameters=dict(
+            {%- for parameter in origin_parameters %}
                 {{ parameter }}=pull_parameters_from.get("{{ parameter }}"),
             {%- endfor %}
         ),
-        destination_parameters=dict(
-            {%- for parameter in destination_parameters %}
+        target_parameters=dict(
+            {%- for parameter in target_parameters %}
                 {{ parameter }}=pull_parameters_from.get("{{ parameter }}"),
             {%- endfor %}
         ),

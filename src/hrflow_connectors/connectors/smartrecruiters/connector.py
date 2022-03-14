@@ -192,8 +192,8 @@ SmartRecruiters = Connector(
             parameters=BaseActionParameters.with_default_format(
                 "PullJobsActionParameters", format=format_job
             ),
-            source=SmartRecruitersJobWarehouse,
-            destination=HrFlowJobWarehouse,
+            origin=SmartRecruitersJobWarehouse,
+            target=HrFlowJobWarehouse,
         ),
         ConnectorAction(
             name="push_profile",
@@ -205,8 +205,8 @@ SmartRecruiters = Connector(
             parameters=BaseActionParameters.with_default_format(
                 "PushProfileActionParameters", format=format_profile
             ),
-            source=HrFlowProfileWarehouse,
-            destination=SmartRecruitersProfileWarehouse,
+            origin=HrFlowProfileWarehouse,
+            target=SmartRecruitersProfileWarehouse,
         ),
     ],
 )

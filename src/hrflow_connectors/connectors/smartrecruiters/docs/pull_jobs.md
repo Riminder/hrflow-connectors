@@ -58,14 +58,14 @@ SmartRecruiters.pull_jobs(
         logics=[],
         format=lambda *args, **kwargs: None # Put your code logic here,
     ),
-    source_parameters=dict(
+    origin_parameters=dict(
         x_smart_token="your_x_smart_token",
         query="your_query",
         updated_after="your_updated_after",
         posting_status="PUBLIC",
         job_status="CREATED",
     ),
-    destination_parameters=dict(
+    target_parameters=dict(
         api_secret="your_api_secret",
         api_user="your_api_user",
         board_key="your_board_key",

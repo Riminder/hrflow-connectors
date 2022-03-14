@@ -28,8 +28,8 @@
               ]
             }
           },
-          "source": "SmartRecruiters Jobs",
-          "source_parameters": {
+          "origin": "SmartRecruiters Jobs",
+          "origin_parameters": {
             "title": "PullJobsParameters",
             "type": "object",
             "properties": {
@@ -96,7 +96,7 @@
               }
             }
           },
-          "source_data_schema": {
+          "origin_data_schema": {
             "title": "SmartRecruitersJob",
             "type": "object",
             "properties": {
@@ -443,8 +443,8 @@
               }
             }
           },
-          "destination": "HrFlow.ai Jobs",
-          "destination_parameters": {
+          "target": "HrFlow.ai Jobs",
+          "target_parameters": {
             "title": "PushJobParameters",
             "type": "object",
             "properties": {
@@ -488,7 +488,7 @@
               "board_key"
             ]
           },
-          "destination_data_schema": {
+          "target_data_schema": {
             "title": "HrFlowJob",
             "type": "object",
             "properties": {
@@ -761,7 +761,7 @@
             }
           },
           "workflow_type": "pull",
-          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import SmartRecruiters\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    \n    pull_parameters_from = settings\n    \n\n    SmartRecruiters.pull_jobs(\n        action_parameters=actions_parameters,\n        source_parameters=dict(\n                x_smart_token=pull_parameters_from.get(\"x_smart_token\"),\n                query=pull_parameters_from.get(\"query\"),\n                updated_after=pull_parameters_from.get(\"updated_after\"),\n                posting_status=pull_parameters_from.get(\"posting_status\"),\n                job_status=pull_parameters_from.get(\"job_status\"),\n        ),\n        destination_parameters=dict(\n                api_secret=pull_parameters_from.get(\"api_secret\"),\n                api_user=pull_parameters_from.get(\"api_user\"),\n                board_key=pull_parameters_from.get(\"board_key\"),\n                sync=pull_parameters_from.get(\"sync\"),\n                update_content=pull_parameters_from.get(\"update_content\"),\n                enrich_with_parsing=pull_parameters_from.get(\"enrich_with_parsing\"),\n        ),\n    )",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import SmartRecruiters\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    \n    pull_parameters_from = settings\n    \n\n    SmartRecruiters.pull_jobs(\n        action_parameters=actions_parameters,\n        origin_parameters=dict(\n                x_smart_token=pull_parameters_from.get(\"x_smart_token\"),\n                query=pull_parameters_from.get(\"query\"),\n                updated_after=pull_parameters_from.get(\"updated_after\"),\n                posting_status=pull_parameters_from.get(\"posting_status\"),\n                job_status=pull_parameters_from.get(\"job_status\"),\n        ),\n        target_parameters=dict(\n                api_secret=pull_parameters_from.get(\"api_secret\"),\n                api_user=pull_parameters_from.get(\"api_user\"),\n                board_key=pull_parameters_from.get(\"board_key\"),\n                sync=pull_parameters_from.get(\"sync\"),\n                update_content=pull_parameters_from.get(\"update_content\"),\n                enrich_with_parsing=pull_parameters_from.get(\"enrich_with_parsing\"),\n        ),\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>"
         },
@@ -789,8 +789,8 @@
               ]
             }
           },
-          "source": "HrFlow.ai Profiles",
-          "source_parameters": {
+          "origin": "HrFlow.ai Profiles",
+          "origin_parameters": {
             "title": "PullProfileParameters",
             "type": "object",
             "properties": {
@@ -822,7 +822,7 @@
               "profile_key"
             ]
           },
-          "source_data_schema": {
+          "origin_data_schema": {
             "title": "HrFlowProfile",
             "type": "object",
             "properties": {
@@ -1283,8 +1283,8 @@
               }
             }
           },
-          "destination": "SmartRecruiters Profiles",
-          "destination_parameters": {
+          "target": "SmartRecruiters Profiles",
+          "target_parameters": {
             "title": "PushProfilesParameters",
             "type": "object",
             "properties": {
@@ -1304,7 +1304,7 @@
               "job_id"
             ]
           },
-          "destination_data_schema": {
+          "target_data_schema": {
             "title": "SmartRecruitersProfile",
             "type": "object",
             "properties": {
@@ -1534,7 +1534,7 @@
             }
           },
           "workflow_type": "catch",
-          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import SmartRecruiters\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    \n    pull_parameters_from = {**settings, **_request}\n    \n\n    SmartRecruiters.push_profile(\n        action_parameters=actions_parameters,\n        source_parameters=dict(\n                api_secret=pull_parameters_from.get(\"api_secret\"),\n                api_user=pull_parameters_from.get(\"api_user\"),\n                source_key=pull_parameters_from.get(\"source_key\"),\n                profile_key=pull_parameters_from.get(\"profile_key\"),\n        ),\n        destination_parameters=dict(\n                x_smart_token=pull_parameters_from.get(\"x_smart_token\"),\n                job_id=pull_parameters_from.get(\"job_id\"),\n        ),\n    )",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import SmartRecruiters\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    \n    pull_parameters_from = {**settings, **_request}\n    \n\n    SmartRecruiters.push_profile(\n        action_parameters=actions_parameters,\n        origin_parameters=dict(\n                api_secret=pull_parameters_from.get(\"api_secret\"),\n                api_user=pull_parameters_from.get(\"api_user\"),\n                source_key=pull_parameters_from.get(\"source_key\"),\n                profile_key=pull_parameters_from.get(\"profile_key\"),\n        ),\n        target_parameters=dict(\n                x_smart_token=pull_parameters_from.get(\"x_smart_token\"),\n                job_id=pull_parameters_from.get(\"job_id\"),\n        ),\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>"
         }
