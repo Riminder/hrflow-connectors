@@ -7,6 +7,6 @@ from hrflow_connectors.core.connector import (  # noqa
 from hrflow_connectors.core.warehouse import (  # noqa
     ActionEndpoints,
     Warehouse,
-    WarehousePullAction,
-    WarehousePushAction,
+    WarehouseReadAction,
+    WarehouseWriteAction,
 )

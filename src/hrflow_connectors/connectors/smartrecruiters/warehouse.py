@@ -12,8 +12,8 @@ from hrflow_connectors.connectors.smartrecruiters.schemas import (
 from hrflow_connectors.core import (
     ActionEndpoints,
     Warehouse,
-    WarehousePullAction,
-    WarehousePushAction,
+    WarehouseReadAction,
+    WarehouseWriteAction,
 )
 
 SMARTRECRUITERS_JOBS_ENDPOINT = "https://api.smartrecruiters.com/jobs"
@@ -106,7 +106,7 @@ class PullJobsParameters(BaseModel):
     )
 
 
-def pull(adapter: LoggerAdapter, parameters: PullJobsParameters) -> t.Iterable[t.Dict]:
+def read(adapter: LoggerAdapter, parameters: PullJobsParameters) -> t.Iterable[t.Dict]:
     page = None
     while True:
         params = dict(
@@ -160,7 +160,7 @@ def pull(adapter: LoggerAdapter, parameters: PullJobsParameters) -> t.Iterable[t
         page = response["nextPageId"]
 
 
-def push(
+def write(
     adapter: LoggerAdapter,
     parameters: PushProfilesParameters,
     profiles: t.Iterator[t.Dict],
@@ -189,9 +189,9 @@ def push(
 SmartRecruitersJobWarehouse = Warehouse(
     name="SmartRecruiters Jobs",
     data_schema=SmartRecruitersJob,
-    pull=WarehousePullAction(
+    read=WarehouseReadAction(
         parameters=PullJobsParameters,
-        function=pull,
+        function=read,
         endpoints=[GET_ALL_JOBS_ENDPOINT, GET_JOB_ENDPOINT],
     ),
 )
@@ -199,9 +199,9 @@ SmartRecruitersJobWarehouse = Warehouse(
 SmartRecruitersProfileWarehouse = Warehouse(
     name="SmartRecruiters Profiles",
     data_schema=SmartRecruitersProfile,
-    push=WarehousePushAction(
+    write=WarehouseWriteAction(
         parameters=PushProfilesParameters,
-        function=push,
+        function=write,
         endpoints=[POST_CANDIDATE_ENDPOINT],
     ),
 )

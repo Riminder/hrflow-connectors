@@ -170,7 +170,7 @@ class PullTest(BaseModel):
 
 
 class WarehouseTests(BaseModel):
-    pull: t.List[PullTest] = Field(default_factory=list)
+    read: t.List[PullTest] = Field(default_factory=list)
 
 
 class ActionTest(BaseModel):

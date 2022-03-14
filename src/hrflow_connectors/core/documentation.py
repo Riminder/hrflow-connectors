@@ -121,11 +121,11 @@ def generate_docs(
                     documentation_path=action_docs_directory,
                 )
                 origin_fields = get_template_fields(
-                    fields=action.origin.pull.parameters.__fields__.values(),
+                    fields=action.origin.read.parameters.__fields__.values(),
                     documentation_path=action_docs_directory,
                 )
                 target_fields = get_template_fields(
-                    fields=action.target.push.parameters.__fields__.values(),
+                    fields=action.target.write.parameters.__fields__.values(),
                     documentation_path=action_docs_directory,
                 )
                 action_documentation_content = ACTION_DOCUMENTATION_TEMAPLTE.render(
@@ -135,10 +135,10 @@ def generate_docs(
                     action_fields=action_fields,
                     origin_name=action.origin.name,
                     origin_fields=origin_fields,
-                    origin_endpoints=action.origin.pull.endpoints,
+                    origin_endpoints=action.origin.read.endpoints,
                     target_name=action.target.name,
                     target_fields=target_fields,
-                    target_endpoints=action.target.push.endpoints,
+                    target_endpoints=action.target.write.endpoints,
                 )
                 action_documentation = action_docs_directory / "{}.md".format(
                     action.name

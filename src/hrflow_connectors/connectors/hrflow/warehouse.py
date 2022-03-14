@@ -7,7 +7,7 @@ from hrflow import Hrflow
 from pydantic import BaseModel, Field
 
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowJob, HrFlowProfile
-from hrflow_connectors.core import Warehouse, WarehousePullAction, WarehousePushAction
+from hrflow_connectors.core import Warehouse, WarehouseReadAction, WarehouseWriteAction
 
 LIST_JOBS_LIMIT = 30
 
@@ -116,7 +116,7 @@ def enrich_job_with_parsing(hrflow_client: Hrflow, job: t.Dict) -> None:
     return
 
 
-def push(
+def write(
     adapter: LoggerAdapter, parameters: PushJobParameters, jobs: t.Iterator[t.Dict]
 ) -> None:
     hrflow_client = Hrflow(
@@ -263,7 +263,7 @@ def push(
             raise Exception("Failed to index job")
 
 
-def pull(adapter: LoggerAdapter, parameters: PullProfileParameters) -> t.List[t.Dict]:
+def read(adapter: LoggerAdapter, parameters: PullProfileParameters) -> t.List[t.Dict]:
     hrflow_client = Hrflow(
         api_secret=parameters.api_secret, api_user=parameters.api_user
     )
@@ -290,11 +290,11 @@ def pull(adapter: LoggerAdapter, parameters: PullProfileParameters) -> t.List[t.
 HrFlowJobWarehouse = Warehouse(
     name="HrFlow.ai Jobs",
     data_schema=HrFlowJob,
-    push=WarehousePushAction(parameters=PushJobParameters, function=push),
+    write=WarehouseWriteAction(parameters=PushJobParameters, function=write),
 )
 
 HrFlowProfileWarehouse = Warehouse(
     name="HrFlow.ai Profiles",
     data_schema=HrFlowProfile,
-    pull=WarehousePullAction(parameters=PullProfileParameters, function=pull),
+    read=WarehouseReadAction(parameters=PullProfileParameters, function=read),
 )

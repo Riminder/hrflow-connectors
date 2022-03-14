@@ -29,15 +29,15 @@ class ConnectorActionAdapter(logging.LoggerAdapter):
 
 
 class ActionStatus(enum.Enum):
-    origin_not_pullable_failure = "origin_not_pullable_failure"
-    target_not_pushable_failure = "target_not_pushable_failure"
+    origin_not_readable_failure = "origin_not_readable_failure"
+    target_not_writable_failure = "target_not_writable_failure"
     bad_action_parameters = "bad_action_parameters"
     bad_origin_parameters = "bad_origin_parameters"
     bad_target_parameters = "bad_target_parameters"
     format_failure = "format_failure"
     logics_failure = "logics_failure"
-    pulling_failure = "pulling_failure"
-    pushing_failure = "pushing_failure"
+    reading_failure = "reading_failure"
+    writing_failure = "writing_failure"
     success = "success"
 
 
@@ -141,10 +141,10 @@ class ConnectorAction(BaseModel):
             action_name=self.name,
             type=self.type.value,
             origin_parameters=[
-                parameter for parameter in self.origin.pull.parameters.__fields__
+                parameter for parameter in self.origin.read.parameters.__fields__
             ],
             target_parameters=[
-                parameter for parameter in self.target.push.parameters.__fields__
+                parameter for parameter in self.target.write.parameters.__fields__
             ],
         )
 
@@ -168,11 +168,11 @@ class ConnectorAction(BaseModel):
         )
         adapter.info("Starting Action")
 
-        if self.origin.is_pullable is False:
-            return ActionStatus.origin_not_pullable_failure
+        if self.origin.is_readable is False:
+            return ActionStatus.origin_not_readable_failure
 
-        if self.target.is_pushable is False:
-            return ActionStatus.target_not_pushable_failure
+        if self.target.is_writable is False:
+            return ActionStatus.target_not_writable_failure
         try:
             parameters = self.parameters(**action_parameters)
         except ValidationError as e:
@@ -182,7 +182,7 @@ class ConnectorAction(BaseModel):
             return ActionStatus.bad_action_parameters
 
         try:
-            origin_parameters = self.origin.pull.parameters(**origin_parameters)
+            origin_parameters = self.origin.read.parameters(**origin_parameters)
         except ValidationError as e:
             adapter.warning(
                 "Failed to parse origin_parameters with errors={}".format(e.errors())
@@ -190,7 +190,7 @@ class ConnectorAction(BaseModel):
             return ActionStatus.bad_origin_parameters
 
         try:
-            target_parameters = self.target.push.parameters(**target_parameters)
+            target_parameters = self.target.write.parameters(**target_parameters)
         except ValidationError as e:
             adapter.warning(
                 "Failed to parse target_parameters with errors={}".format(e.errors())
@@ -198,7 +198,7 @@ class ConnectorAction(BaseModel):
             return ActionStatus.bad_target_parameters
 
         adapter.info(
-            "Starting pulling from warehouse={} with parameters={}".format(
+            "Starting reading from warehouse={} with parameters={}".format(
                 self.origin.name, origin_parameters
             )
         )
@@ -208,21 +208,21 @@ class ConnectorAction(BaseModel):
                 log_tags=adapter.extra["log_tags"]
                 + [
                     dict(name="warehouse", value=self.origin.name),
-                    dict(name="action", value="pull"),
+                    dict(name="action", value="read"),
                 ]
             ),
         )
         try:
-            origin_items = list(self.origin.pull(origin_adapter, origin_parameters))
+            origin_items = list(self.origin.read(origin_adapter, origin_parameters))
         except Exception as e:
             adapter.error(
-                "Failed pull from warehouse={} with parameters={} error={}".format(
+                "Failed read from warehouse={} with parameters={} error={}".format(
                     self.origin.name, origin_parameters, repr(e)
                 )
             )
-            return ActionStatus.pulling_failure
+            return ActionStatus.reading_failure
         adapter.info(
-            "Finished pulling from warehouse={} n_items={}".format(
+            "Finished reading from warehouse={} n_items={}".format(
                 self.origin.name, len(origin_items)
             )
         )
@@ -251,14 +251,14 @@ class ConnectorAction(BaseModel):
                 )
             )
             try:
-                items_to_push = []
+                items_to_write = []
                 for item in formatted_items:
                     for logic in parameters.logics:
                         item = logic(item)
                         if item is None:
                             break
                     else:
-                        items_to_push.append(item)
+                        items_to_write.append(item)
             except Exception as e:
                 adapter.error(
                     "Failed to apply logic functions error={}".format(repr(e))
@@ -266,16 +266,16 @@ class ConnectorAction(BaseModel):
                 return ActionStatus.logics_failure
             adapter.info(
                 "Logic functions applied: n_items={} after applying logics".format(
-                    len(items_to_push)
+                    len(items_to_write)
                 )
             )
         else:
             adapter.info("No logic functions supplied. Skipping")
-            items_to_push = formatted_items
+            items_to_write = formatted_items
 
         adapter.info(
-            "Starting pushing to warehouse={} with parameters={} n_items={}".format(
-                self.target.name, target_parameters, len(items_to_push)
+            "Starting writing to warehouse={} with parameters={} n_items={}".format(
+                self.target.name, target_parameters, len(items_to_write)
             )
         )
         target_adapter = ConnectorActionAdapter(
@@ -284,20 +284,20 @@ class ConnectorAction(BaseModel):
                 log_tags=adapter.extra["log_tags"]
                 + [
                     dict(name="warehouse", value=self.target.name),
-                    dict(name="action", value="push"),
+                    dict(name="action", value="write"),
                 ]
             ),
         )
         try:
-            self.target.push(target_adapter, target_parameters, items_to_push)
+            self.target.write(target_adapter, target_parameters, items_to_write)
         except Exception as e:
             adapter.error(
-                "Failed to push to warehouse={} with parameters={} error={}".format(
+                "Failed to write to warehouse={} with parameters={} error={}".format(
                     self.target.name, target_parameters, repr(e)
                 )
             )
-            return ActionStatus.pushing_failure
-        adapter.info("Finished pushing to warehouse={}".format(self.target.name))
+            return ActionStatus.writing_failure
+        adapter.info("Finished writing to warehouse={}".format(self.target.name))
         return ActionStatus.success
 
 
@@ -323,10 +323,10 @@ class Connector:
                 name=action.name,
                 action_parameters=action.parameters.schema(),
                 origin=action.origin.name,
-                origin_parameters=action.origin.pull.parameters.schema(),
+                origin_parameters=action.origin.read.parameters.schema(),
                 origin_data_schema=action.origin.data_schema.schema(),
                 target=action.target.name,
-                target_parameters=action.target.push.parameters.schema(),
+                target_parameters=action.target.write.parameters.schema(),
                 target_data_schema=action.target.data_schema.schema(),
                 workflow_type=action.type,
                 workflow_code=action.workflow_code(connector_name=model.name),
