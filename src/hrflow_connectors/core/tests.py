@@ -202,7 +202,7 @@ def collect_connector_tests(
         test_config = yaml.safe_load(test_config_file.read_bytes())
     except yaml.YAMLError as e:
         raise InvalidYAMLException(
-            "Failed to parse yaml test config for connector {} with erro {} ".format(
+            "Failed to parse yaml test config for connector {} with error {} ".format(
                 connector_name, str(e)
             )
         )
