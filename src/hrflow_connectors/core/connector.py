@@ -198,7 +198,7 @@ class ConnectorAction(BaseModel):
             return ActionStatus.bad_target_parameters
 
         adapter.info(
-            "Starting reading from warehouse={} with parameters={}".format(
+            "Starting to read from warehouse={} with parameters={}".format(
                 self.origin.name, origin_parameters
             )
         )
@@ -216,7 +216,7 @@ class ConnectorAction(BaseModel):
             origin_items = list(self.origin.read(origin_adapter, origin_parameters))
         except Exception as e:
             adapter.error(
-                "Failed read from warehouse={} with parameters={} error={}".format(
+                "Failed to read from warehouse={} with parameters={} error={}".format(
                     self.origin.name, origin_parameters, repr(e)
                 )
             )
@@ -229,7 +229,7 @@ class ConnectorAction(BaseModel):
 
         using_default_format = not bool(action_parameters.get("format"))
         adapter.info(
-            "Starting formatting origin items using {} function".format(
+            "Starting to format origin items using {} function".format(
                 "default" if using_default_format else "user defined"
             )
         )
@@ -246,9 +246,8 @@ class ConnectorAction(BaseModel):
 
         if len(parameters.logics) > 0:
             adapter.info(
-                "Applying logic functions: n_items={} before applying logics".format(
-                    len(formatted_items)
-                )
+                "Starting to apply logic functions: "
+                "n_items={} before applying logics".format(len(formatted_items))
             )
             try:
                 items_to_write = []
@@ -265,16 +264,15 @@ class ConnectorAction(BaseModel):
                 )
                 return ActionStatus.logics_failure
             adapter.info(
-                "Logic functions applied: n_items={} after applying logics".format(
-                    len(items_to_write)
-                )
+                "Finished applying logic functions: "
+                "n_items={} after applying logics".format(len(items_to_write))
             )
         else:
             adapter.info("No logic functions supplied. Skipping")
             items_to_write = formatted_items
 
         adapter.info(
-            "Starting writing to warehouse={} with parameters={} n_items={}".format(
+            "Starting to write to warehouse={} with parameters={} n_items={}".format(
                 self.target.name, target_parameters, len(items_to_write)
             )
         )
