@@ -10,7 +10,7 @@ class ActionEndpoints(BaseModel):
     url: str
 
 
-class WarehousePullAction(BaseModel):
+class WarehouseReadAction(BaseModel):
     endpoints: t.List[ActionEndpoints] = Field(default_factory=list)
     parameters: t.Type[BaseModel]
     function: t.Callable[[LoggerAdapter, BaseModel], t.Iterable[t.Dict]]
@@ -19,7 +19,7 @@ class WarehousePullAction(BaseModel):
         return self.function(*args, **kwargs)
 
 
-class WarehousePushAction(BaseModel):
+class WarehouseWriteAction(BaseModel):
     endpoints: t.List[ActionEndpoints] = Field(default_factory=list)
     parameters: t.Type[BaseModel]
     function: t.Callable[[LoggerAdapter, BaseModel, t.Iterable[t.Dict]], None]
@@ -31,13 +31,13 @@ class WarehousePushAction(BaseModel):
 class Warehouse(BaseModel):
     name: str
     data_schema: t.Type[BaseModel]
-    pull: t.Optional[WarehousePullAction]
-    push: t.Optional[WarehousePushAction]
+    read: t.Optional[WarehouseReadAction]
+    write: t.Optional[WarehouseWriteAction]
 
     @property
-    def is_pullable(self):
-        return self.pull is not None
+    def is_readable(self):
+        return self.read is not None
 
     @property
-    def is_pushable(self):
-        return self.push is not None
+    def is_writable(self):
+        return self.write is not None

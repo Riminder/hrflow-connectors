@@ -4,7 +4,7 @@ from logging import LoggerAdapter
 
 from pydantic import BaseModel, ConstrainedStr
 
-from hrflow_connectors.core import ActionEndpoints, Warehouse, WarehousePushAction
+from hrflow_connectors.core import ActionEndpoints, Warehouse, WarehouseWriteAction
 
 POST_LEADS = ActionEndpoints(
     name="Post lead",
@@ -28,22 +28,22 @@ class PushLeadsParameters(BaseModel):
     dummy_const_str: t.Optional[ConstrainedStr]
 
 
-def push(
+def write(
     adapter: LoggerAdapter,
     parameters: PushLeadsParameters,
     items: t.Iterator[t.Dict],
 ) -> None:
     adapter.info("Pushing leads to DB")
     LEADS_DB.setdefault(parameters.campaign_id, []).extend(items)
-    adapter.info("Finished pushing leads to DB")
+    adapter.info("Finished writing leads to DB")
 
 
 LeadsWarehouse = Warehouse(
     name="Test Leads",
     data_schema=Lead,
-    push=WarehousePushAction(
+    write=WarehouseWriteAction(
         parameters=PushLeadsParameters,
-        function=push,
+        function=write,
         endpoints=[POST_LEADS],
     ),
 )
@@ -51,7 +51,7 @@ LeadsWarehouse = Warehouse(
 BadLeadsWarehouse = Warehouse(
     name="Bad Test Leads",
     data_schema=Lead,
-    push=WarehousePushAction(
+    write=WarehouseWriteAction(
         parameters=PushLeadsParameters,
         function=lambda *args, **kwargs: 10 / 0,
         endpoints=[POST_LEADS],

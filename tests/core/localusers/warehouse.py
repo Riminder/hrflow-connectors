@@ -4,7 +4,7 @@ from logging import LoggerAdapter
 
 from pydantic import BaseModel
 
-from hrflow_connectors.core import ActionEndpoints, Warehouse, WarehousePullAction
+from hrflow_connectors.core import ActionEndpoints, Warehouse, WarehouseReadAction
 
 GET_USERS = ActionEndpoints(
     name="Get all user",
@@ -37,7 +37,7 @@ class PullUsersParameters(BaseModel):
     gender: t.Optional[Gender] = None
 
 
-def pull(adapter: LoggerAdapter, parameters: PullUsersParameters) -> t.Iterable[t.Dict]:
+def read(adapter: LoggerAdapter, parameters: PullUsersParameters) -> t.Iterable[t.Dict]:
     if parameters.gender is None:
         adapter.info("Returning all users")
         return USERS_DB[:]
@@ -48,9 +48,9 @@ def pull(adapter: LoggerAdapter, parameters: PullUsersParameters) -> t.Iterable[
 UsersWarehouse = Warehouse(
     name="Test Users",
     data_schema=User,
-    pull=WarehousePullAction(
+    read=WarehouseReadAction(
         parameters=PullUsersParameters,
-        function=pull,
+        function=read,
         endpoints=[GET_USERS],
     ),
 )
@@ -58,7 +58,7 @@ UsersWarehouse = Warehouse(
 BadUsersWarehouse = Warehouse(
     name="Bad Test Users",
     data_schema=User,
-    pull=WarehousePullAction(
+    read=WarehouseReadAction(
         parameters=PullUsersParameters,
         function=lambda *args, **kwargs: 10 / 0,
         endpoints=[GET_USERS],

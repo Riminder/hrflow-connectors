@@ -226,7 +226,7 @@ def test_invalid_warehouse_test_config(localusers_test_config, connectors_direct
 # Missing mandatory parameters
 warehouse:
   UsersWarehouse:
-    pull:
+    read:
       - id: valid_parameters
         """.encode()
     )
@@ -237,7 +237,7 @@ warehouse:
         )
     errors = excinfo.value.args[0]
     assert len(errors) == 1
-    assert errors[0]["loc"] == ("warehouse", "UsersWarehouse", "pull", 0, "parameters")
+    assert errors[0]["loc"] == ("warehouse", "UsersWarehouse", "read", 0, "parameters")
     assert errors[0]["type"] == "value_error.missing"
 
     localusers_test_config.write_bytes(
@@ -245,7 +245,7 @@ warehouse:
 # Warehouse doesnt not exist
 warehouse:
   WarehouseDoesNotExist:
-    pull:
+    read:
       - parameters: {}
         """.encode()
     )
@@ -280,7 +280,7 @@ actions:
     - origin_parameters: {}
       target_parameters:
         campain_id: my_camp
-      action_status: pushing_failure
+      action_status: writing_failure
   second_action:
     - origin_parameters:
         gender: male
@@ -313,7 +313,7 @@ actions:
     assert first_action_tests[2].id is None
     assert first_action_tests[2].origin_parameters == dict()
     assert first_action_tests[2].target_parameters == dict(campain_id="my_camp")
-    assert first_action_tests[2].action_status is ActionStatus.pushing_failure
+    assert first_action_tests[2].action_status is ActionStatus.writing_failure
 
     assert len(second_action_tests) == 1
 
@@ -331,7 +331,7 @@ def test_valid_warehouse_config_no_secrets(
         """
 warehouse:
   UsersWarehouse:
-    pull:
+    read:
       - id: empty_parameters
         parameters: {}
       - parameters:
@@ -340,7 +340,7 @@ warehouse:
           gender: female
         expected_number_of_items: 5
   BadUsersWarehouse:
-    pull:
+    read:
       - id: empty_parameters
         parameters: {}
         """.encode()
@@ -354,25 +354,25 @@ warehouse:
     users_warehouse_tests = test_suite.warehouse["UsersWarehouse"]
     bad_users_warehouse_tests = test_suite.warehouse["BadUsersWarehouse"]
 
-    assert len(users_warehouse_tests.pull) == 3
+    assert len(users_warehouse_tests.read) == 3
 
-    assert users_warehouse_tests.pull[0].id == "empty_parameters"
-    assert users_warehouse_tests.pull[0].parameters == dict()
-    assert users_warehouse_tests.pull[0].expected_number_of_items is None
+    assert users_warehouse_tests.read[0].id == "empty_parameters"
+    assert users_warehouse_tests.read[0].parameters == dict()
+    assert users_warehouse_tests.read[0].expected_number_of_items is None
 
-    assert users_warehouse_tests.pull[1].id is None
-    assert users_warehouse_tests.pull[1].parameters == dict(gender="male")
-    assert users_warehouse_tests.pull[1].expected_number_of_items is None
+    assert users_warehouse_tests.read[1].id is None
+    assert users_warehouse_tests.read[1].parameters == dict(gender="male")
+    assert users_warehouse_tests.read[1].expected_number_of_items is None
 
-    assert users_warehouse_tests.pull[2].id is None
-    assert users_warehouse_tests.pull[2].parameters == dict(gender="female")
-    assert users_warehouse_tests.pull[2].expected_number_of_items == 5
+    assert users_warehouse_tests.read[2].id is None
+    assert users_warehouse_tests.read[2].parameters == dict(gender="female")
+    assert users_warehouse_tests.read[2].expected_number_of_items == 5
 
-    assert len(bad_users_warehouse_tests.pull) == 1
+    assert len(bad_users_warehouse_tests.read) == 1
 
-    assert bad_users_warehouse_tests.pull[0].id == "empty_parameters"
-    assert bad_users_warehouse_tests.pull[0].parameters == dict()
-    assert bad_users_warehouse_tests.pull[0].expected_number_of_items is None
+    assert bad_users_warehouse_tests.read[0].id == "empty_parameters"
+    assert bad_users_warehouse_tests.read[0].parameters == dict()
+    assert bad_users_warehouse_tests.read[0].expected_number_of_items is None
 
 
 def test_failure_secret_not_found(
@@ -384,7 +384,7 @@ def test_failure_secret_not_found(
         """
 warehouse:
   LeadsWarehouse:
-    pull:
+    read:
       - parameters:
           my_secret: $__SECRET_KEY
 actions:
@@ -405,7 +405,7 @@ actions:
     assert errors[0]["loc"] == (
         "warehouse",
         "LeadsWarehouse",
-        "pull",
+        "read",
         0,
         "parameters",
         "my_secret",
@@ -465,7 +465,7 @@ def test_secret_from_file(
         """
 warehouse:
   LeadsWarehouse:
-    pull:
+    read:
       - parameters:
           my_secret: $__SECRET_KEY
 actions:
@@ -490,7 +490,7 @@ actions:
         == "xxxToken"
     )
     assert (
-        test_suite.warehouse["LeadsWarehouse"].pull[0].parameters["my_secret"]
+        test_suite.warehouse["LeadsWarehouse"].read[0].parameters["my_secret"]
         == "xxxKey"
     )
 
@@ -503,7 +503,7 @@ def test_secret_from_environment(
         """
 warehouse:
   LeadsWarehouse:
-    pull:
+    read:
       - parameters:
           my_secret: $__SECRET_KEY
 actions:
@@ -532,6 +532,6 @@ actions:
         == "xxxTokenFromEnv"
     )
     assert (
-        test_suite.warehouse["LeadsWarehouse"].pull[0].parameters["my_secret"]
+        test_suite.warehouse["LeadsWarehouse"].read[0].parameters["my_secret"]
         == "xxxKeyFromEnv"
     )

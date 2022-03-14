@@ -127,11 +127,11 @@ def test_origin_warehouse_failure():
             origin_parameters=dict(),
             target_parameters=dict(campaign_id="camp_xxx1"),
         )
-        is ActionStatus.pulling_failure
+        is ActionStatus.reading_failure
     )
 
 
-def test_origin_not_pullable_failure():
+def test_origin_not_readable_failure():
     connector = Connector(
         name="SmartLeads",
         description=DESCRIPTION,
@@ -153,7 +153,7 @@ def test_origin_not_pullable_failure():
             origin_parameters=dict(),
             target_parameters=dict(campaign_id="camp_xxx1"),
         )
-        is ActionStatus.origin_not_pullable_failure
+        is ActionStatus.origin_not_readable_failure
     )
 
 
@@ -179,11 +179,11 @@ def test_target_warehouse_failure():
             origin_parameters=dict(),
             target_parameters=dict(campaign_id="camp_xxx1"),
         )
-        is ActionStatus.pushing_failure
+        is ActionStatus.writing_failure
     )
 
 
-def test_target_not_pushable_failure():
+def test_target_not_writable_failure():
     connector = Connector(
         name="SmartLeads",
         description=DESCRIPTION,
@@ -205,7 +205,7 @@ def test_target_not_pushable_failure():
             origin_parameters=dict(),
             target_parameters=dict(),
         )
-        is ActionStatus.target_not_pushable_failure
+        is ActionStatus.target_not_writable_failure
     )
 
 
