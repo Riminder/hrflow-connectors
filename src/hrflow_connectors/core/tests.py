@@ -175,8 +175,8 @@ class WarehouseTests(BaseModel):
 
 class ActionTest(BaseModel):
     id: t.Optional[str] = None
-    source_parameters: t.Dict[str, ParameterValue]
-    destination_parameters: t.Dict[str, ParameterValue]
+    origin_parameters: t.Dict[str, ParameterValue]
+    target_parameters: t.Dict[str, ParameterValue]
     action_status: t.Optional[ActionStatus]
 
 

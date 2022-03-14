@@ -25,8 +25,8 @@ SmartLeads = Connector(
             type=WorkflowType.pull,
             description="Send users as leads",
             parameters=BaseActionParameters,
-            source=UsersWarehouse,
-            destination=LeadsWarehouse,
+            origin=UsersWarehouse,
+            target=LeadsWarehouse,
         ),
     ],
 )
@@ -80,8 +80,8 @@ def test_documentation_connector_directory_not_found(caplog, connectors_director
                 type=WorkflowType.pull,
                 description="Send users as leads",
                 parameters=BaseActionParameters,
-                source=UsersWarehouse,
-                destination=LeadsWarehouse,
+                origin=UsersWarehouse,
+                target=LeadsWarehouse,
             ),
         ],
     )

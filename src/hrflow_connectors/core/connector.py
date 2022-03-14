@@ -29,11 +29,11 @@ class ConnectorActionAdapter(logging.LoggerAdapter):
 
 
 class ActionStatus(enum.Enum):
-    source_not_pullable_failure = "source_not_pullable_failure"
-    destination_not_pushable_failure = "destination_not_pushable_failure"
+    origin_not_pullable_failure = "origin_not_pullable_failure"
+    target_not_pushable_failure = "target_not_pushable_failure"
     bad_action_parameters = "bad_action_parameters"
-    bad_source_parameters = "bad_source_parameters"
-    bad_destination_parameters = "bad_destination_parameters"
+    bad_origin_parameters = "bad_origin_parameters"
+    bad_target_parameters = "bad_target_parameters"
     format_failure = "format_failure"
     logics_failure = "logics_failure"
     pulling_failure = "pulling_failure"
@@ -130,8 +130,8 @@ class ConnectorAction(BaseModel):
     type: WorkflowType
     description: str
     parameters: t.Type[BaseModel]
-    source: Warehouse
-    destination: Warehouse
+    origin: Warehouse
+    target: Warehouse
 
     def workflow_code(self, connector_name: str) -> str:
         return WORKFLOW_TEMPLATE.render(
@@ -140,11 +140,11 @@ class ConnectorAction(BaseModel):
             connector_name=connector_name,
             action_name=self.name,
             type=self.type.value,
-            source_parameters=[
-                parameter for parameter in self.source.pull.parameters.__fields__
+            origin_parameters=[
+                parameter for parameter in self.origin.pull.parameters.__fields__
             ],
-            destination_parameters=[
-                parameter for parameter in self.destination.push.parameters.__fields__
+            target_parameters=[
+                parameter for parameter in self.target.push.parameters.__fields__
             ],
         )
 
@@ -152,8 +152,8 @@ class ConnectorAction(BaseModel):
         self,
         connector_name: str,
         action_parameters: t.Dict,
-        source_parameters: t.Dict,
-        destination_parameters: t.Dict,
+        origin_parameters: t.Dict,
+        target_parameters: t.Dict,
     ) -> ActionStatus:
         action_id = uuid.uuid4()
         adapter = ConnectorActionAdapter(
@@ -168,11 +168,11 @@ class ConnectorAction(BaseModel):
         )
         adapter.info("Starting Action")
 
-        if self.source.is_pullable is False:
-            return ActionStatus.source_not_pullable_failure
+        if self.origin.is_pullable is False:
+            return ActionStatus.origin_not_pullable_failure
 
-        if self.destination.is_pushable is False:
-            return ActionStatus.destination_not_pushable_failure
+        if self.target.is_pushable is False:
+            return ActionStatus.target_not_pushable_failure
         try:
             parameters = self.parameters(**action_parameters)
         except ValidationError as e:
@@ -182,71 +182,67 @@ class ConnectorAction(BaseModel):
             return ActionStatus.bad_action_parameters
 
         try:
-            source_parameters = self.source.pull.parameters(**source_parameters)
+            origin_parameters = self.origin.pull.parameters(**origin_parameters)
         except ValidationError as e:
             adapter.warning(
-                "Failed to parse source_parameters with errors={}".format(e.errors())
+                "Failed to parse origin_parameters with errors={}".format(e.errors())
             )
-            return ActionStatus.bad_source_parameters
+            return ActionStatus.bad_origin_parameters
 
         try:
-            destination_parameters = self.destination.push.parameters(
-                **destination_parameters
-            )
+            target_parameters = self.target.push.parameters(**target_parameters)
         except ValidationError as e:
             adapter.warning(
-                "Failed to parse destination_parameters with errors={}".format(
-                    e.errors()
-                )
+                "Failed to parse target_parameters with errors={}".format(e.errors())
             )
-            return ActionStatus.bad_destination_parameters
+            return ActionStatus.bad_target_parameters
 
         adapter.info(
-            "Starting pulling from source={} with parameters={}".format(
-                self.source.name, source_parameters
+            "Starting pulling from warehouse={} with parameters={}".format(
+                self.origin.name, origin_parameters
             )
         )
-        source_adapter = ConnectorActionAdapter(
+        origin_adapter = ConnectorActionAdapter(
             logger,
             dict(
                 log_tags=adapter.extra["log_tags"]
                 + [
-                    dict(name="warehouse", value=self.source.name),
+                    dict(name="warehouse", value=self.origin.name),
                     dict(name="action", value="pull"),
                 ]
             ),
         )
         try:
-            source_items = list(self.source.pull(source_adapter, source_parameters))
+            origin_items = list(self.origin.pull(origin_adapter, origin_parameters))
         except Exception as e:
             adapter.error(
-                "Failed pull from source={} with parameters={} error={}".format(
-                    self.source.name, source_parameters, repr(e)
+                "Failed pull from warehouse={} with parameters={} error={}".format(
+                    self.origin.name, origin_parameters, repr(e)
                 )
             )
             return ActionStatus.pulling_failure
         adapter.info(
-            "Finished pulling from source={} n_items={}".format(
-                self.source.name, len(source_items)
+            "Finished pulling from warehouse={} n_items={}".format(
+                self.origin.name, len(origin_items)
             )
         )
 
         using_default_format = not bool(action_parameters.get("format"))
         adapter.info(
-            "Starting formatting source items using {} function".format(
+            "Starting formatting origin items using {} function".format(
                 "default" if using_default_format else "user defined"
             )
         )
         try:
-            formatted_items = list(map(parameters.format, source_items))
+            formatted_items = list(map(parameters.format, origin_items))
         except Exception as e:
             adapter.error(
-                "Failed to format source items using {} function error={}".format(
+                "Failed to format origin items using {} function error={}".format(
                     "default" if using_default_format else "user defined", repr(e)
                 )
             )
             return ActionStatus.format_failure
-        adapter.info("Finished formatting source items")
+        adapter.info("Finished formatting origin items")
 
         if len(parameters.logics) > 0:
             adapter.info(
@@ -278,32 +274,30 @@ class ConnectorAction(BaseModel):
             items_to_push = formatted_items
 
         adapter.info(
-            "Starting pushing to destination={} with parameters={} n_items={}".format(
-                self.destination.name, destination_parameters, len(items_to_push)
+            "Starting pushing to warehouse={} with parameters={} n_items={}".format(
+                self.target.name, target_parameters, len(items_to_push)
             )
         )
-        destination_adapter = ConnectorActionAdapter(
+        target_adapter = ConnectorActionAdapter(
             logger,
             dict(
                 log_tags=adapter.extra["log_tags"]
                 + [
-                    dict(name="warehouse", value=self.destination.name),
+                    dict(name="warehouse", value=self.target.name),
                     dict(name="action", value="push"),
                 ]
             ),
         )
         try:
-            self.destination.push(
-                destination_adapter, destination_parameters, items_to_push
-            )
+            self.target.push(target_adapter, target_parameters, items_to_push)
         except Exception as e:
             adapter.error(
-                "Failed to push to destination={} with parameters={} error={}".format(
-                    self.destination.name, destination_parameters, repr(e)
+                "Failed to push to warehouse={} with parameters={} error={}".format(
+                    self.target.name, target_parameters, repr(e)
                 )
             )
             return ActionStatus.pushing_failure
-        adapter.info("Finished pushing to destination={}".format(self.destination.name))
+        adapter.info("Finished pushing to warehouse={}".format(self.target.name))
         return ActionStatus.success
 
 
@@ -328,12 +322,12 @@ class Connector:
             action_manifest = dict(
                 name=action.name,
                 action_parameters=action.parameters.schema(),
-                source=action.source.name,
-                source_parameters=action.source.pull.parameters.schema(),
-                source_data_schema=action.source.data_schema.schema(),
-                destination=action.destination.name,
-                destination_parameters=action.destination.push.parameters.schema(),
-                destination_data_schema=action.destination.data_schema.schema(),
+                origin=action.origin.name,
+                origin_parameters=action.origin.pull.parameters.schema(),
+                origin_data_schema=action.origin.data_schema.schema(),
+                target=action.target.name,
+                target_parameters=action.target.push.parameters.schema(),
+                target_data_schema=action.target.data_schema.schema(),
                 workflow_type=action.type,
                 workflow_code=action.workflow_code(connector_name=model.name),
                 workflow_code_format_placeholder=action.WORKFLOW_FORMAT_PLACEHOLDER,
