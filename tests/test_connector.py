@@ -8,7 +8,7 @@ from hrflow_connectors.core.tests import collect_connector_tests
 
 ConnectorActionTestParams = namedtuple(
     "ConnectorActionTestParams",
-    "action, source_parameters, destination_parameters, expected_status",
+    "action, origin_parameters, target_parameters, expected_status",
 )
 
 
@@ -39,8 +39,8 @@ def parameterize_connector_action_tests(
                     pytest.param(
                         ConnectorActionTestParams(
                             action=action,
-                            source_parameters=action_test.source_parameters,
-                            destination_parameters=action_test.destination_parameters,
+                            origin_parameters=action_test.origin_parameters,
+                            target_parameters=action_test.target_parameters,
                             expected_status=action_test.action_status,
                         ),
                         id="{}_action:{}_{}".format(
@@ -54,8 +54,8 @@ def parameterize_connector_action_tests(
 def test_connector_action(connector_action_test_params):
     action_status = connector_action_test_params.action(
         action_parameters=dict(),
-        source_parameters=connector_action_test_params.source_parameters,
-        destination_parameters=connector_action_test_params.destination_parameters,
+        origin_parameters=connector_action_test_params.origin_parameters,
+        target_parameters=connector_action_test_params.target_parameters,
     )
     if connector_action_test_params.expected_status is not None:
         assert action_status == connector_action_test_params.expected_status

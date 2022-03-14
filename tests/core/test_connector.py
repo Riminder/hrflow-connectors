@@ -26,8 +26,8 @@ SmartLeads = Connector(
             type=WorkflowType.pull,
             description="Send users as leads",
             parameters=BaseActionParameters,
-            source=UsersWarehouse,
-            destination=LeadsWarehouse,
+            origin=UsersWarehouse,
+            target=LeadsWarehouse,
         ),
     ],
 )
@@ -66,46 +66,46 @@ def test_connector_failures():
     assert (
         SmartLeads.pull_leads(
             action_parameters=dict(format=1),
-            source_parameters=dict(),
-            destination_parameters=dict(),
+            origin_parameters=dict(),
+            target_parameters=dict(),
         )
         is ActionStatus.bad_action_parameters
     )
     assert (
         SmartLeads.pull_leads(
             action_parameters=dict(),
-            source_parameters=dict(gender="M"),
-            destination_parameters=dict(),
+            origin_parameters=dict(gender="M"),
+            target_parameters=dict(),
         )
-        is ActionStatus.bad_source_parameters
+        is ActionStatus.bad_origin_parameters
     )
     assert (
         SmartLeads.pull_leads(
             action_parameters=dict(),
-            source_parameters=dict(),
-            destination_parameters=dict(),
+            origin_parameters=dict(),
+            target_parameters=dict(),
         )
-        is ActionStatus.bad_destination_parameters
+        is ActionStatus.bad_target_parameters
     )
     assert (
         SmartLeads.pull_leads(
             action_parameters=dict(format=lambda user: 10 / 0),
-            source_parameters=dict(),
-            destination_parameters=dict(campaign_id=campaign_id),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
         )
         is ActionStatus.format_failure
     )
     assert (
         SmartLeads.pull_leads(
             action_parameters=dict(logics=[lambda user: 10 / 0]),
-            source_parameters=dict(),
-            destination_parameters=dict(campaign_id=campaign_id),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
         )
         is ActionStatus.logics_failure
     )
 
 
-def test_source_warehouse_failure():
+def test_origin_warehouse_failure():
     connector = Connector(
         name="SmartLeads",
         description=DESCRIPTION,
@@ -116,22 +116,22 @@ def test_source_warehouse_failure():
                 type=WorkflowType.pull,
                 description="Send users as leads",
                 parameters=BaseActionParameters,
-                source=BadUsersWarehouse,
-                destination=LeadsWarehouse,
+                origin=BadUsersWarehouse,
+                target=LeadsWarehouse,
             ),
         ],
     )
     assert (
         connector.pull_leads(
             action_parameters=dict(),
-            source_parameters=dict(),
-            destination_parameters=dict(campaign_id="camp_xxx1"),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id="camp_xxx1"),
         )
         is ActionStatus.pulling_failure
     )
 
 
-def test_source_not_pullable_failure():
+def test_origin_not_pullable_failure():
     connector = Connector(
         name="SmartLeads",
         description=DESCRIPTION,
@@ -142,22 +142,22 @@ def test_source_not_pullable_failure():
                 type=WorkflowType.pull,
                 description="Send users as leads",
                 parameters=BaseActionParameters,
-                source=LeadsWarehouse,
-                destination=LeadsWarehouse,
+                origin=LeadsWarehouse,
+                target=LeadsWarehouse,
             ),
         ],
     )
     assert (
         connector.pull_leads(
             action_parameters=dict(),
-            source_parameters=dict(),
-            destination_parameters=dict(campaign_id="camp_xxx1"),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id="camp_xxx1"),
         )
-        is ActionStatus.source_not_pullable_failure
+        is ActionStatus.origin_not_pullable_failure
     )
 
 
-def test_destination_warehouse_failure():
+def test_target_warehouse_failure():
     connector = Connector(
         name="SmartLeads",
         description=DESCRIPTION,
@@ -168,22 +168,22 @@ def test_destination_warehouse_failure():
                 type=WorkflowType.pull,
                 description="Send users as leads",
                 parameters=BaseActionParameters,
-                source=UsersWarehouse,
-                destination=BadLeadsWarehouse,
+                origin=UsersWarehouse,
+                target=BadLeadsWarehouse,
             ),
         ],
     )
     assert (
         connector.pull_leads(
             action_parameters=dict(),
-            source_parameters=dict(),
-            destination_parameters=dict(campaign_id="camp_xxx1"),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id="camp_xxx1"),
         )
         is ActionStatus.pushing_failure
     )
 
 
-def test_destination_not_pushable_failure():
+def test_target_not_pushable_failure():
     connector = Connector(
         name="SmartLeads",
         description=DESCRIPTION,
@@ -194,18 +194,18 @@ def test_destination_not_pushable_failure():
                 type=WorkflowType.pull,
                 description="Send users as leads",
                 parameters=BaseActionParameters,
-                source=UsersWarehouse,
-                destination=UsersWarehouse,
+                origin=UsersWarehouse,
+                target=UsersWarehouse,
             ),
         ],
     )
     assert (
         connector.pull_leads(
             action_parameters=dict(),
-            source_parameters=dict(),
-            destination_parameters=dict(),
+            origin_parameters=dict(),
+            target_parameters=dict(),
         )
-        is ActionStatus.destination_not_pushable_failure
+        is ActionStatus.target_not_pushable_failure
     )
 
 
@@ -215,8 +215,8 @@ def test_connector_simple_success():
     assert (
         SmartLeads.pull_leads(
             action_parameters=dict(),
-            source_parameters=dict(),
-            destination_parameters=dict(campaign_id=campaign_id),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
         )
         is ActionStatus.success
     )
@@ -234,8 +234,8 @@ def test_connector_with_format():
     assert (
         SmartLeads.pull_leads(
             action_parameters=dict(format=format),
-            source_parameters=dict(),
-            destination_parameters=dict(campaign_id=campaign_id),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
         )
         is ActionStatus.success
     )
@@ -250,8 +250,8 @@ def test_connector_with_logics():
     assert (
         SmartLeads.pull_leads(
             action_parameters=dict(logics=[lambda u: u, lambda u: None, lambda u: u]),
-            source_parameters=dict(),
-            destination_parameters=dict(campaign_id=campaign_id),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
         )
         is ActionStatus.success
     )
@@ -262,8 +262,8 @@ def test_connector_with_logics():
     assert (
         SmartLeads.pull_leads(
             action_parameters=dict(logics=[lambda u: u, lambda u: u, lambda u: None]),
-            source_parameters=dict(),
-            destination_parameters=dict(campaign_id=campaign_id),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
         )
         is ActionStatus.success
     )
@@ -274,8 +274,8 @@ def test_connector_with_logics():
     assert (
         SmartLeads.pull_leads(
             action_parameters=dict(logics=[lambda u: u, lambda u: u, lambda u: u]),
-            source_parameters=dict(),
-            destination_parameters=dict(campaign_id=campaign_id),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
         )
         is ActionStatus.success
     )
@@ -292,8 +292,8 @@ def test_connector_with_logics():
     assert (
         SmartLeads.pull_leads(
             action_parameters=dict(logics=[lambda u: u, logic, lambda u: u]),
-            source_parameters=dict(),
-            destination_parameters=dict(campaign_id=campaign_id),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
         )
         is ActionStatus.success
     )
@@ -320,8 +320,8 @@ def test_connector_default_format():
                 parameters=BaseActionParameters.with_default_format(
                     "even_smarter_leads_connector", smarter_format
                 ),
-                source=UsersWarehouse,
-                destination=LeadsWarehouse,
+                origin=UsersWarehouse,
+                target=LeadsWarehouse,
             ),
         ],
     )
@@ -331,8 +331,8 @@ def test_connector_default_format():
     assert (
         EvenSmarterLeads.pull_leads(
             action_parameters=dict(format=lambda user: user),
-            source_parameters=dict(),
-            destination_parameters=dict(campaign_id=campaign_id),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
         )
         is ActionStatus.success
     )
@@ -345,8 +345,8 @@ def test_connector_default_format():
     assert (
         EvenSmarterLeads.pull_leads(
             action_parameters=dict(),
-            source_parameters=dict(),
-            destination_parameters=dict(campaign_id=campaign_id),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
         )
         is ActionStatus.success
     )

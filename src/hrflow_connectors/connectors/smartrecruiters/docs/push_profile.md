@@ -52,13 +52,13 @@ SmartRecruiters.push_profile(
         logics=[],
         format=lambda *args, **kwargs: None # Put your code logic here,
     ),
-    source_parameters=dict(
+    origin_parameters=dict(
         api_secret="your_api_secret",
         api_user="your_api_user",
         source_key="your_source_key",
         profile_key="your_profile_key",
     ),
-    destination_parameters=dict(
+    target_parameters=dict(
         x_smart_token="your_x_smart_token",
         job_id="your_job_id",
     )

@@ -32,16 +32,16 @@ SmartLeads = Connector(
             type=WorkflowType.pull,
             description="Send users as leads",
             parameters=BaseActionParameters,
-            source=UsersWarehouse,
-            destination=LeadsWarehouse,
+            origin=UsersWarehouse,
+            target=LeadsWarehouse,
         ),
         ConnectorAction(
             name="second_action",
             type=WorkflowType.pull,
             description="Send users as leads",
             parameters=BaseActionParameters,
-            source=UsersWarehouse,
-            destination=LeadsWarehouse,
+            origin=UsersWarehouse,
+            target=LeadsWarehouse,
         ),
     ],
 )
@@ -112,8 +112,8 @@ actions:
   XXXXX
   first_action:
     - id: first_test
-      source_parameters:
-      destination_parameters:
+      origin_parameters:
+      target_parameters:
         campain_id: my_camp
       action_status: success
 
@@ -130,11 +130,11 @@ def test_invalid_action_test_config(smartleads_test_config, connectors_directory
     assert smartleads_test_config.exists() is False
     smartleads_test_config.write_bytes(
         """
-# Missing mandatory source_parameters
+# Missing mandatory origin_parameters
 actions:
   first_action:
     - id: first_test
-      destination_parameters: {}
+      target_parameters: {}
       action_status: success
 
         """.encode()
@@ -146,16 +146,16 @@ actions:
         )
     errors = excinfo.value.args[0]
     assert len(errors) == 1
-    assert errors[0]["loc"] == ("actions", "first_action", 0, "source_parameters")
+    assert errors[0]["loc"] == ("actions", "first_action", 0, "origin_parameters")
     assert errors[0]["type"] == "value_error.missing"
 
     smartleads_test_config.write_bytes(
         """
-# Missing destination_parameters
+# Missing target_parameters
 actions:
   first_action:
     - id: first_test
-      source_parameters: {}
+      origin_parameters: {}
       action_status: success
 
         """.encode()
@@ -167,7 +167,7 @@ actions:
         )
     errors = excinfo.value.args[0]
     assert len(errors) == 1
-    assert errors[0]["loc"] == ("actions", "first_action", 0, "destination_parameters")
+    assert errors[0]["loc"] == ("actions", "first_action", 0, "target_parameters")
     assert errors[0]["type"] == "value_error.missing"
 
     smartleads_test_config.write_bytes(
@@ -176,8 +176,8 @@ actions:
 actions:
   first_action:
     - id: first_test
-      source_parameters: {}
-      destination_parameters: {}
+      origin_parameters: {}
+      target_parameters: {}
       action_status: not_a_valid_action_status
 
         """.encode()
@@ -198,8 +198,8 @@ actions:
 actions:
   invalid_action_name:
     - id: first_test
-      source_parameters: {}
-      destination_parameters: {}
+      origin_parameters: {}
+      target_parameters: {}
       action_status: success
 
         """.encode()
@@ -271,20 +271,20 @@ def test_valid_action_config_no_secrets(smartleads_test_config, connectors_direc
 actions:
   first_action:
     - id: first_test
-      source_parameters: {}
-      destination_parameters: {}
+      origin_parameters: {}
+      target_parameters: {}
     - id: second_test
-      source_parameters: {}
-      destination_parameters: {}
+      origin_parameters: {}
+      target_parameters: {}
       action_status: success
-    - source_parameters: {}
-      destination_parameters:
+    - origin_parameters: {}
+      target_parameters:
         campain_id: my_camp
       action_status: pushing_failure
   second_action:
-    - source_parameters:
+    - origin_parameters:
         gender: male
-      destination_parameters:
+      target_parameters:
         campain_id: my_second_camp
       action_status: success
         """.encode()
@@ -301,27 +301,25 @@ actions:
     assert len(first_action_tests) == 3
 
     assert first_action_tests[0].id == "first_test"
-    assert first_action_tests[0].source_parameters == dict()
-    assert first_action_tests[0].destination_parameters == dict()
+    assert first_action_tests[0].origin_parameters == dict()
+    assert first_action_tests[0].target_parameters == dict()
     assert first_action_tests[0].action_status is None
 
     assert first_action_tests[1].id == "second_test"
-    assert first_action_tests[1].source_parameters == dict()
-    assert first_action_tests[1].destination_parameters == dict()
+    assert first_action_tests[1].origin_parameters == dict()
+    assert first_action_tests[1].target_parameters == dict()
     assert first_action_tests[1].action_status is ActionStatus.success
 
     assert first_action_tests[2].id is None
-    assert first_action_tests[2].source_parameters == dict()
-    assert first_action_tests[2].destination_parameters == dict(campain_id="my_camp")
+    assert first_action_tests[2].origin_parameters == dict()
+    assert first_action_tests[2].target_parameters == dict(campain_id="my_camp")
     assert first_action_tests[2].action_status is ActionStatus.pushing_failure
 
     assert len(second_action_tests) == 1
 
     assert second_action_tests[0].id is None
-    assert second_action_tests[0].source_parameters == dict(gender="male")
-    assert second_action_tests[0].destination_parameters == dict(
-        campain_id="my_second_camp"
-    )
+    assert second_action_tests[0].origin_parameters == dict(gender="male")
+    assert second_action_tests[0].target_parameters == dict(campain_id="my_second_camp")
     assert second_action_tests[0].action_status is ActionStatus.success
 
 
@@ -392,9 +390,9 @@ warehouse:
 actions:
   first_action:
     - id: first_test
-      source_parameters:
+      origin_parameters:
         my_secret: $__SECRET_TOKEN
-      destination_parameters: {}
+      target_parameters: {}
         """.encode()
     )
     with pytest.raises(InvalidTestConfigException) as excinfo:
@@ -421,7 +419,7 @@ actions:
         "actions",
         "first_action",
         0,
-        "source_parameters",
+        "origin_parameters",
         "my_secret",
     )
     assert errors[1][
@@ -441,9 +439,9 @@ def test_failure_invalid_json_secrets(
 actions:
   first_action:
     - id: first_test
-      source_parameters:
+      origin_parameters:
         my_secret: $__SECRET_TOKEN
-      destination_parameters: {}
+      target_parameters: {}
         """.encode()
     )
     smartleads_secrets_file.write_bytes(
@@ -473,9 +471,9 @@ warehouse:
 actions:
   first_action:
     - id: first_test
-      source_parameters:
+      origin_parameters:
         my_secret: $__SECRET_TOKEN
-      destination_parameters: {}
+      target_parameters: {}
         """.encode()
     )
     smartleads_secrets_file.write_bytes(
@@ -488,7 +486,7 @@ actions:
         connectors_directory=connectors_directory,
     )
     assert (
-        test_suite.actions["first_action"][0].source_parameters["my_secret"]
+        test_suite.actions["first_action"][0].origin_parameters["my_secret"]
         == "xxxToken"
     )
     assert (
@@ -511,9 +509,9 @@ warehouse:
 actions:
   first_action:
     - id: first_test
-      source_parameters:
+      origin_parameters:
         my_secret: $__SECRET_TOKEN
-      destination_parameters: {}
+      target_parameters: {}
         """.encode()
     )
     assert smartleads_secrets_file.exists() is False
@@ -530,7 +528,7 @@ actions:
         connectors_directory=connectors_directory,
     )
     assert (
-        test_suite.actions["first_action"][0].source_parameters["my_secret"]
+        test_suite.actions["first_action"][0].origin_parameters["my_secret"]
         == "xxxTokenFromEnv"
     )
     assert (
