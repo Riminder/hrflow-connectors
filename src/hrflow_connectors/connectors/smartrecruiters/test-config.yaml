@@ -1,6 +1,6 @@
 warehouse:
   SmartRecruitersJobWarehouse:
-    pull:
+    read:
       - parameters:
           x_smart_token: $__X_SMART_TOKEN
           posting_status: PUBLIC
@@ -39,7 +39,7 @@ actions:
         api_secret: $__API_SECRET
         api_user: $__API_USER
         board_key: $__BOARD_KEY
-      action_status: pulling_failure
+      action_status: reading_failure
     - id: invalid_hrflow_api_secret
       origin_parameters:
         x_smart_token: $__X_SMART_TOKEN
@@ -48,4 +48,4 @@ actions:
         api_secret: bad_api_secret
         api_user: $__API_USER
         board_key: $__BOARD_KEY
-      action_status: pushing_failure
+      action_status: writing_failure

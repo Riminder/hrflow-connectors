@@ -10,11 +10,11 @@ from hrflow_connectors.core.tests import collect_connector_tests
 
 WarehousePullTest = namedtuple(
     "WarehousePullTest",
-    "pull, parameters, expected_number_of_items",
+    "read, parameters, expected_number_of_items",
 )
 
 
-def parameterize_pull_warehouse_tests(
+def parameterize_read_warehouse_tests(
     connectors: t.List[str],
 ) -> t.List[pytest.param]:
     params = []
@@ -43,11 +43,11 @@ def parameterize_pull_warehouse_tests(
                 warehouse_tests,
             ) in connector_test_suite.warehouse.items():
                 warehouse = getattr(warehouses, warehouse_name)
-                for i, warehouse_test in enumerate(warehouse_tests.pull):
+                for i, warehouse_test in enumerate(warehouse_tests.read):
                     params.append(
                         pytest.param(
                             WarehousePullTest(
-                                pull=warehouse.pull,
+                                read=warehouse.read,
                                 parameters=warehouse_test.parameters,
                                 expected_number_of_items=warehouse_test.expected_number_of_items,  # noqa
                             ),
@@ -61,17 +61,17 @@ def parameterize_pull_warehouse_tests(
     return params
 
 
-def test_pull_warehouse(warehouse_pull_test_params):
-    logger = logging.getLogger("warehouse_pull_test")
+def test_read_warehouse(warehouse_read_test_params):
+    logger = logging.getLogger("warehouse_read_test")
     adapter = logging.LoggerAdapter(logger, extra=dict())
 
     items = list(
-        warehouse_pull_test_params.pull(
+        warehouse_read_test_params.read(
             adapter,
-            warehouse_pull_test_params.pull.parameters(
-                **warehouse_pull_test_params.parameters
+            warehouse_read_test_params.read.parameters(
+                **warehouse_read_test_params.parameters
             ),
         )
     )
-    if warehouse_pull_test_params.expected_number_of_items is not None:
-        assert len(items) == warehouse_pull_test_params.expected_number_of_items
+    if warehouse_read_test_params.expected_number_of_items is not None:
+        assert len(items) == warehouse_read_test_params.expected_number_of_items
