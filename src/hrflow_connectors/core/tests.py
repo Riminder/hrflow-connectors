@@ -41,26 +41,47 @@ class InvalidTestConfigException(Exception):
 
 @contextmanager
 def secrets(connector_name: str, connectors_directory: Path):
-    secrets_file = connectors_directory / connector_name.lower() / "secrets.json"
-    if secrets_file.exists():
+    secrets_prefix = ENVIRON_SECRETS_PREFIX.format(
+        connector_name=connector_name.upper()
+    )
+
+    global_secrets_file = connectors_directory / "secrets.json"
+    if global_secrets_file.exists():
         try:
-            secrets = json.loads(secrets_file.read_text())
+            global_secrets = json.loads(global_secrets_file.read_text())
+            global_secrets = {
+                key.replace(secrets_prefix, "", 1): value
+                for key, value in global_secrets.items()
+                if key.startswith(secrets_prefix)
+            }
+        except json.JSONDecodeError as e:
+            raise InvalidJSONException(
+                "Failed to JSON decode global secrets file for connector {} with"
+                " error {}".format(connector_name, e)
+            )
+    else:
+        global_secrets = dict()
+
+    connector_secrets_file = (
+        connectors_directory / connector_name.lower() / "secrets.json"
+    )
+    if connector_secrets_file.exists():
+        try:
+            connector_secrets = json.loads(connector_secrets_file.read_text())
         except json.JSONDecodeError as e:
             raise InvalidJSONException(
                 "Failed to JSON decode secrets file for connector {} "
                 "with error {}".format(connector_name, e)
             )
     else:
-        secrets = dict()
-    secrets_prefix = ENVIRON_SECRETS_PREFIX.format(
-        connector_name=connector_name.upper()
-    )
+        connector_secrets = dict()
+
     environnment_secrets = {
         key.replace(secrets_prefix, "", 1): value
         for key, value in os.environ.items()
         if key.startswith(secrets_prefix)
     }
-    token = Secrets.set({**secrets, **environnment_secrets})
+    token = Secrets.set({**global_secrets, **connector_secrets, **environnment_secrets})
     yield
     Secrets.reset(token)
 

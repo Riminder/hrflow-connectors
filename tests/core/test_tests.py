@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from unittest import mock
 
 import pytest
 
@@ -57,6 +58,13 @@ LocalUsers = Connector(
 def connectors_directory():
     path = Path(__file__).parent
     yield path
+
+
+@pytest.fixture
+def global_secrets_file(connectors_directory):
+    secrets_file = connectors_directory / "secrets.json"
+    yield secrets_file
+    secrets_file.unlink(missing_ok=True)
 
 
 @pytest.fixture
@@ -376,8 +384,12 @@ warehouse:
 
 
 def test_failure_secret_not_found(
-    smartleads_test_config, smartleads_secrets_file, connectors_directory
+    global_secrets_file,
+    smartleads_test_config,
+    smartleads_secrets_file,
+    connectors_directory,
 ):
+    assert global_secrets_file.exists() is False
     assert smartleads_test_config.exists() is False
     assert smartleads_secrets_file.exists() is False
     smartleads_test_config.write_bytes(
@@ -430,10 +442,13 @@ actions:
 
 
 def test_failure_invalid_json_secrets(
-    smartleads_test_config, smartleads_secrets_file, connectors_directory
+    global_secrets_file,
+    smartleads_test_config,
+    smartleads_secrets_file,
+    connectors_directory,
 ):
+    assert global_secrets_file.exists() is False
     assert smartleads_test_config.exists() is False
-    assert smartleads_secrets_file.exists() is False
     smartleads_test_config.write_bytes(
         """
 actions:
@@ -444,11 +459,28 @@ actions:
       target_parameters: {}
         """.encode()
     )
+
+    # Global Secrets File
+    global_secrets_file.write_bytes(
+        """
+not_at_valid_json_file
+        """.encode()
+    )
+    assert smartleads_secrets_file.exists() is False
+    with pytest.raises(InvalidJSONException):
+        collect_connector_tests(
+            connector=SmartLeads,
+            connectors_directory=connectors_directory,
+        )
+
+    global_secrets_file.unlink()
+
     smartleads_secrets_file.write_bytes(
         """
 not_at_valid_json_file
         """.encode()
     )
+    assert global_secrets_file.exists() is False
     with pytest.raises(InvalidJSONException):
         collect_connector_tests(
             connector=SmartLeads,
@@ -456,10 +488,63 @@ not_at_valid_json_file
         )
 
 
-def test_secret_from_file(
-    smartleads_test_config, smartleads_secrets_file, connectors_directory
+def test_secret_from_global_secrets_file(
+    global_secrets_file,
+    smartleads_test_config,
+    smartleads_secrets_file,
+    connectors_directory,
 ):
     assert smartleads_test_config.exists() is False
+    assert global_secrets_file.exists() is False
+    assert smartleads_secrets_file.exists() is False
+    smartleads_test_config.write_bytes(
+        """
+warehouse:
+  LeadsWarehouse:
+    read:
+      - parameters:
+          my_secret: $__SECRET_KEY
+actions:
+  first_action:
+    - id: first_test
+      origin_parameters:
+        my_secret: $__SECRET_TOKEN
+      target_parameters: {}
+        """.encode()
+    )
+    secrets_prefix = ENVIRON_SECRETS_PREFIX.format(
+        connector_name=SmartLeads.model.name.upper()
+    )
+    global_secrets_file.write_bytes(
+        """
+{{"{prefix}SECRET_TOKEN": "xxxToken", "{prefix}SECRET_KEY": "xxxKey"}}
+        """.format(
+            prefix=secrets_prefix
+        ).encode()
+    )
+    assert smartleads_secrets_file.exists() is False
+    test_suite = collect_connector_tests(
+        connector=SmartLeads,
+        connectors_directory=connectors_directory,
+    )
+    assert (
+        test_suite.actions["first_action"][0].origin_parameters["my_secret"]
+        == "xxxToken"
+    )
+    assert (
+        test_suite.warehouse["LeadsWarehouse"].read[0].parameters["my_secret"]
+        == "xxxKey"
+    )
+
+
+def test_secret_from_connector_secrets_file(
+    global_secrets_file,
+    smartleads_test_config,
+    smartleads_secrets_file,
+    connectors_directory,
+):
+    assert smartleads_test_config.exists() is False
+    assert global_secrets_file.exists() is False
     assert smartleads_secrets_file.exists() is False
     smartleads_test_config.write_bytes(
         """
@@ -481,6 +566,7 @@ actions:
 {"SECRET_TOKEN": "xxxToken", "SECRET_KEY": "xxxKey"}
         """.encode()
     )
+    assert global_secrets_file.exists() is False
     test_suite = collect_connector_tests(
         connector=SmartLeads,
         connectors_directory=connectors_directory,
@@ -496,7 +582,10 @@ actions:
 
 
 def test_secret_from_environment(
-    smartleads_test_config, smartleads_secrets_file, connectors_directory
+    global_secrets_file,
+    smartleads_secrets_file,
+    smartleads_test_config,
+    connectors_directory,
 ):
     assert smartleads_test_config.exists() is False
     smartleads_test_config.write_bytes(
@@ -515,18 +604,21 @@ actions:
         """.encode()
     )
     assert smartleads_secrets_file.exists() is False
-    os.environ[
-        ENVIRON_SECRETS_PREFIX.format(connector_name=SmartLeads.model.name.upper())
-        + "SECRET_TOKEN"
-    ] = "xxxTokenFromEnv"
-    os.environ[
-        ENVIRON_SECRETS_PREFIX.format(connector_name=SmartLeads.model.name.upper())
-        + "SECRET_KEY"
-    ] = "xxxKeyFromEnv"
-    test_suite = collect_connector_tests(
-        connector=SmartLeads,
-        connectors_directory=connectors_directory,
+    assert global_secrets_file.exists() is False
+
+    secrets_prefix = ENVIRON_SECRETS_PREFIX.format(
+        connector_name=SmartLeads.model.name.upper()
     )
+    with mock.patch.dict(
+        os.environ, {"{}SECRET_TOKEN".format(secrets_prefix): "xxxTokenFromEnv"}
+    ):
+        with mock.patch.dict(
+            os.environ, {"{}SECRET_KEY".format(secrets_prefix): "xxxKeyFromEnv"}
+        ):
+            test_suite = collect_connector_tests(
+                connector=SmartLeads,
+                connectors_directory=connectors_directory,
+            )
     assert (
         test_suite.actions["first_action"][0].origin_parameters["my_secret"]
         == "xxxTokenFromEnv"
@@ -534,4 +626,73 @@ actions:
     assert (
         test_suite.warehouse["LeadsWarehouse"].read[0].parameters["my_secret"]
         == "xxxKeyFromEnv"
+    )
+
+
+def test_precedence_of_secrets(
+    global_secrets_file,
+    smartleads_secrets_file,
+    smartleads_test_config,
+    connectors_directory,
+):
+    assert smartleads_test_config.exists() is False
+    assert smartleads_secrets_file.exists() is False
+    assert global_secrets_file.exists() is False
+
+    smartleads_test_config.write_bytes(
+        """
+warehouse:
+  LeadsWarehouse:
+    read:
+      - parameters:
+          my_secret: $__SECRET_KEY
+        """.encode()
+    )
+    secrets_prefix = ENVIRON_SECRETS_PREFIX.format(
+        connector_name=SmartLeads.model.name.upper()
+    )
+
+    # Only global
+    global_secrets_file.write_bytes(
+        """
+{{"{prefix}SECRET_KEY": "fromGlobal"}}
+        """.format(
+            prefix=secrets_prefix
+        ).encode()
+    )
+    test_suite = collect_connector_tests(
+        connector=SmartLeads,
+        connectors_directory=connectors_directory,
+    )
+    assert (
+        test_suite.warehouse["LeadsWarehouse"].read[0].parameters["my_secret"]
+        == "fromGlobal"
+    )
+
+    # Global and connector
+    smartleads_secrets_file.write_bytes(
+        """
+{"SECRET_KEY": "fromConnector"}
+        """.encode()
+    )
+    test_suite = collect_connector_tests(
+        connector=SmartLeads,
+        connectors_directory=connectors_directory,
+    )
+    assert (
+        test_suite.warehouse["LeadsWarehouse"].read[0].parameters["my_secret"]
+        == "fromConnector"
+    )
+
+    # Global, connector and Environment
+    with mock.patch.dict(
+        os.environ, {"{}SECRET_KEY".format(secrets_prefix): "fromEnv"}
+    ):
+        test_suite = collect_connector_tests(
+            connector=SmartLeads,
+            connectors_directory=connectors_directory,
+        )
+    assert (
+        test_suite.warehouse["LeadsWarehouse"].read[0].parameters["my_secret"]
+        == "fromEnv"
     )
