@@ -30,7 +30,7 @@ class WarehouseWriteAction(BaseModel):
 
 class Warehouse(BaseModel):
     name: str
-    data_schema: t.Type[BaseModel]
+    data_schema: t.Type[BaseModel] = Field(default_factory=lambda: BaseModel)
     read: t.Optional[WarehouseReadAction]
     write: t.Optional[WarehouseWriteAction]
 
