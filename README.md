@@ -136,12 +136,6 @@ The features offered by this package:
 ## 📖 Documentation
 To find out **more about the HrFlow.ai Connectors framework** take a look at the [📖 documentation](DOCUMENTATION.md).
 
-## 🚀 Environment
-Hrflow connector was initially developed to be integrated into [***workflows***](https://developers.hrflow.ai/docs/workflows).
-For this reason **it is compatible with Python 3.6.7+**.
-
-**To find the list of dependencies, you can look at the [`pyproject.toml`](pyproject.toml) file**
-
 ## :bulb: Contributions
 
 Please feel free to contribute to the quality of this content by

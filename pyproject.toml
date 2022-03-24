@@ -16,7 +16,7 @@ exclude = ["Makefile", ".pre-commit-config.yaml", "manifest.json", "tests", "poe
 
 
 [tool.poetry.dependencies]
-python = "^3.6.3"
+python = "^3.8"
 pydantic = "^1.9.0"
 Jinja2 = "^3.0.3"
 hrflow = "^1.9.0"
