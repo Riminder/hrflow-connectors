@@ -1,53 +1,77 @@
+
 # Pull jobs
-`SmartRecruiters` :arrow_right: `Hrflow.ai`
+`SmartRecruiters Jobs` :arrow_right: `HrFlow.ai Jobs`
 
-`PullJobsAction` retrieves all jobs via the ***SmartRecruiter*** API. It adds all these **jobs** to a ***Hrflow.ai Board***.
+Retrieves all jobs via the ***SmartRecruiter*** API and send them to a ***Hrflow.ai Board***.
 
-**Links to SmartRecruiters documentation on the endpoints used :**
 
+**SmartRecruiters Jobs endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
-|[Get all jobs](https://dev.smartrecruiters.com/customer-api/live-docs/job-api/#/jobs/jobs.all) | Endpoint to search jobs by traditional params (offset, limit...) and get the list of all jobs with their ids, the request method is `GET`|
-|[Get job content](https://dev.smartrecruiters.com/customer-api/live-docs/job-api/#/jobs/jobs.get) | Endpoint to get the content of a job with a given id, a jobId parameter is required, the request method is `GET`|
+| [**Get all jobs**](https://dev.smartrecruiters.com/customer-api/live-docs/job-api/#/jobs/jobs.all) | Endpoint to search jobs by traditional params (offset, limit...) and get the list of all jobs with their ids, the request method is `GET` |
+| [**Get job**](https://dev.smartrecruiters.com/customer-api/live-docs/job-api/#/jobs/jobs.get) | Endpoint to get the content of a job with a given id, a jobId parameter is required, the request method is `GET` |
 
-## Parameters
 
-| Field | Type | Description |
-| ----- | ---- | ----------- |
-| `logics`  | `List[str]` | Function names to apply as filter        |
-| `local_scope`  | `Optional[Dict[str, Any]]` | A dictionary containing the current scope's local variables. Default value : `None`        |
-| `global_scope`  | `Optional[Dict[str, Any]]` | A dictionary containing the current scope's global variables. Default value : `None`       |
-| `format_function_name`  | `Optional[str]` | Function name to format job before pushing. Default value : `None`        |
-| `hrflow_client` :red_circle: | `hrflow.Hrflow` | Hrflow client instance used to communicate with the Hrflow.ai API        |
-| `board_key` :red_circle: | `str` | Board key where the jobs to be added will be stored        |
-| `hydrate_with_parsing`  | `bool` | Enrich the job with parsing. Default value : `False`        |
-| `archive_deleted_jobs_from_stream`  | `bool` | Archive Board jobs when they are no longer in the incoming job stream. Default value : `True`        |
-| `auth` :red_circle: | `XSmartTokenAuth` | Auth instance to identify and communicate with the platform        |
-| `query` | `Optional[str]` | Full-text search query based on a job title; case insensitive; e.g. java developer. Default value : `None`        |
-| `updated_after` | `Optional[str]` | Posting status of a job. Available values : PUBLIC, INTERNAL, NOT_PUBLISHED, PRIVATE. Default value : `None`        |
-| `posting_status` | `Optional[str]` | Posting status of a job. Available values : PUBLIC, INTERNAL, NOT_PUBLISHED, PRIVATE. Default value : `None`        |
-| `job_status` | `Optional[str]` | Status of a job. Available values : CREATED, SOURCING, FILLED, INTERVIEW, OFFER, CANCELLED, ON_HOLD. Default value : `None`        |
-| `limit` | `int` | Number of elements to return per page. max value is 100. Default value : `10`        |
 
-:red_circle: : *required* 
+## Action Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L96) | Formatting function |
+
+## Source Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `x_smart_token` :red_circle: | `str` | None | X-SmartToken used to access SmartRecruiters API |
+| `query`  | `str` | None | Case insensitive full-text query against job title e.g. java developer |
+| `updated_after`  | `str` | None | ISO8601-formatted time boundaries for the job update time |
+| `posting_status`  | `str` | None | Posting status of a job. One of ['PUBLIC', 'INTERNAL', 'NOT_PUBLISHED', 'PRIVATE'] |
+| `job_status`  | `str` | None | Status of a job. One of ['CREATED', 'SOURCING', 'FILLED', 'INTERVIEW', 'OFFER', 'CANCELLED', 'ON_HOLD'] |
+
+## Destination Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `api_secret` :red_circle: | `str` | None | X-API-KEY used to access HrFlow.ai API |
+| `api_user` :red_circle: | `str` | None | X-USER-EMAIL used to access HrFlow.ai API |
+| `board_key` :red_circle: | `str` | None | HrFlow.ai board key |
+| `sync`  | `bool` | True | When enabled only pushed jobs will remain in the board |
+| `update_content`  | `bool` | False | When enabled jobs already present in the board are updated |
+| `enrich_with_parsing`  | `bool` | False | When enabled jobs are enriched with HrFlow.ai parsing |
+
+:red_circle: : *required*
 
 ## Example
 
 ```python
-from hrflow_connectors import SmartRecruiter
-from hrflow import Hrflow
-from hrflow_connectors import XSmartTokenAuth
+import logging
+from hrflow_connectors import SmartRecruiters
 
-client = Hrflow(api_secret="MY_X-API-KEY", api_user="MY_X-USER-EMAIL")
-auth = XSmartTokenAuth(value=smart_token)
 
-SmartRecruiter.pull_jobs(
-    auth=auth,
-    hrflow_client=client,
-    limit=2,
-    board_key="MY_BOARD_KEY",
-    hydrate_with_parsing=False,
-    archive_deleted_jobs_from_stream=False,
-    posting_status="PUBLIC",
+logging.basicConfig(level=logging.INFO)
+
+
+SmartRecruiters.pull_jobs(
+    action_parameters=dict(
+        logics=[],
+        format=lambda *args, **kwargs: None # Put your code logic here,
+    ),
+    origin_parameters=dict(
+        x_smart_token="your_x_smart_token",
+        query="your_query",
+        updated_after="your_updated_after",
+        posting_status="PUBLIC",
+        job_status="CREATED",
+    ),
+    target_parameters=dict(
+        api_secret="your_api_secret",
+        api_user="your_api_user",
+        board_key="your_board_key",
+        sync=True,
+        update_content=False,
+        enrich_with_parsing=False,
+    )
 )
 ```
