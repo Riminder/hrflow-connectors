@@ -8,8 +8,20 @@ manifest:
 docs:
 	poetry run python -c 'from hrflow_connectors import __CONNECTORS__, generate_docs as m; m(connectors=__CONNECTORS__)'
 
+init-hooks:
+	git lfs update --force
+	poetry run pre-commit install -t pre-commit
+	poetry run pre-commit install -t pre-push
+
 hooks:
 	poetry run pre-commit run --all-files
+
+style:
+	poetry run isort .
+	poetry run black --config=./pyproject.toml .
+
+flake8:
+	poetry run flake8 --config=./.flake8
 
 pytest-core:
 	poetry run pytest
