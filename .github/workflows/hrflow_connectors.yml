@@ -21,9 +21,10 @@ jobs:
           script: |
             core.setFailed("Not enough permissions to run Core Tests")
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+          lfs: true
 
       - uses: actions/setup-python@v2
         with:
@@ -81,9 +82,10 @@ jobs:
           script: |
             core.setFailed("Not enough permissions to run Integration Tests")
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+          lfs: true
 
       - uses: actions/setup-python@v2
         with:
