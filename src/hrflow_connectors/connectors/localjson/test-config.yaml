@@ -1,0 +1,37 @@
+warehouse:
+  LocalJSONWarehouse:
+    read:
+      - id: empty_json
+        parameters:
+          path: tests/data/localjson/empty.json
+        expected_number_of_items: 0
+      - id: fruits json
+        parameters:
+          path: tests/data/localjson/fruits.json
+        expected_number_of_items: 3
+
+actions:
+  pull_jobs:
+    - id: missing_path
+      origin_parameters: {}
+      target_parameters:
+        api_secret: xxxxAPIUSER
+        api_user: user@hrflow.ai
+        board_key: xxxxMyBoardKey
+      action_status: bad_origin_parameters
+    - id: bad_json_input
+      origin_parameters:
+        path: tests/data/localjson/bad_json.json
+      target_parameters:
+        api_secret: xxxxAPIUSER
+        api_user: user@hrflow.ai
+        board_key: xxxxMyBoardKey
+      action_status: reading_failure
+    - origin_parameters:
+        path: tests/data/localjson/valid.json
+      target_parameters:
+        # Obviously this is not a valid api_secret
+        api_secret: xxxxAPIUSER
+        api_user: user@hrflow.ai
+        board_key: xxxxMyBoardKey
+      action_status: writing_failure
