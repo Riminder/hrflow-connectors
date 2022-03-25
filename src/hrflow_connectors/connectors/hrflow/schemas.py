@@ -49,8 +49,10 @@ class Section(BaseModel):
 class RangesFloat(BaseModel):
     name: t.Optional[str] = Field(
         None,
-        description="Identification name of a Range of floats attached "
-        "to the Job. Example: salary",
+        description=(
+            "Identification name of a Range of floats attached "
+            "to the Job. Example: salary"
+        ),
     )
     value_min: t.Optional[float] = Field(None, description="Min value. Example: 500.")
     value_max: t.Optional[float] = Field(None, description="Max value. Example: 100.")
@@ -62,8 +64,10 @@ class RangesFloat(BaseModel):
 class RangesDate(BaseModel):
     name: t.Optional[str] = Field(
         None,
-        description="Identification name of a Range of dates attached"
-        " to the Job. Example: availability.",
+        description=(
+            "Identification name of a Range of dates attached"
+            " to the Job. Example: availability."
+        ),
     )
     value_min: t.Optional[str] = Field(
         None, description="Min value in datetime ISO 8601, Example: 500."
@@ -85,8 +89,10 @@ class HrFlowJob(BaseModel):
     summary: t.Optional[str] = Field(None, description="Brief summary of the Job.")
     archieved_at: t.Optional[str] = Field(
         None,
-        description="type: datetime ISO8601, Archive date of the Job. "
-        "The value is null for unarchived Jobs.",
+        description=(
+            "type: datetime ISO8601, Archive date of the Job. "
+            "The value is null for unarchived Jobs."
+        ),
     )
     updated_at: t.Optional[str] = Field(
         None, description="type: datetime ISO8601, Last update date of the Job."
@@ -209,8 +215,10 @@ class HrFlowProfile(BaseModel):
     )
     archieved_at: t.Optional[str] = Field(
         None,
-        description="type: datetime ISO8601, Archive date of the Profile."
-        " The value is null for unarchived Profiles.",
+        description=(
+            "type: datetime ISO8601, Archive date of the Profile."
+            " The value is null for unarchived Profiles."
+        ),
     )
     updated_at: t.Optional[str] = Field(
         None, description="type: datetime ISO8601, Last update date of the Profile."
