@@ -417,7 +417,6 @@ LocalJSON.pull_jobs(
 )
 ```
 
-</br>
 <details>
 <summary>Sample JSON file you can use for testing</summary>
 
@@ -540,4 +539,259 @@ LocalJSON.pull_jobs(
 ```
 
 </details>
-</br>
+
+## Testing
+In order to ensure a minimal level of quality warehouses and connectors are expected to be automatically tested against a set of basic scenarios. To make this as simple as possible a YAML based testing framework is in place.
+
+For each connector you should find a `test-config.yaml` file to configure integration tests. The file should be in the connector's directory at the same level as `warehouse.py` or `connector.py`.
+
+Tests for both connector actions and warehouses can be defined.
+
+### Testing a `Warehouse`
+:warning: _For now only `read` operation is supported by the testing framework_ :warning:
+
+For each `read` test case you must supply :
+- `parameters` : A dictionnary with parameters that will be passed to the `read` function of the `Warehouse`
+- **[Optional]** `id` : A string to name the particular test case. This makes debugging and reading tests' results easier
+- **[Optional]** `expected_number_of_items` : If provided the test will pass only if the `read` operation returns that exact number of items
+
+A `read` test passes :heavy_check_mark: if :
+- the `read` operation with the provided `parameters` does not raise any exception
+- the `read` operation returns at least one item or exactly `expected_number_of_items` if it's defined
+
+To illustrate let's consider how we could achieve the following test cases :
+- We want to test `LocalJSONWarehouse`
+- We want to make sure that for a simple JSON file with three items the `read` operation returns that number of items
+- We want to make sure that for an empty JSON the `read` operation returns no items
+
+This can be achieved by supplying the following `test-config.yaml` file.
+
+```yaml
+warehouse:
+  # This should be the exact Warehouse instance name as defined in the connector's **warehouse.py**
+  LocalJSONWarehouse:
+    read:
+      - id: empty_json
+        parameters:
+          path: tests/data/localjson/empty.json
+        expected_number_of_items: 0
+      - parameters:
+          path: tests/data/localjson/fruits.json
+        expected_number_of_items: 3
+# This tests is added only for illustration purposes to show
+# that expected_number_of_items is not mandatory
+      - id: same_as_previous_but_without_expected_number_of_items
+        parameters:
+          path: tests/data/localjson/fruits.json
+# This tests should fail because the provided JSON file is empty
+# when expected_number_of_items is not defined at least one item
+# must be returned
+      - id: this_should_fail
+        parameters:
+          path: tests/data/localjson/empty.json
+
+```
+
+Before running add both files under [`tests/data/localjson`](./tests/data/localjson/)
+- `fruits.json`
+```JSON
+[
+    {"id": 0, "name": "tomato"},
+    {"id": 1, "name": "orange"},
+    {"id": 2, "name": "apple"}
+]
+```
+- `empty.json`
+```JSON
+[]
+```
+
+Then run `poetry run pytest --no-cov --ignore tests/core --connector=LocalJSON`.
+
+_Make sure that you properly added `LocalJSON` to `__CONNECTORS__` in [`src/hrflow_connectors/__init__.py`](src/hrflow_connectors/__init__.py) before running the command_.
+
+You should be able to see the three first tests pass and the last failing as expected. You can also see how the output is different when you specify the optional parameter `id` in `test-config.yaml`
+
+### Testing a `ConnectorAction`
+
+For each `ConnectorAction` test case you must supply :
+- `origin_parameters` : This maps to the `origin_parameters` used to invoke the action
+- `target_parameters` : This maps to the `target_parameters` used to invoke the action
+- **[Optional]** `id` : A string to name the particular test case. This makes debugging and reading tests' results easier
+- **[Optional]** `action_status` : If provided the test will pass only if the action returns that exact [`ActionStatus`](src/hrflow_connectors/core/connector.py#L31). For example you can implement a test where you give incorrect credentials in `origin_parameters` and check that the action returns `ActionStatus.reading_failure`
+
+Once again to illustrate let's consider the following test cases :
+- We want to test the `pull_jobs` action of `LocalJSON`
+- We want to make sure that if we forget to give `path` in `origin_parameters` we have `ActionStatus.bad_origin_parameters`
+- We want to make sure that if we point `path` to a file which is not valid JSON we have `ActionStatus.reading_failure`
+- We want to make sure that with a fake `api_secret` in `target_parameters` we have `ActionStatus.writing_failure`
+
+This can be achieved by supplying the following `test-config.yaml` file.
+
+```yaml
+actions:
+  # This should the exact ConnectorAction.name
+  pull_jobs:
+    - id: missing_path
+      origin_parameters: {}
+      target_parameters:
+        api_secret: xxxxAPIUSER
+        api_user: user@hrflow.ai
+        board_key: xxxxMyBoardKey
+      action_status: bad_origin_parameters
+    - id: bad_json_input
+      origin_parameters:
+        path: tests/data/localjson/bad_json.json
+      target_parameters:
+        api_secret: xxxxAPIUSER
+        api_user: user@hrflow.ai
+        board_key: xxxxMyBoardKey
+      action_status: reading_failure
+    - origin_parameters:
+        path: tests/data/localjson/valid.json
+      target_parameters:
+        # Obviously this is not a valid api_secret
+        api_secret: xxxxAPIUSER
+        api_user: user@hrflow.ai
+        board_key: xxxxMyBoardKey
+      action_status: writing_failure
+
+```
+
+Before running add both files under [`tests/data/localjson`](./tests/data/localjson/)
+`bad_json.json`
+```json
+1 + {}
+```
+
+`valid.json`
+```json
+[
+    {
+        "name": "Accounting assistant",
+        "reference": "testing_localjson_connector_1",
+        "summary": "Accounting assistant Job",
+        "created_at": "2022-01-22T11:54:49",
+        "location": {
+            "text": "Paris France"
+        },
+        "sections": [],
+        "tags": [
+            {
+                "name": "Category",
+                "value": "Services"
+            }
+        ]
+    }
+]
+```
+
+Then run `poetry run pytest --no-cov --ignore tests/core --connector=LocalJSON`.
+
+_Make sure that you properly added `LocalJSON` to `__CONNECTORS__` in [`src/hrflow_connectors/__init__.py`](src/hrflow_connectors/__init__.py) before running the command_.
+
+<details>
+<summary>Complete <code>test-config.yaml</code> with <code>Warehouse</code> and <code>ConnectorAction</code> tests </summary>
+
+
+```yaml
+warehouse:
+  LocalJSONWarehouse:
+    read:
+      - id: empty_json
+        parameters:
+          path: tests/data/localjson/empty.json
+        expected_number_of_items: 0
+      - id: fruits json
+        parameters:
+          path: tests/data/localjson/fruits.json
+        expected_number_of_items: 3
+
+actions:
+  pull_jobs:
+    - id: missing_path
+      origin_parameters: {}
+      target_parameters:
+        api_secret: xxxxAPIUSER
+        api_user: user@hrflow.ai
+        board_key: xxxxMyBoardKey
+      action_status: bad_origin_parameters
+    - id: bad_json_input
+      origin_parameters:
+        path: tests/data/localjson/bad_json.json
+      target_parameters:
+        api_secret: xxxxAPIUSER
+        api_user: user@hrflow.ai
+        board_key: xxxxMyBoardKey
+      action_status: reading_failure
+    - origin_parameters:
+        path: tests/data/localjson/valid.json
+      target_parameters:
+        # Obviously this is not a valid api_secret
+        api_secret: xxxxAPIUSER
+        api_user: user@hrflow.ai
+        board_key: xxxxMyBoardKey
+      action_status: writing_failure
+```
+
+</details>
+
+### Using **secrets** in tests
+
+You might need to provide secret parameters in `test-config.yaml`. To do so prepend the corresponding parameter value with **`$__`** then add the _name of the secret_.
+
+To illustrate let's consider this simple `Warehouse` test where we treat the `path` _parameter_ as a secret:
+
+`test-config.yaml`
+```yaml
+warehouse:
+  LocalJSONWarehouse:
+    read:
+      - id: empty_json
+        parameters:
+          path: $__SECRET_JSON_PATH
+        expected_number_of_items: 0
+```
+
+_Make sure to add `empty.json` under [`tests/data/localjson`](./tests/data/localjson/)_
+
+```json
+[]
+```
+
+You can try now to run tests for `LocalJSON` and confirm that it fails because it doesn't find the value of `SECRET_JSON_PATH`.
+
+```bash
+poetry run pytest --no-cov --ignore tests/core --connector=LocalJSON
+```
+
+Secrets are fetched from three locations with this order of precedence :
+- Environment variables : This naming convention should be respected `HRFLOW_CONNECTORS_{CONNECTOR_NAME_UPPERCASED}_{SECRET_NAME}`
+```bash
+HRFLOW_CONNECTORS_LOCALJSON_SECRET_JSON_PATH=tests/data/localjson/empty.json poetry run pytest --no-cov --ignore tests/core --connector=LocalJSON
+```
+- Connector's secrets : The secrets should be written to a JSON file named `secrets.json` under the connector's directory at the same level as `warehouse.py` or `connector.py`
+
+Add `secrets.json` under [`src/hrflow_connectors/connectors/localjson`](src/hrflow_connectors/connectors/localjson/)
+```json
+{
+    "SECRET_JSON_PATH": "tests/data/localjson/empty.json"
+}
+```
+Then run
+```bash
+poetry run pytest --no-cov --ignore tests/core --connector=LocalJSON
+```
+
+- Global secrets file : The secrets should be written to a JSON file named `secrets.json` under [`src/hrflow_connectors/connectors/`](src/hrflow_connectors/connectors/). The naming convention is the same as for environment variables `HRFLOW_CONNECTORS_{CONNECTOR_NAME_UPPERCASED}_{SECRET_NAME}`. _Don't forget to remove the `secrets.json` file created above before testing_
+
+Add `secrets.json` under [`src/hrflow_connectors/connectors/`](src/hrflow_connectors/connectors/)
+```json
+{
+    "HRFLOW_CONNECTORS_LOCALJSON_SECRET_JSON_PATH": "tests/data/localjson/empty.json"
+}
+```
+Then run
+```bash
+poetry run pytest --no-cov --ignore tests/core --connector=LocalJSON
+```
