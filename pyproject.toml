@@ -34,7 +34,7 @@ pytest-cov = "^3.0.0"
 
 [tool.black]
 line-length = 88
-experimental-string-processing = true
+preview = true
 
 
 [tool.isort]
