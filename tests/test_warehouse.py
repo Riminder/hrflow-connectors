@@ -75,3 +75,5 @@ def test_read_warehouse(warehouse_read_test_params):
     )
     if warehouse_read_test_params.expected_number_of_items is not None:
         assert len(items) == warehouse_read_test_params.expected_number_of_items
+    else:
+        assert len(items) > 0
