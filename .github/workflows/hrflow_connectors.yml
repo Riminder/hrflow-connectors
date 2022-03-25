@@ -65,7 +65,7 @@ jobs:
 
       - name: Run Core tests
         run: |
-          echo $ALL_SECRETS > hrflow-connectors/src/hrflow_connectors/connectors/secrets.json
+          echo $ALL_SECRETS > src/hrflow_connectors/connectors/secrets.json
           poetry run pytest
         env:
           ALL_SECRETS: ${{ toJson(secrets) }}
@@ -108,7 +108,7 @@ jobs:
 
       - name: Run Connector tests
         run: |
-          echo $ALL_SECRETS > hrflow-connectors/src/hrflow_connectors/connectors/secrets.json
+          echo $ALL_SECRETS > src/hrflow_connectors/connectors/secrets.json
           poetry run pytest --no-cov --ignore tests/core --allconnectors
         env:
           ALL_SECRETS: ${{ toJson(secrets) }}
