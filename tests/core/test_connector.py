@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 import pytest
+from pydantic import ValidationError
 
 from hrflow_connectors import hrflow_connectors_manifest
 from hrflow_connectors.core import (
@@ -132,29 +133,26 @@ def test_origin_warehouse_failure():
 
 
 def test_origin_not_readable_failure():
-    connector = Connector(
-        name="SmartLeads",
-        description=DESCRIPTION,
-        url="https://www.smartleads.test/",
-        actions=[
-            ConnectorAction(
-                name="pull_leads",
-                type=WorkflowType.pull,
-                description="Send users as leads",
-                parameters=BaseActionParameters,
-                origin=LeadsWarehouse,
-                target=LeadsWarehouse,
-            ),
-        ],
-    )
-    assert (
-        connector.pull_leads(
-            action_parameters=dict(),
-            origin_parameters=dict(),
-            target_parameters=dict(campaign_id="camp_xxx1"),
+    with pytest.raises(ValidationError) as excinfo:
+        Connector(
+            name="SmartLeads",
+            description=DESCRIPTION,
+            url="https://www.smartleads.test/",
+            actions=[
+                ConnectorAction(
+                    name="pull_leads",
+                    type=WorkflowType.pull,
+                    description="Send users as leads",
+                    parameters=BaseActionParameters,
+                    origin=LeadsWarehouse,
+                    target=LeadsWarehouse,
+                ),
+            ],
         )
-        is ActionStatus.origin_not_readable_failure
-    )
+
+    errors = excinfo.value.errors()
+    assert errors[0]["loc"] == ("origin",)
+    assert errors[0]["msg"] == "Origin warehouse is not readable"
 
 
 def test_target_warehouse_failure():
@@ -184,29 +182,26 @@ def test_target_warehouse_failure():
 
 
 def test_target_not_writable_failure():
-    connector = Connector(
-        name="SmartLeads",
-        description=DESCRIPTION,
-        url="https://www.smartleads.test/",
-        actions=[
-            ConnectorAction(
-                name="pull_leads",
-                type=WorkflowType.pull,
-                description="Send users as leads",
-                parameters=BaseActionParameters,
-                origin=UsersWarehouse,
-                target=UsersWarehouse,
-            ),
-        ],
-    )
-    assert (
-        connector.pull_leads(
-            action_parameters=dict(),
-            origin_parameters=dict(),
-            target_parameters=dict(),
+    with pytest.raises(ValidationError) as excinfo:
+        Connector(
+            name="SmartLeads",
+            description=DESCRIPTION,
+            url="https://www.smartleads.test/",
+            actions=[
+                ConnectorAction(
+                    name="pull_leads",
+                    type=WorkflowType.pull,
+                    description="Send users as leads",
+                    parameters=BaseActionParameters,
+                    origin=UsersWarehouse,
+                    target=UsersWarehouse,
+                ),
+            ],
         )
-        is ActionStatus.target_not_writable_failure
-    )
+
+    errors = excinfo.value.errors()
+    assert errors[0]["loc"] == ("target",)
+    assert errors[0]["msg"] == "Target warehouse is not writable"
 
 
 def test_connector_simple_success():
