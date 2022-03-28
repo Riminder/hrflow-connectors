@@ -32,10 +32,11 @@ def write(
     adapter: LoggerAdapter,
     parameters: PushLeadsParameters,
     items: t.Iterator[t.Dict],
-) -> None:
+) -> t.Iterator[t.Dict]:
     adapter.info("Pushing leads to DB")
     LEADS_DB.setdefault(parameters.campaign_id, []).extend(items)
     adapter.info("Finished writing leads to DB")
+    return []
 
 
 LeadsWarehouse = Warehouse(
