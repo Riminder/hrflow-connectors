@@ -66,10 +66,7 @@ jobs:
 
       - name: Run Core tests
         run: |
-          echo $ALL_SECRETS > src/hrflow_connectors/connectors/secrets.json
           poetry run pytest
-        env:
-          ALL_SECRETS: ${{ toJson(secrets) }}
 
   connectors-integration-tests:
     runs-on: ubuntu-latest
