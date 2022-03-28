@@ -5,7 +5,7 @@ import typing as t
 import uuid
 from functools import partial
 
-from pydantic import BaseModel, Field, ValidationError, create_model
+from pydantic import BaseModel, Field, ValidationError, create_model, validator
 
 from hrflow_connectors.core.templates import WORKFLOW_TEMPLATE
 from hrflow_connectors.core.warehouse import Warehouse
@@ -29,8 +29,6 @@ class ConnectorActionAdapter(logging.LoggerAdapter):
 
 
 class ActionStatus(enum.Enum):
-    origin_not_readable_failure = "origin_not_readable_failure"
-    target_not_writable_failure = "target_not_writable_failure"
     bad_action_parameters = "bad_action_parameters"
     bad_origin_parameters = "bad_origin_parameters"
     bad_target_parameters = "bad_target_parameters"
@@ -133,6 +131,18 @@ class ConnectorAction(BaseModel):
     origin: Warehouse
     target: Warehouse
 
+    @validator("origin", pre=False)
+    def origin_is_readable(cls, origin):
+        if origin.is_readable is False:
+            raise ValueError("Origin warehouse is not readable")
+        return origin
+
+    @validator("target", pre=False)
+    def target_is_writable(cls, target):
+        if target.is_writable is False:
+            raise ValueError("Target warehouse is not writable")
+        return target
+
     def workflow_code(self, connector_name: str) -> str:
         return WORKFLOW_TEMPLATE.render(
             format_placeholder=self.WORKFLOW_FORMAT_PLACEHOLDER,
@@ -168,11 +178,6 @@ class ConnectorAction(BaseModel):
         )
         adapter.info("Starting Action")
 
-        if self.origin.is_readable is False:
-            return ActionStatus.origin_not_readable_failure
-
-        if self.target.is_writable is False:
-            return ActionStatus.target_not_writable_failure
         try:
             parameters = self.parameters(**action_parameters)
         except ValidationError as e:
