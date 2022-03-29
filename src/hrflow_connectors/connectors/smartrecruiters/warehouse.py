@@ -163,8 +163,8 @@ def read(adapter: LoggerAdapter, parameters: PullJobsParameters) -> t.Iterable[t
 def write(
     adapter: LoggerAdapter,
     parameters: PushProfilesParameters,
-    profiles: t.Iterator[t.Dict],
-) -> t.Iterator[t.Dict]:
+    profiles: t.Iterable[t.Dict],
+) -> t.List[t.Dict]:
     adapter.info(
         "Pushing {} profiles with job_id={}".format(len(profiles), parameters.job_id)
     )
