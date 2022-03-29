@@ -12,12 +12,7 @@ from hrflow_connectors.core import (
     ConnectorAction,
     WorkflowType,
 )
-from hrflow_connectors.core.connector import (
-    ActionRunEvents,
-    ActionRunResult,
-    ActionStatus,
-    FatalError,
-)
+from hrflow_connectors.core.connector import ActionRunResult, Event, Reason, Status
 from tests.core.localusers.warehouse import USERS_DB, BadUsersWarehouse, UsersWarehouse
 from tests.core.smartleads.warehouse import LEADS_DB, BadLeadsWarehouse, LeadsWarehouse
 
@@ -75,40 +70,40 @@ def test_connector_failures():
         origin_parameters=dict(),
         target_parameters=dict(),
     )
-    assert result.status == ActionStatus.fatal
-    assert result.fatal_reason == FatalError.bad_action_parameters
+    assert result.status == Status.fatal
+    assert result.reason == Reason.bad_action_parameters
 
     result = SmartLeads.pull_leads(
         action_parameters=dict(),
         origin_parameters=dict(gender="M"),
         target_parameters=dict(),
     )
-    assert result.status == ActionStatus.fatal
-    assert result.fatal_reason == FatalError.bad_origin_parameters
+    assert result.status == Status.fatal
+    assert result.reason == Reason.bad_origin_parameters
 
     result = SmartLeads.pull_leads(
         action_parameters=dict(),
         origin_parameters=dict(),
         target_parameters=dict(),
     )
-    assert result.status == ActionStatus.fatal
-    assert result.fatal_reason == FatalError.bad_target_parameters
+    assert result.status == Status.fatal
+    assert result.reason == Reason.bad_target_parameters
 
     result = SmartLeads.pull_leads(
         action_parameters=dict(format=lambda user: 10 / 0),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
     )
-    assert result.status == ActionStatus.fatal
-    assert result.fatal_reason == FatalError.format_failure
+    assert result.status == Status.fatal
+    assert result.reason == Reason.format_failure
 
     result = SmartLeads.pull_leads(
         action_parameters=dict(logics=[lambda user: 10 / 0]),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
     )
-    assert result.status == ActionStatus.fatal
-    assert result.fatal_reason == FatalError.logics_failure
+    assert result.status == Status.fatal
+    assert result.reason == Reason.logics_failure
 
 
 def test_origin_warehouse_failure():
@@ -132,10 +127,10 @@ def test_origin_warehouse_failure():
         origin_parameters=dict(),
         target_parameters=dict(campaign_id="camp_xxx1"),
     )
-    assert result.status == ActionStatus.fatal
-    assert result.fatal_reason == FatalError.read_failure
-    assert result.run_stats[ActionRunEvents.read_success] == 0
-    assert result.run_stats[ActionRunEvents.read_failure] == 1
+    assert result.status == Status.fatal
+    assert result.reason == Reason.read_failure
+    assert result.events[Event.read_success] == 0
+    assert result.events[Event.read_failure] == 1
 
 
 def test_origin_not_readable_failure():
@@ -182,13 +177,10 @@ def test_target_warehouse_failure():
         origin_parameters=dict(),
         target_parameters=dict(campaign_id="camp_xxx1"),
     )
-    assert result.status == ActionStatus.fatal
-    assert result.fatal_reason == FatalError.write_failure
-    assert result.run_stats[ActionRunEvents.read_success] == len(USERS_DB)
-    assert (
-        result.run_stats[ActionRunEvents.write_failure]
-        == result.run_stats[ActionRunEvents.read_success]
-    )
+    assert result.status == Status.fatal
+    assert result.reason == Reason.write_failure
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert result.events[Event.write_failure] == result.events[Event.read_success]
 
 
 def test_target_not_writable_failure():
@@ -224,12 +216,12 @@ def test_connector_simple_success():
         target_parameters=dict(campaign_id=campaign_id),
     )
 
-    assert result.status == ActionStatus.success
-    assert result.run_stats[ActionRunEvents.read_success] == len(USERS_DB)
-    assert result.run_stats[ActionRunEvents.format_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_discard] == 0
-    assert result.run_stats[ActionRunEvents.write_failure] == 0
+    assert result.status == Status.success
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert result.events[Event.format_failure] == 0
+    assert result.events[Event.logics_failure] == 0
+    assert result.events[Event.logics_discard] == 0
+    assert result.events[Event.write_failure] == 0
 
     assert len(USERS_DB) == len(LEADS_DB[campaign_id])
 
@@ -248,12 +240,12 @@ def test_connector_with_format():
         target_parameters=dict(campaign_id=campaign_id),
     )
 
-    assert result.status == ActionStatus.success
-    assert result.run_stats[ActionRunEvents.read_success] == len(USERS_DB)
-    assert result.run_stats[ActionRunEvents.format_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_discard] == 0
-    assert result.run_stats[ActionRunEvents.write_failure] == 0
+    assert result.status == Status.success
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert result.events[Event.format_failure] == 0
+    assert result.events[Event.logics_failure] == 0
+    assert result.events[Event.logics_discard] == 0
+    assert result.events[Event.write_failure] == 0
 
     assert len(USERS_DB) == len(LEADS_DB[campaign_id])
 
@@ -271,12 +263,12 @@ def test_connector_with_logics():
         target_parameters=dict(campaign_id=campaign_id),
     )
 
-    assert result.status == ActionStatus.success
-    assert result.run_stats[ActionRunEvents.read_success] == len(USERS_DB)
-    assert result.run_stats[ActionRunEvents.format_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_discard] == len(USERS_DB)
-    assert result.run_stats[ActionRunEvents.write_failure] == 0
+    assert result.status == Status.success
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert result.events[Event.format_failure] == 0
+    assert result.events[Event.logics_failure] == 0
+    assert result.events[Event.logics_discard] == len(USERS_DB)
+    assert result.events[Event.write_failure] == 0
 
     assert len(LEADS_DB[campaign_id]) == 0
 
@@ -289,12 +281,12 @@ def test_connector_with_logics():
         target_parameters=dict(campaign_id=campaign_id),
     )
 
-    assert result.status == ActionStatus.success
-    assert result.run_stats[ActionRunEvents.read_success] == len(USERS_DB)
-    assert result.run_stats[ActionRunEvents.format_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_discard] == len(USERS_DB)
-    assert result.run_stats[ActionRunEvents.write_failure] == 0
+    assert result.status == Status.success
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert result.events[Event.format_failure] == 0
+    assert result.events[Event.logics_failure] == 0
+    assert result.events[Event.logics_discard] == len(USERS_DB)
+    assert result.events[Event.write_failure] == 0
 
     assert len(LEADS_DB[campaign_id]) == 0
 
@@ -307,12 +299,12 @@ def test_connector_with_logics():
         target_parameters=dict(campaign_id=campaign_id),
     )
 
-    assert result.status == ActionStatus.success
-    assert result.run_stats[ActionRunEvents.read_success] == len(USERS_DB)
-    assert result.run_stats[ActionRunEvents.format_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_discard] == 0
-    assert result.run_stats[ActionRunEvents.write_failure] == 0
+    assert result.status == Status.success
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert result.events[Event.format_failure] == 0
+    assert result.events[Event.logics_failure] == 0
+    assert result.events[Event.logics_discard] == 0
+    assert result.events[Event.write_failure] == 0
 
     assert len(USERS_DB) == len(LEADS_DB[campaign_id])
 
@@ -331,12 +323,12 @@ def test_connector_with_logics():
         target_parameters=dict(campaign_id=campaign_id),
     )
 
-    assert result.status == ActionStatus.success
-    assert result.run_stats[ActionRunEvents.read_success] == len(USERS_DB)
-    assert result.run_stats[ActionRunEvents.format_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_discard] == len(USERS_DB) - n_males
-    assert result.run_stats[ActionRunEvents.write_failure] == 0
+    assert result.status == Status.success
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert result.events[Event.format_failure] == 0
+    assert result.events[Event.logics_failure] == 0
+    assert result.events[Event.logics_discard] == len(USERS_DB) - n_males
+    assert result.events[Event.write_failure] == 0
 
     assert len(USERS_DB) != len(LEADS_DB[campaign_id])
     assert n_males == len(LEADS_DB[campaign_id])
@@ -372,12 +364,12 @@ def test_connector_default_format():
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
     )
-    assert result.status == ActionStatus.success
-    assert result.run_stats[ActionRunEvents.read_success] == len(USERS_DB)
-    assert result.run_stats[ActionRunEvents.format_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_discard] == 0
-    assert result.run_stats[ActionRunEvents.write_failure] == 0
+    assert result.status == Status.success
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert result.events[Event.format_failure] == 0
+    assert result.events[Event.logics_failure] == 0
+    assert result.events[Event.logics_discard] == 0
+    assert result.events[Event.write_failure] == 0
 
     assert len(USERS_DB) == len(LEADS_DB[campaign_id])
     assert any(lead["name"].upper() != lead["name"] for lead in LEADS_DB[campaign_id])
@@ -391,101 +383,101 @@ def test_connector_default_format():
         target_parameters=dict(campaign_id=campaign_id),
     )
 
-    assert result.status == ActionStatus.success
-    assert result.run_stats[ActionRunEvents.read_success] == len(USERS_DB)
-    assert result.run_stats[ActionRunEvents.format_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_failure] == 0
-    assert result.run_stats[ActionRunEvents.logics_discard] == 0
-    assert result.run_stats[ActionRunEvents.write_failure] == 0
+    assert result.status == Status.success
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert result.events[Event.format_failure] == 0
+    assert result.events[Event.logics_failure] == 0
+    assert result.events[Event.logics_discard] == 0
+    assert result.events[Event.write_failure] == 0
 
     assert len(USERS_DB) == len(LEADS_DB[campaign_id])
     assert all(lead["name"].upper() == lead["name"] for lead in LEADS_DB[campaign_id])
 
 
-def test_action_run_results_from_run_stats():
-    result = ActionRunResult.from_run_stats(
-        Counter({ActionRunEvents.read_success: 0, ActionRunEvents.read_failure: 0})
+def test_action_run_results_from_events():
+    result = ActionRunResult.from_events(
+        Counter({Event.read_success: 0, Event.read_failure: 0})
     )
-    assert result.status is ActionStatus.success
-    assert result.fatal_reason is FatalError.none
+    assert result.status is Status.success
+    assert result.reason is Reason.none
 
-    result = ActionRunResult.from_run_stats(
-        Counter({ActionRunEvents.read_success: 0, ActionRunEvents.read_failure: 1})
+    result = ActionRunResult.from_events(
+        Counter({Event.read_success: 0, Event.read_failure: 1})
     )
-    assert result.status is ActionStatus.fatal
-    assert result.fatal_reason is FatalError.read_failure
+    assert result.status is Status.fatal
+    assert result.reason is Reason.read_failure
 
-    result = ActionRunResult.from_run_stats(
-        Counter({ActionRunEvents.read_success: 5, ActionRunEvents.read_failure: 1})
+    result = ActionRunResult.from_events(
+        Counter({Event.read_success: 5, Event.read_failure: 1})
     )
-    assert result.status is ActionStatus.success_with_failures
-    assert result.fatal_reason is FatalError.none
+    assert result.status is Status.success_with_failures
+    assert result.reason is Reason.none
 
-    result = ActionRunResult.from_run_stats(
+    result = ActionRunResult.from_events(
         Counter(
             {
-                ActionRunEvents.read_success: 5,
-                ActionRunEvents.read_failure: 1,
-                ActionRunEvents.format_failure: 5,
+                Event.read_success: 5,
+                Event.read_failure: 1,
+                Event.format_failure: 5,
             }
         )
     )
-    assert result.status is ActionStatus.fatal
-    assert result.fatal_reason is FatalError.format_failure
+    assert result.status is Status.fatal
+    assert result.reason is Reason.format_failure
 
-    result = ActionRunResult.from_run_stats(
+    result = ActionRunResult.from_events(
         Counter(
             {
-                ActionRunEvents.read_success: 5,
-                ActionRunEvents.read_failure: 1,
-                ActionRunEvents.format_failure: 1,
-                ActionRunEvents.logics_failure: 4,
+                Event.read_success: 5,
+                Event.read_failure: 1,
+                Event.format_failure: 1,
+                Event.logics_failure: 4,
             }
         )
     )
-    assert result.status is ActionStatus.fatal
-    assert result.fatal_reason is FatalError.logics_failure
+    assert result.status is Status.fatal
+    assert result.reason is Reason.logics_failure
 
-    result = ActionRunResult.from_run_stats(
+    result = ActionRunResult.from_events(
         Counter(
             {
-                ActionRunEvents.read_success: 5,
-                ActionRunEvents.read_failure: 1,
-                ActionRunEvents.format_failure: 1,
-                ActionRunEvents.logics_discard: 1,
-                ActionRunEvents.logics_failure: 3,
+                Event.read_success: 5,
+                Event.read_failure: 1,
+                Event.format_failure: 1,
+                Event.logics_discard: 1,
+                Event.logics_failure: 3,
             }
         )
     )
-    assert result.status is ActionStatus.success_with_failures
-    assert result.fatal_reason is FatalError.none
+    assert result.status is Status.success_with_failures
+    assert result.reason is Reason.none
 
-    result = ActionRunResult.from_run_stats(
+    result = ActionRunResult.from_events(
         Counter(
             {
-                ActionRunEvents.read_success: 5,
-                ActionRunEvents.read_failure: 1,
-                ActionRunEvents.format_failure: 1,
-                ActionRunEvents.logics_discard: 1,
-                ActionRunEvents.logics_failure: 1,
-                ActionRunEvents.write_failure: 2,
+                Event.read_success: 5,
+                Event.read_failure: 1,
+                Event.format_failure: 1,
+                Event.logics_discard: 1,
+                Event.logics_failure: 1,
+                Event.write_failure: 2,
             }
         )
     )
-    assert result.status is ActionStatus.fatal
-    assert result.fatal_reason is FatalError.write_failure
+    assert result.status is Status.fatal
+    assert result.reason is Reason.write_failure
 
-    result = ActionRunResult.from_run_stats(
+    result = ActionRunResult.from_events(
         Counter(
             {
-                ActionRunEvents.read_success: 5,
-                ActionRunEvents.read_failure: 1,
-                ActionRunEvents.format_failure: 1,
-                ActionRunEvents.logics_discard: 1,
-                ActionRunEvents.logics_failure: 1,
-                ActionRunEvents.write_failure: 1,
+                Event.read_success: 5,
+                Event.read_failure: 1,
+                Event.format_failure: 1,
+                Event.logics_discard: 1,
+                Event.logics_failure: 1,
+                Event.write_failure: 1,
             }
         )
     )
-    assert result.status is ActionStatus.success_with_failures
-    assert result.fatal_reason is FatalError.none
+    assert result.status is Status.success_with_failures
+    assert result.reason is Reason.none
