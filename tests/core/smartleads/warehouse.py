@@ -31,8 +31,8 @@ class PushLeadsParameters(BaseModel):
 def write(
     adapter: LoggerAdapter,
     parameters: PushLeadsParameters,
-    items: t.Iterator[t.Dict],
-) -> t.Iterator[t.Dict]:
+    items: t.Iterable[t.Dict],
+) -> t.List[t.Dict]:
     adapter.info("Pushing leads to DB")
     LEADS_DB.setdefault(parameters.campaign_id, []).extend(items)
     adapter.info("Finished writing leads to DB")
@@ -42,9 +42,10 @@ def write(
 def write_with_failures(
     adapter: LoggerAdapter,
     parameters: PushLeadsParameters,
-    items: t.Iterator[t.Dict],
-) -> t.Iterator[t.Dict]:
+    items: t.Iterable[t.Dict],
+) -> t.List[t.Dict]:
     adapter.info("Pushing leads to DB")
+    items = list(items)
     LEADS_DB.setdefault(parameters.campaign_id, []).extend(items[:-2])
     adapter.info("Finished writing leads to DB")
     return items[-2:]
