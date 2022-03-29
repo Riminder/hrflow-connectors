@@ -118,7 +118,8 @@ def enrich_job_with_parsing(hrflow_client: Hrflow, job: t.Dict) -> None:
 
 def write(
     adapter: LoggerAdapter, parameters: PushJobParameters, jobs: t.Iterator[t.Dict]
-) -> None:
+) -> t.Iterator[t.Dict]:
+    failed_jobs = []
     hrflow_client = Hrflow(
         api_secret=parameters.api_secret, api_user=parameters.api_user
     )
@@ -174,19 +175,23 @@ def write(
                 raise Exception("Failed to archive job")
         adapter.info("Archiving finished")
 
+    jobs_to_write = []
     if parameters.enrich_with_parsing:
         adapter.info("Enrich with parsing enabled. Starting parsing")
         for job in jobs:
             try:
                 enrich_job_with_parsing(hrflow_client, job)
+                jobs_to_write.append(job)
             except JobParsingException as e:
                 adapter.error(
                     "Failed to parse job response={}".format(e.client_response)
                 )
-                raise e
+                failed_jobs.append(job)
         adapter.info("Parsing finished")
+    else:
+        jobs_to_write = jobs
 
-    for job in jobs:
+    for job in jobs_to_write:
         reference = job.get("reference")
         if reference is None:
             response = hrflow_client.job.indexing.add_json(
@@ -197,7 +202,7 @@ def write(
                     "Failed to index job with no reference "
                     "board_key={} response={}".format(parameters.board_key, response)
                 )
-                raise Exception("Failed to index job")
+                failed_jobs.append(job)
             continue
 
         response = hrflow_client.job.indexing.get(
@@ -213,7 +218,8 @@ def write(
                         parameters.board_key, reference, response
                     )
                 )
-                raise Exception("Failed to index job")
+                failed_jobs.append(job)
+                continue
         elif response["code"] == 200:
             archived_at = response["data"].get("archived_at")
             job_key = response["data"]["key"]
@@ -229,7 +235,8 @@ def write(
                                 parameters.board_key, reference, response
                             )
                         )
-                        raise Exception("Failed to edit job")
+                        failed_jobs.append(job)
+                        continue
             else:
                 response = hrflow_client.job.indexing.archive(
                     board_key=parameters.board_key, reference=reference, is_archive=0
@@ -241,7 +248,8 @@ def write(
                             parameters.board_key, reference, response
                         )
                     )
-                    raise Exception("Failed to unarchive job")
+                    failed_jobs.append(job)
+                    continue
                 response = hrflow_client.job.indexing.edit(
                     board_key=parameters.board_key, key=job_key, job_json=job
                 )
@@ -252,7 +260,8 @@ def write(
                             parameters.board_key, reference, response
                         )
                     )
-                    raise Exception("Failed to edit job")
+                    failed_jobs.append(job)
+                    continue
         else:
             adapter.error(
                 "Failed to get job from board board_key={} "
@@ -260,7 +269,10 @@ def write(
                     parameters.board_key, reference, response
                 )
             )
-            raise Exception("Failed to index job")
+            failed_jobs.append(job)
+            continue
+
+    return failed_jobs
 
 
 def read(adapter: LoggerAdapter, parameters: PullProfileParameters) -> t.List[t.Dict]:
