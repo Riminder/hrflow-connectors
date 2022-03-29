@@ -10,7 +10,7 @@ from hrflow_connectors.core import (
     ConnectorAction,
     WorkflowType,
 )
-from hrflow_connectors.core.connector import ActionRunEvents, ActionStatus, FatalError
+from hrflow_connectors.core.connector import Event, Reason, Status
 from hrflow_connectors.core.tests import (
     ENVIRON_SECRETS_PREFIX,
     ConnectorTestConfig,
@@ -202,13 +202,13 @@ actions:
 
     smartleads_test_config.write_bytes(
         """
-# Invalid fatal_reason
+# Invalid reason
 actions:
   first_action:
     - id: first_test
       origin_parameters: {}
       target_parameters: {}
-      fatal_reason: not_a_valid_fatal_reason
+      reason: not_a_valid_reason
 
         """.encode()
     )
@@ -219,18 +219,18 @@ actions:
         )
     errors = excinfo.value.args[0]
     assert len(errors) == 1
-    assert errors[0]["loc"] == ("actions", "first_action", 0, "fatal_reason")
+    assert errors[0]["loc"] == ("actions", "first_action", 0, "reason")
     assert errors[0]["type"] == "type_error.enum"
 
     smartleads_test_config.write_bytes(
         """
-# Invalid run_stats
+# Invalid events
 actions:
   first_action:
     - id: first_test
       origin_parameters: {}
       target_parameters: {}
-      run_stats:
+      events:
         not_a_valid_action_event: 12
 
         """.encode()
@@ -242,7 +242,7 @@ actions:
         )
     errors = excinfo.value.args[0]
     assert len(errors) == 1
-    assert errors[0]["loc"] == ("actions", "first_action", 0, "run_stats", "__key__")
+    assert errors[0]["loc"] == ("actions", "first_action", 0, "events", "__key__")
     assert errors[0]["type"] == "type_error.enum"
 
     smartleads_test_config.write_bytes(
@@ -330,13 +330,13 @@ actions:
       origin_parameters: {}
       target_parameters: {}
       status: success
-      fatal_reason: ""
+      reason: ""
     - origin_parameters: {}
       target_parameters:
         campain_id: my_camp
       status: fatal
-      fatal_reason: bad_action_parameters
-      run_stats:
+      reason: bad_action_parameters
+      events:
         read_success: 4
         read_failure: 1
         write_failure: 3
@@ -346,7 +346,7 @@ actions:
       target_parameters:
         campain_id: my_second_camp
       status: success
-      run_stats:
+      events:
         read_success: 10
         read_failure: 0
         write_failure: 0
@@ -371,18 +371,18 @@ actions:
     assert first_action_tests[1].id == "second_test"
     assert first_action_tests[1].origin_parameters == dict()
     assert first_action_tests[1].target_parameters == dict()
-    assert first_action_tests[1].status is ActionStatus.success
-    assert first_action_tests[1].fatal_reason is FatalError.none
+    assert first_action_tests[1].status is Status.success
+    assert first_action_tests[1].reason is Reason.none
 
     assert first_action_tests[2].id is None
     assert first_action_tests[2].origin_parameters == dict()
     assert first_action_tests[2].target_parameters == dict(campain_id="my_camp")
-    assert first_action_tests[2].status is ActionStatus.fatal
-    assert first_action_tests[2].fatal_reason is FatalError.bad_action_parameters
-    assert first_action_tests[2].run_stats == {
-        ActionRunEvents.read_success: 4,
-        ActionRunEvents.read_failure: 1,
-        ActionRunEvents.write_failure: 3,
+    assert first_action_tests[2].status is Status.fatal
+    assert first_action_tests[2].reason is Reason.bad_action_parameters
+    assert first_action_tests[2].events == {
+        Event.read_success: 4,
+        Event.read_failure: 1,
+        Event.write_failure: 3,
     }
 
     assert len(second_action_tests) == 1
@@ -390,12 +390,12 @@ actions:
     assert second_action_tests[0].id is None
     assert second_action_tests[0].origin_parameters == dict(gender="male")
     assert second_action_tests[0].target_parameters == dict(campain_id="my_second_camp")
-    assert second_action_tests[0].status is ActionStatus.success
-    assert second_action_tests[0].fatal_reason is None
-    assert second_action_tests[0].run_stats == {
-        ActionRunEvents.read_success: 10,
-        ActionRunEvents.read_failure: 0,
-        ActionRunEvents.write_failure: 0,
+    assert second_action_tests[0].status is Status.success
+    assert second_action_tests[0].reason is None
+    assert second_action_tests[0].events == {
+        Event.read_success: 10,
+        Event.read_failure: 0,
+        Event.write_failure: 0,
     }
 
 

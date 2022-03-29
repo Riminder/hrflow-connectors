@@ -29,7 +29,7 @@ class ConnectorActionAdapter(logging.LoggerAdapter):
         )
 
 
-class ActionRunEvents(enum.Enum):
+class Event(enum.Enum):
     read_success = "read_success"
     read_failure = "read_failure"
     format_failure = "format_failure"
@@ -38,11 +38,11 @@ class ActionRunEvents(enum.Enum):
     write_failure = "write_failure"
 
     @classmethod
-    def empty_counter(cls) -> t.Counter["ActionRunEvents"]:
+    def empty_counter(cls) -> t.Counter["Event"]:
         return Counter({event: 0 for event in cls})
 
 
-class FatalError(enum.Enum):
+class Reason(enum.Enum):
     bad_action_parameters = "bad_action_parameters"
     bad_origin_parameters = "bad_origin_parameters"
     bad_target_parameters = "bad_target_parameters"
@@ -53,72 +53,70 @@ class FatalError(enum.Enum):
     none = ""
 
 
-class ActionStatus(enum.Enum):
+class Status(enum.Enum):
     success = "success"
     success_with_failures = "success_with_failures"
     fatal = "fatal"
 
 
 class ActionRunResult(BaseModel):
-    status: ActionStatus
-    fatal_reason: FatalError = FatalError.none
-    run_stats: t.Counter[ActionRunEvents] = Field(
-        default_factory=ActionRunEvents.empty_counter
-    )
+    status: Status
+    reason: Reason = Reason.none
+    events: t.Counter[Event] = Field(default_factory=Event.empty_counter)
 
     @classmethod
-    def from_run_stats(cls, run_stats: t.Counter[ActionRunEvents]):
-        read_success = run_stats[ActionRunEvents.read_success]
-        read_failures = run_stats[ActionRunEvents.read_failure]
+    def from_events(cls, events: t.Counter[Event]):
+        read_success = events[Event.read_success]
+        read_failures = events[Event.read_failure]
         if read_success == 0 and read_failures == 0:
-            return cls(status=ActionStatus.success, run_stats=run_stats)
+            return cls(status=Status.success, events=events)
         elif read_success == 0 and read_failures > 0:
             return cls(
-                status=ActionStatus.fatal,
-                fatal_reason=FatalError.read_failure,
-                run_stats=run_stats,
+                status=Status.fatal,
+                reason=Reason.read_failure,
+                events=events,
             )
 
-        format_failures = run_stats[ActionRunEvents.format_failure]
+        format_failures = events[Event.format_failure]
         if format_failures == read_success:
             return cls(
-                status=ActionStatus.fatal,
-                fatal_reason=FatalError.format_failure,
-                run_stats=run_stats,
+                status=Status.fatal,
+                reason=Reason.format_failure,
+                events=events,
             )
 
-        logics_failures = run_stats[ActionRunEvents.logics_failure]
+        logics_failures = events[Event.logics_failure]
         if logics_failures == read_success - format_failures:
             return cls(
-                status=ActionStatus.fatal,
-                fatal_reason=FatalError.logics_failure,
-                run_stats=run_stats,
+                status=Status.fatal,
+                reason=Reason.logics_failure,
+                events=events,
             )
 
-        logics_discard = run_stats[ActionRunEvents.logics_discard]
-        write_failure = run_stats[ActionRunEvents.write_failure]
+        logics_discard = events[Event.logics_discard]
+        write_failure = events[Event.write_failure]
         if (
             write_failure
             == read_success - format_failures - logics_discard - logics_failures
         ) and write_failure > 0:
             return cls(
-                status=ActionStatus.fatal,
-                fatal_reason=FatalError.write_failure,
-                run_stats=run_stats,
+                status=Status.fatal,
+                reason=Reason.write_failure,
+                events=events,
             )
 
         success_with_failures = any(
-            run_stats[event] > 0
+            events[event] > 0
             for event in [
-                ActionRunEvents.read_failure,
-                ActionRunEvents.format_failure,
-                ActionRunEvents.logics_failure,
-                ActionRunEvents.write_failure,
+                Event.read_failure,
+                Event.format_failure,
+                Event.logics_failure,
+                Event.write_failure,
             ]
         )
         if success_with_failures:
-            return cls(status=ActionStatus.success_with_failures, run_stats=run_stats)
-        return cls(status=ActionStatus.success, run_stats=run_stats)
+            return cls(status=Status.success_with_failures, events=events)
+        return cls(status=Status.success, events=events)
 
 
 LogicFunctionType = t.Callable[[t.Dict], t.Union[t.Dict, None]]
@@ -267,7 +265,7 @@ class ConnectorAction(BaseModel):
                 "Failed to parse action_parameters with errors={}".format(e.errors())
             )
             return ActionRunResult(
-                status=ActionStatus.fatal, fatal_reason=FatalError.bad_action_parameters
+                status=Status.fatal, reason=Reason.bad_action_parameters
             )
 
         try:
@@ -277,7 +275,7 @@ class ConnectorAction(BaseModel):
                 "Failed to parse origin_parameters with errors={}".format(e.errors())
             )
             return ActionRunResult(
-                status=ActionStatus.fatal, fatal_reason=FatalError.bad_origin_parameters
+                status=Status.fatal, reason=Reason.bad_origin_parameters
             )
 
         try:
@@ -287,10 +285,10 @@ class ConnectorAction(BaseModel):
                 "Failed to parse target_parameters with errors={}".format(e.errors())
             )
             return ActionRunResult(
-                status=ActionStatus.fatal, fatal_reason=FatalError.bad_target_parameters
+                status=Status.fatal, reason=Reason.bad_target_parameters
             )
 
-        run_stats = ActionRunEvents.empty_counter()
+        events = Event.empty_counter()
 
         adapter.info(
             "Starting to read from warehouse={} with parameters={}".format(
@@ -311,9 +309,9 @@ class ConnectorAction(BaseModel):
         try:
             for item in self.origin.read(origin_adapter, origin_parameters):
                 origin_items.append(item)
-                run_stats[ActionRunEvents.read_success] += 1
+                events[Event.read_success] += 1
         except Exception as e:
-            run_stats[ActionRunEvents.read_failure] += 1
+            events[Event.read_failure] += 1
             adapter.error(
                 "Failed to read from warehouse={} with parameters={} error={}".format(
                     self.origin.name, origin_parameters, repr(e)
@@ -323,7 +321,7 @@ class ConnectorAction(BaseModel):
             "Finished reading from warehouse={} n_items={} read_failure={}".format(
                 self.origin.name,
                 len(origin_items),
-                run_stats[ActionRunEvents.read_failure] > 0,
+                events[Event.read_failure] > 0,
             )
         )
 
@@ -338,7 +336,7 @@ class ConnectorAction(BaseModel):
             try:
                 formatted_items.append(parameters.format(item))
             except Exception as e:
-                run_stats[ActionRunEvents.format_failure] += 1
+                events[Event.format_failure] += 1
                 adapter.error(
                     "Failed to format origin item using {} function error={}".format(
                         "default" if using_default_format else "user defined", repr(e)
@@ -346,7 +344,7 @@ class ConnectorAction(BaseModel):
                 )
         adapter.info(
             "Finished formatting origin items success={} failures={}".format(
-                len(formatted_items), run_stats[ActionRunEvents.format_failure]
+                len(formatted_items), events[Event.format_failure]
             )
         )
 
@@ -366,10 +364,10 @@ class ConnectorAction(BaseModel):
                                 i, repr(e)
                             )
                         )
-                        run_stats[ActionRunEvents.logics_failure] += 1
+                        events[Event.logics_failure] += 1
                         break
                     if item is None:
-                        run_stats[ActionRunEvents.logics_discard] += 1
+                        events[Event.logics_discard] += 1
                         break
                 else:
                     items_to_write.append(item)
@@ -377,8 +375,8 @@ class ConnectorAction(BaseModel):
                 "Finished applying logic functions: "
                 "success={} discarded={} failures={}".format(
                     len(items_to_write),
-                    run_stats[ActionRunEvents.logics_discard],
-                    run_stats[ActionRunEvents.logics_failure],
+                    events[Event.logics_discard],
+                    events[Event.logics_failure],
                 )
             )
         else:
@@ -404,23 +402,23 @@ class ConnectorAction(BaseModel):
             failed_items = self.target.write(
                 target_adapter, target_parameters, items_to_write
             )
-            run_stats[ActionRunEvents.write_failure] += len(failed_items)
+            events[Event.write_failure] += len(failed_items)
         except Exception as e:
             adapter.error(
                 "Failed to write to warehouse={} with parameters={} error={}".format(
                     self.target.name, target_parameters, repr(e)
                 )
             )
-            run_stats[ActionRunEvents.write_failure] += len(items_to_write)
+            events[Event.write_failure] += len(items_to_write)
         adapter.info(
             "Finished writing to warehouse={} success={} failures={}".format(
                 self.target.name,
-                len(items_to_write) - run_stats[ActionRunEvents.write_failure],
-                run_stats[ActionRunEvents.write_failure],
+                len(items_to_write) - events[Event.write_failure],
+                events[Event.write_failure],
             )
         )
         adapter.info("Finished action")
-        return ActionRunResult.from_run_stats(run_stats)
+        return ActionRunResult.from_events(events)
 
 
 class ConnectorModel(BaseModel):

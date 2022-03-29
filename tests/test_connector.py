@@ -9,7 +9,7 @@ from hrflow_connectors.core.tests import collect_connector_tests
 ConnectorActionTestParams = namedtuple(
     "ConnectorActionTestParams",
     "action, origin_parameters, target_parameters, expected_status,"
-    " expected_fatal_reason, expected_run_stats",
+    " expected_reason, expected_events",
 )
 
 
@@ -43,8 +43,8 @@ def parameterize_connector_action_tests(
                             origin_parameters=action_test.origin_parameters,
                             target_parameters=action_test.target_parameters,
                             expected_status=action_test.status,
-                            expected_fatal_reason=action_test.fatal_reason,
-                            expected_run_stats=action_test.run_stats,
+                            expected_reason=action_test.reason,
+                            expected_events=action_test.events,
                         ),
                         id="{}_action:{}_{}".format(
                             connector.model.name, action_name, action_test.id or i
@@ -62,7 +62,7 @@ def test_connector_action(connector_action_test_params):
     )
     if connector_action_test_params.expected_status is not None:
         assert result.status == connector_action_test_params.expected_status
-    if connector_action_test_params.expected_fatal_reason is not None:
-        assert result.fatal_reason == connector_action_test_params.expected_fatal_reason
-    if connector_action_test_params.expected_run_stats is not None:
-        assert result.run_stats == connector_action_test_params.expected_run_stats
+    if connector_action_test_params.expected_reason is not None:
+        assert result.reason == connector_action_test_params.expected_reason
+    if connector_action_test_params.expected_events is not None:
+        assert result.events == connector_action_test_params.expected_events
