@@ -117,8 +117,8 @@ def enrich_job_with_parsing(hrflow_client: Hrflow, job: t.Dict) -> None:
 
 
 def write(
-    adapter: LoggerAdapter, parameters: PushJobParameters, jobs: t.Iterator[t.Dict]
-) -> t.Iterator[t.Dict]:
+    adapter: LoggerAdapter, parameters: PushJobParameters, jobs: t.Iterable[t.Dict]
+) -> t.List[t.Dict]:
     failed_jobs = []
     hrflow_client = Hrflow(
         api_secret=parameters.api_secret, api_user=parameters.api_user

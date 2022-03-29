@@ -22,11 +22,9 @@ class WarehouseReadAction(BaseModel):
 class WarehouseWriteAction(BaseModel):
     endpoints: t.List[ActionEndpoints] = Field(default_factory=list)
     parameters: t.Type[BaseModel]
-    function: t.Callable[
-        [LoggerAdapter, BaseModel, t.Iterable[t.Dict]], t.Iterable[t.Dict]
-    ]
+    function: t.Callable[[LoggerAdapter, BaseModel, t.Iterable[t.Dict]], t.List[t.Dict]]
 
-    def __call__(self, *args, **kwargs) -> t.Iterable[t.Dict]:
+    def __call__(self, *args, **kwargs) -> t.List[t.Dict]:
         return self.function(*args, **kwargs)
 
 
