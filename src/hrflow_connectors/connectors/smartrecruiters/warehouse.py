@@ -164,10 +164,11 @@ def write(
     adapter: LoggerAdapter,
     parameters: PushProfilesParameters,
     profiles: t.Iterator[t.Dict],
-) -> None:
+) -> t.Iterator[t.Dict]:
     adapter.info(
         "Pushing {} profiles with job_id={}".format(len(profiles), parameters.job_id)
     )
+    failed_profiles = []
     for profile in profiles:
         response = requests.post(
             "{}/{}/candidates".format(SMARTRECRUITERS_JOBS_ENDPOINT, parameters.job_id),
@@ -183,7 +184,8 @@ def write(
                     response.text,
                 )
             )
-            raise Exception("Failed to push profile to SmartRecruiters")
+            failed_profiles.append(profile)
+    return failed_profiles
 
 
 SmartRecruitersJobWarehouse = Warehouse(
