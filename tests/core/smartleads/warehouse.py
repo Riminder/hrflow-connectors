@@ -39,12 +39,34 @@ def write(
     return []
 
 
+def write_with_failures(
+    adapter: LoggerAdapter,
+    parameters: PushLeadsParameters,
+    items: t.Iterator[t.Dict],
+) -> t.Iterator[t.Dict]:
+    adapter.info("Pushing leads to DB")
+    LEADS_DB.setdefault(parameters.campaign_id, []).extend(items[:-2])
+    adapter.info("Finished writing leads to DB")
+    return items[-2:]
+
+
 LeadsWarehouse = Warehouse(
     name="Test Leads",
     data_schema=Lead,
     write=WarehouseWriteAction(
         parameters=PushLeadsParameters,
         function=write,
+        endpoints=[POST_LEADS],
+    ),
+)
+
+
+FailingLeadsWarehouse = Warehouse(
+    name="Test Leads",
+    data_schema=Lead,
+    write=WarehouseWriteAction(
+        parameters=PushLeadsParameters,
+        function=write_with_failures,
         endpoints=[POST_LEADS],
     ),
 )
