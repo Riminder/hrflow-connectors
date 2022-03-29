@@ -10,7 +10,7 @@ from hrflow_connectors.core import (
     ConnectorAction,
     WorkflowType,
 )
-from hrflow_connectors.core.connector import ActionStatus
+from hrflow_connectors.core.connector import ActionRunEvents, ActionStatus, FatalError
 from hrflow_connectors.core.tests import (
     ENVIRON_SECRETS_PREFIX,
     ConnectorTestConfig,
@@ -123,7 +123,7 @@ actions:
       origin_parameters:
       target_parameters:
         campain_id: my_camp
-      action_status: success
+      status: success
 
         """.encode()
     )
@@ -143,7 +143,7 @@ actions:
   first_action:
     - id: first_test
       target_parameters: {}
-      action_status: success
+      status: success
 
         """.encode()
     )
@@ -164,7 +164,7 @@ actions:
   first_action:
     - id: first_test
       origin_parameters: {}
-      action_status: success
+      status: success
 
         """.encode()
     )
@@ -180,13 +180,13 @@ actions:
 
     smartleads_test_config.write_bytes(
         """
-# Invalid action_stats
+# Invalid status
 actions:
   first_action:
     - id: first_test
       origin_parameters: {}
       target_parameters: {}
-      action_status: not_a_valid_action_status
+      status: not_a_valid_action_status
 
         """.encode()
     )
@@ -197,7 +197,52 @@ actions:
         )
     errors = excinfo.value.args[0]
     assert len(errors) == 1
-    assert errors[0]["loc"] == ("actions", "first_action", 0, "action_status")
+    assert errors[0]["loc"] == ("actions", "first_action", 0, "status")
+    assert errors[0]["type"] == "type_error.enum"
+
+    smartleads_test_config.write_bytes(
+        """
+# Invalid fatal_reason
+actions:
+  first_action:
+    - id: first_test
+      origin_parameters: {}
+      target_parameters: {}
+      fatal_reason: not_a_valid_fatal_reason
+
+        """.encode()
+    )
+    with pytest.raises(InvalidTestConfigException) as excinfo:
+        collect_connector_tests(
+            connector=SmartLeads,
+            connectors_directory=connectors_directory,
+        )
+    errors = excinfo.value.args[0]
+    assert len(errors) == 1
+    assert errors[0]["loc"] == ("actions", "first_action", 0, "fatal_reason")
+    assert errors[0]["type"] == "type_error.enum"
+
+    smartleads_test_config.write_bytes(
+        """
+# Invalid run_stats
+actions:
+  first_action:
+    - id: first_test
+      origin_parameters: {}
+      target_parameters: {}
+      run_stats:
+        not_a_valid_action_event: 12
+
+        """.encode()
+    )
+    with pytest.raises(InvalidTestConfigException) as excinfo:
+        collect_connector_tests(
+            connector=SmartLeads,
+            connectors_directory=connectors_directory,
+        )
+    errors = excinfo.value.args[0]
+    assert len(errors) == 1
+    assert errors[0]["loc"] == ("actions", "first_action", 0, "run_stats", "__key__")
     assert errors[0]["type"] == "type_error.enum"
 
     smartleads_test_config.write_bytes(
@@ -208,7 +253,7 @@ actions:
     - id: first_test
       origin_parameters: {}
       target_parameters: {}
-      action_status: success
+      status: success
 
         """.encode()
     )
@@ -284,17 +329,27 @@ actions:
     - id: second_test
       origin_parameters: {}
       target_parameters: {}
-      action_status: success
+      status: success
+      fatal_reason: ""
     - origin_parameters: {}
       target_parameters:
         campain_id: my_camp
-      action_status: writing_failure
+      status: fatal
+      fatal_reason: bad_action_parameters
+      run_stats:
+        read_success: 4
+        read_failure: 1
+        write_failure: 3
   second_action:
     - origin_parameters:
         gender: male
       target_parameters:
         campain_id: my_second_camp
-      action_status: success
+      status: success
+      run_stats:
+        read_success: 10
+        read_failure: 0
+        write_failure: 0
         """.encode()
     )
     test_suite = collect_connector_tests(
@@ -311,24 +366,37 @@ actions:
     assert first_action_tests[0].id == "first_test"
     assert first_action_tests[0].origin_parameters == dict()
     assert first_action_tests[0].target_parameters == dict()
-    assert first_action_tests[0].action_status is None
+    assert first_action_tests[0].status is None
 
     assert first_action_tests[1].id == "second_test"
     assert first_action_tests[1].origin_parameters == dict()
     assert first_action_tests[1].target_parameters == dict()
-    assert first_action_tests[1].action_status is ActionStatus.success
+    assert first_action_tests[1].status is ActionStatus.success
+    assert first_action_tests[1].fatal_reason is FatalError.none
 
     assert first_action_tests[2].id is None
     assert first_action_tests[2].origin_parameters == dict()
     assert first_action_tests[2].target_parameters == dict(campain_id="my_camp")
-    assert first_action_tests[2].action_status is ActionStatus.writing_failure
+    assert first_action_tests[2].status is ActionStatus.fatal
+    assert first_action_tests[2].fatal_reason is FatalError.bad_action_parameters
+    assert first_action_tests[2].run_stats == {
+        ActionRunEvents.read_success: 4,
+        ActionRunEvents.read_failure: 1,
+        ActionRunEvents.write_failure: 3,
+    }
 
     assert len(second_action_tests) == 1
 
     assert second_action_tests[0].id is None
     assert second_action_tests[0].origin_parameters == dict(gender="male")
     assert second_action_tests[0].target_parameters == dict(campain_id="my_second_camp")
-    assert second_action_tests[0].action_status is ActionStatus.success
+    assert second_action_tests[0].status is ActionStatus.success
+    assert second_action_tests[0].fatal_reason is None
+    assert second_action_tests[0].run_stats == {
+        ActionRunEvents.read_success: 10,
+        ActionRunEvents.read_failure: 0,
+        ActionRunEvents.write_failure: 0,
+    }
 
 
 def test_valid_warehouse_config_no_secrets(

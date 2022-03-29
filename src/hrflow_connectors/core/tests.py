@@ -9,7 +9,12 @@ from pathlib import Path
 import yaml
 from pydantic import BaseModel, Field, StrictStr, ValidationError
 
-from hrflow_connectors.core.connector import ActionStatus, Connector
+from hrflow_connectors.core.connector import (
+    ActionRunEvents,
+    ActionStatus,
+    Connector,
+    FatalError,
+)
 from hrflow_connectors.core.warehouse import Warehouse
 
 PROJECT_DIRECTORY = Path(__file__).parent.parent.parent.parent
@@ -198,7 +203,9 @@ class ActionTest(BaseModel):
     id: t.Optional[str] = None
     origin_parameters: t.Dict[str, ParameterValue]
     target_parameters: t.Dict[str, ParameterValue]
-    action_status: t.Optional[ActionStatus]
+    status: t.Optional[ActionStatus]
+    fatal_reason: t.Optional[FatalError]
+    run_stats: t.Optional[t.Dict[ActionRunEvents, int]]
 
 
 class ConnectorTestConfig(BaseModel):
