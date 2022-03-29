@@ -12,6 +12,8 @@ GET_USERS = ActionEndpoints(
     url="https://local_user.readthedocs.com/users",
 )
 
+FAIL_AT = 7
+
 
 class Gender(enum.Enum):
     male = "male"
@@ -30,6 +32,10 @@ USERS_DB = [
     dict(name="Emilie", email="emilie@mailbox.com", gender=Gender.female),
     dict(name="Nicole", email="nicole@mailbox.com", gender=Gender.female),
     dict(name="Jean", email="jean@mailbox.com", gender=Gender.male),
+    dict(name="Durant", email="durant@mailbox.com", gender=Gender.male),
+    dict(name="Sarah", email="sarah@mailbox.com", gender=Gender.female),
+    dict(name="Beatrice", email="beatrice@mailbox.com", gender=Gender.female),
+    dict(name="Marc", email="marc@mailbox.com", gender=Gender.male),
 ]
 
 
@@ -45,12 +51,40 @@ def read(adapter: LoggerAdapter, parameters: PullUsersParameters) -> t.Iterable[
     return [item for item in USERS_DB if item["gender"] is parameters.gender]
 
 
+def read_with_failures(
+    adapter: LoggerAdapter, parameters: PullUsersParameters
+) -> t.Iterable[t.Dict]:
+    if parameters.gender is None:
+        adapter.info("Returning all users")
+        users_to_return = USERS_DB[:]
+    else:
+        adapter.info("Returning {} users".format(parameters.gender))
+        users_to_return = [
+            item for item in USERS_DB if item["gender"] is parameters.gender
+        ]
+    for i, user in enumerate(users_to_return):
+        if i == FAIL_AT:
+            (10 / 0)
+        yield user
+
+
 UsersWarehouse = Warehouse(
     name="Test Users",
     data_schema=User,
     read=WarehouseReadAction(
         parameters=PullUsersParameters,
         function=read,
+        endpoints=[GET_USERS],
+    ),
+)
+
+
+FailingUsersWarehouse = Warehouse(
+    name="Test Users",
+    data_schema=User,
+    read=WarehouseReadAction(
+        parameters=PullUsersParameters,
+        function=read_with_failures,
         endpoints=[GET_USERS],
     ),
 )
