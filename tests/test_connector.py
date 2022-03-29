@@ -8,7 +8,8 @@ from hrflow_connectors.core.tests import collect_connector_tests
 
 ConnectorActionTestParams = namedtuple(
     "ConnectorActionTestParams",
-    "action, origin_parameters, target_parameters, expected_status",
+    "action, origin_parameters, target_parameters, expected_status,"
+    " expected_fatal_reason, expected_run_stats",
 )
 
 
@@ -41,7 +42,9 @@ def parameterize_connector_action_tests(
                             action=action,
                             origin_parameters=action_test.origin_parameters,
                             target_parameters=action_test.target_parameters,
-                            expected_status=action_test.action_status,
+                            expected_status=action_test.status,
+                            expected_fatal_reason=action_test.fatal_reason,
+                            expected_run_stats=action_test.run_stats,
                         ),
                         id="{}_action:{}_{}".format(
                             connector.model.name, action_name, action_test.id or i
@@ -52,10 +55,14 @@ def parameterize_connector_action_tests(
 
 
 def test_connector_action(connector_action_test_params):
-    action_status = connector_action_test_params.action(
+    result = connector_action_test_params.action(
         action_parameters=dict(),
         origin_parameters=connector_action_test_params.origin_parameters,
         target_parameters=connector_action_test_params.target_parameters,
     )
     if connector_action_test_params.expected_status is not None:
-        assert action_status == connector_action_test_params.expected_status
+        assert result.status == connector_action_test_params.expected_status
+    if connector_action_test_params.expected_fatal_reason is not None:
+        assert result.fatal_reason == connector_action_test_params.expected_fatal_reason
+    if connector_action_test_params.expected_run_stats is not None:
+        assert result.run_stats == connector_action_test_params.expected_run_stats
