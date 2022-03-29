@@ -13,8 +13,19 @@ from hrflow_connectors.core import (
     WorkflowType,
 )
 from hrflow_connectors.core.connector import ActionRunResult, Event, Reason, Status
-from tests.core.localusers.warehouse import USERS_DB, BadUsersWarehouse, UsersWarehouse
-from tests.core.smartleads.warehouse import LEADS_DB, BadLeadsWarehouse, LeadsWarehouse
+from tests.core.localusers.warehouse import (
+    FAIL_AT,
+    USERS_DB,
+    BadUsersWarehouse,
+    FailingUsersWarehouse,
+    UsersWarehouse,
+)
+from tests.core.smartleads.warehouse import (
+    LEADS_DB,
+    BadLeadsWarehouse,
+    FailingLeadsWarehouse,
+    LeadsWarehouse,
+)
 
 DESCRIPTION = "Test Connector for seamless users to leads integration"
 
@@ -391,6 +402,55 @@ def test_connector_default_format():
     assert result.events[Event.write_failure] == 0
 
     assert len(USERS_DB) == len(LEADS_DB[campaign_id])
+    assert all(lead["name"].upper() == lead["name"] for lead in LEADS_DB[campaign_id])
+
+
+def test_action_with_failures():
+    def failing_format(user):
+        if user["name"] in [USERS_DB[0]["name"], USERS_DB[3]["name"]]:
+            (10 / 0)
+        user["name"] = user["name"].upper()
+        return user
+
+    def failing_logic(user):
+        if user["name"] in [USERS_DB[2]["name"], USERS_DB[5]["name"]]:
+            (10 / 0)
+        return user
+
+    FailingSmartLeads = Connector(
+        name="SmartLeads",
+        description=DESCRIPTION,
+        url="https://www.smartleads.test/",
+        actions=[
+            ConnectorAction(
+                name="pull_leads",
+                type=WorkflowType.pull,
+                description="Send users as leads",
+                parameters=BaseActionParameters,
+                origin=FailingUsersWarehouse,
+                target=FailingLeadsWarehouse,
+            ),
+        ],
+    )
+    # Without default format
+    campaign_id = "camp_xxx1"
+    assert len(LEADS_DB[campaign_id]) == 0
+
+    result = FailingSmartLeads.pull_leads(
+        action_parameters=dict(format=failing_format, logics=[failing_logic]),
+        origin_parameters=dict(),
+        target_parameters=dict(campaign_id=campaign_id),
+    )
+
+    assert result.status == Status.success_with_failures
+    assert result.events[Event.read_success] == FAIL_AT
+    assert result.events[Event.read_failure] == 1
+    assert result.events[Event.format_failure] == 2
+    assert result.events[Event.logics_failure] == 2
+    assert result.events[Event.logics_discard] == 0
+    assert result.events[Event.write_failure] == 2
+
+    assert len(LEADS_DB[campaign_id]) == FAIL_AT - 2 - 2 - 2
     assert all(lead["name"].upper() == lead["name"] for lead in LEADS_DB[campaign_id])
 
 
