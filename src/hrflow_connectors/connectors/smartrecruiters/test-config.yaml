@@ -14,7 +14,7 @@ actions:
         api_secret: $__API_SECRET
         api_user: $__API_USER
         board_key: $__BOARD_KEY
-      action_status: success
+      status: success
     - id: not_x_smart_token
       origin_parameters:
         posting_status: PUBLIC
@@ -22,7 +22,8 @@ actions:
         api_secret: $__API_SECRET
         api_user: $__API_USER
         board_key: $__BOARD_KEY
-      action_status: bad_origin_parameters
+      status: fatal
+      reason: bad_origin_parameters
     - id: no_hrflow_board_key
       origin_parameters:
         x_smart_token: $__X_SMART_TOKEN
@@ -30,7 +31,8 @@ actions:
       target_parameters:
         api_secret: $__API_SECRET
         api_user: $__API_USER
-      action_status: bad_target_parameters
+      status: fatal
+      reason: bad_target_parameters
     - id: invalid_x_smart_token
       origin_parameters:
         x_smart_token: bad_smart_token
@@ -39,7 +41,8 @@ actions:
         api_secret: $__API_SECRET
         api_user: $__API_USER
         board_key: $__BOARD_KEY
-      action_status: reading_failure
+      status: fatal
+      reason: read_failure
     - id: invalid_hrflow_api_secret
       origin_parameters:
         x_smart_token: $__X_SMART_TOKEN
@@ -48,4 +51,5 @@ actions:
         api_secret: bad_api_secret
         api_user: $__API_USER
         board_key: $__BOARD_KEY
-      action_status: writing_failure
+      status: fatal
+      reason: write_failure
