@@ -36,8 +36,9 @@ class WriteJsonParameters(BaseModel):
 
 
 def write(
-    adapter: LoggerAdapter, parameters: WriteJsonParameters, items: t.Iterator[t.Dict]
-) -> None:
+    adapter: LoggerAdapter, parameters: WriteJsonParameters, items: t.Iterable[t.Dict]
+) -> t.List[t.Dict]:
+    failed_items = []
     items = list(items)
     try:
         with open(parameters.path, "w") as f:
@@ -46,7 +47,9 @@ def write(
     except TypeError as e:
         message = "Failed to JSON encode provided items with error {}".format(repr(e))
         adapter.error(message)
-        raise Exception(message)
+        failed_items = items
+
+    return failed_items
 
 
 LocalJSONWarehouse = Warehouse(

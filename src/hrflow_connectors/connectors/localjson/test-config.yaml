@@ -18,7 +18,7 @@ actions:
         api_secret: xxxxAPIUSER
         api_user: user@hrflow.ai
         board_key: xxxxMyBoardKey
-      action_status: bad_origin_parameters
+      status: fatal
     - id: bad_json_input
       origin_parameters:
         path: tests/data/localjson/bad_json.json
@@ -26,7 +26,8 @@ actions:
         api_secret: xxxxAPIUSER
         api_user: user@hrflow.ai
         board_key: xxxxMyBoardKey
-      action_status: reading_failure
+      status: fatal
+      reason: read_failure
     - origin_parameters:
         path: tests/data/localjson/valid.json
       target_parameters:
@@ -34,4 +35,9 @@ actions:
         api_secret: xxxxAPIUSER
         api_user: user@hrflow.ai
         board_key: xxxxMyBoardKey
-      action_status: writing_failure
+      status: fatal
+      reason: write_failure
+      events:
+        read_success: 2
+        read_failure: 0
+        write_failure: 2

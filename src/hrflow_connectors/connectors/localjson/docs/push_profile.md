@@ -11,7 +11,7 @@ Push a profile from a Hrflow.ai Source to a local JSON file
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`<lambda>`](../../../core/connector.py#L71) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`<lambda>`](../../../core/connector.py#L149) | Formatting function |
 
 ## Source Parameters
 
