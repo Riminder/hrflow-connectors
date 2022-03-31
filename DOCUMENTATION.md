@@ -413,7 +413,7 @@ def only_recent(job: t.Dict) -> t.Optional[t.Dict]:
         return None
 
 
-LocalJSON.pull_jobs(
+run_result = LocalJSON.pull_jobs(
     action_parameters=dict(format=format_job, logics=[only_categories, only_recent]),
     origin_parameters=dict(path="~/data/jobs_from_contractor_xxxyyy.json"),
     target_parameters=dict(
@@ -547,6 +547,25 @@ LocalJSON.pull_jobs(
 ```
 
 </details>
+
+
+### ✨🚀 Understanding `ActionRunResult` ✨🚀
+Running any `ConnectorAction` returns an instance of `ActionRunResult`. It has the following three attributes :
+- `status` :
+    - `"success"` : When no error occured at any step of the run. All data that was `read` from the `origin` warehouse made its way to the `target` warehouse
+    - `"fatal"` : When a critical error occured during the run. No data reached the `target` warehouse
+    - `"success_with_failures"` : Some data _but not all_ was written to the `target` warehouse
+- `reason` :
+    - `""` _(empty string)_ : When `status` is `"success"` or `"success_with_failure"`
+    - `"bad_action_parameters"` : The parameters given as `action_parameters` are not valid _e.g. you give an `int` as `format`_
+    - `"bad_origin_parameters"` : The parameters given as `origin_parameters` are not valid _e.g. you omit a required parameter_
+    - `"bad_target_parameters"` : The parameters given as `target_parameters` are not valid _e.g. you omit a required parameter_
+    - `"format_failure"` : The `format` function raised an exception for **_all_** items
+    - `"logics_failure"`: The `logics` chain of functions raised an exception for **_all_** items
+    - `"read_failure"`: An exception occured during the `read` operation from the very beginning stopping the operation
+    - `"write_failure"`: All items failed to be written to the `target` warehouse
+- `events` : A counter with the counts for the following events `"read_success"` `"read_failure"` `"format_failure"` `"logics_discard"` `"logics_failure"` `"write_failure"`
+
 
 ## Testing
 In order to ensure a minimal level of quality warehouses and connectors are expected to be automatically tested against a set of basic scenarios. To make this as simple as possible a YAML based testing framework is in place.
