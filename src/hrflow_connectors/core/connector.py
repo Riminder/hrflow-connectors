@@ -203,6 +203,8 @@ class WorkflowType(str, enum.Enum):
 class ConnectorAction(BaseModel):
     WORKFLOW_FORMAT_PLACEHOLDER = "# << format_placeholder >>"
     WORKFLOW_LOGICS_PLACEHOLDER = "# << logics_placeholder >>"
+    ORIGIN_SETTINGS_PREFIX = "origin_"
+    TARGET_SETTINGS_PREFIX = "target_"
 
     name: str
     type: WorkflowType
@@ -227,6 +229,8 @@ class ConnectorAction(BaseModel):
         return WORKFLOW_TEMPLATE.render(
             format_placeholder=self.WORKFLOW_FORMAT_PLACEHOLDER,
             logics_placeholder=self.WORKFLOW_LOGICS_PLACEHOLDER,
+            origin_settings_prefix=self.ORIGIN_SETTINGS_PREFIX,
+            target_settings_prefix=self.TARGET_SETTINGS_PREFIX,
             connector_name=connector_name,
             action_name=self.name,
             type=self.type.value,
@@ -446,6 +450,8 @@ class Connector:
                 workflow_code=action.workflow_code(connector_name=model.name),
                 workflow_code_format_placeholder=action.WORKFLOW_FORMAT_PLACEHOLDER,
                 workflow_code_logics_placeholder=action.WORKFLOW_LOGICS_PLACEHOLDER,
+                workflow_code_origin_settings_prefix=action.ORIGIN_SETTINGS_PREFIX,
+                workflow_code_target_settings_prefix=action.TARGET_SETTINGS_PREFIX,
             )
             manifest["actions"].append(action_manifest)
         return manifest
