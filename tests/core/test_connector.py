@@ -12,7 +12,7 @@ from hrflow_connectors.core import (
     ConnectorAction,
     WorkflowType,
 )
-from hrflow_connectors.core.connector import ActionRunResult, Event, Reason, Status
+from hrflow_connectors.core.connector import Event, Reason, RunResult, Status
 from tests.core.localusers.warehouse import (
     FAIL_AT,
     USERS_DB,
@@ -455,25 +455,25 @@ def test_action_with_failures():
 
 
 def test_action_run_results_from_events():
-    result = ActionRunResult.from_events(
+    result = RunResult.from_events(
         Counter({Event.read_success: 0, Event.read_failure: 0})
     )
     assert result.status is Status.success
     assert result.reason is Reason.none
 
-    result = ActionRunResult.from_events(
+    result = RunResult.from_events(
         Counter({Event.read_success: 0, Event.read_failure: 1})
     )
     assert result.status is Status.fatal
     assert result.reason is Reason.read_failure
 
-    result = ActionRunResult.from_events(
+    result = RunResult.from_events(
         Counter({Event.read_success: 5, Event.read_failure: 1})
     )
     assert result.status is Status.success_with_failures
     assert result.reason is Reason.none
 
-    result = ActionRunResult.from_events(
+    result = RunResult.from_events(
         Counter(
             {
                 Event.read_success: 5,
@@ -485,7 +485,7 @@ def test_action_run_results_from_events():
     assert result.status is Status.fatal
     assert result.reason is Reason.format_failure
 
-    result = ActionRunResult.from_events(
+    result = RunResult.from_events(
         Counter(
             {
                 Event.read_success: 5,
@@ -498,7 +498,7 @@ def test_action_run_results_from_events():
     assert result.status is Status.fatal
     assert result.reason is Reason.logics_failure
 
-    result = ActionRunResult.from_events(
+    result = RunResult.from_events(
         Counter(
             {
                 Event.read_success: 5,
@@ -512,7 +512,7 @@ def test_action_run_results_from_events():
     assert result.status is Status.success_with_failures
     assert result.reason is Reason.none
 
-    result = ActionRunResult.from_events(
+    result = RunResult.from_events(
         Counter(
             {
                 Event.read_success: 5,
@@ -527,7 +527,7 @@ def test_action_run_results_from_events():
     assert result.status is Status.fatal
     assert result.reason is Reason.write_failure
 
-    result = ActionRunResult.from_events(
+    result = RunResult.from_events(
         Counter(
             {
                 Event.read_success: 5,

@@ -549,8 +549,8 @@ run_result = LocalJSON.pull_jobs(
 </details>
 
 
-### ✨🚀 Understanding `ActionRunResult` ✨🚀
-Running any `ConnectorAction` returns an instance of `ActionRunResult`. It has the following three attributes :
+### ✨🚀 Understanding `RunResult` ✨🚀
+Running any `ConnectorAction` returns an instance of `RunResult`. It has the following three attributes :
 - `status` :
     - `"success"` : When no error occured at any step of the run. All data that was `read` from the `origin` warehouse made its way to the `target` warehouse
     - `"fatal"` : When a critical error occured during the run. No data reached the `target` warehouse
@@ -645,9 +645,9 @@ For each `ConnectorAction` test case you must supply :
 - `origin_parameters` : This maps to the `origin_parameters` used to invoke the action
 - `target_parameters` : This maps to the `target_parameters` used to invoke the action
 - **[Optional]** `id` : A string to name the particular test case. This makes debugging and reading tests' results easier
-- **[Optional]** `status` : If provided the returned `ActionRunResult` should have that exact `status` value. See this [section](#✨🚀-understanding-actionrunresult-✨🚀) for more about `ActionRunResult`
-- **[Optional]** `reason` : If provided the returned `ActionRunResult` should have that exact `reason` value. See this [section](#✨🚀-understanding-actionrunresult-✨🚀) for more about `ActionRunResult`
-- **[Optional]** `events` : If provided the returned `ActionRunResult` should have the same event counts. See this [section](#✨🚀-understanding-actionrunresult-✨🚀) for more about `ActionRunResult`
+- **[Optional]** `status` : If provided the returned `RunResult` should have that exact `status` value. See this [section](#✨🚀-understanding-runresult-✨🚀) for more about `RunResult`
+- **[Optional]** `reason` : If provided the returned `RunResult` should have that exact `reason` value. See this [section](#✨🚀-understanding-runresult-✨🚀) for more about `RunResult`
+- **[Optional]** `events` : If provided the returned `RunResult` should have the same event counts. See this [section](#✨🚀-understanding-runresult-✨🚀) for more about `RunResult`
 
 
 Once again to illustrate let's consider the following test cases :
