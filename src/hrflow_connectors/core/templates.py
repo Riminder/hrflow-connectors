@@ -103,6 +103,9 @@ import typing as t
 
 from hrflow_connectors import {{ connector_name }}
 
+ORIGIN_SETTINGS_PREFIX = "{{ origin_settings_prefix }}"
+TARGET_SETTINGS_PREFIX = "{{ target_settings_prefix }}"
+
 {{ format_placeholder }}
 
 {{ logics_placeholder }}
@@ -138,12 +141,12 @@ def workflow(
         action_parameters=actions_parameters,
         origin_parameters=dict(
             {%- for parameter in origin_parameters %}
-                {{ parameter }}=parameters.get("{{ parameter }}"),
+                {{ parameter }}=parameters.get("{}{{ parameter }}".format(ORIGIN_SETTINGS_PREFIX)),
             {%- endfor %}
         ),
         target_parameters=dict(
             {%- for parameter in target_parameters %}
-                {{ parameter }}=parameters.get("{{ parameter }}"),
+                {{ parameter }}=parameters.get("{}{{ parameter }}".format(TARGET_SETTINGS_PREFIX)),
             {%- endfor %}
         ),
     )
