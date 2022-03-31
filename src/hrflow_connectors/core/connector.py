@@ -59,7 +59,7 @@ class Status(enum.Enum):
     fatal = "fatal"
 
 
-class ActionRunResult(BaseModel):
+class RunResult(BaseModel):
     status: Status
     reason: Reason = Reason.none
     events: t.Counter[Event] = Field(default_factory=Event.empty_counter)
@@ -244,7 +244,7 @@ class ConnectorAction(BaseModel):
         action_parameters: t.Dict,
         origin_parameters: t.Dict,
         target_parameters: t.Dict,
-    ) -> ActionRunResult:
+    ) -> RunResult:
         action_id = uuid.uuid4()
         adapter = ConnectorActionAdapter(
             logger,
@@ -264,9 +264,7 @@ class ConnectorAction(BaseModel):
             adapter.warning(
                 "Failed to parse action_parameters with errors={}".format(e.errors())
             )
-            return ActionRunResult(
-                status=Status.fatal, reason=Reason.bad_action_parameters
-            )
+            return RunResult(status=Status.fatal, reason=Reason.bad_action_parameters)
 
         try:
             origin_parameters = self.origin.read.parameters(**origin_parameters)
@@ -274,9 +272,7 @@ class ConnectorAction(BaseModel):
             adapter.warning(
                 "Failed to parse origin_parameters with errors={}".format(e.errors())
             )
-            return ActionRunResult(
-                status=Status.fatal, reason=Reason.bad_origin_parameters
-            )
+            return RunResult(status=Status.fatal, reason=Reason.bad_origin_parameters)
 
         try:
             target_parameters = self.target.write.parameters(**target_parameters)
@@ -284,9 +280,7 @@ class ConnectorAction(BaseModel):
             adapter.warning(
                 "Failed to parse target_parameters with errors={}".format(e.errors())
             )
-            return ActionRunResult(
-                status=Status.fatal, reason=Reason.bad_target_parameters
-            )
+            return RunResult(status=Status.fatal, reason=Reason.bad_target_parameters)
 
         events = Event.empty_counter()
 
@@ -418,7 +412,7 @@ class ConnectorAction(BaseModel):
             )
         )
         adapter.info("Finished action")
-        return ActionRunResult.from_events(events)
+        return RunResult.from_events(events)
 
 
 class ConnectorModel(BaseModel):
