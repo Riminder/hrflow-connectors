@@ -645,13 +645,16 @@ For each `ConnectorAction` test case you must supply :
 - `origin_parameters` : This maps to the `origin_parameters` used to invoke the action
 - `target_parameters` : This maps to the `target_parameters` used to invoke the action
 - **[Optional]** `id` : A string to name the particular test case. This makes debugging and reading tests' results easier
-- **[Optional]** `action_status` : If provided the test will pass only if the action returns that exact [`ActionStatus`](src/hrflow_connectors/core/connector.py#L31). For example you can implement a test where you give incorrect credentials in `origin_parameters` and check that the action returns `ActionStatus.reading_failure`
+- **[Optional]** `status` : If provided the returned `ActionRunResult` should have that exact `status` value. See this [section](#✨🚀-understanding-actionrunresult-✨🚀) for more about `ActionRunResult`
+- **[Optional]** `reason` : If provided the returned `ActionRunResult` should have that exact `reason` value. See this [section](#✨🚀-understanding-actionrunresult-✨🚀) for more about `ActionRunResult`
+- **[Optional]** `events` : If provided the returned `ActionRunResult` should have the same event counts. See this [section](#✨🚀-understanding-actionrunresult-✨🚀) for more about `ActionRunResult`
+
 
 Once again to illustrate let's consider the following test cases :
 - We want to test the `pull_jobs` action of `LocalJSON`
-- We want to make sure that if we forget to give `path` in `origin_parameters` we have `ActionStatus.bad_origin_parameters`
-- We want to make sure that if we point `path` to a file which is not valid JSON we have `ActionStatus.reading_failure`
-- We want to make sure that with a fake `api_secret` in `target_parameters` we have `ActionStatus.writing_failure`
+- We want to make sure that if we forget to give `path` in `origin_parameters` we have `status="fatal"`
+- We want to make sure that if we point `path` to a file which is not valid JSON we have `status="fatal"` and `reason="read_failure"`
+- We want to make sure that with a fake `api_secret` in `target_parameters` we have `status="fatal"`, `reason="write_failure"` and `events` counts showing that all succeded except the `writing_failure`
 
 This can be achieved by supplying the following `test-config.yaml` file.
 
@@ -665,7 +668,7 @@ actions:
         api_secret: xxxxAPIUSER
         api_user: user@hrflow.ai
         board_key: xxxxMyBoardKey
-      action_status: bad_origin_parameters
+      status: fatal
     - id: bad_json_input
       origin_parameters:
         path: tests/data/localjson/bad_json.json
@@ -673,7 +676,8 @@ actions:
         api_secret: xxxxAPIUSER
         api_user: user@hrflow.ai
         board_key: xxxxMyBoardKey
-      action_status: reading_failure
+      status: fatal
+      reason: read_failure
     - origin_parameters:
         path: tests/data/localjson/valid.json
       target_parameters:
@@ -681,8 +685,12 @@ actions:
         api_secret: xxxxAPIUSER
         api_user: user@hrflow.ai
         board_key: xxxxMyBoardKey
-      action_status: writing_failure
-
+      status: fatal
+      reason: write_failure
+      events:
+        read_success: 2
+        read_failure: 0
+        write_failure: 2
 ```
 
 Before running add both files under [`tests/data/localjson`](./tests/data/localjson/)
@@ -707,6 +715,22 @@ Before running add both files under [`tests/data/localjson`](./tests/data/localj
             {
                 "name": "Category",
                 "value": "Services"
+            }
+        ]
+    },
+    {
+        "name": "Software engineer",
+        "reference": "testing_localjson_connector_2",
+        "summary": "Software engineer Job",
+        "created_at": "2022-03-22T11:54:49",
+        "location": {
+            "text": "Tokyo Japan"
+        },
+        "sections": [],
+        "tags": [
+            {
+                "name": "Category",
+                "value": "IT"
             }
         ]
     }
@@ -742,7 +766,7 @@ actions:
         api_secret: xxxxAPIUSER
         api_user: user@hrflow.ai
         board_key: xxxxMyBoardKey
-      action_status: bad_origin_parameters
+      status: fatal
     - id: bad_json_input
       origin_parameters:
         path: tests/data/localjson/bad_json.json
@@ -750,7 +774,8 @@ actions:
         api_secret: xxxxAPIUSER
         api_user: user@hrflow.ai
         board_key: xxxxMyBoardKey
-      action_status: reading_failure
+      status: fatal
+      reason: read_failure
     - origin_parameters:
         path: tests/data/localjson/valid.json
       target_parameters:
@@ -758,7 +783,12 @@ actions:
         api_secret: xxxxAPIUSER
         api_user: user@hrflow.ai
         board_key: xxxxMyBoardKey
-      action_status: writing_failure
+      status: fatal
+      reason: write_failure
+      events:
+        read_success: 2
+        read_failure: 0
+        write_failure: 2
 ```
 
 </details>
