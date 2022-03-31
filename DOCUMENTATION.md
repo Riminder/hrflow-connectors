@@ -84,7 +84,9 @@ def read(adapter: LoggerAdapter, parameters: ReadJsonParameters) -> t.Iterable[t
         yield data
 
 ```
-Defining the `WarehouseWriteAction` is in many aspects quite similar. Only the corresponding callable has a different signature
+Defining the `WarehouseWriteAction` is in many aspects quite similar. Only the corresponding callable has a different signature.
+
+:warning: _Mind that the underlying function is expected to **always** return the list of items for which the `write` operation failed_. If no such failure happened it should return an **_empty list_**.:warning:
 ```python
 import json
 import typing as t
@@ -100,7 +102,8 @@ class WriteJsonParameters(BaseModel):
 
 def write(
     adapter: LoggerAdapter, parameters: WriteJsonParameters, items: t.Iterable[t.Dict]
-) -> None:
+) -> t.List[t.Dict]:
+    failed_items = []
     items = list(items)
     try:
         with open(parameters.path, "w") as f:
@@ -109,7 +112,9 @@ def write(
     except TypeError as e:
         message = "Failed to JSON encode provided items with error {}".format(repr(e))
         adapter.error(message)
-        raise Exception(message)
+        failed_items = items
+
+    return failed_items
 ```
 
 The last step is defining the `Warehouse`.
@@ -172,7 +177,8 @@ class WriteJsonParameters(BaseModel):
 
 def write(
     adapter: LoggerAdapter, parameters: WriteJsonParameters, items: t.Iterable[t.Dict]
-) -> None:
+) -> t.List[t.Dict]:
+    failed_items = []
     items = list(items)
     try:
         with open(parameters.path, "w") as f:
@@ -181,7 +187,9 @@ def write(
     except TypeError as e:
         message = "Failed to JSON encode provided items with error {}".format(repr(e))
         adapter.error(message)
-        raise Exception(message)
+        failed_items = items
+
+    return failed_items
 
 
 LocalJSONWarehouse = Warehouse(
