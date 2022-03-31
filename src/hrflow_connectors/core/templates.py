@@ -129,21 +129,21 @@ def workflow(
         actions_parameters["logics"] = logics
 
     {% if type == "pull" %}
-    pull_parameters_from = settings
+    parameters = settings
     {% else %}
-    pull_parameters_from = {**settings, **_request}
+    parameters = {**settings, **_request}
     {% endif %}
 
     {{ connector_name }}.{{ action_name }}(
         action_parameters=actions_parameters,
         origin_parameters=dict(
             {%- for parameter in origin_parameters %}
-                {{ parameter }}=pull_parameters_from.get("{{ parameter }}"),
+                {{ parameter }}=parameters.get("{{ parameter }}"),
             {%- endfor %}
         ),
         target_parameters=dict(
             {%- for parameter in target_parameters %}
-                {{ parameter }}=pull_parameters_from.get("{{ parameter }}"),
+                {{ parameter }}=parameters.get("{{ parameter }}"),
             {%- endfor %}
         ),
     )
