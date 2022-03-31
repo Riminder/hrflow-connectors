@@ -65,4 +65,8 @@ def test_connector_action(connector_action_test_params):
     if connector_action_test_params.expected_reason is not None:
         assert result.reason == connector_action_test_params.expected_reason
     if connector_action_test_params.expected_events is not None:
-        assert result.events == connector_action_test_params.expected_events
+        for event in connector_action_test_params.expected_events:
+            assert (
+                result.events[event]
+                == connector_action_test_params.expected_events[event]
+            )

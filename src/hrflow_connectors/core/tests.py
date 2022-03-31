@@ -200,7 +200,7 @@ class ActionTest(BaseModel):
     target_parameters: t.Dict[str, ParameterValue]
     status: t.Optional[Status]
     reason: t.Optional[Reason]
-    events: t.Optional[t.Dict[Event, int]]
+    events: t.Optional[t.Counter[Event]]
 
 
 class ConnectorTestConfig(BaseModel):
