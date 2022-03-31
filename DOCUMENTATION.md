@@ -99,7 +99,7 @@ class WriteJsonParameters(BaseModel):
 
 
 def write(
-    adapter: LoggerAdapter, parameters: WriteJsonParameters, items: t.Iterator[t.Dict]
+    adapter: LoggerAdapter, parameters: WriteJsonParameters, items: t.Iterable[t.Dict]
 ) -> None:
     items = list(items)
     try:
@@ -171,7 +171,7 @@ class WriteJsonParameters(BaseModel):
 
 
 def write(
-    adapter: LoggerAdapter, parameters: WriteJsonParameters, items: t.Iterator[t.Dict]
+    adapter: LoggerAdapter, parameters: WriteJsonParameters, items: t.Iterable[t.Dict]
 ) -> None:
     items = list(items)
     try:
