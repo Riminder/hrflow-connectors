@@ -36,6 +36,7 @@ class Event(enum.Enum):
     logics_discard = "logics_discard"
     logics_failure = "logics_failure"
     write_failure = "write_failure"
+    callback_failure = "callback_failure"
 
     @classmethod
     def empty_counter(cls) -> t.Counter["Event"]:
@@ -65,7 +66,7 @@ class RunResult(BaseModel):
     events: t.Counter[Event] = Field(default_factory=Event.empty_counter)
 
     @classmethod
-    def from_events(cls, events: t.Counter[Event]):
+    def from_events(cls, events: t.Counter[Event]) -> "RunResult":
         read_success = events[Event.read_success]
         read_failures = events[Event.read_failure]
         if read_success == 0 and read_failures == 0:
@@ -212,6 +213,7 @@ class ConnectorAction(BaseModel):
     parameters: t.Type[BaseModel]
     origin: Warehouse
     target: Warehouse
+    callback: t.Optional[t.Callable[[t.Counter[Event], t.List[t.Dict]], None]] = None
 
     @validator("origin", pre=False)
     def origin_is_readable(cls, origin):
@@ -261,7 +263,6 @@ class ConnectorAction(BaseModel):
             ),
         )
         adapter.info("Starting Action")
-
         try:
             parameters = self.parameters(**action_parameters)
         except ValidationError as e:
@@ -415,6 +416,15 @@ class ConnectorAction(BaseModel):
                 events[Event.write_failure],
             )
         )
+
+        if self.callback is not None:
+            adapter.info("Calling callback function")
+            try:
+                self.callback(events, items_to_write)
+            except Exception as e:
+                events[Event.callback_failure] += 1
+                adapter.error("Failed to run callback with error={}".format(repr(e)))
+
         adapter.info("Finished action")
         return RunResult.from_events(events)
 
