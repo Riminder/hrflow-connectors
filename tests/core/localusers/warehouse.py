@@ -39,11 +39,11 @@ USERS_DB = [
 ]
 
 
-class PullUsersParameters(BaseModel):
+class ReadUsersParameters(BaseModel):
     gender: t.Optional[Gender] = None
 
 
-def read(adapter: LoggerAdapter, parameters: PullUsersParameters) -> t.Iterable[t.Dict]:
+def read(adapter: LoggerAdapter, parameters: ReadUsersParameters) -> t.Iterable[t.Dict]:
     if parameters.gender is None:
         adapter.info("Returning all users")
         return USERS_DB[:]
@@ -52,7 +52,7 @@ def read(adapter: LoggerAdapter, parameters: PullUsersParameters) -> t.Iterable[
 
 
 def read_with_failures(
-    adapter: LoggerAdapter, parameters: PullUsersParameters
+    adapter: LoggerAdapter, parameters: ReadUsersParameters
 ) -> t.Iterable[t.Dict]:
     if parameters.gender is None:
         adapter.info("Returning all users")
@@ -72,7 +72,7 @@ UsersWarehouse = Warehouse(
     name="Test Users",
     data_schema=User,
     read=WarehouseReadAction(
-        parameters=PullUsersParameters,
+        parameters=ReadUsersParameters,
         function=read,
         endpoints=[GET_USERS],
     ),
@@ -83,7 +83,7 @@ FailingUsersWarehouse = Warehouse(
     name="Test Users",
     data_schema=User,
     read=WarehouseReadAction(
-        parameters=PullUsersParameters,
+        parameters=ReadUsersParameters,
         function=read_with_failures,
         endpoints=[GET_USERS],
     ),
@@ -93,7 +93,7 @@ BadUsersWarehouse = Warehouse(
     name="Bad Test Users",
     data_schema=User,
     read=WarehouseReadAction(
-        parameters=PullUsersParameters,
+        parameters=ReadUsersParameters,
         function=lambda *args, **kwargs: 10 / 0,
         endpoints=[GET_USERS],
     ),

@@ -25,7 +25,7 @@ class JobParsingException(Exception):
         self.client_response = client_response
 
 
-class PushJobParameters(BaseModel):
+class WriteJobParameters(BaseModel):
     api_secret: str = Field(
         ...,
         description="X-API-KEY used to access HrFlow.ai API",
@@ -44,7 +44,7 @@ class PushJobParameters(BaseModel):
     )
 
 
-class PullProfileParameters(BaseModel):
+class ReadProfileParameters(BaseModel):
     api_secret: str = Field(
         ...,
         description="X-API-KEY used to access HrFlow.ai API",
@@ -117,7 +117,7 @@ def enrich_job_with_parsing(hrflow_client: Hrflow, job: t.Dict) -> None:
 
 
 def write(
-    adapter: LoggerAdapter, parameters: PushJobParameters, jobs: t.Iterable[t.Dict]
+    adapter: LoggerAdapter, parameters: WriteJobParameters, jobs: t.Iterable[t.Dict]
 ) -> t.List[t.Dict]:
     failed_jobs = []
     hrflow_client = Hrflow(
@@ -275,7 +275,7 @@ def write(
     return failed_jobs
 
 
-def read(adapter: LoggerAdapter, parameters: PullProfileParameters) -> t.List[t.Dict]:
+def read(adapter: LoggerAdapter, parameters: ReadProfileParameters) -> t.List[t.Dict]:
     hrflow_client = Hrflow(
         api_secret=parameters.api_secret, api_user=parameters.api_user
     )
@@ -302,11 +302,11 @@ def read(adapter: LoggerAdapter, parameters: PullProfileParameters) -> t.List[t.
 HrFlowJobWarehouse = Warehouse(
     name="HrFlow.ai Jobs",
     data_schema=HrFlowJob,
-    write=WarehouseWriteAction(parameters=PushJobParameters, function=write),
+    write=WarehouseWriteAction(parameters=WriteJobParameters, function=write),
 )
 
 HrFlowProfileWarehouse = Warehouse(
     name="HrFlow.ai Profiles",
     data_schema=HrFlowProfile,
-    read=WarehouseReadAction(parameters=PullProfileParameters, function=read),
+    read=WarehouseReadAction(parameters=ReadProfileParameters, function=read),
 )

@@ -7,7 +7,7 @@
         {
           "name": "pull_jobs",
           "action_parameters": {
-            "title": "PullJobsActionParameters",
+            "title": "ReadJobsActionParameters",
             "type": "object",
             "properties": {
               "logics": [
@@ -30,7 +30,7 @@
           },
           "origin": "SmartRecruiters Jobs",
           "origin_parameters": {
-            "title": "PullJobsParameters",
+            "title": "ReadJobsParameters",
             "type": "object",
             "properties": {
               "x_smart_token": {
@@ -445,7 +445,7 @@
           },
           "target": "HrFlow.ai Jobs",
           "target_parameters": {
-            "title": "PushJobParameters",
+            "title": "WriteJobParameters",
             "type": "object",
             "properties": {
               "api_secret": {
@@ -770,7 +770,7 @@
         {
           "name": "push_profile",
           "action_parameters": {
-            "title": "PushProfileActionParameters",
+            "title": "WriteProfileActionParameters",
             "type": "object",
             "properties": {
               "logics": [
@@ -793,7 +793,7 @@
           },
           "origin": "HrFlow.ai Profiles",
           "origin_parameters": {
-            "title": "PullProfileParameters",
+            "title": "ReadProfileParameters",
             "type": "object",
             "properties": {
               "api_secret": {
@@ -1287,7 +1287,7 @@
           },
           "target": "SmartRecruiters Profiles",
           "target_parameters": {
-            "title": "PushProfilesParameters",
+            "title": "WriteProfilesParameters",
             "type": "object",
             "properties": {
               "x_smart_token": {
