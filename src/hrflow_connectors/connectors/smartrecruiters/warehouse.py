@@ -67,7 +67,7 @@ class JobStatus(str, enum.Enum):
     on_hold = "ON_HOLD"
 
 
-class PushProfilesParameters(BaseModel):
+class WriteProfilesParameters(BaseModel):
     x_smart_token: str = Field(
         ..., description="X-SmartToken used to access SmartRecruiters API", repr=False
     )
@@ -81,7 +81,7 @@ class PushProfilesParameters(BaseModel):
     )
 
 
-class PullJobsParameters(BaseModel):
+class ReadJobsParameters(BaseModel):
     x_smart_token: str = Field(
         ..., description="X-SmartToken used to access SmartRecruiters API", repr=False
     )
@@ -106,7 +106,7 @@ class PullJobsParameters(BaseModel):
     )
 
 
-def read(adapter: LoggerAdapter, parameters: PullJobsParameters) -> t.Iterable[t.Dict]:
+def read(adapter: LoggerAdapter, parameters: ReadJobsParameters) -> t.Iterable[t.Dict]:
     page = None
     while True:
         params = dict(
@@ -162,7 +162,7 @@ def read(adapter: LoggerAdapter, parameters: PullJobsParameters) -> t.Iterable[t
 
 def write(
     adapter: LoggerAdapter,
-    parameters: PushProfilesParameters,
+    parameters: WriteProfilesParameters,
     profiles: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
     adapter.info(
@@ -192,7 +192,7 @@ SmartRecruitersJobWarehouse = Warehouse(
     name="SmartRecruiters Jobs",
     data_schema=SmartRecruitersJob,
     read=WarehouseReadAction(
-        parameters=PullJobsParameters,
+        parameters=ReadJobsParameters,
         function=read,
         endpoints=[GET_ALL_JOBS_ENDPOINT, GET_JOB_ENDPOINT],
     ),
@@ -202,7 +202,7 @@ SmartRecruitersProfileWarehouse = Warehouse(
     name="SmartRecruiters Profiles",
     data_schema=SmartRecruitersProfile,
     write=WarehouseWriteAction(
-        parameters=PushProfilesParameters,
+        parameters=WriteProfilesParameters,
         function=write,
         endpoints=[POST_CANDIDATE_ENDPOINT],
     ),

@@ -215,7 +215,7 @@ As stated above any valid JSON can be used with `LocalJSONWarehouse` so this fil
 
 This last step is mainly boilerplate code and wire connecting. We will create two `ConnectorAction`s :
 - `pull_jobs` : Uses the `LocalJSONWarehouse` to read jobs from a JSON file and sends them to a HrFlow.ai Job Board
-- `push_profile` : Pulls a profile from a HrFlow.ai Profile Source and writes it down to a local JSON file for inspection
+- `push_profile` : Reads a profile from a HrFlow.ai Profile Source and writes it down to a local JSON file for inspection
 
 **One important aspect** is that the whole logic of how to save jobs into a HrFlow.ai Job Board or how to pull a profile from a HrFlow.ai Profile source is abstracted by  `HrFlowJobWarehouse` and `HrFlowProfileWarehouse`. It's ready to use with a palette of optional parameters like adding parsing when pushing jobs for example.
 
@@ -299,7 +299,7 @@ LocalJSON = Connector(
             type=WorkflowType.pull,
             description="Send jobs from local JSON file to a ***Hrflow.ai Board***.",
             parameters=BaseActionParameters.with_default_format(
-                "PullJSONJobsActionParameters", format=format_job
+                "ReadJSONJobsActionParameters", format=format_job
             ),
             origin=LocalJSONWarehouse,
             target=HrFlowJobWarehouse,
