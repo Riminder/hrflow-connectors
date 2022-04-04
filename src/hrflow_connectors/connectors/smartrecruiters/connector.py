@@ -190,7 +190,7 @@ SmartRecruiters = Connector(
                 " to a ***Hrflow.ai Board***."
             ),
             parameters=BaseActionParameters.with_default_format(
-                "PullJobsActionParameters", format=format_job
+                "ReadJobsActionParameters", format=format_job
             ),
             origin=SmartRecruitersJobWarehouse,
             target=HrFlowJobWarehouse,
@@ -199,11 +199,11 @@ SmartRecruiters = Connector(
             name="push_profile",
             type=WorkflowType.catch,
             description=(
-                "Push a profile from Hrflow.ai Source to SmartRecruiters via the API"
+                "Writes a profile from Hrflow.ai Source to SmartRecruiters via the API"
                 " for the given `job_id`."
             ),
             parameters=BaseActionParameters.with_default_format(
-                "PushProfileActionParameters", format=format_profile
+                "WriteProfileActionParameters", format=format_profile
             ),
             origin=HrFlowProfileWarehouse,
             target=SmartRecruitersProfileWarehouse,

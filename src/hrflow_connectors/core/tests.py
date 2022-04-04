@@ -184,14 +184,14 @@ class WarehouseName(StrictStr):
         yield cls.validate
 
 
-class PullTest(BaseModel):
+class ReadTest(BaseModel):
     id: t.Optional[str] = None
     parameters: t.Dict[str, ParameterValue]
     expected_number_of_items: t.Optional[int] = None
 
 
 class WarehouseTests(BaseModel):
-    read: t.List[PullTest] = Field(default_factory=list)
+    read: t.List[ReadTest] = Field(default_factory=list)
 
 
 class ActionTest(BaseModel):

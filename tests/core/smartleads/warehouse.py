@@ -21,7 +21,7 @@ class Lead(BaseModel):
     email: str
 
 
-class PushLeadsParameters(BaseModel):
+class WriteLeadsParameters(BaseModel):
     campaign_id: str
     dummy_int: t.Optional[int]
     dummy_str: str = "xxx"
@@ -30,7 +30,7 @@ class PushLeadsParameters(BaseModel):
 
 def write(
     adapter: LoggerAdapter,
-    parameters: PushLeadsParameters,
+    parameters: WriteLeadsParameters,
     items: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
     adapter.info("Pushing leads to DB")
@@ -41,7 +41,7 @@ def write(
 
 def write_with_failures(
     adapter: LoggerAdapter,
-    parameters: PushLeadsParameters,
+    parameters: WriteLeadsParameters,
     items: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
     adapter.info("Pushing leads to DB")
@@ -55,7 +55,7 @@ LeadsWarehouse = Warehouse(
     name="Test Leads",
     data_schema=Lead,
     write=WarehouseWriteAction(
-        parameters=PushLeadsParameters,
+        parameters=WriteLeadsParameters,
         function=write,
         endpoints=[POST_LEADS],
     ),
@@ -66,7 +66,7 @@ FailingLeadsWarehouse = Warehouse(
     name="Test Leads",
     data_schema=Lead,
     write=WarehouseWriteAction(
-        parameters=PushLeadsParameters,
+        parameters=WriteLeadsParameters,
         function=write_with_failures,
         endpoints=[POST_LEADS],
     ),
@@ -76,7 +76,7 @@ BadLeadsWarehouse = Warehouse(
     name="Bad Test Leads",
     data_schema=Lead,
     write=WarehouseWriteAction(
-        parameters=PushLeadsParameters,
+        parameters=WriteLeadsParameters,
         function=lambda *args, **kwargs: 10 / 0,
         endpoints=[POST_LEADS],
     ),

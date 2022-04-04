@@ -8,8 +8,8 @@ import pytest
 import hrflow_connectors
 from hrflow_connectors.core.tests import collect_connector_tests
 
-WarehousePullTest = namedtuple(
-    "WarehousePullTest",
+WarehouseReadTest = namedtuple(
+    "WarehouseReadTest",
     "read, parameters, expected_number_of_items",
 )
 
@@ -46,7 +46,7 @@ def parameterize_read_warehouse_tests(
                 for i, warehouse_test in enumerate(warehouse_tests.read):
                     params.append(
                         pytest.param(
-                            WarehousePullTest(
+                            WarehouseReadTest(
                                 read=warehouse.read,
                                 parameters=warehouse_test.parameters,
                                 expected_number_of_items=warehouse_test.expected_number_of_items,  # noqa

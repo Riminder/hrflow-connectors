@@ -2,7 +2,7 @@
 # Push profile
 `HrFlow.ai Profiles` :arrow_right: `SmartRecruiters Profiles`
 
-Push a profile from Hrflow.ai Source to SmartRecruiters via the API for the given `job_id`.
+Writes a profile from Hrflow.ai Source to SmartRecruiters via the API for the given `job_id`.
 
 
 
