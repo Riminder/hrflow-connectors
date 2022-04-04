@@ -541,3 +541,94 @@ def test_action_run_results_from_events():
     )
     assert result.status is Status.success_with_failures
     assert result.reason is Reason.none
+
+
+def test_action_with_callback_success():
+    change_me = False
+
+    def callback(events, written_items) -> None:
+        nonlocal change_me
+        change_me = True
+        assert events[Event.read_success] == len(USERS_DB)
+        assert events[Event.format_failure] == 0
+        assert events[Event.logics_failure] == 0
+        assert events[Event.logics_discard] == 0
+        assert events[Event.write_failure] == 0
+        assert len(written_items) == len(USERS_DB)
+
+    SmartLeads = Connector(
+        name="SmartLeads",
+        description=DESCRIPTION,
+        url="https://www.smartleads.test/",
+        actions=[
+            ConnectorAction(
+                name="pull_leads_with_callback",
+                type=WorkflowType.pull,
+                description="Send users as leads",
+                parameters=BaseActionParameters,
+                origin=UsersWarehouse,
+                target=LeadsWarehouse,
+                callback=callback,
+            ),
+        ],
+    )
+
+    campaign_id = "camp_xxx1"
+
+    result = SmartLeads.pull_leads_with_callback(
+        action_parameters=dict(),
+        origin_parameters=dict(),
+        target_parameters=dict(campaign_id=campaign_id),
+    )
+
+    assert change_me is True
+
+    assert result.status == Status.success
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert result.events[Event.format_failure] == 0
+    assert result.events[Event.logics_failure] == 0
+    assert result.events[Event.logics_discard] == 0
+    assert result.events[Event.write_failure] == 0
+    assert result.events[Event.callback_failure] == 0
+
+    assert len(USERS_DB) == len(LEADS_DB[campaign_id])
+
+
+def test_action_with_callback_failure():
+    def callback(events, written_items) -> None:
+        raise Exception("Callback failure")
+
+    SmartLeads = Connector(
+        name="SmartLeads",
+        description=DESCRIPTION,
+        url="https://www.smartleads.test/",
+        actions=[
+            ConnectorAction(
+                name="pull_leads_with_callback",
+                type=WorkflowType.pull,
+                description="Send users as leads",
+                parameters=BaseActionParameters,
+                origin=UsersWarehouse,
+                target=LeadsWarehouse,
+                callback=callback,
+            ),
+        ],
+    )
+
+    campaign_id = "camp_xxx1"
+
+    result = SmartLeads.pull_leads_with_callback(
+        action_parameters=dict(),
+        origin_parameters=dict(),
+        target_parameters=dict(campaign_id=campaign_id),
+    )
+
+    assert result.status == Status.success
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert result.events[Event.format_failure] == 0
+    assert result.events[Event.logics_failure] == 0
+    assert result.events[Event.logics_discard] == 0
+    assert result.events[Event.write_failure] == 0
+    assert result.events[Event.callback_failure] == 1
+
+    assert len(USERS_DB) == len(LEADS_DB[campaign_id])
