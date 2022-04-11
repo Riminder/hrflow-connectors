@@ -1,0 +1,287 @@
+warehouse:
+  CrosstalentJobWarehouse:
+    read:
+      - parameters:
+          env: test
+          subdomain: $__SUBDOMAIN
+          client_secret: $__CLIENT_SECRET
+          client_id: $__CLIENT_ID
+          username: $__USERNAME
+          password: $__PASSWORD
+
+actions:
+  pull_jobs:
+    - id: valid_parameters
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+
+    - id: no_client_env
+      origin_parameters:
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+
+    - id: invalid_client_env
+      origin_parameters:
+        env: invalid_env
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+
+    - id: no_client_subdomain
+      origin_parameters:
+        env: test
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+
+    - id: invalid_client_subdomain
+      origin_parameters:
+        env: test
+        subdomain: invalid_subdomain
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+
+    - id: no_client_secret
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+
+    - id: invalid_client_secret
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: invalid_client_secret
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+
+    - id: no_client_id
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+
+    - id: invalid_client_id
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: invalid_client_id
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+
+    - id: no_client_username
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+
+    - id: invalid_client_username
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: invalid_client_username
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+
+    - id: no_client_password
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+
+    - id: invalid_client_password
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: invalid_client_password
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+
+    - id: no_hrflow_api_secret
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_target_parameters
+
+    - id: invalid_hrflow_api_secret
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: invalid_hrflow_api_secret
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: write_failure
+
+    - id: no_hrflow_api_user
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_target_parameters
+
+    - id: invalid_hrflow_api_user
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: invalid_hrflow_api_user
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: write_failure
+
+    - id: no_hrflow_board_key
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      status: fatal
+      reason: bad_target_parameters
+    
+    - id: invalid_hrflow_board_key
+      origin_parameters:
+        env: test
+        subdomain: $__SUBDOMAIN
+        client_secret: $__CLIENT_SECRET
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: invalid_hrflow_board_key
+      status: fatal
+      reason: write_failure

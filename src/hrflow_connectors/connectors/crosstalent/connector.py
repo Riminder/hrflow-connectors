@@ -27,7 +27,7 @@ def get_job_location(crosstalent_location: t.Dict) -> t.Dict:
     postcode = crosstalent_location.get("crta__CT_Postal_code__c")
     if postcode is None:
         postcode = crosstalent_location.get("crta__Postal_Code__c")
-    
+
     if postcode != None:
         concatenate.append(postcode)
 
@@ -189,4 +189,3 @@ Crosstalent = Connector(
         )
     ],
 )
-
