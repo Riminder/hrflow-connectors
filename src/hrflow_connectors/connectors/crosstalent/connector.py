@@ -10,6 +10,8 @@ from hrflow_connectors.core.connector import (
     WorkflowType,
 )
 
+# region format_job
+
 
 def get_job_location(crosstalent_location: t.Dict) -> t.Dict:
     lat = crosstalent_location.get("crta__Location__Latitude__s")
@@ -26,7 +28,7 @@ def get_job_location(crosstalent_location: t.Dict) -> t.Dict:
     postcode = crosstalent_location.get("crta__CT_Postal_code__c")
     if postcode is None:
         postcode = crosstalent_location.get("crta__Postal_Code__c")
-    
+
     concatenate.append(postcode)
 
     return dict(lat=lat, lng=lng, text=" ".join(concatenate))
@@ -37,24 +39,24 @@ def get_sections(crosstalent_job: t.Dict) -> t.List[t.Dict]:
 
     section = crosstalent_job.get("crta__CT_Description__c")
     if section is not None:
-            sections.append(
-                dict(
-                    name="crosstalent-sections-crta__CT_Description__c",
-                    title="Description",
-                    description="Descriptif du poste",
-                )
+        sections.append(
+            dict(
+                name="crosstalent-sections-crta__CT_Description__c",
+                title="Description",
+                description="Descriptif du poste",
             )
-    
+        )
+
     section = crosstalent_job.get("Profil_recherche__c")
     if section is not None:
-            sections.append(
-                dict(
-                    name="crosstalent-sections-Profil_recherche__c",
-                    title="Profil recherché",
-                    description="Profile recherché",
-                )
+        sections.append(
+            dict(
+                name="crosstalent-sections-Profil_recherche__c",
+                title="Profil recherché",
+                description="Profile recherché",
             )
-    
+        )
+
     return sections
 
 
@@ -64,19 +66,43 @@ def get_tags(crosstalent_job: t.Dict) -> t.List[t.Dict]:
     t = lambda name, value: dict(name=name, value=value)
     return [
         t("crosstalent_Disponible_sous__c", job.get("Disponible_sous__c")),
-        t("crosstalent_crta__CT_Designation__c", re.sub("Vulcain - ", "", job.get("postingStatus"))),
-        t("crosstalent_crtarecr__Start_date_of_Website_publication__c", job.get("crtarecr__Start_date_of_Website_publication__c")),
-        t("crosstalent_Site_de_diffusion_de_l_offre__c", job.get("Site_de_diffusion_de_l_offre__c")),
+        t(
+            "crosstalent_crta__CT_Designation__c",
+            re.sub("Vulcain - ", "", job.get("postingStatus")),
+        ),
+        t(
+            "crosstalent_crtarecr__Start_date_of_Website_publication__c",
+            job.get("crtarecr__Start_date_of_Website_publication__c"),
+        ),
+        t(
+            "crosstalent_Site_de_diffusion_de_l_offre__c",
+            job.get("Site_de_diffusion_de_l_offre__c"),
+        ),
         t("crosstalent_M_tier__c", job.get("M_tier__c")),
-        t("crosstalent_Niveau_d_exp_rience_attendu__c", job.get("Niveau_d_exp_rience_attendu__c")),
-        t("crosstalent_Sous_Secteur_d_activite__c", job.get("Sous_Secteur_d_activite__c")),
+        t(
+            "crosstalent_Niveau_d_exp_rience_attendu__c",
+            job.get("Niveau_d_exp_rience_attendu__c"),
+        ),
+        t(
+            "crosstalent_Sous_Secteur_d_activite__c",
+            job.get("Sous_Secteur_d_activite__c"),
+        ),
         t("crosstalent_compensation-currency", job.get("currency")),
         t("crosstalent_Langue_de_diffusion__c", job.get("Langue_de_diffusion__c")),
-        t("crosstalent_Numero_d_offre_automatique__c", job.get("Numero_d_offre_automatique__c")),
-        t("crosstalent_crtarecr__Published_on_Website__c", job.get("crtarecr__Published_on_Website__c")),
+        t(
+            "crosstalent_Numero_d_offre_automatique__c",
+            job.get("Numero_d_offre_automatique__c"),
+        ),
+        t(
+            "crosstalent_crtarecr__Published_on_Website__c",
+            job.get("crtarecr__Published_on_Website__c"),
+        ),
         t("crosstalent_Sourcing_Auto__c", job.get("Sourcing_Auto__c")),
         t("crosstalent_Mots_Clefs__c", job.get("Mots_Clefs__c")),
-        t("crosstalent_Disponibilit_imm_diate__c", job.get("Disponibilit_imm_diate__c")),
+        t(
+            "crosstalent_Disponibilit_imm_diate__c",
+            job.get("Disponibilit_imm_diate__c"),
+        ),
         t("crosstalent_Date_de_d_but__c", job.get("Date_de_d_but__c")),
         t("crosstalent_Date_de_fin__c", job.get("Date_de_fin__c")),
         t("crosstalent_Mobilit_R_gion__c", job.get("Mobilit_R_gion__c")),
@@ -98,7 +124,6 @@ def get_languages(crosstalent_job: t.Dict) -> t.List[t.Dict]:
         language = dict(name=language_name, value=language_level)
         languages.append(language)
 
-    
     language_name = crosstalent_job.get("crtarecr__Language_3__c")
     language_level = crosstalent_job.get("crtarecr__Language_3__c")
     if language_name is not None:
@@ -134,9 +159,12 @@ def format_job(crosstalent_job: t.Dict) -> t.Dict:
         sections=get_sections(crosstalent_job),
         tags=get_tags(crosstalent_job),
         languages=get_languages(),
-        metadatas=get_metadatas()
+        metadatas=get_metadatas(),
     )
     return job
+
+
+# endregion
 
 
 DESCRIPTION = "METTRE UNE DESCRIPTION."  # TODO: Mettre une description.

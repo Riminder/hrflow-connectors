@@ -1,13 +1,15 @@
-from email import header
-from logging import LoggerAdapter
 import typing as t
+from logging import LoggerAdapter
 
 import requests
 from pydantic import BaseModel, Field
 
 from hrflow_connectors.connectors.crosstalent.schemas import CrosstalentJob
-from hrflow_connectors.core import warehouse
-from hrflow_connectors.core.warehouse import ActionEndpoints, WarehouseReadAction
+from hrflow_connectors.core.warehouse import (
+    ActionEndpoints,
+    Warehouse,
+    WarehouseReadAction,
+)
 
 CROSSTALENT_JOBS_ENDPOINT = "https://vulcain-eng--preprod.my.salesforce.com/services/apexrest/crta/HrFlowGetJobOffers/"
 
@@ -39,6 +41,7 @@ class PullJobsParameters(BaseModel):
     username: str = Field(..., description="Username")
     password: str = Field(..., description="Password")
 
+
 def get_access_token(adapter: LoggerAdapter, parameters: PullJobsParameters) -> str:
     access_token_url = f"https://{parameters.env}.salesforce.com/services/oauth2/token"
     payload = dict()
@@ -55,20 +58,21 @@ def get_access_token(adapter: LoggerAdapter, parameters: PullJobsParameters) -> 
         raise RuntimeError("OAuth2 failed ! Reason : `{}`".format(response.content))
     return response.json()["access_token"]
 
+
 def read(adapter: LoggerAdapter, parameters: PullJobsParameters) -> t.Iterable[t.Dict]:
-    
+
     access_token = get_access_token(adapter=adapter, parameters=parameters)
 
     # Prepare request
     session = requests.Session()
     pull_jobs_request = requests.Request()
     pull_jobs_request.method = "GET"
-    pull_jobs_request.url = "https://{}.salesforce.com/services/apexrest/crta/HrFlowGetJobOffers/".format(
-        parameters.subdomain
+    pull_jobs_request.url = (
+        "https://{}.salesforce.com/services/apexrest/crta/HrFlowGetJobOffers/".format(
+            parameters.subdomain
+        )
     )
-    pull_jobs_request.headers = {
-        "Authorization": f"OAuth {access_token}"
-    }
+    pull_jobs_request.headers = {"Authorization": f"OAuth {access_token}"}
     prepared_request = pull_jobs_request.prepare()
 
     # Send request
@@ -77,10 +81,10 @@ def read(adapter: LoggerAdapter, parameters: PullJobsParameters) -> t.Iterable[t
     if not response.ok:
         raise RuntimeError("Failed to pull jobs reason {}".format(response.content))
 
-    return response.json()    
+    return response.json()
 
 
-CrosstalentJobWarehouse = warehouse(
+CrosstalentJobWarehouse = Warehouse(
     name="Crosstalent Jobs",
     data_schema=CrosstalentJob,
     read=WarehouseReadAction(
