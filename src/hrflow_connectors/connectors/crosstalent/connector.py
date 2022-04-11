@@ -1,4 +1,3 @@
-import re
 import typing as t
 
 from hrflow_connectors.connectors.crosstalent.warehouse import CrosstalentJobWarehouse
@@ -28,8 +27,9 @@ def get_job_location(crosstalent_location: t.Dict) -> t.Dict:
     postcode = crosstalent_location.get("crta__CT_Postal_code__c")
     if postcode is None:
         postcode = crosstalent_location.get("crta__Postal_Code__c")
-
-    concatenate.append(postcode)
+    
+    if postcode != None:
+        concatenate.append(postcode)
 
     return dict(lat=lat, lng=lng, text=" ".join(concatenate))
 
@@ -68,7 +68,7 @@ def get_tags(crosstalent_job: t.Dict) -> t.List[t.Dict]:
         t("crosstalent_Disponible_sous__c", job.get("Disponible_sous__c")),
         t(
             "crosstalent_crta__CT_Designation__c",
-            re.sub("Vulcain - ", "", job.get("postingStatus")),
+            job.get("crosstalent_crta__CT_Designation__c"),
         ),
         t(
             "crosstalent_crtarecr__Start_date_of_Website_publication__c",
@@ -158,8 +158,8 @@ def format_job(crosstalent_job: t.Dict) -> t.Dict:
         summary=None,
         sections=get_sections(crosstalent_job),
         tags=get_tags(crosstalent_job),
-        languages=get_languages(),
-        metadatas=get_metadatas(),
+        languages=get_languages(crosstalent_job),
+        metadatas=get_metadatas(crosstalent_job),
     )
     return job
 
@@ -189,3 +189,4 @@ Crosstalent = Connector(
         )
     ],
 )
+

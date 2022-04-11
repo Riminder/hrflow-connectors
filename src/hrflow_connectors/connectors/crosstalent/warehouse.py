@@ -62,20 +62,12 @@ def read(adapter: LoggerAdapter, parameters: PullJobsParameters) -> t.Iterable[t
 
     access_token = get_access_token(adapter=adapter, parameters=parameters)
 
-    # Prepare request
-    session = requests.Session()
-    pull_jobs_request = requests.Request()
-    pull_jobs_request.method = "GET"
-    pull_jobs_request.url = (
+    response = requests.get(
         "https://{}.salesforce.com/services/apexrest/crta/HrFlowGetJobOffers/".format(
             parameters.subdomain
-        )
+        ),
+        headers={"Authorization": f"OAuth {access_token}"},
     )
-    pull_jobs_request.headers = {"Authorization": f"OAuth {access_token}"}
-    prepared_request = pull_jobs_request.prepare()
-
-    # Send request
-    response = session.send(prepared_request)
 
     if not response.ok:
         raise RuntimeError("Failed to pull jobs reason {}".format(response.content))
