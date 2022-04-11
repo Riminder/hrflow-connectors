@@ -1543,6 +1543,965 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ]
+    },
+    {
+      "name": "Crosstalent",
+      "actions": [
+        {
+          "name": "pull_jobs",
+          "action_parameters": {
+            "title": "PullJobsActionParameters",
+            "type": "object",
+            "properties": {
+              "logics": [
+                {
+                  "title": "logics",
+                  "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                  "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                  "type": "code_editor"
+                }
+              ],
+              "format": [
+                {
+                  "title": "format",
+                  "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                  "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                  "type": "code_editor"
+                }
+              ]
+            }
+          },
+          "origin": "Crosstalent Jobs",
+          "origin_parameters": {
+            "title": "PullJobsParameters",
+            "type": "object",
+            "properties": {
+              "env": {
+                "title": "Env",
+                "description": "Environnement: test, stagin, production",
+                "type": "string"
+              },
+              "subdomain": {
+                "title": "Subdomain",
+                "description": "Subdomain Crosstalent just before `salesforce.com`. For example subdomain=`my_subdomain.my` in `http://my_subdomain.my.salesforce.com/ABC`",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Crosstalent secret key",
+                "type": "string"
+              },
+              "client_id": {
+                "title": "Client Id",
+                "description": "Crosstalent id",
+                "type": "string"
+              },
+              "username": {
+                "title": "Username",
+                "description": "Username",
+                "type": "string"
+              },
+              "password": {
+                "title": "Password",
+                "description": "Password",
+                "type": "string"
+              }
+            },
+            "required": [
+              "env",
+              "subdomain",
+              "client_secret",
+              "client_id",
+              "username",
+              "password"
+            ]
+          },
+          "origin_data_schema": {
+            "title": "CrosstalentJob",
+            "type": "object",
+            "properties": {
+              "Name": {
+                "title": "Name",
+                "default": "Undefined",
+                "type": "string"
+              },
+              "Id": {
+                "title": "Id",
+                "description": "ID d'enregistrement",
+                "type": "string"
+              },
+              "createdDate": {
+                "title": "Createddate",
+                "type": "string"
+              },
+              "crtarecr__URL_of_the_form_on_job_offer__c": {
+                "title": "Crtarecr  Url Of The Form On Job Offer  C",
+                "description": "URL of the job",
+                "type": "string"
+              },
+              "crta__Location__Latitude__s": {
+                "title": "Crta  Location  Latitude  S",
+                "description": "Geolocation latitude",
+                "type": "number"
+              },
+              "crta__Location__Longitude__s": {
+                "title": "Crta  Location  Longitude  S",
+                "description": "Geolocation longitude",
+                "type": "number"
+              },
+              "Lieu__c": {
+                "title": "Lieu  C",
+                "description": "Address",
+                "type": "string"
+              },
+              "crta__CT_City__c": {
+                "title": "Crta  Ct City  C",
+                "description": "City",
+                "type": "string"
+              },
+              "crta__CT_Country__c": {
+                "title": "Crta  Ct Country  C",
+                "description": "Country",
+                "type": "string"
+              },
+              "crta__CT_Postal_code__c": {
+                "title": "Crta  Ct Postal Code  C",
+                "description": "Postal code",
+                "type": "string"
+              },
+              "crta__Postal_Code__c": {
+                "title": "Crta  Postal Code  C",
+                "description": "Postal code",
+                "type": "string"
+              },
+              "crta__CT_Description__c": {
+                "title": "Crta  Ct Description  C",
+                "description": "Job description",
+                "type": "string"
+              },
+              "crta__CT_Benefices_attendus__c": {
+                "title": "Crta  Ct Benefices Attendus  C",
+                "description": "Job benefits",
+                "type": "string"
+              },
+              "crta__CT_Detail_motif_recours_CDD__c": {
+                "title": "Crta  Ct Detail Motif Recours Cdd  C",
+                "type": "string"
+              },
+              "crta__CT_Horaires_particuliers__c": {
+                "title": "Crta  Ct Horaires Particuliers  C",
+                "type": "string"
+              },
+              "crta__CT_Needed_skills__c": {
+                "title": "Crta  Ct Needed Skills  C",
+                "type": "string"
+              },
+              "crta__CT_Other_contract_benefits__c": {
+                "title": "Crta  Ct Other Contract Benefits  C",
+                "type": "string"
+              },
+              "crta__CT_Other_salary_benefits__c": {
+                "title": "Crta  Ct Other Salary Benefits  C",
+                "type": "string"
+              },
+              "crta__CT_Remuneration_variable__c": {
+                "title": "Crta  Ct Remuneration Variable  C",
+                "type": "string"
+              },
+              "crta__RC_Service__c": {
+                "title": "Crta  Rc Service  C",
+                "type": "string"
+              },
+              "crtarecr__Personalised_header__c": {
+                "title": "Crtarecr  Personalised Header  C",
+                "type": "string"
+              },
+              "crtarecr__Required_Profile__c": {
+                "title": "Crtarecr  Required Profile  C",
+                "type": "string"
+              },
+              "Profil_recherche__c": {
+                "title": "Profil Recherche  C",
+                "type": "string"
+              },
+              "crtarecr__Language_1__c": {
+                "title": "Crtarecr  Language 1  C",
+                "type": "string"
+              },
+              "crtarecr__Language_level_1__c": {
+                "title": "Crtarecr  Language Level 1  C",
+                "type": "string"
+              },
+              "crtarecr__Language_2__c": {
+                "title": "Crtarecr  Language 2  C",
+                "type": "string"
+              },
+              "crtarecr__Language_level_2__c": {
+                "title": "Crtarecr  Language Level 2  C",
+                "type": "string"
+              },
+              "crtarecr__Language_3__c": {
+                "title": "Crtarecr  Language 3  C",
+                "type": "string"
+              },
+              "crtarecr__Language_level_3__c": {
+                "title": "Crtarecr  Language Level 3  C",
+                "type": "string"
+              },
+              "OwnerId": {
+                "title": "Ownerid",
+                "type": "string"
+              },
+              "IsDeleted": {
+                "title": "Isdeleted",
+                "type": "boolean"
+              },
+              "CurrencyIsoCode": {
+                "title": "Currencyisocode",
+                "type": "string"
+              },
+              "RecordTypeId": {
+                "title": "Recordtypeid",
+                "type": "string"
+              },
+              "CreatedById": {
+                "title": "Createdbyid",
+                "type": "string"
+              },
+              "LastModifiedDate": {
+                "title": "Lastmodifieddate",
+                "type": "string"
+              },
+              "LastModifiedById": {
+                "title": "Lastmodifiedbyid",
+                "type": "string"
+              },
+              "SystemModstamp": {
+                "title": "Systemmodstamp",
+                "type": "string"
+              },
+              "LastActivityDate": {
+                "title": "Lastactivitydate",
+                "type": "string"
+              },
+              "LastViewedDate": {
+                "title": "Lastvieweddate",
+                "type": "string"
+              },
+              "LastReferencedDate": {
+                "title": "Lastreferenceddate",
+                "type": "string"
+              },
+              "crta__Etat__c": {
+                "title": "Crta  Etat  C",
+                "type": "string"
+              },
+              "crta__CT_Avec_RTT__c": {
+                "title": "Crta  Ct Avec Rtt  C",
+                "type": "boolean"
+              },
+              "crta__CT_Annee_budget__c": {
+                "title": "Crta  Ct Annee Budget  C",
+                "type": "string"
+              },
+              "crta__CT_Contact_Person__c": {
+                "title": "Crta  Ct Contact Person  C",
+                "type": "string"
+              },
+              "crta__CT_Motif_recours_CDD__c": {
+                "title": "Crta  Ct Motif Recours Cdd  C",
+                "type": "string"
+              },
+              "crta__CT_Nom_demandeur_DAR__c": {
+                "title": "Crta  Ct Nom Demandeur Dar  C",
+                "type": "string"
+              },
+              "crta__Contrainte__c": {
+                "title": "Crta  Contrainte  C",
+                "type": "string"
+              },
+              "crta__Categorie__c": {
+                "title": "Crta  Categorie  C",
+                "type": "string"
+              },
+              "crta__CT_Organization_name__c": {
+                "title": "Crta  Ct Organization Name  C",
+                "type": "string"
+              },
+              "crta__Diffusion_de_l_offre__c": {
+                "title": "Crta  Diffusion De L Offre  C",
+                "type": "boolean"
+              },
+              "crta__Origine_de_l_offre__c": {
+                "title": "Crta  Origine De L Offre  C",
+                "type": "string"
+              },
+              "crta__Email_du_recruteur__c": {
+                "title": "Crta  Email Du Recruteur  C",
+                "type": "string"
+              },
+              "crta__Temps_de_travail_en_pourcentage__c": {
+                "title": "Crta  Temps De Travail En Pourcentage  C",
+                "type": "string"
+              },
+              "crta__Filiere__c": {
+                "title": "Crta  Filiere  C",
+                "type": "string"
+              },
+              "crta__CT_Date__c": {
+                "title": "Crta  Ct Date  C",
+                "type": "string"
+              },
+              "crta__Contrat__c": {
+                "title": "Crta  Contrat  C",
+                "type": "string"
+              },
+              "crta__CT_Salary__c": {
+                "title": "Crta  Ct Salary  C",
+                "type": "string"
+              },
+              "crta__Date_max_du_positionnement__c": {
+                "title": "Crta  Date Max Du Positionnement  C",
+                "type": "string"
+              },
+              "crta__CT_Nom_Responsable_hierarchique__c": {
+                "title": "Crta  Ct Nom Responsable Hierarchique  C",
+                "type": "string"
+              },
+              "crta__CT_Duration__c": {
+                "title": "Crta  Ct Duration  C",
+                "type": "string"
+              },
+              "crta__CT_Duree_Stage__c": {
+                "title": "Crta  Ct Duree Stage  C",
+                "type": "string"
+              },
+              "crta__CT_Email_Manager__c": {
+                "title": "Crta  Ct Email Manager  C",
+                "type": "string"
+              },
+              "crta__CT_End_date__c": {
+                "title": "Crta  Ct End Date  C",
+                "type": "string"
+              },
+              "crta__CT_Modalite_attribution_remun_variable__c": {
+                "title": "Crta  Ct Modalite Attribution Remun Variable  C",
+                "type": "string"
+              },
+              "crta__CT_Industry_of_activities__c": {
+                "title": "Crta  Ct Industry Of Activities  C",
+                "type": "string"
+              },
+              "crta__CT_Date_debut_Contrat__c": {
+                "title": "Crta  Ct Date Debut Contrat  C",
+                "type": "string"
+              },
+              "crta__CT_Date_fin_Contrat__c": {
+                "title": "Crta  Ct Date Fin Contrat  C",
+                "type": "string"
+              },
+              "crta__CT_date_validation_DAR__c": {
+                "title": "Crta  Ct Date Validation Dar  C",
+                "type": "string"
+              },
+              "crta__CT_Motif_CDI__c": {
+                "title": "Crta  Ct Motif Cdi  C",
+                "type": "string"
+              },
+              "crta__CT_Number_of_opened_positions__c": {
+                "title": "Crta  Ct Number Of Opened Positions  C",
+                "type": "integer"
+              },
+              "crta__CT_Prevu_au_budget__c": {
+                "title": "Crta  Ct Prevu Au Budget  C",
+                "type": "boolean"
+              },
+              "crta__CT_Publiee_Site_web_externe__c": {
+                "title": "Crta  Ct Publiee Site Web Externe  C",
+                "type": "boolean"
+              },
+              "crta__CT_Scope__c": {
+                "title": "Crta  Ct Scope  C",
+                "type": "boolean"
+              },
+              "crta__CT_Entrprise_Postal_code__c": {
+                "title": "Crta  Ct Entrprise Postal Code  C",
+                "type": "string"
+              },
+              "crta__Date_limite_de_reponse__c": {
+                "title": "Crta  Date Limite De Reponse  C",
+                "type": "string"
+              },
+              "crta__Duree_ouverture_mois__c": {
+                "title": "Crta  Duree Ouverture Mois  C",
+                "type": "integer"
+              },
+              "crta__Status__c": {
+                "title": "Crta  Status  C",
+                "type": "string"
+              },
+              "crtarecr__Archived__c": {
+                "title": "Crtarecr  Archived  C",
+                "type": "boolean"
+              },
+              "crtarecr__Contract_type__c": {
+                "title": "Crtarecr  Contract Type  C",
+                "type": "string"
+              },
+              "crtarecr__Published_on_Jobboards__c": {
+                "title": "Crtarecr  Published On Jobboards  C",
+                "type": "boolean"
+              },
+              "crtarecr__Published_on_Website__c": {
+                "title": "Crtarecr  Published On Website  C",
+                "type": "boolean"
+              },
+              "crtarecr__Recruitment_Request_Date__c": {
+                "title": "Crtarecr  Recruitment Request Date  C",
+                "type": "string"
+              },
+              "crtarecr__Recruitment_request_status__c": {
+                "title": "Crtarecr  Recruitment Request Status  C",
+                "type": "string"
+              },
+              "M_tier__c": {
+                "title": "M Tier  C",
+                "type": "string"
+              },
+              "Famille_de_m_tier__c": {
+                "title": "Famille De M Tier  C",
+                "type": "string"
+              },
+              "Sourcing_Auto__c": {
+                "title": "Sourcing Auto  C",
+                "type": "boolean"
+              },
+              "Disponibilit_imm_diate__c": {
+                "title": "Disponibilit Imm Diate  C",
+                "type": "boolean"
+              },
+              "Date_de_d_but__c": {
+                "title": "Date De D But  C",
+                "type": "string"
+              },
+              "Fourchette_de_salaire__c": {
+                "title": "Fourchette De Salaire  C",
+                "type": "string"
+              },
+              "Mobilit_R_gion__c": {
+                "title": "Mobilit R Gion  C",
+                "type": "string"
+              },
+              "Entit_juridique__c": {
+                "title": "Entit Juridique  C",
+                "type": "string"
+              },
+              "Compte_de_rattachement__c": {
+                "title": "Compte De Rattachement  C",
+                "type": "string"
+              },
+              "Site_de_diffusion_de_l_offre__c": {
+                "title": "Site De Diffusion De L Offre  C",
+                "type": "string"
+              },
+              "Mobilit_Pays__c": {
+                "title": "Mobilit Pays  C",
+                "type": "string"
+              },
+              "Position__c": {
+                "title": "Position  C",
+                "type": "string"
+              },
+              "Pays__c": {
+                "title": "Pays  C",
+                "type": "string"
+              },
+              "Mots_Clefs__c": {
+                "title": "Mots Clefs  C",
+                "type": "string"
+              },
+              "Emploi_Type__c": {
+                "title": "Emploi Type  C",
+                "type": "string"
+              },
+              "Niveau_d_exp_rience_attendu__c": {
+                "title": "Niveau D Exp Rience Attendu  C",
+                "type": "string"
+              },
+              "Domaine_d_activite__c": {
+                "title": "Domaine D Activite  C",
+                "type": "string"
+              },
+              "Secteur_d_activite__c": {
+                "title": "Secteur D Activite  C",
+                "type": "string"
+              },
+              "Date_de_fin__c": {
+                "title": "Date De Fin  C",
+                "type": "string"
+              },
+              "crtarecr__BU1__c": {
+                "title": "Crtarecr  Bu1  C",
+                "type": "string"
+              },
+              "crtarecr__BU2__c": {
+                "title": "Crtarecr  Bu2  C",
+                "type": "string"
+              },
+              "crtarecr__Contractual_status__c": {
+                "title": "Crtarecr  Contractual Status  C",
+                "type": "string"
+              },
+              "crtarecr__Employment_start_date__c": {
+                "title": "Crtarecr  Employment Start Date  C",
+                "type": "string"
+              },
+              "crtarecr__End_date_of_Intranet_Site_publication__c": {
+                "title": "Crtarecr  End Date Of Intranet Site Publication  C",
+                "type": "string"
+              },
+              "crtarecr__End_date_of_Jobboard_publication__c": {
+                "title": "Crtarecr  End Date Of Jobboard Publication  C",
+                "type": "string"
+              },
+              "crtarecr__End_date_of_Website_publication__c": {
+                "title": "Crtarecr  End Date Of Website Publication  C",
+                "type": "string"
+              },
+              "crtarecr__Envisaged_annual_gross_remuneration__c": {
+                "title": "Crtarecr  Envisaged Annual Gross Remuneration  C",
+                "type": "string"
+              },
+              "crtarecr__HR_Function__c": {
+                "title": "Crtarecr  Hr Function  C",
+                "type": "string"
+              },
+              "crtarecr__Max_salary__c": {
+                "title": "Crtarecr  Max Salary  C",
+                "type": "integer"
+              },
+              "crtarecr__Max_term_months__c": {
+                "title": "Crtarecr  Max Term Months  C",
+                "type": "integer"
+              },
+              "crtarecr__Min_salary__c": {
+                "title": "Crtarecr  Min Salary  C",
+                "type": "integer"
+              },
+              "crtarecr__Min_term_months__c": {
+                "title": "Crtarecr  Min Term Months  C",
+                "type": "integer"
+              },
+              "crtarecr__Period__c": {
+                "title": "Crtarecr  Period  C",
+                "type": "string"
+              },
+              "crtarecr__Recruiter_Firstname__c": {
+                "title": "Crtarecr  Recruiter Firstname  C",
+                "type": "string"
+              },
+              "crtarecr__Recruiter_Lastname__c": {
+                "title": "Crtarecr  Recruiter Lastname  C",
+                "type": "string"
+              },
+              "crtarecr__Reference__c": {
+                "title": "Crtarecr  Reference  C",
+                "type": "string"
+              },
+              "crtarecr__Required_Experience_Level__c": {
+                "title": "Crtarecr  Required Experience Level  C",
+                "type": "string"
+              },
+              "crtarecr__Required_diploma_level__c": {
+                "title": "Crtarecr  Required Diploma Level  C",
+                "type": "string"
+              },
+              "crtarecr__Start_date_of_Intranet_Site_publication__c": {
+                "title": "Crtarecr  Start Date Of Intranet Site Publication  C",
+                "type": "string"
+              },
+              "crtarecr__Start_date_of_Jobboard_publication__c": {
+                "title": "Crtarecr  Start Date Of Jobboard Publication  C",
+                "type": "string"
+              },
+              "crtarecr__Start_date_of_Website_publication__c": {
+                "title": "Crtarecr  Start Date Of Website Publication  C",
+                "type": "string"
+              },
+              "crtarecr__Type_of_employment__c": {
+                "title": "Crtarecr  Type Of Employment  C",
+                "type": "string"
+              },
+              "crtarecr__Weekly_Working_Time_in_hours__c": {
+                "title": "Crtarecr  Weekly Working Time In Hours  C",
+                "type": "integer"
+              },
+              "crta__CT_Designation__c": {
+                "title": "Crta  Ct Designation  C",
+                "type": "string"
+              },
+              "crta__Location__c": {
+                "title": "Crta  Location  C",
+                "type": "object"
+              },
+              "crta__Nb_positionnements__c": {
+                "title": "Crta  Nb Positionnements  C",
+                "type": "integer"
+              },
+              "crta__Texte_statut__c": {
+                "title": "Crta  Texte Statut  C",
+                "type": "string"
+              },
+              "crta__Valeur_statut__c": {
+                "title": "Crta  Valeur Statut  C",
+                "type": "integer"
+              },
+              "crtarecr__Link_of_the_form_on_job_offer__c": {
+                "title": "Crtarecr  Link Of The Form On Job Offer  C",
+                "type": "string"
+              },
+              "crtarecr__Nb_of_applications_still_to_be_processed__c": {
+                "title": "Crtarecr  Nb Of Applications Still To Be Processed  C",
+                "type": "integer"
+              },
+              "Besoin_client__c": {
+                "title": "Besoin Client  C",
+                "type": "string"
+              },
+              "crta__Entite__c": {
+                "title": "Crta  Entite  C",
+                "type": "string"
+              }
+            },
+            "required": [
+              "Id"
+            ]
+          },
+          "target": "HrFlow.ai Jobs",
+          "target_parameters": {
+            "title": "PushJobParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "board_key": {
+                "title": "Board Key",
+                "description": "HrFlow.ai board key",
+                "type": "string"
+              },
+              "sync": {
+                "title": "Sync",
+                "description": "When enabled only pushed jobs will remain in the board",
+                "default": true,
+                "type": "boolean"
+              },
+              "update_content": {
+                "title": "Update Content",
+                "description": "When enabled jobs already present in the board are updated",
+                "default": false,
+                "type": "boolean"
+              },
+              "enrich_with_parsing": {
+                "title": "Enrich With Parsing",
+                "description": "When enabled jobs are enriched with HrFlow.ai parsing",
+                "default": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "board_key"
+            ]
+          },
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Job.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Job.",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "title": "Location",
+                "description": "Job location object.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Location"
+                  }
+                ]
+              },
+              "sections": {
+                "title": "Sections",
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Section"
+                }
+              },
+              "url": {
+                "title": "Url",
+                "description": "Job post original URL.",
+                "type": "string"
+              },
+              "summary": {
+                "title": "Summary",
+                "description": "Brief summary of the Job.",
+                "type": "string"
+              },
+              "archieved_at": {
+                "title": "Archieved At",
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "type": "string"
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "t.List of skills of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "t.List of spoken languages of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "t.List of certifications of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "t.List of courses of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "t.List of tasks of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "t.List of tags of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "t.List of metadatas of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "ranges_float": {
+                "title": "Ranges Float",
+                "description": "t.List of ranges of floats",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesFloat"
+                }
+              },
+              "ranges_date": {
+                "title": "Ranges Date",
+                "description": "t.List of ranges of dates",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesDate"
+                }
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value. Example: 500.",
+                    "type": "number"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value. Example: 100.",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "description": "Unit of the value. Example: euros.",
+                    "type": "string"
+                  }
+                }
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "type": "string"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "workflow_type": "pull",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import Crosstalent\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    \n    parameters = settings\n    \n\n    Crosstalent.pull_jobs(\n        action_parameters=actions_parameters,\n        origin_parameters=dict(\n                env=parameters.get(\"{}env\".format(ORIGIN_SETTINGS_PREFIX)),\n                subdomain=parameters.get(\"{}subdomain\".format(ORIGIN_SETTINGS_PREFIX)),\n                client_secret=parameters.get(\"{}client_secret\".format(ORIGIN_SETTINGS_PREFIX)),\n                client_id=parameters.get(\"{}client_id\".format(ORIGIN_SETTINGS_PREFIX)),\n                username=parameters.get(\"{}username\".format(ORIGIN_SETTINGS_PREFIX)),\n                password=parameters.get(\"{}password\".format(ORIGIN_SETTINGS_PREFIX)),\n        ),\n        target_parameters=dict(\n                api_secret=parameters.get(\"{}api_secret\".format(TARGET_SETTINGS_PREFIX)),\n                api_user=parameters.get(\"{}api_user\".format(TARGET_SETTINGS_PREFIX)),\n                board_key=parameters.get(\"{}board_key\".format(TARGET_SETTINGS_PREFIX)),\n                sync=parameters.get(\"{}sync\".format(TARGET_SETTINGS_PREFIX)),\n                update_content=parameters.get(\"{}update_content\".format(TARGET_SETTINGS_PREFIX)),\n                enrich_with_parsing=parameters.get(\"{}enrich_with_parsing\".format(TARGET_SETTINGS_PREFIX)),\n        ),\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        }
+      ]
     }
   ]
 }

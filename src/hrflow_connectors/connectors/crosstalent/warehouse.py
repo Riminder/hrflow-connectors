@@ -26,16 +26,15 @@ GET_ALL_JOBS_ENDPOINT = ActionEndpoints(
 
 class PullJobsParameters(BaseModel):
     env: str = Field(..., description="Environnement: test, stagin, production")
-    subdomain: str = (
-        Field(
-            ...,
-            description=(
-                "Subdomain Crosstalent just before `salesforce.com`. For example"
-                " subdomain=`my_subdomain.my` in"
-                " `http://my_subdomain.my.salesforce.com/ABC`"
-            ),
+    subdomain: str = Field(
+        ...,
+        description=(
+            "Subdomain Crosstalent just before `salesforce.com`. For example"
+            " subdomain=`my_subdomain.my` in"
+            " `http://my_subdomain.my.salesforce.com/ABC`"
         ),
     )
+
     client_secret: str = Field(..., description="Crosstalent secret key")
     client_id: str = Field(..., description="Crosstalent id")
     username: str = Field(..., description="Username")
