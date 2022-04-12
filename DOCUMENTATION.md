@@ -852,3 +852,73 @@ Then run
 ```bash
 poetry run pytest --no-cov --ignore tests/core --connector=LocalJSON
 ```
+
+## Advanced topics
+### Mutating a `Warehouse` to fix some parameters
+
+Let's consider the case of `LocalJSON` connector with a single action that reads profiles from `HrFlowProfileWarehouse` and writes them to a JSON file.
+
+```python
+from hrflow_connectors.connectors.hrflow.warehouse import (
+    HrFlowJobWarehouse,
+    HrFlowProfileWarehouse,
+)
+from hrflow_connectors.connectors.localjson.warehouse import LocalJSONWarehouse
+from hrflow_connectors.core import (
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    WorkflowType,
+)
+
+LocalJSON = Connector(
+    name="LocalJSON",
+    description="Read from JSON, Write to JSON",
+    url="https://localjson.ai",
+    actions=[
+        ConnectorAction(
+            name="push_profile",
+            type=WorkflowType.catch,
+            description="Push a profile from a Hrflow.ai Source to a local JSON file",
+            parameters=BaseActionParameters,
+            origin=HrFlowProfileWarehouse,
+            target=LocalJSONWarehouse,
+        ),
+    ],
+)
+```
+
+When the end user will eventually use the `push_profile` action defined above he will need to provide the parameters expected by `HrFlowProfileWarehouse`'s `read` function.
+
+If some of these parameters should be **fixed** at the `ConnectorAction` level and not _left for the user to choose_ you can use one of `with_fixed_read_parameters` or `with_fixed_write_parameters` `Warehouse`'s methods to achieve the desired behavior.
+
+Below are a few examples :
+- `api_user` should always be `"from_localjson_connector@hrflow.ai"`
+```python
+LocalJSON = Connector(
+    name="LocalJSON",
+    description="Read from JSON, Write to JSON",
+    url="https://localjson.ai",
+    actions=[
+        ConnectorAction(
+            name="push_profile",
+            type=WorkflowType.catch,
+            description="Push a profile from a Hrflow.ai Source to a local JSON file",
+            parameters=BaseActionParameters,
+            origin=HrFlowProfileWarehouse.with_fixed_read_parameters(
+                api_user="from_localjson_connector@hrflow.ai"
+            ),
+            target=LocalJSONWarehouse,
+        ),
+    ],
+)
+```
+- `api_user` resp. `source_key` should always be `"from_localjson_connector@hrflow.ai"` resp. `"some_fixed_source_key"`
+```python
+...
+    origin=HrFlowProfileWarehouse.with_fixed_read_parameters(
+        api_user="from_localjson_connector",
+        source_key="some_fixed_source_key"
+    )
+...
+```
