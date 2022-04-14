@@ -87,6 +87,7 @@ def get_template_fields(
             default=field_default(field, documentation_path),
         )
         for field in fields
+        if not field.field_info.const
     ]
 
 
