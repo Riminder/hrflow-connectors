@@ -122,6 +122,23 @@ TalentSoft = Connector(
             target=HrFlowProfileParsingWarehouse.with_fixed_write_parameters(
                 only_insert=True
             ),
-        )
+        ),
+        ConnectorAction(
+            name="applicant_resume_update",
+            type=WorkflowType.catch,
+            description=(
+                "Handle TalentSoft 'applicant_resume_update' event by"
+                " running a new HrFlow.ai Parsing on updated resume."
+            ),
+            parameters=BaseActionParameters.with_default_format(
+                "ApplicantResumeUpdateActionParameters", format=format_new_applicant
+            ),
+            origin=TalentSoftProfileWarehouse.with_fixed_read_parameters(
+                token_scope="MatchingIndexation"
+            ),
+            target=HrFlowProfileParsingWarehouse.with_fixed_write_parameters(
+                only_insert=False
+            ),
+        ),
     ],
 )
