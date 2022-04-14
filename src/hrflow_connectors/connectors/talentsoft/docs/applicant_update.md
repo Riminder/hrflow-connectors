@@ -1,8 +1,8 @@
 
-# Applicant new
-`TalentSoft Profiles` :arrow_right: `HrFlow.ai Profile Parsing`
+# Applicant update
+`TalentSoft Profiles` :arrow_right: `HrFlow.ai Profiles`
 
-Handle TalentSoft 'applicant_new' event by fetching profile from TalentSoft and sending it to HrFlow.ai Parsing API.
+Handle TalentSoft 'applicant_update' event by only updating tags coming from TalentSoft in HrFlow.ai.
 
 
 
@@ -43,7 +43,7 @@ from hrflow_connectors import TalentSoft
 logging.basicConfig(level=logging.INFO)
 
 
-TalentSoft.applicant_new(
+TalentSoft.applicant_update(
     action_parameters=dict(
         logics=[],
         format=lambda *args, **kwargs: None # Put your code logic here,

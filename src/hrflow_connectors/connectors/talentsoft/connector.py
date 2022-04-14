@@ -1,6 +1,9 @@
 import typing as t
 
-from hrflow_connectors.connectors.hrflow.warehouse import HrFlowProfileParsingWarehouse
+from hrflow_connectors.connectors.hrflow.warehouse import (
+    HrFlowProfileParsingWarehouse,
+    HrFlowProfileWarehouse,
+)
 from hrflow_connectors.connectors.talentsoft.warehouse import TalentSoftProfileWarehouse
 from hrflow_connectors.core import (
     BaseActionParameters,
@@ -10,7 +13,7 @@ from hrflow_connectors.core import (
 )
 
 
-def format_new_applicant(ts_candidate: t.Dict) -> t.Dict:
+def format_ts_candidate(ts_candidate: t.Dict) -> t.Dict:
     details = ts_candidate["candidateDetail"]
     tags = [
         dict(name="talentsoft-isEmployee", value=ts_candidate["isEmployee"]),
@@ -114,7 +117,7 @@ TalentSoft = Connector(
                 " TalentSoft and sending it to HrFlow.ai Parsing API."
             ),
             parameters=BaseActionParameters.with_default_format(
-                "ApplicantNewActionParameters", format=format_new_applicant
+                "ApplicantNewActionParameters", format=format_ts_candidate
             ),
             origin=TalentSoftProfileWarehouse.with_fixed_read_parameters(
                 token_scope="MatchingIndexation"
@@ -131,13 +134,30 @@ TalentSoft = Connector(
                 " running a new HrFlow.ai Parsing on updated resume."
             ),
             parameters=BaseActionParameters.with_default_format(
-                "ApplicantResumeUpdateActionParameters", format=format_new_applicant
+                "ApplicantResumeUpdateActionParameters", format=format_ts_candidate
             ),
             origin=TalentSoftProfileWarehouse.with_fixed_read_parameters(
                 token_scope="MatchingIndexation"
             ),
             target=HrFlowProfileParsingWarehouse.with_fixed_write_parameters(
                 only_insert=False
+            ),
+        ),
+        ConnectorAction(
+            name="applicant_update",
+            type=WorkflowType.catch,
+            description=(
+                "Handle TalentSoft 'applicant_update' event by"
+                " only updating tags coming from TalentSoft in HrFlow.ai."
+            ),
+            parameters=BaseActionParameters.with_default_format(
+                "ApplicantUpdateActionParameters", format=format_ts_candidate
+            ),
+            origin=TalentSoftProfileWarehouse.with_fixed_read_parameters(
+                token_scope="MatchingIndexation"
+            ),
+            target=HrFlowProfileWarehouse.with_fixed_write_parameters(
+                edit=True, only_edit_fields=["tags"]
             ),
         ),
     ],
