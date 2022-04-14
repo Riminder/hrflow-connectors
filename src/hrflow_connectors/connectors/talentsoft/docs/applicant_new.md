@@ -21,6 +21,7 @@ Handle TalentSoft 'applicant_new' event by fetching profile from TalentSoft and 
 | `client_secret` :red_circle: | `str` | None | Client Secret used to access TalentSoft API |
 | `client_url` :red_circle: | `str` | None | URL of TalentSoft client integration |
 | `applicantId` :red_circle: | `str` | None | TalentSoft applicantId of the profile to fetch |
+| `fileId`  | `str` | None | If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left |
 
 ## Destination Parameters
 
@@ -52,6 +53,7 @@ TalentSoft.applicant_new(
         client_secret="your_client_secret",
         client_url="your_client_url",
         applicantId="your_applicantId",
+        fileId="your_fileId",
     ),
     target_parameters=dict(
         api_secret="your_api_secret",
