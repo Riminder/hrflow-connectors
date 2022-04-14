@@ -1741,6 +1741,201 @@
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "applicant_resume_update",
+          "action_parameters": {
+            "title": "ApplicantResumeUpdateActionParameters",
+            "type": "object",
+            "properties": {
+              "logics": [
+                {
+                  "title": "logics",
+                  "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                  "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                  "type": "code_editor"
+                }
+              ],
+              "format": [
+                {
+                  "title": "format",
+                  "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                  "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                  "type": "code_editor"
+                }
+              ]
+            }
+          },
+          "origin": "TalentSoft Profiles",
+          "origin_parameters": {
+            "title": "FixedReadParameters",
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "title": "Client Id",
+                "description": "Client ID used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Client Secret used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_url": {
+                "title": "Client Url",
+                "description": "URL of TalentSoft client integration",
+                "type": "string"
+              },
+              "token_scope": {
+                "title": "Token Scope",
+                "description": "Scope of the authentication token to request from TalentSoft ",
+                "const": "MatchingIndexation",
+                "type": "string"
+              },
+              "applicantId": {
+                "title": "Applicantid",
+                "description": "TalentSoft applicantId of the profile to fetch",
+                "type": "string"
+              },
+              "fileId": {
+                "title": "Fileid",
+                "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left",
+                "type": "string"
+              }
+            },
+            "required": [
+              "client_id",
+              "client_secret",
+              "client_url",
+              "applicantId"
+            ]
+          },
+          "origin_data_schema": {
+            "title": "BaseModel",
+            "type": "object",
+            "properties": {}
+          },
+          "target": "HrFlow.ai Profile Parsing",
+          "target_parameters": {
+            "title": "FixedWriteParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "source_key": {
+                "title": "Source Key",
+                "description": "HrFlow.ai source key",
+                "type": "string"
+              },
+              "only_insert": {
+                "title": "Only Insert",
+                "description": "When enabled the profile is written only if it doesn't exist in the source",
+                "const": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "source_key"
+            ]
+          },
+          "target_data_schema": {
+            "title": "HrFlowProfileParsing",
+            "type": "object",
+            "properties": {
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
+                "type": "string"
+              },
+              "resume": {
+                "$ref": "#/definitions/ResumeToParse"
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "List of tags of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              }
+            },
+            "required": [
+              "reference",
+              "created_at",
+              "resume",
+              "tags",
+              "metadatas"
+            ],
+            "definitions": {
+              "ResumeToParse": {
+                "title": "ResumeToParse",
+                "type": "object",
+                "properties": {
+                  "raw": {
+                    "title": "Raw",
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "content_type": {
+                    "title": "Content Type",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "raw",
+                  "content_type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "workflow_type": "catch",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    \n    parameters = {**settings, **_request}\n    \n\n    TalentSoft.applicant_resume_update(\n        action_parameters=actions_parameters,\n        origin_parameters=dict(\n                client_id=parameters.get(\"{}client_id\".format(ORIGIN_SETTINGS_PREFIX)),\n                client_secret=parameters.get(\"{}client_secret\".format(ORIGIN_SETTINGS_PREFIX)),\n                client_url=parameters.get(\"{}client_url\".format(ORIGIN_SETTINGS_PREFIX)),\n                token_scope=parameters.get(\"{}token_scope\".format(ORIGIN_SETTINGS_PREFIX)),\n                applicantId=parameters.get(\"{}applicantId\".format(ORIGIN_SETTINGS_PREFIX)),\n                fileId=parameters.get(\"{}fileId\".format(ORIGIN_SETTINGS_PREFIX)),\n        ),\n        target_parameters=dict(\n                api_secret=parameters.get(\"{}api_secret\".format(TARGET_SETTINGS_PREFIX)),\n                api_user=parameters.get(\"{}api_user\".format(TARGET_SETTINGS_PREFIX)),\n                source_key=parameters.get(\"{}source_key\".format(TARGET_SETTINGS_PREFIX)),\n                only_insert=parameters.get(\"{}only_insert\".format(TARGET_SETTINGS_PREFIX)),\n        ),\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
         }
       ]
     }
