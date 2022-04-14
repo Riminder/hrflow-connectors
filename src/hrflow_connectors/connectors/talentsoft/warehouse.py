@@ -23,8 +23,8 @@ class ReadProfileParameters(BaseModel):
     token_scope: str = Field(
         ..., description="Scope of the authentication token to request from TalentSoft "
     )
-    reference: str = Field(
-        ..., description="TalentSoft reference of the profile to fetch"
+    applicantId: str = Field(
+        ..., description="TalentSoft applicantId of the profile to fetch"
     )
 
 
@@ -56,7 +56,7 @@ def read(
 
     response = requests.get(
         "{}/api/exports/v1/candidates?filter=id::{}".format(
-            parameters.client_url, parameters.reference
+            parameters.client_url, parameters.applicantId
         ),
         headers={
             "Authorization": "bearer {}".format(token),
@@ -64,13 +64,13 @@ def read(
     )
     if not response.ok:
         raise Exception(
-            "Failed to fetch candidate with reference={} from TalentSoft with error={}"
-            .format(parameters.reference, response.text)
+            "Failed to fetch candidate with applicantId={} from TalentSoft with"
+            " error={}".format(parameters.applicantId, response.text)
         )
     if not response.content:
         adapter.warning(
-            "Empty content when fetching candidate with reference={} from TalentSoft"
-            .format(parameters.reference)
+            "Empty content when fetching candidate with applicantId={} from TalentSoft"
+            .format(parameters.applicantId)
         )
         return
 
