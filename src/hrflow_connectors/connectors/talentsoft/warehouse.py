@@ -26,6 +26,12 @@ class ReadProfileParameters(BaseModel):
     applicantId: str = Field(
         ..., description="TalentSoft applicantId of the profile to fetch"
     )
+    fileId: t.Optional[str] = Field(
+        description=(
+            "If provided only the attachment matching with fileId is left in"
+            " 'attachments'. If not found all attachments are left"
+        )
+    )
 
 
 def read(
@@ -80,6 +86,17 @@ def read(
     candidate = json.loads(zip_data.read("applicantdetail").decode())
     for attachment in candidate["attachments"]:
         attachment["raw"] = zip_data.read(attachment["id"])
+    if parameters.fileId is not None:
+        found = next(
+            (
+                attachment
+                for attachment in candidate["attachments"]
+                if attachment["id"] == parameters.fileId
+            ),
+            None,
+        )
+        if found:
+            candidate["attachments"] = [found]
     yield candidate
 
 
