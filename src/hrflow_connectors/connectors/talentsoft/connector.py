@@ -1,14 +1,22 @@
 import typing as t
+from datetime import datetime
+
+import requests
+from pydantic import BaseModel
 
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowProfileParsingWarehouse,
     HrFlowProfileWarehouse,
 )
-from hrflow_connectors.connectors.talentsoft.warehouse import TalentSoftProfileWarehouse
+from hrflow_connectors.connectors.talentsoft.warehouse import (
+    TalentSoftProfileWarehouse,
+    get_talentsoft_auth_token,
+)
 from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    Event,
     WorkflowType,
 )
 
@@ -97,10 +105,52 @@ def format_ts_candidate(ts_candidate: t.Dict) -> t.Dict:
     return dict(
         reference=details["id"],
         created_at=details["creationDate"],
+        updated_at=datetime.utcnow().isoformat(),
         resume=resume,
         tags=tags,
         metadatas=metadatas,
     )
+
+
+def ts_callback(
+    origin_parameters: BaseModel,
+    target_parameters: BaseModel,
+    events: t.Counter[Event],
+    items_to_write: t.List[t.Dict],
+) -> None:
+    if len(items_to_write) == 1 and events[Event.write_failure] == 0:
+        candidate = items_to_write[0]
+        token = get_talentsoft_auth_token(
+            client_url=origin_parameters.client_url,
+            token_scope=origin_parameters.token_scope,
+            client_id=origin_parameters.client_id,
+            client_secret=origin_parameters.client_secret,
+        )
+        report = dict(
+            reportType="Candidates",
+            items=[
+                dict(
+                    id=candidate["reference"],
+                    date=candidate["created_at"],
+                    lastUpdateDate=candidate["updated_at"],
+                    status="success",
+                )
+            ],
+        )
+        response = requests.post(
+            "{}/api/exports/v1/reports".format(origin_parameters.client_url),
+            headers={
+                "Authorization": "bearer {}".format(token),
+            },
+            json=report,
+        )
+        if not response.ok:
+            raise Exception(
+                "Talentsoft callback report failed error={} evens={}".format(
+                    response.text,
+                    events,
+                )
+            )
 
 
 DESCRIPTION = "TalentSoft"
@@ -125,6 +175,7 @@ TalentSoft = Connector(
             target=HrFlowProfileParsingWarehouse.with_fixed_write_parameters(
                 only_insert=True
             ),
+            callback=ts_callback,
         ),
         ConnectorAction(
             name="applicant_resume_update",
@@ -142,6 +193,7 @@ TalentSoft = Connector(
             target=HrFlowProfileParsingWarehouse.with_fixed_write_parameters(
                 only_insert=False
             ),
+            callback=ts_callback,
         ),
         ConnectorAction(
             name="applicant_update",

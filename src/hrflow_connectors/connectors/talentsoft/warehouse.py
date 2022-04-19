@@ -34,19 +34,19 @@ class ReadProfileParameters(BaseModel):
     )
 
 
-def read(
-    adapter: LoggerAdapter, parameters: ReadProfileParameters
-) -> t.Iterable[t.Dict]:
+def get_talentsoft_auth_token(
+    client_url: str, token_scope: str, client_id: str, client_secret: str
+) -> str:
     response = requests.post(
-        "{}/api/token".format(parameters.client_url),
+        "{}/api/token".format(client_url),
         headers={
             "Content-Type": "application/x-www-form-urlencoded",
         },
         data=dict(
             grant_type=GRANT_TYPE,
-            scope=parameters.token_scope,
-            client_id=parameters.client_id,
-            client_secret=parameters.client_secret,
+            scope=token_scope,
+            client_id=client_id,
+            client_secret=client_secret,
         ),
     )
     if not response.ok:
@@ -54,12 +54,22 @@ def read(
             "Failed to get authentication token with error={}".format(response.text)
         )
     try:
-        token = response.json()["access_token"]
+        return response.json()["access_token"]
     except (KeyError, requests.exceptions.JSONDecodeError) as e:
         raise Exception(
             "Failed to get token from response with error={}".format(repr(e))
         )
 
+
+def read(
+    adapter: LoggerAdapter, parameters: ReadProfileParameters
+) -> t.Iterable[t.Dict]:
+    token = get_talentsoft_auth_token(
+        client_url=parameters.client_url,
+        token_scope=parameters.token_scope,
+        client_id=parameters.client_id,
+        client_secret=parameters.client_secret,
+    )
     response = requests.get(
         "{}/api/exports/v1/candidates?filter=id::{}".format(
             parameters.client_url, parameters.applicantId
