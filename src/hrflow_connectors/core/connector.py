@@ -213,7 +213,9 @@ class ConnectorAction(BaseModel):
     parameters: t.Type[BaseModel]
     origin: Warehouse
     target: Warehouse
-    callback: t.Optional[t.Callable[[t.Counter[Event], t.List[t.Dict]], None]] = None
+    callback: t.Optional[
+        t.Callable[[BaseModel, BaseModel, t.Counter[Event], t.List[t.Dict]], None]
+    ] = None
 
     @validator("origin", pre=False)
     def origin_is_readable(cls, origin):
@@ -420,7 +422,9 @@ class ConnectorAction(BaseModel):
         if self.callback is not None:
             adapter.info("Calling callback function")
             try:
-                self.callback(events, items_to_write)
+                self.callback(
+                    origin_parameters, target_parameters, events, items_to_write
+                )
             except Exception as e:
                 events[Event.callback_failure] += 1
                 adapter.error("Failed to run callback with error={}".format(repr(e)))
