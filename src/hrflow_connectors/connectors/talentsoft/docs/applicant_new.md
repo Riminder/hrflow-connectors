@@ -11,7 +11,7 @@ Handle TalentSoft 'applicant_new' event by fetching profile from TalentSoft and 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_candidate`](../connector.py#L16) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_candidate`](../connector.py#L24) | Formatting function |
 
 ## Source Parameters
 
