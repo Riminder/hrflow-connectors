@@ -545,16 +545,20 @@ def test_action_run_results_from_events():
 
 def test_action_with_callback_success():
     change_me = False
+    campaign_id = "camp_xxx1"
+    n_males = len([user for user in USERS_DB if user["gender"].value == "male"])
 
-    def callback(events, written_items) -> None:
+    def callback(origin_parameters, target_parameters, events, written_items) -> None:
         nonlocal change_me
         change_me = True
-        assert events[Event.read_success] == len(USERS_DB)
+        assert events[Event.read_success] == n_males
         assert events[Event.format_failure] == 0
         assert events[Event.logics_failure] == 0
         assert events[Event.logics_discard] == 0
         assert events[Event.write_failure] == 0
-        assert len(written_items) == len(USERS_DB)
+        assert len(written_items) == n_males
+        assert origin_parameters.gender.value == "male"
+        assert target_parameters.campaign_id == campaign_id
 
     SmartLeads = Connector(
         name="SmartLeads",
@@ -573,29 +577,27 @@ def test_action_with_callback_success():
         ],
     )
 
-    campaign_id = "camp_xxx1"
-
     result = SmartLeads.pull_leads_with_callback(
         action_parameters=dict(),
-        origin_parameters=dict(),
+        origin_parameters=dict(gender="male"),
         target_parameters=dict(campaign_id=campaign_id),
     )
 
     assert change_me is True
 
     assert result.status == Status.success
-    assert result.events[Event.read_success] == len(USERS_DB)
+    assert result.events[Event.read_success] == n_males
     assert result.events[Event.format_failure] == 0
     assert result.events[Event.logics_failure] == 0
     assert result.events[Event.logics_discard] == 0
     assert result.events[Event.write_failure] == 0
     assert result.events[Event.callback_failure] == 0
 
-    assert len(USERS_DB) == len(LEADS_DB[campaign_id])
+    assert n_males == len(LEADS_DB[campaign_id])
 
 
 def test_action_with_callback_failure():
-    def callback(events, written_items) -> None:
+    def callback(origin_parameters, target_parameters, events, written_items) -> None:
         raise Exception("Callback failure")
 
     SmartLeads = Connector(
