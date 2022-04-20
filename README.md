@@ -58,7 +58,8 @@ to democratize Talent Data integration within the HR Tech landscape.
 | **HelloWork** | Job Board | :hourglass: |  |  |
 | **ICIMS** | ATS | :hourglass: |  |  |
 | **Indeed** | Job Board | :hourglass: |  |  |
-| **Inzojob** | Job Board | :hourglass: |  |  |
+| **Inzojob** | Job Board | :hourglass: |  |  | 
+| **JobAdder** | ATS  | :hourglass: |  |  |
 | **Jobijoba** | Job Board | :hourglass: |  |  |
 | **Jobrapido** | Job Board | :hourglass: |  |  |
 | **JobTeaser** | Job Board | :hourglass: |  |  |
