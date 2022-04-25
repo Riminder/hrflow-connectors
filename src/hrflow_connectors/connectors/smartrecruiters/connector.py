@@ -189,7 +189,7 @@ SmartRecruiters = Connector(
                 "Retrieves all jobs via the ***SmartRecruiter*** API and send them"
                 " to a ***Hrflow.ai Board***."
             ),
-            parameters=BaseActionParameters.with_default_format(
+            parameters=BaseActionParameters.with_defaults(
                 "ReadJobsActionParameters", format=format_job
             ),
             origin=SmartRecruitersJobWarehouse,
@@ -202,7 +202,7 @@ SmartRecruiters = Connector(
                 "Writes a profile from Hrflow.ai Source to SmartRecruiters via the API"
                 " for the given `job_id`."
             ),
-            parameters=BaseActionParameters.with_default_format(
+            parameters=BaseActionParameters.with_defaults(
                 "WriteProfileActionParameters", format=format_profile
             ),
             origin=HrFlowProfileWarehouse,

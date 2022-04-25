@@ -166,7 +166,7 @@ TalentSoft = Connector(
                 "Handle TalentSoft 'applicant_new' event by fetching profile from"
                 " TalentSoft and sending it to HrFlow.ai Parsing API."
             ),
-            parameters=BaseActionParameters.with_default_format(
+            parameters=BaseActionParameters.with_defaults(
                 "ApplicantNewActionParameters", format=format_ts_candidate
             ),
             origin=TalentSoftProfileWarehouse.with_fixed_read_parameters(
@@ -184,7 +184,7 @@ TalentSoft = Connector(
                 "Handle TalentSoft 'applicant_resume_update' event by"
                 " running a new HrFlow.ai Parsing on updated resume."
             ),
-            parameters=BaseActionParameters.with_default_format(
+            parameters=BaseActionParameters.with_defaults(
                 "ApplicantResumeUpdateActionParameters", format=format_ts_candidate
             ),
             origin=TalentSoftProfileWarehouse.with_fixed_read_parameters(
@@ -202,7 +202,7 @@ TalentSoft = Connector(
                 "Handle TalentSoft 'applicant_update' event by"
                 " only updating tags coming from TalentSoft in HrFlow.ai."
             ),
-            parameters=BaseActionParameters.with_default_format(
+            parameters=BaseActionParameters.with_defaults(
                 "ApplicantUpdateActionParameters", format=format_ts_candidate
             ),
             origin=TalentSoftProfileWarehouse.with_fixed_read_parameters(
