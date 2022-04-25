@@ -359,8 +359,8 @@ def test_connector_default_format():
                 name="pull_leads",
                 type=WorkflowType.pull,
                 description="Send users as leads",
-                parameters=BaseActionParameters.with_default_format(
-                    "even_smarter_leads_connector", smarter_format
+                parameters=BaseActionParameters.with_defaults(
+                    "even_smarter_leads_connector", format=smarter_format
                 ),
                 origin=UsersWarehouse,
                 target=LeadsWarehouse,
@@ -403,6 +403,19 @@ def test_connector_default_format():
 
     assert len(USERS_DB) == len(LEADS_DB[campaign_id])
     assert all(lead["name"].upper() == lead["name"] for lead in LEADS_DB[campaign_id])
+
+
+def test_connector_default_event_parser():
+    def event_parser(event):
+        return
+
+    without_event_parser = BaseActionParameters.with_defaults("no_change")
+    assert without_event_parser.__fields__["event_parser"].default is not event_parser
+
+    with_event_parser = BaseActionParameters.with_defaults(
+        "with_event_parser", event_parser=event_parser
+    )
+    assert with_event_parser.__fields__["event_parser"].default is event_parser
 
 
 def test_action_with_failures():

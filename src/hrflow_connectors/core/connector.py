@@ -215,17 +215,33 @@ class BaseActionParameters(BaseModel):
             )
 
     @classmethod
-    def with_default_format(
-        cls, model_name: str, format: FormatFunctionType
+    def with_defaults(
+        cls,
+        model_name: str,
+        *,
+        format: t.Optional[FormatFunctionType] = None,
+        event_parser: t.Optional[EventParserFunctionType] = None,
     ) -> t.Type["BaseActionParameters"]:
-        return create_model(
-            model_name,
-            format=(
-                FormatFunctionType,
-                Field(format, description=FormatDescription),
-            ),
-            __base__=cls,
-        )
+        new_model = cls
+        if format is not None:
+            new_model = create_model(
+                model_name,
+                format=(
+                    FormatFunctionType,
+                    Field(format, description=FormatDescription),
+                ),
+                __base__=new_model,
+            )
+        if event_parser is not None:
+            new_model = create_model(
+                model_name,
+                event_parser=(
+                    EventParserFunctionType,
+                    Field(event_parser, description=EventParserDescription),
+                ),
+                __base__=new_model,
+            )
+        return new_model
 
 
 class WorkflowType(str, enum.Enum):
