@@ -298,7 +298,7 @@ LocalJSON = Connector(
             name="pull_jobs",
             type=WorkflowType.pull,
             description="Send jobs from local JSON file to a ***Hrflow.ai Board***.",
-            parameters=BaseActionParameters.with_default_format(
+            parameters=BaseActionParameters.with_defaults(
                 "ReadJSONJobsActionParameters", format=format_job
             ),
             origin=LocalJSONWarehouse,
