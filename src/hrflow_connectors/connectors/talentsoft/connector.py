@@ -9,7 +9,7 @@ from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowProfileWarehouse,
 )
 from hrflow_connectors.connectors.talentsoft.warehouse import (
-    TalentSoftProfileWarehouse,
+    TalentSoftProfilesWarehouse,
     get_talentsoft_auth_token,
 )
 from hrflow_connectors.core import (
@@ -122,7 +122,6 @@ def ts_callback(
         candidate = items_to_write[0]
         token = get_talentsoft_auth_token(
             client_url=origin_parameters.client_url,
-            token_scope=origin_parameters.token_scope,
             client_id=origin_parameters.client_id,
             client_secret=origin_parameters.client_secret,
         )
@@ -141,6 +140,7 @@ def ts_callback(
             "{}/api/exports/v1/reports".format(origin_parameters.client_url),
             headers={
                 "Authorization": "bearer {}".format(token),
+                "Host": "safran-rh.profils.org",  # FIXME REMOVE ME
             },
             json=report,
         )
@@ -151,6 +151,18 @@ def ts_callback(
                     events,
                 )
             )
+
+
+def applicant_new_parser(event: t.Dict) -> t.Dict:
+    return dict(filter="id::{}".format(event["applicantId"]))
+
+
+def applicant_resume_update_parser(event: t.Dict) -> t.Dict:
+    return dict(filter="id::{}".format(event["applicantId"]), fileId=event["fileId"])
+
+
+def applicant_update_parser(event: t.Dict) -> t.Dict:
+    return dict(filter="id::{}".format(event["applicantId"]))
 
 
 DESCRIPTION = "TalentSoft"
@@ -167,10 +179,12 @@ TalentSoft = Connector(
                 " TalentSoft and sending it to HrFlow.ai Parsing API."
             ),
             parameters=BaseActionParameters.with_defaults(
-                "ApplicantNewActionParameters", format=format_ts_candidate
+                "ApplicantNewActionParameters",
+                format=format_ts_candidate,
+                event_parser=applicant_new_parser,
             ),
-            origin=TalentSoftProfileWarehouse.with_fixed_read_parameters(
-                token_scope="MatchingIndexation"
+            origin=TalentSoftProfilesWarehouse.with_fixed_read_parameters(
+                only_resume=True
             ),
             target=HrFlowProfileParsingWarehouse.with_fixed_write_parameters(
                 only_insert=True
@@ -185,10 +199,12 @@ TalentSoft = Connector(
                 " running a new HrFlow.ai Parsing on updated resume."
             ),
             parameters=BaseActionParameters.with_defaults(
-                "ApplicantResumeUpdateActionParameters", format=format_ts_candidate
+                "ApplicantResumeUpdateActionParameters",
+                format=format_ts_candidate,
+                event_parser=applicant_resume_update_parser,
             ),
-            origin=TalentSoftProfileWarehouse.with_fixed_read_parameters(
-                token_scope="MatchingIndexation"
+            origin=TalentSoftProfilesWarehouse.with_fixed_read_parameters(
+                only_resume=True
             ),
             target=HrFlowProfileParsingWarehouse.with_fixed_write_parameters(
                 only_insert=False
@@ -203,11 +219,11 @@ TalentSoft = Connector(
                 " only updating tags coming from TalentSoft in HrFlow.ai."
             ),
             parameters=BaseActionParameters.with_defaults(
-                "ApplicantUpdateActionParameters", format=format_ts_candidate
+                "ApplicantUpdateActionParameters",
+                format=format_ts_candidate,
+                event_parser=applicant_update_parser,
             ),
-            origin=TalentSoftProfileWarehouse.with_fixed_read_parameters(
-                token_scope="MatchingIndexation"
-            ),
+            origin=TalentSoftProfilesWarehouse,
             target=HrFlowProfileWarehouse.with_fixed_write_parameters(
                 edit=True, only_edit_fields=["tags"]
             ),
