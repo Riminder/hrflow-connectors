@@ -1617,28 +1617,28 @@
                 "description": "URL of TalentSoft client integration",
                 "type": "string"
               },
-              "token_scope": {
-                "title": "Token Scope",
-                "description": "Scope of the authentication token to request from TalentSoft ",
-                "const": "MatchingIndexation",
-                "type": "string"
-              },
-              "applicantId": {
-                "title": "Applicantid",
-                "description": "TalentSoft applicantId of the profile to fetch",
+              "filter": {
+                "title": "Filter",
+                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get .Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
                 "type": "string"
               },
               "fileId": {
                 "title": "Fileid",
-                "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left",
+                "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left.",
                 "type": "string"
+              },
+              "only_resume": {
+                "title": "Only Resume",
+                "description": "If enabled only resume attachments are returned",
+                "const": true,
+                "type": "boolean"
               }
             },
             "required": [
               "client_id",
               "client_secret",
               "client_url",
-              "applicantId"
+              "filter"
             ]
           },
           "origin_data_schema": {
@@ -1821,28 +1821,28 @@
                 "description": "URL of TalentSoft client integration",
                 "type": "string"
               },
-              "token_scope": {
-                "title": "Token Scope",
-                "description": "Scope of the authentication token to request from TalentSoft ",
-                "const": "MatchingIndexation",
-                "type": "string"
-              },
-              "applicantId": {
-                "title": "Applicantid",
-                "description": "TalentSoft applicantId of the profile to fetch",
+              "filter": {
+                "title": "Filter",
+                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get .Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
                 "type": "string"
               },
               "fileId": {
                 "title": "Fileid",
-                "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left",
+                "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left.",
                 "type": "string"
+              },
+              "only_resume": {
+                "title": "Only Resume",
+                "description": "If enabled only resume attachments are returned",
+                "const": true,
+                "type": "boolean"
               }
             },
             "required": [
               "client_id",
               "client_secret",
               "client_url",
-              "applicantId"
+              "filter"
             ]
           },
           "origin_data_schema": {
@@ -2007,7 +2007,7 @@
           },
           "origin": "TalentSoft Profiles",
           "origin_parameters": {
-            "title": "FixedReadParameters",
+            "title": "ReadProfilesParameters",
             "type": "object",
             "properties": {
               "client_id": {
@@ -2025,28 +2025,28 @@
                 "description": "URL of TalentSoft client integration",
                 "type": "string"
               },
-              "token_scope": {
-                "title": "Token Scope",
-                "description": "Scope of the authentication token to request from TalentSoft ",
-                "const": "MatchingIndexation",
-                "type": "string"
-              },
-              "applicantId": {
-                "title": "Applicantid",
-                "description": "TalentSoft applicantId of the profile to fetch",
+              "filter": {
+                "title": "Filter",
+                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get .Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
                 "type": "string"
               },
               "fileId": {
                 "title": "Fileid",
-                "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left",
+                "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left.",
                 "type": "string"
+              },
+              "only_resume": {
+                "title": "Only Resume",
+                "description": "If enabled only resume attachments are returned",
+                "default": false,
+                "type": "boolean"
               }
             },
             "required": [
               "client_id",
               "client_secret",
               "client_url",
-              "applicantId"
+              "filter"
             ]
           },
           "origin_data_schema": {
