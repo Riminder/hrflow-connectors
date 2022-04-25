@@ -25,6 +25,14 @@
                   "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
                   "type": "code_editor"
                 }
+              ],
+              "event_parser": [
+                {
+                  "title": "event_parser",
+                  "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                  "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
+                  "type": "code_editor"
+                }
               ]
             }
           },
@@ -761,9 +769,10 @@
             }
           },
           "workflow_type": "pull",
-          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import SmartRecruiters\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    \n    parameters = settings\n    \n\n    SmartRecruiters.pull_jobs(\n        action_parameters=actions_parameters,\n        origin_parameters=dict(\n                x_smart_token=parameters.get(\"{}x_smart_token\".format(ORIGIN_SETTINGS_PREFIX)),\n                query=parameters.get(\"{}query\".format(ORIGIN_SETTINGS_PREFIX)),\n                updated_after=parameters.get(\"{}updated_after\".format(ORIGIN_SETTINGS_PREFIX)),\n                posting_status=parameters.get(\"{}posting_status\".format(ORIGIN_SETTINGS_PREFIX)),\n                job_status=parameters.get(\"{}job_status\".format(ORIGIN_SETTINGS_PREFIX)),\n        ),\n        target_parameters=dict(\n                api_secret=parameters.get(\"{}api_secret\".format(TARGET_SETTINGS_PREFIX)),\n                api_user=parameters.get(\"{}api_user\".format(TARGET_SETTINGS_PREFIX)),\n                board_key=parameters.get(\"{}board_key\".format(TARGET_SETTINGS_PREFIX)),\n                sync=parameters.get(\"{}sync\".format(TARGET_SETTINGS_PREFIX)),\n                update_content=parameters.get(\"{}update_content\".format(TARGET_SETTINGS_PREFIX)),\n                enrich_with_parsing=parameters.get(\"{}enrich_with_parsing\".format(TARGET_SETTINGS_PREFIX)),\n        ),\n    )",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import SmartRecruiters\nfrom hrflow_connectors.core.connector import EventParsingError\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n\n    origin_parameters = dict()\n    for parameter in ['x_smart_token', 'query', 'updated_after', 'posting_status', 'job_status']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return SmartRecruiters.pull_jobs(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         },
@@ -786,6 +795,14 @@
                   "title": "format",
                   "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
                   "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                  "type": "code_editor"
+                }
+              ],
+              "event_parser": [
+                {
+                  "title": "event_parser",
+                  "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                  "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
                   "type": "code_editor"
                 }
               ]
@@ -1536,9 +1553,10 @@
             }
           },
           "workflow_type": "catch",
-          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import SmartRecruiters\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    \n    parameters = {**settings, **_request}\n    \n\n    SmartRecruiters.push_profile(\n        action_parameters=actions_parameters,\n        origin_parameters=dict(\n                api_secret=parameters.get(\"{}api_secret\".format(ORIGIN_SETTINGS_PREFIX)),\n                api_user=parameters.get(\"{}api_user\".format(ORIGIN_SETTINGS_PREFIX)),\n                source_key=parameters.get(\"{}source_key\".format(ORIGIN_SETTINGS_PREFIX)),\n                profile_key=parameters.get(\"{}profile_key\".format(ORIGIN_SETTINGS_PREFIX)),\n        ),\n        target_parameters=dict(\n                x_smart_token=parameters.get(\"{}x_smart_token\".format(TARGET_SETTINGS_PREFIX)),\n                job_id=parameters.get(\"{}job_id\".format(TARGET_SETTINGS_PREFIX)),\n        ),\n    )",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import SmartRecruiters\nfrom hrflow_connectors.core.connector import EventParsingError\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n    try:\n        _request = event_parser(_request)\n    except NameError:\n        pass\n    except Exception as e:\n        event_parsing_error = EventParsingError(\n            event=_request,\n            error=e,\n        )\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'profile_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['x_smart_token', 'job_id']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return SmartRecruiters.push_profile(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
@@ -1566,6 +1584,14 @@
                   "title": "format",
                   "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
                   "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                  "type": "code_editor"
+                }
+              ],
+              "event_parser": [
+                {
+                  "title": "event_parser",
+                  "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                  "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
                   "type": "code_editor"
                 }
               ]
@@ -1736,9 +1762,10 @@
             }
           },
           "workflow_type": "catch",
-          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    \n    parameters = {**settings, **_request}\n    \n\n    TalentSoft.applicant_new(\n        action_parameters=actions_parameters,\n        origin_parameters=dict(\n                client_id=parameters.get(\"{}client_id\".format(ORIGIN_SETTINGS_PREFIX)),\n                client_secret=parameters.get(\"{}client_secret\".format(ORIGIN_SETTINGS_PREFIX)),\n                client_url=parameters.get(\"{}client_url\".format(ORIGIN_SETTINGS_PREFIX)),\n                token_scope=parameters.get(\"{}token_scope\".format(ORIGIN_SETTINGS_PREFIX)),\n                applicantId=parameters.get(\"{}applicantId\".format(ORIGIN_SETTINGS_PREFIX)),\n                fileId=parameters.get(\"{}fileId\".format(ORIGIN_SETTINGS_PREFIX)),\n        ),\n        target_parameters=dict(\n                api_secret=parameters.get(\"{}api_secret\".format(TARGET_SETTINGS_PREFIX)),\n                api_user=parameters.get(\"{}api_user\".format(TARGET_SETTINGS_PREFIX)),\n                source_key=parameters.get(\"{}source_key\".format(TARGET_SETTINGS_PREFIX)),\n                only_insert=parameters.get(\"{}only_insert\".format(TARGET_SETTINGS_PREFIX)),\n        ),\n    )",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\nfrom hrflow_connectors.core.connector import EventParsingError\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n    try:\n        _request = event_parser(_request)\n    except NameError:\n        pass\n    except Exception as e:\n        event_parsing_error = EventParsingError(\n            event=_request,\n            error=e,\n        )\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'client_url', 'filter', 'fileId', 'only_resume']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'only_insert']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return TalentSoft.applicant_new(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         },
@@ -1761,6 +1788,14 @@
                   "title": "format",
                   "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
                   "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                  "type": "code_editor"
+                }
+              ],
+              "event_parser": [
+                {
+                  "title": "event_parser",
+                  "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                  "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
                   "type": "code_editor"
                 }
               ]
@@ -1931,9 +1966,10 @@
             }
           },
           "workflow_type": "catch",
-          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    \n    parameters = {**settings, **_request}\n    \n\n    TalentSoft.applicant_resume_update(\n        action_parameters=actions_parameters,\n        origin_parameters=dict(\n                client_id=parameters.get(\"{}client_id\".format(ORIGIN_SETTINGS_PREFIX)),\n                client_secret=parameters.get(\"{}client_secret\".format(ORIGIN_SETTINGS_PREFIX)),\n                client_url=parameters.get(\"{}client_url\".format(ORIGIN_SETTINGS_PREFIX)),\n                token_scope=parameters.get(\"{}token_scope\".format(ORIGIN_SETTINGS_PREFIX)),\n                applicantId=parameters.get(\"{}applicantId\".format(ORIGIN_SETTINGS_PREFIX)),\n                fileId=parameters.get(\"{}fileId\".format(ORIGIN_SETTINGS_PREFIX)),\n        ),\n        target_parameters=dict(\n                api_secret=parameters.get(\"{}api_secret\".format(TARGET_SETTINGS_PREFIX)),\n                api_user=parameters.get(\"{}api_user\".format(TARGET_SETTINGS_PREFIX)),\n                source_key=parameters.get(\"{}source_key\".format(TARGET_SETTINGS_PREFIX)),\n                only_insert=parameters.get(\"{}only_insert\".format(TARGET_SETTINGS_PREFIX)),\n        ),\n    )",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\nfrom hrflow_connectors.core.connector import EventParsingError\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n    try:\n        _request = event_parser(_request)\n    except NameError:\n        pass\n    except Exception as e:\n        event_parsing_error = EventParsingError(\n            event=_request,\n            error=e,\n        )\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'client_url', 'filter', 'fileId', 'only_resume']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'only_insert']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return TalentSoft.applicant_resume_update(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         },
@@ -1956,6 +1992,14 @@
                   "title": "format",
                   "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
                   "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                  "type": "code_editor"
+                }
+              ],
+              "event_parser": [
+                {
+                  "title": "event_parser",
+                  "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                  "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
                   "type": "code_editor"
                 }
               ]
@@ -2513,9 +2557,10 @@
             }
           },
           "workflow_type": "catch",
-          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    \n    parameters = {**settings, **_request}\n    \n\n    TalentSoft.applicant_update(\n        action_parameters=actions_parameters,\n        origin_parameters=dict(\n                client_id=parameters.get(\"{}client_id\".format(ORIGIN_SETTINGS_PREFIX)),\n                client_secret=parameters.get(\"{}client_secret\".format(ORIGIN_SETTINGS_PREFIX)),\n                client_url=parameters.get(\"{}client_url\".format(ORIGIN_SETTINGS_PREFIX)),\n                token_scope=parameters.get(\"{}token_scope\".format(ORIGIN_SETTINGS_PREFIX)),\n                applicantId=parameters.get(\"{}applicantId\".format(ORIGIN_SETTINGS_PREFIX)),\n                fileId=parameters.get(\"{}fileId\".format(ORIGIN_SETTINGS_PREFIX)),\n        ),\n        target_parameters=dict(\n                api_secret=parameters.get(\"{}api_secret\".format(TARGET_SETTINGS_PREFIX)),\n                api_user=parameters.get(\"{}api_user\".format(TARGET_SETTINGS_PREFIX)),\n                source_key=parameters.get(\"{}source_key\".format(TARGET_SETTINGS_PREFIX)),\n                edit=parameters.get(\"{}edit\".format(TARGET_SETTINGS_PREFIX)),\n                only_edit_fields=parameters.get(\"{}only_edit_fields\".format(TARGET_SETTINGS_PREFIX)),\n        ),\n    )",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\nfrom hrflow_connectors.core.connector import EventParsingError\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n    try:\n        _request = event_parser(_request)\n    except NameError:\n        pass\n    except Exception as e:\n        event_parsing_error = EventParsingError(\n            event=_request,\n            error=e,\n        )\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'client_url', 'filter', 'fileId', 'only_resume']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'edit', 'only_edit_fields']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return TalentSoft.applicant_update(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
