@@ -10,9 +10,11 @@ from pydantic import BaseModel, Field
 from hrflow_connectors.core import Warehouse, WarehouseReadAction
 
 GRANT_TYPE = "client_credentials"
+TOKEN_SCOPE = "MatchingIndexation"
+LIMIT = 100
 
 
-class ReadProfileParameters(BaseModel):
+class ReadProfilesParameters(BaseModel):
     client_id: str = Field(
         ..., description="Client ID used to access TalentSoft API", repr=False
     )
@@ -20,22 +22,32 @@ class ReadProfileParameters(BaseModel):
         ..., description="Client Secret used to access TalentSoft API", repr=False
     )
     client_url: str = Field(..., description="URL of TalentSoft client integration")
-    token_scope: str = Field(
-        ..., description="Scope of the authentication token to request from TalentSoft "
-    )
-    applicantId: str = Field(
-        ..., description="TalentSoft applicantId of the profile to fetch"
+    filter: t.Optional[str] = Field(
+        ...,
+        description=(
+            "Filter to apply when reading profiles. See documentation at"
+            " https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-"
+            "matchingindexation&operation=api-exports-v1-candidates-get ."
+            " Examples : By id Single Item 'id::_TS-00001'; By id Multiple"
+            " Items 'id::_TS-00001,_TS-00002'; By email"
+            " 'email::john.doe@company.corp'; By updateDate updated before the 10th"
+            " of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than"
+            " 108921  'chronoNumber:gt:108921'"
+        ),
     )
     fileId: t.Optional[str] = Field(
         description=(
             "If provided only the attachment matching with fileId is left in"
-            " 'attachments'. If not found all attachments are left"
+            " 'attachments'. If not found all attachments are left."
         )
+    )
+    only_resume: bool = Field(
+        False, description="If enabled only resume attachments are returned"
     )
 
 
 def get_talentsoft_auth_token(
-    client_url: str, token_scope: str, client_id: str, client_secret: str
+    client_url: str, client_id: str, client_secret: str
 ) -> str:
     response = requests.post(
         "{}/api/token".format(client_url),
@@ -44,7 +56,7 @@ def get_talentsoft_auth_token(
         },
         data=dict(
             grant_type=GRANT_TYPE,
-            scope=token_scope,
+            scope=TOKEN_SCOPE,
             client_id=client_id,
             client_secret=client_secret,
         ),
@@ -62,58 +74,67 @@ def get_talentsoft_auth_token(
 
 
 def read(
-    adapter: LoggerAdapter, parameters: ReadProfileParameters
+    adapter: LoggerAdapter, parameters: ReadProfilesParameters
 ) -> t.Iterable[t.Dict]:
     token = get_talentsoft_auth_token(
         client_url=parameters.client_url,
-        token_scope=parameters.token_scope,
         client_id=parameters.client_id,
         client_secret=parameters.client_secret,
     )
-    response = requests.get(
-        "{}/api/exports/v1/candidates?filter=id::{}".format(
-            parameters.client_url, parameters.applicantId
-        ),
-        headers={
-            "Authorization": "bearer {}".format(token),
-        },
-    )
-    if not response.ok:
-        raise Exception(
-            "Failed to fetch candidate with applicantId={} from TalentSoft with"
-            " error={}".format(parameters.applicantId, response.text)
-        )
-    if not response.content:
-        adapter.warning(
-            "Empty content when fetching candidate with applicantId={} from TalentSoft"
-            .format(parameters.applicantId)
-        )
-        return
+    params = dict(offset=0, limit=LIMIT)
+    if parameters.filter:
+        params["filter"] = parameters.filter
+    if parameters.only_resume:
+        params["attachmenttype"] = "resume"
 
-    data = response.content
-    read_up_to = int.from_bytes(data[0:4], byteorder="little")
-    zip_data = ZipFile(BytesIO(data[4 : 4 + read_up_to]))
-    candidate = json.loads(zip_data.read("applicantdetail").decode())
-    for attachment in candidate["attachments"]:
-        attachment["raw"] = zip_data.read(attachment["id"])
-    if parameters.fileId is not None:
-        found = next(
-            (
-                attachment
-                for attachment in candidate["attachments"]
-                if attachment["id"] == parameters.fileId
-            ),
-            None,
+    while True:
+        response = requests.get(
+            "{}/api/exports/v1/candidates".format(parameters.client_url),
+            params=params,
+            headers={
+                "Authorization": "bearer {}".format(token),
+            },
         )
-        if found:
-            candidate["attachments"] = [found]
-    yield candidate
+        if not response.ok:
+            raise Exception(
+                "Failed to fetch candidates with params={} from TalentSoft with"
+                " error={}".format(params, response.text)
+            )
+        if response.headers.get("Content-Length") == 0 or not response.content:
+            adapter.info(
+                "No profiles found with params={} text={} headers={}".format(
+                    params, response.text, response.headers
+                )
+            )
+            return
+
+        data = response.content
+        while data:
+            read_up_to = int.from_bytes(data[0:4], byteorder="little")
+            zip_data = ZipFile(BytesIO(data[4 : 4 + read_up_to]))
+            candidate = json.loads(zip_data.read("applicantdetail").decode())
+            for attachment in candidate["attachments"]:
+                attachment["raw"] = zip_data.read(attachment["id"])
+            if parameters.fileId is not None:
+                found = next(
+                    (
+                        attachment
+                        for attachment in candidate["attachments"]
+                        if attachment["id"] == parameters.fileId
+                    ),
+                    None,
+                )
+                if found:
+                    candidate["attachments"] = [found]
+            yield candidate
+            data = data[4 + read_up_to :]
+        params["offset"] += LIMIT
 
 
-TalentSoftProfileWarehouse = Warehouse(
+TalentSoftProfilesWarehouse = Warehouse(
     name="TalentSoft Profiles",
     read=WarehouseReadAction(
-        parameters=ReadProfileParameters,
+        parameters=ReadProfilesParameters,
         function=read,
     ),
 )
