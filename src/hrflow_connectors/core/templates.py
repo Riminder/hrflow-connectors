@@ -102,6 +102,7 @@ WORKFLOW_TEMPLATE = Template(
 import typing as t
 
 from hrflow_connectors import {{ connector_name }}
+from hrflow_connectors.core.connector import EventParsingError
 
 ORIGIN_SETTINGS_PREFIX = "{{ origin_settings_prefix }}"
 TARGET_SETTINGS_PREFIX = "{{ target_settings_prefix }}"
@@ -109,6 +110,9 @@ TARGET_SETTINGS_PREFIX = "{{ target_settings_prefix }}"
 {{ format_placeholder }}
 
 {{ logics_placeholder }}
+{% if type == "catch" %}
+{{ event_parser_placeholder }}
+{% endif %}
 
 def workflow(
         {% if type == "catch" %}
@@ -131,24 +135,42 @@ def workflow(
     else:
         actions_parameters["logics"] = logics
 
-    {% if type == "pull" %}
-    parameters = settings
-    {% else %}
-    parameters = {**settings, **_request}
+    event_parsing_error = None
+    {% if type == "catch" %}
+    try:
+        _request = event_parser(_request)
+    except NameError:
+        pass
+    except Exception as e:
+        event_parsing_error = EventParsingError(
+            event=_request,
+            error=e,
+        )
     {% endif %}
 
-    {{ connector_name }}.{{ action_name }}(
+    origin_parameters = dict()
+    for parameter in {{ origin_parameters }}:
+        if "{}{}".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:
+            origin_parameters[parameter] = settings["{}{}".format(ORIGIN_SETTINGS_PREFIX, parameter)]
+        {% if type == "catch" %}
+        if parameter in _request:
+            origin_parameters[parameter] = _request[parameter]
+        {% endif %}
+
+    target_parameters = dict()
+    for parameter in {{ target_parameters }}:
+        if "{}{}".format(TARGET_SETTINGS_PREFIX, parameter) in settings:
+            target_parameters[parameter] = settings["{}{}".format(TARGET_SETTINGS_PREFIX, parameter)]
+        {% if type == "catch" %}
+        if parameter in _request:
+            target_parameters[parameter] = _request[parameter]
+        {% endif %}
+
+    return {{ connector_name }}.{{ action_name }}(
         action_parameters=actions_parameters,
-        origin_parameters=dict(
-            {%- for parameter in origin_parameters %}
-                {{ parameter }}=parameters.get("{}{{ parameter }}".format(ORIGIN_SETTINGS_PREFIX)),
-            {%- endfor %}
-        ),
-        target_parameters=dict(
-            {%- for parameter in target_parameters %}
-                {{ parameter }}=parameters.get("{}{{ parameter }}".format(TARGET_SETTINGS_PREFIX)),
-            {%- endfor %}
-        ),
+        origin_parameters=origin_parameters,
+        target_parameters=target_parameters,
+        event_parsing_error=event_parsing_error
     )
 """
 )
