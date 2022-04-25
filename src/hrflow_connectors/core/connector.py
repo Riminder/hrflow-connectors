@@ -29,6 +29,11 @@ class ConnectorActionAdapter(logging.LoggerAdapter):
         )
 
 
+class EventParsingError(BaseModel):
+    event: t.Dict
+    error: t.Any
+
+
 class Event(enum.Enum):
     read_success = "read_success"
     read_failure = "read_failure"
@@ -44,6 +49,7 @@ class Event(enum.Enum):
 
 
 class Reason(enum.Enum):
+    event_parsing_failure = "event_parsing_failure"
     bad_action_parameters = "bad_action_parameters"
     bad_origin_parameters = "bad_origin_parameters"
     bad_target_parameters = "bad_target_parameters"
@@ -141,6 +147,17 @@ def format(item: t.Dict) -> t.Dict:
     return item
 """
 FormatDescription = "Formatting function"
+EventParserFunctionType = t.Callable[[t.Dict], t.Dict]
+EventParserTemplate = """
+import typing as t
+
+def event_parser(event: t.Dict) -> t.Dict:
+    parsed = dict()
+    parsed["user_id"] = event["email"]
+    parsed["thread_id"] = event["subscription_id"]
+    return parsed
+"""
+EventParserDescription = "Event parsing function"
 
 
 class BaseActionParameters(BaseModel):
@@ -148,6 +165,9 @@ class BaseActionParameters(BaseModel):
         default_factory=list, description=LogicsDescription
     )
     format: FormatFunctionType = Field(lambda x: x, description=FormatDescription)
+    event_parser: EventParserFunctionType = Field(
+        lambda x: x, description=EventParserDescription
+    )
 
     class Config:
         @staticmethod
@@ -181,6 +201,18 @@ class BaseActionParameters(BaseModel):
                     "type": "code_editor",
                 },
             )
+            schema["properties"]["event_parser"] = (
+                {
+                    "title": "event_parser",
+                    "description": (
+                        "Event parsing function for **CATCH** integrations. You should"
+                        " expose a function named 'event_parser' with following"
+                        " signature {}".format(EventParserFunctionType)
+                    ),
+                    "template": EventParserTemplate,
+                    "type": "code_editor",
+                },
+            )
 
     @classmethod
     def with_default_format(
@@ -204,6 +236,7 @@ class WorkflowType(str, enum.Enum):
 class ConnectorAction(BaseModel):
     WORKFLOW_FORMAT_PLACEHOLDER = "# << format_placeholder >>"
     WORKFLOW_LOGICS_PLACEHOLDER = "# << logics_placeholder >>"
+    WORKFLOW_EVENT_PARSER_PLACEHOLDER = "# << event_parser_placeholder >>"
     ORIGIN_SETTINGS_PREFIX = "origin_"
     TARGET_SETTINGS_PREFIX = "target_"
 
@@ -233,6 +266,7 @@ class ConnectorAction(BaseModel):
         return WORKFLOW_TEMPLATE.render(
             format_placeholder=self.WORKFLOW_FORMAT_PLACEHOLDER,
             logics_placeholder=self.WORKFLOW_LOGICS_PLACEHOLDER,
+            event_parser_placeholder=self.WORKFLOW_EVENT_PARSER_PLACEHOLDER,
             origin_settings_prefix=self.ORIGIN_SETTINGS_PREFIX,
             target_settings_prefix=self.TARGET_SETTINGS_PREFIX,
             connector_name=connector_name,
@@ -252,6 +286,7 @@ class ConnectorAction(BaseModel):
         action_parameters: t.Dict,
         origin_parameters: t.Dict,
         target_parameters: t.Dict,
+        event_parsing_error: t.Optional[EventParsingError] = None,
     ) -> RunResult:
         action_id = uuid.uuid4()
         adapter = ConnectorActionAdapter(
@@ -264,6 +299,18 @@ class ConnectorAction(BaseModel):
                 ]
             ),
         )
+
+        if event_parsing_error is not None:
+            adapter.error(
+                "Failed to parse event with errors={} event={}".format(
+                    repr(event_parsing_error.error), event_parsing_error.event
+                )
+            )
+            return RunResult(
+                status=Status.fatal,
+                reason=Reason.event_parsing_failure,
+            )
+
         adapter.info("Starting Action")
         try:
             parameters = self.parameters(**action_parameters)
@@ -451,6 +498,9 @@ class Connector:
         model = self.model
         manifest = dict(name=model.name, actions=[])
         for action in model.actions:
+            format_placeholder = action.WORKFLOW_FORMAT_PLACEHOLDER
+            logics_placeholder = action.WORKFLOW_LOGICS_PLACEHOLDER
+            event_parser_placeholder = action.WORKFLOW_EVENT_PARSER_PLACEHOLDER
             action_manifest = dict(
                 name=action.name,
                 action_parameters=action.parameters.schema(),
@@ -462,8 +512,9 @@ class Connector:
                 target_data_schema=action.target.data_schema.schema(),
                 workflow_type=action.type,
                 workflow_code=action.workflow_code(connector_name=model.name),
-                workflow_code_format_placeholder=action.WORKFLOW_FORMAT_PLACEHOLDER,
-                workflow_code_logics_placeholder=action.WORKFLOW_LOGICS_PLACEHOLDER,
+                workflow_code_format_placeholder=format_placeholder,
+                workflow_code_logics_placeholder=logics_placeholder,
+                workflow_code_event_parser_placeholder=event_parser_placeholder,
                 workflow_code_origin_settings_prefix=action.ORIGIN_SETTINGS_PREFIX,
                 workflow_code_target_settings_prefix=action.TARGET_SETTINGS_PREFIX,
             )
