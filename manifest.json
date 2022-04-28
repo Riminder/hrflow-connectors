@@ -1619,7 +1619,7 @@
               },
               "filter": {
                 "title": "Filter",
-                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get .Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
+                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get . Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
                 "type": "string"
               },
               "fileId": {
@@ -1823,7 +1823,7 @@
               },
               "filter": {
                 "title": "Filter",
-                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get .Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
+                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get . Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
                 "type": "string"
               },
               "fileId": {
@@ -2027,7 +2027,7 @@
               },
               "filter": {
                 "title": "Filter",
-                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get .Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
+                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get . Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
                 "type": "string"
               },
               "fileId": {
