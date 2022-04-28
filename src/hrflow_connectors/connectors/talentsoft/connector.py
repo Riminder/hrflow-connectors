@@ -228,5 +228,21 @@ TalentSoft = Connector(
                 edit=True, only_edit_fields=["tags"]
             ),
         ),
+        ConnectorAction(
+            name="pull_profiles",
+            type=WorkflowType.pull,
+            description=(
+                "Retrieves profiles from TalentSoft candidates export API and send them"
+                " to a ***Hrflow.ai Source***."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "PullTalentSoftProfilesActionParameters",
+                format=format_ts_candidate,
+            ),
+            origin=TalentSoftProfilesWarehouse.with_fixed_read_parameters(
+                only_resume=True
+            ),
+            target=HrFlowProfileParsingWarehouse,
+        ),
     ],
 )
