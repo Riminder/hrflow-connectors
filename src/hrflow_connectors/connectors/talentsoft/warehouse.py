@@ -23,7 +23,7 @@ class ReadProfilesParameters(BaseModel):
     )
     client_url: str = Field(..., description="URL of TalentSoft client integration")
     filter: t.Optional[str] = Field(
-        ...,
+        None,
         description=(
             "Filter to apply when reading profiles. See documentation at"
             " https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-"

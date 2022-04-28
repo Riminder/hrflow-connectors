@@ -1637,8 +1637,7 @@
             "required": [
               "client_id",
               "client_secret",
-              "client_url",
-              "filter"
+              "client_url"
             ]
           },
           "origin_data_schema": {
@@ -1841,8 +1840,7 @@
             "required": [
               "client_id",
               "client_secret",
-              "client_url",
-              "filter"
+              "client_url"
             ]
           },
           "origin_data_schema": {
@@ -2045,8 +2043,7 @@
             "required": [
               "client_id",
               "client_secret",
-              "client_url",
-              "filter"
+              "client_url"
             ]
           },
           "origin_data_schema": {
@@ -2636,8 +2633,7 @@
             "required": [
               "client_id",
               "client_secret",
-              "client_url",
-              "filter"
+              "client_url"
             ]
           },
           "origin_data_schema": {
