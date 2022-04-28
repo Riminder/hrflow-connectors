@@ -101,11 +101,12 @@ def read(
                 " error={}".format(params, response.text)
             )
         if response.headers.get("Content-Length") == 0 or not response.content:
-            adapter.info(
-                "No profiles found with params={} text={} headers={}".format(
-                    params, response.text, response.headers
+            if params["offset"] == 0:
+                adapter.info(
+                    "No profiles found with params={} text={} headers={}".format(
+                        params, response.text, response.headers
+                    )
                 )
-            )
             return
 
         data = response.content
