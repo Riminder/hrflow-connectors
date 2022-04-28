@@ -11,3 +11,4 @@
 | [**Applicant new**](docs/applicant_new.md) |
 | [**Applicant resume update**](docs/applicant_resume_update.md) |
 | [**Applicant update**](docs/applicant_update.md) |
+| [**Pull profiles**](docs/pull_profiles.md) |
