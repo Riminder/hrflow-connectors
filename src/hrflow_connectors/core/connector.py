@@ -119,6 +119,7 @@ class RunResult(BaseModel):
                 Event.format_failure,
                 Event.logics_failure,
                 Event.write_failure,
+                Event.callback_failure,
             ]
         )
         if success_with_failures:
