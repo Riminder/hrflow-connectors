@@ -19,7 +19,7 @@ Retrieves all jobs via the ***SmartRecruiter*** API and send them to a ***Hrflow
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
 | `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L96) | Formatting function |
-| `event_parser`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`<lambda>`](../../../core/connector.py#L169) | Event parsing function |
+| `event_parser`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`<lambda>`](../../../core/connector.py#L170) | Event parsing function |
 
 ## Source Parameters
 
