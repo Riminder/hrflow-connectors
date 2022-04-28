@@ -638,7 +638,7 @@ def test_action_with_callback_failure():
         target_parameters=dict(campaign_id=campaign_id),
     )
 
-    assert result.status == Status.success
+    assert result.status == Status.success_with_failures
     assert result.events[Event.read_success] == len(USERS_DB)
     assert result.events[Event.format_failure] == 0
     assert result.events[Event.logics_failure] == 0
