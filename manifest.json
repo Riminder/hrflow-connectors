@@ -2563,6 +2563,210 @@
           "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "pull_profiles",
+          "action_parameters": {
+            "title": "PullTalentSoftProfilesActionParameters",
+            "type": "object",
+            "properties": {
+              "logics": [
+                {
+                  "title": "logics",
+                  "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                  "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                  "type": "code_editor"
+                }
+              ],
+              "format": [
+                {
+                  "title": "format",
+                  "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                  "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                  "type": "code_editor"
+                }
+              ],
+              "event_parser": [
+                {
+                  "title": "event_parser",
+                  "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                  "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
+                  "type": "code_editor"
+                }
+              ]
+            }
+          },
+          "origin": "TalentSoft Profiles",
+          "origin_parameters": {
+            "title": "FixedReadParameters",
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "title": "Client Id",
+                "description": "Client ID used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Client Secret used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_url": {
+                "title": "Client Url",
+                "description": "URL of TalentSoft client integration",
+                "type": "string"
+              },
+              "filter": {
+                "title": "Filter",
+                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get . Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
+                "type": "string"
+              },
+              "fileId": {
+                "title": "Fileid",
+                "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left.",
+                "type": "string"
+              },
+              "only_resume": {
+                "title": "Only Resume",
+                "description": "If enabled only resume attachments are returned",
+                "const": true,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "client_id",
+              "client_secret",
+              "client_url",
+              "filter"
+            ]
+          },
+          "origin_data_schema": {
+            "title": "BaseModel",
+            "type": "object",
+            "properties": {}
+          },
+          "target": "HrFlow.ai Profile Parsing",
+          "target_parameters": {
+            "title": "WriteProfileParsingParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "source_key": {
+                "title": "Source Key",
+                "description": "HrFlow.ai source key",
+                "type": "string"
+              },
+              "only_insert": {
+                "title": "Only Insert",
+                "description": "When enabled the profile is written only if it doesn't exist in the source",
+                "default": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "source_key"
+            ]
+          },
+          "target_data_schema": {
+            "title": "HrFlowProfileParsing",
+            "type": "object",
+            "properties": {
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
+                "type": "string"
+              },
+              "resume": {
+                "$ref": "#/definitions/ResumeToParse"
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "List of tags of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              }
+            },
+            "required": [
+              "reference",
+              "created_at",
+              "resume",
+              "tags",
+              "metadatas"
+            ],
+            "definitions": {
+              "ResumeToParse": {
+                "title": "ResumeToParse",
+                "type": "object",
+                "properties": {
+                  "raw": {
+                    "title": "Raw",
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "content_type": {
+                    "title": "Content Type",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "raw",
+                  "content_type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "workflow_type": "pull",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\nfrom hrflow_connectors.core.connector import EventParsingError\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'client_url', 'filter', 'fileId', 'only_resume']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'only_insert']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return TalentSoft.pull_profiles(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
         }
       ]
     }
