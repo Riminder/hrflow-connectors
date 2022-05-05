@@ -10,30 +10,24 @@
             "title": "ReadJobsActionParameters",
             "type": "object",
             "properties": {
-              "logics": [
-                {
-                  "title": "logics",
-                  "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
-                  "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
-                  "type": "code_editor"
-                }
-              ],
-              "format": [
-                {
-                  "title": "format",
-                  "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
-                  "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
-                  "type": "code_editor"
-                }
-              ],
-              "event_parser": [
-                {
-                  "title": "event_parser",
-                  "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
-                  "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
-                  "type": "code_editor"
-                }
-              ]
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              },
+              "event_parser": {
+                "title": "event_parser",
+                "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
+                "type": "code_editor"
+              }
             }
           },
           "origin": "SmartRecruiters Jobs",
@@ -782,30 +776,24 @@
             "title": "WriteProfileActionParameters",
             "type": "object",
             "properties": {
-              "logics": [
-                {
-                  "title": "logics",
-                  "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
-                  "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
-                  "type": "code_editor"
-                }
-              ],
-              "format": [
-                {
-                  "title": "format",
-                  "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
-                  "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
-                  "type": "code_editor"
-                }
-              ],
-              "event_parser": [
-                {
-                  "title": "event_parser",
-                  "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
-                  "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
-                  "type": "code_editor"
-                }
-              ]
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              },
+              "event_parser": {
+                "title": "event_parser",
+                "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
+                "type": "code_editor"
+              }
             }
           },
           "origin": "HrFlow.ai Profiles",
@@ -1571,30 +1559,24 @@
             "title": "ApplicantNewActionParameters",
             "type": "object",
             "properties": {
-              "logics": [
-                {
-                  "title": "logics",
-                  "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
-                  "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
-                  "type": "code_editor"
-                }
-              ],
-              "format": [
-                {
-                  "title": "format",
-                  "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
-                  "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
-                  "type": "code_editor"
-                }
-              ],
-              "event_parser": [
-                {
-                  "title": "event_parser",
-                  "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
-                  "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
-                  "type": "code_editor"
-                }
-              ]
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              },
+              "event_parser": {
+                "title": "event_parser",
+                "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
+                "type": "code_editor"
+              }
             }
           },
           "origin": "TalentSoft Profiles",
@@ -1774,30 +1756,24 @@
             "title": "ApplicantResumeUpdateActionParameters",
             "type": "object",
             "properties": {
-              "logics": [
-                {
-                  "title": "logics",
-                  "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
-                  "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
-                  "type": "code_editor"
-                }
-              ],
-              "format": [
-                {
-                  "title": "format",
-                  "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
-                  "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
-                  "type": "code_editor"
-                }
-              ],
-              "event_parser": [
-                {
-                  "title": "event_parser",
-                  "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
-                  "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
-                  "type": "code_editor"
-                }
-              ]
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              },
+              "event_parser": {
+                "title": "event_parser",
+                "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
+                "type": "code_editor"
+              }
             }
           },
           "origin": "TalentSoft Profiles",
@@ -1977,30 +1953,24 @@
             "title": "ApplicantUpdateActionParameters",
             "type": "object",
             "properties": {
-              "logics": [
-                {
-                  "title": "logics",
-                  "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
-                  "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
-                  "type": "code_editor"
-                }
-              ],
-              "format": [
-                {
-                  "title": "format",
-                  "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
-                  "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
-                  "type": "code_editor"
-                }
-              ],
-              "event_parser": [
-                {
-                  "title": "event_parser",
-                  "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
-                  "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
-                  "type": "code_editor"
-                }
-              ]
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              },
+              "event_parser": {
+                "title": "event_parser",
+                "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
+                "type": "code_editor"
+              }
             }
           },
           "origin": "TalentSoft Profiles",
@@ -2567,30 +2537,24 @@
             "title": "PullTalentSoftProfilesActionParameters",
             "type": "object",
             "properties": {
-              "logics": [
-                {
-                  "title": "logics",
-                  "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
-                  "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
-                  "type": "code_editor"
-                }
-              ],
-              "format": [
-                {
-                  "title": "format",
-                  "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
-                  "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
-                  "type": "code_editor"
-                }
-              ],
-              "event_parser": [
-                {
-                  "title": "event_parser",
-                  "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
-                  "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
-                  "type": "code_editor"
-                }
-              ]
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              },
+              "event_parser": {
+                "title": "event_parser",
+                "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
+                "type": "code_editor"
+              }
             }
           },
           "origin": "TalentSoft Profiles",
