@@ -11,8 +11,8 @@ Handle TalentSoft 'applicant_resume_update' event by running a new HrFlow.ai Par
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_candidate`](../connector.py#L24) | Formatting function |
-| `event_parser`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`applicant_resume_update_parser`](../connector.py#L160) | Event parsing function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_candidate`](../connector.py#L23) | Formatting function |
+| `event_parser`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`applicant_resume_update_parser`](../connector.py#L159) | Event parsing function |
 
 ## Source Parameters
 

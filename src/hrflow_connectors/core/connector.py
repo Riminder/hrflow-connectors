@@ -254,7 +254,6 @@ class ConnectorAction(BaseModel):
     TARGET_SETTINGS_PREFIX = "target_"
 
     name: str
-    type: WorkflowType
     description: str
     parameters: t.Type[BaseModel]
     origin: Warehouse
@@ -275,7 +274,7 @@ class ConnectorAction(BaseModel):
             raise ValueError("Target warehouse is not writable")
         return target
 
-    def workflow_code(self, connector_name: str) -> str:
+    def workflow_code(self, connector_name: str, workflow_type: WorkflowType) -> str:
         return WORKFLOW_TEMPLATE.render(
             format_placeholder=self.WORKFLOW_FORMAT_PLACEHOLDER,
             logics_placeholder=self.WORKFLOW_LOGICS_PLACEHOLDER,
@@ -284,7 +283,7 @@ class ConnectorAction(BaseModel):
             target_settings_prefix=self.TARGET_SETTINGS_PREFIX,
             connector_name=connector_name,
             action_name=self.name,
-            type=self.type.value,
+            type=workflow_type,
             origin_parameters=[
                 parameter for parameter in self.origin.read.parameters.__fields__
             ],
@@ -523,8 +522,12 @@ class Connector:
                 target=action.target.name,
                 target_parameters=action.target.write.parameters.schema(),
                 target_data_schema=action.target.data_schema.schema(),
-                workflow_type=action.type,
-                workflow_code=action.workflow_code(connector_name=model.name),
+                workflow_code_catch=action.workflow_code(
+                    connector_name=model.name, workflow_type=WorkflowType.catch
+                ),
+                workflow_code_pull=action.workflow_code(
+                    connector_name=model.name, workflow_type=WorkflowType.pull
+                ),
                 workflow_code_format_placeholder=format_placeholder,
                 workflow_code_logics_placeholder=logics_placeholder,
                 workflow_code_event_parser_placeholder=event_parser_placeholder,
