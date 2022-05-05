@@ -1,12 +1,7 @@
 import pytest
 
 import hrflow_connectors
-from hrflow_connectors.core import (
-    BaseActionParameters,
-    Connector,
-    ConnectorAction,
-    WorkflowType,
-)
+from hrflow_connectors.core import BaseActionParameters, Connector, ConnectorAction
 from hrflow_connectors.core.connector import Event, Reason, Status
 from tests.core.localusers.warehouse import USERS_DB, Gender, UsersWarehouse
 from tests.core.smartleads.warehouse import LEADS_DB, LeadsWarehouse
@@ -20,7 +15,6 @@ SmartLeads = Connector(
     actions=[
         ConnectorAction(
             name="pull_leads",
-            type=WorkflowType.pull,
             description="Send users as leads",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
@@ -28,7 +22,6 @@ SmartLeads = Connector(
         ),
         ConnectorAction(
             name="catch_user",
-            type=WorkflowType.catch,
             description="Send users as leads",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
@@ -52,7 +45,7 @@ def test_pull_workflow_code(with_smartleads):
     campaign_id = "xxxx_234"
     n_males = len([u for u in USERS_DB if u["gender"] is Gender.male])
 
-    workflow_code = action_manifest["workflow_code"]
+    workflow_code = action_manifest["workflow_code_pull"]
     script = (
         workflow_code
         + "\n__run_result=workflow(settings=dict({origin_prefix}gender='male',"
@@ -91,7 +84,7 @@ def format(item):
     return item
 """
 
-    workflow_code = action_manifest["workflow_code"]
+    workflow_code = action_manifest["workflow_code_pull"]
     script = (
         workflow_code
         + "\n__run_result=workflow(settings=dict("
@@ -146,7 +139,7 @@ def logic(item):
 logics = [logic]
 """
 
-    workflow_code = action_manifest["workflow_code"]
+    workflow_code = action_manifest["workflow_code_pull"]
     # FIXME this should work without needing to supply dummy_str
     script = (
         workflow_code
@@ -198,7 +191,7 @@ def test_catch_workflow_code(with_smartleads):
     campaign_id = "xxxx_356"
     n_males = len([u for u in USERS_DB if u["gender"] is Gender.male])
 
-    workflow_code = action_manifest["workflow_code"]
+    workflow_code = action_manifest["workflow_code_catch"]
     script = (
         workflow_code
         + "\n__run_result=workflow(_request=dict(gender='male'),"
@@ -236,7 +229,7 @@ def format(item):
     return item
 """
 
-    workflow_code = action_manifest["workflow_code"]
+    workflow_code = action_manifest["workflow_code_catch"]
     script = (
         workflow_code
         + "\n__run_result=workflow(_request=dict(),"
@@ -291,7 +284,7 @@ def logic(item):
 logics = [logic]
 """
 
-    workflow_code = action_manifest["workflow_code"]
+    workflow_code = action_manifest["workflow_code_catch"]
     script = (
         workflow_code
         + "\n__run_result=workflow(_request=dict(),"
@@ -344,7 +337,7 @@ def event_parser(event):
     return dict(gender=event["desired_gender"])
 """
 
-    workflow_code = action_manifest["workflow_code"]
+    workflow_code = action_manifest["workflow_code_catch"]
     # 'desired_gender' should not have any effect
     script = (
         workflow_code
@@ -398,7 +391,7 @@ def event_parser(event):
     raise Exception()
 """
 
-    workflow_code = action_manifest["workflow_code"]
+    workflow_code = action_manifest["workflow_code_catch"]
     with_event_parser = workflow_code.replace(
         action_manifest["workflow_code_event_parser_placeholder"], event_parser
     )

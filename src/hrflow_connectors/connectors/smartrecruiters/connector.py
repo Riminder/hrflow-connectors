@@ -8,12 +8,7 @@ from hrflow_connectors.connectors.smartrecruiters.warehouse import (
     SmartRecruitersJobWarehouse,
     SmartRecruitersProfileWarehouse,
 )
-from hrflow_connectors.core import (
-    BaseActionParameters,
-    Connector,
-    ConnectorAction,
-    WorkflowType,
-)
+from hrflow_connectors.core import BaseActionParameters, Connector, ConnectorAction
 
 
 def get_job_location(smartrecruiters_location: t.Union[t.Dict, None]) -> t.Dict:
@@ -184,7 +179,6 @@ SmartRecruiters = Connector(
     actions=[
         ConnectorAction(
             name="pull_jobs",
-            type=WorkflowType.pull,
             description=(
                 "Retrieves all jobs via the ***SmartRecruiter*** API and send them"
                 " to a ***Hrflow.ai Board***."
@@ -197,7 +191,6 @@ SmartRecruiters = Connector(
         ),
         ConnectorAction(
             name="push_profile",
-            type=WorkflowType.catch,
             description=(
                 "Writes a profile from Hrflow.ai Source to SmartRecruiters via the API"
                 " for the given `job_id`."
