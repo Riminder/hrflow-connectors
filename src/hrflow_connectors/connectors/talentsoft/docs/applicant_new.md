@@ -11,8 +11,8 @@ Handle TalentSoft 'applicant_new' event by fetching profile from TalentSoft and 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_candidate`](../connector.py#L24) | Formatting function |
-| `event_parser`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`applicant_new_parser`](../connector.py#L156) | Event parsing function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_candidate`](../connector.py#L23) | Formatting function |
+| `event_parser`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`applicant_new_parser`](../connector.py#L155) | Event parsing function |
 
 ## Source Parameters
 

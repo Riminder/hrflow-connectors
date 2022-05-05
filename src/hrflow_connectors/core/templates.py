@@ -102,7 +102,9 @@ WORKFLOW_TEMPLATE = Template(
 import typing as t
 
 from hrflow_connectors import {{ connector_name }}
+{% if type == "catch" %}
 from hrflow_connectors.core.connector import EventParsingError
+{% endif %}
 
 ORIGIN_SETTINGS_PREFIX = "{{ origin_settings_prefix }}"
 TARGET_SETTINGS_PREFIX = "{{ target_settings_prefix }}"
