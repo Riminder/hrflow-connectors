@@ -177,43 +177,39 @@ class BaseActionParameters(BaseModel):
         ) -> None:
             # JSON has no equivalent for Callable type which is used for
             # logics and format. Thus we hardcode properties for both here
-            schema["properties"]["logics"] = (
-                {
-                    "title": "logics",
-                    "description": (
-                        "List of logic functions. Each function should have"
-                        " the following signature {}. The final list should be exposed "
-                        "in a variable named 'logics'.".format(LogicFunctionType)
-                    ),
-                    "template": LogicsTemplate,
-                    "type": "code_editor",
-                },
-            )
-            schema["properties"]["format"] = (
-                {
-                    "title": "format",
-                    "description": (
-                        "Formatting function. You should expose a function"
-                        " named 'format' with following signature {}".format(
-                            FormatFunctionType
-                        )
-                    ),
-                    "template": FormatTemplate,
-                    "type": "code_editor",
-                },
-            )
-            schema["properties"]["event_parser"] = (
-                {
-                    "title": "event_parser",
-                    "description": (
-                        "Event parsing function for **CATCH** integrations. You should"
-                        " expose a function named 'event_parser' with following"
-                        " signature {}".format(EventParserFunctionType)
-                    ),
-                    "template": EventParserTemplate,
-                    "type": "code_editor",
-                },
-            )
+            schema["properties"]["logics"] = {
+                "title": "logics",
+                "description": (
+                    "List of logic functions. Each function should have"
+                    " the following signature {}. The final list should be exposed "
+                    "in a variable named 'logics'.".format(LogicFunctionType)
+                ),
+                "template": LogicsTemplate,
+                "type": "code_editor",
+            }
+
+            schema["properties"]["format"] = {
+                "title": "format",
+                "description": (
+                    "Formatting function. You should expose a function"
+                    " named 'format' with following signature {}".format(
+                        FormatFunctionType
+                    )
+                ),
+                "template": FormatTemplate,
+                "type": "code_editor",
+            }
+
+            schema["properties"]["event_parser"] = {
+                "title": "event_parser",
+                "description": (
+                    "Event parsing function for **CATCH** integrations. You should"
+                    " expose a function named 'event_parser' with following"
+                    " signature {}".format(EventParserFunctionType)
+                ),
+                "template": EventParserTemplate,
+                "type": "code_editor",
+            }
 
     @classmethod
     def with_defaults(
