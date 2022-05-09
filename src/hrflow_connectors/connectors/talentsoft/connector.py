@@ -5,10 +5,12 @@ import requests
 from pydantic import BaseModel
 
 from hrflow_connectors.connectors.hrflow.warehouse import (
+    HrFlowJobWarehouse,
     HrFlowProfileParsingWarehouse,
     HrFlowProfileWarehouse,
 )
 from hrflow_connectors.connectors.talentsoft.warehouse import (
+    TalentSoftJobsWarehouse,
     TalentSoftProfilesWarehouse,
     get_talentsoft_auth_token,
 )
@@ -18,6 +20,113 @@ from hrflow_connectors.core import (
     ConnectorAction,
     Event,
 )
+
+
+def format_ts_vacancy(ts_vacancy: t.Dict) -> t.Dict:
+    # FIXME lat and lng makes requests to HERE Maps API in original workflow
+    ts_location = ts_vacancy["location"]
+    location = dict(
+        text=ts_location["address"],
+        lat=ts_location["latitude"],
+        lng=ts_location["longitude"],
+    )
+
+    job_description = ts_vacancy["jobDescription"]
+    custom_fields = job_description["jobDescriptionCustomFields"]
+    sections = [
+        dict(
+            name="description1",
+            title="description1",
+            description=job_description["description1"] or "",
+        ),
+        dict(
+            name="description2",
+            title="description2",
+            description=job_description["description2"] or "",
+        ),
+        dict(
+            name="Complément du descriptif",
+            title="Complément du descriptif",
+            description="\n".join(
+                [
+                    custom_fields.get("longText1") or "",
+                    custom_fields.get("longText2") or "",
+                    custom_fields.get("longText3") or "",
+                ]
+            ),
+        ),
+    ]
+
+    languages = [
+        dict(name=language["language"]["label"], value=None)
+        for language in ts_vacancy.get("languages") or []
+    ]
+
+    tags = [
+        dict(
+            name="talentsoft-organisation-id",
+            value=(ts_vacancy["organisation"] or {}).get("id"),
+        ),
+        dict(
+            name="talentsoft-status-id",
+            value=(ts_vacancy["status"] or {}).get("id"),
+        ),
+        dict(
+            name="talentsoft-professionalCategory-id",
+            value=(ts_vacancy["jobDescription"]["professionalCategory"] or {}).get(
+                "id"
+            ),
+        ),
+        dict(
+            name="talentsoft-country-id",
+            value=(ts_vacancy["jobDescription"]["country"] or {}).get("id"),
+        ),
+        dict(
+            name="talentsoft-primaryProfile-id",
+            value=(ts_vacancy["jobDescription"]["primaryProfile"] or {}).get("id"),
+        ),
+        dict(
+            name="talentsoft-contractType-id",
+            value=(ts_vacancy["jobDescription"]["contractType"] or {}).get("id"),
+        ),
+        dict(
+            name="talentsoft-publishedOnInternet",
+            value=ts_vacancy.get("publishedOnInternet"),
+        ),
+        dict(
+            name="talentsoft-publishedOnIntranet",
+            value=ts_vacancy.get("publishedOnIntranet"),
+        ),
+    ]
+
+    if ts_vacancy["criteria"]["experienceLevel"]:
+        tags.append(
+            dict(
+                name="talentsoft-experienceLevel",
+                value=ts_vacancy["criteria"]["experienceLevel"].get("id"),
+            )
+        )
+
+    if ts_vacancy["criteria"]["educationLevel"]:
+        tags.append(
+            dict(
+                name="talentsoft-educationLevel",
+                value=ts_vacancy["criteria"]["educationLevel"].get("id"),
+            )
+        )
+
+    return dict(
+        name=ts_vacancy["jobDescription"]["title"],
+        reference=ts_vacancy["reference"],
+        created_at=ts_vacancy["creationDate"],
+        location=location,
+        url=None,
+        summary=None,
+        sections=sections,
+        tags=tags,
+        skills=ts_vacancy["criteria"]["skills"],
+        languages=languages,
+    )
 
 
 def format_ts_candidate(ts_candidate: t.Dict) -> t.Dict:
@@ -238,6 +347,19 @@ TalentSoft = Connector(
                 only_resume=True
             ),
             target=HrFlowProfileParsingWarehouse,
+        ),
+        ConnectorAction(
+            name="pull_jobs",
+            description=(
+                "Retrieves jobs from TalentSoft vacancies export API and send them"
+                " to a ***Hrflow.ai Board***."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "PullTalentSoftProfilesActionParameters",
+                format=format_ts_vacancy,
+            ),
+            origin=TalentSoftJobsWarehouse,
+            target=HrFlowJobWarehouse,
         ),
     ],
 )
