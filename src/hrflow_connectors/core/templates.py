@@ -140,14 +140,23 @@ def workflow(
     event_parsing_error = None
     {% if type == "catch" %}
     try:
-        _request = event_parser(_request)
-    except NameError:
-        pass
-    except Exception as e:
-        event_parsing_error = EventParsingError(
-            event=_request,
-            error=e,
-        )
+        event_parser
+        _event_parser = event_parser
+    except NameError as e:
+        action = {{ connector_name }}.model.action_by_name("{{ action_name }}")
+        # Without this trick event_parser is always only fetched from the local scope
+        # meaning that try block always raises NameError even if the function is
+        # defined in the placeholder
+        _event_parser = action.parameters.__fields__["event_parser"].default
+
+    if _event_parser is not None:
+        try:
+            _request = _event_parser(_request)
+        except Exception as e:
+            event_parsing_error = EventParsingError(
+                event=_request,
+                error=e,
+            )
     {% endif %}
 
     origin_parameters = dict()
