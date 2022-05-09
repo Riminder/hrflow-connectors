@@ -498,6 +498,13 @@ class ConnectorModel(BaseModel):
     url: str
     actions: t.List[ConnectorAction]
 
+    def action_by_name(self, action_name: str) -> t.Optional[ConnectorAction]:
+        if "__actions_by_name" not in self.__dict__:
+            self.__dict__["__actions_by_name"] = {
+                action.name: action for action in self.actions
+            }
+        return self.__dict__["__actions_by_name"].get(action_name)
+
 
 class Connector:
     def __init__(self, *args, **kwargs) -> None:
