@@ -27,6 +27,16 @@ SmartLeads = Connector(
             origin=UsersWarehouse,
             target=LeadsWarehouse,
         ),
+        ConnectorAction(
+            name="catch_user_with_event_parser",
+            description="Send users as leads",
+            parameters=BaseActionParameters.with_defaults(
+                "CatchUserWithEventParser",
+                event_parser=lambda event: dict(gender=event["desired_gender"]),
+            ),
+            origin=UsersWarehouse,
+            target=LeadsWarehouse,
+        ),
     ],
 )
 
@@ -364,6 +374,59 @@ def event_parser(event):
     )
     script = (
         with_event_parser
+        + "\n__run_result=workflow(_request=dict(desired_gender='male'),"
+        " settings=dict({target_prefix}campaign_id='{campaign_id}'))".format(
+            target_prefix=action_manifest["workflow_code_target_settings_prefix"],
+            campaign_id=campaign_id,
+        )
+    )
+
+    assert len(LEADS_DB[campaign_id]) == 0
+
+    exec(script, global_namespace)
+
+    result = global_namespace["__run_result"]
+    assert result.status is Status.success
+    assert result.events[Event.read_success] == n_males
+    assert len(LEADS_DB[campaign_id]) == n_males
+
+
+def test_catch_workflow_code_with_default_event_parser(with_smartleads):
+    action_manifest = SmartLeads.manifest()["actions"][1]
+    assert action_manifest["name"] == "catch_user"
+
+    campaign_id = "xxxx_5434"
+    n_males = len([u for u in USERS_DB if u["gender"] is Gender.male])
+
+    workflow_code = action_manifest["workflow_code_catch"]
+    # 'desired_gender' should not have any effect
+    script = (
+        workflow_code
+        + "\n__run_result=workflow(_request=dict(desired_gender='male'),"
+        " settings=dict({target_prefix}campaign_id='{campaign_id}'))".format(
+            target_prefix=action_manifest["workflow_code_target_settings_prefix"],
+            campaign_id=campaign_id,
+        )
+    )
+    global_namespace = {"hrflow_connectors": with_smartleads}
+
+    assert len(LEADS_DB[campaign_id]) == 0
+
+    exec(script, global_namespace)
+
+    result = global_namespace["__run_result"]
+    assert result.status is Status.success
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert len(LEADS_DB[campaign_id]) == len(USERS_DB)
+
+    action_manifest = SmartLeads.manifest()["actions"][2]
+    assert action_manifest["name"] == "catch_user_with_event_parser"
+
+    campaign_id = "xxxx_withDefaultEventParser"
+
+    workflow_code = action_manifest["workflow_code_catch"]
+    script = (
+        workflow_code
         + "\n__run_result=workflow(_request=dict(desired_gender='male'),"
         " settings=dict({target_prefix}campaign_id='{campaign_id}'))".format(
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
