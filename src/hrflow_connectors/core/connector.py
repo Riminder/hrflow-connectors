@@ -159,6 +159,7 @@ def event_parser(event: t.Dict) -> t.Dict:
     return parsed
 """
 EventParserDescription = "Event parsing function"
+EventParserExtra = dict(skip_from_docs=True)
 
 
 class BaseActionParameters(BaseModel):
@@ -167,7 +168,7 @@ class BaseActionParameters(BaseModel):
     )
     format: FormatFunctionType = Field(lambda x: x, description=FormatDescription)
     event_parser: t.Optional[EventParserFunctionType] = Field(
-        None, description=EventParserDescription
+        None, description=EventParserDescription, **EventParserExtra
     )
 
     class Config:
@@ -234,7 +235,11 @@ class BaseActionParameters(BaseModel):
                 model_name,
                 event_parser=(
                     EventParserFunctionType,
-                    Field(event_parser, description=EventParserDescription),
+                    Field(
+                        event_parser,
+                        description=EventParserDescription,
+                        **EventParserExtra,
+                    ),
                 ),
                 __base__=new_model,
             )

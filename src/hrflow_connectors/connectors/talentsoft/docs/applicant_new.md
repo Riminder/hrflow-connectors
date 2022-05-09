@@ -12,7 +12,6 @@ Handle TalentSoft 'applicant_new' event by fetching profile from TalentSoft and 
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
 | `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_candidate`](../connector.py#L132) | Formatting function |
-| `event_parser`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`applicant_new_parser`](../connector.py#L264) | Event parsing function |
 
 ## Source Parameters
 
@@ -48,7 +47,6 @@ TalentSoft.applicant_new(
     action_parameters=dict(
         logics=[],
         format=lambda *args, **kwargs: None # Put your code logic here,
-        event_parser=lambda *args, **kwargs: None # Put your code logic here,
     ),
     origin_parameters=dict(
         client_id="your_client_id",

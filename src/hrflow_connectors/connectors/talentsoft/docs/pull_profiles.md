@@ -12,7 +12,6 @@ Retrieves profiles from TalentSoft candidates export API and send them to a ***H
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
 | `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_candidate`](../connector.py#L132) | Formatting function |
-| `event_parser`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`<lambda>`](../../../core/connector.py#L170) | Event parsing function |
 
 ## Source Parameters
 
@@ -49,7 +48,6 @@ TalentSoft.pull_profiles(
     action_parameters=dict(
         logics=[],
         format=lambda *args, **kwargs: None # Put your code logic here,
-        event_parser=lambda *args, **kwargs: None # Put your code logic here,
     ),
     origin_parameters=dict(
         client_id="your_client_id",
