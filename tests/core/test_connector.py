@@ -415,7 +415,7 @@ def test_connector_default_event_parser():
         return
 
     without_event_parser = BaseActionParameters.with_defaults("no_change")
-    assert without_event_parser.__fields__["event_parser"].default is not event_parser
+    assert without_event_parser.__fields__["event_parser"].default is None
 
     with_event_parser = BaseActionParameters.with_defaults(
         "with_event_parser", event_parser=event_parser

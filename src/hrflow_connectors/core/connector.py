@@ -166,8 +166,8 @@ class BaseActionParameters(BaseModel):
         default_factory=list, description=LogicsDescription
     )
     format: FormatFunctionType = Field(lambda x: x, description=FormatDescription)
-    event_parser: EventParserFunctionType = Field(
-        lambda x: x, description=EventParserDescription
+    event_parser: t.Optional[EventParserFunctionType] = Field(
+        None, description=EventParserDescription
     )
 
     class Config:
