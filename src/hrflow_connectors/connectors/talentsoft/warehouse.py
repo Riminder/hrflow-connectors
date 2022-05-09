@@ -46,6 +46,32 @@ class ReadProfilesParameters(BaseModel):
     )
 
 
+class ReadJobsParameters(BaseModel):
+    client_id: str = Field(
+        ..., description="Client ID used to access TalentSoft API", repr=False
+    )
+    client_secret: str = Field(
+        ..., description="Client Secret used to access TalentSoft API", repr=False
+    )
+    client_url: str = Field(..., description="URL of TalentSoft client integration")
+    q: t.Optional[str] = Field(None, description="Query search to get vacancies")
+    filter: t.Optional[str] = Field(
+        None,
+        description=(
+            "Filter to apply when reading vacancies. See documentation at"
+            " https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting"
+            "-matchingindexation&operation=api-exports-v1-vacancies-get"
+            " . . You can filter by **chronoNumber**, **updateDate**, **reference**"
+            " **vacancyStatus**, **clientVacancyStatus**, **publicationMedia** "
+            " **publishedOnTheMedia**. Examples : By reference Single Item"
+            " 'reference::2019-01'; By reference Multiple Items"
+            " 'reference::2019-01,2019-02,2019-03';  By updateDate updated before the"
+            " 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater"
+            " than 108921  'chronoNumber:gt:108921' . "
+        ),
+    )
+
+
 def get_talentsoft_auth_token(
     client_url: str, client_id: str, client_secret: str
 ) -> str:
@@ -73,7 +99,55 @@ def get_talentsoft_auth_token(
         )
 
 
-def read(
+def read_jobs(
+    adapter: LoggerAdapter, parameters: ReadProfilesParameters
+) -> t.Iterable[t.Dict]:
+    token = get_talentsoft_auth_token(
+        client_url=parameters.client_url,
+        client_id=parameters.client_id,
+        client_secret=parameters.client_secret,
+    )
+    params = dict(offset=0, limit=LIMIT)
+    if parameters.filter:
+        params["filter"] = parameters.filter
+    if parameters.q:
+        params["q"] = parameters.q
+
+    while True:
+        response = requests.get(
+            "{}/api/exports/v1/vacancies".format(parameters.client_url),
+            params=params,
+            verify=False,  # FIXME REMOVE ME
+            headers={
+                "Authorization": "bearer {}".format(token),
+                "Host": "safran-rh.profils.org",  # FIXME REMOVE ME
+            },
+        )
+        if not response.ok:
+            raise Exception(
+                "Failed to fetch jobs with params={} from TalentSoft with"
+                " error={}".format(params, response.text)
+            )
+        if response.headers.get("Content-Length") == 0 or not response.content:
+            if params["offset"] == 0:
+                adapter.info(
+                    "No jobs found with params={} text={} headers={}".format(
+                        params, response.text, response.headers
+                    )
+                )
+            return
+
+        data = response.content
+        while data:
+            read_up_to = int.from_bytes(data[0:4], byteorder="little")
+            zip_data = ZipFile(BytesIO(data[4 : 4 + read_up_to]))
+            job = json.loads(zip_data.read("offerdetail").decode())["offerDetail"]
+            yield job
+            data = data[4 + read_up_to :]
+        params["offset"] += LIMIT
+
+
+def read_profiles(
     adapter: LoggerAdapter, parameters: ReadProfilesParameters
 ) -> t.Iterable[t.Dict]:
     token = get_talentsoft_auth_token(
@@ -136,6 +210,15 @@ TalentSoftProfilesWarehouse = Warehouse(
     name="TalentSoft Profiles",
     read=WarehouseReadAction(
         parameters=ReadProfilesParameters,
-        function=read,
+        function=read_profiles,
+    ),
+)
+
+
+TalentSoftJobsWarehouse = Warehouse(
+    name="TalentSoft Jobs",
+    read=WarehouseReadAction(
+        parameters=ReadJobsParameters,
+        function=read_jobs,
     ),
 )
