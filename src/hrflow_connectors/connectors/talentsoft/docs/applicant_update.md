@@ -12,7 +12,6 @@ Handle TalentSoft 'applicant_update' event by only updating tags coming from Tal
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
 | `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_candidate`](../connector.py#L132) | Formatting function |
-| `event_parser`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`applicant_update_parser`](../connector.py#L272) | Event parsing function |
 
 ## Source Parameters
 
@@ -49,7 +48,6 @@ TalentSoft.applicant_update(
     action_parameters=dict(
         logics=[],
         format=lambda *args, **kwargs: None # Put your code logic here,
-        event_parser=lambda *args, **kwargs: None # Put your code logic here,
     ),
     origin_parameters=dict(
         client_id="your_client_id",

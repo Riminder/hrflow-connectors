@@ -88,6 +88,7 @@ def get_template_fields(
         )
         for field in fields
         if not field.field_info.const
+        and field.field_info.extra.get("skip_from_docs", False) is False
     ]
 
 
