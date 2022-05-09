@@ -248,7 +248,6 @@ def ts_callback(
             "{}/api/exports/v1/reports".format(origin_parameters.client_url),
             headers={
                 "Authorization": "bearer {}".format(token),
-                "Host": "safran-rh.profils.org",  # FIXME REMOVE ME
             },
             json=report,
         )
