@@ -1,8 +1,8 @@
 
-# Pull profiles
-`TalentSoft Profiles` :arrow_right: `HrFlow.ai Profile Parsing`
+# Pull jobs
+`TalentSoft Jobs` :arrow_right: `HrFlow.ai Jobs`
 
-Retrieves profiles from TalentSoft candidates export API and send them to a ***Hrflow.ai Source***.
+Retrieves jobs from TalentSoft vacancies export API and send them to a ***Hrflow.ai Board***.
 
 
 
@@ -11,7 +11,7 @@ Retrieves profiles from TalentSoft candidates export API and send them to a ***H
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_candidate`](../connector.py#L132) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_vacancy`](../connector.py#L25) | Formatting function |
 | `event_parser`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`<lambda>`](../../../core/connector.py#L170) | Event parsing function |
 
 ## Source Parameters
@@ -21,8 +21,8 @@ Retrieves profiles from TalentSoft candidates export API and send them to a ***H
 | `client_id` :red_circle: | `str` | None | Client ID used to access TalentSoft API |
 | `client_secret` :red_circle: | `str` | None | Client Secret used to access TalentSoft API |
 | `client_url` :red_circle: | `str` | None | URL of TalentSoft client integration |
-| `filter`  | `str` | None | Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get . Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921' |
-| `fileId`  | `str` | None | If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left. |
+| `q`  | `str` | None | Query search to get vacancies |
+| `filter`  | `str` | None | Filter to apply when reading vacancies. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-vacancies-get . . You can filter by **chronoNumber**, **updateDate**, **reference** **vacancyStatus**, **clientVacancyStatus**, **publicationMedia**  **publishedOnTheMedia**. Examples : By reference Single Item 'reference::2019-01'; By reference Multiple Items 'reference::2019-01,2019-02,2019-03';  By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921' .  |
 
 ## Destination Parameters
 
@@ -30,8 +30,10 @@ Retrieves profiles from TalentSoft candidates export API and send them to a ***H
 | ----- | ---- | ------- | ----------- |
 | `api_secret` :red_circle: | `str` | None | X-API-KEY used to access HrFlow.ai API |
 | `api_user` :red_circle: | `str` | None | X-USER-EMAIL used to access HrFlow.ai API |
-| `source_key` :red_circle: | `str` | None | HrFlow.ai source key |
-| `only_insert`  | `bool` | False | When enabled the profile is written only if it doesn't exist in the source |
+| `board_key` :red_circle: | `str` | None | HrFlow.ai board key |
+| `sync`  | `bool` | True | When enabled only pushed jobs will remain in the board |
+| `update_content`  | `bool` | False | When enabled jobs already present in the board are updated |
+| `enrich_with_parsing`  | `bool` | False | When enabled jobs are enriched with HrFlow.ai parsing |
 
 :red_circle: : *required*
 
@@ -45,7 +47,7 @@ from hrflow_connectors import TalentSoft
 logging.basicConfig(level=logging.INFO)
 
 
-TalentSoft.pull_profiles(
+TalentSoft.pull_jobs(
     action_parameters=dict(
         logics=[],
         format=lambda *args, **kwargs: None # Put your code logic here,
@@ -55,14 +57,16 @@ TalentSoft.pull_profiles(
         client_id="your_client_id",
         client_secret="your_client_secret",
         client_url="your_client_url",
+        q="your_q",
         filter="your_filter",
-        fileId="your_fileId",
     ),
     target_parameters=dict(
         api_secret="your_api_secret",
         api_user="your_api_user",
-        source_key="your_source_key",
-        only_insert=False,
+        board_key="your_board_key",
+        sync=True,
+        update_content=False,
+        enrich_with_parsing=False,
     )
 )
 ```
