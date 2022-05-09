@@ -117,10 +117,8 @@ def read_jobs(
         response = requests.get(
             "{}/api/exports/v1/vacancies".format(parameters.client_url),
             params=params,
-            verify=False,  # FIXME REMOVE ME
             headers={
                 "Authorization": "bearer {}".format(token),
-                "Host": "safran-rh.profils.org",  # FIXME REMOVE ME
             },
         )
         if not response.ok:
