@@ -36,6 +36,13 @@ SmartLeads = Connector(
             origin=UsersWarehouse,
             target=LeadsWarehouse,
         ),
+        ConnectorAction(
+            name="same_pull_leads",
+            description="Send users as leads",
+            parameters=BaseActionParameters,
+            origin=UsersWarehouse,
+            target=LeadsWarehouse,
+        ),
     ],
 )
 
@@ -66,6 +73,15 @@ def test_hrflow_connectors_manifest(manifest_directory):
 
     assert manifest.exists() is True
     assert len(json.loads(manifest.read_text())["connectors"]) == len(connectors)
+
+
+def test_action_by_name():
+    assert SmartLeads.model.action_by_name("pull_leads") is SmartLeads.model.actions[0]
+    assert (
+        SmartLeads.model.action_by_name("same_pull_leads")
+        is SmartLeads.model.actions[1]
+    )
+    assert SmartLeads.model.action_by_name("doest_not_exist") is None
 
 
 def test_connector_failures():
