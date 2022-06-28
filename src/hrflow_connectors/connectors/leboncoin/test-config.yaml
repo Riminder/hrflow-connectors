@@ -1,0 +1,119 @@
+actions:
+  push_jobs:
+    - id: valid_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+        job_key: $__JOB_KEY
+      target_parameters:
+        secret_key: $__SECRET_KEY
+        http_auth_identity: $__HTTP_AUTH_IDENTITY
+        morpheus_client_id: $__MORPHEUS_CLIENT_ID
+      status: 'success'
+      events:
+        read_success: 1
+        read_failure: 0
+        write_failure: 0
+    - id: missing_api_secret
+      origin_parameters:
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+        job_key: $__JOB_KEY
+      target_parameters:
+        secret_key: $__SECRET_KEY
+        http_auth_identity: $__HTTP_AUTH_IDENTITY
+        morpheus_client_id: $__MORPHEUS_CLIENT_ID
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+      status: 'fatal'
+    - id: missing_job_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      target_parameters:
+        secret_key: $__SECRET_KEY
+        http_auth_identity: $__HTTP_AUTH_IDENTITY
+        morpheus_client_id: $__MORPHEUS_CLIENT_ID
+      status: 'fatal'
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+    - id: invalid_job_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        job_key: "Not_A_JOB_KEY"
+        board_key: $__BOARD_KEY
+      target_parameters:
+        secret_key: $__SECRET_KEY
+        http_auth_identity: $__HTTP_AUTH_IDENTITY
+        morpheus_client_id: $__MORPHEUS_CLIENT_ID
+      status: 'success'
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+    - id: missing_board_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        job_key: $__JOB_KEY
+      target_parameters:
+        secret_key: $__SECRET_KEY
+        http_auth_identity: $__HTTP_AUTH_IDENTITY
+        morpheus_client_id: $__MORPHEUS_CLIENT_ID
+      status: 'fatal'
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+    - id: invalid_board_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: ""
+        job_key: $__JOB_KEY
+      target_parameters:
+        secret_key: $__SECRET_KEY
+        http_auth_identity: $__HTTP_AUTH_IDENTITY
+        morpheus_client_id: $__MORPHEUS_CLIENT_ID
+      status: 'success'
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+    - id: missing_secret_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+        job_key: $__JOB_KEY
+      target_parameters:
+        http_auth_identity: $__HTTP_AUTH_IDENTITY
+        morpheus_client_id: $__MORPHEUS_CLIENT_ID
+      status: 'fatal'
+    - id: missing_identity
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+        job_key: $__JOB_KEY
+      target_parameters:
+        secret_key: $__SECRET_KEY
+        morpheus_client_id: $__MORPHEUS_CLIENT_ID
+      status: 'fatal'
+    - id: missing_client_id
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+        job_key: $__JOB_KEY
+      target_parameters:
+        secret_key: $__SECRET_KEY
+        http_auth_identity: $__HTTP_AUTH_IDENTITY
+      status: 'fatal'

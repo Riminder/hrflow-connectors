@@ -4,3 +4,9 @@ __pycache__/
 .vscode/
 .coverage
 secrets.json
+src/hrflow_connectors/connectors/leboncoin/secrets.json
+src/hrflow_connectors/connectors/leboncoin/test.py
+src/hrflow_connectors/connectors/leboncoin/job.json
+src/hrflow_connectors/connectors/leboncoin/test_format.py
+.DS_Store
+src/.DS_Store

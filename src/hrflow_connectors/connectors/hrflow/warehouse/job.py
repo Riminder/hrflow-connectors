@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowJob
 from hrflow_connectors.core import Warehouse, WarehouseWriteAction
+from hrflow_connectors.core.warehouse import WarehouseReadAction
 
 LIST_JOBS_LIMIT = 30
 
@@ -23,6 +24,19 @@ SKILL_LABEL_TO_TYPE = dict(Skill=None, HardSkill="hard", SoftSkill="soft")
 class JobParsingException(Exception):
     def __init__(self, *args, client_response: t.Dict):
         self.client_response = client_response
+
+
+class ReadJobParameters(BaseModel):
+    api_secret: str = Field(
+        ...,
+        description="X-API-KEY used to access HrFlow.ai API",
+        repr=False,
+    )
+    api_user: str = Field(..., description="X-USER-EMAIL used to access HrFlow.ai API")
+    board_key: str = Field(
+        ..., description="HrFlow.ai board keys to extract the job from"
+    )
+    job_key: str = Field(..., description="")
 
 
 class WriteJobParameters(BaseModel):
@@ -103,6 +117,30 @@ def enrich_job_with_parsing(hrflow_client: Hrflow, job: t.Dict) -> None:
             job["skills"].append(dict(name=entity_text, type=skill_type, value=None))
 
     return
+
+
+def read(adapter: LoggerAdapter, parameters: ReadJobParameters) -> t.List[t.Dict]:
+    hrflow_client = Hrflow(
+        api_secret=parameters.api_secret, api_user=parameters.api_user
+    )
+    response = hrflow_client.job.indexing.get(
+        board_key=parameters.board_key, key=parameters.job_key
+    )
+    if "Unable to find object" in response["message"]:
+        adapter.info(
+            "No job found for board_key={} job_key={} response={}".format(
+                parameters.board_key, parameters.job_key, response
+            )
+        )
+        return []
+    elif response["code"] >= 400:
+        adapter.error(
+            "Failed to get job board_key={} job_key={} response={}".format(
+                parameters.source_key, parameters.profile_key, response
+            )
+        )
+        raise Exception("Failed to get profile")
+    return [response["data"]]
 
 
 def write(
@@ -267,5 +305,6 @@ def write(
 HrFlowJobWarehouse = Warehouse(
     name="HrFlow.ai Jobs",
     data_schema=HrFlowJob,
+    read=WarehouseReadAction(parameters=ReadJobParameters, function=read),
     write=WarehouseWriteAction(parameters=WriteJobParameters, function=write),
 )
