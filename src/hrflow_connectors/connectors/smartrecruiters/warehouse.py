@@ -104,6 +104,15 @@ class ReadJobsParameters(BaseModel):
         None,
         description="Status of a job. One of {}".format([e.value for e in JobStatus]),
     )
+    limit: t.Optional[int] = Field(
+        SMARTRECRUITERS_JOBS_ENDPOINT_LIMIT,
+        description=(
+            "Number of items to pull from SmartRecruiters at a time. Not matter what"
+            " value is supplied it is capped at {}".format(
+                SMARTRECRUITERS_JOBS_ENDPOINT_LIMIT
+            )
+        ),
+    )
 
 
 def read(adapter: LoggerAdapter, parameters: ReadJobsParameters) -> t.Iterable[t.Dict]:
@@ -114,7 +123,7 @@ def read(adapter: LoggerAdapter, parameters: ReadJobsParameters) -> t.Iterable[t
             updatedAfter=parameters.updated_after,
             postingStatus=parameters.posting_status,
             status=parameters.job_status,
-            limit=SMARTRECRUITERS_JOBS_ENDPOINT_LIMIT,
+            limit=min(parameters.limit, SMARTRECRUITERS_JOBS_ENDPOINT_LIMIT),
             pageId=page,
         )
         response = requests.get(
@@ -158,6 +167,8 @@ def read(adapter: LoggerAdapter, parameters: ReadJobsParameters) -> t.Iterable[t
             yield full_job_response.json()
 
         page = response["nextPageId"]
+        if not page:
+            break
 
 
 def write(
