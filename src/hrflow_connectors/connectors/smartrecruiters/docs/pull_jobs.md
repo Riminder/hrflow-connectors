@@ -29,6 +29,7 @@ Retrieves all jobs via the ***SmartRecruiter*** API and send them to a ***Hrflow
 | `updated_after`  | `str` | None | ISO8601-formatted time boundaries for the job update time |
 | `posting_status`  | `str` | None | Posting status of a job. One of ['PUBLIC', 'INTERNAL', 'NOT_PUBLISHED', 'PRIVATE'] |
 | `job_status`  | `str` | None | Status of a job. One of ['CREATED', 'SOURCING', 'FILLED', 'INTERVIEW', 'OFFER', 'CANCELLED', 'ON_HOLD'] |
+| `limit`  | `int` | 100 | Number of items to pull from SmartRecruiters at a time. Not matter what value is supplied it is capped at 100 |
 
 ## Destination Parameters
 
@@ -64,6 +65,7 @@ SmartRecruiters.pull_jobs(
         updated_after="your_updated_after",
         posting_status="PUBLIC",
         job_status="CREATED",
+        limit=100,
     ),
     target_parameters=dict(
         api_secret="your_api_secret",
