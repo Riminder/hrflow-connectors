@@ -87,6 +87,21 @@ actions:
         read_success: 0
         read_failure: 0
         write_failure: 0
+    - id: invalid_api_user
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: " "
+        board_key: $__BOARD_KEY
+        job_key: $__JOB_KEY
+      target_parameters:
+        secret_key: $__SECRET_KEY
+        http_auth_identity: $__HTTP_AUTH_IDENTITY
+        morpheus_client_id: $__MORPHEUS_CLIENT_ID
+      status: 'fatal'
+      events:
+        read_success: 0
+        read_failure: 1
+        write_failure: 0
     - id: missing_secret_key
       origin_parameters:
         api_secret: $__API_SECRET

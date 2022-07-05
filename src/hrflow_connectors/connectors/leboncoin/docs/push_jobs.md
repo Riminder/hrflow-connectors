@@ -11,7 +11,7 @@ Retrieves all jobs from an HrFlow JobBoard and sends them through the Leboncoin 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ad`](../connector.py#L93) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ad`](../connector.py#L86) | Formatting function |
 
 ## Source Parameters
 
