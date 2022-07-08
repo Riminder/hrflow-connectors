@@ -5,6 +5,20 @@ from typing import Any, List
 
 from pydantic import BaseModel, validator
 
+from hrflow_connectors.connectors.poleemploi.referentials import (
+    Listofappelations,
+    ListofcodeROME,
+    Listofcommunes,
+    Listoflanguages,
+    ListofnatureContrats,
+    ListofniveauFormations,
+    ListofpermisLibelles,
+    ListofsecteursActivite,
+    ListofsecteursActiviteLibelles,
+    ListoftypesContratLibelles,
+    ListoftypesContrats,
+)
+
 
 def validate_date(value: Any) -> Any:
     try:
@@ -17,12 +31,29 @@ def validate_date(value: Any) -> Any:
         )
 
 
+Appellation = Enum("Appellation", dict(Listofappelations), type=str)
+CodeROME = Enum("CodeROME", dict(ListofcodeROME), type=str)
+Commune = Enum("Commune", dict(Listofcommunes), type=str)
+NatureContrat = Enum("NatureContrat", dict(ListofnatureContrats), type=str)
+NiveauFormation = Enum("NiveauFormation", dict(ListofniveauFormations), type=str)
+SecteurActivite = Enum("SecteurActivite", dict(ListofsecteursActivite), type=str)
+TypeContrat = Enum("TypeContrat", dict(ListoftypesContrats), type=str)
+LibelleLangue = Enum("LibelleLangue", dict(Listoflanguages), type=str)
+LibellePermis = Enum("LibellePermis", dict(ListofpermisLibelles), type=str)
+TypeContratLibelle = Enum(
+    "TypeContratLibelle", dict(ListoftypesContratLibelles), type=str
+)
+SecteurActiviteLibelle = Enum(
+    "SecteurActiviteLibelle", dict(ListofsecteursActiviteLibelles), type=str
+)
+
+
 class JobLocation(BaseModel):
     libelle: str
     latitude: float
     longitude: float
     codepostal: str
-    commune: str
+    commune: Commune
 
 
 class Entreprise(BaseModel):
@@ -50,7 +81,7 @@ class OrigineOffre(BaseModel):
     partenaires: List[Partenaire]
 
 
-class ExperienceExige(str, Enum):  # TODO: ado all restreining enums like this
+class ExperienceExige(str, Enum):
     d = "D"  # Débutant accepté
     s = "S"  # Expérience souhaitée
     e = "E"  # Expérience exigée
@@ -63,18 +94,18 @@ class Exigence(Enum):
 
 class Formation(BaseModel):
     domaineLibelle: str
-    niveauLibelle: str
+    niveauLibelle: NiveauFormation
     commentaire: str
     exigence: Exigence
 
 
 class Langue(BaseModel):
-    libelle: str
+    libelle: LibelleLangue
     exigence: t.Optional[Exigence]
 
 
 class Permis(BaseModel):
-    libelle: str
+    libelle: LibellePermis
     exigence: t.Optional[Exigence]
 
 
@@ -143,24 +174,24 @@ class PoleEmploiJobOffer(BaseModel):
     description: str
     dateCreation: t.Optional[str]
     dateActualisation: t.Optional[str]
-    lieuTravail: JobLocation
-    romeCode: t.Optional[str]  # TODO: String 5
+    lieuTravail: t.Optional[JobLocation]
+    romeCode: t.Optional[CodeROME]
     romeLibelle: t.Optional[str]
-    appellationLibelle: t.Optional[str]
+    appellationLibelle: t.Optional[Appellation]
     entreprise: t.Optional[Entreprise]
-    typeContrat: t.Optional[str]
-    typeContratLibelle: t.Optional[str]
-    natureContrat: t.Optional[str]
+    typeContrat: t.Optional[TypeContrat]
+    typeContratLibelle: t.Optional[TypeContratLibelle]
+    natureContrat: t.Optional[NatureContrat]
     origineOffre: t.Optional[OrigineOffre]
     offresManqueCandidats: t.Optional[bool]
     experienceExige: t.Optional[ExperienceExige]
     experienceLibelle: t.Optional[str]
     experienceCommentaire: t.Optional[str]
-    formations: List[Formation]
-    langues: List[Langue]
-    permis: List[Permis]
+    formations: t.Optional[List[Formation]]
+    langues: t.Optional[List[Langue]]
+    permis: t.Optional[List[Permis]]
     outilsBureautiques: t.Optional[str]
-    competences: List[Competence]
+    competences: t.Optional[List[Competence]]
     salaire: t.Optional[Salaire]
     dureeTravailLibelle: t.Optional[str]
     dureeTravailLibelleConverti: t.Optional[str]
@@ -175,8 +206,8 @@ class PoleEmploiJobOffer(BaseModel):
     deplacementLibelle: t.Optional[str]
     qualificationCode: t.Optional[QualificationCode]
     qualificationLibelle: t.Optional[QualificationLibelle]
-    secteurActivite: t.Optional[str]
-    secteurActiviteLibelle: t.Optional[str]
+    secteurActivite: t.Optional[SecteurActivite]
+    secteurActiviteLibelle: t.Optional[SecteurActiviteLibelle]
     qualitesProfessionnelles: t.Optional[List[QualitePro]]
 
     # validators

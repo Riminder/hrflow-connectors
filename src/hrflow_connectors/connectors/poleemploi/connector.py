@@ -66,7 +66,7 @@ def get_tags(poleemploi_job: t.Dict) -> t.List[t.Dict]:  # TODO: get more tags
 
 def format_job(
     poleemploi_job: t.Dict,
-) -> t.Dict:  # TODO: format job to HrFlow format before being sent to Job board.
+) -> t.Dict:
     job = dict(
         name=poleemploi_job.get("intitule"),
         reference=poleemploi_job.get("id"),

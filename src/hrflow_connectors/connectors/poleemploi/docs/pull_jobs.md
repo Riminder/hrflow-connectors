@@ -16,8 +16,8 @@ Retrieves jobs via the ***Offres d'emploi v2*** API from the Pôle emploi websit
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L76) | Formatting function |
+| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L67) | Formatting function |
 
 ## Source Parameters
 
@@ -26,13 +26,25 @@ Retrieves jobs via the ***Offres d'emploi v2*** API from the Pôle emploi websit
 | `access_token` :red_circle: | `str` | None | Bearer Token used to access Pole Emploi's API |
 | `range`  | `str` | None |  |
 | `sort`  | `int` | None |  |
+| `domaine`  | `str` | None |  |
+| `codeROME`  | `str` | None |  |
+| `theme`  | `str` | None |  |
+| `appellation`  | `str` | None |  |
+| `secteurActivite`  | `str` | None |  |
 | `experience`  | `str` | None |  |
+| `typeContrat`  | `str` | None |  |
+| `natureContrat`  | `str` | None |  |
 | `origineOffre`  | `str` | None |  |
 | `qualification`  | `str` | None |  |
 | `tempsPlein`  | `bool` | None |  |
+| `commune`  | `str` | None |  |
 | `departement`  | `str` | None |  |
 | `inclureLimitrophes`  | `bool` | None |  |
-| `motsCles` :red_circle: | `str` | None |  |
+| `region`  | `str` | None |  |
+| `paysContinent`  | `str` | None |  |
+| `niveauFormation`  | `str` | None |  |
+| `permis`  | `str` | None |  |
+| `motsCles`  | `str` | None |  |
 | `salaireMin`  | `float` | None |  |
 | `periodeSalaire`  | `str` | None |  |
 | `accesTravailleurHandicape`  | `bool` | None |  |
@@ -85,12 +97,24 @@ PoleEmploi.pull_jobs(
         access_token="your_access_token",
         range="your_range",
         sort=0,
+        domaine="A11",
+        codeROME="A1303",
+        theme="1",
+        appellation="10263",
+        secteurActivite="01",
         experience="1",
+        typeContrat="CDI",
+        natureContrat="E1",
         origineOffre="1",
         qualification="0",
         tempsPlein=False,
-        departement="your_departement",
+        commune="21704",
+        departement="01",
         inclureLimitrophes=False,
+        region="01",
+        paysContinent="65",
+        niveauFormation="AFS",
+        permis="AM",
         motsCles="your_motsCles",
         salaireMin=0.0,
         periodeSalaire="M",

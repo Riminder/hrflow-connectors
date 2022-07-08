@@ -5,10 +5,25 @@ from logging import LoggerAdapter
 import requests
 from pydantic import BaseModel, Field, validator
 
+from hrflow_connectors.connectors.poleemploi.referentials import (
+    Listofdepartments,
+    Listofdomaines,
+    ListofpaysContinents,
+    Listofpermis,
+    Listofregions,
+    Listofthemes,
+)
 from hrflow_connectors.connectors.poleemploi.schemas import (
+    Appellation,
+    CodeROME,
+    Commune,
     ExperienceExige,
+    NatureContrat,
+    NiveauFormation,
     OrigineOffreTag,
     PoleEmploiJobOffer,
+    SecteurActivite,
+    TypeContrat,
     validate_date,
 )
 from hrflow_connectors.core import Warehouse, WarehouseReadAction
@@ -30,7 +45,6 @@ SEARCH_JOBS_ENDPOINT = ActionEndpoints(
         "documentation&doc-section=api-doc-section-rechercher-par-crit%C3%A8res"
     ),
 )
-# class Domaine(BaseModel): #TODO: implmenet referentiels
 
 
 class JobLocation(BaseModel):
@@ -38,6 +52,14 @@ class JobLocation(BaseModel):
     latitude: float
     longitude: float
     codePostal: str
+
+
+Domaine = Enum("Domaine", dict(Listofdomaines), type=str)
+Theme = Enum("Theme", dict(Listofthemes), type=str)
+Region = Enum("Region", dict(Listofregions), type=str)
+PaysContinent = Enum("PaysContinent", dict(ListofpaysContinents, type=str))
+Permis = Enum("Permis", dict(Listofpermis), type=str)
+Departement = Enum("Departement", dict(Listofdepartments), type=str)
 
 
 class Experience(str, Enum):
@@ -112,28 +134,28 @@ class ReadJobsParameters(BaseModel):
     )
     range: t.Optional[str]
     sort: t.Optional[int]
-    # domaine : t.Optional[Domaine]
-    # codeROME : t.Optional[codeROME]
-    # theme : t.Optional[Theme]
-    # appellation : t.Optional[Appellation]
-    # secteurActivite : t.Optional[SecteurActivite]
+    domaine: t.Optional[Domaine]
+    codeROME: t.Optional[CodeROME]
+    theme: t.Optional[Theme]
+    appellation: t.Optional[Appellation]
+    secteurActivite: t.Optional[SecteurActivite]
     experience: t.Optional[Experience]
-    # typeContrat : t.Optional[TypeContrat]
-    # natureContrat : t.Optional[NatureContrat]
+    typeContrat: t.Optional[TypeContrat]
+    natureContrat: t.Optional[NatureContrat]
     origineOffre: t.Optional[OrigineOffreTag]
     qualification: t.Optional[Qualification]
     tempsPlein: t.Optional[bool]
-    # commune : t.Optional[Commune]
+    commune: t.Optional[Commune]
     distance = (
         10  # distance=0 pour pour obtenir seulement les offres d'une commune spécifique
     )
-    departement: t.Optional[str]
+    departement: t.Optional[Departement]
     inclureLimitrophes: t.Optional[bool]
-    # region : t.Optional[Region]
-    # paysContinent : t.Optional[PaysContinent]
-    # niveauFormation : t.Optional[NiveauFormation]
-    # permis : t.Optional[Permis]
-    motsCles: str
+    region: t.Optional[Region]
+    paysContinent: t.Optional[PaysContinent]
+    niveauFormation: t.Optional[NiveauFormation]
+    permis: t.Optional[Permis]
+    motsCles: t.Optional[str]
     salaireMin: t.Optional[float]
     periodeSalaire: t.Optional[
         PeriodeSalaire
@@ -188,7 +210,9 @@ def read(adapter: LoggerAdapter, parameters: ReadJobsParameters) -> t.Iterable[t
             )
         )
         raise Exception("Failed to pull jobs from Pole Emploi")
-    yield response.json()["resultats"]
+    jobs = response.json()["resultats"]
+    for job in jobs:
+        yield job
 
 
 PoleEmploiJobWarehouse = Warehouse(
