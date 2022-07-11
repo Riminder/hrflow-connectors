@@ -1,23 +1,9 @@
 import datetime
 import typing as t
 from enum import Enum, IntEnum
-from typing import Any, List
+from typing import Any, List, Optional
 
-from pydantic import BaseModel, validator
-
-from hrflow_connectors.connectors.poleemploi.referentials import (
-    Listofappelations,
-    ListofcodeROME,
-    Listofcommunes,
-    Listoflanguages,
-    ListofnatureContrats,
-    ListofniveauFormations,
-    ListofpermisLibelles,
-    ListofsecteursActivite,
-    ListofsecteursActiviteLibelles,
-    ListoftypesContratLibelles,
-    ListoftypesContrats,
-)
+from pydantic import BaseModel, Field, validator
 
 
 def validate_date(value: Any) -> Any:
@@ -31,29 +17,20 @@ def validate_date(value: Any) -> Any:
         )
 
 
-Appellation = Enum("Appellation", dict(Listofappelations), type=str)
-CodeROME = Enum("CodeROME", dict(ListofcodeROME), type=str)
-Commune = Enum("Commune", dict(Listofcommunes), type=str)
-NatureContrat = Enum("NatureContrat", dict(ListofnatureContrats), type=str)
-NiveauFormation = Enum("NiveauFormation", dict(ListofniveauFormations), type=str)
-SecteurActivite = Enum("SecteurActivite", dict(ListofsecteursActivite), type=str)
-TypeContrat = Enum("TypeContrat", dict(ListoftypesContrats), type=str)
-LibelleLangue = Enum("LibelleLangue", dict(Listoflanguages), type=str)
-LibellePermis = Enum("LibellePermis", dict(ListofpermisLibelles), type=str)
-TypeContratLibelle = Enum(
-    "TypeContratLibelle", dict(ListoftypesContratLibelles), type=str
-)
-SecteurActiviteLibelle = Enum(
-    "SecteurActiviteLibelle", dict(ListofsecteursActiviteLibelles), type=str
-)
-
-
 class JobLocation(BaseModel):
     libelle: str
     latitude: float
     longitude: float
     codepostal: str
-    commune: Commune
+    commune: str = Field(
+        description=(
+            "INSEE code of the commune"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}communes"
+        ),
+    )
 
 
 class Entreprise(BaseModel):
@@ -94,18 +71,42 @@ class Exigence(Enum):
 
 class Formation(BaseModel):
     domaineLibelle: str
-    niveauLibelle: NiveauFormation
+    niveauLibelle: str = Field(
+        description=(
+            "Label of the level of the education required"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}referentiel/niveauxFormations"
+        ),
+    )
     commentaire: str
     exigence: Exigence
 
 
 class Langue(BaseModel):
-    libelle: LibelleLangue
+    libelle: str = Field(
+        description=(
+            "Language label"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}referentiel/langues"
+        ),
+    )
     exigence: t.Optional[Exigence]
 
 
 class Permis(BaseModel):
-    libelle: LibellePermis
+    libelle: str = Field(
+        description=(
+            "requested license"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}referentiel/permis"
+        ),
+    )
     exigence: t.Optional[Exigence]
 
 
@@ -175,13 +176,54 @@ class PoleEmploiJobOffer(BaseModel):
     dateCreation: t.Optional[str]
     dateActualisation: t.Optional[str]
     lieuTravail: t.Optional[JobLocation]
-    romeCode: t.Optional[CodeROME]
+    romeCode: t.Optional[str] = Field(
+        description=(
+            "ROME code of the profession"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}metiers"
+        ),
+    )
     romeLibelle: t.Optional[str]
-    appellationLibelle: t.Optional[Appellation]
+    appellationLibelle: t.Optional[str] = Field(
+        description=(
+            "Code of the appellation"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}appellations"
+        ),
+    )
     entreprise: t.Optional[Entreprise]
-    typeContrat: t.Optional[TypeContrat]
-    typeContratLibelle: t.Optional[TypeContratLibelle]
-    natureContrat: t.Optional[NatureContrat]
+    typeContrat: t.Optional[str] = Field(
+        description=(
+            "Contract type code"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}typesContrats"
+        ),
+    )
+    typeContratLibelle: t.Optional[str] = Field(
+        description=(
+            "Contract type label"
+            "Example : CDI,CDD"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}typesContrats"
+        ),
+    )
+    natureContrat: t.Optional[str] = Field(
+        description=(
+            "Code of the nature of contract"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}naturesContrats"
+        ),
+    )
     origineOffre: t.Optional[OrigineOffre]
     offresManqueCandidats: t.Optional[bool]
     experienceExige: t.Optional[ExperienceExige]
@@ -206,8 +248,26 @@ class PoleEmploiJobOffer(BaseModel):
     deplacementLibelle: t.Optional[str]
     qualificationCode: t.Optional[QualificationCode]
     qualificationLibelle: t.Optional[QualificationLibelle]
-    secteurActivite: t.Optional[SecteurActivite]
-    secteurActiviteLibelle: t.Optional[SecteurActiviteLibelle]
+    secteurActivite: t.Optional[str] = Field(
+        description=(
+            "NAF codes for sectors of activity. It is possible to specify two NAF codes"
+            " by separating them with a comma in the character string."
+            "Example : 01,02"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}secteursActivites"
+        ),
+    )
+    secteurActiviteLibelle: t.Optional[str] = Field(
+        description=(
+            "Sector of activitylabel"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}secteursActivites"
+        ),
+    )
     qualitesProfessionnelles: t.Optional[List[QualitePro]]
 
     # validators

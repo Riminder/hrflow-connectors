@@ -5,25 +5,10 @@ from logging import LoggerAdapter
 import requests
 from pydantic import BaseModel, Field, validator
 
-from hrflow_connectors.connectors.poleemploi.referentials import (
-    Listofdepartments,
-    Listofdomaines,
-    ListofpaysContinents,
-    Listofpermis,
-    Listofregions,
-    Listofthemes,
-)
 from hrflow_connectors.connectors.poleemploi.schemas import (
-    Appellation,
-    CodeROME,
-    Commune,
     ExperienceExige,
-    NatureContrat,
-    NiveauFormation,
     OrigineOffreTag,
     PoleEmploiJobOffer,
-    SecteurActivite,
-    TypeContrat,
     validate_date,
 )
 from hrflow_connectors.core import Warehouse, WarehouseReadAction
@@ -33,6 +18,9 @@ POLEEMPLOI_JOBS_SEARCH_ENDPOINT = (
     "https://api.emploi-store.fr/partenaire/offresdemploi/v2/offres/search"
 )
 
+POLEEMPLOI_REFERENCES_ENDPOINT = (
+    "https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/"
+)
 SEARCH_JOBS_ENDPOINT = ActionEndpoints(
     name="Get all jobs",
     description=(
@@ -45,6 +33,12 @@ SEARCH_JOBS_ENDPOINT = ActionEndpoints(
         "documentation&doc-section=api-doc-section-rechercher-par-crit%C3%A8res"
     ),
 )
+TOKEN_GENERATOR_URL = (
+    "https://entreprise.pole-emploi.fr/connexion/oauth2/access_token?realm=/partenaire"
+)
+
+GRANT_TYPE = "client_credentials"
+TOKEN_SCOPE = "api_offresdemploiv2 o2dsoffre"
 
 
 class JobLocation(BaseModel):
@@ -52,14 +46,6 @@ class JobLocation(BaseModel):
     latitude: float
     longitude: float
     codePostal: str
-
-
-Domaine = Enum("Domaine", dict(Listofdomaines), type=str)
-Theme = Enum("Theme", dict(Listofthemes), type=str)
-Region = Enum("Region", dict(Listofregions), type=str)
-PaysContinent = Enum("PaysContinent", dict(ListofpaysContinents, type=str))
-Permis = Enum("Permis", dict(Listofpermis), type=str)
-Departement = Enum("Departement", dict(Listofdepartments), type=str)
 
 
 class Experience(str, Enum):
@@ -129,58 +115,171 @@ class DureeHebdo(str, Enum):
 
 
 class ReadJobsParameters(BaseModel):
-    access_token: str = Field(
-        ..., description="Bearer Token used to access Pole Emploi's API", repr=False
+    client_id: str = Field(
+        ..., description="Client ID used to access Pole Emploi API", repr=False
+    )
+    client_secret: str = Field(
+        ..., description="Client Secret used to access Pole Emploi API", repr=False
     )
     range: t.Optional[str]
     sort: t.Optional[int]
-    domaine: t.Optional[Domaine]
-    codeROME: t.Optional[CodeROME]
-    theme: t.Optional[Theme]
-    appellation: t.Optional[Appellation]
-    secteurActivite: t.Optional[SecteurActivite]
+    domaine: t.Optional[str] = Field(
+        description=(
+            "Professional field code"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            "{POLEEMPLOI_REFERENCES_ENDPOINT}/domaines"
+        ),
+    )
+    codeROME: t.Optional[str] = Field(
+        description=(
+            "ROME code of the profession"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/metiers"
+        ),
+    )
+    theme: t.Optional[str] = Field(
+        description=(
+            "Theme of the profession"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/themes"
+        ),
+    )
+    appellation: t.Optional[str] = Field(
+        description=(
+            "Code of the appellation"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/appellations"
+        ),
+    )
+    secteurActivite: t.Optional[str] = Field(
+        description=(
+            "NAF codes for sectors of activity. It is possible to specify two NAF codes"
+            " by separating them with a comma in the character string."
+            "Example : 01,02"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/secteursActivites"
+        ),
+    )
     experience: t.Optional[Experience]
-    typeContrat: t.Optional[TypeContrat]
-    natureContrat: t.Optional[NatureContrat]
+    typeContrat: t.Optional[str] = Field(
+        description=(
+            "Contract type code"
+            "Example : CDI,CDD"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/typesContrats"
+        ),
+    )
+    natureContrat: t.Optional[str] = Field(
+        description=(
+            "Code of the nature of contract"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/naturesContrats"
+        ),
+    )
     origineOffre: t.Optional[OrigineOffreTag]
     qualification: t.Optional[Qualification]
     tempsPlein: t.Optional[bool]
-    commune: t.Optional[Commune]
+    commune: t.Optional[str] = Field(
+        description=(
+            "INSEE code of the commune"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/communes"
+        ),
+    )
     distance = (
         10  # distance=0 pour pour obtenir seulement les offres d'une commune spécifique
     )
-    departement: t.Optional[Departement]
+    departement: t.Optional[str] = Field(
+        description=(
+            "INSEE code of the department"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/departements"
+        ),
+    )
     inclureLimitrophes: t.Optional[bool]
-    region: t.Optional[Region]
-    paysContinent: t.Optional[PaysContinent]
-    niveauFormation: t.Optional[NiveauFormation]
-    permis: t.Optional[Permis]
+    region: t.Optional[str] = Field(
+        description=(
+            "Code of the region of the offer"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/regions"
+        ),
+    )
+    paysContinent: t.Optional[str] = Field(
+        description=(
+            "Code of the country or continent of the offer"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/pays"
+            "AND {POLEEMPLOI_REFERENCES_ENDPOINT}/continents"
+        ),
+    )
+    niveauFormation: t.Optional[str] = Field(
+        description=(
+            "Level of education required"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/niveauxFormations"
+        ),
+    )
+    permis: t.Optional[str] = Field(
+        description=(
+            "Code of the requested license"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/permis"
+        ),
+    )
     motsCles: t.Optional[str]
-    salaireMin: t.Optional[float]
+    salaireMin: t.Optional[
+        float
+    ]  # If this field is set, then periodeSalaire is required.
     periodeSalaire: t.Optional[
         PeriodeSalaire
-    ]  # TODO: link salaireMin w/ periodeSalaire
+    ]  # If this field is set, then salaireMin is required.
     accesTravailleurHandicape: t.Optional[bool]
     offresMRS: t.Optional[bool]
     grandDomaine: t.Optional[GrandDomaine]
     experienceExigence: t.Optional[ExperienceExige]
     publieeDepuis: t.Optional[PublieeDepuis]
-    minCreationDate: t.Optional[str]
-    maxCreationDate: t.Optional[str]
+    minCreationDate: t.Optional[
+        str
+    ]  # If this field is set, then minCreationDate is required.
+    maxCreationDate: t.Optional[
+        str
+    ]  # If this field is set, then maxCreationDate is required.
 
     partenaires: t.Optional[
         str
     ]  # Il est possible de saisir plusieurs codes (séparateur ",").
     modeSelectionPartenaires: t.Optional[ModeSelectionPartenaires]
     dureeHebdo: t.Optional[DureeHebdo]
-    dureeHebdoMin: t.Optional[int]  # TODO : format HHMM
-    dureeHebdoMax: t.Optional[int]  # TODO : format HHMM
-    dureeContratMin: t.Optional[
-        float
-    ]  # TODO : Décimal positif (Séparateur de décimales: '.')
-    dureeContratMax: t.Optional[
-        float
-    ]  # TODO : Décimal positif (Séparateur de décimales: '.')
+    dureeHebdoMin: t.Optional[int]  # format HHMM
+    dureeHebdoMax: t.Optional[int]  # format HHMM
+    dureeContratMin: t.Optional[float]
+    dureeContratMax: t.Optional[float]
     offresManqueCandidats: t.Optional[bool]
     entreprisesAdaptees: t.Optional[bool]
 
@@ -193,13 +292,43 @@ class ReadJobsParameters(BaseModel):
     )
 
 
+def get_poleemploi_auth_token(client_id: str, client_secret: str) -> str:
+    response = requests.post(
+        TOKEN_GENERATOR_URL,
+        headers={
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        data=dict(
+            grant_type=GRANT_TYPE,
+            scope=TOKEN_SCOPE,
+            client_id=client_id,
+            client_secret=client_secret,
+        ),
+    )
+    if not response.ok:
+        raise Exception(
+            "Failed to get authentication token with error={}".format(response.text)
+        )
+    try:
+        return response.json()["access_token"]
+    except (KeyError, requests.exceptions.JSONDecodeError) as e:
+        raise Exception(
+            "Failed to get token from response with error={}".format(repr(e))
+        )
+
+
 def read(adapter: LoggerAdapter, parameters: ReadJobsParameters) -> t.Iterable[t.Dict]:
+    token = get_poleemploi_auth_token(
+        client_id=parameters.client_id,
+        client_secret=parameters.client_secret,
+    )
     params = parameters.dict()
-    del params["access_token"]
+    del params["client_id"]
+    del params["client_secret"]
 
     response = requests.get(
         POLEEMPLOI_JOBS_SEARCH_ENDPOINT,
-        headers={"Authorization": "Bearer {}".format(parameters.access_token)},
+        headers={"Authorization": "Bearer {}".format(token)},
         params=params,
     )
     if response.status_code // 100 != 2:

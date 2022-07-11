@@ -16,34 +16,35 @@ Retrieves jobs via the ***Offres d'emploi v2*** API from the Pôle emploi websit
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L67) | Formatting function |
+| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L69) | Formatting function |
 
 ## Source Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `access_token` :red_circle: | `str` | None | Bearer Token used to access Pole Emploi's API |
+| `client_id` :red_circle: | `str` | None | Client ID used to access Pole Emploi API |
+| `client_secret` :red_circle: | `str` | None | Client Secret used to access Pole Emploi API |
 | `range`  | `str` | None |  |
 | `sort`  | `int` | None |  |
-| `domaine`  | `str` | None |  |
-| `codeROME`  | `str` | None |  |
-| `theme`  | `str` | None |  |
-| `appellation`  | `str` | None |  |
-| `secteurActivite`  | `str` | None |  |
+| `domaine` :red_circle: | `str` | None | Professional field codeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint :{POLEEMPLOI_REFERENCES_ENDPOINT}/domaines |
+| `codeROME` :red_circle: | `str` | None | ROME code of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/metiers |
+| `theme` :red_circle: | `str` | None | Theme of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/themes |
+| `appellation` :red_circle: | `str` | None | Code of the appellationA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/appellations |
+| `secteurActivite` :red_circle: | `str` | None | NAF codes for sectors of activity. It is possible to specify two NAF codes by separating them with a comma in the character string.Example : 01,02A GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/secteursActivites |
 | `experience`  | `str` | None |  |
-| `typeContrat`  | `str` | None |  |
-| `natureContrat`  | `str` | None |  |
+| `typeContrat` :red_circle: | `str` | None | Contract type codeExample : CDI,CDDA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/typesContrats |
+| `natureContrat` :red_circle: | `str` | None | Code of the nature of contractA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/naturesContrats |
 | `origineOffre`  | `str` | None |  |
 | `qualification`  | `str` | None |  |
 | `tempsPlein`  | `bool` | None |  |
-| `commune`  | `str` | None |  |
-| `departement`  | `str` | None |  |
+| `commune` :red_circle: | `str` | None | INSEE code of the communeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/communes |
+| `departement` :red_circle: | `str` | None | INSEE code of the departmentA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/departements |
 | `inclureLimitrophes`  | `bool` | None |  |
-| `region`  | `str` | None |  |
-| `paysContinent`  | `str` | None |  |
-| `niveauFormation`  | `str` | None |  |
-| `permis`  | `str` | None |  |
+| `region` :red_circle: | `str` | None | Code of the region of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/regions |
+| `paysContinent` :red_circle: | `str` | None | Code of the country or continent of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/paysAND {POLEEMPLOI_REFERENCES_ENDPOINT}/continents |
+| `niveauFormation` :red_circle: | `str` | None | Level of education requiredA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/niveauxFormations |
+| `permis` :red_circle: | `str` | None | Code of the requested licenseA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/permis |
 | `motsCles`  | `str` | None |  |
 | `salaireMin`  | `float` | None |  |
 | `periodeSalaire`  | `str` | None |  |
@@ -94,27 +95,28 @@ PoleEmploi.pull_jobs(
         format=lambda *args, **kwargs: None # Put your code logic here,
     ),
     origin_parameters=dict(
-        access_token="your_access_token",
+        client_id="your_client_id",
+        client_secret="your_client_secret",
         range="your_range",
         sort=0,
-        domaine="A11",
-        codeROME="A1303",
-        theme="1",
-        appellation="10263",
-        secteurActivite="01",
+        domaine="your_domaine",
+        codeROME="your_codeROME",
+        theme="your_theme",
+        appellation="your_appellation",
+        secteurActivite="your_secteurActivite",
         experience="1",
-        typeContrat="CDI",
-        natureContrat="E1",
+        typeContrat="your_typeContrat",
+        natureContrat="your_natureContrat",
         origineOffre="1",
         qualification="0",
         tempsPlein=False,
-        commune="21704",
-        departement="01",
+        commune="your_commune",
+        departement="your_departement",
         inclureLimitrophes=False,
-        region="01",
-        paysContinent="65",
-        niveauFormation="AFS",
-        permis="AM",
+        region="your_region",
+        paysContinent="your_paysContinent",
+        niveauFormation="your_niveauFormation",
+        permis="your_permis",
         motsCles="your_motsCles",
         salaireMin=0.0,
         periodeSalaire="M",

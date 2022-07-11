@@ -13,6 +13,7 @@ Retrieves jobs from TalentSoft vacancies export API and send them to a ***Hrflow
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
 | `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_vacancy`](../connector.py#L26) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
+(feat: Pole Emploi Connector, Retrieves jobs via the ***Offres d'emploi v2*** API based on selection criteria to ***Hrflow.ai Board***)
 
 ## Source Parameters
 
