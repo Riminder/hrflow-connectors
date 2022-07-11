@@ -3163,9 +3163,14 @@
             "title": "ReadJobsParameters",
             "type": "object",
             "properties": {
-              "access_token": {
-                "title": "Access Token",
-                "description": "Bearer Token used to access Pole Emploi's API",
+              "client_id": {
+                "title": "Client Id",
+                "description": "Client ID used to access Pole Emploi API",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Client Secret used to access Pole Emploi API",
                 "type": "string"
               },
               "range": {
@@ -3309,7 +3314,8 @@
               }
             },
             "required": [
-              "access_token"
+              "client_id",
+              "client_secret"
             ],
             "definitions": {
               "Domaine": {
@@ -3426,7 +3432,8 @@
                   "N42",
                   "N43",
                   "N44"
-                ]
+                ],
+                "type": "string"
               },
               "CodeROME": {
                 "title": "CodeROME",
@@ -3964,7 +3971,8 @@
                   "N4401",
                   "N4402",
                   "N4403"
-                ]
+                ],
+                "type": "string"
               },
               "Theme": {
                 "title": "Theme",
@@ -3987,7 +3995,8 @@
                   "15",
                   "16",
                   "17"
-                ]
+                ],
+                "type": "string"
               },
               "Appellation": {
                 "title": "Appellation",
@@ -15111,7 +15120,8 @@
                   "18473",
                   "18474",
                   "18475"
-                ]
+                ],
+                "type": "string"
               },
               "SecteurActivite": {
                 "title": "SecteurActivite",
@@ -15205,7 +15215,8 @@
                   "97",
                   "98",
                   "99"
-                ]
+                ],
+                "type": "string"
               },
               "Experience": {
                 "title": "Experience",
@@ -15232,7 +15243,8 @@
                   "TTI",
                   "DDI",
                   "DIN"
-                ]
+                ],
+                "type": "string"
               },
               "NatureContrat": {
                 "title": "NatureContrat",
@@ -15258,7 +15270,8 @@
                   "EE",
                   "ER",
                   "CI"
-                ]
+                ],
+                "type": "string"
               },
               "OrigineOffreTag": {
                 "title": "OrigineOffreTag",
@@ -48056,7 +48069,8 @@
                   "2A108",
                   "16096",
                   "02098"
-                ]
+                ],
+                "type": "string"
               },
               "Departement": {
                 "title": "Departement",
@@ -48163,7 +48177,8 @@
                   "973",
                   "974",
                   "976"
-                ]
+                ],
+                "type": "string"
               },
               "Region": {
                 "title": "Region",
@@ -48187,7 +48202,8 @@
                   "84",
                   "93",
                   "94"
-                ]
+                ],
+                "type": "string"
               },
               "PaysContinent": {
                 "title": "PaysContinent",
@@ -48421,7 +48437,8 @@
                   "AM",
                   "AS",
                   "XX"
-                ]
+                ],
+                "type": "string"
               },
               "NiveauFormation": {
                 "title": "NiveauFormation",
@@ -48438,7 +48455,8 @@
                   "NV3",
                   "NV2",
                   "NV1"
-                ]
+                ],
+                "type": "string"
               },
               "Permis": {
                 "title": "Permis",
@@ -48464,7 +48482,8 @@
                   "D",
                   "DE",
                   "ED"
-                ]
+                ],
+                "type": "string"
               },
               "PeriodeSalaire": {
                 "title": "PeriodeSalaire",
@@ -81497,7 +81516,8 @@
                   "2A108",
                   "16096",
                   "02098"
-                ]
+                ],
+                "type": "string"
               },
               "JobLocation": {
                 "title": "JobLocation",
@@ -82067,7 +82087,8 @@
                   "N4401",
                   "N4402",
                   "N4403"
-                ]
+                ],
+                "type": "string"
               },
               "Appellation": {
                 "title": "Appellation",
@@ -93191,7 +93212,8 @@
                   "18473",
                   "18474",
                   "18475"
-                ]
+                ],
+                "type": "string"
               },
               "Entreprise": {
                 "title": "Entreprise",
@@ -93237,7 +93259,8 @@
                   "TTI",
                   "DDI",
                   "DIN"
-                ]
+                ],
+                "type": "string"
               },
               "TypeContratLibelle": {
                 "title": "TypeContratLibelle",
@@ -93254,7 +93277,8 @@
                   "Contrat travail temporaire insertion",
                   "Contrat dur\u00e9e d\u00e9termin\u00e9e insertion",
                   "CDI Int\u00e9rimaire"
-                ]
+                ],
+                "type": "string"
               },
               "NatureContrat": {
                 "title": "NatureContrat",
@@ -93280,7 +93304,8 @@
                   "EE",
                   "ER",
                   "CI"
-                ]
+                ],
+                "type": "string"
               },
               "OrigineOffreTag": {
                 "title": "OrigineOffreTag",
@@ -93363,7 +93388,8 @@
                   "NV3",
                   "NV2",
                   "NV1"
-                ]
+                ],
+                "type": "string"
               },
               "Exigence": {
                 "title": "Exigence",
@@ -93473,7 +93499,8 @@
                   "Vietnamien",
                   "Wolof",
                   "Zoulou"
-                ]
+                ],
+                "type": "string"
               },
               "Langue": {
                 "title": "Langue",
@@ -93514,7 +93541,8 @@
                   "D___Transport_de_personnes",
                   "DE___Transport_de_personnes___remorque____ED_",
                   "ED___Transport_de_personnes___remorque"
-                ]
+                ],
+                "type": "string"
               },
               "Permis": {
                 "title": "Permis",
@@ -93754,7 +93782,8 @@
                   "97",
                   "98",
                   "99"
-                ]
+                ],
+                "type": "string"
               },
               "SecteurActiviteLibelle": {
                 "title": "SecteurActiviteLibelle",
@@ -93848,7 +93877,8 @@
                   "Activit\u00e9s des m\u00e9nages en tant qu'employeurs de personnel domestique",
                   "Activit\u00e9s indiff\u00e9renci\u00e9es des m\u00e9nages en tant que producteurs de biens et services pour usage propre",
                   "Activit\u00e9s des organisations et organismes extraterritoriaux"
-                ]
+                ],
+                "type": "string"
               },
               "QualitePro": {
                 "title": "QualitePro",
@@ -94183,8 +94213,8 @@
               }
             }
           },
-          "workflow_code_catch": "\nimport typing as t\n\nfrom hrflow_connectors import PoleEmploi\n\nfrom hrflow_connectors.core.connector import EventParsingError\n\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = PoleEmploi.model.action_by_name(\"pull_jobs\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            event_parsing_error = EventParsingError(\n                event=_request,\n                error=e,\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['access_token', 'range', 'sort', 'domaine', 'codeROME', 'theme', 'appellation', 'secteurActivite', 'experience', 'typeContrat', 'natureContrat', 'origineOffre', 'qualification', 'tempsPlein', 'commune', 'departement', 'inclureLimitrophes', 'region', 'paysContinent', 'niveauFormation', 'permis', 'motsCles', 'salaireMin', 'periodeSalaire', 'accesTravailleurHandicape', 'offresMRS', 'grandDomaine', 'experienceExigence', 'publieeDepuis', 'minCreationDate', 'maxCreationDate', 'partenaires', 'modeSelectionPartenaires', 'dureeHebdo', 'dureeHebdoMin', 'dureeHebdoMax', 'dureeContratMin', 'dureeContratMax', 'offresManqueCandidats', 'entreprisesAdaptees', 'distance']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return PoleEmploi.pull_jobs(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
-          "workflow_code_pull": "\nimport typing as t\n\nfrom hrflow_connectors import PoleEmploi\n\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n\n    origin_parameters = dict()\n    for parameter in ['access_token', 'range', 'sort', 'domaine', 'codeROME', 'theme', 'appellation', 'secteurActivite', 'experience', 'typeContrat', 'natureContrat', 'origineOffre', 'qualification', 'tempsPlein', 'commune', 'departement', 'inclureLimitrophes', 'region', 'paysContinent', 'niveauFormation', 'permis', 'motsCles', 'salaireMin', 'periodeSalaire', 'accesTravailleurHandicape', 'offresMRS', 'grandDomaine', 'experienceExigence', 'publieeDepuis', 'minCreationDate', 'maxCreationDate', 'partenaires', 'modeSelectionPartenaires', 'dureeHebdo', 'dureeHebdoMin', 'dureeHebdoMax', 'dureeContratMin', 'dureeContratMax', 'offresManqueCandidats', 'entreprisesAdaptees', 'distance']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return PoleEmploi.pull_jobs(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
+          "workflow_code_catch": "\nimport typing as t\n\nfrom hrflow_connectors import PoleEmploi\n\nfrom hrflow_connectors.core.connector import EventParsingError\n\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = PoleEmploi.model.action_by_name(\"pull_jobs\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            event_parsing_error = EventParsingError(\n                event=_request,\n                error=e,\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'range', 'sort', 'domaine', 'codeROME', 'theme', 'appellation', 'secteurActivite', 'experience', 'typeContrat', 'natureContrat', 'origineOffre', 'qualification', 'tempsPlein', 'commune', 'departement', 'inclureLimitrophes', 'region', 'paysContinent', 'niveauFormation', 'permis', 'motsCles', 'salaireMin', 'periodeSalaire', 'accesTravailleurHandicape', 'offresMRS', 'grandDomaine', 'experienceExigence', 'publieeDepuis', 'minCreationDate', 'maxCreationDate', 'partenaires', 'modeSelectionPartenaires', 'dureeHebdo', 'dureeHebdoMin', 'dureeHebdoMax', 'dureeContratMin', 'dureeContratMax', 'offresManqueCandidats', 'entreprisesAdaptees', 'distance']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return PoleEmploi.pull_jobs(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
+          "workflow_code_pull": "\nimport typing as t\n\nfrom hrflow_connectors import PoleEmploi\n\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'range', 'sort', 'domaine', 'codeROME', 'theme', 'appellation', 'secteurActivite', 'experience', 'typeContrat', 'natureContrat', 'origineOffre', 'qualification', 'tempsPlein', 'commune', 'departement', 'inclureLimitrophes', 'region', 'paysContinent', 'niveauFormation', 'permis', 'motsCles', 'salaireMin', 'periodeSalaire', 'accesTravailleurHandicape', 'offresMRS', 'grandDomaine', 'experienceExigence', 'publieeDepuis', 'minCreationDate', 'maxCreationDate', 'partenaires', 'modeSelectionPartenaires', 'dureeHebdo', 'dureeHebdoMin', 'dureeHebdoMax', 'dureeContratMin', 'dureeContratMax', 'offresManqueCandidats', 'entreprisesAdaptees', 'distance']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return PoleEmploi.pull_jobs(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
           "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",

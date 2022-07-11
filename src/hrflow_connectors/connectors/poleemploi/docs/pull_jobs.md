@@ -16,14 +16,15 @@ Retrieves jobs via the ***Offres d'emploi v2*** API from the Pôle emploi websit
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
+| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
 | `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L67) | Formatting function |
 
 ## Source Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `access_token` :red_circle: | `str` | None | Bearer Token used to access Pole Emploi's API |
+| `client_id` :red_circle: | `str` | None | Client ID used to access Pole Emploi API |
+| `client_secret` :red_circle: | `str` | None | Client Secret used to access Pole Emploi API |
 | `range`  | `str` | None |  |
 | `sort`  | `int` | None |  |
 | `domaine`  | `str` | None |  |
@@ -94,7 +95,8 @@ PoleEmploi.pull_jobs(
         format=lambda *args, **kwargs: None # Put your code logic here,
     ),
     origin_parameters=dict(
-        access_token="your_access_token",
+        client_id="your_client_id",
+        client_secret="your_client_secret",
         range="your_range",
         sort=0,
         domaine="A11",

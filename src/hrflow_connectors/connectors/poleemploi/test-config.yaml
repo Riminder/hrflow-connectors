@@ -1,13 +1,10 @@
-warehouse:
-  PoleEmploiJobWarehouse:
-    read:
-      - parameters:
-          access_token: $__ACCESS_TOKEN
+warehouse: {}
 actions:
   pull_jobs:
     - id: valid_parameters
       origin_parameters:
-        access_token: $__ACCESS_TOKEN
+        client_id: $__CLIENT_ID
+        client_secret:  $__CLIENT_SECRET
         theme: "5"
         secteurActivite: "72"
         typeContrat: "CDI"
@@ -19,7 +16,8 @@ actions:
       status: success
     - id: invalid_parameters
       origin_parameters:
-        access_token: $__ACCESS_TOKEN
+        client_id: $__CLIENT_ID
+        client_secret:  $__CLIENT_SECRET
         codeROME: "K1304"
         appellation: "20003" #no such appellation code
       target_parameters:
@@ -30,8 +28,9 @@ actions:
       reason: bad_origin_parameters
     - id: invalid_parameter_type
       origin_parameters:
-        access_token: $__ACCESS_TOKEN
-        theme: 5
+        client_id: $__CLIENT_ID
+        client_secret:  $__CLIENT_SECRET
+        theme: 5 #should be a string
         secteurActivite: "72"
         typeContrat: "CDI"
         natureContrat: "E1"
@@ -41,7 +40,7 @@ actions:
         board_key: $__BOARD_KEY
       status: fatal
       reason: bad_origin_parameters
-    - id: no_access_token
+    - id: no_client_credentials
       origin_parameters:
         motsCles: INFORMATIQUE
       target_parameters:
@@ -52,16 +51,18 @@ actions:
       reason: bad_origin_parameters
     - id: no_hrflow_board_key
       origin_parameters:
-        access_token: $__ACCESS_TOKEN
+        client_id: $__CLIENT_ID
+        client_secret:  $__CLIENT_SECRET
         motsCles : Software
       target_parameters:
         api_secret: $__API_SECRET
         api_user: $__API_USER
       status: fatal
       reason: bad_target_parameters
-    - id: invalid_access_token
+    - id: invalid_client_credentials
       origin_parameters:
-        access_token: bad_access_token
+        client_id: bad_client_id
+        client_secret:  bad_client_secret
         motsCles : Software
       target_parameters:
         api_secret: $__API_SECRET
@@ -70,8 +71,9 @@ actions:
       status: fatal
       reason: read_failure
     - id: invalid_hrflow_api_secret
-      origin_parameters:
-        access_token: $__ACCESS_TOKEN
+      origin_parameters: 
+        client_id: $__CLIENT_ID
+        client_secret:  $__CLIENT_SECRET
         motsCles : Software
       target_parameters:
         api_secret: bad_api_secret

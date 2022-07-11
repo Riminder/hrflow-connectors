@@ -45,6 +45,12 @@ SEARCH_JOBS_ENDPOINT = ActionEndpoints(
         "documentation&doc-section=api-doc-section-rechercher-par-crit%C3%A8res"
     ),
 )
+TOKEN_GENERATOR_URL = (
+    "https://entreprise.pole-emploi.fr/connexion/oauth2/access_token?realm=/partenaire"
+)
+
+GRANT_TYPE = "client_credentials"
+TOKEN_SCOPE = "api_offresdemploiv2 o2dsoffre"
 
 
 class JobLocation(BaseModel):
@@ -57,7 +63,7 @@ class JobLocation(BaseModel):
 Domaine = Enum("Domaine", dict(Listofdomaines), type=str)
 Theme = Enum("Theme", dict(Listofthemes), type=str)
 Region = Enum("Region", dict(Listofregions), type=str)
-PaysContinent = Enum("PaysContinent", dict(ListofpaysContinents, type=str))
+PaysContinent = Enum("PaysContinent", dict(ListofpaysContinents), type=str)
 Permis = Enum("Permis", dict(Listofpermis), type=str)
 Departement = Enum("Departement", dict(Listofdepartments), type=str)
 
@@ -129,8 +135,11 @@ class DureeHebdo(str, Enum):
 
 
 class ReadJobsParameters(BaseModel):
-    access_token: str = Field(
-        ..., description="Bearer Token used to access Pole Emploi's API", repr=False
+    client_id: str = Field(
+        ..., description="Client ID used to access Pole Emploi API", repr=False
+    )
+    client_secret: str = Field(
+        ..., description="Client Secret used to access Pole Emploi API", repr=False
     )
     range: t.Optional[str]
     sort: t.Optional[int]
@@ -193,13 +202,43 @@ class ReadJobsParameters(BaseModel):
     )
 
 
+def get_poleemploi_auth_token(client_id: str, client_secret: str) -> str:
+    response = requests.post(
+        TOKEN_GENERATOR_URL,
+        headers={
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        data=dict(
+            grant_type=GRANT_TYPE,
+            scope=TOKEN_SCOPE,
+            client_id=client_id,
+            client_secret=client_secret,
+        ),
+    )
+    if not response.ok:
+        raise Exception(
+            "Failed to get authentication token with error={}".format(response.text)
+        )
+    try:
+        return response.json()["access_token"]
+    except (KeyError, requests.exceptions.JSONDecodeError) as e:
+        raise Exception(
+            "Failed to get token from response with error={}".format(repr(e))
+        )
+
+
 def read(adapter: LoggerAdapter, parameters: ReadJobsParameters) -> t.Iterable[t.Dict]:
+    token = get_poleemploi_auth_token(
+        client_id=parameters.client_id,
+        client_secret=parameters.client_secret,
+    )
     params = parameters.dict()
-    del params["access_token"]
+    del params["client_id"]
+    del params["client_secret"]
 
     response = requests.get(
         POLEEMPLOI_JOBS_SEARCH_ENDPOINT,
-        headers={"Authorization": "Bearer {}".format(parameters.access_token)},
+        headers={"Authorization": "Bearer {}".format(token)},
         params=params,
     )
     if response.status_code // 100 != 2:
