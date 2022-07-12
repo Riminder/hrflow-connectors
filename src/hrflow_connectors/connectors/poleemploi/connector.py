@@ -15,22 +15,22 @@ def get_job_location(poleemploi_location: t.Union[t.Dict, None]) -> t.Dict:
     lng = poleemploi_location.get("longitude")
     lng = float(lng) if lng is not None else lng
 
-    concatenate = []
-    for field in ["libelle", "codePostal"]:
-        if poleemploi_location.get(field):
-            concatenate.append(poleemploi_location.get(field))
-
-    return dict(lat=lat, lng=lng, text=" ".join(concatenate))
+    return dict(
+        lat=lat,
+        lng=lng,
+        text=" ".join(
+            [
+                poleemploi_location.get(field)
+                for field in ["libelle", "codePostal"]
+                if poleemploi_location.get(field)
+            ]
+        ),
+    )
 
 
 def get_sections(poleemploi_job: t.Dict) -> t.List[t.Dict]:
     sections = []
-    if (
-        "entreprise" not in poleemploi_job
-        or "description" not in poleemploi_job["entreprise"]
-    ):
-        return sections
-    else:
+    if "entreprise" in poleemploi_job and "description" in poleemploi_job["entreprise"]:
         sections.append(
             dict(
                 name="poleemploi_company_description",
@@ -41,13 +41,14 @@ def get_sections(poleemploi_job: t.Dict) -> t.List[t.Dict]:
     return sections
 
 
-def get_tags(poleemploi_job: t.Dict) -> t.List[t.Dict]:  # TODO: get more tags
+def get_tags(poleemploi_job: t.Dict) -> t.List[t.Dict]:
     job = poleemploi_job
     contact = job.get("contact", {})
     salaire = job.get("salaire", {})
+    tags = []
 
     t = lambda name, value: dict(name=name, value=value)
-    return [
+    tags = [
         t("poleemploi_romeCode", job.get("romeCode")),
         t("poleemploi_romeLibelle", job.get("romeLibelle")),
         t("poleemploi_appellationLibelle", job.get("appellationLibelle")),
@@ -62,6 +63,7 @@ def get_tags(poleemploi_job: t.Dict) -> t.List[t.Dict]:  # TODO: get more tags
         t("poleemploi_contact-email", contact.get("courriel")),
         t("poleemploi_contact-phone", contact.get("telephone")),
     ]
+    return tags
 
 
 def format_job(
@@ -89,7 +91,7 @@ DESCRIPTION = (
 PoleEmploi = Connector(
     name="PoleEmploi",
     description=DESCRIPTION,
-    url="https://www.smartrecruiters.com/",
+    url="https://www.pole-emploi.fr/",
     actions=[
         ConnectorAction(
             name="pull_jobs",

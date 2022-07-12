@@ -1,3 +1,7 @@
+""" the references grouped in lists from which the Enum calses used in schemas.py
+ and warehous.py are created
+"""
+
 Listofdomaines = [
     ("Engins_agricoles_et_forestiers", "A11"),
     ("Espaces_naturels_et_espaces_verts", "A12"),

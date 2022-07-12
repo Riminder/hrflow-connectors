@@ -17,7 +17,7 @@ Retrieves all jobs via the ***SmartRecruiter*** API and send them to a ***Hrflow
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
+| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
 | `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L91) | Formatting function |
 
 ## Source Parameters

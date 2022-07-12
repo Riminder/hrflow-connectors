@@ -165,31 +165,33 @@ class ReadJobsParameters(BaseModel):
     niveauFormation: t.Optional[NiveauFormation]
     permis: t.Optional[Permis]
     motsCles: t.Optional[str]
-    salaireMin: t.Optional[float]
+    salaireMin: t.Optional[
+        float
+    ]  # If this field is set, then periodeSalaire is required.
     periodeSalaire: t.Optional[
         PeriodeSalaire
-    ]  # TODO: link salaireMin w/ periodeSalaire
+    ]  # If this field is set, then salaireMin is required.
     accesTravailleurHandicape: t.Optional[bool]
     offresMRS: t.Optional[bool]
     grandDomaine: t.Optional[GrandDomaine]
     experienceExigence: t.Optional[ExperienceExige]
     publieeDepuis: t.Optional[PublieeDepuis]
-    minCreationDate: t.Optional[str]
-    maxCreationDate: t.Optional[str]
+    minCreationDate: t.Optional[
+        str
+    ]  # If this field is set, then minCreationDate is required.
+    maxCreationDate: t.Optional[
+        str
+    ]  # If this field is set, then maxCreationDate is required.
 
     partenaires: t.Optional[
         str
     ]  # Il est possible de saisir plusieurs codes (séparateur ",").
     modeSelectionPartenaires: t.Optional[ModeSelectionPartenaires]
     dureeHebdo: t.Optional[DureeHebdo]
-    dureeHebdoMin: t.Optional[int]  # TODO : format HHMM
-    dureeHebdoMax: t.Optional[int]  # TODO : format HHMM
-    dureeContratMin: t.Optional[
-        float
-    ]  # TODO : Décimal positif (Séparateur de décimales: '.')
-    dureeContratMax: t.Optional[
-        float
-    ]  # TODO : Décimal positif (Séparateur de décimales: '.')
+    dureeHebdoMin: t.Optional[int]  # format HHMM
+    dureeHebdoMax: t.Optional[int]  # format HHMM
+    dureeContratMin: t.Optional[float]
+    dureeContratMax: t.Optional[float]
     offresManqueCandidats: t.Optional[bool]
     entreprisesAdaptees: t.Optional[bool]
 

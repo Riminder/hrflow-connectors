@@ -10,7 +10,7 @@ Retrieves jobs from TalentSoft vacancies export API and send them to a ***Hrflow
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
+| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
 | `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_vacancy`](../connector.py#L25) | Formatting function |
 
 ## Source Parameters
