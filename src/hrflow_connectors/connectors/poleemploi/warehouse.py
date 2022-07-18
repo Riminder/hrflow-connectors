@@ -5,25 +5,10 @@ from logging import LoggerAdapter
 import requests
 from pydantic import BaseModel, Field, validator
 
-from hrflow_connectors.connectors.poleemploi.referentials import (
-    Listofdepartments,
-    Listofdomaines,
-    ListofpaysContinents,
-    Listofpermis,
-    Listofregions,
-    Listofthemes,
-)
 from hrflow_connectors.connectors.poleemploi.schemas import (
-    Appellation,
-    CodeROME,
-    Commune,
     ExperienceExige,
-    NatureContrat,
-    NiveauFormation,
     OrigineOffreTag,
     PoleEmploiJobOffer,
-    SecteurActivite,
-    TypeContrat,
     validate_date,
 )
 from hrflow_connectors.core import Warehouse, WarehouseReadAction
@@ -33,6 +18,9 @@ POLEEMPLOI_JOBS_SEARCH_ENDPOINT = (
     "https://api.emploi-store.fr/partenaire/offresdemploi/v2/offres/search"
 )
 
+POLEEMPLOI_REFERENCES_ENDPOINT = (
+    "https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/"
+)
 SEARCH_JOBS_ENDPOINT = ActionEndpoints(
     name="Get all jobs",
     description=(
@@ -58,14 +46,6 @@ class JobLocation(BaseModel):
     latitude: float
     longitude: float
     codePostal: str
-
-
-Domaine = Enum("Domaine", dict(Listofdomaines), type=str)
-Theme = Enum("Theme", dict(Listofthemes), type=str)
-Region = Enum("Region", dict(Listofregions), type=str)
-PaysContinent = Enum("PaysContinent", dict(ListofpaysContinents), type=str)
-Permis = Enum("Permis", dict(Listofpermis), type=str)
-Departement = Enum("Departement", dict(Listofdepartments), type=str)
 
 
 class Experience(str, Enum):
@@ -143,27 +123,135 @@ class ReadJobsParameters(BaseModel):
     )
     range: t.Optional[str]
     sort: t.Optional[int]
-    domaine: t.Optional[Domaine]
-    codeROME: t.Optional[CodeROME]
-    theme: t.Optional[Theme]
-    appellation: t.Optional[Appellation]
-    secteurActivite: t.Optional[SecteurActivite]
+    domaine: t.Optional[str] = Field(
+        description=(
+            "Professional field code"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            "{POLEEMPLOI_REFERENCES_ENDPOINT}/domaines"
+        ),
+    )
+    codeROME: t.Optional[str] = Field(
+        description=(
+            "ROME code of the profession"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/metiers"
+        ),
+    )
+    theme: t.Optional[str] = Field(
+        description=(
+            "Theme of the profession"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/themes"
+        ),
+    )
+    appellation: t.Optional[str] = Field(
+        description=(
+            "Code of the appellation"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/appellations"
+        ),
+    )
+    secteurActivite: t.Optional[str] = Field(
+        description=(
+            "NAF codes for sectors of activity. It is possible to specify two NAF codes"
+            " by separating them with a comma in the character string."
+            "Example : 01,02"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/secteursActivites"
+        ),
+    )
     experience: t.Optional[Experience]
-    typeContrat: t.Optional[TypeContrat]
-    natureContrat: t.Optional[NatureContrat]
+    typeContrat: t.Optional[str] = Field(
+        description=(
+            "Contract type code"
+            "Example : CDI,CDD"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/typesContrats"
+        ),
+    )
+    natureContrat: t.Optional[str] = Field(
+        description=(
+            "Code of the nature of contract"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/naturesContrats"
+        ),
+    )
     origineOffre: t.Optional[OrigineOffreTag]
     qualification: t.Optional[Qualification]
     tempsPlein: t.Optional[bool]
-    commune: t.Optional[Commune]
+    commune: t.Optional[str] = Field(
+        description=(
+            "INSEE code of the commune"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/communes"
+        ),
+    )
     distance = (
         10  # distance=0 pour pour obtenir seulement les offres d'une commune spécifique
     )
-    departement: t.Optional[Departement]
+    departement: t.Optional[str] = Field(
+        description=(
+            "INSEE code of the department"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/departements"
+        ),
+    )
     inclureLimitrophes: t.Optional[bool]
-    region: t.Optional[Region]
-    paysContinent: t.Optional[PaysContinent]
-    niveauFormation: t.Optional[NiveauFormation]
-    permis: t.Optional[Permis]
+    region: t.Optional[str] = Field(
+        description=(
+            "Code of the region of the offer"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/regions"
+        ),
+    )
+    paysContinent: t.Optional[str] = Field(
+        description=(
+            "Code of the country or continent of the offer"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/pays"
+            "AND {POLEEMPLOI_REFERENCES_ENDPOINT}/continents"
+        ),
+    )
+    niveauFormation: t.Optional[str] = Field(
+        description=(
+            "Level of education required"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/niveauxFormations"
+        ),
+    )
+    permis: t.Optional[str] = Field(
+        description=(
+            "Code of the requested license"
+            "A GET request for the list of accepted choices from the Offres"
+            " d'emploi API"
+            "to this endpoint :"
+            " {POLEEMPLOI_REFERENCES_ENDPOINT}/permis"
+        ),
+    )
     motsCles: t.Optional[str]
     salaireMin: t.Optional[
         float

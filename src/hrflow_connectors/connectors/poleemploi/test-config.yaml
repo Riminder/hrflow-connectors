@@ -14,32 +14,6 @@ actions:
         api_user: $__API_USER
         board_key: $__BOARD_KEY
       status: success
-    - id: invalid_parameters
-      origin_parameters:
-        client_id: $__CLIENT_ID
-        client_secret:  $__CLIENT_SECRET
-        codeROME: "K1304"
-        appellation: "20003" #no such appellation code
-      target_parameters:
-        api_secret: $__API_SECRET
-        api_user: $__API_USER
-        board_key: $__BOARD_KEY
-      status: fatal
-      reason: bad_origin_parameters
-    - id: invalid_parameter_type
-      origin_parameters:
-        client_id: $__CLIENT_ID
-        client_secret:  $__CLIENT_SECRET
-        theme: 5 #should be a string
-        secteurActivite: "72"
-        typeContrat: "CDI"
-        natureContrat: "E1"
-      target_parameters:
-        api_secret: $__API_SECRET
-        api_user: $__API_USER
-        board_key: $__BOARD_KEY
-      status: fatal
-      reason: bad_origin_parameters
     - id: no_client_credentials
       origin_parameters:
         motsCles: INFORMATIQUE
