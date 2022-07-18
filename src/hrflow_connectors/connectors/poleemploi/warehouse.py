@@ -129,7 +129,7 @@ class ReadJobsParameters(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            "{POLEEMPLOI_REFERENCES_ENDPOINT}/domaines"
+            f"{POLEEMPLOI_REFERENCES_ENDPOINT}/domaines"
         ),
     )
     codeROME: t.Optional[str] = Field(
@@ -138,7 +138,7 @@ class ReadJobsParameters(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            " {POLEEMPLOI_REFERENCES_ENDPOINT}/metiers"
+            f" {POLEEMPLOI_REFERENCES_ENDPOINT}/metiers"
         ),
     )
     theme: t.Optional[str] = Field(
@@ -147,7 +147,7 @@ class ReadJobsParameters(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            " {POLEEMPLOI_REFERENCES_ENDPOINT}/themes"
+            f" {POLEEMPLOI_REFERENCES_ENDPOINT}/themes"
         ),
     )
     appellation: t.Optional[str] = Field(
@@ -156,7 +156,7 @@ class ReadJobsParameters(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            " {POLEEMPLOI_REFERENCES_ENDPOINT}/appellations"
+            f" {POLEEMPLOI_REFERENCES_ENDPOINT}/appellations"
         ),
     )
     secteurActivite: t.Optional[str] = Field(
@@ -167,7 +167,7 @@ class ReadJobsParameters(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            " {POLEEMPLOI_REFERENCES_ENDPOINT}/secteursActivites"
+            f" {POLEEMPLOI_REFERENCES_ENDPOINT}/secteursActivites"
         ),
     )
     experience: t.Optional[Experience]
@@ -178,7 +178,7 @@ class ReadJobsParameters(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            " {POLEEMPLOI_REFERENCES_ENDPOINT}/typesContrats"
+            f" {POLEEMPLOI_REFERENCES_ENDPOINT}/typesContrats"
         ),
     )
     natureContrat: t.Optional[str] = Field(
@@ -187,7 +187,7 @@ class ReadJobsParameters(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            " {POLEEMPLOI_REFERENCES_ENDPOINT}/naturesContrats"
+            f" {POLEEMPLOI_REFERENCES_ENDPOINT}/naturesContrats"
         ),
     )
     origineOffre: t.Optional[OrigineOffreTag]
@@ -199,7 +199,7 @@ class ReadJobsParameters(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            " {POLEEMPLOI_REFERENCES_ENDPOINT}/communes"
+            f" {POLEEMPLOI_REFERENCES_ENDPOINT}/communes"
         ),
     )
     distance = (
@@ -211,7 +211,7 @@ class ReadJobsParameters(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            " {POLEEMPLOI_REFERENCES_ENDPOINT}/departements"
+            f" {POLEEMPLOI_REFERENCES_ENDPOINT}/departements"
         ),
     )
     inclureLimitrophes: t.Optional[bool]
@@ -221,7 +221,7 @@ class ReadJobsParameters(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            " {POLEEMPLOI_REFERENCES_ENDPOINT}/regions"
+            f" {POLEEMPLOI_REFERENCES_ENDPOINT}/regions"
         ),
     )
     paysContinent: t.Optional[str] = Field(
@@ -230,8 +230,8 @@ class ReadJobsParameters(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            " {POLEEMPLOI_REFERENCES_ENDPOINT}/pays"
-            "AND {POLEEMPLOI_REFERENCES_ENDPOINT}/continents"
+            f" {POLEEMPLOI_REFERENCES_ENDPOINT}/pays"
+            f"AND {POLEEMPLOI_REFERENCES_ENDPOINT}/continents"
         ),
     )
     niveauFormation: t.Optional[str] = Field(
@@ -240,7 +240,7 @@ class ReadJobsParameters(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            " {POLEEMPLOI_REFERENCES_ENDPOINT}/niveauxFormations"
+            f" {POLEEMPLOI_REFERENCES_ENDPOINT}/niveauxFormations"
         ),
     )
     permis: t.Optional[str] = Field(
@@ -249,7 +249,7 @@ class ReadJobsParameters(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            " {POLEEMPLOI_REFERENCES_ENDPOINT}/permis"
+            f" {POLEEMPLOI_REFERENCES_ENDPOINT}/permis"
         ),
     )
     motsCles: t.Optional[str]

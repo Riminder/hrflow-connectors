@@ -21,7 +21,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -808,7 +808,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -1613,7 +1613,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -1832,7 +1832,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -2051,7 +2051,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -2657,7 +2657,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -2869,7 +2869,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -3273,7 +3273,7 @@
             "properties": {
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -3316,27 +3316,27 @@
               },
               "domaine": {
                 "title": "Domaine",
-                "description": "Professional field codeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint :{POLEEMPLOI_REFERENCES_ENDPOINT}/domaines",
+                "description": "Professional field codeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint :https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//domaines",
                 "type": "string"
               },
               "codeROME": {
                 "title": "Coderome",
-                "description": "ROME code of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/metiers",
+                "description": "ROME code of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//metiers",
                 "type": "string"
               },
               "theme": {
                 "title": "Theme",
-                "description": "Theme of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/themes",
+                "description": "Theme of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//themes",
                 "type": "string"
               },
               "appellation": {
                 "title": "Appellation",
-                "description": "Code of the appellationA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/appellations",
+                "description": "Code of the appellationA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//appellations",
                 "type": "string"
               },
               "secteurActivite": {
                 "title": "Secteuractivite",
-                "description": "NAF codes for sectors of activity. It is possible to specify two NAF codes by separating them with a comma in the character string.Example : 01,02A GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/secteursActivites",
+                "description": "NAF codes for sectors of activity. It is possible to specify two NAF codes by separating them with a comma in the character string.Example : 01,02A GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//secteursActivites",
                 "type": "string"
               },
               "experience": {
@@ -3344,12 +3344,12 @@
               },
               "typeContrat": {
                 "title": "Typecontrat",
-                "description": "Contract type codeExample : CDI,CDDA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/typesContrats",
+                "description": "Contract type codeExample : CDI,CDDA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//typesContrats",
                 "type": "string"
               },
               "natureContrat": {
                 "title": "Naturecontrat",
-                "description": "Code of the nature of contractA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/naturesContrats",
+                "description": "Code of the nature of contractA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//naturesContrats",
                 "type": "string"
               },
               "origineOffre": {
@@ -3364,12 +3364,12 @@
               },
               "commune": {
                 "title": "Commune",
-                "description": "INSEE code of the communeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/communes",
+                "description": "INSEE code of the communeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//communes",
                 "type": "string"
               },
               "departement": {
                 "title": "Departement",
-                "description": "INSEE code of the departmentA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/departements",
+                "description": "INSEE code of the departmentA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//departements",
                 "type": "string"
               },
               "inclureLimitrophes": {
@@ -3378,22 +3378,22 @@
               },
               "region": {
                 "title": "Region",
-                "description": "Code of the region of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/regions",
+                "description": "Code of the region of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//regions",
                 "type": "string"
               },
               "paysContinent": {
                 "title": "Payscontinent",
-                "description": "Code of the country or continent of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/paysAND {POLEEMPLOI_REFERENCES_ENDPOINT}/continents",
+                "description": "Code of the country or continent of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//paysAND https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//continents",
                 "type": "string"
               },
               "niveauFormation": {
                 "title": "Niveauformation",
-                "description": "Level of education requiredA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/niveauxFormations",
+                "description": "Level of education requiredA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//niveauxFormations",
                 "type": "string"
               },
               "permis": {
                 "title": "Permis",
-                "description": "Code of the requested licenseA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/permis",
+                "description": "Code of the requested licenseA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//permis",
                 "type": "string"
               },
               "motsCles": {
@@ -3474,20 +3474,7 @@
             },
             "required": [
               "client_id",
-              "client_secret",
-              "domaine",
-              "codeROME",
-              "theme",
-              "appellation",
-              "secteurActivite",
-              "typeContrat",
-              "natureContrat",
-              "commune",
-              "departement",
-              "region",
-              "paysContinent",
-              "niveauFormation",
-              "permis"
+              "client_secret"
             ],
             "definitions": {
               "Experience": {
@@ -3630,7 +3617,7 @@
               },
               "romeCode": {
                 "title": "Romecode",
-                "description": "ROME code of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}metiers",
+                "description": "ROME code of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/metiers",
                 "type": "string"
               },
               "romeLibelle": {
@@ -3639,7 +3626,7 @@
               },
               "appellationLibelle": {
                 "title": "Appellationlibelle",
-                "description": "Code of the appellationA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}appellations",
+                "description": "Code of the appellationA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/appellations",
                 "type": "string"
               },
               "entreprise": {
@@ -3647,17 +3634,17 @@
               },
               "typeContrat": {
                 "title": "Typecontrat",
-                "description": "Contract type codeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}typesContrats",
+                "description": "Contract type codeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/typesContrats",
                 "type": "string"
               },
               "typeContratLibelle": {
                 "title": "Typecontratlibelle",
-                "description": "Contract type labelExample : CDI,CDDA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}typesContrats",
+                "description": "Contract type labelExample : CDI,CDDA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/typesContrats",
                 "type": "string"
               },
               "natureContrat": {
                 "title": "Naturecontrat",
-                "description": "Code of the nature of contractA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}naturesContrats",
+                "description": "Code of the nature of contractA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/naturesContrats",
                 "type": "string"
               },
               "origineOffre": {
@@ -3763,12 +3750,12 @@
               },
               "secteurActivite": {
                 "title": "Secteuractivite",
-                "description": "NAF codes for sectors of activity. It is possible to specify two NAF codes by separating them with a comma in the character string.Example : 01,02A GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}secteursActivites",
+                "description": "NAF codes for sectors of activity. It is possible to specify two NAF codes by separating them with a comma in the character string.Example : 01,02A GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/secteursActivites",
                 "type": "string"
               },
               "secteurActiviteLibelle": {
                 "title": "Secteuractivitelibelle",
-                "description": "Sector of activitylabelA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}secteursActivites",
+                "description": "Sector of activitylabelA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/secteursActivites",
                 "type": "string"
               },
               "qualitesProfessionnelles": {
@@ -3782,14 +3769,7 @@
             "required": [
               "id",
               "intitule",
-              "description",
-              "romeCode",
-              "appellationLibelle",
-              "typeContrat",
-              "typeContratLibelle",
-              "natureContrat",
-              "secteurActivite",
-              "secteurActiviteLibelle"
+              "description"
             ],
             "definitions": {
               "JobLocation": {
@@ -3814,7 +3794,7 @@
                   },
                   "commune": {
                     "title": "Commune",
-                    "description": "INSEE code of the communeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}communes",
+                    "description": "INSEE code of the communeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/communes",
                     "type": "string"
                   }
                 },
@@ -3939,7 +3919,7 @@
                   },
                   "niveauLibelle": {
                     "title": "Niveaulibelle",
-                    "description": "Label of the level of the education requiredA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}referentiel/niveauxFormations",
+                    "description": "Label of the level of the education requiredA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/referentiel/niveauxFormations",
                     "type": "string"
                   },
                   "commentaire": {
@@ -3963,7 +3943,7 @@
                 "properties": {
                   "libelle": {
                     "title": "Libelle",
-                    "description": "Language labelA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}referentiel/langues",
+                    "description": "Language labelA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/referentiel/langues",
                     "type": "string"
                   },
                   "exigence": {
@@ -3980,7 +3960,7 @@
                 "properties": {
                   "libelle": {
                     "title": "Libelle",
-                    "description": "requested licenseA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}referentiel/permis",
+                    "description": "requested licenseA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/referentiel/permis",
                     "type": "string"
                   },
                   "exigence": {

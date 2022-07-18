@@ -16,7 +16,7 @@ Retrieves jobs via the ***Offres d'emploi v2*** API from the Pôle emploi websit
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
+| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
 | `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L69) | Formatting function |
 
 ## Source Parameters
@@ -27,24 +27,24 @@ Retrieves jobs via the ***Offres d'emploi v2*** API from the Pôle emploi websit
 | `client_secret` :red_circle: | `str` | None | Client Secret used to access Pole Emploi API |
 | `range`  | `str` | None |  |
 | `sort`  | `int` | None |  |
-| `domaine` :red_circle: | `str` | None | Professional field codeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint :{POLEEMPLOI_REFERENCES_ENDPOINT}/domaines |
-| `codeROME` :red_circle: | `str` | None | ROME code of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/metiers |
-| `theme` :red_circle: | `str` | None | Theme of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/themes |
-| `appellation` :red_circle: | `str` | None | Code of the appellationA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/appellations |
-| `secteurActivite` :red_circle: | `str` | None | NAF codes for sectors of activity. It is possible to specify two NAF codes by separating them with a comma in the character string.Example : 01,02A GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/secteursActivites |
+| `domaine`  | `str` | None | Professional field codeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint :https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//domaines |
+| `codeROME`  | `str` | None | ROME code of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//metiers |
+| `theme`  | `str` | None | Theme of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//themes |
+| `appellation`  | `str` | None | Code of the appellationA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//appellations |
+| `secteurActivite`  | `str` | None | NAF codes for sectors of activity. It is possible to specify two NAF codes by separating them with a comma in the character string.Example : 01,02A GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//secteursActivites |
 | `experience`  | `str` | None |  |
-| `typeContrat` :red_circle: | `str` | None | Contract type codeExample : CDI,CDDA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/typesContrats |
-| `natureContrat` :red_circle: | `str` | None | Code of the nature of contractA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/naturesContrats |
+| `typeContrat`  | `str` | None | Contract type codeExample : CDI,CDDA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//typesContrats |
+| `natureContrat`  | `str` | None | Code of the nature of contractA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//naturesContrats |
 | `origineOffre`  | `str` | None |  |
 | `qualification`  | `str` | None |  |
 | `tempsPlein`  | `bool` | None |  |
-| `commune` :red_circle: | `str` | None | INSEE code of the communeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/communes |
-| `departement` :red_circle: | `str` | None | INSEE code of the departmentA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/departements |
+| `commune`  | `str` | None | INSEE code of the communeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//communes |
+| `departement`  | `str` | None | INSEE code of the departmentA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//departements |
 | `inclureLimitrophes`  | `bool` | None |  |
-| `region` :red_circle: | `str` | None | Code of the region of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/regions |
-| `paysContinent` :red_circle: | `str` | None | Code of the country or continent of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/paysAND {POLEEMPLOI_REFERENCES_ENDPOINT}/continents |
-| `niveauFormation` :red_circle: | `str` | None | Level of education requiredA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/niveauxFormations |
-| `permis` :red_circle: | `str` | None | Code of the requested licenseA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : {POLEEMPLOI_REFERENCES_ENDPOINT}/permis |
+| `region`  | `str` | None | Code of the region of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//regions |
+| `paysContinent`  | `str` | None | Code of the country or continent of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//paysAND https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//continents |
+| `niveauFormation`  | `str` | None | Level of education requiredA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//niveauxFormations |
+| `permis`  | `str` | None | Code of the requested licenseA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//permis |
 | `motsCles`  | `str` | None |  |
 | `salaireMin`  | `float` | None |  |
 | `periodeSalaire`  | `str` | None |  |
