@@ -3,14 +3,15 @@ import json
 import typing as t
 
 
-from hrflow_connectors.connectors.hrflow.warehouse import HrFlowProfileWarehouse
+from hrflow_connectors.connectors.hrflow.warehouse import HrFlowProfileWarehouse, HrFlowJobWarehouse
 
-from hrflow_connectors.connectors.taleez.warehouse import TaleezProfilesWarehouse
+from hrflow_connectors.connectors.taleez.warehouse import TaleezProfilesWarehouse, TaleezJobWarehouse
 
 from hrflow_connectors.core import BaseActionParameters, Connector, ConnectorAction
 
 PROPERTIES_PATH = "src/hrflow_connectors/connectors/taleez/properties.json"
 DATE_FORMAT = "%Y-%m-%d"
+INITIALREF = "HrFlow"
 HRFLOW_TAGS_MAPPING = {
     "experience": 51933,
     "fr_education_level": 51934,
@@ -41,9 +42,82 @@ EDUCATION_LEVELS_MAPPING = {
     600951: "Doctorat et équivalent (> bac +5)",
 }
 
+import enum
+import typing as t
+from logging import LoggerAdapter
+
+import requests
+from pydantic import BaseModel, Field
+
+from hrflow_connectors.connectors.taleez.schemas import (
+    Job,
+)
+from hrflow_connectors.core import (
+    ActionEndpoints,
+    Warehouse,
+    WarehouseReadAction,
+)
+
+TALEEZ_JOBS_ENDPOINT = "https://api.taleez.com/0/jobs"
+TALEEZ_JOBS_ENDPOINT_LIMIT = 100
+
+
+GET_ALL_JOBS_ENDPOINT = ActionEndpoints(
+    name="Get all jobs",
+    description=(
+        "Endpoint to retrieve all jobs."
+        " and get the list of all jobs with their ids, the request method"
+        " is `GET`"
+    ),
+    url=(
+        "https://api.taleez.com/0/jobs"
+    ),
+)
+
+
+class JobStatus(str, enum.Enum):
+    published = "PUBLISHED"
+
+
+class PullJobsParameters(BaseModel):
+    x_taleez_api_secret: str = Field(
+        ..., description="X-taleez-api-secret used to access Taleez API", repr=False
+    )
+    with_details: bool = Field(..., description="xxx")
+    job_status: JobStatus = Field(None, description="Posting status of a job. One of {}".format(
+        [e.value for e in JobStatus]
+    ))
+
+
+def read(adapter: LoggerAdapter, parameters: PullJobsParameters) -> t.Iterable[t.Dict]:
+    params = dict(
+        withDetails=parameters.with_details,
+        status=parameters.job_status
+    )
+
+    response = requests.get(
+        TALEEZ_JOBS_ENDPOINT,
+        headers={ "X-taleez-api-secret": parameters.x_taleez_api_secret },
+        params=params
+    )
+
+    if response.status_code // 100 != 2:
+        adapter.error(
+            "Failed to pull jobs from Taleez params={}"
+            " status_code={} response={}".format(
+                params, response.status_code, response.text
+            )
+        )
+        raise Exception("Failed to pull jobs from Taleez")
+
+    response = response.json()
+    jobs = response["list"]
+
+    for job in jobs:
+        yield job
 
 class ExperienceId:
-    def __init__(self, ids, period):
+    def __init__(self, ids: t.List, period: int):
         self.ids = ids
         self.period = period
 
@@ -68,9 +142,7 @@ def process_experience(tag_value):
     Returns:
         int: experience id for the candidate
     """
-    t = float(tag_value)
-    T = EXPERIENCE_IDS.get_period()
-    ids = EXPERIENCE_IDS.get_ids()
+    t, T, ids= float(tag_value), EXPERIENCE_IDS.get_period(), EXPERIENCE_IDS.get_ids()
     n = 0
     if t > 0 and t < T:
         n = 1
@@ -78,7 +150,7 @@ def process_experience(tag_value):
         n = int(t)
     else:
         n = T
-    return ids[n]
+    return [ids[n]]
 
 
 def process_availability(tag_value):
@@ -96,10 +168,6 @@ def process_availability(tag_value):
         return tag_value
     except ValueError:
         return ""
-
-
-def process_source(tag_value):
-    return tag_value if tag_value else DEFAULT_CANDIDATE_SOURCE
 
 
 def get_education_level(profile: t.Dict):
@@ -190,8 +258,9 @@ class Property:
 # Hardskills
 def get_parsed_hardskills(profile: t.Dict):
     skills = list(filter(lambda x: x["type"] == "hard", profile["skills"]))
+    skills = [skill["name"] for skill in skills] if skills else []
     # return ", ".join(sorted(set(skills), key=skills.index))
-    return ", ".join(sorted(skills)) if skills else ""
+    return ", ".join(skills) if skills else ""
 
 
 def get_languages(profile: t.Dict):
@@ -216,7 +285,7 @@ def get_last_position(profile: t.Dict):
 
 # Get properties to push on taleez from HrFlow.ai profile object
 def get_hrflow_tag_by_name(hrflow_profile: t.Dict, tag_name: str) -> t.Optional[t.Dict]:
-    return next(filter(lambda x: x["name"] == tag_name, hrflow_profile["tags"]), None)
+    return next(filter(lambda x: x["name"] == tag_name, hrflow_profile["tags"]), {})
 
 
 #
@@ -250,11 +319,11 @@ def get_profile_properties_to_push(
 
     # 1 - Availability
     tag_name = "availability"
-    input_text = get_hrflow_tag_by_name(profile, tag_name)["value"]
-    processor = process_availability
-    output.append(
-        property_objects[tag_name].generate_property_payload(
-            input_text=input_text, processor=processor
+    if get_hrflow_tag_by_name(profile, tag_name):
+        processor = process_availability
+        output.append(
+            property_objects[tag_name].generate_property_payload(
+                input_text=get_hrflow_tag_by_name(profile, tag_name)["value"], processor=processor
         )
     )
     # 2 - Experience
@@ -296,10 +365,10 @@ def get_profile_properties_to_push(
 
 def format_profile(profile: t.Dict) -> t.Dict:
     candidate = dict(
-        first_name=profile["info"]["first_name"],
-        last_name=profile["info"]["last_name"],
+        firstName=profile["info"]["first_name"],
+        lastName=profile["info"]["last_name"],
         mail=profile["info"]["email"],
-        initial_referrer="",
+        initialReferrer=INITIALREF,
         lang=str(profile["text_language"]).upper(),
         social_links={},
     )
@@ -308,6 +377,79 @@ def format_profile(profile: t.Dict) -> t.Dict:
     cv = get_CV(profile)
     return dict(candidate=candidate, CV=cv, properties=properties)
 
+def get_job_location(taleez_job: t.Union[t.Dict, None]) -> t.Dict:
+    if taleez_job is None:
+        return dict(lat=None, lng=None, text="")
+
+    lat = taleez_job.get("lat")
+    lat = float(lat) if lat is not None else lat
+
+    lng = taleez_job.get("lng")
+    lng = float(lng) if lng is not None else lng
+
+    concatenate = []
+    for field in ["postalCode", "city", "country"]:
+        if taleez_job.get(field):
+            concatenate.append(taleez_job.get(field))
+
+    return dict(lat=lat, lng=lng, text=" ".join(concatenate))
+
+def get_sections(taleez_job: t.Dict) -> t.List[t.Dict]:
+    sections = []
+    for section_name in [
+        "jobDescription",
+        "profileDescription",
+        "companyDescription"
+    ]:
+        section = taleez_job.get(section_name)
+        if section is not None:
+            sections.append(
+                dict(
+                    name="taleez-sections-{}".format(section_name), 
+                    title=section_name, 
+                    description=section,
+                )
+            )
+    return sections
+
+def get_tags(taleez_job: t.Dict) -> t.List[t.Dict]:
+    taleez_tags = taleez_job.get('tags')
+    t = lambda name, value: dict(name=name, value=value)
+
+    custom_fields = [
+        "contract",
+        "profile",
+        "contractLength",
+        "fullTime",
+        "workHours",
+        "qualification",
+        "remote",
+        "recruiterId",
+        "companyLabel",
+        "urlApplying",
+        "currentStatus",
+    ]
+
+    tags = [t("{}_{}".format("taleez", field), taleez_job.get(field)) for field in custom_fields]
+    tags += [t("{}_{}".format("taleez", "tag"), tag) for tag in taleez_tags]
+    return tags
+
+def format_job(taleez_job: t.Dict) -> t.Dict:
+    job = dict(
+        name=taleez_job.get("label", "Undefined"), 
+        reference=str(taleez_job.get("id")),
+        created_at=datetime.fromtimestamp(taleez_job["dateCreation"]).isoformat(),
+        updated_at=datetime.fromtimestamp(taleez_job["dateLastPublish"]).isoformat(),
+        location=get_job_location(taleez_job),
+        url=taleez_job.get("url"),
+        summary=None,
+        sections=get_sections(taleez_job),
+        tags=get_tags(taleez_job),
+    )
+    return job
+
+DESCRIPTION = ("Taleez est une solution globale de gestion des candidatures et de diffusion d'offres d'emploi."
+"Pilotez intégralement vos processus de recrutement et intégrez vos équipes dans les décisions.")
 
 Taleez = Connector(
     name="Taleez",
@@ -326,5 +468,17 @@ Taleez = Connector(
             origin=HrFlowProfileWarehouse,
             target=TaleezProfilesWarehouse,
         ),
+        ConnectorAction(
+            name="pull_jobs",
+            description=(
+                "Retrieves all jobs via the ***Taleez*** API and send them"
+                " to a ***Hrflow.ai Board***."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "PullJobsActionParameters", format=format_job
+            ),
+            origin=TaleezJobWarehouse,
+            target=HrFlowJobWarehouse,
+        )
     ],
 )
