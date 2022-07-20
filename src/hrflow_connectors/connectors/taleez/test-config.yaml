@@ -1,0 +1,134 @@
+actions:
+  push_profiles:
+    - id: valid_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: $__ACCEPT
+        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: $__CONTENT_TYPE
+      status: 'success'
+      events:
+        read_success: 1
+        read_failure: 0
+        write_failure: 0
+    - id: missing_api_secret
+      origin_parameters:
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: $__ACCEPT
+        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: $__CONTENT_TYPE
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+      status: 'fatal'
+    - id: missing_profile_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+      target_parameters:
+        accept: $__ACCEPT
+        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: $__CONTENT_TYPE
+      status: 'fatal'
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+    - id: invalid_profile_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        profile_key: "Not_A_JOB_KEY"
+        source_key: $__SOURCE_KEY
+      target_parameters:
+        accept: $__ACCEPT
+        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: $__CONTENT_TYPE
+      status: 'success'
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+    - id: missing_source_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: $__ACCEPT
+        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: $__CONTENT_TYPE
+      status: 'fatal'
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+    - id: invalid_source_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: ""  
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: $__ACCEPT
+        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: $__CONTENT_TYPE
+      status: 'success'
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+    - id: invalid_api_user
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: " "
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: $__ACCEPT
+        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: $__CONTENT_TYPE
+      status: 'fatal'
+      events:
+        read_success: 0
+        read_failure: 1
+        write_failure: 0
+    - id: missing_secret_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: $__ACCEPT
+        content_type: $__CONTENT_TYPE
+      status: 'fatal'
+    - id: missing_accept
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: $__CONTENT_TYPE
+      status: 'success_with_failures'
+    - id: missing_content_type
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: $__ACCEPT
+        taleez_api_secret: $__X_TALEEZ_API_SECRET
+      status: 'fatal'
