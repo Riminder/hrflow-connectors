@@ -75,7 +75,7 @@ def read(adapter: LoggerAdapter, parameters: ReadJobsParameters) -> t.Iterable[t
 
 class WriteProfilesParameters(BaseModel):
     accept: str = Field(ACCEPT, const=True)
-    taleez_api_secret: str = Field(
+    x_taleez_api_secret: str = Field(
         ..., description="Client Secret id used to access Taleez API", repr=False
     )
     content_type: str = Field(..., description="Content type", repr=True)
@@ -92,7 +92,7 @@ def write(
     for profile in data:
         headers = {
             "accept": "{}".format(parameters.accept),
-            "X-taleez-api-secret": "{}".format(parameters.taleez_api_secret),
+            "X-taleez-api-secret": "{}".format(parameters.x_taleez_api_secret),
             "Content-Type": "{}".format(parameters.content_type),
         }
 
@@ -115,7 +115,7 @@ def write(
             "{}/{}/documents?cv=true".format(POST_CANDIDATE_ENDPOINT, id),
             headers={
                 "accept": "{}".format(parameters.accept),
-                "X-taleez-api-secret": "{}".format(parameters.taleez_api_secret),
+                "X-taleez-api-secret": "{}".format(parameters.x_taleez_api_secret),
             },
             files=[
                 (
@@ -145,7 +145,7 @@ def write(
                 data=json.dumps(profile["properties"]),
                 headers={
                     "accept": "{}".format(parameters.accept),
-                    "X-taleez-api-secret": "{}".format(parameters.taleez_api_secret),
+                    "X-taleez-api-secret": "{}".format(parameters.x_taleez_api_secret),
                     "Content-Type": "{}".format(parameters.content_type),
                 },
             )

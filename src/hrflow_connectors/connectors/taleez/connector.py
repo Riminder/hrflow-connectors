@@ -15,8 +15,12 @@ from hrflow_connectors.connectors.taleez.warehouse import (
     TaleezJobWarehouse,
     TaleezProfilesWarehouse,
 )
-from hrflow_connectors.core import ActionEndpoints
-from hrflow_connectors.core import BaseActionParameters, Connector, ConnectorAction
+from hrflow_connectors.core import (
+    ActionEndpoints,
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+)
 
 PROPERTIES_PATH = "src/hrflow_connectors/connectors/taleez/properties.json"
 DATE_FORMAT = "%Y-%m-%d"
@@ -417,8 +421,9 @@ def get_sections(taleez_job: t.Dict) -> t.List[t.Dict]:
 
 def get_tags(taleez_job: t.Dict) -> t.List[t.Dict]:
     taleez_tags = taleez_job.get("tags")
+    if taleez_tags is None:
+        return []
     t = lambda name, value: dict(name=name, value=value)
-
     custom_fields = [
         "contract",
         "profile",
@@ -432,7 +437,6 @@ def get_tags(taleez_job: t.Dict) -> t.List[t.Dict]:
         "urlApplying",
         "currentStatus",
     ]
-
     tags = [
         t("{}_{}".format("taleez", field), taleez_job.get(field))
         for field in custom_fields

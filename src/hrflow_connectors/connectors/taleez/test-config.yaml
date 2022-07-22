@@ -1,4 +1,81 @@
+warehouse:
+  TaleezJobWarehouse:
+    read:
+      - parameters:
+          accept: $__ACCEPT
+          x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+          with_details: $__WITH_DETAILS
+          posting_status: PUBLIC
+          limit: 1
+        expected_number_of_items: 6
 actions:
+  pull_jobs:
+    - id : valid_parameters
+      origin_parameters:
+        accept: $__ACCEPT
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        with_details: $__WITH_DETAILS
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+    - id: missing_x_taleez_api_secret
+      origin_parameters:
+        accept: $__ACCEPT
+        with_details: $__WITH_DETAILS
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+    - id: missing_api_secret
+      origin_parameters:
+        accept: $__ACCEPT
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        with_details: $__WITH_DETAILS
+      target_parameters:
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+    - id: invalid_api_secret
+      origin_parameters:
+        accept: $__ACCEPT
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        with_details: $__WITH_DETAILS
+      target_parameters:
+        api_secret: "Not_API_KEY"
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+    - id : missing_board_key
+      origin_parameters:
+        accept: $__ACCEPT
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        with_details: $__WITH_DETAILS
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      status: fatal
+    - id: invalid_board_key
+      origin_parameters:
+        accept: $__ACCEPT
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        with_details: $__WITH_DETAILS
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: "Not_BOARD_KEY"
+      status: fatal
+    - id : missing_api_user
+      origin_parameters:
+        accept: $__ACCEPT
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        with_details: $__WITH_DETAILS
+      target_parameters:
+        api_secret: $__API_SECRET
+        board_key: $__BOARD_KEY
+      status: fatal
   push_profiles:
     - id: valid_parameters
       origin_parameters:
@@ -8,7 +85,7 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         accept: $__ACCEPT
-        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
         content_type: $__CONTENT_TYPE
       status: 'success'
       events:
@@ -22,7 +99,7 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         accept: $__ACCEPT
-        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
         content_type: $__CONTENT_TYPE
       events:
         read_success: 0
@@ -36,7 +113,7 @@ actions:
         source_key: $__SOURCE_KEY
       target_parameters:
         accept: $__ACCEPT
-        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
         content_type: $__CONTENT_TYPE
       status: 'fatal'
       events:
@@ -51,7 +128,7 @@ actions:
         source_key: $__SOURCE_KEY
       target_parameters:
         accept: $__ACCEPT
-        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
         content_type: $__CONTENT_TYPE
       status: 'success'
       events:
@@ -65,7 +142,7 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         accept: $__ACCEPT
-        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
         content_type: $__CONTENT_TYPE
       status: 'fatal'
       events:
@@ -80,7 +157,7 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         accept: $__ACCEPT
-        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
         content_type: $__CONTENT_TYPE
       status: 'success'
       events:
@@ -95,13 +172,9 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         accept: $__ACCEPT
-        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
         content_type: $__CONTENT_TYPE
       status: 'fatal'
-      events:
-        read_success: 0
-        read_failure: 1
-        write_failure: 0
     - id: missing_secret_key
       origin_parameters:
         api_secret: $__API_SECRET
@@ -119,9 +192,9 @@ actions:
         source_key: $__SOURCE_KEY
         profile_key: $__PROFILE_KEY
       target_parameters:
-        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
         content_type: $__CONTENT_TYPE
-      status: 'success_with_failures'
+      status: 'success'
     - id: missing_content_type
       origin_parameters:
         api_secret: $__API_SECRET
@@ -130,5 +203,5 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         accept: $__ACCEPT
-        taleez_api_secret: $__X_TALEEZ_API_SECRET
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
       status: 'fatal'
