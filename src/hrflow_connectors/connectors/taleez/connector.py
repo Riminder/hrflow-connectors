@@ -1,13 +1,21 @@
-from datetime import datetime
 import json
 import typing as t
+from datetime import datetime
 
-
-from hrflow_connectors.connectors.hrflow.warehouse import HrFlowProfileWarehouse, HrFlowJobWarehouse
-
-from hrflow_connectors.connectors.taleez.warehouse import TaleezProfilesWarehouse, TaleezJobWarehouse
-
-from hrflow_connectors.core import BaseActionParameters, Connector, ConnectorAction
+from hrflow_connectors.connectors.hrflow.warehouse import (
+    HrFlowJobWarehouse,
+    HrFlowProfileWarehouse,
+)
+from hrflow_connectors.connectors.taleez.warehouse import (
+    TaleezJobWarehouse,
+    TaleezProfilesWarehouse,
+)
+from hrflow_connectors.core import (
+    ActionEndpoints,
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+)
 
 PROPERTIES_PATH = "src/hrflow_connectors/connectors/taleez/properties.json"
 DATE_FORMAT = "%Y-%m-%d"
@@ -27,6 +35,7 @@ HRFLOW_TAGS_MAPPING = {
     "hard_skills": 56260,
     "languages": 56261,
     "courses": 56262,
+    "last_education": 59898,
 }
 
 DEFAULT_CANDIDATE_SOURCE = "HrFlow"
@@ -42,21 +51,16 @@ EDUCATION_LEVELS_MAPPING = {
     600951: "Doctorat et équivalent (> bac +5)",
 }
 
-import enum
-import typing as t
-from logging import LoggerAdapter
-
-import requests
-from pydantic import BaseModel, Field
-
-from hrflow_connectors.connectors.taleez.schemas import (
-    Job,
-)
-from hrflow_connectors.core import (
-    ActionEndpoints,
-    Warehouse,
-    WarehouseReadAction,
-)
+SOCIAL_LINKS = [
+    "linkedin",
+    "viadeo",
+    "twitter",
+    "github",
+    "behance",
+    "other",
+    "website",
+    "dribble",
+]
 
 TALEEZ_JOBS_ENDPOINT = "https://api.taleez.com/0/jobs"
 TALEEZ_JOBS_ENDPOINT_LIMIT = 100
@@ -69,105 +73,8 @@ GET_ALL_JOBS_ENDPOINT = ActionEndpoints(
         " and get the list of all jobs with their ids, the request method"
         " is `GET`"
     ),
-    url=(
-        "https://api.taleez.com/0/jobs"
-    ),
+    url="https://api.taleez.com/0/jobs",
 )
-
-
-class JobStatus(str, enum.Enum):
-    published = "PUBLISHED"
-
-
-class PullJobsParameters(BaseModel):
-    x_taleez_api_secret: str = Field(
-        ..., description="X-taleez-api-secret used to access Taleez API", repr=False
-    )
-    with_details: bool = Field(..., description="xxx")
-    job_status: JobStatus = Field(None, description="Posting status of a job. One of {}".format(
-        [e.value for e in JobStatus]
-    ))
-
-
-def read(adapter: LoggerAdapter, parameters: PullJobsParameters) -> t.Iterable[t.Dict]:
-    params = dict(
-        withDetails=parameters.with_details,
-        status=parameters.job_status
-    )
-
-    response = requests.get(
-        TALEEZ_JOBS_ENDPOINT,
-        headers={ "X-taleez-api-secret": parameters.x_taleez_api_secret },
-        params=params
-    )
-
-    if response.status_code // 100 != 2:
-        adapter.error(
-            "Failed to pull jobs from Taleez params={}"
-            " status_code={} response={}".format(
-                params, response.status_code, response.text
-            )
-        )
-        raise Exception("Failed to pull jobs from Taleez")
-
-    response = response.json()
-    jobs = response["list"]
-
-    for job in jobs:
-        yield job
-
-class ExperienceId:
-    def __init__(self, ids: t.List, period: int):
-        self.ids = ids
-        self.period = period
-
-    def get_period(self):
-        return self.period
-
-    def get_ids(self):
-        return self.ids
-
-
-EXPERIENCE_IDS = ExperienceId(ids=[600932 + i for i in range(10)], period=1)
-
-
-def process_experience(tag_value):
-    """This function parses the experience duration of the candidate
-    from the HrFlow.ai profile and returns the corresponding id for the experience
-    property
-
-    Args:
-        profile (t.Dict): HrFlow.ai profile to process
-
-    Returns:
-        int: experience id for the candidate
-    """
-    t, T, ids= float(tag_value), EXPERIENCE_IDS.get_period(), EXPERIENCE_IDS.get_ids()
-    n = 0
-    if t > 0 and t < T:
-        n = 1
-    elif t < (len(ids) - 1) * T:
-        n = int(t)
-    else:
-        n = T
-    return [ids[n]]
-
-
-def process_availability(tag_value):
-    """This function parses the text of the availability tag in HrFlow.ai
-        Profile and returns the corresponding availability choice id in the property
-
-    Args:
-        tag_value (str): value of the tag with name availabilty in HrFlow.ai Profile.
-
-    Returns:
-        int: choice id from the picklist defined in the property Disponibilité in Taleez
-    """
-    try:
-        datetime.strptime(tag_value, DATE_FORMAT)
-        return tag_value
-    except ValueError:
-        return ""
 
 
 def get_education_level(profile: t.Dict):
@@ -186,14 +93,12 @@ def get_CV(profile: t.Dict):
     ).get("public_url")
 
 
-# Taleez properties
 def get_property_by_id(
     properties_list: t.List[t.Dict], prop_id: int
 ) -> t.Optional[t.Dict]:
     return next(iter(filter(lambda x: x["id"] == prop_id, properties_list)), None)
 
 
-# Get settings
 def tags_to_properties_mapping(properties: t.List[t.Dict]) -> t.Dict:
     mapping = dict()
     for tag_name, id_ in HRFLOW_TAGS_MAPPING.items():
@@ -203,7 +108,6 @@ def tags_to_properties_mapping(properties: t.List[t.Dict]) -> t.Dict:
     return mapping
 
 
-# Taleez Property Class
 class Property:
     def __init__(
         self,
@@ -255,11 +159,9 @@ class Property:
         return payload
 
 
-# Hardskills
 def get_parsed_hardskills(profile: t.Dict):
     skills = list(filter(lambda x: x["type"] == "hard", profile["skills"]))
     skills = [skill["name"] for skill in skills] if skills else []
-    # return ", ".join(sorted(set(skills), key=skills.index))
     return ", ".join(skills) if skills else ""
 
 
@@ -283,99 +185,94 @@ def get_last_position(profile: t.Dict):
     return profile["experiences"][0]["title"]
 
 
-# Get properties to push on taleez from HrFlow.ai profile object
 def get_hrflow_tag_by_name(hrflow_profile: t.Dict, tag_name: str) -> t.Optional[t.Dict]:
     return next(filter(lambda x: x["name"] == tag_name, hrflow_profile["tags"]), {})
 
 
-#
 def get_profile_properties_to_push(
     profile: t.Dict, origin_properties: t.List[t.Dict]
 ) -> t.List[t.Dict]:
-    """Takes hrflow profile object and the list of all properties from Taleez candidates endpoint
-       Generates Property objects to leverage class methods to format tag values and each tag specific
-       processor to format the text if needed or select the corresponding choice from choices list in case
-       of a select field depending on the rule fixed in the processor function.
+    """Takes hrflow profile object and the list of all properties
+        from Taleez candidates endpoint
+        Generates Property objects to leverage class methods
+        to format tag values and each tag specific
+        processor to format the text if needed or
+        select the corresponding choice from choices list in case
+        of a select field depending on the rule fixed in the processor function.
 
     Args:
         profile (t.Dict): HrFlow.ai Profile
-        origin_properties (t.List[t.Dict]): List of properties created by the customer on Taleez (result of get candidate-properties)
+        origin_properties (t.List[t.Dict]): List of properties
+        created by the customer on Taleez (result of get candidate-properties)
 
     Returns:
-        t.List[t.Dict]: List of properties payload to post via candidate-properties endpoint
+        t.List[t.Dict]: List of properties payload
+        to post via candidate-properties endpoint
     """
     output = []
-
-    # Default Values
-    # Source
-
     property_objects = dict()
     for tag_name, property_id in HRFLOW_TAGS_MAPPING.items():
-        property_dict = get_property_by_id(
-            origin_properties, property_id
-        )  # handle experience and skills/certifications
+        property_dict = get_property_by_id(origin_properties, property_id)
         if property_dict:
             property_objects[tag_name] = Property(**property_dict)
 
-    # 1 - Availability
-    tag_name = "availability"
-    if get_hrflow_tag_by_name(profile, tag_name):
-        processor = process_availability
-        output.append(
-            property_objects[tag_name].generate_property_payload(
-                input_text=get_hrflow_tag_by_name(profile, tag_name)["value"], processor=processor
-        )
-    )
-    # 2 - Experience
-    tag_name = "experience"  # noqa it's not a tag in HrFlow profile
-    input_text = profile["experiences_duration"]  # noqa input_text here is a float
-    processor = process_experience
-    output.append(
-        property_objects[tag_name].generate_property_payload(
-            input_text=input_text, processor=processor
-        )
-    )
-    # 3 - Source candidate (HrFlow)
     tag_name = "source_candidate"
-    input_text = DEFAULT_CANDIDATE_SOURCE  # HrFlow
+    input_text = profile["source"]["name"]
     output.append(
         property_objects[tag_name].generate_property_payload(input_text=input_text)
-    )  # TODO handle case tag doesn't exist --> input_text=None
-    #  - Hardskills
-    tag_name = "hard_skills"  # noqa it's not a tag in HrFlow profile
-    # Skills retrieved from job board (in tags as text concatenated by ",")
+    )
+
+    tag_name = "hard_skills"
     input_text = get_parsed_hardskills(profile)
     output.append(
         property_objects[tag_name].generate_property_payload(input_text=input_text)
     )
-    # 4 - Languages
+
     tag_name = "languages"
     input_text = get_languages(profile)
     output.append(
         property_objects[tag_name].generate_property_payload(input_text=input_text)
     )
-    # 5 - Courses
+
     tag_name = "courses"
     input_text = get_courses(profile)
     output.append(
         property_objects[tag_name].generate_property_payload(input_text=input_text)
     )
+
+    tag_name = "last_position"
+    input_text = profile["experiences"][0]["title"] if profile["experiences"] else ""
+    output.append(
+        property_objects[tag_name].generate_property_payload(input_text=input_text)
+    )
+
+    tag_name = "last_education"
+    input_text = profile["educations"][0]["title"] if profile["educations"] else ""
+    output.append(
+        property_objects[tag_name].generate_property_payload(input_text=input_text)
+    )
+
     return output
 
 
 def format_profile(profile: t.Dict) -> t.Dict:
+    social_links = {}
+    for link in profile["info"]["urls"]:
+        if link["type"] in SOCIAL_LINKS:
+            social_links["{}".format(link["type"])] = link["url"]
     candidate = dict(
         firstName=profile["info"]["first_name"],
         lastName=profile["info"]["last_name"],
         mail=profile["info"]["email"],
         initialReferrer=INITIALREF,
         lang=str(profile["text_language"]).upper(),
-        social_links={},
+        social_links=social_links,
     )
+    cv = get_CV(profile)
     with open(PROPERTIES_PATH) as f:
         properties = get_profile_properties_to_push(profile, json.load(f)["list"])
-    cv = get_CV(profile)
     return dict(candidate=candidate, CV=cv, properties=properties)
+
 
 def get_job_location(taleez_job: t.Union[t.Dict, None]) -> t.Dict:
     if taleez_job is None:
@@ -394,49 +291,46 @@ def get_job_location(taleez_job: t.Union[t.Dict, None]) -> t.Dict:
 
     return dict(lat=lat, lng=lng, text=" ".join(concatenate))
 
+
 def get_sections(taleez_job: t.Dict) -> t.List[t.Dict]:
     sections = []
-    for section_name in [
-        "jobDescription",
-        "profileDescription",
-        "companyDescription"
-    ]:
+    for section_name in ["jobDescription", "profileDescription", "companyDescription"]:
         section = taleez_job.get(section_name)
         if section is not None:
             sections.append(
                 dict(
-                    name="taleez-sections-{}".format(section_name), 
-                    title=section_name, 
+                    name="taleez-sections-{}".format(section_name),
+                    title=section_name,
                     description=section,
                 )
             )
     return sections
 
+
 def get_tags(taleez_job: t.Dict) -> t.List[t.Dict]:
-    taleez_tags = taleez_job.get('tags')
+    taleez_tags = taleez_job.get("tags")
+    if taleez_tags is None:
+        return []
     t = lambda name, value: dict(name=name, value=value)
 
     custom_fields = [
         "contract",
         "profile",
-        "contractLength",
-        "fullTime",
-        "workHours",
-        "qualification",
-        "remote",
-        "recruiterId",
-        "companyLabel",
         "urlApplying",
         "currentStatus",
     ]
 
-    tags = [t("{}_{}".format("taleez", field), taleez_job.get(field)) for field in custom_fields]
+    tags = [
+        t("{}_{}".format("taleez", field), taleez_job.get(field))
+        for field in custom_fields
+    ]
     tags += [t("{}_{}".format("taleez", "tag"), tag) for tag in taleez_tags]
     return tags
 
+
 def format_job(taleez_job: t.Dict) -> t.Dict:
     job = dict(
-        name=taleez_job.get("label", "Undefined"), 
+        name=taleez_job.get("label", "Undefined"),
         reference=str(taleez_job.get("id")),
         created_at=datetime.fromtimestamp(taleez_job["dateCreation"]).isoformat(),
         updated_at=datetime.fromtimestamp(taleez_job["dateLastPublish"]).isoformat(),
@@ -448,8 +342,12 @@ def format_job(taleez_job: t.Dict) -> t.Dict:
     )
     return job
 
-DESCRIPTION = ("Taleez est une solution globale de gestion des candidatures et de diffusion d'offres d'emploi."
-"Pilotez intégralement vos processus de recrutement et intégrez vos équipes dans les décisions.")
+
+DESCRIPTION = (
+    "Taleez est une solution globale de gestion des candidatures et de diffusion"
+    " d'offres d'emploi.Pilotez intégralement vos processus de recrutement et intégrez"
+    " vos équipes dans les décisions."
+)
 
 Taleez = Connector(
     name="Taleez",
@@ -479,6 +377,6 @@ Taleez = Connector(
             ),
             origin=TaleezJobWarehouse,
             target=HrFlowJobWarehouse,
-        )
+        ),
     ],
 )

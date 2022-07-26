@@ -1,14 +1,19 @@
 import enum
-from logging import LoggerAdapter
-import typing as t
+import json
 import re
+import typing as t
+from logging import LoggerAdapter
 
 import requests
 from pydantic import BaseModel, Field
 
-from hrflow_connectors.core import (Warehouse, WarehouseWriteAction, WarehouseReadAction, ActionEndpoints)
-from hrflow_connectors.connectors.taleez.schemas import (Candidate, Job)
-
+from hrflow_connectors.connectors.taleez.schemas import Candidate, Job
+from hrflow_connectors.core import (
+    ActionEndpoints,
+    Warehouse,
+    WarehouseReadAction,
+    WarehouseWriteAction,
+)
 
 POST_CANDIDATE_ENDPOINT = "https://api.taleez.com/0/candidates"
 TALEEZ_JOBS_ENDPOINT = "https://api.taleez.com/0/jobs"
@@ -22,9 +27,7 @@ GET_ALL_JOBS_ENDPOINT = ActionEndpoints(
         " and get the list of all jobs with their ids, the request method"
         " is `GET`"
     ),
-    url=(
-        "https://api.taleez.com/0/jobs"
-    ),
+    url="https://api.taleez.com/0/jobs",
 )
 
 
@@ -32,26 +35,26 @@ class JobStatus(str, enum.Enum):
     published = "PUBLISHED"
 
 
-class PullJobsParameters(BaseModel):
+class ReadJobsParameters(BaseModel):
     x_taleez_api_secret: str = Field(
         ..., description="X-taleez-api-secret used to access Taleez API", repr=False
     )
     with_details: bool = Field(..., description="xxx")
-    job_status: JobStatus = Field(None, description="Posting status of a job. One of {}".format(
-        [e.value for e in JobStatus]
-    ))
-
-
-def read(adapter: LoggerAdapter, parameters: PullJobsParameters) -> t.Iterable[t.Dict]:
-    params = dict(
-        withDetails=parameters.with_details,
-        status=parameters.job_status
+    job_status: JobStatus = Field(
+        None,
+        description="Posting status of a job. One of {}".format(
+            [e.value for e in JobStatus]
+        ),
     )
+
+
+def read(adapter: LoggerAdapter, parameters: ReadJobsParameters) -> t.Iterable[t.Dict]:
+    params = dict(withDetails=parameters.with_details, status=parameters.job_status)
 
     response = requests.get(
         TALEEZ_JOBS_ENDPOINT,
-        headers={ "X-taleez-api-secret": parameters.x_taleez_api_secret },
-        params=params
+        headers={"X-taleez-api-secret": parameters.x_taleez_api_secret},
+        params=params,
     )
 
     if response.status_code // 100 != 2:
@@ -72,9 +75,10 @@ def read(adapter: LoggerAdapter, parameters: PullJobsParameters) -> t.Iterable[t
 
 class WriteProfilesParameters(BaseModel):
     accept: str = Field(ACCEPT, const=True)
-    X_taleez_api_secret: str = Field(
+    x_taleez_api_secret: str = Field(
         ..., description="Client Secret id used to access Taleez API", repr=False
     )
+    content_type: str = Field(..., description="Content type", repr=True)
 
 
 def write(
@@ -86,48 +90,72 @@ def write(
     adapter.info("Pushing {} candidates to Taleez API".format(len(data)))
     failed_profiles = []
     for profile in data:
+        headers = {
+            "accept": "{}".format(parameters.accept),
+            "X-taleez-api-secret": "{}".format(parameters.x_taleez_api_secret),
+            "Content-Type": "{}".format(parameters.content_type),
+        }
+
         response = requests.post(
-            POST_CANDIDATE_ENDPOINT, json=profile["candidate"], headers=parameters
+            POST_CANDIDATE_ENDPOINT,
+            headers=headers,
+            data=json.dumps(profile["candidate"]),
         )
-        id = re.search("[0-9]{7,8}", response.content).group(0)
         if response.status_code // 100 != 2:
             adapter.error(
-                "Failed to create ad status_code={} response={}".format(
+                "Failed to create candidate status_code={} response={}".format(
                     response.status_code,
                     response.text,
                 )
             )
-            failed_profiles.append(profile)
-        # TODO: request to add documents and properties to candidate
+        id = int(re.search("[0-9]{7,8}", str(response.content)).group(0))
         binary_cv = requests.get(profile["CV"]).content
         response = requests.post(
             "{}/{}/documents?cv=true".format(POST_CANDIDATE_ENDPOINT, id),
-            files=[("file", (binary_cv, "application/pdf"))],
-            headers=parameters,
+            headers={
+                "accept": "{}".format(parameters.accept),
+                "X-taleez-api-secret": "{}".format(parameters.x_taleez_api_secret),
+            },
+            files=[
+                (
+                    "file",
+                    (
+                        "CV_{}_{}".format(
+                            profile["candidate"]["firstName"],
+                            profile["candidate"]["lastName"],
+                        ),
+                        binary_cv,
+                        "application/pdf",
+                    ),
+                )
+            ],
         )
         if response.status_code // 100 != 2:
             adapter.error(
-                "Failed to create ad status_code={} response={}".format(
+                "Failed to add document status_code={} response={}".format(
                     response.status_code,
                     response.text,
                 )
             )
             failed_profiles.append(profile)
-        # TODO: POST the properties to candidate after having created it
-        response = requests.post(
-            "{}/{}/properties".format(POST_CANDIDATE_ENDPOINT, id),
-            json=profile["properties"],
-            headers=parameters,
-        )
+        if profile["properties"]:
+            response = requests.post(
+                "{}/{}/properties".format(POST_CANDIDATE_ENDPOINT, id),
+                data=json.dumps(profile["properties"]),
+                headers={
+                    "accept": "{}".format(parameters.accept),
+                    "X-taleez-api-secret": "{}".format(parameters.x_taleez_api_secret),
+                    "Content-Type": "{}".format(parameters.content_type),
+                },
+            )
         if response.status_code // 100 != 2:
             adapter.error(
-                "Failed to create ad status_code={} response={}".format(
+                "Failed to update property status_code={} response={}".format(
                     response.status_code,
                     response.text,
                 )
             )
             failed_profiles.append(profile)
-        # properties = get_profile_properties_to_push()
 
     return failed_profiles
 
@@ -144,7 +172,7 @@ TaleezJobWarehouse = Warehouse(
     name="Taleez Jobs Warehouse",
     data_schema=Job,
     read=WarehouseReadAction(
-        parameters=PullJobsParameters,
+        parameters=ReadJobsParameters,
         function=read,
         endpoints=[GET_ALL_JOBS_ENDPOINT],
     ),

@@ -1,166 +1,8 @@
 {
     "page": 0,
     "pageSize": 100,
-    "listSize": 14,
+    "listSize": 13,
     "list": [
-        {
-            "id": 51933,
-            "key": "Expérience",
-            "name": "Votre expérience",
-            "nameEn": "Your experience level",
-            "type": "SELECT",
-            "choices": [
-                {
-                    "id": 600932,
-                    "labelFr": "Aucune expérience",
-                    "labelEn": "Beginner",
-                    "order": 0,
-                    "category": false
-                },
-                {
-                    "id": 600933,
-                    "labelFr": "1 an d'expérience",
-                    "labelEn": "1 year of experience",
-                    "order": 1,
-                    "category": false
-                },
-                {
-                    "id": 600934,
-                    "labelFr": "2 ans d'expérience",
-                    "labelEn": "2 year of experience",
-                    "order": 2,
-                    "category": false
-                },
-                {
-                    "id": 600935,
-                    "labelFr": "3 ans d'expérience",
-                    "labelEn": "3 year of experience",
-                    "order": 3,
-                    "category": false
-                },
-                {
-                    "id": 600936,
-                    "labelFr": "4 ans d'expérience",
-                    "labelEn": "4 year of experience",
-                    "order": 4,
-                    "category": false
-                },
-                {
-                    "id": 600937,
-                    "labelFr": "5 ans d'expérience",
-                    "labelEn": "5 year of experience",
-                    "order": 5,
-                    "category": false
-                },
-                {
-                    "id": 600938,
-                    "labelFr": "6 ans d'expérience",
-                    "labelEn": "6 year of experience",
-                    "order": 6,
-                    "category": false
-                },
-                {
-                    "id": 600939,
-                    "labelFr": "7 ans d'expérience",
-                    "labelEn": "7 year of experience",
-                    "order": 7,
-                    "category": false
-                },
-                {
-                    "id": 600940,
-                    "labelFr": "8 ans d'expérience",
-                    "labelEn": "8 year of experience",
-                    "order": 8,
-                    "category": false
-                },
-                {
-                    "id": 600941,
-                    "labelFr": "9 ans d'expérience",
-                    "labelEn": "9 year of experience",
-                    "order": 9,
-                    "category": false
-                },
-                {
-                    "id": 600942,
-                    "labelFr": "10 ans d'expérience",
-                    "labelEn": "10 year of experience",
-                    "order": 10,
-                    "category": false
-                },
-                {
-                    "id": 600943,
-                    "labelFr": "+ de 10 ans d'expérience",
-                    "labelEn": "10 years of experience or more",
-                    "order": 11,
-                    "category": false
-                }
-            ]
-        },
-        {
-            "id": 51934,
-            "key": "Niveau d'étude",
-            "name": "Votre niveau d'étude",
-            "nameEn": null,
-            "type": "SELECT",
-            "choices": [
-                {
-                    "id": 600944,
-                    "labelFr": "Aucun diplôme",
-                    "labelEn": null,
-                    "order": 0,
-                    "category": false
-                },
-                {
-                    "id": 600945,
-                    "labelFr": "BEP, CAP ou équivalent",
-                    "labelEn": null,
-                    "order": 1,
-                    "category": false
-                },
-                {
-                    "id": 600946,
-                    "labelFr": "Baccalauréat (bac +0)",
-                    "labelEn": null,
-                    "order": 2,
-                    "category": false
-                },
-                {
-                    "id": 600947,
-                    "labelFr": "DUT, BTS, Diplôme d'état ou équivalent (bac +2)",
-                    "labelEn": null,
-                    "order": 3,
-                    "category": false
-                },
-                {
-                    "id": 600948,
-                    "labelFr": "Licence, Bachelor ou équivalent (bac +3)",
-                    "labelEn": null,
-                    "order": 4,
-                    "category": false
-                },
-                {
-                    "id": 600949,
-                    "labelFr": "Master 1 ou équivalent (bac +4)",
-                    "labelEn": null,
-                    "order": 5,
-                    "category": false
-                },
-                {
-                    "id": 600950,
-                    "labelFr": "Master, Diplôme d'ingénieur ou équivalent (bac +5)",
-                    "labelEn": null,
-                    "order": 6,
-                    "category": false
-                },
-                {
-                    "id": 600951,
-                    "labelFr": "Doctorat et équivalent (> bac +5)",
-                    "labelEn": null,
-                    "order": 7,
-                    "category": false
-                }
-            ]
-        },
         {
             "id": 51935,
             "key": "Disponibilité",
@@ -896,6 +738,14 @@
             "key": "Last position held",
             "name": "Dernier poste occupé",
             "nameEn": "Last position held",
+            "type": "INPUT",
+            "choices": []
+        },
+        {
+            "id": 59898,
+            "key": "Last education",
+            "name": "Last education",
+            "nameEn": "Last education",
             "type": "INPUT",
             "choices": []
         }

@@ -1,5 +1,7 @@
 import typing as t
+
 from pydantic import BaseModel
+
 
 class Property(BaseModel):
     id: int
@@ -20,6 +22,7 @@ class Candidate(BaseModel):
     socialLinks: dict
     properties: t.Optional[list]
     jobs: t.Optional[list]
+
 
 class Job(BaseModel):
     id: int
@@ -51,9 +54,10 @@ class Job(BaseModel):
     profileDescription: str
     companyDescription: str
     properties: t.List[t.Dict]
-    public : bool
+    public: bool
+
 
 class JobProperty(BaseModel):
     key: str
     value: str
-    values: t.List[str] 
+    values: t.List[str]
