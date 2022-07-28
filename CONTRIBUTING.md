@@ -19,18 +19,18 @@ guidelines.
 
 ## Environment setup
 1. Fork the repository
-2. Make sure you have `python` _3.8_ or above installed
+2. Make sure you have `python` _3.10.5_
 3. Install [poetry](https://python-poetry.org/docs/)
 4. Install dependencies by running `poetry install`
 5. **[Optional]** Install [git-lfs](https://git-lfs.github.com/) if necessary. _Run `sudo apt-get install git-lfs` for Ubuntu 18.04, Debian 10, and newer versions_
 6. **[Optional]** Install developpment hooks `make init-hooks`. This installs `git-lfs` add `pre-commit` hooks defined in [`.pre-commit-config.yaml`](.pre-commit-config.yaml)
 
 ### Instructions for `pyenv` users
-1. Install python version `3.8.X` for example `pyenv install 3.8.X`
-2. Activate version `pyenv local 3.8.X`
-3. Check that version is activated `python --version` should print `3.8.X`
+1. Install python version `3.10.5` for example `pyenv install 3.10.5`
+2. Activate version `pyenv local 3.10.5`
+3. Check that version is activated `python --version` should print `3.10.5`
 4. Force `poetry` to use `pyenv` python version `poetry env use $(pyenv which python)`
-5. Check that `poetry` uses correct python version `poetry run python --version` should print `3.8.X`
+5. Check that `poetry` uses correct python version `poetry run python --version` should print `3.10.5`
 6. Then run `poetry install`
 
 
