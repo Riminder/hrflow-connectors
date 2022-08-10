@@ -1,0 +1,156 @@
+actions:
+  push_jobs:
+    - id: valid_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+        job_key: $__JOB_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+      status: success
+    - id: missing_api_secret
+      origin_parameters:
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+        job_key: $__JOB_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+      status: fatal
+    - id: invalid_api_secret
+      origin_parameters:
+        api_secret: "00000000000000000000"
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+        job_key: $__JOB_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+      status: fatal
+      reason: read_failure
+    - id: missing_board_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        job_key: $__JOB_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+      status: fatal
+      reason: bad_origin_parameters
+    - id: missing_job_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+      status: fatal
+      reason: bad_origin_parameters
+    - id: invalid_job_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+        job_key: ""
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+      status: fatal
+      reason: read_failure
+    - id: missing_access_token
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+        job_key: $__JOB_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+  push_profile:
+    - id: valid_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+    - id: missing_api_secret
+      origin_parameters:
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+      status: fatal
+    - id: invalid_api_secret
+      origin_parameters:
+        api_secret: "00000000000000000000"
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+      status: fatal
+      reason: read_failure
+    - id: missing_source_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+      status: fatal
+    - id: missing_profile_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+      status: fatal
+      reason: bad_origin_parameters
+    - id: invalid_profile_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: ""
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+      status: fatal
+      reason: read_failure
+    - id: missing_access_token
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        access_token: $__ACCESS_TOKEN
+    
