@@ -9,7 +9,7 @@ The framework is based on three main concepts : `Warehouse`, `ConnectorAction` a
 When contributing a new `Connector` you mainly have to define the corresponding `Warehouse`. You are bringing the knowledge of how to _read_ and/or _write_ to that new source of data. The rest is mainly boilerplate code and wire connecting with another already defined `Warehouse`.
 
 ## Prerequisites
-Before you can develop new connectors or update existing ones you need to have `python` _3.8_ or above and [poetry](https://python-poetry.org/docs/) installed.
+Before you can develop new connectors or update existing ones you need to have `python` _3.10.5_ and [poetry](https://python-poetry.org/docs/) installed.
 
 Then to install dependencies run `poetry install` and that's it.
 
