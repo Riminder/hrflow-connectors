@@ -4,7 +4,12 @@ from logging import LoggerAdapter
 
 from pydantic import BaseModel
 
-from hrflow_connectors.core import ActionEndpoints, Warehouse, WarehouseReadAction
+from hrflow_connectors.core import (
+    ActionEndpoints,
+    DataType,
+    Warehouse,
+    WarehouseReadAction,
+)
 
 GET_USERS = ActionEndpoints(
     name="Get all user",
@@ -71,6 +76,7 @@ def read_with_failures(
 UsersWarehouse = Warehouse(
     name="Test Users",
     data_schema=User,
+    data_type=DataType.other,
     read=WarehouseReadAction(
         parameters=ReadUsersParameters,
         function=read,
@@ -82,6 +88,7 @@ UsersWarehouse = Warehouse(
 FailingUsersWarehouse = Warehouse(
     name="Test Users",
     data_schema=User,
+    data_type=DataType.other,
     read=WarehouseReadAction(
         parameters=ReadUsersParameters,
         function=read_with_failures,
@@ -92,6 +99,7 @@ FailingUsersWarehouse = Warehouse(
 BadUsersWarehouse = Warehouse(
     name="Bad Test Users",
     data_schema=User,
+    data_type=DataType.other,
     read=WarehouseReadAction(
         parameters=ReadUsersParameters,
         function=lambda *args, **kwargs: 10 / 0,

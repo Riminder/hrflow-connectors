@@ -7,7 +7,7 @@ from zipfile import ZipFile
 import requests
 from pydantic import BaseModel, Field
 
-from hrflow_connectors.core import Warehouse, WarehouseReadAction
+from hrflow_connectors.core import DataType, Warehouse, WarehouseReadAction
 
 GRANT_TYPE = "client_credentials"
 TOKEN_SCOPE = "MatchingIndexation"
@@ -206,6 +206,7 @@ def read_profiles(
 
 TalentSoftProfilesWarehouse = Warehouse(
     name="TalentSoft Profiles",
+    data_type=DataType.profile,
     read=WarehouseReadAction(
         parameters=ReadProfilesParameters,
         function=read_profiles,
@@ -215,6 +216,7 @@ TalentSoftProfilesWarehouse = Warehouse(
 
 TalentSoftJobsWarehouse = Warehouse(
     name="TalentSoft Jobs",
+    data_type=DataType.job,
     read=WarehouseReadAction(
         parameters=ReadJobsParameters,
         function=read_jobs,
