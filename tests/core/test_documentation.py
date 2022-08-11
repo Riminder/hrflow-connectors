@@ -4,7 +4,12 @@ from pathlib import Path
 import pytest
 
 from hrflow_connectors import generate_docs
-from hrflow_connectors.core import BaseActionParameters, Connector, ConnectorAction
+from hrflow_connectors.core import (
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    WorkflowType,
+)
 from tests.core.localusers.warehouse import UsersWarehouse
 from tests.core.smartleads.warehouse import LeadsWarehouse
 
@@ -17,6 +22,7 @@ SmartLeads = Connector(
     actions=[
         ConnectorAction(
             name="pull_leads",
+            trigger_type=WorkflowType.pull,
             description="Send users as leads",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
@@ -71,6 +77,7 @@ def test_documentation_connector_directory_not_found(caplog, connectors_director
         actions=[
             ConnectorAction(
                 name="pull_leads",
+                trigger_type=WorkflowType.pull,
                 description="Send users as leads",
                 parameters=BaseActionParameters,
                 origin=UsersWarehouse,

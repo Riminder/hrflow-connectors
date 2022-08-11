@@ -4,7 +4,12 @@ from unittest import mock
 
 import pytest
 
-from hrflow_connectors.core import BaseActionParameters, Connector, ConnectorAction
+from hrflow_connectors.core import (
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    WorkflowType,
+)
 from hrflow_connectors.core.connector import Event, Reason, Status
 from hrflow_connectors.core.tests import (
     ENVIRON_SECRETS_PREFIX,
@@ -25,6 +30,7 @@ SmartLeads = Connector(
     actions=[
         ConnectorAction(
             name="first_action",
+            trigger_type=WorkflowType.pull,
             description="Send users as leads",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
@@ -32,6 +38,7 @@ SmartLeads = Connector(
         ),
         ConnectorAction(
             name="second_action",
+            trigger_type=WorkflowType.pull,
             description="Send users as leads",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
