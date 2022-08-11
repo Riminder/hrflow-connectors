@@ -7,7 +7,7 @@ from hrflow import Hrflow
 from pydantic import BaseModel, Field
 
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowJob
-from hrflow_connectors.core import Warehouse, WarehouseWriteAction
+from hrflow_connectors.core import DataType, Warehouse, WarehouseWriteAction
 
 LIST_JOBS_LIMIT = 30
 
@@ -267,5 +267,6 @@ def write(
 HrFlowJobWarehouse = Warehouse(
     name="HrFlow.ai Jobs",
     data_schema=HrFlowJob,
+    data_type=DataType.job,
     write=WarehouseWriteAction(parameters=WriteJobParameters, function=write),
 )

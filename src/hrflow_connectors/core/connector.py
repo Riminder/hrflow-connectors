@@ -279,6 +279,10 @@ class ConnectorAction(BaseModel):
             raise ValueError("Target warehouse is not writable")
         return target
 
+    @property
+    def data_type(self) -> str:
+        return self.origin.data_type.name
+
     def workflow_code(self, connector_name: str, workflow_type: WorkflowType) -> str:
         return WORKFLOW_TEMPLATE.render(
             format_placeholder=self.WORKFLOW_FORMAT_PLACEHOLDER,
@@ -528,6 +532,7 @@ class Connector:
             action_manifest = dict(
                 name=action.name,
                 action_parameters=action.parameters.schema(),
+                data_type=action.data_type,
                 origin=action.origin.name,
                 origin_parameters=action.origin.read.parameters.schema(),
                 origin_data_schema=action.origin.data_schema.schema(),
