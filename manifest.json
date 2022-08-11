@@ -30,6 +30,7 @@
               }
             }
           },
+          "data_type": "job",
           "origin": "SmartRecruiters Jobs",
           "origin_parameters": {
             "title": "ReadJobsParameters",
@@ -802,6 +803,7 @@
               }
             }
           },
+          "data_type": "profile",
           "origin": "HrFlow.ai Profiles",
           "origin_parameters": {
             "title": "ReadProfileParameters",
@@ -1585,6 +1587,7 @@
               }
             }
           },
+          "data_type": "profile",
           "origin": "TalentSoft Profiles",
           "origin_parameters": {
             "title": "FixedReadParameters",
@@ -1782,6 +1785,7 @@
               }
             }
           },
+          "data_type": "profile",
           "origin": "TalentSoft Profiles",
           "origin_parameters": {
             "title": "FixedReadParameters",
@@ -1979,6 +1983,7 @@
               }
             }
           },
+          "data_type": "profile",
           "origin": "TalentSoft Profiles",
           "origin_parameters": {
             "title": "ReadProfilesParameters",
@@ -2563,6 +2568,7 @@
               }
             }
           },
+          "data_type": "profile",
           "origin": "TalentSoft Profiles",
           "origin_parameters": {
             "title": "FixedReadParameters",
@@ -2760,6 +2766,7 @@
               }
             }
           },
+          "data_type": "job",
           "origin": "TalentSoft Jobs",
           "origin_parameters": {
             "title": "ReadJobsParameters",

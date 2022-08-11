@@ -11,6 +11,7 @@ from hrflow_connectors.connectors.smartrecruiters.schemas import (
 )
 from hrflow_connectors.core import (
     ActionEndpoints,
+    DataType,
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
@@ -202,6 +203,7 @@ def write(
 SmartRecruitersJobWarehouse = Warehouse(
     name="SmartRecruiters Jobs",
     data_schema=SmartRecruitersJob,
+    data_type=DataType.job,
     read=WarehouseReadAction(
         parameters=ReadJobsParameters,
         function=read,
@@ -212,6 +214,7 @@ SmartRecruitersJobWarehouse = Warehouse(
 SmartRecruitersProfileWarehouse = Warehouse(
     name="SmartRecruiters Profiles",
     data_schema=SmartRecruitersProfile,
+    data_type=DataType.profile,
     write=WarehouseWriteAction(
         parameters=WriteProfilesParameters,
         function=write,

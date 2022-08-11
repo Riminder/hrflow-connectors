@@ -8,7 +8,12 @@ from hrflow_connectors.connectors.hrflow.schemas import (
     HrFlowProfile,
     HrFlowProfileParsing,
 )
-from hrflow_connectors.core import Warehouse, WarehouseReadAction, WarehouseWriteAction
+from hrflow_connectors.core import (
+    DataType,
+    Warehouse,
+    WarehouseReadAction,
+    WarehouseWriteAction,
+)
 
 
 class ReadProfileParameters(BaseModel):
@@ -176,6 +181,7 @@ def write_parsing(
 HrFlowProfileWarehouse = Warehouse(
     name="HrFlow.ai Profiles",
     data_schema=HrFlowProfile,
+    data_type=DataType.profile,
     read=WarehouseReadAction(parameters=ReadProfileParameters, function=read),
     write=WarehouseReadAction(parameters=WriteProfileParameters, function=write),
 )
@@ -184,6 +190,7 @@ HrFlowProfileWarehouse = Warehouse(
 HrFlowProfileParsingWarehouse = Warehouse(
     name="HrFlow.ai Profile Parsing",
     data_schema=HrFlowProfileParsing,
+    data_type=DataType.profile,
     write=WarehouseWriteAction(
         parameters=WriteProfileParsingParameters, function=write_parsing
     ),

@@ -2,6 +2,7 @@ import pytest
 from pydantic import BaseModel, Field, PositiveInt
 
 from hrflow_connectors.core.warehouse import (
+    DataType,
     FieldNotFoundError,
     FixedValueValidationError,
     Warehouse,
@@ -18,6 +19,7 @@ class Parameters(BaseModel):
 
 TestWarehouse = Warehouse(
     name="Test Warehouse",
+    data_type=DataType.other,
     read=WarehouseReadAction(
         parameters=Parameters, function=lambda *args, **kwargs: None
     ),

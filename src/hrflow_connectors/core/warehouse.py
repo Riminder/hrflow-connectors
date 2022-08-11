@@ -13,6 +13,12 @@ class FixedValueValidationError(RuntimeError):
     pass
 
 
+class DataType(enum.Enum):
+    profile = enum.auto()
+    job = enum.auto()
+    other = enum.auto()
+
+
 class ActionType(enum.Enum):
     read = enum.auto()
     write = enum.auto()
@@ -44,6 +50,7 @@ class WarehouseWriteAction(BaseModel):
 
 class Warehouse(BaseModel):
     name: str
+    data_type: DataType
     data_schema: t.Type[BaseModel] = Field(default_factory=lambda: BaseModel)
     read: t.Optional[WarehouseReadAction]
     write: t.Optional[WarehouseWriteAction]
@@ -100,6 +107,7 @@ class Warehouse(BaseModel):
             return Warehouse(
                 name=self.name,
                 data_schema=self.data_schema,
+                data_type=self.data_type,
                 read=WarehouseReadAction(
                     endpoints=self.read.endpoints,
                     parameters=with_fixed_parameters,
@@ -111,6 +119,7 @@ class Warehouse(BaseModel):
         return Warehouse(
             name=self.name,
             data_schema=self.data_schema,
+            data_type=self.data_type,
             read=self.read,
             write=WarehouseWriteAction(
                 endpoints=self.write.endpoints,
