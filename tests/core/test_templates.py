@@ -1,7 +1,12 @@
 import pytest
 
 import hrflow_connectors
-from hrflow_connectors.core import BaseActionParameters, Connector, ConnectorAction
+from hrflow_connectors.core import (
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    WorkflowType,
+)
 from hrflow_connectors.core.connector import Event, Reason, Status
 from tests.core.localusers.warehouse import USERS_DB, Gender, UsersWarehouse
 from tests.core.smartleads.warehouse import LEADS_DB, LeadsWarehouse
@@ -15,6 +20,7 @@ SmartLeads = Connector(
     actions=[
         ConnectorAction(
             name="pull_leads",
+            trigger_type=WorkflowType.pull,
             description="Send users as leads",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
@@ -22,6 +28,7 @@ SmartLeads = Connector(
         ),
         ConnectorAction(
             name="catch_user",
+            trigger_type=WorkflowType.catch,
             description="Send users as leads",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
@@ -29,6 +36,7 @@ SmartLeads = Connector(
         ),
         ConnectorAction(
             name="catch_user_with_event_parser",
+            trigger_type=WorkflowType.catch,
             description="Send users as leads",
             parameters=BaseActionParameters.with_defaults(
                 "CatchUserWithEventParser",
@@ -51,11 +59,14 @@ def with_smartleads():
 def test_pull_workflow_code(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][0]
     assert action_manifest["name"] == "pull_leads"
+    assert action_manifest["trigger_type"] == "schedule"
+    assert "workflow_code_event_parser_placeholder" not in action_manifest
+    assert "event_parser" not in action_manifest["action_parameters"]["properties"]
 
     campaign_id = "xxxx_234"
     n_males = len([u for u in USERS_DB if u["gender"] is Gender.male])
 
-    workflow_code = action_manifest["workflow_code_pull"]
+    workflow_code = action_manifest["workflow_code"]
     script = (
         workflow_code
         + "\n__run_result=workflow(settings=dict({origin_prefix}gender='male',"
@@ -85,6 +96,9 @@ def test_pull_workflow_code(with_smartleads):
 def test_pull_workflow_code_with_format(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][0]
     assert action_manifest["name"] == "pull_leads"
+    assert action_manifest["trigger_type"] == "schedule"
+    assert "workflow_code_event_parser_placeholder" not in action_manifest
+    assert "event_parser" not in action_manifest["action_parameters"]["properties"]
 
     campaign_id = "xxxx_7875"
     format_function = """
@@ -94,7 +108,7 @@ def format(item):
     return item
 """
 
-    workflow_code = action_manifest["workflow_code_pull"]
+    workflow_code = action_manifest["workflow_code"]
     script = (
         workflow_code
         + "\n__run_result=workflow(settings=dict("
@@ -139,6 +153,9 @@ def format(item):
 def test_pull_workflow_code_with_logics(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][0]
     assert action_manifest["name"] == "pull_leads"
+    assert action_manifest["trigger_type"] == "schedule"
+    assert "workflow_code_event_parser_placeholder" not in action_manifest
+    assert "event_parser" not in action_manifest["action_parameters"]["properties"]
 
     campaign_id = "xxxx_4652"
     logics_functions = """
@@ -149,7 +166,7 @@ def logic(item):
 logics = [logic]
 """
 
-    workflow_code = action_manifest["workflow_code_pull"]
+    workflow_code = action_manifest["workflow_code"]
     # FIXME this should work without needing to supply dummy_str
     script = (
         workflow_code
@@ -197,11 +214,14 @@ logics = [logic]
 def test_catch_workflow_code(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][1]
     assert action_manifest["name"] == "catch_user"
+    assert action_manifest["trigger_type"] == "hook"
+    assert "workflow_code_event_parser_placeholder" in action_manifest
+    assert "event_parser" in action_manifest["action_parameters"]["properties"]
 
     campaign_id = "xxxx_356"
     n_males = len([u for u in USERS_DB if u["gender"] is Gender.male])
 
-    workflow_code = action_manifest["workflow_code_catch"]
+    workflow_code = action_manifest["workflow_code"]
     script = (
         workflow_code
         + "\n__run_result=workflow(_request=dict(gender='male'),"
@@ -230,6 +250,9 @@ def test_catch_workflow_code(with_smartleads):
 def test_catch_workflow_code_with_format(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][1]
     assert action_manifest["name"] == "catch_user"
+    assert action_manifest["trigger_type"] == "hook"
+    assert "workflow_code_event_parser_placeholder" in action_manifest
+    assert "event_parser" in action_manifest["action_parameters"]["properties"]
 
     campaign_id = "xxxx_346"
     format_function = """
@@ -239,7 +262,7 @@ def format(item):
     return item
 """
 
-    workflow_code = action_manifest["workflow_code_catch"]
+    workflow_code = action_manifest["workflow_code"]
     script = (
         workflow_code
         + "\n__run_result=workflow(_request=dict(),"
@@ -284,6 +307,9 @@ def format(item):
 def test_catch_workflow_code_with_logics(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][1]
     assert action_manifest["name"] == "catch_user"
+    assert action_manifest["trigger_type"] == "hook"
+    assert "workflow_code_event_parser_placeholder" in action_manifest
+    assert "event_parser" in action_manifest["action_parameters"]["properties"]
 
     campaign_id = "xxxx_874"
     logics_functions = """
@@ -294,7 +320,7 @@ def logic(item):
 logics = [logic]
 """
 
-    workflow_code = action_manifest["workflow_code_catch"]
+    workflow_code = action_manifest["workflow_code"]
     script = (
         workflow_code
         + "\n__run_result=workflow(_request=dict(),"
@@ -339,6 +365,9 @@ logics = [logic]
 def test_catch_workflow_code_with_event_parser(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][1]
     assert action_manifest["name"] == "catch_user"
+    assert action_manifest["trigger_type"] == "hook"
+    assert "workflow_code_event_parser_placeholder" in action_manifest
+    assert "event_parser" in action_manifest["action_parameters"]["properties"]
 
     campaign_id = "xxxx_6876"
     n_males = len([u for u in USERS_DB if u["gender"] is Gender.male])
@@ -347,7 +376,7 @@ def event_parser(event):
     return dict(gender=event["desired_gender"])
 """
 
-    workflow_code = action_manifest["workflow_code_catch"]
+    workflow_code = action_manifest["workflow_code"]
     # 'desired_gender' should not have any effect
     script = (
         workflow_code
@@ -394,11 +423,14 @@ def event_parser(event):
 def test_catch_workflow_code_with_default_event_parser(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][1]
     assert action_manifest["name"] == "catch_user"
+    assert action_manifest["trigger_type"] == "hook"
+    assert "workflow_code_event_parser_placeholder" in action_manifest
+    assert "event_parser" in action_manifest["action_parameters"]["properties"]
 
     campaign_id = "xxxx_5434"
     n_males = len([u for u in USERS_DB if u["gender"] is Gender.male])
 
-    workflow_code = action_manifest["workflow_code_catch"]
+    workflow_code = action_manifest["workflow_code"]
     # 'desired_gender' should not have any effect
     script = (
         workflow_code
@@ -424,7 +456,7 @@ def test_catch_workflow_code_with_default_event_parser(with_smartleads):
 
     campaign_id = "xxxx_withDefaultEventParser"
 
-    workflow_code = action_manifest["workflow_code_catch"]
+    workflow_code = action_manifest["workflow_code"]
     script = (
         workflow_code
         + "\n__run_result=workflow(_request=dict(desired_gender='male'),"
@@ -447,6 +479,9 @@ def test_catch_workflow_code_with_default_event_parser(with_smartleads):
 def test_catch_workflow_code_with_event_parser_failure(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][1]
     assert action_manifest["name"] == "catch_user"
+    assert action_manifest["trigger_type"] == "hook"
+    assert "workflow_code_event_parser_placeholder" in action_manifest
+    assert "event_parser" in action_manifest["action_parameters"]["properties"]
 
     campaign_id = "xxxx_43434"
     event_parser = """
@@ -454,7 +489,7 @@ def event_parser(event):
     raise Exception()
 """
 
-    workflow_code = action_manifest["workflow_code_catch"]
+    workflow_code = action_manifest["workflow_code"]
     with_event_parser = workflow_code.replace(
         action_manifest["workflow_code_event_parser_placeholder"], event_parser
     )

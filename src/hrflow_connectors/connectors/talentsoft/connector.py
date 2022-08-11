@@ -19,6 +19,7 @@ from hrflow_connectors.core import (
     Connector,
     ConnectorAction,
     Event,
+    WorkflowType,
 )
 
 
@@ -280,6 +281,7 @@ TalentSoft = Connector(
     actions=[
         ConnectorAction(
             name="applicant_new",
+            trigger_type=WorkflowType.catch,
             description=(
                 "Handle TalentSoft 'applicant_new' event by fetching profile from"
                 " TalentSoft and sending it to HrFlow.ai Parsing API."
@@ -299,6 +301,7 @@ TalentSoft = Connector(
         ),
         ConnectorAction(
             name="applicant_resume_update",
+            trigger_type=WorkflowType.catch,
             description=(
                 "Handle TalentSoft 'applicant_resume_update' event by"
                 " running a new HrFlow.ai Parsing on updated resume."
@@ -318,6 +321,7 @@ TalentSoft = Connector(
         ),
         ConnectorAction(
             name="applicant_update",
+            trigger_type=WorkflowType.catch,
             description=(
                 "Handle TalentSoft 'applicant_update' event by"
                 " only updating tags coming from TalentSoft in HrFlow.ai."
@@ -334,6 +338,7 @@ TalentSoft = Connector(
         ),
         ConnectorAction(
             name="pull_profiles",
+            trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves profiles from TalentSoft candidates export API and send them"
                 " to a ***Hrflow.ai Source***."
@@ -349,6 +354,7 @@ TalentSoft = Connector(
         ),
         ConnectorAction(
             name="pull_jobs",
+            trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves jobs from TalentSoft vacancies export API and send them"
                 " to a ***Hrflow.ai Board***."

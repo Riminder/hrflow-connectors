@@ -11,7 +11,7 @@ Retrieves profiles from TalentSoft candidates export API and send them to a ***H
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_candidate`](../connector.py#L132) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_candidate`](../connector.py#L133) | Formatting function |
 
 ## Source Parameters
 

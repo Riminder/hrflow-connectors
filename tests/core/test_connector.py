@@ -6,7 +6,12 @@ import pytest
 from pydantic import ValidationError
 
 from hrflow_connectors import hrflow_connectors_manifest
-from hrflow_connectors.core import BaseActionParameters, Connector, ConnectorAction
+from hrflow_connectors.core import (
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    WorkflowType,
+)
 from hrflow_connectors.core.connector import Event, Reason, RunResult, Status
 from tests.core.localusers.warehouse import (
     FAIL_AT,
@@ -31,6 +36,7 @@ SmartLeads = Connector(
     actions=[
         ConnectorAction(
             name="pull_leads",
+            trigger_type=WorkflowType.pull,
             description="Send users as leads",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
@@ -38,6 +44,7 @@ SmartLeads = Connector(
         ),
         ConnectorAction(
             name="same_pull_leads",
+            trigger_type=WorkflowType.pull,
             description="Send users as leads",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
@@ -135,6 +142,7 @@ def test_origin_warehouse_failure():
         actions=[
             ConnectorAction(
                 name="pull_leads",
+                trigger_type=WorkflowType.pull,
                 description="Send users as leads",
                 parameters=BaseActionParameters,
                 origin=BadUsersWarehouse,
@@ -162,6 +170,7 @@ def test_origin_not_readable_failure():
             actions=[
                 ConnectorAction(
                     name="pull_leads",
+                    trigger_type=WorkflowType.pull,
                     description="Send users as leads",
                     parameters=BaseActionParameters,
                     origin=LeadsWarehouse,
@@ -183,6 +192,7 @@ def test_target_warehouse_failure():
         actions=[
             ConnectorAction(
                 name="pull_leads",
+                trigger_type=WorkflowType.pull,
                 description="Send users as leads",
                 parameters=BaseActionParameters,
                 origin=UsersWarehouse,
@@ -210,6 +220,7 @@ def test_target_not_writable_failure():
             actions=[
                 ConnectorAction(
                     name="pull_leads",
+                    trigger_type=WorkflowType.pull,
                     description="Send users as leads",
                     parameters=BaseActionParameters,
                     origin=UsersWarehouse,
@@ -363,6 +374,7 @@ def test_connector_default_format():
         actions=[
             ConnectorAction(
                 name="pull_leads",
+                trigger_type=WorkflowType.pull,
                 description="Send users as leads",
                 parameters=BaseActionParameters.with_defaults(
                     "even_smarter_leads_connector", format=smarter_format
@@ -442,6 +454,7 @@ def test_action_with_failures():
         actions=[
             ConnectorAction(
                 name="pull_leads",
+                trigger_type=WorkflowType.pull,
                 description="Send users as leads",
                 parameters=BaseActionParameters,
                 origin=FailingUsersWarehouse,
@@ -584,6 +597,7 @@ def test_action_with_callback_success():
         actions=[
             ConnectorAction(
                 name="pull_leads_with_callback",
+                trigger_type=WorkflowType.pull,
                 description="Send users as leads",
                 parameters=BaseActionParameters,
                 origin=UsersWarehouse,
@@ -623,6 +637,7 @@ def test_action_with_callback_failure():
         actions=[
             ConnectorAction(
                 name="pull_leads_with_callback",
+                trigger_type=WorkflowType.pull,
                 description="Send users as leads",
                 parameters=BaseActionParameters,
                 origin=UsersWarehouse,
