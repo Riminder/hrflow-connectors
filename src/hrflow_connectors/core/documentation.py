@@ -67,6 +67,7 @@ def field_default(field: ModelField, documentation_path: Path) -> str:
 
 
 def field_type(field: ModelField) -> str:
+    print(field.type_.__name__)
     if isinstance(field.outer_type_, enum.EnumMeta):
         return "str"
     if field.type_.__name__ == "Callable":

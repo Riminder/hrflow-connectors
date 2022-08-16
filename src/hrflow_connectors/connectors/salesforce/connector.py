@@ -1,15 +1,14 @@
 import typing as t
 
-from hrflow_connectors.connectors.hrflow.warehouse import (
-    HrFlowJobWarehouse,
-    HrFlowProfileWarehouse,
-)
+from hrflow_connectors.connectors.hrflow.warehouse import HrFlowProfileWarehouse
 from hrflow_connectors.connectors.salesforce.schemas import HrFlowProfile
-from hrflow_connectors.connectors.salesforce.warehouse import (
-    SalesforceJobsWarehouse,
-    SalesforceProfileWarehouse,
+from hrflow_connectors.connectors.salesforce.warehouse import SalesforceProfileWarehouse
+from hrflow_connectors.core import (
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    WorkflowType,
 )
-from hrflow_connectors.core import BaseActionParameters, Connector, ConnectorAction
 
 
 def format(profile_or_job: t.Dict) -> t.Dict:
@@ -22,17 +21,6 @@ Salesforce = Connector(
     url="https://www.salesforce.com",
     actions=[
         ConnectorAction(
-            name="push_jobs",
-            description=(
-                "Retrieves jobs from HrFlow.ai Board and posts them to Salesforce API"
-            ),
-            parameters=BaseActionParameters.with_defaults(
-                "WriteJobsActionParameters", format=format
-            ),
-            origin=HrFlowJobWarehouse,
-            target=SalesforceJobsWarehouse,
-        ),
-        ConnectorAction(
             name="push_profile",
             data_schema=HrFlowProfile,
             description="Writes a profile from HrFlow.ai Source to Salesforce API",
@@ -41,6 +29,7 @@ Salesforce = Connector(
             ),
             origin=HrFlowProfileWarehouse,
             target=SalesforceProfileWarehouse,
+            trigger_type=WorkflowType.catch,
         ),
     ],
 )
