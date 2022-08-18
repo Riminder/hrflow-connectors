@@ -1,5 +1,7 @@
+import enum
 import json
 import typing as t
+from enum import Enum
 from logging import LoggerAdapter
 
 import requests
@@ -8,19 +10,31 @@ from pydantic import BaseModel, Field
 from hrflow_connectors.core import DataType, Warehouse, WarehouseWriteAction
 
 URI = "https://hrflowai3-dev-ed.my.salesforce.com/services/data/v55.0/sobjects"
+ACCESS_TOKEN_URL = "https://login.salesforce.com/services/oauth2/token"
 ACCEPT = "application/json"
-PROFILE_FIELDS = [
-    "experience",
-    "education",
-    "skill",
-    "language",
-    "certification",
-    "course",
-    "interest",
-    "tag",
-    "metadata",
-]
 GRANT_TYPE = "password"
+
+
+class ProfileFields(Enum):
+    """Class representing a profile field
+    get_plural method used to get plural form of a field
+    """
+
+    experience = "experience"
+    education = "education"
+    skill = "skill"
+    language = "language"
+    certification = "certification"
+    course = "course"
+    interest = "interest"
+    tag = "tag"
+    metadata = "metadata"
+
+    def get_plural(self):
+        return "{}s".format(self.value)
+
+    def get_salesforce_field(self):
+        return "{}__c".format(self.value.capitalize())
 
 
 class WriteProfilesParameters(BaseModel):
@@ -41,8 +55,9 @@ class WriteProfilesParameters(BaseModel):
     )
 
 
-def get_access_token(parameters: WriteProfilesParameters):
-    url = "https://login.salesforce.com/services/oauth2/token"
+def get_access_token(
+    adapter: LoggerAdapter, parameters: WriteProfilesParameters
+) -> str:
     data = dict(
         grant_type=parameters.grant_type,
         client_id=parameters.client_id,
@@ -50,20 +65,30 @@ def get_access_token(parameters: WriteProfilesParameters):
         username=parameters.username,
         password=parameters.password,
     )
-    response = requests.post(url, data=data)
+    response = requests.post(ACCESS_TOKEN_URL, data=data)
+    if response.status_code != 200:
+        if response.status_code // 100 != 2:
+            adapter.error(
+                "Failed to get access_token using status_code={} response={}".format(
+                    response.status_code,
+                    response.text,
+                )
+            )
     return json.loads(response.content.decode())["access_token"]
 
 
 def write_related_object(
-    profile: t.Dict, profile_id: str, headers: t.Dict, obj_name: str
+    profile: t.Dict, profile_id: str, headers: t.Dict, obj: Enum
 ) -> str:
-    n = 0
-    objects_list = profile.get("{}s".format(obj_name))
+    PROFILE_FIELDS = ProfileFields
+    objects_list = profile.get(PROFILE_FIELDS.get_plural(obj))
     if objects_list is not None:
-        n = 0
         for instance in objects_list:
-            name = instance.get("name", obj_name + str(n))
-            n += 1 if name == obj_name + str(n) else n
+            name = (
+                instance.get("name")
+                if instance.get("name") is not None
+                else instance.get("title")
+            )
             record = dict(Name=name, Profile__c=profile_id)
             fields = list(filter(lambda x: x != "Name", instance.keys()))
             for field in fields:
@@ -72,7 +97,7 @@ def write_related_object(
                 elif isinstance(instance[field], str):
                     record["{}__c".format(field)] = instance[field]
             requests.post(
-                URI + "/{}__c".format(obj_name),
+                "{}/{}".format(URI, PROFILE_FIELDS.get_salesforce_field(obj)),
                 headers=headers,
                 json=record,
             )
@@ -85,9 +110,15 @@ def write_profiles(
 ) -> t.List[t.Dict]:
     adapter.info("Pushing {} profiles to Salesforce API".format(len(profiles)))
     failed_profiles = []
-    access_token = get_access_token(parameters)
+    access_token = get_access_token(adapter, parameters)
     for profile in profiles:
-        info = dict(Name=profile["info"]["full_name"])
+        info = dict(
+            Name=profile["info"]["full_name"],
+            first_name__c=profile["info"]["first_name"],
+            last_name__c=profile["info"]["last_name"],
+            email__c=profile["info"].get("email"),
+            phone__c=profile["info"].get("phone"),
+        )
         headers = {
             "Accept": parameters.accept,
             "Content-Type": parameters.content_type,
@@ -124,7 +155,7 @@ def write_profiles(
             )
             failed_profiles.append(profile)
         profile_id = json.loads(response.content.decode())["id"]
-        for field in PROFILE_FIELDS:
+        for field in ProfileFields:
             write_related_object(profile, profile_id, headers, field)
     return failed_profiles
 
