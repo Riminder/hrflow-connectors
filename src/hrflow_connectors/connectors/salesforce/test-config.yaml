@@ -1,0 +1,133 @@
+actions:
+  push_profile:
+    - id: valid_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        grant_type: "password"
+        client_id: $__CLIENT_ID
+        client_secret: $__CLIENT_SECRET
+        username: $__USERNAME
+        password: $__PASSWORD
+    - id: missing_api_secret
+      origin_parameters:
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        grant_type: "password"
+        client_id: $__CLIENT_ID
+        client_secret: $__CLIENT_SECRET
+        username: $__USERNAME
+        password: $__PASSWORD
+      status: fatal
+    - id: invalid_api_secret
+      origin_parameters:
+        api_secret: "00000000000000000000"
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        grant_type: "password"
+        client_id: $__CLIENT_ID
+        client_secret: $__CLIENT_SECRET
+        username: $__USERNAME
+        password: $__PASSWORD
+      status: fatal
+      reason: read_failure
+    - id: missing_source_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        grant_type: "password"
+        client_id: $__CLIENT_ID
+        client_secret: $__CLIENT_SECRET
+        username: $__USERNAME
+        password: $__PASSWORD
+      status: fatal
+    - id: missing_profile_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        grant_type: "password"
+        client_id: $__CLIENT_ID
+        client_secret: $__CLIENT_SECRET
+        username: $__USERNAME
+        password: $__PASSWORD
+      status: fatal
+      reason: bad_origin_parameters
+    - id: invalid_profile_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: ""
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        grant_type: "password"
+        client_id: $__CLIENT_ID
+        client_secret: $__CLIENT_SECRET
+        username: $__USERNAME
+        password: $__PASSWORD
+      status: fatal
+      reason: read_failure
+    - id: missing_client_id
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        grant_type: "password"
+        client_secret: $__CLIENT_SECRET
+        username: $__USERNAME
+        password: $__PASSWORD
+      status: fatal
+    - id: missing_client_secret
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        grant_type: "password"
+        client_id: $__CLIENT_ID
+        username: $__USERNAME
+        password: $__PASSWORD
+      status: fatal
+    - id: missing_password
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json"
+        content_type: "application/json"
+        grant_type: "password"
+        client_id: $__CLIENT_ID
+        client_secret: $__CLIENT_SECRET
+        username: $__USERNAME
+      status: fatal

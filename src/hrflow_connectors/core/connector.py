@@ -1,3 +1,4 @@
+import copy
 import enum
 import json
 import logging
@@ -247,8 +248,8 @@ class BaseActionParameters(BaseModel):
 
 
 class WorkflowType(str, enum.Enum):
-    catch = "catch"
-    pull = "pull"
+    catch = "hook"
+    pull = "schedule"
 
 
 class ConnectorAction(BaseModel):
@@ -260,6 +261,7 @@ class ConnectorAction(BaseModel):
 
     name: str
     description: str
+    trigger_type: WorkflowType
     parameters: t.Type[BaseModel]
     origin: Warehouse
     target: Warehouse
@@ -279,6 +281,10 @@ class ConnectorAction(BaseModel):
             raise ValueError("Target warehouse is not writable")
         return target
 
+    @property
+    def data_type(self) -> str:
+        return self.origin.data_type.name
+
     def workflow_code(self, connector_name: str, workflow_type: WorkflowType) -> str:
         return WORKFLOW_TEMPLATE.render(
             format_placeholder=self.WORKFLOW_FORMAT_PLACEHOLDER,
@@ -288,7 +294,7 @@ class ConnectorAction(BaseModel):
             target_settings_prefix=self.TARGET_SETTINGS_PREFIX,
             connector_name=connector_name,
             action_name=self.name,
-            type=workflow_type,
+            type=workflow_type.name,
             origin_parameters=[
                 parameter for parameter in self.origin.read.parameters.__fields__
             ],
@@ -527,18 +533,17 @@ class Connector:
             event_parser_placeholder = action.WORKFLOW_EVENT_PARSER_PLACEHOLDER
             action_manifest = dict(
                 name=action.name,
-                action_parameters=action.parameters.schema(),
+                action_parameters=copy.deepcopy(action.parameters.schema()),
+                data_type=action.data_type,
+                trigger_type=action.trigger_type.value,
                 origin=action.origin.name,
                 origin_parameters=action.origin.read.parameters.schema(),
                 origin_data_schema=action.origin.data_schema.schema(),
                 target=action.target.name,
                 target_parameters=action.target.write.parameters.schema(),
                 target_data_schema=action.target.data_schema.schema(),
-                workflow_code_catch=action.workflow_code(
-                    connector_name=model.name, workflow_type=WorkflowType.catch
-                ),
-                workflow_code_pull=action.workflow_code(
-                    connector_name=model.name, workflow_type=WorkflowType.pull
+                workflow_code=action.workflow_code(
+                    connector_name=model.name, workflow_type=action.trigger_type
                 ),
                 workflow_code_format_placeholder=format_placeholder,
                 workflow_code_logics_placeholder=logics_placeholder,
@@ -546,6 +551,10 @@ class Connector:
                 workflow_code_origin_settings_prefix=action.ORIGIN_SETTINGS_PREFIX,
                 workflow_code_target_settings_prefix=action.TARGET_SETTINGS_PREFIX,
             )
+            if action.trigger_type is WorkflowType.pull:
+                action_manifest.pop("workflow_code_event_parser_placeholder")
+                action_manifest["action_parameters"]["properties"].pop("event_parser")
+
             manifest["actions"].append(action_manifest)
         return manifest
 
