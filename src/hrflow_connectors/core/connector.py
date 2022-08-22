@@ -30,11 +30,6 @@ class ConnectorActionAdapter(logging.LoggerAdapter):
         )
 
 
-class EventParsingError(BaseModel):
-    event: t.Dict
-    error: t.Any
-
-
 class Event(enum.Enum):
     read_success = "read_success"
     read_failure = "read_failure"
@@ -65,6 +60,11 @@ class Status(enum.Enum):
     success = "success"
     success_with_failures = "success_with_failures"
     fatal = "fatal"
+
+
+class ActionInitError(BaseModel):
+    data: t.Dict
+    reason: Reason
 
 
 class RunResult(BaseModel):
@@ -309,7 +309,7 @@ class ConnectorAction(BaseModel):
         action_parameters: t.Dict,
         origin_parameters: t.Dict,
         target_parameters: t.Dict,
-        event_parsing_error: t.Optional[EventParsingError] = None,
+        init_error: t.Optional[ActionInitError] = None,
     ) -> RunResult:
         action_id = uuid.uuid4()
         adapter = ConnectorActionAdapter(
@@ -323,15 +323,15 @@ class ConnectorAction(BaseModel):
             ),
         )
 
-        if event_parsing_error is not None:
+        if init_error is not None:
             adapter.error(
-                "Failed to parse event with errors={} event={}".format(
-                    repr(event_parsing_error.error), event_parsing_error.event
+                "Failed to parse event with reason={} data={}".format(
+                    repr(init_error.reason), init_error.data
                 )
             )
             return RunResult(
                 status=Status.fatal,
-                reason=Reason.event_parsing_failure,
+                reason=init_error.reason,
             )
 
         adapter.info("Starting Action")

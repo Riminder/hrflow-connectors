@@ -102,9 +102,7 @@ WORKFLOW_TEMPLATE = Template(
 import typing as t
 
 from hrflow_connectors import {{ connector_name }}
-{% if type == "catch" %}
-from hrflow_connectors.core.connector import EventParsingError
-{% endif %}
+from hrflow_connectors.core.connector import ActionInitError, Reason
 
 ORIGIN_SETTINGS_PREFIX = "{{ origin_settings_prefix }}"
 TARGET_SETTINGS_PREFIX = "{{ target_settings_prefix }}"
@@ -137,7 +135,6 @@ def workflow(
     else:
         actions_parameters["logics"] = logics
 
-    event_parsing_error = None
     {% if type == "catch" %}
     try:
         event_parser
@@ -153,9 +150,14 @@ def workflow(
         try:
             _request = _event_parser(_request)
         except Exception as e:
-            event_parsing_error = EventParsingError(
-                event=_request,
-                error=e,
+            return {{ connector_name }}.{{ action_name }}(
+                action_parameters=dict(),
+                origin_parameters=dict(),
+                target_parameters=dict(),
+                init_error=ActionInitError(
+                    reason=Reason.event_parsing_failure,
+                    data=dict(error=e, event=_request),
+                )
             )
     {% endif %}
 
@@ -181,7 +183,6 @@ def workflow(
         action_parameters=actions_parameters,
         origin_parameters=origin_parameters,
         target_parameters=target_parameters,
-        event_parsing_error=event_parsing_error
     )
 """
 )
