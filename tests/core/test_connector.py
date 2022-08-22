@@ -13,6 +13,7 @@ from hrflow_connectors.core import (
     WorkflowType,
 )
 from hrflow_connectors.core.connector import Event, Reason, RunResult, Status
+from tests.conftest import random_workflow_id
 from tests.core.localusers.warehouse import (
     FAIL_AT,
     USERS_DB,
@@ -94,6 +95,7 @@ def test_action_by_name():
 def test_connector_failures():
     campaign_id = "camp_xxx1"
     result = SmartLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(format=1),
         origin_parameters=dict(),
         target_parameters=dict(),
@@ -102,6 +104,7 @@ def test_connector_failures():
     assert result.reason == Reason.bad_action_parameters
 
     result = SmartLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(gender="M"),
         target_parameters=dict(),
@@ -110,6 +113,7 @@ def test_connector_failures():
     assert result.reason == Reason.bad_origin_parameters
 
     result = SmartLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(),
         target_parameters=dict(),
@@ -118,6 +122,7 @@ def test_connector_failures():
     assert result.reason == Reason.bad_target_parameters
 
     result = SmartLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(format=lambda user: 10 / 0),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
@@ -126,6 +131,7 @@ def test_connector_failures():
     assert result.reason == Reason.format_failure
 
     result = SmartLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(logics=[lambda user: 10 / 0]),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
@@ -151,6 +157,7 @@ def test_origin_warehouse_failure():
         ],
     )
     result = connector.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id="camp_xxx1"),
@@ -201,6 +208,7 @@ def test_target_warehouse_failure():
         ],
     )
     result = connector.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id="camp_xxx1"),
@@ -239,6 +247,7 @@ def test_connector_simple_success():
     assert len(LEADS_DB[campaign_id]) == 0
 
     result = SmartLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
@@ -263,6 +272,7 @@ def test_connector_with_format():
 
     assert len(LEADS_DB[campaign_id]) == 0
     result = SmartLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(format=format),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
@@ -286,6 +296,7 @@ def test_connector_with_logics():
     assert len(LEADS_DB[campaign_id]) == 0
 
     result = SmartLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(logics=[lambda u: u, lambda u: None, lambda u: u]),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
@@ -304,6 +315,7 @@ def test_connector_with_logics():
     assert len(LEADS_DB[campaign_id]) == 0
 
     result = SmartLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(logics=[lambda u: u, lambda u: u, lambda u: None]),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
@@ -322,6 +334,7 @@ def test_connector_with_logics():
     assert len(LEADS_DB[campaign_id]) == 0
 
     result = SmartLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(logics=[lambda u: u, lambda u: u, lambda u: u]),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
@@ -346,6 +359,7 @@ def test_connector_with_logics():
 
     assert len(LEADS_DB[campaign_id]) == 0
     result = SmartLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(logics=[lambda u: u, logic, lambda u: u]),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
@@ -388,6 +402,7 @@ def test_connector_default_format():
     campaign_id = "camp_xxx1"
     assert len(LEADS_DB[campaign_id]) == 0
     result = EvenSmarterLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(format=lambda user: user),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
@@ -406,6 +421,7 @@ def test_connector_default_format():
     campaign_id = "camp_xxx2"
     assert len(LEADS_DB[campaign_id]) == 0
     result = EvenSmarterLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
@@ -467,6 +483,7 @@ def test_action_with_failures():
     assert len(LEADS_DB[campaign_id]) == 0
 
     result = FailingSmartLeads.pull_leads(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(format=failing_format, logics=[failing_logic]),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),
@@ -608,6 +625,7 @@ def test_action_with_callback_success():
     )
 
     result = SmartLeads.pull_leads_with_callback(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(gender="male"),
         target_parameters=dict(campaign_id=campaign_id),
@@ -650,6 +668,7 @@ def test_action_with_callback_failure():
     campaign_id = "camp_xxx1"
 
     result = SmartLeads.pull_leads_with_callback(
+        workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(),
         target_parameters=dict(campaign_id=campaign_id),

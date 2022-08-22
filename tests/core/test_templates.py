@@ -8,6 +8,7 @@ from hrflow_connectors.core import (
     WorkflowType,
 )
 from hrflow_connectors.core.connector import Event, Reason, Status
+from tests.conftest import random_workflow_id
 from tests.core.localusers.warehouse import USERS_DB, Gender, UsersWarehouse
 from tests.core.smartleads.warehouse import LEADS_DB, LeadsWarehouse
 
@@ -70,10 +71,13 @@ def test_pull_workflow_code(with_smartleads):
     script = (
         workflow_code
         + "\n__run_result=workflow(settings=dict({origin_prefix}gender='male',"
-        " {target_prefix}campaign_id='{campaign_id}'))".format(
+        " {target_prefix}campaign_id='{campaign_id}',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             origin_prefix=action_manifest["workflow_code_origin_settings_prefix"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
     global_namespace = {"hrflow_connectors": with_smartleads}
@@ -112,9 +116,12 @@ def format(item):
     script = (
         workflow_code
         + "\n__run_result=workflow(settings=dict("
-        " {target_prefix}campaign_id='{campaign_id}'))".format(
+        " {target_prefix}campaign_id='{campaign_id}',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
     global_namespace = {"hrflow_connectors": with_smartleads, "change_me": False}
@@ -135,9 +142,12 @@ def format(item):
     script = (
         with_format_function
         + "\n__run_result=workflow(settings=dict("
-        " {target_prefix}campaign_id='{campaign_id}'))".format(
+        " {target_prefix}campaign_id='{campaign_id}',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
 
@@ -172,9 +182,12 @@ logics = [logic]
         workflow_code
         + "\n__run_result=workflow(settings=dict("
         " {target_prefix}campaign_id='{campaign_id}',"
-        " {target_prefix}dummy_str='FIXME'))".format(
+        " {target_prefix}dummy_str='FIXME',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
     global_namespace = {"hrflow_connectors": with_smartleads, "change_me": False}
@@ -196,9 +209,12 @@ logics = [logic]
         with_format_function
         + "\n__run_result=workflow(settings=dict("
         " {target_prefix}campaign_id='{campaign_id}',"
-        " {target_prefix}dummy_str='FIXME'))".format(
+        " {target_prefix}dummy_str='FIXME',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
 
@@ -225,9 +241,12 @@ def test_catch_workflow_code(with_smartleads):
     script = (
         workflow_code
         + "\n__run_result=workflow(_request=dict(gender='male'),"
-        " settings=dict({target_prefix}campaign_id='{campaign_id}'))".format(
+        " settings=dict({target_prefix}campaign_id='{campaign_id}',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
     global_namespace = {"hrflow_connectors": with_smartleads}
@@ -266,9 +285,12 @@ def format(item):
     script = (
         workflow_code
         + "\n__run_result=workflow(_request=dict(),"
-        " settings=dict({target_prefix}campaign_id='{campaign_id}'))".format(
+        " settings=dict({target_prefix}campaign_id='{campaign_id}',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
     global_namespace = {"hrflow_connectors": with_smartleads, "change_me": False}
@@ -289,9 +311,12 @@ def format(item):
     script = (
         with_format_function
         + "\n__run_result=workflow(_request=dict(),"
-        " settings=dict({target_prefix}campaign_id='{campaign_id}'))".format(
+        " settings=dict({target_prefix}campaign_id='{campaign_id}',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
 
@@ -324,9 +349,12 @@ logics = [logic]
     script = (
         workflow_code
         + "\n__run_result=workflow(_request=dict(),"
-        " settings=dict({target_prefix}campaign_id='{campaign_id}'))".format(
+        " settings=dict({target_prefix}campaign_id='{campaign_id}',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
     global_namespace = {"hrflow_connectors": with_smartleads, "change_me": False}
@@ -347,9 +375,12 @@ logics = [logic]
     script = (
         with_format_function
         + "\n__run_result=workflow(_request=dict(),"
-        " settings=dict({target_prefix}campaign_id='{campaign_id}'))".format(
+        " settings=dict({target_prefix}campaign_id='{campaign_id}',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
 
@@ -381,9 +412,12 @@ def event_parser(event):
     script = (
         workflow_code
         + "\n__run_result=workflow(_request=dict(desired_gender='male'),"
-        " settings=dict({target_prefix}campaign_id='{campaign_id}'))".format(
+        " settings=dict({target_prefix}campaign_id='{campaign_id}',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
     global_namespace = {"hrflow_connectors": with_smartleads}
@@ -404,9 +438,12 @@ def event_parser(event):
     script = (
         with_event_parser
         + "\n__run_result=workflow(_request=dict(desired_gender='male'),"
-        " settings=dict({target_prefix}campaign_id='{campaign_id}'))".format(
+        " settings=dict({target_prefix}campaign_id='{campaign_id}',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
 
@@ -435,9 +472,12 @@ def test_catch_workflow_code_with_default_event_parser(with_smartleads):
     script = (
         workflow_code
         + "\n__run_result=workflow(_request=dict(desired_gender='male'),"
-        " settings=dict({target_prefix}campaign_id='{campaign_id}'))".format(
+        " settings=dict({target_prefix}campaign_id='{campaign_id}',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
     global_namespace = {"hrflow_connectors": with_smartleads}
@@ -460,9 +500,12 @@ def test_catch_workflow_code_with_default_event_parser(with_smartleads):
     script = (
         workflow_code
         + "\n__run_result=workflow(_request=dict(desired_gender='male'),"
-        " settings=dict({target_prefix}campaign_id='{campaign_id}'))".format(
+        " settings=dict({target_prefix}campaign_id='{campaign_id}',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
         )
     )
 
@@ -496,6 +539,40 @@ def event_parser(event):
     script = (
         with_event_parser
         + "\n__run_result=workflow(_request=dict(desired_gender='male'),"
+        " settings=dict({target_prefix}campaign_id='{campaign_id}',"
+        " {workflow_id_key}='{workflow_id}'))".format(
+            workflow_id_key=action_manifest["workflow_code_workflow_id_settings_key"],
+            target_prefix=action_manifest["workflow_code_target_settings_prefix"],
+            campaign_id=campaign_id,
+            workflow_id=random_workflow_id(),
+        )
+    )
+    global_namespace = {"hrflow_connectors": with_smartleads}
+
+    assert len(LEADS_DB[campaign_id]) == 0
+
+    exec(script, global_namespace)
+
+    result = global_namespace["__run_result"]
+    assert result.status is Status.fatal
+    assert result.reason is Reason.event_parsing_failure
+    assert result.events[Event.read_success] == 0
+    assert len(LEADS_DB[campaign_id]) == 0
+
+
+def test_catch_workflow_code_with_no_workflow_id(with_smartleads):
+    action_manifest = SmartLeads.manifest()["actions"][1]
+    assert action_manifest["name"] == "catch_user"
+    assert action_manifest["trigger_type"] == "hook"
+    assert "workflow_code_event_parser_placeholder" in action_manifest
+    assert "event_parser" in action_manifest["action_parameters"]["properties"]
+
+    campaign_id = "xxxx_4663"
+
+    workflow_code = action_manifest["workflow_code"]
+    script = (
+        workflow_code
+        + "\n__run_result=workflow(_request=dict(desired_gender='male'),"
         " settings=dict({target_prefix}campaign_id='{campaign_id}'))".format(
             target_prefix=action_manifest["workflow_code_target_settings_prefix"],
             campaign_id=campaign_id,
@@ -509,6 +586,6 @@ def event_parser(event):
 
     result = global_namespace["__run_result"]
     assert result.status is Status.fatal
-    assert result.reason is Reason.event_parsing_failure
+    assert result.reason is Reason.workflow_id_not_found
     assert result.events[Event.read_success] == 0
     assert len(LEADS_DB[campaign_id]) == 0
