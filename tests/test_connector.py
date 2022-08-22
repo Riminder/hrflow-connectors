@@ -9,7 +9,7 @@ from hrflow_connectors.core.tests import collect_connector_tests
 ConnectorActionTestParams = namedtuple(
     "ConnectorActionTestParams",
     "action, origin_parameters, target_parameters, expected_status,"
-    " expected_reason, expected_events",
+    " expected_reason, expected_events, workflow_id",
 )
 
 
@@ -40,6 +40,9 @@ def parameterize_connector_action_tests(
                     pytest.param(
                         ConnectorActionTestParams(
                             action=action,
+                            workflow_id="pytest_{}_{}".format(
+                                connector.model.name, action_name
+                            ),
                             origin_parameters=action_test.origin_parameters,
                             target_parameters=action_test.target_parameters,
                             expected_status=action_test.status,
@@ -56,6 +59,7 @@ def parameterize_connector_action_tests(
 
 def test_connector_action(connector_action_test_params):
     result = connector_action_test_params.action(
+        workflow_id=connector_action_test_params.workflow_id,
         action_parameters=dict(),
         origin_parameters=connector_action_test_params.origin_parameters,
         target_parameters=connector_action_test_params.target_parameters,

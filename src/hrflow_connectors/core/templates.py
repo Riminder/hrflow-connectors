@@ -77,6 +77,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 {{ connector_name }}.{{ action_name }}(
+    workflow_id="some_string_identifier",
     action_parameters=dict(
         {%- for field in action_fields %}
         {{ field.name }}={{ field.example }},
@@ -135,6 +136,19 @@ def workflow(
     else:
         actions_parameters["logics"] = logics
 
+    if "{{ workflow_id_settings_key }}" not in settings:
+        return {{ connector_name }}.{{ action_name }}(
+            workflow_id="",
+            action_parameters=dict(),
+            origin_parameters=dict(),
+            target_parameters=dict(),
+            init_error=ActionInitError(
+                reason=Reason.workflow_id_not_found,
+                data=dict(error="{{ workflow_id_settings_key }} not found in settings", settings_keys=list(settings.keys())),
+            )
+        )
+    workflow_id = settings["{{ workflow_id_settings_key }}"]
+
     {% if type == "catch" %}
     try:
         event_parser
@@ -151,6 +165,7 @@ def workflow(
             _request = _event_parser(_request)
         except Exception as e:
             return {{ connector_name }}.{{ action_name }}(
+                workflow_id=workflow_id,
                 action_parameters=dict(),
                 origin_parameters=dict(),
                 target_parameters=dict(),
@@ -180,6 +195,7 @@ def workflow(
         {% endif %}
 
     return {{ connector_name }}.{{ action_name }}(
+        workflow_id=workflow_id,
         action_parameters=actions_parameters,
         origin_parameters=origin_parameters,
         target_parameters=target_parameters,

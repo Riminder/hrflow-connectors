@@ -45,6 +45,7 @@ class Event(enum.Enum):
 
 
 class Reason(enum.Enum):
+    workflow_id_not_found = "workflow_id_not_found"
     event_parsing_failure = "event_parsing_failure"
     bad_action_parameters = "bad_action_parameters"
     bad_origin_parameters = "bad_origin_parameters"
@@ -258,6 +259,7 @@ class ConnectorAction(BaseModel):
     WORKFLOW_EVENT_PARSER_PLACEHOLDER = "# << event_parser_placeholder >>"
     ORIGIN_SETTINGS_PREFIX = "origin_"
     TARGET_SETTINGS_PREFIX = "target_"
+    WORKFLOW_ID_SETTINGS_KEY = "__workflow_id"
 
     name: str
     description: str
@@ -290,6 +292,7 @@ class ConnectorAction(BaseModel):
             format_placeholder=self.WORKFLOW_FORMAT_PLACEHOLDER,
             logics_placeholder=self.WORKFLOW_LOGICS_PLACEHOLDER,
             event_parser_placeholder=self.WORKFLOW_EVENT_PARSER_PLACEHOLDER,
+            workflow_id_settings_key=self.WORKFLOW_ID_SETTINGS_KEY,
             origin_settings_prefix=self.ORIGIN_SETTINGS_PREFIX,
             target_settings_prefix=self.TARGET_SETTINGS_PREFIX,
             connector_name=connector_name,
@@ -306,6 +309,7 @@ class ConnectorAction(BaseModel):
     def run(
         self,
         connector_name: str,
+        workflow_id: str,
         action_parameters: t.Dict,
         origin_parameters: t.Dict,
         target_parameters: t.Dict,
@@ -318,6 +322,7 @@ class ConnectorAction(BaseModel):
                 log_tags=[
                     dict(name="connector", value=connector_name),
                     dict(name="action_name", value=self.name),
+                    dict(name="workflow_id", value=workflow_id),
                     dict(name="action_id", value=action_id),
                 ]
             ),
@@ -548,6 +553,7 @@ class Connector:
                 workflow_code_format_placeholder=format_placeholder,
                 workflow_code_logics_placeholder=logics_placeholder,
                 workflow_code_event_parser_placeholder=event_parser_placeholder,
+                workflow_code_workflow_id_settings_key=action.WORKFLOW_ID_SETTINGS_KEY,
                 workflow_code_origin_settings_prefix=action.ORIGIN_SETTINGS_PREFIX,
                 workflow_code_target_settings_prefix=action.TARGET_SETTINGS_PREFIX,
             )

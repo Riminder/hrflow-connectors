@@ -1,3 +1,6 @@
+import random
+import string
+
 from hrflow_connectors import __CONNECTORS__
 from tests.test_connector import parameterize_connector_action_tests
 from tests.test_warehouse import parameterize_read_warehouse_tests
@@ -34,3 +37,7 @@ def pytest_generate_tests(metafunc):
             connectors = metafunc.config.getoption("connector")
         params = parameterize_read_warehouse_tests(connectors=connectors)
         metafunc.parametrize("warehouse_read_test_params", params)
+
+
+def random_workflow_id() -> str:
+    return "".join([random.choice(string.ascii_letters) for _ in range(10)])
