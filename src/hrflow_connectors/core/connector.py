@@ -9,6 +9,7 @@ from functools import partial
 
 from pydantic import BaseModel, Field, ValidationError, create_model, validator
 
+from hrflow_connectors.core import backend
 from hrflow_connectors.core.templates import WORKFLOW_TEMPLATE
 from hrflow_connectors.core.warehouse import Warehouse
 
@@ -30,7 +31,7 @@ class ConnectorActionAdapter(logging.LoggerAdapter):
         )
 
 
-class Event(enum.Enum):
+class Event(str, enum.Enum):
     read_success = "read_success"
     read_failure = "read_failure"
     format_failure = "format_failure"
@@ -44,7 +45,7 @@ class Event(enum.Enum):
         return Counter({event: 0 for event in cls})
 
 
-class Reason(enum.Enum):
+class Reason(str, enum.Enum):
     workflow_id_not_found = "workflow_id_not_found"
     event_parsing_failure = "event_parsing_failure"
     bad_action_parameters = "bad_action_parameters"
@@ -57,7 +58,7 @@ class Reason(enum.Enum):
     none = ""
 
 
-class Status(enum.Enum):
+class Status(str, enum.Enum):
     success = "success"
     success_with_failures = "success_with_failures"
     fatal = "fatal"
@@ -504,8 +505,13 @@ class ConnectorAction(BaseModel):
                 events[Event.callback_failure] += 1
                 adapter.error("Failed to run callback with error={}".format(repr(e)))
 
+        results = RunResult.from_events(events)
+        if backend.is_configured:
+            adapter.info("Saving run results in {} backend".format(backend.store.type))
+            backend.store.save(key=workflow_id, data=results)
+
         adapter.info("Finished action")
-        return RunResult.from_events(events)
+        return results
 
 
 class ConnectorModel(BaseModel):
