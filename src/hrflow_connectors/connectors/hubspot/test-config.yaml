@@ -12,7 +12,18 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         access_token: $__ACCESS_TOKEN
-      status: success    
+        dealID: $__DEALID
+      status: success
+    - id: no_access_token
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        dealID: $__DEALID
+      status: fatal
+      reason: bad_target_parameters    
     - id: invalid_access_token
       origin_parameters:
         api_secret: $__API_SECRET
@@ -21,6 +32,7 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         access_token: bad_access_token
+        dealID: $__DEALID
       status: fatal
       reason: write_failure
     - id: no_hrflow_source_key
@@ -30,6 +42,7 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         access_token: $__ACCESS_TOKEN
+        dealID: $__DEALID
       status: fatal
       reason: bad_origin_parameters
     - id: no_hrflow_profile_key
@@ -39,6 +52,7 @@ actions:
         source_key: $__SOURCE_KEY
       target_parameters:
         access_token: $__ACCESS_TOKEN
+        dealID: $__DEALID
       status: fatal
       reason: bad_origin_parameters
     - id: invalid_hrflow_api_secret      
@@ -49,5 +63,6 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         access_token: $__ACCESS_TOKEN
+        dealID: $__DEALID
       status: fatal
       reason: read_failure

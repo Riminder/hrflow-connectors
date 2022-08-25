@@ -76,6 +76,19 @@ class ReadProfilesParameters(BaseModel):
     )
 
 
+class Stage(BaseModel):
+    label: str
+    displayOrder: int
+    metadata: str  # TODO: implement metadata
+
+
+class Pipeline(BaseModel):
+    id: int
+    label: str
+    displayOrder: int
+    stages: t.List[Stage]
+
+
 class WriteProfilesParameters(BaseModel):
     access_token: str = Field(
         ...,
@@ -85,10 +98,13 @@ class WriteProfilesParameters(BaseModel):
         ),
         repr=False,
     )
-    # TODO: Pipeline and sequences to be added to the parameters
+    dealID: t.Optional[int]
+    ticketID: t.Optional[int]
+    pipeline: t.Optional[Pipeline]
 
 
-# TODO: Improve how the contact's profile info is collected individually
+# TODO: Improve how the contact's profile info is collected individually,
+# take into account paggination
 def read(
     adapter: LoggerAdapter, parameters: ReadProfilesParameters
 ) -> t.Iterable[t.Dict]:
@@ -115,6 +131,8 @@ def read(
         yield contact
 
 
+# TODO: custom pipelines using the endpoint
+# and add the contact to it using associations endpoint
 def write(
     adapter: LoggerAdapter,
     parameters: WriteProfilesParameters,
@@ -122,13 +140,12 @@ def write(
 ) -> t.List[t.Dict]:
     adapter.info("Adding {} profiles to Hubspot ".format(len(profiles)))
     failed_profiles = []
-    url = f"{baseUrl}/objects/contacts"
-
+    contacts_endpoint = f"{baseUrl}/objects/contacts"
     for profile in profiles:
         payload = json.dumps(profile)
 
         response = requests.post(
-            url,
+            contacts_endpoint,
             headers={
                 "Content-Type": "application/json",
                 "Authorization": "Bearer {}".format(parameters.access_token),
@@ -143,6 +160,29 @@ def write(
                 )
             )
             failed_profiles.append(profile)
+        else:
+            contactId = response.json()["id"]
+            adapter.info("Successfully added contact with ID={}".format(contactId))
+            dealId = parameters.dealID
+            if dealId is not None:
+                deals_endpoint = (
+                    f"{baseUrl}/objects/deals/{dealId}"
+                    "/associations/contacts/{contactId}/3"
+                )
+                headers = {
+                    "Authorization": "Bearer {}".format(parameters.access_token),
+                }
+                deal_response = requests.request(
+                    "PUT", deals_endpoint, headers=headers, data={}
+                )
+                if deal_response.status_code // 100 != 2:
+                    adapter.error(
+                        "Failed to add profile to Hubspot status_code={} response={}"
+                        .format(
+                            deal_response.status_code,
+                            deal_response.text,
+                        )
+                    )
     return failed_profiles
 
 
