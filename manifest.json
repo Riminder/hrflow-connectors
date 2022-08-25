@@ -3649,11 +3649,78 @@
                 "title": "Access Token",
                 "description": "The token used to authenticate any API calls made for to your HubSpot account.",
                 "type": "string"
+              },
+              "dealID": {
+                "title": "Dealid",
+                "type": "integer"
+              },
+              "ticketID": {
+                "title": "Ticketid",
+                "type": "integer"
+              },
+              "pipeline": {
+                "$ref": "#/definitions/Pipeline"
               }
             },
             "required": [
               "access_token"
-            ]
+            ],
+            "definitions": {
+              "Stage": {
+                "title": "Stage",
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "title": "Label",
+                    "type": "string"
+                  },
+                  "displayOrder": {
+                    "title": "Displayorder",
+                    "type": "integer"
+                  },
+                  "metadata": {
+                    "title": "Metadata",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "label",
+                  "displayOrder",
+                  "metadata"
+                ]
+              },
+              "Pipeline": {
+                "title": "Pipeline",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "title": "Id",
+                    "type": "integer"
+                  },
+                  "label": {
+                    "title": "Label",
+                    "type": "string"
+                  },
+                  "displayOrder": {
+                    "title": "Displayorder",
+                    "type": "integer"
+                  },
+                  "stages": {
+                    "title": "Stages",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/Stage"
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "displayOrder",
+                  "stages"
+                ]
+              }
+            }
           },
           "target_data_schema": {
             "title": "ContactObject",
@@ -3742,7 +3809,7 @@
               }
             }
           },
-          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import Hubspot\n\nfrom hrflow_connectors.core.connector import EventParsingError\n\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = Hubspot.model.action_by_name(\"push_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            event_parsing_error = EventParsingError(\n                event=_request,\n                error=e,\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'profile_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['access_token']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return Hubspot.push_profile(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import Hubspot\n\nfrom hrflow_connectors.core.connector import EventParsingError\n\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = Hubspot.model.action_by_name(\"push_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            event_parsing_error = EventParsingError(\n                event=_request,\n                error=e,\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'profile_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['access_token', 'dealID', 'ticketID', 'pipeline']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return Hubspot.push_profile(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
           "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",

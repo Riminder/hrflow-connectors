@@ -27,6 +27,9 @@ Writes a profile from Hrflow.ai Source as a contact on Hubspot via the API
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `access_token` :red_circle: | `str` | None | The token used to authenticate any API calls made for to your HubSpot account. |
+| `dealID`  | `int` | None |  |
+| `ticketID`  | `int` | None |  |
+| `pipeline`  | `Pipeline` | None |  |
 
 :red_circle: : *required*
 
@@ -53,6 +56,9 @@ Hubspot.push_profile(
     ),
     target_parameters=dict(
         access_token="your_access_token",
+        dealID=0,
+        ticketID=0,
+        pipeline=***,
     )
 )
 ```
