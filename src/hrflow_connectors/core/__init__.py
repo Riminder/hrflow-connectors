@@ -8,6 +8,7 @@ from hrflow_connectors.core.connector import (  # noqa
 from hrflow_connectors.core.warehouse import (  # noqa
     ActionEndpoints,
     DataType,
+    ReadMode,
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
