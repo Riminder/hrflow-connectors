@@ -466,6 +466,7 @@
               }
             }
           },
+          "supports_incremental": false,
           "target": "HrFlow.ai Jobs",
           "target_parameters": {
             "title": "WriteJobParameters",
@@ -1331,6 +1332,7 @@
               }
             }
           },
+          "supports_incremental": false,
           "target": "SmartRecruiters Profiles",
           "target_parameters": {
             "title": "WriteProfilesParameters",
@@ -1689,6 +1691,7 @@
             "type": "object",
             "properties": {}
           },
+          "supports_incremental": false,
           "target": "HrFlow.ai Profile Parsing",
           "target_parameters": {
             "title": "FixedWriteParameters",
@@ -1907,6 +1910,7 @@
             "type": "object",
             "properties": {}
           },
+          "supports_incremental": false,
           "target": "HrFlow.ai Profile Parsing",
           "target_parameters": {
             "title": "FixedWriteParameters",
@@ -2125,6 +2129,7 @@
             "type": "object",
             "properties": {}
           },
+          "supports_incremental": false,
           "target": "HrFlow.ai Profiles",
           "target_parameters": {
             "title": "FixedWriteParameters",
@@ -2724,6 +2729,7 @@
             "type": "object",
             "properties": {}
           },
+          "supports_incremental": false,
           "target": "HrFlow.ai Profile Parsing",
           "target_parameters": {
             "title": "WriteProfileParsingParameters",
@@ -2929,6 +2935,7 @@
             "type": "object",
             "properties": {}
           },
+          "supports_incremental": false,
           "target": "HrFlow.ai Jobs",
           "target_parameters": {
             "title": "WriteJobParameters",
