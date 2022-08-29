@@ -1,5 +1,5 @@
 import pytest
-from pydantic import BaseModel, Field, PositiveInt
+from pydantic import BaseModel, Field, PositiveInt, ValidationError
 
 from hrflow_connectors.core.warehouse import (
     DataType,
@@ -85,3 +85,13 @@ def test_with_fixed_write_parameters():
     assert fixed.write.parameters().age == 22
     assert fixed.write.parameters().distance == 200
     assert fixed.write.parameters().name == "fixed"
+
+
+def test_read_action_incremental_validation():
+    with pytest.raises(ValidationError) as excinfo:
+        WarehouseReadAction(
+            parameters=Parameters,
+            function=lambda *args, **kwargs: None,
+            supports_incremental=True,
+        )
+    assert "item_to_read_from must be provided" in excinfo.value.errors()[0]["msg"]

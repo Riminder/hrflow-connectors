@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field, ValidationError, create_model, validator
 
 from hrflow_connectors.core import backend
 from hrflow_connectors.core.templates import WORKFLOW_TEMPLATE
-from hrflow_connectors.core.warehouse import Warehouse
+from hrflow_connectors.core.warehouse import ReadMode, Warehouse
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +39,7 @@ class Event(str, enum.Enum):
     logics_failure = "logics_failure"
     write_failure = "write_failure"
     callback_failure = "callback_failure"
+    item_to_read_from_failure = "item_to_read_from_failure"
 
     @classmethod
     def empty_counter(cls) -> t.Counter["Event"]:
@@ -46,6 +47,11 @@ class Event(str, enum.Enum):
 
 
 class Reason(str, enum.Enum):
+    item_to_read_from_failure = "item_to_read_from_failure"
+    origin_does_not_support_incremental = "origin_does_not_support_incremental"
+    backend_not_configured_in_incremental_mode = (
+        "backend_not_configured_in_incremental_mode"
+    )
     workflow_id_not_found = "workflow_id_not_found"
     event_parsing_failure = "event_parsing_failure"
     bad_action_parameters = "bad_action_parameters"
@@ -73,6 +79,7 @@ class RunResult(BaseModel):
     status: Status
     reason: Reason = Reason.none
     events: t.Counter[Event] = Field(default_factory=Event.empty_counter)
+    read_from: t.Optional[str] = None
 
     @classmethod
     def from_events(cls, events: t.Counter[Event]) -> "RunResult":
@@ -172,6 +179,15 @@ class BaseActionParameters(BaseModel):
     format: FormatFunctionType = Field(lambda x: x, description=FormatDescription)
     event_parser: t.Optional[EventParserFunctionType] = Field(
         None, description=EventParserDescription, **EventParserExtra
+    )
+    read_mode: ReadMode = Field(
+        ReadMode.sync,
+        description=(
+            "If 'incremental' then `read_from` of the last run is given to Origin"
+            " Warehouse during read. **The actual behavior depends on implementation of"
+            " read**. In 'sync' mode `read_from` is neither fetched nor given to Origin"
+            " Warehouse during read."
+        ),
     )
 
     class Config:
@@ -365,11 +381,48 @@ class ConnectorAction(BaseModel):
             )
             return RunResult(status=Status.fatal, reason=Reason.bad_target_parameters)
 
+        if parameters.read_mode is ReadMode.incremental:
+            if self.origin.supports_incremental is False:
+                adapter.warning(
+                    "Origin warehouse {} does not support '{}' read mode".format(
+                        self.origin.name, ReadMode.incremental.value
+                    )
+                )
+                return RunResult(
+                    status=Status.fatal,
+                    reason=Reason.origin_does_not_support_incremental,
+                )
+
+            if backend.is_configured is False:
+                adapter.warning(
+                    "For '{}' read_mode backend must be configured".format(
+                        ReadMode.incremental.value
+                    )
+                )
+                return RunResult(
+                    status=Status.fatal,
+                    reason=Reason.backend_not_configured_in_incremental_mode,
+                )
+
+        read_from = None
+        if parameters.read_mode is ReadMode.incremental:
+            adapter.info(
+                "Read mode is '{}' fetching last run results".format(
+                    ReadMode.incremental.value
+                )
+            )
+            last_results = backend.store.load(key=workflow_id, parse_as=RunResult)
+            read_from = last_results.read_from if last_results is not None else None
+
         events = Event.empty_counter()
 
         adapter.info(
-            "Starting to read from warehouse={} with parameters={}".format(
-                self.origin.name, origin_parameters
+            "Starting to read from warehouse={} with mode={} read_from={} parameters={}"
+            .format(
+                self.origin.name,
+                parameters.read_mode,
+                read_from,
+                origin_parameters,
             )
         )
         origin_adapter = ConnectorActionAdapter(
@@ -384,7 +437,12 @@ class ConnectorAction(BaseModel):
         )
         origin_items = []
         try:
-            for item in self.origin.read(origin_adapter, origin_parameters):
+            for item in self.origin.read(
+                origin_adapter,
+                origin_parameters,
+                read_mode=parameters.read_mode,
+                read_from=read_from,
+            ):
                 origin_items.append(item)
                 events[Event.read_success] += 1
         except Exception as e:
@@ -401,6 +459,25 @@ class ConnectorAction(BaseModel):
                 events[Event.read_failure] > 0,
             )
         )
+
+        next_read_from = read_from
+        if len(origin_items) > 0 and parameters.read_mode is ReadMode.incremental:
+            last_item = origin_items[-1]
+            try:
+                next_read_from = self.origin.item_to_read_from(last_item)
+            except Exception as e:
+                events[Event.item_to_read_from_failure] += 1
+                adapter.error(
+                    "Failed to get read_from from warehouse={} with parameters={}"
+                    " item={} error={}".format(
+                        self.origin.name, origin_parameters, last_item, repr(e)
+                    )
+                )
+                return RunResult(
+                    status=Status.fatal,
+                    reason=Reason.item_to_read_from_failure,
+                    events=events,
+                )
 
         using_default_format = not bool(action_parameters.get("format"))
         adapter.info(
@@ -506,6 +583,7 @@ class ConnectorAction(BaseModel):
                 adapter.error("Failed to run callback with error={}".format(repr(e)))
 
         results = RunResult.from_events(events)
+        results.read_from = next_read_from
         if backend.is_configured:
             adapter.info("Saving run results in {} backend".format(backend.store.type))
             backend.store.save(key=workflow_id, data=results)

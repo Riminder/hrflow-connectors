@@ -71,6 +71,7 @@ ACTION_DOCUMENTATION_TEMAPLTE = Template(
 ```python
 import logging
 from hrflow_connectors import {{ connector_name }}
+from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)

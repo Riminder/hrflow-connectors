@@ -10,7 +10,7 @@ from hrflow_connectors.core.tests import collect_connector_tests
 
 WarehouseReadTest = namedtuple(
     "WarehouseReadTest",
-    "read, parameters, expected_number_of_items",
+    "read, parameters, read_mode, read_from, expected_number_of_items",
 )
 
 
@@ -49,6 +49,8 @@ def parameterize_read_warehouse_tests(
                             WarehouseReadTest(
                                 read=warehouse.read,
                                 parameters=warehouse_test.parameters,
+                                read_mode=warehouse_test.read_mode,
+                                read_from=warehouse_test.read_from,
                                 expected_number_of_items=warehouse_test.expected_number_of_items,  # noqa
                             ),
                             id="{}_warehouse:{}_{}".format(
@@ -71,6 +73,8 @@ def test_read_warehouse(warehouse_read_test_params):
             warehouse_read_test_params.read.parameters(
                 **warehouse_read_test_params.parameters
             ),
+            warehouse_read_test_params.read_mode,
+            warehouse_read_test_params.read_from,
         )
     )
     if warehouse_read_test_params.expected_number_of_items is not None:
