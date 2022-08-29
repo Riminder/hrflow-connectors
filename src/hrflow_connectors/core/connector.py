@@ -628,6 +628,7 @@ class Connector:
                 origin=action.origin.name,
                 origin_parameters=action.origin.read.parameters.schema(),
                 origin_data_schema=action.origin.data_schema.schema(),
+                supports_incremental=action.origin.supports_incremental,
                 target=action.target.name,
                 target_parameters=action.target.write.parameters.schema(),
                 target_data_schema=action.target.data_schema.schema(),
