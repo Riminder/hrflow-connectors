@@ -12,6 +12,7 @@ from hrflow_connectors.connectors.smartrecruiters.schemas import (
 from hrflow_connectors.core import (
     ActionEndpoints,
     DataType,
+    ReadMode,
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
@@ -116,7 +117,12 @@ class ReadJobsParameters(BaseModel):
     )
 
 
-def read(adapter: LoggerAdapter, parameters: ReadJobsParameters) -> t.Iterable[t.Dict]:
+def read(
+    adapter: LoggerAdapter,
+    parameters: ReadJobsParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
+) -> t.Iterable[t.Dict]:
     page = None
     while True:
         params = dict(
