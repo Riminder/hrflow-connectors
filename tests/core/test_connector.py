@@ -1,6 +1,7 @@
 import json
 from collections import Counter
 from pathlib import Path
+from unittest import mock
 
 import pytest
 from pydantic import ValidationError
@@ -10,7 +11,9 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ReadMode,
     WorkflowType,
+    backend,
 )
 from hrflow_connectors.core.connector import Event, Reason, RunResult, Status
 from tests.conftest import random_workflow_id
@@ -19,7 +22,9 @@ from tests.core.localusers.warehouse import (
     USERS_DB,
     BadUsersWarehouse,
     FailingUsersWarehouse,
+    UsersIncrementalWarehouse,
     UsersWarehouse,
+    add_user,
 )
 from tests.core.smartleads.warehouse import (
     LEADS_DB,
@@ -49,6 +54,14 @@ SmartLeads = Connector(
             description="Send users as leads",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
+            target=LeadsWarehouse,
+        ),
+        ConnectorAction(
+            name="pull_leads_incremental",
+            trigger_type=WorkflowType.pull,
+            description="Send users as leads with support for incremental",
+            parameters=BaseActionParameters,
+            origin=UsersIncrementalWarehouse,
             target=LeadsWarehouse,
         ),
     ],
@@ -683,3 +696,231 @@ def test_action_with_callback_failure():
     assert result.events[Event.callback_failure] == 1
 
     assert len(USERS_DB) == len(LEADS_DB[campaign_id])
+
+
+def test_connector_incremental_read_not_supported():
+    campaign_id = "camp_xxx1"
+    assert len(LEADS_DB[campaign_id]) == 0
+
+    result = SmartLeads.pull_leads(
+        workflow_id=random_workflow_id(),
+        action_parameters=dict(read_mode=ReadMode.incremental),
+        origin_parameters=dict(),
+        target_parameters=dict(campaign_id=campaign_id),
+    )
+
+    assert result.status == Status.fatal
+    assert result.reason == Reason.origin_does_not_support_incremental
+    assert result.events[Event.read_success] == 0
+    assert len(LEADS_DB[campaign_id]) == 0
+
+
+def test_connector_incremental_backend_not_configured():
+    campaign_id = "camp_xxx1"
+    assert len(LEADS_DB[campaign_id]) == 0
+
+    with mock.patch.object(backend, "is_configured", new=False):
+        with mock.patch.object(
+            SmartLeads.model.actions[0].origin.read, "supports_incremental", new=True
+        ):
+            result = SmartLeads.pull_leads(
+                workflow_id=random_workflow_id(),
+                action_parameters=dict(read_mode=ReadMode.incremental),
+                origin_parameters=dict(),
+                target_parameters=dict(campaign_id=campaign_id),
+            )
+
+    assert result.status == Status.fatal
+    assert result.reason == Reason.backend_not_configured_in_incremental_mode
+    assert result.events[Event.read_success] == 0
+    assert len(LEADS_DB[campaign_id]) == 0
+
+
+def test_connector_incremental_item_to_read_from_failing():
+    campaign_id = "camp_xxx21"
+    assert len(LEADS_DB[campaign_id]) == 0
+
+    workflow_id = random_workflow_id()
+    with mock.patch.object(
+        SmartLeads.model.actions[2].origin.read,
+        "item_to_read_from",
+        new=lambda item: 1 / 0,
+    ):
+        result = SmartLeads.pull_leads_incremental(
+            workflow_id=workflow_id,
+            action_parameters=dict(read_mode=ReadMode.incremental),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
+        )
+
+    assert result.status == Status.fatal
+    assert result.reason == Reason.item_to_read_from_failure
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert result.read_from is None
+
+
+def test_connector_incremental_read():
+    campaign_id = "camp_xxx35"
+    assert len(LEADS_DB[campaign_id]) == 0
+
+    initial_users = len(USERS_DB)
+
+    workflow_id = random_workflow_id()
+    result = SmartLeads.pull_leads_incremental(
+        workflow_id=workflow_id,
+        action_parameters=dict(read_mode=ReadMode.incremental),
+        origin_parameters=dict(),
+        target_parameters=dict(campaign_id=campaign_id),
+    )
+
+    assert result.status == Status.success
+    assert result.events[Event.read_success] == initial_users
+    assert len(LEADS_DB[campaign_id]) == initial_users
+    assert result.read_from == str(USERS_DB[-1]["id"])
+
+    # Add user to USERS_DB
+    add_user()
+    add_user()
+    last_id = add_user()["id"]
+
+    result = SmartLeads.pull_leads_incremental(
+        workflow_id=workflow_id,
+        action_parameters=dict(read_mode=ReadMode.incremental),
+        origin_parameters=dict(),
+        target_parameters=dict(campaign_id=campaign_id),
+    )
+
+    assert result.status == Status.success
+    assert result.events[Event.read_success] == 3
+    assert len(LEADS_DB[campaign_id]) == initial_users + 3
+    assert result.read_from == str(last_id)
+
+
+def test_read_from_is_persisted_after_failure():
+    campaign_id = "camp_xxx35"
+    assert len(LEADS_DB[campaign_id]) == 0
+
+    workflow_id = random_workflow_id()
+    result = SmartLeads.pull_leads_incremental(
+        workflow_id=workflow_id,
+        action_parameters=dict(read_mode=ReadMode.incremental),
+        origin_parameters=dict(),
+        target_parameters=dict(campaign_id=campaign_id),
+    )
+
+    assert result.status == Status.success
+    assert result.events[Event.read_success] == len(USERS_DB)
+    assert len(LEADS_DB[campaign_id]) == len(USERS_DB)
+    assert result.read_from == str(USERS_DB[-1]["id"])
+
+    assert backend.store.load(key=workflow_id, parse_as=RunResult).read_from == str(
+        USERS_DB[-1]["id"]
+    )
+
+    # Init error
+    init_error = mock.MagicMock()
+    init_error.reason = Reason.workflow_id_not_found
+    result = SmartLeads.pull_leads_incremental(
+        workflow_id=workflow_id,
+        action_parameters=dict(read_mode=ReadMode.incremental),
+        origin_parameters=dict(),
+        target_parameters=dict(campaign_id=campaign_id),
+        init_error=init_error,
+    )
+    assert result.status == Status.fatal
+    assert result.reason == Reason.workflow_id_not_found
+    assert backend.store.load(key=workflow_id, parse_as=RunResult).read_from == str(
+        USERS_DB[-1]["id"]
+    )
+
+    # Bad paramaters
+    result = SmartLeads.pull_leads_incremental(
+        workflow_id=workflow_id,
+        action_parameters=dict(read_mode=5),
+        origin_parameters=dict(),
+        target_parameters=dict(campaign_id=campaign_id),
+    )
+    assert result.status == Status.fatal
+    assert result.reason == Reason.bad_action_parameters
+    assert backend.store.load(key=workflow_id, parse_as=RunResult).read_from == str(
+        USERS_DB[-1]["id"]
+    )
+
+    result = SmartLeads.pull_leads_incremental(
+        workflow_id=workflow_id,
+        action_parameters=dict(read_mode=ReadMode.incremental),
+        origin_parameters=dict(gender="XFRE"),
+        target_parameters=dict(campaign_id=campaign_id),
+    )
+    assert result.status == Status.fatal
+    assert result.reason == Reason.bad_origin_parameters
+    assert backend.store.load(key=workflow_id, parse_as=RunResult).read_from == str(
+        USERS_DB[-1]["id"]
+    )
+
+    result = SmartLeads.pull_leads_incremental(
+        workflow_id=workflow_id,
+        action_parameters=dict(read_mode=ReadMode.incremental),
+        origin_parameters=dict(),
+        target_parameters=dict(campaign_id=[1, 2, 3]),
+    )
+    assert result.status == Status.fatal
+    assert result.reason == Reason.bad_target_parameters
+    assert backend.store.load(key=workflow_id, parse_as=RunResult).read_from == str(
+        USERS_DB[-1]["id"]
+    )
+
+    # Backend not configured
+    with mock.patch.object(backend, "is_configured", new=False):
+        result = SmartLeads.pull_leads_incremental(
+            workflow_id=workflow_id,
+            action_parameters=dict(read_mode=ReadMode.incremental),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
+        )
+    assert result.status == Status.fatal
+    assert result.reason == Reason.backend_not_configured_in_incremental_mode
+    assert backend.store.load(key=workflow_id, parse_as=RunResult).read_from == str(
+        USERS_DB[-1]["id"]
+    )
+
+    # Read failure
+    with mock.patch.object(
+        SmartLeads.model.actions[2].origin.read,
+        "function",
+        new=lambda *args, **kwargs: 1 / 0,
+    ):
+        result = SmartLeads.pull_leads_incremental(
+            workflow_id=workflow_id,
+            action_parameters=dict(read_mode=ReadMode.incremental),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
+        )
+    assert result.status == Status.fatal
+    assert result.reason == Reason.read_failure
+    assert backend.store.load(key=workflow_id, parse_as=RunResult).read_from == str(
+        USERS_DB[-1]["id"]
+    )
+
+    # Item to read_from failure
+    last_id = add_user()["id"]
+    with mock.patch.object(
+        SmartLeads.model.actions[2].origin.read,
+        "item_to_read_from",
+        new=lambda item: 1 / 0,
+    ):
+        result = SmartLeads.pull_leads_incremental(
+            workflow_id=workflow_id,
+            action_parameters=dict(read_mode=ReadMode.incremental),
+            origin_parameters=dict(),
+            target_parameters=dict(campaign_id=campaign_id),
+        )
+
+    assert result.status == Status.fatal
+    assert result.events[Event.read_success] == 1
+    assert result.reason == Reason.item_to_read_from_failure
+    assert (
+        backend.store.load(key=workflow_id, parse_as=RunResult).read_from
+        == str(USERS_DB[-2]["id"])
+        != last_id
+    )

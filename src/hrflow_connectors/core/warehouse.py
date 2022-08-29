@@ -2,7 +2,7 @@ import enum
 import typing as t
 from logging import LoggerAdapter
 
-from pydantic import BaseModel, Field, ValidationError, create_model
+from pydantic import BaseModel, Field, ValidationError, create_model, root_validator
 
 
 class FieldNotFoundError(RuntimeError):
@@ -24,6 +24,11 @@ class ActionType(enum.Enum):
     write = enum.auto()
 
 
+class ReadMode(enum.Enum):
+    sync = "sync"
+    incremental = "incremental"
+
+
 class ActionEndpoints(BaseModel):
     name: str
     description: str
@@ -33,10 +38,26 @@ class ActionEndpoints(BaseModel):
 class WarehouseReadAction(BaseModel):
     endpoints: t.List[ActionEndpoints] = Field(default_factory=list)
     parameters: t.Type[BaseModel]
-    function: t.Callable[[LoggerAdapter, BaseModel], t.Iterable[t.Dict]]
+    function: t.Callable[
+        [LoggerAdapter, BaseModel, t.Optional[ReadMode], t.Optional[str]],
+        t.Iterable[t.Dict],
+    ]
+    item_to_read_from: t.Optional[t.Callable[[t.Dict], str]] = None
+    supports_incremental: bool = False
 
     def __call__(self, *args, **kwargs) -> t.Iterable[t.Dict]:
         return self.function(*args, **kwargs)
+
+    @root_validator
+    def validate_incremental(cls, values):
+        supports_incremental = values.get("supports_incremental")
+        item_to_read_from = values.get("item_to_read_from")
+        if supports_incremental is True and item_to_read_from is None:
+            raise ValueError(
+                "Function item_to_read_from must be provided when"
+                " supports_incremental is True"
+            )
+        return values
 
 
 class WarehouseWriteAction(BaseModel):
@@ -54,6 +75,13 @@ class Warehouse(BaseModel):
     data_schema: t.Type[BaseModel] = Field(default_factory=lambda: BaseModel)
     read: t.Optional[WarehouseReadAction]
     write: t.Optional[WarehouseWriteAction]
+
+    @property
+    def supports_incremental(self):
+        return self.read.supports_incremental
+
+    def item_to_read_from(self, *args, **kwargs):
+        return self.read.item_to_read_from(*args, **kwargs)
 
     @property
     def is_readable(self):

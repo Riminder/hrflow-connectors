@@ -10,7 +10,7 @@ import yaml
 from pydantic import BaseModel, Field, StrictStr, ValidationError
 
 from hrflow_connectors.core.connector import Connector, Event, Reason, Status
-from hrflow_connectors.core.warehouse import Warehouse
+from hrflow_connectors.core.warehouse import ReadMode, Warehouse
 
 PROJECT_DIRECTORY = Path(__file__).parent.parent.parent.parent
 CONNECTORS_DIRECTORY = Path(__file__).parent.parent / "connectors"
@@ -187,6 +187,8 @@ class WarehouseName(StrictStr):
 class ReadTest(BaseModel):
     id: t.Optional[str] = None
     parameters: t.Dict[str, ParameterValue]
+    read_mode: t.Optional[ReadMode] = None
+    read_from: t.Optional[str] = None
     expected_number_of_items: t.Optional[int] = None
 
 
