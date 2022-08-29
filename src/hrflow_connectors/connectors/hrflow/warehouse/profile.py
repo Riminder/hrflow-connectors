@@ -10,6 +10,7 @@ from hrflow_connectors.connectors.hrflow.schemas import (
 )
 from hrflow_connectors.core import (
     DataType,
+    ReadMode,
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
@@ -64,7 +65,12 @@ class WriteProfileParsingParameters(BaseModel):
     )
 
 
-def read(adapter: LoggerAdapter, parameters: ReadProfileParameters) -> t.List[t.Dict]:
+def read(
+    adapter: LoggerAdapter,
+    parameters: ReadProfileParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
+) -> t.List[t.Dict]:
     hrflow_client = Hrflow(
         api_secret=parameters.api_secret, api_user=parameters.api_user
     )
