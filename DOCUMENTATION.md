@@ -36,7 +36,7 @@ The `LocalJsonWarehouse` will have both `read` and `write` capability. The `read
 
 We start by importing core components from `hrflow_connectors`
 ```python
-from hrflow_connectors.core import Warehouse, WarehouseReadAction, WarehouseWriteAction
+from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction, WarehouseWriteAction
 ```
 
 To define a new `WarehouseReadAction` you need :
@@ -51,7 +51,15 @@ class ReadJsonParameters(BaseModel):
 
 ```
 
-- A callable that should accept two arguments: a  `LoggerAdapter` instance that should be used for logging and an instance of the `pydantic` schema defined earlier. The callable should return an _iterable_ that yields data as Python dictionnaries.
+- A callable that should accept four arguments:
+    - A `LoggerAdapter` instance that should be used for logging 
+    - An instance of the `pydantic` schema defined earlier
+    - An optional `read_mode` enumeration member
+    - An optional `read_from` string
+
+The callable should return an _iterable_ that yields data as Python dictionnaries.
+
+📢 _Both `read_mode` and `read_from` are not used in this basic example. **Yet they need to be present in the signature**. To learn more about how to use them to enable **incremental reading** see the [dedicated section](#how-to-do-incremental-reading)_
 
 ```python
 import json
@@ -61,12 +69,19 @@ from logging import LoggerAdapter
 
 from pydantic import BaseModel, Field, FilePath
 
+from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction, WarehouseWriteAction
+
 
 class ReadJsonParameters(BaseModel):
     path: FilePath = Field(..., description="Path to JSON file to read")
 
 
-def read(adapter: LoggerAdapter, parameters: ReadJsonParameters) -> t.Iterable[t.Dict]:
+def read(
+    adapter: LoggerAdapter,
+    parameters: ReadJsonParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
+) -> t.Iterable[t.Dict]:
     # Because of validation happening in ReadJsonParameters
     # no need to handle FileNotFoundError
     try:
@@ -95,9 +110,12 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
+from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction, WarehouseWriteAction
+
 
 class WriteJsonParameters(BaseModel):
     path: Path = Field(..., description="Path where to save JSON file")
+    mode: t.Optional[t.Literal["append", "erase"]] = "erase"
 
 
 def write(
@@ -106,8 +124,15 @@ def write(
     failed_items = []
     items = list(items)
     try:
-        with open(parameters.path, "w") as f:
-            json.dump(items, f)
+        if parameters.mode == "erase":
+            with open(parameters.path, "w") as f:
+                json.dump(items, f)
+        else:
+            with open(parameters.path, "r") as f:
+                old_items = json.load(f)
+            old_items.extend(items)
+            with open(parameters.path, "w") as f:
+                json.dump(old_items, f)
     # More error handling can be added to cope with file permissions for example
     except TypeError as e:
         message = "Failed to JSON encode provided items with error {}".format(repr(e))
@@ -121,6 +146,7 @@ The last step is defining the `Warehouse`.
 ```python
 LocalJSONWarehouse = Warehouse(
     name="LocalJSONWarehouse",
+    data_type=DataType.other,
     read=WarehouseReadAction(
         parameters=ReadJsonParameters,
         function=read,
@@ -131,7 +157,10 @@ LocalJSONWarehouse = Warehouse(
     ),
 )
 ```
-_`Warehouse` has also a `data_schema` attribute that can receive a [pydantic](https://pydantic-docs.helpmanual.io/) schema. This is for use cases where your warehouse stores data with a specific schema. We didn't use it here because any valid JSON can be read or written using `LocalJSONWarehouse`._
+
+> _`Warehouse` has also a `data_schema` attribute that can receive a [pydantic](https://pydantic-docs.helpmanual.io/) schema. This is for use cases where your warehouse stores data with a specific schema. We didn't use it here because any valid JSON can be read or written using `LocalJSONWarehouse`._
+
+> ❗️ `data_type` expects one of the `DataType` enumeration members which are `job`, `profile` or `other`. Since _jobs_ and _profiles_ are quite common in the HR space they have dedicated members. This makes it easy to reason about warehouses on the HrFlow.ai plateform. For all other cases use `DataType.other`.
 
 </br>
 <details>
@@ -146,14 +175,19 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field, FilePath
 
-from hrflow_connectors.core import Warehouse, WarehouseReadAction, WarehouseWriteAction
+from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction, WarehouseWriteAction
 
 
 class ReadJsonParameters(BaseModel):
     path: FilePath = Field(..., description="Path to JSON file to read")
 
 
-def read(adapter: LoggerAdapter, parameters: ReadJsonParameters) -> t.Iterable[t.Dict]:
+def read(
+    adapter: LoggerAdapter,
+    parameters: ReadJsonParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
+) -> t.Iterable[t.Dict]:
     # Because of validation happening in ReadJsonParameters
     # no need to handle FileNotFoundError
     try:
@@ -173,6 +207,7 @@ def read(adapter: LoggerAdapter, parameters: ReadJsonParameters) -> t.Iterable[t
 
 class WriteJsonParameters(BaseModel):
     path: Path = Field(..., description="Path where to save JSON file")
+    mode: t.Optional[t.Literal["append", "erase"]] = "erase"
 
 
 def write(
@@ -181,8 +216,15 @@ def write(
     failed_items = []
     items = list(items)
     try:
-        with open(parameters.path, "w") as f:
-            json.dump(items, f)
+        if parameters.mode == "erase":
+            with open(parameters.path, "w") as f:
+                json.dump(items, f)
+        else:
+            with open(parameters.path, "r") as f:
+                old_items = json.load(f)
+            old_items.extend(items)
+            with open(parameters.path, "w") as f:
+                json.dump(old_items, f)
     # More error handling can be added to cope with file permissions for example
     except TypeError as e:
         message = "Failed to JSON encode provided items with error {}".format(repr(e))
@@ -194,6 +236,7 @@ def write(
 
 LocalJSONWarehouse = Warehouse(
     name="LocalJSONWarehouse",
+    data_type=DataType.other,
     read=WarehouseReadAction(
         parameters=ReadJsonParameters,
         function=read,
@@ -240,7 +283,7 @@ LocalJSON = Connector(
     actions=[
         ConnectorAction(
             name="pull_jobs",
-            type=WorkflowType.pull,
+            trigger_type=WorkflowType.pull,
             description="Send jobs from local JSON file to a ***Hrflow.ai Board***.",
             parameters=BaseActionParameters,
             origin=LocalJSONWarehouse,
@@ -248,7 +291,7 @@ LocalJSON = Connector(
         ),
         ConnectorAction(
             name="push_profile",
-            type=WorkflowType.catch,
+            trigger_type=WorkflowType.catch,
             description="Push a profile from a Hrflow.ai Source to a local JSON file",
             parameters=BaseActionParameters,
             origin=HrFlowProfileWarehouse,
@@ -296,7 +339,7 @@ LocalJSON = Connector(
     actions=[
         ConnectorAction(
             name="pull_jobs",
-            type=WorkflowType.pull,
+            trigger_type=WorkflowType.pull,
             description="Send jobs from local JSON file to a ***Hrflow.ai Board***.",
             parameters=BaseActionParameters.with_defaults(
                 "ReadJSONJobsActionParameters", format=format_job
@@ -343,7 +386,7 @@ logics = [only_males, only_over_18]
 
 _Mind_ that `logics` can not be defined at the `ConnectorAction` level contrary to `format` for which you can define a default behavior. `logics` are directly supplied by the end user when calling your `ConnectorAction`. See [section](#how-to-use-a-connector) for instructions on how to use a `Connector` and make us of the `logics` functions.
 
-##### `type`
+##### `trigger_type`
 You can define two types of `ConnectorAction`s depending on how they will be eventually used on the HrFlow.ai [Workflows](https://developers.hrflow.ai/docs/workflows) plateform. For cases where the action should be executed on a schedule based interval choose `WorkflowType.pull`. Alternatively for actions that should be triggered by a HTTP request use `WorkflowType.catch`.
 
 ### Plugging `LocalJSON`
@@ -364,8 +407,9 @@ A `Connector` is simply an abstraction with metadata on top of a list of `Connec
 
 For `LocalJSON` defined in the [tutorial above](#connector-developpment-tutorial-localjson) both `LocalJSON.pull_jobs(...)` and `LocalJSON.push_profile(...)` are valid instructions.
 
-When called each `ConnectorAction` should be supplied with three **mandatory** arguments :
-- `action_parameters` : this is where you can supply `format` and `logics` functions
+When called each `ConnectorAction` should be supplied with four **mandatory** arguments :
+- `workflow_id`: any string identifier. It should be **unique** within your integration scope **if your are using _incremental_ reading mode**. See this [section](#how-to-do-incremental-reading) for more about this
+- `action_parameters` : this is where you can supply `format`, `logics` and `read_mode`
 - `origin_parameters` : this is where you supply any parameters needed to _read_ from the `origin` warehouse
 - `target_parameters` : this is where you supply any parameters needed to _write_ to the `target` warehouse
 
@@ -414,6 +458,7 @@ def only_recent(job: t.Dict) -> t.Optional[t.Dict]:
 
 
 run_result = LocalJSON.pull_jobs(
+    workflow_id="testing-localjson",
     action_parameters=dict(format=format_job, logics=[only_categories, only_recent]),
     origin_parameters=dict(path="~/data/jobs_from_contractor_xxxyyy.json"),
     target_parameters=dict(
@@ -564,7 +609,13 @@ Running any `ConnectorAction` returns an instance of `RunResult`. It has the fol
     - `"logics_failure"`: The `logics` chain of functions raised an exception for **_all_** items
     - `"read_failure"`: An exception occured during the `read` operation from the very beginning stopping the operation
     - `"write_failure"`: All items failed to be written to the `target` warehouse
-- `events` : A counter with the counts for the following events `"read_success"` `"read_failure"` `"format_failure"` `"logics_discard"` `"logics_failure"` `"write_failure"`
+    - `"workflow_id_not_found"`: This is one of the possible initialization errors that can happen when using `hrflow_connectors` in the Cloud on HrFlow.ai plateform
+    - `"event_parsing_failure"`: This is one the possible initialization errors that can happen when using `hrflow_connectors` in the Cloud on HrFlow.ai plateform. It happens when the logic you defined to parse the hook triggering your action fails unexpectedly
+    - `"backend_not_configured_in_incremental_mode"`: `read_mode` is `ReadMode.incremental` but no backend was configured
+    - `"origin_does_not_support_incremental"`: Happens when `read_mode` is `ReadMode.incremental` but the origin warehouse does not support that mode
+    - `"item_to_read_from_failure"` : The action failed when trying to get the `read_from` flag from the origin warehouse
+- `events` : A counter with the counts for the following events `"read_success"` `"read_failure"` `"format_failure"` `"logics_discard"` `"logics_failure"` `"write_failure"` `"callback_failure"` and `"item_to_read_from_failure"`
+- `read_from` : A  string identifier returned by the origin warehouse when `read_mode=ReadMode.incremental`. During the next execution of the action that value will be given to the `read` function. Depending on implementation it can be used to only _read_ newer items or only beyond a certain limit and avoid pulling already visited items
 
 
 ## Testing
@@ -579,7 +630,8 @@ Tests for both connector actions and warehouses can be defined.
 
 For each `read` test case you must supply :
 - `parameters` : A dictionnary with parameters that will be passed to the `read` function of the `Warehouse`
-- **[Optional]** `id` : A string to name the particular test case. This makes debugging and reading tests' results easier
+- **[Optional]** `read_mode` : One of `sync` or `incremental` 
+- **[Optional]** `read_from` : A string identifier passed to the `read` function of the `Warehouse`
 - **[Optional]** `expected_number_of_items` : If provided the test will pass only if the `read` operation returns that exact number of items
 
 A `read` test passes :heavy_check_mark: if :
@@ -878,7 +930,7 @@ LocalJSON = Connector(
     actions=[
         ConnectorAction(
             name="push_profile",
-            type=WorkflowType.catch,
+            trigger_type=WorkflowType.catch,
             description="Push a profile from a Hrflow.ai Source to a local JSON file",
             parameters=BaseActionParameters,
             origin=HrFlowProfileWarehouse,
@@ -902,7 +954,7 @@ LocalJSON = Connector(
     actions=[
         ConnectorAction(
             name="push_profile",
-            type=WorkflowType.catch,
+            trigger_type=WorkflowType.catch,
             description="Push a profile from a Hrflow.ai Source to a local JSON file",
             parameters=BaseActionParameters,
             origin=HrFlowProfileWarehouse.with_fixed_read_parameters(
@@ -922,3 +974,369 @@ LocalJSON = Connector(
     )
 ...
 ```
+
+### How to do _incremental_ reading
+#### Concepts
+One common use case for connectors is to maintain two different warehouses synced over time. Using the `trigger_type=WorkflowType.pull` parameter of `ConnectorAction` it is possible to setup on the HrFlow.ai plateform a recurring action. Every given period of time the action is executed making sure that items from the origin are written to the target. 
+
+But in such cases pulling all items from the origin each time can become very time consuming on top of being inefficient. For this reason there is a way to implement _incremental_ reading within `hrflow_connectors`. 
+
+The main idea is that after each run of the action a string flag named `read_from` is returned by the origin warehouse. During the next execution of the action that `read_from` flag is given to the `read` function allowing it to only fetch relevent items given the flag value. 
+
+One simple example can be to set `read_from` to the execution time of the action. During the next iteration the `read` function of the origin warehouse can use the value stored in `read_from` to only fetch items that have a `created_at` or `updated_at` greater than the last `read_from`. 
+
+> **_Mind_** that what `read_from` should be and how it will be used is completely implementation dependent. Each warehouse depending on its internal logic can have a different logic for `read_from`. 
+
+#### Backend
+In order for the _incremental_ flow to work a **backend** needs to be configured. The backend is a store which is used in order to persist the value of `read_from`. That way it can be fetched and given to the action during future executions. 
+
+> :warning: If you try to run an action in _incremental_ mode without configuring a backend you will get a failure with `reason=backend_not_configured_in_incremental_mode`.
+
+In the current release only `LocalJsonStore` can be used as a backend. This simple store is an abstraction over a JSON file persisted in the local file system. In the future more stores are expected to be added. 
+> For steps on how to configure a backend you can check the [dedicated section](#backend-configuration)
+
+#### Interface
+In order for a warehouse to support _incremental_ reading it needs to implement the following interface:
+- The optional `item_to_read_from` callable of a `WarehouseReadAction` must be provided. That callable should accept a single argument and return the `read_from` string flag. That single argument is the last item returned by the `read` operation. It is up to the logic in `item_to_read_from` to use or not that argument in order to compute `read_from`
+- The optional `supports_incremental` boolean flag of a `WarehouseReadAction` must be set to `True`
+
+#### Example
+In order to illustrate how to use the _incremental_ mode we will consider the following use case : 
+- We have a warehouse that fetches _orders_ from a SQLite table
+- Each _order_ has an `updated_at` field which is stored as an integer unix timestamp
+- The warehouse always returns _orders_ ordered by `updated_at` in an ascending fashion 
+
+Let's consider how it can be implemented without _incremental_ logic. 
+
+```python
+import sqlite3
+import typing as t
+from logging import LoggerAdapter
+
+from pydantic import BaseModel, Field
+
+from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction
+
+class ReadOrderParameters(BaseModel):
+    db_name: str = Field(..., repr=False)
+
+def read(
+    adapter: LoggerAdapter,
+    parameters: ReadOrderParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
+) -> t.Iterable[t.Dict]:
+    connection = sqlite3.connect(parameters.db_name)
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT id, product, quantity, updated_at FROM orders ORDER BY updated_at ASC;")
+        for order in cursor:
+            yield dict(id=order[0], product=order[1], quantity=order[2], updated_at=order[3])
+    finally:
+        cursor.close()
+        connection.close()
+        
+
+OrdersWarehouse = Warehouse(
+    name="OrdersWarehouse",
+    data_type=DataType.other,
+    read=WarehouseReadAction(
+        parameters=ReadOrderParameters,
+        function=read,
+    ),
+)
+```
+In this implementation for each execution all orders are fetched. The `read` function doesn't make use of `read_mode` nor `read_from`. 
+
+🧪 Now let's see how the implementation can be made _incremental_. We will make the following changes to the code : 
+- We will assume that `read_from` when provided is the `update_at` of the last order that was read during a previous execution of the action
+- We will add a simple `item_to_read_from` callable that given an order returns `order["updated_at"]` 
+- We will change the query sent to MySQL in the case where `read_mode=ReadMode.incremental` in order to only fetch relevent items
+
+```python
+def read(
+    adapter: LoggerAdapter,
+    parameters: ReadOrderParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
+) -> t.Iterable[t.Dict]:
+    connection = sqlite3.connect(parameters.db_name)
+    query = (
+        "SELECT id, product, quantity, updated_at FROM orders ORDER BY updated_at ASC;"
+    )
+    if read_mode is ReadMode.incremental and read_from is not None:
+        # Making use of the last updated_at that was read in order to only fetch new items not already written to the target Warehouse
+        query = (
+            "SELECT id, product, quantity, updated_at FROM orders WHERE updated_at > {}"
+            " ORDER BY updated_at ASC;".format(read_from)
+        )
+    try:
+        cursor = connection.cursor()
+        cursor.execute(query)
+        for order in cursor:
+            yield dict(
+                id=order[0], product=order[1], quantity=order[2], updated_at=order[3]
+            )
+    finally:
+        cursor.close()
+        connection.close()
+
+
+SQLiteOrdersWarehouse = Warehouse(
+    name="SQLiteOrdersWarehouse",
+    data_type=DataType.other,
+    read=WarehouseReadAction(
+        parameters=ReadOrderParameters,
+        function=read,
+        # Set the boolean flag to True
+        supports_incremental=True,
+        item_to_read_from=lambda order: order["updated_at"],
+    ),
+)
+```
+
+#### Running the action
+With the concepts and example code at hand let's put all that theory into practice.
+1. Create a new folder `sqliteorders` under [`src/hrflow_connectors/connectors/`](src/hrflow_connectors/connectors/).
+2. Put following content in `warehouse.py` under [`src/hrflow_connectors/connectors/sqliteorders`](src/hrflow_connectors/connectors/sqliteorders)  
+    <details>
+    <summary><code>warehouse.py</code></summary>
+
+    ```python
+    import sqlite3
+    import typing as t
+    from logging import LoggerAdapter
+
+    from pydantic import BaseModel, Field
+
+    from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction
+
+
+    class ReadOrderParameters(BaseModel):
+        db_name: str = Field(..., repr=False)
+
+
+    def read(
+        adapter: LoggerAdapter,
+        parameters: ReadOrderParameters,
+        read_mode: t.Optional[ReadMode] = None,
+        read_from: t.Optional[str] = None,
+    ) -> t.Iterable[t.Dict]:
+        connection = sqlite3.connect(parameters.db_name)
+        query = (
+            "SELECT id, product, quantity, updated_at FROM orders ORDER BY updated_at ASC;"
+        )
+        if read_mode is ReadMode.incremental and read_from is not None:
+            # Making use of the last updated_at that was read in order to only fetch new items not already written to the target Warehouse
+            query = (
+                "SELECT id, product, quantity, updated_at FROM orders WHERE updated_at > {}"
+                " ORDER BY updated_at ASC;".format(read_from)
+            )
+        try:
+            cursor = connection.cursor()
+            cursor.execute(query)
+            for order in cursor:
+                yield dict(
+                    id=order[0], product=order[1], quantity=order[2], updated_at=order[3]
+                )
+        finally:
+            cursor.close()
+            connection.close()
+
+
+    SQLiteOrdersWarehouse = Warehouse(
+        name="SQLiteOrdersWarehouse",
+        data_type=DataType.other,
+        read=WarehouseReadAction(
+            parameters=ReadOrderParameters,
+            function=read,
+            # Set the boolean flag to True
+            supports_incremental=True,
+            item_to_read_from=lambda order: order["updated_at"],
+        ),
+    )
+    ```
+    </details>
+
+3. Put following content in `connector.py` under [`src/hrflow_connectors/connectors/sqliteorders`](src/hrflow_connectors/connectors/sqliteorders). We are using `SQLiteOrders` in conjonction with `LocalJSON` from the tutorial
+    <details>
+    <summary><code>connector.py</code></summary>
+
+    ```python
+    from hrflow_connectors.connectors.localjson.warehouse import LocalJSONWarehouse
+    from hrflow_connectors.connectors.sqliteorders.warehouse import SQLiteOrdersWarehouse
+    from hrflow_connectors.core import (
+        BaseActionParameters,
+        Connector,
+        ConnectorAction,
+        WorkflowType,
+    )
+
+    SQLiteOrders = Connector(
+        name="SQLiteOrders",
+        description="Read from SQLite, Write to JSON",
+        url="https://sqliteorder.ai",
+        actions=[
+            ConnectorAction(
+                name="pull_orders",
+                trigger_type=WorkflowType.pull,
+                description="Send orders from SQLite to JSON file.",
+                parameters=BaseActionParameters,
+                origin=SQLiteOrdersWarehouse,
+                target=LocalJSONWarehouse,
+            ),
+        ],
+    )
+    ```
+
+    </details>
+
+4. Add `SQLiteOrders` to the `__CONNECTORS__` list in [`src/hrflow_connectors/__init__.py`](src/hrflow_connectors/__init__.py)
+5. Make sure that everything is okay by generating the docs `make docs`. You should see instructions about how to use the `pull_orders` action in [`src/hrflow_connectors/connectors/sqliteorders/docs/pull_orders.md`](src/hrflow_connectors/connectors/sqliteorders/docs/pull_orders.md)
+6. Configure `LocalJSONStore` backend by setting proper environment variables in your terminal as described [here](#backend-configuration) and [here](#localjsonstore)
+    ```bash
+    export HRFLOW_CONNECTORS_STORE_ENABLED=True
+    export HRFLOW_CONNECTORS_STORE=localjson
+    export HRFLOW_CONNECTORS_LOCALJSON_DIR=/tmp/
+    ```
+7. Open an iPython terminal with `hrflow_connectors` scope by running `make ipython` in the same terminal where you configured the previous environment variables
+8. Run the following instructions
+
+    ```python
+    import logging
+    from hrflow_connectors import SQLiteOrders
+    from hrflow_connectors.core import ReadMode
+
+    logging.basicConfig(level=logging.INFO)
+
+    # This first run should fail because no table orders exists in tutorial.db
+    # Run the action then check that :
+    # - status == Status.fatal
+    # - reason == Reason.read_failure
+    # - result is stored in /tmp/store.json under `testing_incremental` 
+    # - target_warehouse.json is empty
+    result = SQLiteOrders.pull_orders(
+        workflow_id="testing_incremental",
+        action_parameters=dict(
+            read_mode=ReadMode.incremental,
+        ),
+        origin_parameters=dict(
+            db_name="tutorial.db",
+        ),
+        target_parameters=dict(
+            path="target_warehouse.json",
+            mode="append"
+        )
+    )
+
+    # Let's create the table
+    import sqlite3
+    con = sqlite3.connect("tutorial.db")
+    cur = con.cursor()
+    cur.execute("CREATE TABLE orders(id, product, quantity, updated_at)")
+
+    # Run the action then check that :
+    # - status == Status.success
+    # - Event.read_success == 0
+    # - result is stored in /tmp/store.json under `testing_incremental` 
+    # - target_warehouse.json is empty
+    result = SQLiteOrders.pull_orders(
+        workflow_id="testing_incremental",
+        action_parameters=dict(
+            read_mode=ReadMode.incremental,
+        ),
+        origin_parameters=dict(
+            db_name="tutorial.db",
+        ),
+        target_parameters=dict(
+            path="target_warehouse.json",
+            mode="append"
+        )
+    )
+
+    # Let's add some orders
+    data = [
+        (34492, "pizza", 2, 1660000006), # 6
+        (59683, "burger", 1, 1660000001), # 1
+        (59285, "salad", 3, 1660000004), # 4
+        (68483, "orange_juice", 1, 1660000002), # 2
+        (98543, "pizza", 5, 1660000005), # 5
+        (65345, "falafel", 3, 1660000003), # 3
+    ]
+    cur.executemany("INSERT INTO orders VALUES(?, ?, ?, ?)", data)
+    con.commit()  
+
+    # Run the action then check that :
+    # - Event.read_success == 6
+    # - target_warehouse.json has the six orders of the db in the right order
+    # - 1660000006 which is the update_at of the last order is stored in /tmp/store.json under `testing_incremental` key as `read_from`
+    result = SQLiteOrders.pull_orders(
+        workflow_id="testing_incremental",
+        action_parameters=dict(
+            read_mode=ReadMode.incremental,
+        ),
+        origin_parameters=dict(
+            db_name="tutorial.db",
+        ),
+        target_parameters=dict(
+            path="target_warehouse.json",
+            mode="append"
+        )
+    )
+
+    # Now let's run another incremental run without adding order to the db
+    # Since no new orders have been added nothing should be read from the origin
+    # Run the action then check that :
+    # - Event.read_success == 0
+    # - target_warehouse.json is unchanded
+    # - 1660000006 is stored in /tmp/store.json under `testing_incremental` key as `read_from`
+    result = SQLiteOrders.pull_orders(
+        workflow_id="testing_incremental",
+        action_parameters=dict(
+            read_mode=ReadMode.incremental,
+        ),
+        origin_parameters=dict(
+            db_name="tutorial.db",
+        ),
+        target_parameters=dict(
+            path="target_warehouse.json",
+            mode="append"
+        )
+    )
+
+    # Now let's add two new orders
+    data = [
+        (73958, "fish_and_ships", 1, 1660000008), # 8
+        (35878, "lasagna", 1, 1660000007), # 7
+    ]
+    cur.executemany("INSERT INTO orders VALUES(?, ?, ?, ?)", data)
+    con.commit()  
+
+    # One final incremental run
+    # Run the action then check that :
+    # - Event.read_success == 2
+    # - target_warehouse.json is has the new orders in the right order lasagne before fish_and_ships
+    # - 1660000008 is stored in /tmp/store.json under `testing_incremental` key as `read_from`
+    result = SQLiteOrders.pull_orders(
+        workflow_id="testing_incremental",
+        action_parameters=dict(
+            read_mode=ReadMode.incremental,
+        ),
+        origin_parameters=dict(
+            db_name="tutorial.db",
+        ),
+        target_parameters=dict(
+            path="target_warehouse.json",
+            mode="append"
+        )
+    )
+    ```
+
+
+## Backend Configuration
+Configuration is based on environment variables that must be properly set during action execution: 
+- `HRFLOW_CONNECTORS_STORE_ENABLED` : Any non empty string **different from** `"false"`, `"False"` or `"0"` **activates** the backend configuration
+- `HRFLOW_CONNECTORS_STORE`: Set to the name of the store that you want to configure
+### `LocalJSONStore`
+- `HRFLOW_CONNECTORS_STORE`:  `"localjson"`
+- `HRFLOW_CONNECTORS_LOCALJSON_DIR`: **[Required]** Absolute filepath to a directory where the JSON store will be written
