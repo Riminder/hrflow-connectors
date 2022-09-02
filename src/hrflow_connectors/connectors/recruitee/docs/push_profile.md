@@ -1,0 +1,62 @@
+
+# Push profile
+`HrFlow.ai Profiles` :arrow_right: `Recruitee Profiles`
+
+Writes a profile from Hrflow.ai Source as a candidate on Recruitee via the API
+
+
+
+## Action Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_profile`](../connector.py#L32) | Formatting function |
+
+## Source Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `api_secret` :red_circle: | `str` | None | X-API-KEY used to access HrFlow.ai API |
+| `api_user` :red_circle: | `str` | None | X-USER-EMAIL used to access HrFlow.ai API |
+| `source_key` :red_circle: | `str` | None | HrFlow.ai source key |
+| `profile_key` :red_circle: | `str` | None | HrFlow.ai profile key |
+
+## Destination Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `company_id` :red_circle: | `str` | None | Company ID. A company subdomain can also be used. |
+| `API_Token` :red_circle: | `str` | None | Personal API Token allowing access to the Recruitee API from external services. |
+| `offers`  | `int` | None | Offers to which the candidate will be assigned with default stage. You can also pass one ID as offer_id |
+
+:red_circle: : *required*
+
+## Example
+
+```python
+import logging
+from hrflow_connectors import Recruitee
+
+
+logging.basicConfig(level=logging.INFO)
+
+
+Recruitee.push_profile(
+    action_parameters=dict(
+        logics=[],
+        format=lambda *args, **kwargs: None # Put your code logic here,
+    ),
+    origin_parameters=dict(
+        api_secret="your_api_secret",
+        api_user="your_api_user",
+        source_key="your_source_key",
+        profile_key="your_profile_key",
+    ),
+    target_parameters=dict(
+        company_id="your_company_id",
+        API_Token="your_API_Token",
+        offers=***,
+    )
+)
+```
