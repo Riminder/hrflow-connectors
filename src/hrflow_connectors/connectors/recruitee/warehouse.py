@@ -16,6 +16,7 @@ from hrflow_connectors.core import (
     WarehouseWriteAction,
 )
 
+# !! Note: This endpoint is for the STAGING ENVIRONMENT !!
 RECRUITEE_ENDPOINT = "https://api.s.recruitee.com/c"
 
 
