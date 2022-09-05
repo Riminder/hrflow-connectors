@@ -67,6 +67,9 @@ jobs:
       - name: Run Core tests
         run: |
           poetry run pytest
+        env:
+          HRFLOW_CONNECTORS_STORE_ENABLED: "1"
+          HRFLOW_CONNECTORS_LOCALJSON_DIR: "/tmp/"
 
   connectors-integration-tests:
     runs-on: ubuntu-latest
@@ -111,6 +114,8 @@ jobs:
           poetry run pytest --no-cov --ignore tests/core --allconnectors
         env:
           ALL_SECRETS: ${{ toJson(secrets) }}
+          HRFLOW_CONNECTORS_STORE_ENABLED: "1"
+          HRFLOW_CONNECTORS_LOCALJSON_DIR: "/tmp/"
 
   reset-labels:
     runs-on: ubuntu-latest
