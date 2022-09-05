@@ -585,7 +585,7 @@ class ConnectorAction(BaseModel):
         results = RunResult.from_events(events)
         results.read_from = next_read_from
         if backend.is_configured:
-            adapter.info("Saving run results in {} backend".format(backend.store.type))
+            adapter.info("Saving run results in {} backend".format(backend.store.name))
             backend.store.save(key=workflow_id, data=results)
 
         adapter.info("Finished action")

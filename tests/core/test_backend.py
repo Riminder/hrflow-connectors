@@ -29,7 +29,7 @@ def test_bad_store_name(backend_restore):
         os.environ,
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
-            backend.STORE_TYPE_ENVIRONMENT_VARIABLE: "NotValid",
+            backend.STORE_NAME_ENVIRONMENT_VARIABLE: "NotValid",
         },
     ):
         with pytest.raises(Exception) as excinfo:
@@ -48,7 +48,7 @@ def test_localjson_store_bad_configuration(backend_restore):
         os.environ,
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
-            backend.STORE_TYPE_ENVIRONMENT_VARIABLE: "localjson",
+            backend.STORE_NAME_ENVIRONMENT_VARIABLE: "localjson",
         },
         clear=True,
     ):
@@ -60,7 +60,7 @@ def test_localjson_store_bad_configuration(backend_restore):
         os.environ,
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
-            backend.STORE_TYPE_ENVIRONMENT_VARIABLE: "localjson",
+            backend.STORE_NAME_ENVIRONMENT_VARIABLE: "localjson",
             backend.LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE: "./ubuntu",
         },
     ):
@@ -72,7 +72,7 @@ def test_localjson_store_bad_configuration(backend_restore):
         os.environ,
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
-            backend.STORE_TYPE_ENVIRONMENT_VARIABLE: "localjson",
+            backend.STORE_NAME_ENVIRONMENT_VARIABLE: "localjson",
             backend.LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE: (
                 "/home/userDoesNotExist/work"
             ),
@@ -91,7 +91,7 @@ def test_localjson_store(backend_restore, tmp_path):
         os.environ,
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
-            backend.STORE_TYPE_ENVIRONMENT_VARIABLE: "localjson",
+            backend.STORE_NAME_ENVIRONMENT_VARIABLE: "localjson",
             backend.LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE: str(tmp_path),
         },
     ):
@@ -114,7 +114,7 @@ def test_localjson_store(backend_restore, tmp_path):
         os.environ,
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
-            backend.STORE_TYPE_ENVIRONMENT_VARIABLE: "localjson",
+            backend.STORE_NAME_ENVIRONMENT_VARIABLE: "localjson",
             backend.LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE: str(tmp_path),
         },
     ):
@@ -130,7 +130,7 @@ def test_localjson_store_corrupted_file(backend_restore, tmp_path):
         os.environ,
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
-            backend.STORE_TYPE_ENVIRONMENT_VARIABLE: "localjson",
+            backend.STORE_NAME_ENVIRONMENT_VARIABLE: "localjson",
             backend.LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE: str(tmp_path),
         },
     ):
