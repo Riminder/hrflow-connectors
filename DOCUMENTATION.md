@@ -626,7 +626,7 @@ Running any `ConnectorAction` returns an instance of `RunResult`. It has the fol
     - `"backend_not_configured_in_incremental_mode"`: `read_mode` is `ReadMode.incremental` but no backend was configured
     - `"origin_does_not_support_incremental"`: Happens when `read_mode` is `ReadMode.incremental` but the origin warehouse does not support that mode
     - `"item_to_read_from_failure"` : The action failed when trying to get the `read_from` flag from the origin warehouse
-- `events` : A counter with the counts for the following events `"read_success"` `"read_failure"` `"format_failure"` `"logics_discard"` `"logics_failure"` `"write_failure"` `"callback_failure"` and `"item_to_read_from_failure"`
+- `events` : A counter with the counts for the following events `"read_success"` `"read_failure"` `"format_failure"` `"logics_discard"` `"logics_failure"` `"write_failure"` `"callback_executed"` `"callback_failure"` and `"item_to_read_from_failure"`
 - `read_from` : A  string identifier returned by the origin warehouse when `read_mode=ReadMode.incremental`. During the next execution of the action that value will be given to the `read` function. Depending on implementation it can be used to only _read_ newer items or only beyond a certain limit and avoid pulling already visited items
 
 
@@ -986,6 +986,35 @@ LocalJSON = Connector(
     )
 ...
 ```
+
+### Addind a callback to your `ConnectorAction`
+It is possible to add a callback function when developping a new `ConnectorAction`. 
+
+The callback signature should be as follow:
+```python
+def my_callback_function(
+    origin_parameters: BaseModel, # <==== parameters that were given to the origin warehouse
+    target_parameters: BaseModel, # <==== parameters that were given to the target warehouse
+    events: t.Counter[Event], # <==== Counter of events that occured during the execution
+    items_to_write: t.List[t.Dict], # <==== The list of items that the action tried to write to the target
+) -> None:
+    # Any code logic
+
+my_action_with_callback = ConnectorAction(
+    name=...,
+    trigger_type=...,
+    description=...,
+    parameters=...,
+    origin=...,
+    target=...,
+    callback=my_callback_function,
+)  
+```
+You are free to use any or none of the given arguments. But if your callback depends on the events that might have occured during execution then you should have enough data to build your custom logic. 
+
+The callback function is called _after the write operation_ **but only if the execution didn't exit early**. 
+To know if your callback was executed or not you should check the returned `RunResult` and look for `Event.callback_executed` and/or `Event.callback_failure`. 
+> For example if the `origin_parameters` are not valid the execution of the action is stopped early and the callback function is not called. 
 
 ### How to do _incremental_ reading
 #### Concepts
