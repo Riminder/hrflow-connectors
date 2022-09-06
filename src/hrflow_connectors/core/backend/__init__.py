@@ -2,6 +2,7 @@ import logging
 import os
 
 from hrflow_connectors.core.backend.localjson import LocalJsonStore
+from hrflow_connectors.core.backend.s3 import S3Store
 
 logger = logging.getLogger(__name__)
 store = None
@@ -12,7 +13,7 @@ STORE_NAME_ENVIRONMENT_VARIABLE = "HRFLOW_CONNECTORS_STORE"
 DEFAULT_STORE = LocalJsonStore.NAME()
 
 
-NAME_TO_STORE = {LocalJsonStore.NAME(): LocalJsonStore}
+NAME_TO_STORE = {LocalJsonStore.NAME(): LocalJsonStore, S3Store.NAME(): S3Store}
 
 
 def configure_store():

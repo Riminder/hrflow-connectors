@@ -992,7 +992,6 @@ In order for the _incremental_ flow to work a **backend** needs to be configured
 
 > :warning: If you try to run an action in _incremental_ mode without configuring a backend you will get a failure with `reason=backend_not_configured_in_incremental_mode`.
 
-In the current release only `LocalJsonStore` can be used as a backend. This simple store is an abstraction over a JSON file persisted in the local file system. In the future more stores are expected to be added. 
 > For steps on how to configure a backend you can check the [dedicated section](#backend-configuration)
 
 #### Interface
@@ -1337,6 +1336,15 @@ With the concepts and example code at hand let's put all that theory into practi
 Configuration is based on environment variables that must be properly set during action execution: 
 - `HRFLOW_CONNECTORS_STORE_ENABLED` : Any non empty string **different from** `"false"`, `"False"` or `"0"` **activates** the backend configuration
 - `HRFLOW_CONNECTORS_STORE`: Set to the name of the store that you want to configure
+
 ### `LocalJSONStore`
 - `HRFLOW_CONNECTORS_STORE`:  `"localjson"`
 - `HRFLOW_CONNECTORS_LOCALJSON_DIR`: **[Required]** Absolute filepath to a directory where the JSON store will be written
+
+### `S3Store`
+- `HRFLOW_CONNECTORS_STORE`:  `"s3"`
+- `HRFLOW_CONNECTORS_S3_BUCKET`: **[Required]** S3 bucket
+- `HRFLOW_CONNECTORS_S3_PREFIX`: **[Optional]** S3 key prefix for all data stored by backend
+- `HRFLOW_CONNECTORS_S3_AWS_REGION`: **[Required]** AWS region name
+- `HRFLOW_CONNECTORS_S3_AWS_ACCESS_KEY_ID`: **[Required]** AWS ACCESS KEY ID
+- `HRFLOW_CONNECTORS_S3_AWS_SECRET_ACCESS_KEY`: **[Required]** AWS SECRET ACCESS KEY
