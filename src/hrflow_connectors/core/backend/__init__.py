@@ -1,8 +1,16 @@
 import logging
 import os
 
-from hrflow_connectors.core.backend.localjson import LocalJsonStore
-from hrflow_connectors.core.backend.s3 import S3Store
+ACTIVE_STORES = []
+from hrflow_connectors.core.backend.localjson import LocalJsonStore  # noqa
+
+ACTIVE_STORES.append(LocalJsonStore)
+try:
+    from hrflow_connectors.core.backend.s3 import S3Store
+
+    ACTIVE_STORES.append(S3Store)
+except ModuleNotFoundError:
+    pass
 
 logger = logging.getLogger(__name__)
 store = None
@@ -13,7 +21,7 @@ STORE_NAME_ENVIRONMENT_VARIABLE = "HRFLOW_CONNECTORS_STORE"
 DEFAULT_STORE = LocalJsonStore.NAME()
 
 
-NAME_TO_STORE = {LocalJsonStore.NAME(): LocalJsonStore, S3Store.NAME(): S3Store}
+NAME_TO_STORE = {store.NAME(): store for store in ACTIVE_STORES}
 
 
 def configure_store():

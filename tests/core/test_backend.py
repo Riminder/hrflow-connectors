@@ -2,7 +2,15 @@ import os
 import typing as t
 from unittest import mock
 
-import boto3
+try:
+    import boto3
+
+    from hrflow_connectors.core.backend.s3 import S3Store  # noqa
+
+    skip_s3_tests = False
+except ModuleNotFoundError:
+    skip_s3_tests = True
+
 import pytest
 from pydantic import BaseModel
 
@@ -163,6 +171,7 @@ def test_localjson_store_corrupted_file(backend_restore, tmp_path):
         assert "Store file is corrupted" in excinfo.value.args[0]
 
 
+@pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
 def test_s3_store_bad_configuration(backend_restore, s3_restore):
     with mock.patch.dict(
         os.environ,
@@ -177,6 +186,7 @@ def test_s3_store_bad_configuration(backend_restore, s3_restore):
         assert "Missing environment variable" in excinfo.value.args[0]
 
 
+@pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
 def test_s3_store_no_write_permission(backend_restore, s3_restore):
     with mock.patch.dict(
         os.environ,
@@ -203,6 +213,7 @@ def test_s3_store_no_write_permission(backend_restore, s3_restore):
         assert "Failed to check writing to S3" in excinfo.value.args[0]
 
 
+@pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
 def test_s3_store_no_read_permission(backend_restore, s3_restore):
     with mock.patch.dict(
         os.environ,
@@ -229,6 +240,7 @@ def test_s3_store_no_read_permission(backend_restore, s3_restore):
         assert "Failed to check reading from S3" in excinfo.value.args[0]
 
 
+@pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
 def test_s3_store(backend_restore, s3_restore):
     key = "xxx_TestS3Store"
     data = TestModel(key1="xxx", key2=3, key3=dict(test=True))
@@ -259,6 +271,7 @@ def test_s3_store(backend_restore, s3_restore):
         assert backend.store.load(key, TestModel) == data
 
 
+@pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
 def test_s3_store_prefix_working(backend_restore, s3_restore, s3_resource):
     key = "xxx_TestS3StoreWithPrefix"
     data = TestModel(key1="xxx", key2=3, key3=dict(test=True))
