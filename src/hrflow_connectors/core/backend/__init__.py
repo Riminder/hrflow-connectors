@@ -8,9 +8,9 @@ ACTIVE_STORES.append(LocalJsonStore)
 try:
     from hrflow_connectors.core.backend.s3 import S3Store
 
-    ACTIVE_STORES.append(S3Store)
-except ModuleNotFoundError:
-    pass
+    ACTIVE_STORES.append(S3Store)  # pragma: nocover
+except ModuleNotFoundError:  # pragma: nocover
+    pass  # pragma: nocover
 
 logger = logging.getLogger(__name__)
 store = None
