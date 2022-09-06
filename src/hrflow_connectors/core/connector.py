@@ -39,6 +39,7 @@ class Event(str, enum.Enum):
     logics_failure = "logics_failure"
     write_failure = "write_failure"
     callback_failure = "callback_failure"
+    callback_executed = "callback_executed"
     item_to_read_from_failure = "item_to_read_from_failure"
 
     @classmethod
@@ -586,6 +587,8 @@ class ConnectorAction(BaseModel):
             except Exception as e:
                 events[Event.callback_failure] += 1
                 adapter.error("Failed to run callback with error={}".format(repr(e)))
+            finally:
+                events[Event.callback_executed] += 1
 
         results = RunResult.from_events(events)
         results.read_from = next_read_from

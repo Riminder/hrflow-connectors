@@ -653,6 +653,7 @@ def test_action_with_callback_success():
     assert result.events[Event.logics_discard] == 0
     assert result.events[Event.write_failure] == 0
     assert result.events[Event.callback_failure] == 0
+    assert result.events[Event.callback_executed] == 1
 
     assert n_males == len(LEADS_DB[campaign_id])
 
@@ -694,6 +695,7 @@ def test_action_with_callback_failure():
     assert result.events[Event.logics_discard] == 0
     assert result.events[Event.write_failure] == 0
     assert result.events[Event.callback_failure] == 1
+    assert result.events[Event.callback_executed] == 1
 
     assert len(USERS_DB) == len(LEADS_DB[campaign_id])
 
