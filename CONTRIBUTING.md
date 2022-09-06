@@ -32,6 +32,20 @@ guidelines.
 4. Force `poetry` to use `pyenv` python version `poetry env use $(pyenv which python)`
 5. Check that `poetry` uses correct python version `poetry run python --version` should print `3.10.5`
 6. Then run `poetry install`
+7. **[Optional]** If you work on code related to S3 backend store then install the **s3** extras by running `poetry install -E s3`
+> **Mind** that if you activate this extra you will need to export the following environment variables before executing tests locally 
+```bash
+export S3_STORE_TEST_BUCKET="hrflow-connectors-cicd"
+export S3_STORE_TEST_AWS_REGION="eu-west-1"
+export S3_STORE_TEST_AWS_ACCESS_KEY_ID=***REACH OUT INTERNALLY***
+export S3_STORE_TEST_AWS_SECRET_ACCESS_KEY=***REACH OUT INTERNALLY***
+
+export S3_STORE_TEST_READ_ONLY_AWS_ACCESS_KEY_ID=***REACH OUT INTERNALLY***
+export S3_STORE_TEST_READ_ONLY_AWS_SECRET_ACCESS_KEY=***REACH OUT INTERNALLY***
+
+export S3_STORE_TEST_WRITE_ONLY_AWS_ACCESS_KEY_ID=***REACH OUT INTERNALLY***
+export S3_STORE_TEST_WRITE_ONLY_AWS_SECRET_ACCESS_KEY=***REACH OUT INTERNALLY***
+```
 
 
 
