@@ -128,8 +128,11 @@ def write(
             with open(parameters.path, "w") as f:
                 json.dump(items, f)
         else:
-            with open(parameters.path, "r") as f:
-                old_items = json.load(f)
+            try:
+                with open(parameters.path, "r") as f:
+                    old_items = json.load(f)
+            except FileNotFoundError:
+                old_items = []
             old_items.extend(items)
             with open(parameters.path, "w") as f:
                 json.dump(old_items, f)
@@ -175,7 +178,13 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field, FilePath
 
-from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction, WarehouseWriteAction
+from hrflow_connectors.core import (
+    DataType,
+    ReadMode,
+    Warehouse,
+    WarehouseReadAction,
+    WarehouseWriteAction,
+)
 
 
 class ReadJsonParameters(BaseModel):
@@ -220,8 +229,11 @@ def write(
             with open(parameters.path, "w") as f:
                 json.dump(items, f)
         else:
-            with open(parameters.path, "r") as f:
-                old_items = json.load(f)
+            try:
+                with open(parameters.path, "r") as f:
+                    old_items = json.load(f)
+            except FileNotFoundError:
+                old_items = []
             old_items.extend(items)
             with open(parameters.path, "w") as f:
                 json.dump(old_items, f)
