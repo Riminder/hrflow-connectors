@@ -21,6 +21,7 @@ pydantic = "^1.9.0"
 Jinja2 = "^3.0.3"
 hrflow = "^1.9.0"
 requests = "^2.27.1"
+boto3 = {version = "^1.24.66", optional = true}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
@@ -32,6 +33,9 @@ black = "^22.1.0"
 pre-commit = "^2.17.0"
 pytest-cov = "^3.0.0"
 ipdb = "^0.13.9"
+
+[tool.poetry.extras]
+s3 = ["boto3"]
 
 [tool.black]
 line-length = 88
