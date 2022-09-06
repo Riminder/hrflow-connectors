@@ -564,6 +564,11 @@ class ConnectorAction(BaseModel):
                 )
             )
             events[Event.write_failure] += len(items_to_write)
+            return RunResult(
+                status=Status.fatal,
+                reason=Reason.write_failure,
+                events=events,
+            )
         adapter.info(
             "Finished writing to warehouse={} success={} failures={}".format(
                 self.target.name,
