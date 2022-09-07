@@ -11,6 +11,7 @@ from hrflow_connectors.connectors.recruitee.schemas import (
 )
 from hrflow_connectors.core import (
     DataType,
+    ReadMode,
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
@@ -165,7 +166,12 @@ class WriteJobsParameters(BaseModel):
     )
 
 
-def read_candidates(parameters: ReadProfilesParameters) -> t.Iterable[t.Dict]:
+def read_candidates(
+    adapter: LoggerAdapter,
+    parameters: ReadProfilesParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
+) -> t.Iterable[t.Dict]:
     params = parameters.dict()
     del params["API_Token"]
     del params["company_id"]
@@ -222,7 +228,10 @@ def write_candidates(
 
 
 def read_jobs(
-    adapter: LoggerAdapter, parameters: ReadJobsParameters
+    adapter: LoggerAdapter,
+    parameters: ReadJobsParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
     params = dict(
         kind=parameters.kind,
