@@ -8,7 +8,7 @@ import requests
 from pydantic import BaseModel, Field
 
 from hrflow_connectors.connectors.hubspot.schemas import ContactObject
-from hrflow_connectors.core import Warehouse, WarehouseWriteAction
+from hrflow_connectors.core import ReadMode, Warehouse, WarehouseWriteAction
 from hrflow_connectors.core.warehouse import DataType
 
 baseUrl = "https://api.hubapi.com/crm/v3"
@@ -106,7 +106,10 @@ class WriteProfilesParameters(BaseModel):
 # TODO: Improve how the contact's profile info is collected individually,
 # take into account paggination
 def read(
-    adapter: LoggerAdapter, parameters: ReadProfilesParameters
+    adapter: LoggerAdapter,
+    parameters: ReadProfilesParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
 
     url = f"{baseUrl}/objects/contacts"

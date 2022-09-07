@@ -12,6 +12,7 @@ Writes a profile from Hrflow.ai Source as a contact on Hubspot via the API
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
 | `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_profile`](../connector.py#L9) | Formatting function |
+| `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
 
@@ -38,15 +39,18 @@ Writes a profile from Hrflow.ai Source as a contact on Hubspot via the API
 ```python
 import logging
 from hrflow_connectors import Hubspot
+from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
 Hubspot.push_profile(
+    workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
         format=lambda *args, **kwargs: None # Put your code logic here,
+        read_mode=ReadMode.sync,
     ),
     origin_parameters=dict(
         api_secret="your_api_secret",
