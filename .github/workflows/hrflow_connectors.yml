@@ -59,7 +59,7 @@ jobs:
         run: poetry run pre-commit run --hook-stage commit --all-files
 
       - name: Check manifest is up to date
-        run: poetry run pre-commit run --hook-stage push --all-files hrflow_connectors_manifest
+        run: poetry run pre- run --hook-stage push --all-files hrflow_connectors_manifest
 
       - name: Check documentation is up to date
         run: poetry run pre-commit run --hook-stage push --all-files hrflow_connectors_docs
