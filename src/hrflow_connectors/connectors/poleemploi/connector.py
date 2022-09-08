@@ -2,7 +2,12 @@ import typing as t
 
 from hrflow_connectors.connectors.hrflow.warehouse import HrFlowJobWarehouse
 from hrflow_connectors.connectors.poleemploi.warehouse import PoleEmploiJobWarehouse
-from hrflow_connectors.core import BaseActionParameters, Connector, ConnectorAction
+from hrflow_connectors.core import (
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    WorkflowType,
+)
 
 
 def get_job_location(poleemploi_location: t.Union[t.Dict, None]) -> t.Dict:
@@ -95,6 +100,7 @@ PoleEmploi = Connector(
     actions=[
         ConnectorAction(
             name="pull_jobs",
+            trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves jobs via the ***Offres d'emploi v2*** API from the Pôle"
                 " emploi website based on selection criteria set in the and send them"

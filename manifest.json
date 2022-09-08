@@ -21,7 +21,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -808,7 +808,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -1613,7 +1613,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -1832,7 +1832,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -2051,7 +2051,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -2657,7 +2657,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -2869,7 +2869,7 @@
               },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -3271,9 +3271,18 @@
             "title": "ReadJobsActionParameters",
             "type": "object",
             "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
               "logics": {
                 "title": "logics",
-                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]. The final list should be exposed in a variable named 'logics'.",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
                 "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
                 "type": "code_editor"
               },
@@ -3282,15 +3291,21 @@
                 "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
                 "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
                 "type": "code_editor"
-              },
-              "event_parser": {
-                "title": "event_parser",
-                "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
-                "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
-                "type": "code_editor"
+              }
+            },
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
               }
             }
           },
+          "data_type": "job",
+          "trigger_type": "schedule",
           "origin": "Pole Emploi Jobs",
           "origin_parameters": {
             "title": "ReadJobsParameters",
@@ -4118,6 +4133,7 @@
               }
             }
           },
+          "supports_incremental": false,
           "target": "HrFlow.ai Jobs",
           "target_parameters": {
             "title": "WriteJobParameters",
@@ -4435,11 +4451,10 @@
               }
             }
           },
-          "workflow_code_catch": "\nimport typing as t\n\nfrom hrflow_connectors import PoleEmploi\n\nfrom hrflow_connectors.core.connector import EventParsingError\n\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = PoleEmploi.model.action_by_name(\"pull_jobs\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            event_parsing_error = EventParsingError(\n                event=_request,\n                error=e,\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'range', 'sort', 'domaine', 'codeROME', 'theme', 'appellation', 'secteurActivite', 'experience', 'typeContrat', 'natureContrat', 'origineOffre', 'qualification', 'tempsPlein', 'commune', 'departement', 'inclureLimitrophes', 'region', 'paysContinent', 'niveauFormation', 'permis', 'motsCles', 'salaireMin', 'periodeSalaire', 'accesTravailleurHandicape', 'offresMRS', 'grandDomaine', 'experienceExigence', 'publieeDepuis', 'minCreationDate', 'maxCreationDate', 'partenaires', 'modeSelectionPartenaires', 'dureeHebdo', 'dureeHebdoMin', 'dureeHebdoMax', 'dureeContratMin', 'dureeContratMax', 'offresManqueCandidats', 'entreprisesAdaptees', 'distance']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return PoleEmploi.pull_jobs(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
-          "workflow_code_pull": "\nimport typing as t\n\nfrom hrflow_connectors import PoleEmploi\n\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    event_parsing_error = None\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'range', 'sort', 'domaine', 'codeROME', 'theme', 'appellation', 'secteurActivite', 'experience', 'typeContrat', 'natureContrat', 'origineOffre', 'qualification', 'tempsPlein', 'commune', 'departement', 'inclureLimitrophes', 'region', 'paysContinent', 'niveauFormation', 'permis', 'motsCles', 'salaireMin', 'periodeSalaire', 'accesTravailleurHandicape', 'offresMRS', 'grandDomaine', 'experienceExigence', 'publieeDepuis', 'minCreationDate', 'maxCreationDate', 'partenaires', 'modeSelectionPartenaires', 'dureeHebdo', 'dureeHebdoMin', 'dureeHebdoMax', 'dureeContratMin', 'dureeContratMax', 'offresManqueCandidats', 'entreprisesAdaptees', 'distance']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return PoleEmploi.pull_jobs(\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n        event_parsing_error=event_parsing_error\n    )",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import PoleEmploi\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return PoleEmploi.pull_jobs(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'range', 'sort', 'domaine', 'codeROME', 'theme', 'appellation', 'secteurActivite', 'experience', 'typeContrat', 'natureContrat', 'origineOffre', 'qualification', 'tempsPlein', 'commune', 'departement', 'inclureLimitrophes', 'region', 'paysContinent', 'niveauFormation', 'permis', 'motsCles', 'salaireMin', 'periodeSalaire', 'accesTravailleurHandicape', 'offresMRS', 'grandDomaine', 'experienceExigence', 'publieeDepuis', 'minCreationDate', 'maxCreationDate', 'partenaires', 'modeSelectionPartenaires', 'dureeHebdo', 'dureeHebdoMin', 'dureeHebdoMax', 'dureeContratMin', 'dureeContratMax', 'offresManqueCandidats', 'entreprisesAdaptees', 'distance']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return PoleEmploi.pull_jobs(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
-          "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }

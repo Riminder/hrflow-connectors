@@ -16,8 +16,9 @@ Retrieves jobs via the ***Offres d'emploi v2*** API from the Pôle emploi websit
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Union[typing.Dict, NoneType]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L69) | Formatting function |
+| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L74) | Formatting function |
+| `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
 
@@ -84,15 +85,18 @@ Retrieves jobs via the ***Offres d'emploi v2*** API from the Pôle emploi websit
 ```python
 import logging
 from hrflow_connectors import PoleEmploi
+from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
 PoleEmploi.pull_jobs(
+    workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
         format=lambda *args, **kwargs: None # Put your code logic here,
+        read_mode=ReadMode.sync,
     ),
     origin_parameters=dict(
         client_id="your_client_id",

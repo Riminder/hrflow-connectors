@@ -11,7 +11,7 @@ from hrflow_connectors.connectors.poleemploi.schemas import (
     PoleEmploiJobOffer,
     validate_date,
 )
-from hrflow_connectors.core import Warehouse, WarehouseReadAction
+from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction
 from hrflow_connectors.core.warehouse import ActionEndpoints
 
 POLEEMPLOI_JOBS_SEARCH_ENDPOINT = (
@@ -317,7 +317,12 @@ def get_poleemploi_auth_token(client_id: str, client_secret: str) -> str:
         )
 
 
-def read(adapter: LoggerAdapter, parameters: ReadJobsParameters) -> t.Iterable[t.Dict]:
+def read(
+    adapter: LoggerAdapter,
+    parameters: ReadJobsParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
+) -> t.Iterable[t.Dict]:
     token = get_poleemploi_auth_token(
         client_id=parameters.client_id,
         client_secret=parameters.client_secret,
@@ -347,6 +352,7 @@ def read(adapter: LoggerAdapter, parameters: ReadJobsParameters) -> t.Iterable[t
 PoleEmploiJobWarehouse = Warehouse(
     name="Pole Emploi Jobs",
     data_schema=PoleEmploiJobOffer,
+    data_type=DataType.job,
     read=WarehouseReadAction(
         parameters=ReadJobsParameters,
         function=read,
