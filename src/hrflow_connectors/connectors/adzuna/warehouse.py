@@ -6,7 +6,7 @@ import requests
 from pydantic import BaseModel, Field
 
 from hrflow_connectors.connectors.adzuna.schemas import AdzunaJob
-from hrflow_connectors.core import ReadMode, Warehouse, WarehouseReadAction
+from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction
 from hrflow_connectors.core.warehouse import ActionEndpoints
 
 ADZUNA_ENDPOINT = "http://api.adzuna.com/v1/api"
@@ -226,6 +226,7 @@ def read(
 AdzunaJobWarehouse = Warehouse(
     name="Adzuna Jobs",
     data_schema=AdzunaJob,
+    data_type=DataType.job,
     read=WarehouseReadAction(
         parameters=ReadJobsParameters,
         function=read,

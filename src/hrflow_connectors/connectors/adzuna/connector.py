@@ -2,7 +2,12 @@ import typing as t
 
 from hrflow_connectors.connectors.adzuna.warehouse import AdzunaJobWarehouse
 from hrflow_connectors.connectors.hrflow.warehouse import HrFlowJobWarehouse
-from hrflow_connectors.core import BaseActionParameters, Connector, ConnectorAction
+from hrflow_connectors.core import (
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    WorkflowType,
+)
 
 
 def get_job_location(adzuna_job: t.Dict) -> t.Dict:
@@ -57,6 +62,7 @@ Adzuna = Connector(
     actions=[
         ConnectorAction(
             name="pull_jobs",
+            trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves jobs via the ***Adzuna'*** API Search endpoint"
                 "and send them to a ***Hrflow.ai Board***."
