@@ -1,0 +1,120 @@
+warehouse: {}
+actions:
+  pull_jobs:
+    - id: valid_parameters
+      origin_parameters:
+        company_id: $__COMPANY_ID
+        API_Token:  $__API_TOKEN
+        view_mode: "default"
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+    - id: no_client_credentials
+      origin_parameters:
+        view_mode: "default"
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+    - id: no_hrflow_board_key
+      origin_parameters:
+        company_id: $__COMPANY_ID
+        API_Token:  $__API_TOKEN
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_client_credentials
+      origin_parameters:
+        company_id: bad_company_id
+        API_Token:  bad_api_token
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+    - id: invalid_hrflow_api_secret
+      origin_parameters: 
+        company_id: $__COMPANY_ID
+        API_Token:  $__API_TOKEN
+      target_parameters:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: write_failure
+  push_profile:
+    - id: valid_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        company_id: $__COMPANY_ID
+        API_Token:  $__API_TOKEN
+        offers: [699480,698005]
+      status: success
+    - id: no_access_token
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        company_id: $__COMPANY_ID
+        offers: [699480,698005]
+      status: fatal
+      reason: bad_target_parameters    
+    - id: invalid_access_token
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        company_id: $__COMPANY_ID
+        API_Token:  bad_api_token
+        offers: [699480,698005]
+      status: fatal
+      reason: write_failure
+    - id: no_hrflow_source_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        company_id: $__COMPANY_ID
+        API_Token:  $__API_TOKEN
+        offers: [699480,698005]
+      status: fatal
+      reason: bad_origin_parameters
+    - id: no_hrflow_profile_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+      target_parameters:
+        company_id: $__COMPANY_ID
+        API_Token:  $__API_TOKEN
+        offers: [699480,698005]
+      status: fatal
+      reason: bad_origin_parameters
+    - id: invalid_hrflow_api_secret      
+      origin_parameters:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        company_id: $__COMPANY_ID
+        API_Token:  $__API_TOKEN
+        offers: [699480,698005]
+      status: fatal
+      reason: read_failure
