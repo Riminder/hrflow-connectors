@@ -3261,6 +3261,1204 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ]
+    },
+    {
+      "name": "PoleEmploi",
+      "actions": [
+        {
+          "name": "pull_jobs",
+          "action_parameters": {
+            "title": "ReadJobsActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "job",
+          "trigger_type": "schedule",
+          "origin": "Pole Emploi Jobs",
+          "origin_parameters": {
+            "title": "ReadJobsParameters",
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "title": "Client Id",
+                "description": "Client ID used to access Pole Emploi API",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Client Secret used to access Pole Emploi API",
+                "type": "string"
+              },
+              "range": {
+                "title": "Range",
+                "type": "string"
+              },
+              "sort": {
+                "title": "Sort",
+                "type": "integer"
+              },
+              "domaine": {
+                "title": "Domaine",
+                "description": "Professional field codeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint :https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//domaines",
+                "type": "string"
+              },
+              "codeROME": {
+                "title": "Coderome",
+                "description": "ROME code of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//metiers",
+                "type": "string"
+              },
+              "theme": {
+                "title": "Theme",
+                "description": "Theme of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//themes",
+                "type": "string"
+              },
+              "appellation": {
+                "title": "Appellation",
+                "description": "Code of the appellationA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//appellations",
+                "type": "string"
+              },
+              "secteurActivite": {
+                "title": "Secteuractivite",
+                "description": "NAF codes for sectors of activity. It is possible to specify two NAF codes by separating them with a comma in the character string.Example : 01,02A GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//secteursActivites",
+                "type": "string"
+              },
+              "experience": {
+                "$ref": "#/definitions/Experience"
+              },
+              "typeContrat": {
+                "title": "Typecontrat",
+                "description": "Contract type codeExample : CDI,CDDA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//typesContrats",
+                "type": "string"
+              },
+              "natureContrat": {
+                "title": "Naturecontrat",
+                "description": "Code of the nature of contractA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//naturesContrats",
+                "type": "string"
+              },
+              "origineOffre": {
+                "$ref": "#/definitions/OrigineOffreTag"
+              },
+              "qualification": {
+                "$ref": "#/definitions/Qualification"
+              },
+              "tempsPlein": {
+                "title": "Tempsplein",
+                "type": "boolean"
+              },
+              "commune": {
+                "title": "Commune",
+                "description": "INSEE code of the communeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//communes",
+                "type": "string"
+              },
+              "departement": {
+                "title": "Departement",
+                "description": "INSEE code of the departmentA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//departements",
+                "type": "string"
+              },
+              "inclureLimitrophes": {
+                "title": "Inclurelimitrophes",
+                "type": "boolean"
+              },
+              "region": {
+                "title": "Region",
+                "description": "Code of the region of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//regions",
+                "type": "string"
+              },
+              "paysContinent": {
+                "title": "Payscontinent",
+                "description": "Code of the country or continent of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//paysAND https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//continents",
+                "type": "string"
+              },
+              "niveauFormation": {
+                "title": "Niveauformation",
+                "description": "Level of education requiredA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//niveauxFormations",
+                "type": "string"
+              },
+              "permis": {
+                "title": "Permis",
+                "description": "Code of the requested licenseA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//permis",
+                "type": "string"
+              },
+              "motsCles": {
+                "title": "Motscles",
+                "type": "string"
+              },
+              "salaireMin": {
+                "title": "Salairemin",
+                "type": "number"
+              },
+              "periodeSalaire": {
+                "$ref": "#/definitions/PeriodeSalaire"
+              },
+              "accesTravailleurHandicape": {
+                "title": "Accestravailleurhandicape",
+                "type": "boolean"
+              },
+              "offresMRS": {
+                "title": "Offresmrs",
+                "type": "boolean"
+              },
+              "grandDomaine": {
+                "$ref": "#/definitions/GrandDomaine"
+              },
+              "experienceExigence": {
+                "$ref": "#/definitions/ExperienceExige"
+              },
+              "publieeDepuis": {
+                "$ref": "#/definitions/PublieeDepuis"
+              },
+              "minCreationDate": {
+                "title": "Mincreationdate",
+                "type": "string"
+              },
+              "maxCreationDate": {
+                "title": "Maxcreationdate",
+                "type": "string"
+              },
+              "partenaires": {
+                "title": "Partenaires",
+                "type": "string"
+              },
+              "modeSelectionPartenaires": {
+                "$ref": "#/definitions/ModeSelectionPartenaires"
+              },
+              "dureeHebdo": {
+                "$ref": "#/definitions/DureeHebdo"
+              },
+              "dureeHebdoMin": {
+                "title": "Dureehebdomin",
+                "type": "integer"
+              },
+              "dureeHebdoMax": {
+                "title": "Dureehebdomax",
+                "type": "integer"
+              },
+              "dureeContratMin": {
+                "title": "Dureecontratmin",
+                "type": "number"
+              },
+              "dureeContratMax": {
+                "title": "Dureecontratmax",
+                "type": "number"
+              },
+              "offresManqueCandidats": {
+                "title": "Offresmanquecandidats",
+                "type": "boolean"
+              },
+              "entreprisesAdaptees": {
+                "title": "Entreprisesadaptees",
+                "type": "boolean"
+              },
+              "distance": {
+                "title": "Distance",
+                "default": 10,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "client_id",
+              "client_secret"
+            ],
+            "definitions": {
+              "Experience": {
+                "title": "Experience",
+                "description": "An enumeration.",
+                "enum": [
+                  "1",
+                  "2",
+                  "3"
+                ],
+                "type": "string"
+              },
+              "OrigineOffreTag": {
+                "title": "OrigineOffreTag",
+                "description": "An enumeration.",
+                "enum": [
+                  1,
+                  2
+                ],
+                "type": "integer"
+              },
+              "Qualification": {
+                "title": "Qualification",
+                "description": "An enumeration.",
+                "enum": [
+                  0,
+                  9
+                ],
+                "type": "integer"
+              },
+              "PeriodeSalaire": {
+                "title": "PeriodeSalaire",
+                "description": "An enumeration.",
+                "enum": [
+                  "M",
+                  "A",
+                  "H",
+                  "C"
+                ],
+                "type": "string"
+              },
+              "GrandDomaine": {
+                "title": "GrandDomaine",
+                "description": "An enumeration.",
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  "C15",
+                  "D",
+                  "E",
+                  "F",
+                  "G",
+                  "H",
+                  "I",
+                  "J",
+                  "K",
+                  "L",
+                  "L14",
+                  "M",
+                  "M13",
+                  "M14",
+                  "M15",
+                  "M16",
+                  "M17",
+                  "M18",
+                  "N"
+                ],
+                "type": "string"
+              },
+              "ExperienceExige": {
+                "title": "ExperienceExige",
+                "description": "An enumeration.",
+                "enum": [
+                  "D",
+                  "S",
+                  "E"
+                ],
+                "type": "string"
+              },
+              "PublieeDepuis": {
+                "title": "PublieeDepuis",
+                "description": "An enumeration.",
+                "enum": [
+                  1,
+                  3,
+                  7,
+                  14,
+                  31
+                ],
+                "type": "integer"
+              },
+              "ModeSelectionPartenaires": {
+                "title": "ModeSelectionPartenaires",
+                "description": "An enumeration.",
+                "enum": [
+                  "INCLUS",
+                  "EXCLU"
+                ],
+                "type": "string"
+              },
+              "DureeHebdo": {
+                "title": "DureeHebdo",
+                "description": "An enumeration.",
+                "enum": [
+                  "0",
+                  "1",
+                  "2"
+                ],
+                "type": "string"
+              }
+            }
+          },
+          "origin_data_schema": {
+            "title": "PoleEmploiJobOffer",
+            "type": "object",
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "integer"
+              },
+              "intitule": {
+                "title": "Intitule",
+                "type": "string"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "dateCreation": {
+                "title": "Datecreation",
+                "type": "string"
+              },
+              "dateActualisation": {
+                "title": "Dateactualisation",
+                "type": "string"
+              },
+              "lieuTravail": {
+                "$ref": "#/definitions/JobLocation"
+              },
+              "romeCode": {
+                "title": "Romecode",
+                "description": "ROME code of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/metiers",
+                "type": "string"
+              },
+              "romeLibelle": {
+                "title": "Romelibelle",
+                "type": "string"
+              },
+              "appellationLibelle": {
+                "title": "Appellationlibelle",
+                "description": "Code of the appellationA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/appellations",
+                "type": "string"
+              },
+              "entreprise": {
+                "$ref": "#/definitions/Entreprise"
+              },
+              "typeContrat": {
+                "title": "Typecontrat",
+                "description": "Contract type codeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/typesContrats",
+                "type": "string"
+              },
+              "typeContratLibelle": {
+                "title": "Typecontratlibelle",
+                "description": "Contract type labelExample : CDI,CDDA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/typesContrats",
+                "type": "string"
+              },
+              "natureContrat": {
+                "title": "Naturecontrat",
+                "description": "Code of the nature of contractA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/naturesContrats",
+                "type": "string"
+              },
+              "origineOffre": {
+                "$ref": "#/definitions/OrigineOffre"
+              },
+              "offresManqueCandidats": {
+                "title": "Offresmanquecandidats",
+                "type": "boolean"
+              },
+              "experienceExige": {
+                "$ref": "#/definitions/ExperienceExige"
+              },
+              "experienceLibelle": {
+                "title": "Experiencelibelle",
+                "type": "string"
+              },
+              "experienceCommentaire": {
+                "title": "Experiencecommentaire",
+                "type": "string"
+              },
+              "formations": {
+                "title": "Formations",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Formation"
+                }
+              },
+              "langues": {
+                "title": "Langues",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Langue"
+                }
+              },
+              "permis": {
+                "title": "Permis",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permis"
+                }
+              },
+              "outilsBureautiques": {
+                "title": "Outilsbureautiques",
+                "type": "string"
+              },
+              "competences": {
+                "title": "Competences",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Competence"
+                }
+              },
+              "salaire": {
+                "$ref": "#/definitions/Salaire"
+              },
+              "dureeTravailLibelle": {
+                "title": "Dureetravaillibelle",
+                "type": "string"
+              },
+              "dureeTravailLibelleConverti": {
+                "title": "Dureetravaillibelleconverti",
+                "type": "string"
+              },
+              "complementExercice": {
+                "title": "Complementexercice",
+                "type": "string"
+              },
+              "conditionExercice": {
+                "title": "Conditionexercice",
+                "type": "string"
+              },
+              "alternance": {
+                "title": "Alternance",
+                "type": "boolean"
+              },
+              "contact": {
+                "$ref": "#/definitions/Contact"
+              },
+              "agence": {
+                "$ref": "#/definitions/Agence"
+              },
+              "nombrePostes": {
+                "title": "Nombrepostes",
+                "type": "integer"
+              },
+              "accessibleTH": {
+                "title": "Accessibleth",
+                "type": "boolean"
+              },
+              "deplacementCode": {
+                "title": "Deplacementcode",
+                "type": "string"
+              },
+              "deplacementLibelle": {
+                "title": "Deplacementlibelle",
+                "type": "string"
+              },
+              "qualificationCode": {
+                "$ref": "#/definitions/QualificationCode"
+              },
+              "qualificationLibelle": {
+                "$ref": "#/definitions/QualificationLibelle"
+              },
+              "secteurActivite": {
+                "title": "Secteuractivite",
+                "description": "NAF codes for sectors of activity. It is possible to specify two NAF codes by separating them with a comma in the character string.Example : 01,02A GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/secteursActivites",
+                "type": "string"
+              },
+              "secteurActiviteLibelle": {
+                "title": "Secteuractivitelibelle",
+                "description": "Sector of activitylabelA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/secteursActivites",
+                "type": "string"
+              },
+              "qualitesProfessionnelles": {
+                "title": "Qualitesprofessionnelles",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/QualitePro"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "intitule",
+              "description"
+            ],
+            "definitions": {
+              "JobLocation": {
+                "title": "JobLocation",
+                "type": "object",
+                "properties": {
+                  "libelle": {
+                    "title": "Libelle",
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "title": "Latitude",
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "title": "Longitude",
+                    "type": "number"
+                  },
+                  "codepostal": {
+                    "title": "Codepostal",
+                    "type": "string"
+                  },
+                  "commune": {
+                    "title": "Commune",
+                    "description": "INSEE code of the communeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/communes",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "libelle",
+                  "latitude",
+                  "longitude",
+                  "codepostal",
+                  "commune"
+                ]
+              },
+              "Entreprise": {
+                "title": "Entreprise",
+                "type": "object",
+                "properties": {
+                  "nom": {
+                    "title": "Nom",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "type": "string"
+                  },
+                  "url": {
+                    "title": "Url",
+                    "type": "string"
+                  },
+                  "entrepriseAdaptee": {
+                    "title": "Entrepriseadaptee",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "entrepriseAdaptee"
+                ]
+              },
+              "OrigineOffreTag": {
+                "title": "OrigineOffreTag",
+                "description": "An enumeration.",
+                "enum": [
+                  1,
+                  2
+                ],
+                "type": "integer"
+              },
+              "Partenaire": {
+                "title": "Partenaire",
+                "type": "object",
+                "properties": {
+                  "nom": {
+                    "title": "Nom",
+                    "type": "string"
+                  },
+                  "url": {
+                    "title": "Url",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "nom",
+                  "url",
+                  "logo"
+                ]
+              },
+              "OrigineOffre": {
+                "title": "OrigineOffre",
+                "type": "object",
+                "properties": {
+                  "origine": {
+                    "$ref": "#/definitions/OrigineOffreTag"
+                  },
+                  "urlOrigine": {
+                    "title": "Urlorigine",
+                    "type": "string"
+                  },
+                  "partenaires": {
+                    "title": "Partenaires",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/Partenaire"
+                    }
+                  }
+                },
+                "required": [
+                  "origine",
+                  "partenaires"
+                ]
+              },
+              "ExperienceExige": {
+                "title": "ExperienceExige",
+                "description": "An enumeration.",
+                "enum": [
+                  "D",
+                  "S",
+                  "E"
+                ],
+                "type": "string"
+              },
+              "Exigence": {
+                "title": "Exigence",
+                "description": "An enumeration.",
+                "enum": [
+                  "E",
+                  "S"
+                ]
+              },
+              "Formation": {
+                "title": "Formation",
+                "type": "object",
+                "properties": {
+                  "domaineLibelle": {
+                    "title": "Domainelibelle",
+                    "type": "string"
+                  },
+                  "niveauLibelle": {
+                    "title": "Niveaulibelle",
+                    "description": "Label of the level of the education requiredA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/referentiel/niveauxFormations",
+                    "type": "string"
+                  },
+                  "commentaire": {
+                    "title": "Commentaire",
+                    "type": "string"
+                  },
+                  "exigence": {
+                    "$ref": "#/definitions/Exigence"
+                  }
+                },
+                "required": [
+                  "domaineLibelle",
+                  "niveauLibelle",
+                  "commentaire",
+                  "exigence"
+                ]
+              },
+              "Langue": {
+                "title": "Langue",
+                "type": "object",
+                "properties": {
+                  "libelle": {
+                    "title": "Libelle",
+                    "description": "Language labelA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/referentiel/langues",
+                    "type": "string"
+                  },
+                  "exigence": {
+                    "$ref": "#/definitions/Exigence"
+                  }
+                },
+                "required": [
+                  "libelle"
+                ]
+              },
+              "Permis": {
+                "title": "Permis",
+                "type": "object",
+                "properties": {
+                  "libelle": {
+                    "title": "Libelle",
+                    "description": "requested licenseA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/referentiel/permis",
+                    "type": "string"
+                  },
+                  "exigence": {
+                    "$ref": "#/definitions/Exigence"
+                  }
+                },
+                "required": [
+                  "libelle"
+                ]
+              },
+              "Competence": {
+                "title": "Competence",
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "title": "Code",
+                    "type": "string"
+                  },
+                  "libelle": {
+                    "title": "Libelle",
+                    "type": "string"
+                  },
+                  "exigence": {
+                    "$ref": "#/definitions/Exigence"
+                  }
+                },
+                "required": [
+                  "code",
+                  "libelle"
+                ]
+              },
+              "Salaire": {
+                "title": "Salaire",
+                "type": "object",
+                "properties": {
+                  "libelle": {
+                    "title": "Libelle",
+                    "type": "string"
+                  },
+                  "commentaire": {
+                    "title": "Commentaire",
+                    "type": "string"
+                  },
+                  "complement1": {
+                    "title": "Complement1",
+                    "type": "string"
+                  },
+                  "complement2": {
+                    "title": "Complement2",
+                    "type": "string"
+                  }
+                }
+              },
+              "Contact": {
+                "title": "Contact",
+                "type": "object",
+                "properties": {
+                  "nom": {
+                    "title": "Nom",
+                    "type": "string"
+                  },
+                  "coordonnees1": {
+                    "title": "Coordonnees1",
+                    "type": "string"
+                  },
+                  "coordonnees2": {
+                    "title": "Coordonnees2",
+                    "type": "string"
+                  },
+                  "coordonnees3": {
+                    "title": "Coordonnees3",
+                    "type": "string"
+                  },
+                  "telephone": {
+                    "title": "Telephone",
+                    "type": "string"
+                  },
+                  "courriel": {
+                    "title": "Courriel",
+                    "type": "string"
+                  },
+                  "commentaire": {
+                    "title": "Commentaire",
+                    "type": "string"
+                  },
+                  "urlRecruteur": {
+                    "title": "Urlrecruteur",
+                    "type": "string"
+                  },
+                  "urlPostulation": {
+                    "title": "Urlpostulation",
+                    "type": "string"
+                  }
+                }
+              },
+              "Agence": {
+                "title": "Agence",
+                "type": "object",
+                "properties": {
+                  "telephone": {
+                    "title": "Telephone",
+                    "type": "string"
+                  },
+                  "courriel": {
+                    "title": "Courriel",
+                    "type": "string"
+                  }
+                }
+              },
+              "QualificationCode": {
+                "title": "QualificationCode",
+                "description": "An enumeration.",
+                "enum": [
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9"
+                ],
+                "type": "string"
+              },
+              "QualificationLibelle": {
+                "title": "QualificationLibelle",
+                "description": "An enumeration.",
+                "enum": [
+                  "Man\u0153uvre",
+                  "Ouvrier sp\u00e9cialis\u00e9",
+                  "Ouvrier qualifi\u00e9 (P1, P2)",
+                  "Ouvrier qualifi\u00e9 (P3, P4, OHQ)",
+                  "Employ\u00e9 non qualifi\u00e9",
+                  "Employ\u00e9 qualifi\u00e9",
+                  "Technicien",
+                  "Agent de ma\u00eetrise",
+                  "Cadre"
+                ],
+                "type": "string"
+              },
+              "QualitePro": {
+                "title": "QualitePro",
+                "type": "object",
+                "properties": {
+                  "libelle": {
+                    "title": "Libelle",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "supports_incremental": false,
+          "target": "HrFlow.ai Jobs",
+          "target_parameters": {
+            "title": "WriteJobParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "board_key": {
+                "title": "Board Key",
+                "description": "HrFlow.ai board key",
+                "type": "string"
+              },
+              "sync": {
+                "title": "Sync",
+                "description": "When enabled only pushed jobs will remain in the board",
+                "default": true,
+                "type": "boolean"
+              },
+              "update_content": {
+                "title": "Update Content",
+                "description": "When enabled jobs already present in the board are updated",
+                "default": false,
+                "type": "boolean"
+              },
+              "enrich_with_parsing": {
+                "title": "Enrich With Parsing",
+                "description": "When enabled jobs are enriched with HrFlow.ai parsing",
+                "default": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "board_key"
+            ]
+          },
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Job.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Job.",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "title": "Location",
+                "description": "Job location object.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Location"
+                  }
+                ]
+              },
+              "sections": {
+                "title": "Sections",
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Section"
+                }
+              },
+              "url": {
+                "title": "Url",
+                "description": "Job post original URL.",
+                "type": "string"
+              },
+              "summary": {
+                "title": "Summary",
+                "description": "Brief summary of the Job.",
+                "type": "string"
+              },
+              "archieved_at": {
+                "title": "Archieved At",
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "type": "string"
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "t.List of skills of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "t.List of spoken languages of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "t.List of certifications of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "t.List of courses of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "t.List of tasks of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "t.List of tags of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "t.List of metadatas of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "ranges_float": {
+                "title": "Ranges Float",
+                "description": "t.List of ranges of floats",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesFloat"
+                }
+              },
+              "ranges_date": {
+                "title": "Ranges Date",
+                "description": "t.List of ranges of dates",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesDate"
+                }
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value. Example: 500.",
+                    "type": "number"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value. Example: 100.",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "description": "Unit of the value. Example: euros.",
+                    "type": "string"
+                  }
+                }
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "type": "string"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import PoleEmploi\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return PoleEmploi.pull_jobs(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'range', 'sort', 'domaine', 'codeROME', 'theme', 'appellation', 'secteurActivite', 'experience', 'typeContrat', 'natureContrat', 'origineOffre', 'qualification', 'tempsPlein', 'commune', 'departement', 'inclureLimitrophes', 'region', 'paysContinent', 'niveauFormation', 'permis', 'motsCles', 'salaireMin', 'periodeSalaire', 'accesTravailleurHandicape', 'offresMRS', 'grandDomaine', 'experienceExigence', 'publieeDepuis', 'minCreationDate', 'maxCreationDate', 'partenaires', 'modeSelectionPartenaires', 'dureeHebdo', 'dureeHebdoMin', 'dureeHebdoMax', 'dureeContratMin', 'dureeContratMax', 'offresManqueCandidats', 'entreprisesAdaptees', 'distance']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return PoleEmploi.pull_jobs(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        }
+      ]
     }
   ]
 }
