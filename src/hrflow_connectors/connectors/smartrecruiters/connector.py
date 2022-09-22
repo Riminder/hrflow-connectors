@@ -1,77 +1,212 @@
-from hrflow import Hrflow
-from typing import Optional, Dict, Any
+import typing as t
 
-from ...core.connector import Connector
-from ...core.auth import XSmartTokenAuth
-from ...utils.schemas import HrflowProfile
-from .actions import PullJobsAction, PushProfileAction
+from hrflow_connectors.connectors.hrflow.warehouse import (
+    HrFlowJobWarehouse,
+    HrFlowProfileWarehouse,
+)
+from hrflow_connectors.connectors.smartrecruiters.warehouse import (
+    SmartRecruitersJobWarehouse,
+    SmartRecruitersProfileWarehouse,
+)
+from hrflow_connectors.core import (
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    WorkflowType,
+)
 
 
-class SmartRecruiters(Connector):
-    @staticmethod
-    def pull_jobs(
-        auth: XSmartTokenAuth, hrflow_client: Hrflow, board_key: str, **kwargs
-    ) -> Optional[Dict[str, Any]]:
-        """
-        `PullJobsAction` retrieves all jobs via the SmartRecruiter API. It adds all these jobs to a Hrflow.ai Board.
+def get_job_location(smartrecruiters_location: t.Union[t.Dict, None]) -> t.Dict:
+    if smartrecruiters_location is None:
+        return dict(lat=None, lng=None, text="")
 
-        `Smart Recruiters` -> `Hrflow.ai`
+    lat = smartrecruiters_location.get("latitude")
+    lat = float(lat) if lat is not None else lat
 
-        Args:
-            hrflow_client (Hrflow): Hrflow client instance used to communicate with the Hrflow.ai API
-            auth (XSmartTokenAuth): Auth instance to identify and communicate with the platform
-            board_key (str): Board key where the jobs to be added will be stored
-            logics (List[str], optional): Function names to apply as filter . Default value `[]`
-            global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
-            local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
-            format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
-            hydrate_with_parsing (bool, optional): Enrich the job with parsing. Default value `False`
-            archive_deleted_jobs_from_stream (bool, optional): Archive Board jobs when they are no longer in the incoming job stream. Default value `True`
-            query (str, optional): Full-text search query based on a job title; case insensitive; e.g. java developer. Default value `None`
-            updated_after (str, optional): ISO8601-formatted time boundaries for the job update time. Default value `None`
-            posting_status (str, optional): Posting status of a job. Available values  PUBLIC, INTERNAL, NOT_PUBLISHED, PRIVATE. Default value `None`
-            job_status (str, optional): Status of a job. Available values  CREATED, SOURCING, FILLED, INTERVIEW, OFFER, CANCELLED, ON_HOLD. Default value `None`
-            limit (int, optional): Number of elements to return per page. max value is 100. Default value  10. Default value `10`
+    lng = smartrecruiters_location.get("longitude")
+    lng = float(lng) if lng is not None else lng
 
-        Returns:
-            Optional[Dict[str, Any]]: Workflow response or `None`
-        """
-        action = PullJobsAction(
-            auth=auth, hrflow_client=hrflow_client, board_key=board_key, **kwargs
+    concatenate = []
+    for field in ["country", "region", "city", "address"]:
+        if smartrecruiters_location.get(field):
+            concatenate.append(smartrecruiters_location.get(field))
+
+    return dict(lat=lat, lng=lng, text=" ".join(concatenate))
+
+
+def get_sections(smartrecruiters_job: t.Dict) -> t.List[t.Dict]:
+    sections = []
+    if (
+        "jobAd" not in smartrecruiters_job
+        or "sections" not in smartrecruiters_job["jobAd"]
+    ):
+        return sections
+
+    smartrecruiters_sections = smartrecruiters_job["jobAd"]["sections"]
+    for section_name in [
+        "companyDescription",
+        "jobDescription",
+        "qualifications",
+        "additionalInformation",
+    ]:
+        section = smartrecruiters_sections.get(section_name)
+        if section is not None:
+            sections.append(
+                dict(
+                    name="smartrecruiters_jobAd-sections-{}".format(section_name),
+                    title=section.get("title"),
+                    description=section.get("text"),
+                )
+            )
+
+
+def get_tags(smartrecruiters_job: t.Dict) -> t.List[t.Dict]:
+    job = smartrecruiters_job
+    creator = job.get("creator", {})
+    compensation = job.get("compensation", {})
+
+    t = lambda name, value: dict(name=name, value=value)
+    return [
+        t("smartrecruiters_status", job.get("status")),
+        t("smartrecruiters_postingStatus", job.get("postingStatus")),
+        t("smartrecruiters_id", job.get("id")),
+        t(
+            "smartrecruiters_experienceLevel-id",
+            job.get("experienceLevel", {}).get("id"),
+        ),
+        t(
+            "smartrecruiters_typeOfEmployment-id",
+            job.get("typeOfEmployment", {}).get("id"),
+        ),
+        t("smartrecruiters_compensation-min", compensation.get("min")),
+        t("smartrecruiters_compensation-max", compensation.get("max")),
+        t("smartrecruiters_compensation-currency", compensation.get("currency")),
+        t("smartrecruiters_industry-id", job.get("industry", {}).get("id")),
+        t("smartrecruiters_creator-firstName", creator.get("firstName")),
+        t("smartrecruiters_creator-lastName", creator.get("lastName")),
+        t("smartrecruiters_function-id", job.get("function", {}).get("id")),
+        t("smartrecruiters_department-id", job.get("department", {}).get("id")),
+        t("smartrecruiters_location-manual", job.get("location", {}).get("manual")),
+        t("smartrecruiters_location-remote", job.get("location", {}).get("remote")),
+        t("smartrecruiters_eeoCategory-id", job.get("eeoCategory", {}).get("id")),
+        t("smartrecruiters_targetHiringDate", job.get("targetHiringDate")),
+    ]
+
+
+def format_job(smartrecruiters_job: t.Dict) -> t.Dict:
+    job = dict(
+        name=smartrecruiters_job.get("title", "Undefined"),
+        reference=smartrecruiters_job.get("refNumber"),
+        created_at=smartrecruiters_job.get("createdon"),
+        updated_at=smartrecruiters_job.get("updatedon"),
+        location=get_job_location(smartrecruiters_job.get("location")),
+        url=None,
+        summary=None,
+        sections=get_sections(smartrecruiters_job),
+        tags=get_tags(smartrecruiters_job),
+    )
+    return job
+
+
+def get_profile_location(hrflow_location: t.Dict) -> t.Dict:
+    fields = hrflow_location["fields"] or {}
+    return dict(
+        lat=hrflow_location["lat"] or 0,
+        lng=hrflow_location["lng"] or 0,
+        city=fields.get("city") or "Undefined",
+        country=fields.get("country") or "Undefined",
+        region=fields.get("state") or "Undefined",
+    )
+
+
+def get_profile_occupation(hrflow_occupation: t.Dict) -> t.Dict:
+    return dict(
+        description=hrflow_occupation["description"],
+        # FIXME Maybe that current could be True for the most recent occupation
+        current=False,
+        startDate=(hrflow_occupation["date_start"] or "XXXX").split("T")[0],
+        endDate=(hrflow_occupation["date_end"] or "XXXX").split("T")[0],
+        location=hrflow_occupation["location"]["text"] or "Undefined",
+    )
+
+
+def get_profile_experiences(hrflow_experiences: t.List[t.Dict]) -> t.List[t.Dict]:
+    return [
+        dict(
+            title=experience["title"] or "Undefined",
+            company=experience["company"] or "Undefined",
+            **get_profile_occupation(experience)
         )
-        return action.execute()
+        for experience in hrflow_experiences
+    ]
 
-    @staticmethod
-    def push_profile(
-        auth: XSmartTokenAuth,
-        hrflow_client: Hrflow,
-        profile: HrflowProfile,
-        job_id: str,
-        **kwargs
-    ) -> Optional[Dict[str, Any]]:
-        """
-        `PushProfileAction` pushes a HrFlow.ai profile from a Hrflow.ai Source to `SmartRecruiters` via the SmartRecruiter API.
 
-        `Hrflow.ai` -> `Smart Recruiters`
-
-        Args:
-            hrflow_client (Hrflow): Hrflow client instance used to communicate with the Hrflow.ai API
-            auth (XSmartTokenAuth): Auth instance to identify and communicate with the platform
-            profile (Profile): Profile to push
-            job_id (str): Id of a Job to which you want to assign a candidate when it’s created. A profile is sent to this URL `https//api.smartrecruiters.com/jobs/{job_id}/candidates`
-            logics (List[str], optional): Function names to apply as filter . Default value `[]`
-            global_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's global variables. Default value `None`
-            local_scope (Optional[Dict[str, Any]], optional): A dictionary containing the current scope's local variables. Default value `None`
-            format_function_name (Optional[str], optional): Function name to format job before pushing. Default value `None`
-
-        Returns:
-            Optional[Dict[str, Any]]: Workflow response or `None`
-        """
-        action = PushProfileAction(
-            auth=auth,
-            hrflow_client=hrflow_client,
-            profile=profile,
-            job_id=job_id,
-            **kwargs
+def get_profile_educations(hrflow_educations: t.List[t.Dict]) -> t.List[t.Dict]:
+    return [
+        dict(
+            institution=education["school"] or "Undefined",
+            degree=education["title"] or "Undefined",
+            major="Undefined",
+            **get_profile_occupation(education)
         )
-        return action.execute()
+        for education in hrflow_educations
+    ]
+
+
+def format_profile(hrflow_profile: t.Dict) -> t.Dict:
+    hrflow_profile_info = hrflow_profile["info"]
+
+    profile = dict(
+        firstName=hrflow_profile_info["first_name"],
+        lastName=hrflow_profile_info["last_name"],
+        email=hrflow_profile_info["email"],
+        phoneNumber=hrflow_profile_info["phone"],
+        location=get_profile_location(hrflow_profile_info["location"]),
+        experiences=get_profile_experiences(hrflow_profile["experiences"]),
+        educations=get_profile_educations(hrflow_profile["educations"]),
+        web=dict(hrflow_profile_info["urls"]),
+        tags=[],
+        consent=True,
+        attachments=hrflow_profile.get("attachments") or [],
+    )
+    return profile
+
+
+DESCRIPTION = (
+    "Move beyond applicant tracking systems (ATS) with an enterprise-grade recruiting"
+    " platform designed for the modern workforce. SmartRecruiters' Talent Acquisition"
+    " Suite provides everything needed to attract, select, and hire great talent."
+)
+SmartRecruiters = Connector(
+    name="SmartRecruiters",
+    description=DESCRIPTION,
+    url="https://www.smartrecruiters.com/",
+    actions=[
+        ConnectorAction(
+            name="pull_jobs",
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves all jobs via the ***SmartRecruiter*** API and send them"
+                " to a ***Hrflow.ai Board***."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadJobsActionParameters", format=format_job
+            ),
+            origin=SmartRecruitersJobWarehouse,
+            target=HrFlowJobWarehouse,
+        ),
+        ConnectorAction(
+            name="push_profile",
+            trigger_type=WorkflowType.catch,
+            description=(
+                "Writes a profile from Hrflow.ai Source to SmartRecruiters via the API"
+                " for the given `job_id`."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "WriteProfileActionParameters", format=format_profile
+            ),
+            origin=HrFlowProfileWarehouse,
+            target=SmartRecruitersProfileWarehouse,
+        ),
+    ],
+)

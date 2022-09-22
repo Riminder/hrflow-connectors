@@ -1,74 +1,75 @@
-from typing import List, Optional
+import typing as t
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-# Job Model
+
+# Job
 class Department(BaseModel):
-    id: Optional[str]
+    id: str
 
 
-class Location(BaseModel):
-    country: Optional[Optional[str]]
-    countryCode: Optional[Optional[str]]
-    regionCode: Optional[Optional[str]]
-    region: Optional[Optional[str]]
-    city: Optional[str]
-    address: Optional[Optional[str]]
-    longitude: Optional[Optional[str]]
-    latitude: Optional[Optional[str]]
-    remote: Optional[bool]
-    manual: Optional[bool]
+class JobLocation(BaseModel):
+    country: t.Optional[str]
+    countryCode: t.Optional[str]
+    regionCode: t.Optional[str]
+    region: t.Optional[str]
+    city: str
+    address: t.Optional[str]
+    longitude: t.Optional[str]
+    latitude: t.Optional[str]
+    remote: t.Optional[bool]
+    manual: t.Optional[bool]
 
 
 class Industry(BaseModel):
-    id: Optional[str]
+    id: str
 
 
 class Function(BaseModel):
-    id: Optional[str]
+    id: str
 
 
 class TypeOfEmployment(BaseModel):
-    id: Optional[str]
+    id: str
 
 
 class ExperienceLevel(BaseModel):
-    id: Optional[Optional[str]]
+    id: t.Optional[str]
 
 
 class EeoCategory(BaseModel):
-    id: Optional[str]
+    id: str
 
 
 class Creator(BaseModel):
-    firstName: Optional[str]
-    lastName: Optional[str]
+    firstName: str
+    lastName: str
 
 
 class Compensation(BaseModel):
     min: int
     max: int
-    currency: Optional[str]
+    currency: str
 
 
 class CompanyDescription(BaseModel):
-    title: Optional[str]
-    text: Optional[str]
+    title: str
+    text: str
 
 
 class JobDescription(BaseModel):
-    title: Optional[str]
-    text: Optional[str]
+    title: str
+    text: str
 
 
 class Qualifications(BaseModel):
-    title: Optional[str]
-    text: Optional[str]
+    title: str
+    text: str
 
 
 class AdditionalInformation(BaseModel):
-    title: Optional[str]
-    text: Optional[str]
+    title: str
+    text: str
 
 
 class Sections(BaseModel):
@@ -82,77 +83,73 @@ class JobAd(BaseModel):
     sections: Sections
 
 
-class SmartRecruitersModel(BaseModel):
+class SmartRecruitersJob(BaseModel):
     title: str
-    refNumber: Optional[str]
-    createdOn: Optional[str]
-    updatedOn: Optional[str]
-    department: Optional[Department]
-    location: Location
-    status: Optional[Optional[str]]
-    postingStatus: Optional[Optional[str]]
-    targetHiringDate: Optional[Optional[str]]
-    industry: Optional[Industry]
-    function: Optional[Function]
-    typeOfEmployment: Optional[TypeOfEmployment]
-    experienceLevel: Optional[ExperienceLevel]
-    eeoCategory: Optional[EeoCategory]
-    creator: Optional[Creator]
-    compensation: Optional[Compensation]
+    refNumber: str
+    createdOn: str
+    updatedOn: str
+    department: t.Optional[Department]
+    location: JobLocation
+    status: t.Optional[str]
+    postingStatus: t.Optional[str]
+    targetHiringDate: t.Optional[str]
+    industry: t.Optional[Industry]
+    function: t.Optional[Function]
+    typeOfEmployment: t.Optional[TypeOfEmployment]
+    experienceLevel: t.Optional[ExperienceLevel]
+    eeoCategory: t.Optional[EeoCategory]
+    creator: t.Optional[Creator]
+    compensation: t.Optional[Compensation]
     jobAd: JobAd
 
 
-# Profile Model
-
-
-class Location(BaseModel):
-    country: Optional[str] = Field("Undefined")
-    countryCode: Optional[str] = Field("NO")
-    regionCode: Optional[str] = Field("Undefined")
-    region: Optional[str] = Field("Undefined")
-    city: Optional[str] = Field("Undefined")
-    lat: Optional[int] = Field(0)
-    lng: Optional[int] = Field(0)
+# Profile
+class ProfileLocation(BaseModel):
+    country: str
+    countryCode: str
+    regionCode: str
+    region: str
+    city: str
+    lat: int
+    lng: int
 
 
 class Web(BaseModel):
-    skype: Optional[str] = Field("Undefined")
-    linkedin: Optional[str] = Field("Undefined")
-    facebook: Optional[str] = Field("Undefined")
-    twitter: Optional[str] = Field("Undefined")
-    website: Optional[str] = Field("Undefined")
+    skype: str
+    linkedin: str
+    facebook: str
+    twitter: str
+    website: str
 
 
 class EducationItem(BaseModel):
-    institution: Optional[str]
-    degree: Optional[str]
-    major: Optional[str]
-    current: Optional[bool]
-    location: Optional[str]
-    startDate: Optional[str]
-    endDate: Optional[str]
-    description: Optional[str]
+    institution: str
+    degree: str
+    major: str
+    current: bool
+    location: str
+    startDate: str
+    endDate: str
+    description: str
 
 
 class ExperienceItem(BaseModel):
-    title: Optional[str]
-    company: Optional[str]
-    current: Optional[bool]
-    startDate: Optional[str]
-    endDate: Optional[str]
-    location: Optional[str]
-    description: Optional[str]
+    title: str
+    company: str
+    current: bool
+    startDate: str
+    endDate: str
+    location: str
+    description: str
 
 
-class SmartrecruitersProfileModel(BaseModel):
+class SmartRecruitersProfile(BaseModel):
     firstName: str
     lastName: str
-    email: Optional[str]
-    phoneNumber: Optional[str]
-    location: Location
-    web: Optional[Web]
-    tags: List[str]
-    education: List[EducationItem]
-    experience: List[ExperienceItem]
-    consent: Optional[bool]
-    attachments: Optional[list]
+    email: str
+    phoneNumber: str
+    location: ProfileLocation
+    web: Web
+    tags: t.List[str]
+    education: t.List[EducationItem]
+    experience: t.List[ExperienceItem]
