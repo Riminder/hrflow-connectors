@@ -4,7 +4,7 @@ on:
   pull_request_target:
     types: [labeled, opened, synchronize, reopened]
     branches:
-      - "v2"
+      - "master"
 
 env:
   PYTHON_VERSION: 3.10.5
