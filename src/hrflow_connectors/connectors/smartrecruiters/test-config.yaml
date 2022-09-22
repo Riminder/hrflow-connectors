@@ -1,0 +1,57 @@
+warehouse:
+  SmartRecruitersJobWarehouse:
+    read:
+      - parameters:
+          x_smart_token: $__X_SMART_TOKEN
+          posting_status: PUBLIC
+          limit: 1
+        expected_number_of_items: 5
+actions:
+  pull_jobs:
+    - id: valid_parameters
+      origin_parameters:
+        x_smart_token: $__X_SMART_TOKEN
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+    - id: not_x_smart_token
+      origin_parameters:
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+    - id: no_hrflow_board_key
+      origin_parameters:
+        x_smart_token: $__X_SMART_TOKEN
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_x_smart_token
+      origin_parameters:
+        x_smart_token: bad_smart_token
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+    - id: invalid_hrflow_api_secret
+      origin_parameters:
+        x_smart_token: $__X_SMART_TOKEN
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: write_failure

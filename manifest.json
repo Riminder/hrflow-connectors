@@ -1,0 +1,3266 @@
+{
+  "name": "HrFlow.ai Connectors",
+  "connectors": [
+    {
+      "name": "SmartRecruiters",
+      "actions": [
+        {
+          "name": "pull_jobs",
+          "action_parameters": {
+            "title": "ReadJobsActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "job",
+          "trigger_type": "schedule",
+          "origin": "SmartRecruiters Jobs",
+          "origin_parameters": {
+            "title": "ReadJobsParameters",
+            "type": "object",
+            "properties": {
+              "x_smart_token": {
+                "title": "X Smart Token",
+                "description": "X-SmartToken used to access SmartRecruiters API",
+                "type": "string"
+              },
+              "query": {
+                "title": "Query",
+                "description": "Case insensitive full-text query against job title e.g. java developer",
+                "type": "string"
+              },
+              "updated_after": {
+                "title": "Updated After",
+                "description": "ISO8601-formatted time boundaries for the job update time",
+                "type": "string"
+              },
+              "posting_status": {
+                "description": "Posting status of a job. One of ['PUBLIC', 'INTERNAL', 'NOT_PUBLISHED', 'PRIVATE']",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/JobPostingStatus"
+                  }
+                ]
+              },
+              "job_status": {
+                "description": "Status of a job. One of ['CREATED', 'SOURCING', 'FILLED', 'INTERVIEW', 'OFFER', 'CANCELLED', 'ON_HOLD']",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/JobStatus"
+                  }
+                ]
+              },
+              "limit": {
+                "title": "Limit",
+                "description": "Number of items to pull from SmartRecruiters at a time. Not matter what value is supplied it is capped at 100",
+                "default": 100,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x_smart_token"
+            ],
+            "definitions": {
+              "JobPostingStatus": {
+                "title": "JobPostingStatus",
+                "description": "An enumeration.",
+                "enum": [
+                  "PUBLIC",
+                  "INTERNAL",
+                  "NOT_PUBLISHED",
+                  "PRIVATE"
+                ],
+                "type": "string"
+              },
+              "JobStatus": {
+                "title": "JobStatus",
+                "description": "An enumeration.",
+                "enum": [
+                  "CREATED",
+                  "SOURCING",
+                  "FILLED",
+                  "INTERVIEW",
+                  "OFFER",
+                  "CANCELLED",
+                  "ON_HOLD"
+                ],
+                "type": "string"
+              }
+            }
+          },
+          "origin_data_schema": {
+            "title": "SmartRecruitersJob",
+            "type": "object",
+            "properties": {
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "refNumber": {
+                "title": "Refnumber",
+                "type": "string"
+              },
+              "createdOn": {
+                "title": "Createdon",
+                "type": "string"
+              },
+              "updatedOn": {
+                "title": "Updatedon",
+                "type": "string"
+              },
+              "department": {
+                "$ref": "#/definitions/Department"
+              },
+              "location": {
+                "$ref": "#/definitions/JobLocation"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "postingStatus": {
+                "title": "Postingstatus",
+                "type": "string"
+              },
+              "targetHiringDate": {
+                "title": "Targethiringdate",
+                "type": "string"
+              },
+              "industry": {
+                "$ref": "#/definitions/Industry"
+              },
+              "function": {
+                "$ref": "#/definitions/Function"
+              },
+              "typeOfEmployment": {
+                "$ref": "#/definitions/TypeOfEmployment"
+              },
+              "experienceLevel": {
+                "$ref": "#/definitions/ExperienceLevel"
+              },
+              "eeoCategory": {
+                "$ref": "#/definitions/EeoCategory"
+              },
+              "creator": {
+                "$ref": "#/definitions/Creator"
+              },
+              "compensation": {
+                "$ref": "#/definitions/Compensation"
+              },
+              "jobAd": {
+                "$ref": "#/definitions/JobAd"
+              }
+            },
+            "required": [
+              "title",
+              "refNumber",
+              "createdOn",
+              "updatedOn",
+              "location",
+              "jobAd"
+            ],
+            "definitions": {
+              "Department": {
+                "title": "Department",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "title": "Id",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              },
+              "JobLocation": {
+                "title": "JobLocation",
+                "type": "object",
+                "properties": {
+                  "country": {
+                    "title": "Country",
+                    "type": "string"
+                  },
+                  "countryCode": {
+                    "title": "Countrycode",
+                    "type": "string"
+                  },
+                  "regionCode": {
+                    "title": "Regioncode",
+                    "type": "string"
+                  },
+                  "region": {
+                    "title": "Region",
+                    "type": "string"
+                  },
+                  "city": {
+                    "title": "City",
+                    "type": "string"
+                  },
+                  "address": {
+                    "title": "Address",
+                    "type": "string"
+                  },
+                  "longitude": {
+                    "title": "Longitude",
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "title": "Latitude",
+                    "type": "string"
+                  },
+                  "remote": {
+                    "title": "Remote",
+                    "type": "boolean"
+                  },
+                  "manual": {
+                    "title": "Manual",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "city"
+                ]
+              },
+              "Industry": {
+                "title": "Industry",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "title": "Id",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              },
+              "Function": {
+                "title": "Function",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "title": "Id",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              },
+              "TypeOfEmployment": {
+                "title": "TypeOfEmployment",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "title": "Id",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              },
+              "ExperienceLevel": {
+                "title": "ExperienceLevel",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "title": "Id",
+                    "type": "string"
+                  }
+                }
+              },
+              "EeoCategory": {
+                "title": "EeoCategory",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "title": "Id",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              },
+              "Creator": {
+                "title": "Creator",
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "title": "Firstname",
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "title": "Lastname",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "firstName",
+                  "lastName"
+                ]
+              },
+              "Compensation": {
+                "title": "Compensation",
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "title": "Min",
+                    "type": "integer"
+                  },
+                  "max": {
+                    "title": "Max",
+                    "type": "integer"
+                  },
+                  "currency": {
+                    "title": "Currency",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "min",
+                  "max",
+                  "currency"
+                ]
+              },
+              "CompanyDescription": {
+                "title": "CompanyDescription",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "title": "Title",
+                    "type": "string"
+                  },
+                  "text": {
+                    "title": "Text",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "title",
+                  "text"
+                ]
+              },
+              "JobDescription": {
+                "title": "JobDescription",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "title": "Title",
+                    "type": "string"
+                  },
+                  "text": {
+                    "title": "Text",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "title",
+                  "text"
+                ]
+              },
+              "Qualifications": {
+                "title": "Qualifications",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "title": "Title",
+                    "type": "string"
+                  },
+                  "text": {
+                    "title": "Text",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "title",
+                  "text"
+                ]
+              },
+              "AdditionalInformation": {
+                "title": "AdditionalInformation",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "title": "Title",
+                    "type": "string"
+                  },
+                  "text": {
+                    "title": "Text",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "title",
+                  "text"
+                ]
+              },
+              "Sections": {
+                "title": "Sections",
+                "type": "object",
+                "properties": {
+                  "companyDescription": {
+                    "$ref": "#/definitions/CompanyDescription"
+                  },
+                  "jobDescription": {
+                    "$ref": "#/definitions/JobDescription"
+                  },
+                  "qualifications": {
+                    "$ref": "#/definitions/Qualifications"
+                  },
+                  "additionalInformation": {
+                    "$ref": "#/definitions/AdditionalInformation"
+                  }
+                },
+                "required": [
+                  "companyDescription",
+                  "jobDescription",
+                  "qualifications",
+                  "additionalInformation"
+                ]
+              },
+              "JobAd": {
+                "title": "JobAd",
+                "type": "object",
+                "properties": {
+                  "sections": {
+                    "$ref": "#/definitions/Sections"
+                  }
+                },
+                "required": [
+                  "sections"
+                ]
+              }
+            }
+          },
+          "supports_incremental": false,
+          "target": "HrFlow.ai Jobs",
+          "target_parameters": {
+            "title": "WriteJobParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "board_key": {
+                "title": "Board Key",
+                "description": "HrFlow.ai board key",
+                "type": "string"
+              },
+              "sync": {
+                "title": "Sync",
+                "description": "When enabled only pushed jobs will remain in the board",
+                "default": true,
+                "type": "boolean"
+              },
+              "update_content": {
+                "title": "Update Content",
+                "description": "When enabled jobs already present in the board are updated",
+                "default": false,
+                "type": "boolean"
+              },
+              "enrich_with_parsing": {
+                "title": "Enrich With Parsing",
+                "description": "When enabled jobs are enriched with HrFlow.ai parsing",
+                "default": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "board_key"
+            ]
+          },
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Job.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Job.",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "title": "Location",
+                "description": "Job location object.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Location"
+                  }
+                ]
+              },
+              "sections": {
+                "title": "Sections",
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Section"
+                }
+              },
+              "url": {
+                "title": "Url",
+                "description": "Job post original URL.",
+                "type": "string"
+              },
+              "summary": {
+                "title": "Summary",
+                "description": "Brief summary of the Job.",
+                "type": "string"
+              },
+              "archieved_at": {
+                "title": "Archieved At",
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "type": "string"
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "t.List of skills of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "t.List of spoken languages of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "t.List of certifications of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "t.List of courses of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "t.List of tasks of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "t.List of tags of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "t.List of metadatas of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "ranges_float": {
+                "title": "Ranges Float",
+                "description": "t.List of ranges of floats",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesFloat"
+                }
+              },
+              "ranges_date": {
+                "title": "Ranges Date",
+                "description": "t.List of ranges of dates",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesDate"
+                }
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value. Example: 500.",
+                    "type": "number"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value. Example: 100.",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "description": "Unit of the value. Example: euros.",
+                    "type": "string"
+                  }
+                }
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "type": "string"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import SmartRecruiters\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return SmartRecruiters.pull_jobs(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['x_smart_token', 'query', 'updated_after', 'posting_status', 'job_status', 'limit']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return SmartRecruiters.pull_jobs(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "push_profile",
+          "action_parameters": {
+            "title": "WriteProfileActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              },
+              "event_parser": {
+                "title": "event_parser",
+                "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
+                "type": "code_editor"
+              }
+            },
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "profile",
+          "trigger_type": "hook",
+          "origin": "HrFlow.ai Profiles",
+          "origin_parameters": {
+            "title": "ReadProfileParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "source_key": {
+                "title": "Source Key",
+                "description": "HrFlow.ai source key",
+                "type": "string"
+              },
+              "profile_key": {
+                "title": "Profile Key",
+                "description": "HrFlow.ai profile key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "source_key",
+              "profile_key"
+            ]
+          },
+          "origin_data_schema": {
+            "title": "HrFlowProfile",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Profile.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Profile.",
+                "type": "string"
+              },
+              "archieved_at": {
+                "title": "Archieved At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
+                "type": "string"
+              },
+              "info": {
+                "title": "Info",
+                "description": "Object containing the Profile's info.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ProfileInfo"
+                  }
+                ]
+              },
+              "text_language": {
+                "title": "Text Language",
+                "description": "Code language of the Profile. type: string code ISO 639-1",
+                "type": "string"
+              },
+              "text": {
+                "title": "Text",
+                "description": "Full text of the Profile..",
+                "type": "string"
+              },
+              "experiences_duration": {
+                "title": "Experiences Duration",
+                "description": "Total number of years of experience.",
+                "type": "number"
+              },
+              "educations_duration": {
+                "title": "Educations Duration",
+                "description": "Total number of years of education.",
+                "type": "number"
+              },
+              "experiences": {
+                "title": "Experiences",
+                "description": "List of experiences of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Experience"
+                }
+              },
+              "educations": {
+                "title": "Educations",
+                "description": "List of educations of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Education"
+                }
+              },
+              "attachments": {
+                "title": "Attachments",
+                "description": "List of documents attached to the Profile.",
+                "type": "array",
+                "items": {}
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "List of skills of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "List of spoken languages of the profile",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "List of certifications of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "List of courses of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "List of tasks of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "interests": {
+                "title": "Interests",
+                "description": "List of interests of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "List of tags of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              }
+            },
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "InfoUrls": {
+                "title": "InfoUrls",
+                "type": "object",
+                "properties": {
+                  "from_resume": {
+                    "title": "From Resume",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "linkedin": {
+                    "title": "Linkedin",
+                    "type": "string"
+                  },
+                  "twitter": {
+                    "title": "Twitter",
+                    "type": "string"
+                  },
+                  "facebook": {
+                    "title": "Facebook",
+                    "type": "string"
+                  },
+                  "github": {
+                    "title": "Github",
+                    "type": "string"
+                  }
+                }
+              },
+              "ProfileInfo": {
+                "title": "ProfileInfo",
+                "type": "object",
+                "properties": {
+                  "full_name": {
+                    "title": "Full Name",
+                    "type": "string"
+                  },
+                  "first_name": {
+                    "title": "First Name",
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "title": "Last Name",
+                    "type": "string"
+                  },
+                  "email": {
+                    "title": "Email",
+                    "type": "string"
+                  },
+                  "phone": {
+                    "title": "Phone",
+                    "type": "string"
+                  },
+                  "date_birth": {
+                    "title": "Date Birth",
+                    "description": "Profile date of birth",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Profile location object",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "urls": {
+                    "title": "Urls",
+                    "description": "Profile social networks and URLs",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/InfoUrls"
+                      }
+                    ]
+                  },
+                  "picture": {
+                    "title": "Picture",
+                    "description": "Profile picture url",
+                    "type": "string"
+                  },
+                  "gender": {
+                    "title": "Gender",
+                    "description": "Profile gender",
+                    "type": "string"
+                  },
+                  "summary": {
+                    "title": "Summary",
+                    "description": "Profile summary text",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "Experience": {
+                "title": "Experience",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "title": "Key",
+                    "description": "Identification key of the Experience.",
+                    "type": "string"
+                  },
+                  "company": {
+                    "title": "Company",
+                    "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Title of the Experience.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Description of the Experience.",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Location object of the Experience.",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "date_start": {
+                    "title": "Date Start",
+                    "description": "Start date of the experience. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "date_end": {
+                    "title": "Date End",
+                    "description": "End date of the experience. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "skills": {
+                    "title": "Skills",
+                    "description": "List of skills of the Experience.",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/Skill"
+                    }
+                  },
+                  "certifications": {
+                    "title": "Certifications",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "courses": {
+                    "title": "Courses",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "tasks": {
+                    "title": "Tasks",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  }
+                }
+              },
+              "Education": {
+                "title": "Education",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "title": "Key",
+                    "description": "Identification key of the Education.",
+                    "type": "string"
+                  },
+                  "school": {
+                    "title": "School",
+                    "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Title of the Education.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Description of the Education.",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Location object of the Education.",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "date_start": {
+                    "title": "Date Start",
+                    "description": "Start date of the Education. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "date_end": {
+                    "title": "Date End",
+                    "description": "End date of the Education. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "skills": {
+                    "title": "Skills",
+                    "description": "List of skills of the Education.",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/Skill"
+                    }
+                  },
+                  "certifications": {
+                    "title": "Certifications",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "courses": {
+                    "title": "Courses",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "tasks": {
+                    "title": "Tasks",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "supports_incremental": false,
+          "target": "SmartRecruiters Profiles",
+          "target_parameters": {
+            "title": "WriteProfilesParameters",
+            "type": "object",
+            "properties": {
+              "x_smart_token": {
+                "title": "X Smart Token",
+                "description": "X-SmartToken used to access SmartRecruiters API",
+                "type": "string"
+              },
+              "job_id": {
+                "title": "Job Id",
+                "description": "Id of a Job to which you want to assign a candidates when it\u2019s created. Profiles are sent to this URL `https://api.smartrecruiters.com/jobs/{job_id}/candidates` ",
+                "type": "string"
+              }
+            },
+            "required": [
+              "x_smart_token",
+              "job_id"
+            ]
+          },
+          "target_data_schema": {
+            "title": "SmartRecruitersProfile",
+            "type": "object",
+            "properties": {
+              "firstName": {
+                "title": "Firstname",
+                "type": "string"
+              },
+              "lastName": {
+                "title": "Lastname",
+                "type": "string"
+              },
+              "email": {
+                "title": "Email",
+                "type": "string"
+              },
+              "phoneNumber": {
+                "title": "Phonenumber",
+                "type": "string"
+              },
+              "location": {
+                "$ref": "#/definitions/ProfileLocation"
+              },
+              "web": {
+                "$ref": "#/definitions/Web"
+              },
+              "tags": {
+                "title": "Tags",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "education": {
+                "title": "Education",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/EducationItem"
+                }
+              },
+              "experience": {
+                "title": "Experience",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ExperienceItem"
+                }
+              }
+            },
+            "required": [
+              "firstName",
+              "lastName",
+              "email",
+              "phoneNumber",
+              "location",
+              "web",
+              "tags",
+              "education",
+              "experience"
+            ],
+            "definitions": {
+              "ProfileLocation": {
+                "title": "ProfileLocation",
+                "type": "object",
+                "properties": {
+                  "country": {
+                    "title": "Country",
+                    "type": "string"
+                  },
+                  "countryCode": {
+                    "title": "Countrycode",
+                    "type": "string"
+                  },
+                  "regionCode": {
+                    "title": "Regioncode",
+                    "type": "string"
+                  },
+                  "region": {
+                    "title": "Region",
+                    "type": "string"
+                  },
+                  "city": {
+                    "title": "City",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "type": "integer"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "country",
+                  "countryCode",
+                  "regionCode",
+                  "region",
+                  "city",
+                  "lat",
+                  "lng"
+                ]
+              },
+              "Web": {
+                "title": "Web",
+                "type": "object",
+                "properties": {
+                  "skype": {
+                    "title": "Skype",
+                    "type": "string"
+                  },
+                  "linkedin": {
+                    "title": "Linkedin",
+                    "type": "string"
+                  },
+                  "facebook": {
+                    "title": "Facebook",
+                    "type": "string"
+                  },
+                  "twitter": {
+                    "title": "Twitter",
+                    "type": "string"
+                  },
+                  "website": {
+                    "title": "Website",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "skype",
+                  "linkedin",
+                  "facebook",
+                  "twitter",
+                  "website"
+                ]
+              },
+              "EducationItem": {
+                "title": "EducationItem",
+                "type": "object",
+                "properties": {
+                  "institution": {
+                    "title": "Institution",
+                    "type": "string"
+                  },
+                  "degree": {
+                    "title": "Degree",
+                    "type": "string"
+                  },
+                  "major": {
+                    "title": "Major",
+                    "type": "string"
+                  },
+                  "current": {
+                    "title": "Current",
+                    "type": "boolean"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "type": "string"
+                  },
+                  "startDate": {
+                    "title": "Startdate",
+                    "type": "string"
+                  },
+                  "endDate": {
+                    "title": "Enddate",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "institution",
+                  "degree",
+                  "major",
+                  "current",
+                  "location",
+                  "startDate",
+                  "endDate",
+                  "description"
+                ]
+              },
+              "ExperienceItem": {
+                "title": "ExperienceItem",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "title": "Title",
+                    "type": "string"
+                  },
+                  "company": {
+                    "title": "Company",
+                    "type": "string"
+                  },
+                  "current": {
+                    "title": "Current",
+                    "type": "boolean"
+                  },
+                  "startDate": {
+                    "title": "Startdate",
+                    "type": "string"
+                  },
+                  "endDate": {
+                    "title": "Enddate",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "title",
+                  "company",
+                  "current",
+                  "startDate",
+                  "endDate",
+                  "location",
+                  "description"
+                ]
+              }
+            }
+          },
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import SmartRecruiters\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return SmartRecruiters.push_profile(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = SmartRecruiters.model.action_by_name(\"push_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return SmartRecruiters.push_profile(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'profile_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['x_smart_token', 'job_id']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return SmartRecruiters.push_profile(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        }
+      ]
+    },
+    {
+      "name": "TalentSoft",
+      "actions": [
+        {
+          "name": "applicant_new",
+          "action_parameters": {
+            "title": "ApplicantNewActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              },
+              "event_parser": {
+                "title": "event_parser",
+                "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
+                "type": "code_editor"
+              }
+            },
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "profile",
+          "trigger_type": "hook",
+          "origin": "TalentSoft Profiles",
+          "origin_parameters": {
+            "title": "FixedReadParameters",
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "title": "Client Id",
+                "description": "Client ID used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Client Secret used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_url": {
+                "title": "Client Url",
+                "description": "URL of TalentSoft client integration",
+                "type": "string"
+              },
+              "filter": {
+                "title": "Filter",
+                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get . Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
+                "type": "string"
+              },
+              "fileId": {
+                "title": "Fileid",
+                "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left.",
+                "type": "string"
+              },
+              "only_resume": {
+                "title": "Only Resume",
+                "description": "If enabled only resume attachments are returned",
+                "const": true,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "client_id",
+              "client_secret",
+              "client_url"
+            ]
+          },
+          "origin_data_schema": {
+            "title": "BaseModel",
+            "type": "object",
+            "properties": {}
+          },
+          "supports_incremental": false,
+          "target": "HrFlow.ai Profile Parsing",
+          "target_parameters": {
+            "title": "FixedWriteParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "source_key": {
+                "title": "Source Key",
+                "description": "HrFlow.ai source key",
+                "type": "string"
+              },
+              "only_insert": {
+                "title": "Only Insert",
+                "description": "When enabled the profile is written only if it doesn't exist in the source",
+                "const": true,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "source_key"
+            ]
+          },
+          "target_data_schema": {
+            "title": "HrFlowProfileParsing",
+            "type": "object",
+            "properties": {
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
+                "type": "string"
+              },
+              "resume": {
+                "$ref": "#/definitions/ResumeToParse"
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "List of tags of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              }
+            },
+            "required": [
+              "reference",
+              "created_at",
+              "resume",
+              "tags",
+              "metadatas"
+            ],
+            "definitions": {
+              "ResumeToParse": {
+                "title": "ResumeToParse",
+                "type": "object",
+                "properties": {
+                  "raw": {
+                    "title": "Raw",
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "content_type": {
+                    "title": "Content Type",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "raw",
+                  "content_type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return TalentSoft.applicant_new(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = TalentSoft.model.action_by_name(\"applicant_new\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return TalentSoft.applicant_new(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'client_url', 'filter', 'fileId', 'only_resume']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'only_insert']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return TalentSoft.applicant_new(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "applicant_resume_update",
+          "action_parameters": {
+            "title": "ApplicantResumeUpdateActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              },
+              "event_parser": {
+                "title": "event_parser",
+                "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
+                "type": "code_editor"
+              }
+            },
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "profile",
+          "trigger_type": "hook",
+          "origin": "TalentSoft Profiles",
+          "origin_parameters": {
+            "title": "FixedReadParameters",
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "title": "Client Id",
+                "description": "Client ID used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Client Secret used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_url": {
+                "title": "Client Url",
+                "description": "URL of TalentSoft client integration",
+                "type": "string"
+              },
+              "filter": {
+                "title": "Filter",
+                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get . Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
+                "type": "string"
+              },
+              "fileId": {
+                "title": "Fileid",
+                "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left.",
+                "type": "string"
+              },
+              "only_resume": {
+                "title": "Only Resume",
+                "description": "If enabled only resume attachments are returned",
+                "const": true,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "client_id",
+              "client_secret",
+              "client_url"
+            ]
+          },
+          "origin_data_schema": {
+            "title": "BaseModel",
+            "type": "object",
+            "properties": {}
+          },
+          "supports_incremental": false,
+          "target": "HrFlow.ai Profile Parsing",
+          "target_parameters": {
+            "title": "FixedWriteParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "source_key": {
+                "title": "Source Key",
+                "description": "HrFlow.ai source key",
+                "type": "string"
+              },
+              "only_insert": {
+                "title": "Only Insert",
+                "description": "When enabled the profile is written only if it doesn't exist in the source",
+                "const": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "source_key"
+            ]
+          },
+          "target_data_schema": {
+            "title": "HrFlowProfileParsing",
+            "type": "object",
+            "properties": {
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
+                "type": "string"
+              },
+              "resume": {
+                "$ref": "#/definitions/ResumeToParse"
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "List of tags of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              }
+            },
+            "required": [
+              "reference",
+              "created_at",
+              "resume",
+              "tags",
+              "metadatas"
+            ],
+            "definitions": {
+              "ResumeToParse": {
+                "title": "ResumeToParse",
+                "type": "object",
+                "properties": {
+                  "raw": {
+                    "title": "Raw",
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "content_type": {
+                    "title": "Content Type",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "raw",
+                  "content_type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return TalentSoft.applicant_resume_update(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = TalentSoft.model.action_by_name(\"applicant_resume_update\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return TalentSoft.applicant_resume_update(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'client_url', 'filter', 'fileId', 'only_resume']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'only_insert']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return TalentSoft.applicant_resume_update(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "applicant_update",
+          "action_parameters": {
+            "title": "ApplicantUpdateActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              },
+              "event_parser": {
+                "title": "event_parser",
+                "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
+                "type": "code_editor"
+              }
+            },
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "profile",
+          "trigger_type": "hook",
+          "origin": "TalentSoft Profiles",
+          "origin_parameters": {
+            "title": "ReadProfilesParameters",
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "title": "Client Id",
+                "description": "Client ID used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Client Secret used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_url": {
+                "title": "Client Url",
+                "description": "URL of TalentSoft client integration",
+                "type": "string"
+              },
+              "filter": {
+                "title": "Filter",
+                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get . Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
+                "type": "string"
+              },
+              "fileId": {
+                "title": "Fileid",
+                "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left.",
+                "type": "string"
+              },
+              "only_resume": {
+                "title": "Only Resume",
+                "description": "If enabled only resume attachments are returned",
+                "default": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "client_id",
+              "client_secret",
+              "client_url"
+            ]
+          },
+          "origin_data_schema": {
+            "title": "BaseModel",
+            "type": "object",
+            "properties": {}
+          },
+          "supports_incremental": false,
+          "target": "HrFlow.ai Profiles",
+          "target_parameters": {
+            "title": "FixedWriteParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "source_key": {
+                "title": "Source Key",
+                "description": "HrFlow.ai source key",
+                "type": "string"
+              },
+              "edit": {
+                "title": "Edit",
+                "description": "When enabled the profile must exist in the source",
+                "const": true,
+                "type": "boolean"
+              },
+              "only_edit_fields": {
+                "title": "Only Edit Fields",
+                "description": "List of attributes to use for the edit operation e.g. ['tags', 'metadatas']",
+                "const": [
+                  "tags"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "source_key"
+            ]
+          },
+          "target_data_schema": {
+            "title": "HrFlowProfile",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Profile.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Profile.",
+                "type": "string"
+              },
+              "archieved_at": {
+                "title": "Archieved At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
+                "type": "string"
+              },
+              "info": {
+                "title": "Info",
+                "description": "Object containing the Profile's info.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ProfileInfo"
+                  }
+                ]
+              },
+              "text_language": {
+                "title": "Text Language",
+                "description": "Code language of the Profile. type: string code ISO 639-1",
+                "type": "string"
+              },
+              "text": {
+                "title": "Text",
+                "description": "Full text of the Profile..",
+                "type": "string"
+              },
+              "experiences_duration": {
+                "title": "Experiences Duration",
+                "description": "Total number of years of experience.",
+                "type": "number"
+              },
+              "educations_duration": {
+                "title": "Educations Duration",
+                "description": "Total number of years of education.",
+                "type": "number"
+              },
+              "experiences": {
+                "title": "Experiences",
+                "description": "List of experiences of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Experience"
+                }
+              },
+              "educations": {
+                "title": "Educations",
+                "description": "List of educations of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Education"
+                }
+              },
+              "attachments": {
+                "title": "Attachments",
+                "description": "List of documents attached to the Profile.",
+                "type": "array",
+                "items": {}
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "List of skills of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "List of spoken languages of the profile",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "List of certifications of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "List of courses of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "List of tasks of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "interests": {
+                "title": "Interests",
+                "description": "List of interests of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "List of tags of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              }
+            },
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "InfoUrls": {
+                "title": "InfoUrls",
+                "type": "object",
+                "properties": {
+                  "from_resume": {
+                    "title": "From Resume",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "linkedin": {
+                    "title": "Linkedin",
+                    "type": "string"
+                  },
+                  "twitter": {
+                    "title": "Twitter",
+                    "type": "string"
+                  },
+                  "facebook": {
+                    "title": "Facebook",
+                    "type": "string"
+                  },
+                  "github": {
+                    "title": "Github",
+                    "type": "string"
+                  }
+                }
+              },
+              "ProfileInfo": {
+                "title": "ProfileInfo",
+                "type": "object",
+                "properties": {
+                  "full_name": {
+                    "title": "Full Name",
+                    "type": "string"
+                  },
+                  "first_name": {
+                    "title": "First Name",
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "title": "Last Name",
+                    "type": "string"
+                  },
+                  "email": {
+                    "title": "Email",
+                    "type": "string"
+                  },
+                  "phone": {
+                    "title": "Phone",
+                    "type": "string"
+                  },
+                  "date_birth": {
+                    "title": "Date Birth",
+                    "description": "Profile date of birth",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Profile location object",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "urls": {
+                    "title": "Urls",
+                    "description": "Profile social networks and URLs",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/InfoUrls"
+                      }
+                    ]
+                  },
+                  "picture": {
+                    "title": "Picture",
+                    "description": "Profile picture url",
+                    "type": "string"
+                  },
+                  "gender": {
+                    "title": "Gender",
+                    "description": "Profile gender",
+                    "type": "string"
+                  },
+                  "summary": {
+                    "title": "Summary",
+                    "description": "Profile summary text",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "Experience": {
+                "title": "Experience",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "title": "Key",
+                    "description": "Identification key of the Experience.",
+                    "type": "string"
+                  },
+                  "company": {
+                    "title": "Company",
+                    "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Title of the Experience.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Description of the Experience.",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Location object of the Experience.",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "date_start": {
+                    "title": "Date Start",
+                    "description": "Start date of the experience. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "date_end": {
+                    "title": "Date End",
+                    "description": "End date of the experience. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "skills": {
+                    "title": "Skills",
+                    "description": "List of skills of the Experience.",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/Skill"
+                    }
+                  },
+                  "certifications": {
+                    "title": "Certifications",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "courses": {
+                    "title": "Courses",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "tasks": {
+                    "title": "Tasks",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  }
+                }
+              },
+              "Education": {
+                "title": "Education",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "title": "Key",
+                    "description": "Identification key of the Education.",
+                    "type": "string"
+                  },
+                  "school": {
+                    "title": "School",
+                    "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Title of the Education.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Description of the Education.",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Location object of the Education.",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "date_start": {
+                    "title": "Date Start",
+                    "description": "Start date of the Education. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "date_end": {
+                    "title": "Date End",
+                    "description": "End date of the Education. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "skills": {
+                    "title": "Skills",
+                    "description": "List of skills of the Education.",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/Skill"
+                    }
+                  },
+                  "certifications": {
+                    "title": "Certifications",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "courses": {
+                    "title": "Courses",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "tasks": {
+                    "title": "Tasks",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return TalentSoft.applicant_update(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = TalentSoft.model.action_by_name(\"applicant_update\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return TalentSoft.applicant_update(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'client_url', 'filter', 'fileId', 'only_resume']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'edit', 'only_edit_fields']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return TalentSoft.applicant_update(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "pull_profiles",
+          "action_parameters": {
+            "title": "PullTalentSoftProfilesActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "profile",
+          "trigger_type": "schedule",
+          "origin": "TalentSoft Profiles",
+          "origin_parameters": {
+            "title": "FixedReadParameters",
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "title": "Client Id",
+                "description": "Client ID used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Client Secret used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_url": {
+                "title": "Client Url",
+                "description": "URL of TalentSoft client integration",
+                "type": "string"
+              },
+              "filter": {
+                "title": "Filter",
+                "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get . Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
+                "type": "string"
+              },
+              "fileId": {
+                "title": "Fileid",
+                "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left.",
+                "type": "string"
+              },
+              "only_resume": {
+                "title": "Only Resume",
+                "description": "If enabled only resume attachments are returned",
+                "const": true,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "client_id",
+              "client_secret",
+              "client_url"
+            ]
+          },
+          "origin_data_schema": {
+            "title": "BaseModel",
+            "type": "object",
+            "properties": {}
+          },
+          "supports_incremental": false,
+          "target": "HrFlow.ai Profile Parsing",
+          "target_parameters": {
+            "title": "WriteProfileParsingParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "source_key": {
+                "title": "Source Key",
+                "description": "HrFlow.ai source key",
+                "type": "string"
+              },
+              "only_insert": {
+                "title": "Only Insert",
+                "description": "When enabled the profile is written only if it doesn't exist in the source",
+                "default": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "source_key"
+            ]
+          },
+          "target_data_schema": {
+            "title": "HrFlowProfileParsing",
+            "type": "object",
+            "properties": {
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
+                "type": "string"
+              },
+              "resume": {
+                "$ref": "#/definitions/ResumeToParse"
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "List of tags of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              }
+            },
+            "required": [
+              "reference",
+              "created_at",
+              "resume",
+              "tags",
+              "metadatas"
+            ],
+            "definitions": {
+              "ResumeToParse": {
+                "title": "ResumeToParse",
+                "type": "object",
+                "properties": {
+                  "raw": {
+                    "title": "Raw",
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "content_type": {
+                    "title": "Content Type",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "raw",
+                  "content_type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return TalentSoft.pull_profiles(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'client_url', 'filter', 'fileId', 'only_resume']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'only_insert']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return TalentSoft.pull_profiles(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "pull_jobs",
+          "action_parameters": {
+            "title": "PullTalentSoftProfilesActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "job",
+          "trigger_type": "schedule",
+          "origin": "TalentSoft Jobs",
+          "origin_parameters": {
+            "title": "ReadJobsParameters",
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "title": "Client Id",
+                "description": "Client ID used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Client Secret used to access TalentSoft API",
+                "type": "string"
+              },
+              "client_url": {
+                "title": "Client Url",
+                "description": "URL of TalentSoft client integration",
+                "type": "string"
+              },
+              "q": {
+                "title": "Q",
+                "description": "Query search to get vacancies",
+                "type": "string"
+              },
+              "filter": {
+                "title": "Filter",
+                "description": "Filter to apply when reading vacancies. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-vacancies-get . . You can filter by **chronoNumber**, **updateDate**, **reference** **vacancyStatus**, **clientVacancyStatus**, **publicationMedia**  **publishedOnTheMedia**. Examples : By reference Single Item 'reference::2019-01'; By reference Multiple Items 'reference::2019-01,2019-02,2019-03';  By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921' . ",
+                "type": "string"
+              }
+            },
+            "required": [
+              "client_id",
+              "client_secret",
+              "client_url"
+            ]
+          },
+          "origin_data_schema": {
+            "title": "BaseModel",
+            "type": "object",
+            "properties": {}
+          },
+          "supports_incremental": false,
+          "target": "HrFlow.ai Jobs",
+          "target_parameters": {
+            "title": "WriteJobParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "board_key": {
+                "title": "Board Key",
+                "description": "HrFlow.ai board key",
+                "type": "string"
+              },
+              "sync": {
+                "title": "Sync",
+                "description": "When enabled only pushed jobs will remain in the board",
+                "default": true,
+                "type": "boolean"
+              },
+              "update_content": {
+                "title": "Update Content",
+                "description": "When enabled jobs already present in the board are updated",
+                "default": false,
+                "type": "boolean"
+              },
+              "enrich_with_parsing": {
+                "title": "Enrich With Parsing",
+                "description": "When enabled jobs are enriched with HrFlow.ai parsing",
+                "default": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "board_key"
+            ]
+          },
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Job.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Job.",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "title": "Location",
+                "description": "Job location object.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Location"
+                  }
+                ]
+              },
+              "sections": {
+                "title": "Sections",
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Section"
+                }
+              },
+              "url": {
+                "title": "Url",
+                "description": "Job post original URL.",
+                "type": "string"
+              },
+              "summary": {
+                "title": "Summary",
+                "description": "Brief summary of the Job.",
+                "type": "string"
+              },
+              "archieved_at": {
+                "title": "Archieved At",
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "type": "string"
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "t.List of skills of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "t.List of spoken languages of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "t.List of certifications of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "t.List of courses of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "t.List of tasks of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "t.List of tags of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "t.List of metadatas of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "ranges_float": {
+                "title": "Ranges Float",
+                "description": "t.List of ranges of floats",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesFloat"
+                }
+              },
+              "ranges_date": {
+                "title": "Ranges Date",
+                "description": "t.List of ranges of dates",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesDate"
+                }
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value. Example: 500.",
+                    "type": "number"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value. Example: 100.",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "description": "Unit of the value. Example: euros.",
+                    "type": "string"
+                  }
+                }
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "type": "string"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return TalentSoft.pull_jobs(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'client_url', 'q', 'filter']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return TalentSoft.pull_jobs(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        }
+      ]
+    }
+  ]
+}

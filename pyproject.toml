@@ -1,23 +1,49 @@
 [tool.poetry]
 name = "hrflow-connectors"
-version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
+version = "2.0.0"
+description = "hrflow-connectors is an open source project created by HrFlow.ai to allow developers to connect easily HR ecosystem component."
+license = "Apache-2.0"
+authors = ["HrFlow.ai <support+hrflow_connectors@hrflow.ai>"]
+readme = "README.md"
+homepage = "https://github.com/Riminder/hrflow-connectors"
+repository = "https://github.com/Riminder/hrflow-connectors"
+documentation = "https://github.com/Riminder/hrflow-connectors"
+exclude = ["Makefile", ".pre-commit-config.yaml", "manifest.json", "tests", "poetry.lock"]
+
+[tool.poetry.urls]
+"HrFlow.ai Documentation" = "https://developers.hrflow.ai/"
+"Changelog" = "https://github.com/Riminder/hrflow-connectors/releases/"
+
 
 [tool.poetry.dependencies]
-python = "^3.6"
-requests = "^2.26.0"
-pydantic = "1.7.4"
+python = "3.10.5"
+pydantic = "^1.9.0"
+Jinja2 = "^3.0.3"
 hrflow = "^1.9.0"
+requests = "^2.27.1"
+boto3 = {version = "^1.24.66", optional = true}
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.5"
-jupyter = "^1.0.0"
+pytest = "^6.2"
+ipython = "^7.0"
+flake8 = "^4.0.1"
+flake8-isort = "^4.1.1"
+flake8-black = "^0.2.4"
+black = "^22.1.0"
+pre-commit = "^2.17.0"
 pytest-cov = "^3.0.0"
-black = "20.8b0"
-unittest = "^0.0"
-responses = "^0.16.0"
-python-dotenv = "^0.19.2"
+ipdb = "^0.13.9"
+
+[tool.poetry.extras]
+s3 = ["boto3"]
+
+[tool.black]
+line-length = 88
+preview = true
+
+
+[tool.isort]
+profile = "black"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

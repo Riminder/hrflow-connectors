@@ -1,64 +1,43 @@
-"""
-    Conftest for `hrflow_connectors`
-    
-    All the fixtures used throughout the tests are grouped here.
-"""
+import random
+import string
 
-import pytest
-import os
-import json
-import logging
-from typing import Dict, Any, Callable
-from hrflow import Hrflow
-
-from hrflow_connectors.utils.logger import get_logger_with_basic_config
-from hrflow_connectors.utils.config import Config
+from hrflow_connectors import __CONNECTORS__
+from tests.test_connector import parameterize_connector_action_tests
+from tests.test_warehouse import parameterize_read_warehouse_tests
 
 
-@pytest.fixture(scope="session")
-def config() -> Config:
-    """
-    Get config from the `.env` file at the root of the project (to be defined)
+def pytest_addoption(parser):
+    parser.addoption(
+        "--connector",
+        action="append",
+        default=[],
+        help="list of connectors for which to run integration tests",
+    )
+    parser.addoption(
+        "--allconnectors",
+        action="store_true",
+        default=False,
+        help="Run integration tests for all connectors",
+    )
 
-    Returns:
-        Config: Config instance
-    """
-    return Config()
 
-
-@pytest.fixture(scope="session")
-def hrflow_client(config) -> Callable:
-    """
-    Get a function to generate an instance of Hrflow Client
-
-    Returns:
-        Callable: Function to generate an instance of Hrflow Client
-
-    Example :
-    >>> def test_stuff(hrflow_client):
-    >>>     client = hrflow_client(portal_name="MY_PORTAL_ON_HRFLOW")
-    """
-
-    def hrflow_client_func(portal_name="dev-demo"):
-        if portal_name == "dev-demo":
-            x_api_key = config.HRFLOW_DEVDEMO_XAPIKEY
-            x_user_email = config.HRFLOW_DEVDEMO_XUSEREMAIL
-        elif portal_name == "vulcain":
-            x_api_key = config.HRFLOW_VULCAIN_XAPIKEY
-            x_user_email = config.HRFLOW_VULCAIN_XUSEREMAIL
+def pytest_generate_tests(metafunc):
+    if "connector_action_test_params" in metafunc.fixturenames:
+        if metafunc.config.getoption("allconnectors") is True:
+            connectors = [connector.model.name for connector in __CONNECTORS__]
         else:
-            raise RuntimeError(f"Hrflow Portal `{portal_name}` not found !")
-        return Hrflow(api_secret=x_api_key, api_user=x_user_email)
+            connectors = metafunc.config.getoption("connector")
+        params = parameterize_connector_action_tests(connectors=connectors)
+        metafunc.parametrize("connector_action_test_params", params)
 
-    return hrflow_client_func
+    if "warehouse_read_test_params" in metafunc.fixturenames:
+        if metafunc.config.getoption("allconnectors") is True:
+            connectors = [connector.model.name for connector in __CONNECTORS__]
+        else:
+            connectors = metafunc.config.getoption("connector")
+        params = parameterize_read_warehouse_tests(connectors=connectors)
+        metafunc.parametrize("warehouse_read_test_params", params)
 
 
-@pytest.fixture(scope="session")
-def logger() -> logging.Logger:
-    """
-    Get `hrflow_connectors` Logger with basic config
-
-    Returns:
-        logging.Logger: `hrflow_connectors` Logger with basic config
-    """
-    return get_logger_with_basic_config()
+def random_workflow_id() -> str:
+    return "".join([random.choice(string.ascii_letters) for _ in range(10)])

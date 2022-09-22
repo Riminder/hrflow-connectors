@@ -1,0 +1,6 @@
+[flake8]
+max-line-length = 88
+exclude = .pytest_cache,__pycache__
+ignore = E731, W503, E203
+per-file-ignores =
+    src/hrflow_connectors/core/templates.py: E501
