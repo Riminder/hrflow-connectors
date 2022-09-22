@@ -86,11 +86,11 @@ to democratize Talent Data integration within the HR Tech landscape.
 | **RegionsJob** | Job Board | :hourglass: |  |  |
 | SAPSuccessfactors | Cloud Apps for HR | :hourglass: |  |  |
 | **Salesforce** | CRM-ATS | :hourglass: |  |  |
-| [**Smartrecruiters**](src/hrflow_connectors/connectors/smartrecruiters/) | ATS | :heavy_check_mark: | *21/03/2022* | *21/03/2022* |
+| [**Smartrecruiters**](src/hrflow_connectors/connectors/smartrecruiters/) | ATS | :heavy_check_mark: | *21/03/2022* | *30/06/2022* |
 | **Staffme** | Job Board | :hourglass: |  |  |
 | **Staffsante** | Job Board | :hourglass: |  |  |
 | Taleez| ATS | :hourglass: |  |  |
-| **Talentsoft** | HCM | :hourglass: |  |  |
+| **Talentsoft** | HCM | :heavy_check_mark: | *19/04/2022* | *09/05/2022* |
 | **Talentlink** |  | :hourglass: |  |  |
 | Teamtailor| ATS | :hourglass: |  |  |
 | **Tekkit** | Job Board | :hourglass: |  |  |
@@ -102,6 +102,7 @@ to democratize Talent Data integration within the HR Tech landscape.
 | **Wizbii** | Job Board | :hourglass: |  |  |
 | **Workday** | HCM Cloud | :hourglass: |  |  |
 | XML | Job Board | :hourglass: |  |  |
+
 
 ## 🪄 Quickstart
 ### What I can do?
