@@ -16,8 +16,8 @@ from hrflow_connectors.core.connector import (
     WorkflowType,
 )
 
-from ..hrflow.schemas import HrFlowJob
-from .schemas import WorkableJobModel
+from ..hrflow.schemas import HrFlowJob, HrFlowProfile
+from .schemas import WorkableCandidate, WorkableJobModel
 
 
 def remove_html_tags(text: str) -> str:
@@ -105,7 +105,9 @@ def format_jobs(workable_jobs: WorkableJobModel) -> HrFlowJob:
     return job
 
 
-def format_profile(profile):  # HrFlow profiles -> Workable Profiles
+def format_profile(
+    profile: HrFlowProfile,
+) -> WorkableCandidate:  # HrFlow profiles -> Workable Profiles
     """
     Format a HrflowProfile object into a WorkableCandidate object
     Args:
