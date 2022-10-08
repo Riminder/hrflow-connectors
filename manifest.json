@@ -3261,6 +3261,784 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ]
+    },
+    {
+      "name": "Adzuna",
+      "actions": [
+        {
+          "name": "pull_jobs",
+          "action_parameters": {
+            "title": "ReadJobsActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "job",
+          "trigger_type": "schedule",
+          "origin": "Adzuna Jobs",
+          "origin_parameters": {
+            "title": "ReadJobsParameters",
+            "type": "object",
+            "properties": {
+              "country": {
+                "description": "ISO 8601 country code of the country of interes",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/CountryCode"
+                  }
+                ]
+              },
+              "app_id": {
+                "title": "App Id",
+                "description": "Application ID, supplied by Adzuna",
+                "type": "string"
+              },
+              "app_key": {
+                "title": "App Key",
+                "description": "Application key, supplied by Adzuna",
+                "type": "string"
+              },
+              "results_per_page": {
+                "title": "Results Per Page",
+                "description": "The number of results to include on a page of search results.",
+                "type": "integer"
+              },
+              "what": {
+                "title": "What",
+                "description": "The keywords to search for. Multiple terms may be space separated.",
+                "type": "string"
+              },
+              "what_and": {
+                "title": "What And",
+                "description": "The keywords to search for, all keywords must be found.",
+                "type": "string"
+              },
+              "what_phrase": {
+                "title": "What Phrase",
+                "description": "An entire phrase which must be found in the description or title.",
+                "type": "string"
+              },
+              "what_or": {
+                "title": "What Or",
+                "description": "The keywords to search for, any keywords may be found. Multiple terms may be space separated.",
+                "type": "string"
+              },
+              "what_exclude": {
+                "title": "What Exclude",
+                "description": "Keywords to exclude from the search. Multiple terms may be space separated.",
+                "type": "string"
+              },
+              "title_only": {
+                "title": "Title Only",
+                "description": "Keywords to find, but only in the title. Multiple terms may be space separated.",
+                "type": "string"
+              },
+              "where": {
+                "title": "Where",
+                "description": "The geographic centre of the search. Place names, postal codes, etc. may be used.\t",
+                "type": "string"
+              },
+              "distance": {
+                "title": "Distance",
+                "description": "The distance in kilometres from the centre of the place described by the 'where' parameter. Defaults to 5km.",
+                "type": "integer"
+              },
+              "location0": {
+                "title": "Location0",
+                "description": "The location fields may be used to describe a location, in a similar form to that returned in a Adzuna::API::Response::Location object.For example, \"location0=UK&location1=South East England&location2=Surrey\"  will performn a search over the county of Surrey.",
+                "type": "string"
+              },
+              "location1": {
+                "title": "Location1",
+                "type": "string"
+              },
+              "location2": {
+                "title": "Location2",
+                "type": "string"
+              },
+              "location3": {
+                "title": "Location3",
+                "type": "string"
+              },
+              "location4": {
+                "title": "Location4",
+                "type": "string"
+              },
+              "location5": {
+                "title": "Location5",
+                "type": "string"
+              },
+              "location6": {
+                "title": "Location6",
+                "type": "string"
+              },
+              "location7": {
+                "title": "Location7",
+                "type": "string"
+              },
+              "max_days_old": {
+                "title": "Max Days Old",
+                "description": "The age of the oldest advertisment in days that will be returned.",
+                "type": "integer"
+              },
+              "category": {
+                "title": "Category",
+                "description": "The category tag, as returned by the \"category\" endpoint.",
+                "type": "string"
+              },
+              "sort_dir": {
+                "description": "The direction to order the search results.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/SortDir"
+                  }
+                ]
+              },
+              "sort_by": {
+                "description": "The ordering of the search results.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/SortKey"
+                  }
+                ]
+              },
+              "salary_min": {
+                "title": "Salary Min",
+                "description": "The minimum salary we wish to get results for.",
+                "type": "integer"
+              },
+              "salary_max": {
+                "title": "Salary Max",
+                "description": "The maximum salary we wish to get results for.",
+                "type": "integer"
+              },
+              "salary_include_unknown": {
+                "description": "If set it \"1\", jobs without a known salary are returned.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Filter"
+                  }
+                ]
+              },
+              "full_time": {
+                "description": "If set to \"1\", only full time jobs will be returned.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Filter"
+                  }
+                ]
+              },
+              "part_time": {
+                "description": "If set to \"1\", only part time jobs will be returned.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Filter"
+                  }
+                ]
+              },
+              "contract": {
+                "description": "If set to \"1\", only contract jobs will be returned.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Filter"
+                  }
+                ]
+              },
+              "permanent": {
+                "description": "If set to \"1\", only permanent jobs will be returned.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Filter"
+                  }
+                ]
+              },
+              "company": {
+                "title": "Company",
+                "description": "The canonical company name. This may be returned in a Adzuna::API::Response::Company object when a job is returned. A full list of allowed terms in not available through the API.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "country",
+              "app_id",
+              "app_key"
+            ],
+            "definitions": {
+              "CountryCode": {
+                "title": "CountryCode",
+                "description": "An enumeration.",
+                "enum": [
+                  "gb",
+                  "at",
+                  "au",
+                  "br",
+                  "ca",
+                  "de",
+                  "fr",
+                  "in",
+                  "it",
+                  "nl",
+                  "nz",
+                  "pl",
+                  "ru",
+                  "sg",
+                  "us",
+                  "za"
+                ],
+                "type": "string"
+              },
+              "SortDir": {
+                "title": "SortDir",
+                "description": "An enumeration.",
+                "enum": [
+                  "up",
+                  "down"
+                ],
+                "type": "string"
+              },
+              "SortKey": {
+                "title": "SortKey",
+                "description": "An enumeration.",
+                "enum": [
+                  "default",
+                  "hybrid",
+                  "date",
+                  "salary",
+                  "relevance"
+                ],
+                "type": "string"
+              },
+              "Filter": {
+                "title": "Filter",
+                "description": "An enumeration.",
+                "enum": [
+                  "1"
+                ],
+                "type": "string"
+              }
+            }
+          },
+          "origin_data_schema": {
+            "title": "AdzunaJob",
+            "type": "object",
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "created": {
+                "title": "Created",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "full_description": {
+                "title": "Full Description",
+                "type": "string"
+              },
+              "redirect_url": {
+                "title": "Redirect Url",
+                "type": "string"
+              },
+              "latitude": {
+                "title": "Latitude",
+                "type": "number"
+              },
+              "longitude": {
+                "title": "Longitude",
+                "type": "number"
+              },
+              "category": {
+                "$ref": "#/definitions/Category"
+              },
+              "location": {
+                "$ref": "#/definitions/Location"
+              },
+              "salary_min": {
+                "title": "Salary Min",
+                "type": "integer"
+              },
+              "salary_max": {
+                "title": "Salary Max",
+                "type": "integer"
+              },
+              "salary_is_predicted": {
+                "$ref": "#/definitions/Flag"
+              },
+              "company": {
+                "$ref": "#/definitions/Company"
+              },
+              "contract_type": {
+                "$ref": "#/definitions/ContractType"
+              },
+              "contract_time": {
+                "$ref": "#/definitions/ContractTime"
+              }
+            },
+            "required": [
+              "id",
+              "created",
+              "title",
+              "description",
+              "redirect_url",
+              "category",
+              "location",
+              "salary_min",
+              "salary_max",
+              "salary_is_predicted",
+              "company",
+              "contract_time"
+            ],
+            "definitions": {
+              "Category": {
+                "title": "Category",
+                "type": "object",
+                "properties": {
+                  "tag": {
+                    "title": "Tag",
+                    "type": "string"
+                  },
+                  "label": {
+                    "title": "Label",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tag",
+                  "label"
+                ]
+              },
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "area": {
+                    "title": "Area",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "display_name": {
+                    "title": "Display Name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "area",
+                  "display_name"
+                ]
+              },
+              "Flag": {
+                "title": "Flag",
+                "description": "An enumeration.",
+                "enum": [
+                  "1",
+                  "0"
+                ],
+                "type": "string"
+              },
+              "Company": {
+                "title": "Company",
+                "type": "object",
+                "properties": {
+                  "display_name": {
+                    "title": "Display Name",
+                    "type": "string"
+                  },
+                  "canonical_name": {
+                    "title": "Canonical Name",
+                    "type": "string"
+                  },
+                  "count": {
+                    "title": "Count",
+                    "type": "integer"
+                  }
+                }
+              },
+              "ContractType": {
+                "title": "ContractType",
+                "description": "An enumeration.",
+                "enum": [
+                  "permanent",
+                  "contract"
+                ],
+                "type": "string"
+              },
+              "ContractTime": {
+                "title": "ContractTime",
+                "description": "An enumeration.",
+                "enum": [
+                  "full_time",
+                  "part_time"
+                ],
+                "type": "string"
+              }
+            }
+          },
+          "supports_incremental": false,
+          "target": "HrFlow.ai Jobs",
+          "target_parameters": {
+            "title": "WriteJobParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "board_key": {
+                "title": "Board Key",
+                "description": "HrFlow.ai board key",
+                "type": "string"
+              },
+              "sync": {
+                "title": "Sync",
+                "description": "When enabled only pushed jobs will remain in the board",
+                "default": true,
+                "type": "boolean"
+              },
+              "update_content": {
+                "title": "Update Content",
+                "description": "When enabled jobs already present in the board are updated",
+                "default": false,
+                "type": "boolean"
+              },
+              "enrich_with_parsing": {
+                "title": "Enrich With Parsing",
+                "description": "When enabled jobs are enriched with HrFlow.ai parsing",
+                "default": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "board_key"
+            ]
+          },
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Job.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Job.",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "title": "Location",
+                "description": "Job location object.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Location"
+                  }
+                ]
+              },
+              "sections": {
+                "title": "Sections",
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Section"
+                }
+              },
+              "url": {
+                "title": "Url",
+                "description": "Job post original URL.",
+                "type": "string"
+              },
+              "summary": {
+                "title": "Summary",
+                "description": "Brief summary of the Job.",
+                "type": "string"
+              },
+              "archieved_at": {
+                "title": "Archieved At",
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "type": "string"
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "t.List of skills of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "t.List of spoken languages of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "t.List of certifications of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "t.List of courses of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "t.List of tasks of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "t.List of tags of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "t.List of metadatas of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "ranges_float": {
+                "title": "Ranges Float",
+                "description": "t.List of ranges of floats",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesFloat"
+                }
+              },
+              "ranges_date": {
+                "title": "Ranges Date",
+                "description": "t.List of ranges of dates",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesDate"
+                }
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value. Example: 500.",
+                    "type": "number"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value. Example: 100.",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "description": "Unit of the value. Example: euros.",
+                    "type": "string"
+                  }
+                }
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "type": "string"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import Adzuna\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Adzuna.pull_jobs(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['country', 'app_id', 'app_key', 'results_per_page', 'what', 'what_and', 'what_phrase', 'what_or', 'what_exclude', 'title_only', 'where', 'distance', 'location0', 'location1', 'location2', 'location3', 'location4', 'location5', 'location6', 'location7', 'max_days_old', 'category', 'sort_dir', 'sort_by', 'salary_min', 'salary_max', 'salary_include_unknown', 'full_time', 'part_time', 'contract', 'permanent', 'company']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Adzuna.pull_jobs(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        }
+      ]
     }
   ]
 }
