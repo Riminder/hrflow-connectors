@@ -10,7 +10,9 @@ from hrflow_connectors.core.warehouse import WarehouseWriteAction
 
 
 class WorkableReadParameters(BaseModel):
-    auth: str = Field(..., description="API KEY")
+    auth: str = Field(
+        ..., description="API KEY", repr=False, is_auth=True, field_type="auth"
+    )
     subdomain: str = Field(..., description="Subdomain")
 
 
@@ -39,7 +41,9 @@ def read(
 
 
 class WorkableWriteParameters(BaseModel):
-    auth: str = Field(..., description="API KEY")
+    auth: str = Field(
+        ..., description="API KEY", repr=False, is_auth=True, field_type="auth"
+    )
     subdomain: str = Field(..., description="Subdomain")
     shortcode: str = Field(..., description="Job shortcode")
 

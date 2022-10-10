@@ -3314,6 +3314,8 @@
               "auth": {
                 "title": "Auth",
                 "description": "API KEY",
+                "is_auth": true,
+                "field_type": "auth",
                 "type": "string"
               },
               "subdomain": {
@@ -4207,6 +4209,8 @@
               "auth": {
                 "title": "Auth",
                 "description": "API KEY",
+                "is_auth": true,
+                "field_type": "auth",
                 "type": "string"
               },
               "subdomain": {
