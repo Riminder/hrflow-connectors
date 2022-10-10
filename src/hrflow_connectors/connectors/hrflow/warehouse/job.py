@@ -4,10 +4,16 @@ import typing as t
 from logging import LoggerAdapter
 
 from hrflow import Hrflow
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowJob
-from hrflow_connectors.core import DataType, Warehouse, WarehouseWriteAction
+from hrflow_connectors.core import (
+    DataType,
+    FieldType,
+    ParametersModel,
+    Warehouse,
+    WarehouseWriteAction,
+)
 
 LIST_JOBS_LIMIT = 30
 
@@ -25,22 +31,35 @@ class JobParsingException(Exception):
         self.client_response = client_response
 
 
-class WriteJobParameters(BaseModel):
+class WriteJobParameters(ParametersModel):
     api_secret: str = Field(
         ...,
         description="X-API-KEY used to access HrFlow.ai API",
         repr=False,
+        field_type=FieldType.Auth,
     )
-    api_user: str = Field(..., description="X-USER-EMAIL used to access HrFlow.ai API")
-    board_key: str = Field(..., description="HrFlow.ai board key")
+    api_user: str = Field(
+        ...,
+        description="X-USER-EMAIL used to access HrFlow.ai API",
+        field_type=FieldType.Auth,
+    )
+    board_key: str = Field(
+        ..., description="HrFlow.ai board key", field_type=FieldType.QueryParam
+    )
     sync: bool = Field(
-        True, description="When enabled only pushed jobs will remain in the board"
+        True,
+        description="When enabled only pushed jobs will remain in the board",
+        field_type=FieldType.Other,
     )
     update_content: bool = Field(
-        False, description="When enabled jobs already present in the board are updated"
+        False,
+        description="When enabled jobs already present in the board are updated",
+        field_type=FieldType.Other,
     )
     enrich_with_parsing: bool = Field(
-        False, description="When enabled jobs are enriched with HrFlow.ai parsing"
+        False,
+        description="When enabled jobs are enriched with HrFlow.ai parsing",
+        field_type=FieldType.Other,
     )
 
 

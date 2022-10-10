@@ -1,0 +1,60 @@
+warehouse:
+  CeridianJobWarehouse:
+    read:
+      - parameters:
+          subdomain: $__SUBDOMAIN
+          client_name_space: $__CLIENT_NAME_SPACE
+          posting_status: PUBLIC
+actions:
+  pull_jobs:
+    - id: valid_parameters
+      origin_parameters:
+        subdomain: $__SUBDOMAIN
+        client_name_space: $__CLIENT_NAME_SPACE
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+    - id: not_x_smart_token
+      origin_parameters:
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+    - id: no_hrflow_board_key
+      origin_parameters:
+        subdomain: $__SUBDOMAIN
+        client_name_space: $__CLIENT_NAME_SPACE
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_x_smart_token
+      origin_parameters:
+        subdomain: bad_smart_token
+        client_name_space: bad_namespace
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+    - id: invalid_hrflow_api_secret
+      origin_parameters:
+        subdomain: $__SUBDOMAIN
+        client_name_space: $__CLIENT_NAME_SPACE
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: write_failure

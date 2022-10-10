@@ -3,7 +3,7 @@ import typing as t
 from logging import LoggerAdapter
 
 import requests
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from hrflow_connectors.connectors.smartrecruiters.schemas import (
     SmartRecruitersJob,
@@ -12,6 +12,8 @@ from hrflow_connectors.connectors.smartrecruiters.schemas import (
 from hrflow_connectors.core import (
     ActionEndpoints,
     DataType,
+    FieldType,
+    ParametersModel,
     ReadMode,
     Warehouse,
     WarehouseReadAction,
@@ -69,9 +71,12 @@ class JobStatus(str, enum.Enum):
     on_hold = "ON_HOLD"
 
 
-class WriteProfilesParameters(BaseModel):
+class WriteProfilesParameters(ParametersModel):
     x_smart_token: str = Field(
-        ..., description="X-SmartToken used to access SmartRecruiters API", repr=False
+        ...,
+        description="X-SmartToken used to access SmartRecruiters API",
+        repr=False,
+        field_type=FieldType.Auth,
     )
     job_id: str = Field(
         ...,
@@ -80,31 +85,40 @@ class WriteProfilesParameters(BaseModel):
             "when it’s created. Profiles are sent to this "
             "URL `https://api.smartrecruiters.com/jobs/{job_id}/candidates` "
         ),
+        field_type=FieldType.QueryParam,
     )
 
 
-class ReadJobsParameters(BaseModel):
+class ReadJobsParameters(ParametersModel):
     x_smart_token: str = Field(
-        ..., description="X-SmartToken used to access SmartRecruiters API", repr=False
+        ...,
+        description="X-SmartToken used to access SmartRecruiters API",
+        repr=False,
+        field_type=FieldType.Auth,
     )
     query: t.Optional[str] = Field(
         None,
         description=(
             "Case insensitive full-text query against job title e.g. java developer"
         ),
+        field_type=FieldType.QueryParam,
     )
     updated_after: t.Optional[str] = Field(
-        None, description="ISO8601-formatted time boundaries for the job update time"
+        None,
+        description="ISO8601-formatted time boundaries for the job update time",
+        field_type=FieldType.QueryParam,
     )
     posting_status: t.Optional[JobPostingStatus] = Field(
         None,
         description="Posting status of a job. One of {}".format(
             [e.value for e in JobPostingStatus]
         ),
+        field_type=FieldType.QueryParam,
     )
     job_status: t.Optional[JobStatus] = Field(
         None,
         description="Status of a job. One of {}".format([e.value for e in JobStatus]),
+        field_type=FieldType.QueryParam,
     )
     limit: t.Optional[int] = Field(
         SMARTRECRUITERS_JOBS_ENDPOINT_LIMIT,
@@ -114,6 +128,7 @@ class ReadJobsParameters(BaseModel):
                 SMARTRECRUITERS_JOBS_ENDPOINT_LIMIT
             )
         ),
+        field_type=FieldType.QueryParam,
     )
 
 
