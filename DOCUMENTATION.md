@@ -36,18 +36,28 @@ The `LocalJsonWarehouse` will have both `read` and `write` capability. The `read
 
 We start by importing core components from `hrflow_connectors`
 ```python
-from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction, WarehouseWriteAction
+from hrflow_connectors.core import (
+    DataType,
+    FieldType,
+    ParametersModel,
+    ReadMode,
+    Warehouse,
+    WarehouseReadAction,
+    WarehouseWriteAction,
+)
 ```
 
 To define a new `WarehouseReadAction` you need :
-- A [pydantic](https://pydantic-docs.helpmanual.io/) schema that defines the arguments needed to read data from your warehoue. This is the place to define any necessary _tokens_ or _credentials_ for authentication but also any additional options or flags that can precise or scope the read operation. In our use case it's only the path to the JSON file to read from
+- A `ParametersModel` schema which is a subclass of [pydantic](https://pydantic-docs.helpmanual.io/) `BaseModel` with extra validation. It should define the arguments needed to read data from your warehouse. This is the place to define any necessary _tokens_ or _credentials_ for authentication but also any additional options or flags that can precise or scope the read operation. In our use case it's only the path to the JSON file to read from.
+
+:warning: _Mind that for all fields that you annotate you need to add a `field_type` declaration to `pydantic.Field`. The value should be a member of `FieldType` enumeration._
 
 ```python
 from pydantic import BaseModel, Field, FilePath
 
 
-class ReadJsonParameters(BaseModel):
-    path: FilePath = Field(..., description="Path to JSON file to read")
+class ReadJsonParameters(ParametersModel):
+    path: FilePath = Field(..., description="Path to JSON file to read", field_type=FieldType.Other)
 
 ```
 
@@ -69,11 +79,19 @@ from logging import LoggerAdapter
 
 from pydantic import BaseModel, Field, FilePath
 
-from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction, WarehouseWriteAction
+from hrflow_connectors.core import (
+    DataType,
+    FieldType,
+    ParametersModel,
+    ReadMode,
+    Warehouse,
+    WarehouseReadAction,
+    WarehouseWriteAction,
+)
 
 
-class ReadJsonParameters(BaseModel):
-    path: FilePath = Field(..., description="Path to JSON file to read")
+class ReadJsonParameters(ParametersModel):
+    path: FilePath = Field(..., description="Path to JSON file to read", field_type=FieldType.Other)
 
 
 def read(
@@ -110,12 +128,20 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
-from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction, WarehouseWriteAction
+from hrflow_connectors.core import (
+    DataType,
+    FieldType,
+    ParametersModel,
+    ReadMode,
+    Warehouse,
+    WarehouseReadAction,
+    WarehouseWriteAction,
+)
 
 
-class WriteJsonParameters(BaseModel):
-    path: Path = Field(..., description="Path where to save JSON file")
-    mode: t.Optional[t.Literal["append", "erase"]] = "erase"
+class WriteJsonParameters(ParametersModel):
+    path: Path = Field(..., description="Path where to save JSON file", field_type=FieldType.Other)
+    mode: t.Optional[t.Literal["append", "erase"]] = Field("erase", description="File writing mode", field_type=FieldType.Other)
 
 
 def write(
@@ -176,10 +202,12 @@ from json import JSONDecodeError
 from logging import LoggerAdapter
 from pathlib import Path
 
-from pydantic import BaseModel, Field, FilePath
+from pydantic import Field, FilePath
 
 from hrflow_connectors.core import (
     DataType,
+    FieldType,
+    ParametersModel,
     ReadMode,
     Warehouse,
     WarehouseReadAction,
@@ -187,8 +215,10 @@ from hrflow_connectors.core import (
 )
 
 
-class ReadJsonParameters(BaseModel):
-    path: FilePath = Field(..., description="Path to JSON file to read")
+class ReadJsonParameters(ParametersModel):
+    path: FilePath = Field(
+        ..., description="Path to JSON file to read", field_type=FieldType.Other
+    )
 
 
 def read(
@@ -214,9 +244,13 @@ def read(
         yield data
 
 
-class WriteJsonParameters(BaseModel):
-    path: Path = Field(..., description="Path where to save JSON file")
-    mode: t.Optional[t.Literal["append", "erase"]] = "erase"
+class WriteJsonParameters(ParametersModel):
+    path: Path = Field(
+        ..., description="Path where to save JSON file", field_type=FieldType.Other
+    )
+    mode: t.Optional[t.Literal["append", "erase"]] = Field(
+        "erase", description="Writing mode", field_type=FieldType.Other
+    )
 
 
 def write(
@@ -1055,10 +1089,17 @@ from logging import LoggerAdapter
 
 from pydantic import BaseModel, Field
 
-from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction
+from hrflow_connectors.core import (
+    DataType,
+    FieldType,
+    ParametersModel,
+    ReadMode,
+    Warehouse,
+    WarehouseReadAction,
+)
 
-class ReadOrderParameters(BaseModel):
-    db_name: str = Field(..., repr=False)
+class ReadOrderParameters(ParametersModel):
+    db_name: str = Field(..., repr=False, field_type=FieldType.Other)
 
 def read(
     adapter: LoggerAdapter,
@@ -1149,11 +1190,18 @@ With the concepts and example code at hand let's put all that theory into practi
 
     from pydantic import BaseModel, Field
 
-    from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction
+    from hrflow_connectors.core import (
+        DataType,
+        FieldType,
+        ParametersModel,
+        ReadMode,
+        Warehouse,
+        WarehouseReadAction,
+    )
 
 
-    class ReadOrderParameters(BaseModel):
-        db_name: str = Field(..., repr=False)
+    class ReadOrderParameters(ParametersModel):
+        db_name: str = Field(..., repr=False, field_type=FieldType.Other)
 
 
     def read(

@@ -2,7 +2,7 @@ import typing as t
 from logging import LoggerAdapter
 
 from hrflow import Hrflow
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from hrflow_connectors.connectors.hrflow.schemas import (
     HrFlowProfile,
@@ -10,6 +10,8 @@ from hrflow_connectors.connectors.hrflow.schemas import (
 )
 from hrflow_connectors.core import (
     DataType,
+    FieldType,
+    ParametersModel,
     ReadMode,
     Warehouse,
     WarehouseReadAction,
@@ -17,28 +19,45 @@ from hrflow_connectors.core import (
 )
 
 
-class ReadProfileParameters(BaseModel):
+class ReadProfileParameters(ParametersModel):
     api_secret: str = Field(
         ...,
         description="X-API-KEY used to access HrFlow.ai API",
         repr=False,
+        field_type=FieldType.Auth,
     )
-    api_user: str = Field(..., description="X-USER-EMAIL used to access HrFlow.ai API")
-    source_key: str = Field(..., description="HrFlow.ai source key")
-    profile_key: str = Field(..., description="HrFlow.ai profile key")
+    api_user: str = Field(
+        ...,
+        description="X-USER-EMAIL used to access HrFlow.ai API",
+        field_type=FieldType.Auth,
+    )
+    source_key: str = Field(
+        ..., description="HrFlow.ai source key", field_type=FieldType.QueryParam
+    )
+    profile_key: str = Field(
+        ..., description="HrFlow.ai profile key", field_type=FieldType.QueryParam
+    )
 
 
-class WriteProfileParameters(BaseModel):
+class WriteProfileParameters(ParametersModel):
     api_secret: str = Field(
         ...,
         description="X-API-KEY used to access HrFlow.ai API",
         repr=False,
+        field_type=FieldType.Auth,
     )
-    api_user: str = Field(..., description="X-USER-EMAIL used to access HrFlow.ai API")
-    source_key: str = Field(..., description="HrFlow.ai source key")
+    api_user: str = Field(
+        ...,
+        description="X-USER-EMAIL used to access HrFlow.ai API",
+        field_type=FieldType.Auth,
+    )
+    source_key: str = Field(
+        ..., description="HrFlow.ai source key", field_type=FieldType.QueryParam
+    )
     edit: bool = Field(
         False,
         description="When enabled the profile must exist in the source",
+        field_type=FieldType.Other,
     )
     only_edit_fields: t.Optional[t.List[str]] = Field(
         ...,
@@ -46,22 +65,31 @@ class WriteProfileParameters(BaseModel):
             "List of attributes to use for the edit operation e.g. ['tags',"
             " 'metadatas']"
         ),
+        field_type=FieldType.Other,
     )
 
 
-class WriteProfileParsingParameters(BaseModel):
+class WriteProfileParsingParameters(ParametersModel):
     api_secret: str = Field(
         ...,
         description="X-API-KEY used to access HrFlow.ai API",
         repr=False,
+        field_type=FieldType.Auth,
     )
-    api_user: str = Field(..., description="X-USER-EMAIL used to access HrFlow.ai API")
-    source_key: str = Field(..., description="HrFlow.ai source key")
+    api_user: str = Field(
+        ...,
+        description="X-USER-EMAIL used to access HrFlow.ai API",
+        field_type=FieldType.Auth,
+    )
+    source_key: str = Field(
+        ..., description="HrFlow.ai source key", field_type=FieldType.Other
+    )
     only_insert: bool = Field(
         False,
         description=(
             "When enabled the profile is written only if it doesn't exist in the source"
         ),
+        field_type=FieldType.Other,
     )
 
 

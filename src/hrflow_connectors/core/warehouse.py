@@ -3,6 +3,7 @@ import typing as t
 from logging import LoggerAdapter
 
 from pydantic import BaseModel, Field, ValidationError, create_model, root_validator
+from pydantic.main import FieldInfo, ModelMetaclass
 
 
 class FieldNotFoundError(RuntimeError):
@@ -10,6 +11,18 @@ class FieldNotFoundError(RuntimeError):
 
 
 class FixedValueValidationError(RuntimeError):
+    pass
+
+
+class InvalidFieldError(TypeError):
+    pass
+
+
+class NoFieldTypeError(TypeError):
+    pass
+
+
+class BadFieldTypeError(TypeError):
     pass
 
 
@@ -29,17 +42,76 @@ class ReadMode(enum.Enum):
     incremental = "incremental"
 
 
+class FieldType(str, enum.Enum):
+    Auth = "Auth"
+    QueryParam = "Query Param"
+    AnyOf = "AnyOf"
+    Other = "Other"
+
+
 class ActionEndpoints(BaseModel):
     name: str
     description: str
     url: str
 
 
+FIELD_TYPE_EXAMPLE = """
+    Example :
+        from pydantic import Field
+
+        from hrflow_connectors.core import FieldType
+
+        class MyParams(ParametersModel):
+            my_field: str = Field(
+                ..., description="My field", field_type=FieldType.Other
+            )
+"""
+INVALID_FIELD_ERROR_MSG = """Field '{{}}' in {{}} should have proper annotation using pydantic.Field.
+    {}
+""".format(
+    FIELD_TYPE_EXAMPLE
+)
+NO_FIELD_TYPE_ERROR_MSG = """Field '{{}}' in {{}} is missing 'field_type' declaration.
+    {}
+""".format(
+    FIELD_TYPE_EXAMPLE
+)
+BAD_FIELD_TYPE_ERROR_MSG = """'field_type' for field '{{}}' in {{}} should be defined using
+    `hrflow_connectors.core.FieldType`.
+    {}
+""".format(
+    FIELD_TYPE_EXAMPLE
+)
+
+
+class ParametersMeta(ModelMetaclass):
+    def __new__(self, name, bases, namespaces, **kwargs):
+        for annotation in namespaces.get("__annotations__", {}).keys():
+            field_info = namespaces.get(annotation)
+            if field_info is None or not isinstance(field_info, FieldInfo):
+                raise InvalidFieldError(
+                    INVALID_FIELD_ERROR_MSG.format(annotation, name)
+                )
+            field_type = field_info.extra.get("field_type")
+            if field_type is None:
+                raise NoFieldTypeError(NO_FIELD_TYPE_ERROR_MSG.format(annotation, name))
+            if not isinstance(field_type, FieldType):
+                raise BadFieldTypeError(
+                    BAD_FIELD_TYPE_ERROR_MSG.format(annotation, name)
+                )
+
+        return super().__new__(self, name, bases, namespaces, **kwargs)
+
+
+class ParametersModel(BaseModel, metaclass=ParametersMeta):
+    pass
+
+
 class WarehouseReadAction(BaseModel):
     endpoints: t.List[ActionEndpoints] = Field(default_factory=list)
-    parameters: t.Type[BaseModel]
+    parameters: t.Type[ParametersModel]
     function: t.Callable[
-        [LoggerAdapter, BaseModel, t.Optional[ReadMode], t.Optional[str]],
+        [LoggerAdapter, ParametersModel, t.Optional[ReadMode], t.Optional[str]],
         t.Iterable[t.Dict],
     ]
     item_to_read_from: t.Optional[t.Callable[[t.Dict], str]] = None
@@ -62,8 +134,10 @@ class WarehouseReadAction(BaseModel):
 
 class WarehouseWriteAction(BaseModel):
     endpoints: t.List[ActionEndpoints] = Field(default_factory=list)
-    parameters: t.Type[BaseModel]
-    function: t.Callable[[LoggerAdapter, BaseModel, t.Iterable[t.Dict]], t.List[t.Dict]]
+    parameters: t.Type[ParametersModel]
+    function: t.Callable[
+        [LoggerAdapter, ParametersModel, t.Iterable[t.Dict]], t.List[t.Dict]
+    ]
 
     def __call__(self, *args, **kwargs) -> t.List[t.Dict]:
         return self.function(*args, **kwargs)
@@ -124,7 +198,12 @@ class Warehouse(BaseModel):
             original = action_to_fix.parameters.__fields__[field]
             fixed[field] = (
                 original.type_,
-                Field(value, const=True, description=original.field_info.description),
+                Field(
+                    value,
+                    const=True,
+                    description=original.field_info.description,
+                    **original.field_info.extra
+                ),
             )
         with_fixed_parameters = create_model(
             "Fixed{}Parameters".format(action_type.name.capitalize()),
