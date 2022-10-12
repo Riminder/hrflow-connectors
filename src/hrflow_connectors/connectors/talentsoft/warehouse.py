@@ -5,23 +5,40 @@ from logging import LoggerAdapter
 from zipfile import ZipFile
 
 import requests
-from pydantic import BaseModel, Field
+from pydantic import Field
 
-from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction
+from hrflow_connectors.core import (
+    DataType,
+    FieldType,
+    ParametersModel,
+    ReadMode,
+    Warehouse,
+    WarehouseReadAction,
+)
 
 GRANT_TYPE = "client_credentials"
 TOKEN_SCOPE = "MatchingIndexation"
 LIMIT = 100
 
 
-class ReadProfilesParameters(BaseModel):
+class ReadProfilesParameters(ParametersModel):
     client_id: str = Field(
-        ..., description="Client ID used to access TalentSoft API", repr=False
+        ...,
+        description="Client ID used to access TalentSoft API",
+        repr=False,
+        field_type=FieldType.Auth,
     )
     client_secret: str = Field(
-        ..., description="Client Secret used to access TalentSoft API", repr=False
+        ...,
+        description="Client Secret used to access TalentSoft API",
+        repr=False,
+        field_type=FieldType.Auth,
     )
-    client_url: str = Field(..., description="URL of TalentSoft client integration")
+    client_url: str = Field(
+        ...,
+        description="URL of TalentSoft client integration",
+        field_type=FieldType.Other,
+    )
     filter: t.Optional[str] = Field(
         None,
         description=(
@@ -34,27 +51,45 @@ class ReadProfilesParameters(BaseModel):
             " of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than"
             " 108921  'chronoNumber:gt:108921'"
         ),
+        field_type=FieldType.QueryParam,
     )
     fileId: t.Optional[str] = Field(
         description=(
             "If provided only the attachment matching with fileId is left in"
             " 'attachments'. If not found all attachments are left."
-        )
+        ),
+        field_type=FieldType.QueryParam,
     )
     only_resume: bool = Field(
-        False, description="If enabled only resume attachments are returned"
+        False,
+        description="If enabled only resume attachments are returned",
+        field_type=FieldType.QueryParam,
     )
 
 
-class ReadJobsParameters(BaseModel):
+class ReadJobsParameters(ParametersModel):
     client_id: str = Field(
-        ..., description="Client ID used to access TalentSoft API", repr=False
+        ...,
+        description="Client ID used to access TalentSoft API",
+        repr=False,
+        field_type=FieldType.Auth,
     )
     client_secret: str = Field(
-        ..., description="Client Secret used to access TalentSoft API", repr=False
+        ...,
+        description="Client Secret used to access TalentSoft API",
+        repr=False,
+        field_type=FieldType.Auth,
     )
-    client_url: str = Field(..., description="URL of TalentSoft client integration")
-    q: t.Optional[str] = Field(None, description="Query search to get vacancies")
+    client_url: str = Field(
+        ...,
+        description="URL of TalentSoft client integration",
+        field_type=FieldType.Other,
+    )
+    q: t.Optional[str] = Field(
+        None,
+        description="Query search to get vacancies",
+        field_type=FieldType.QueryParam,
+    )
     filter: t.Optional[str] = Field(
         None,
         description=(
@@ -69,6 +104,7 @@ class ReadJobsParameters(BaseModel):
             " 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater"
             " than 108921  'chronoNumber:gt:108921' . "
         ),
+        field_type=FieldType.QueryParam,
     )
 
 
