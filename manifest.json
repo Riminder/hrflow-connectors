@@ -53,20 +53,24 @@
               "x_smart_token": {
                 "title": "X Smart Token",
                 "description": "X-SmartToken used to access SmartRecruiters API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "query": {
                 "title": "Query",
                 "description": "Case insensitive full-text query against job title e.g. java developer",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "updated_after": {
                 "title": "Updated After",
                 "description": "ISO8601-formatted time boundaries for the job update time",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "posting_status": {
                 "description": "Posting status of a job. One of ['PUBLIC', 'INTERNAL', 'NOT_PUBLISHED', 'PRIVATE']",
+                "field_type": "Query Param",
                 "allOf": [
                   {
                     "$ref": "#/definitions/JobPostingStatus"
@@ -75,6 +79,7 @@
               },
               "job_status": {
                 "description": "Status of a job. One of ['CREATED', 'SOURCING', 'FILLED', 'INTERVIEW', 'OFFER', 'CANCELLED', 'ON_HOLD']",
+                "field_type": "Query Param",
                 "allOf": [
                   {
                     "$ref": "#/definitions/JobStatus"
@@ -85,6 +90,7 @@
                 "title": "Limit",
                 "description": "Number of items to pull from SmartRecruiters at a time. Not matter what value is supplied it is capped at 100",
                 "default": 100,
+                "field_type": "Query Param",
                 "type": "integer"
               }
             },
@@ -475,34 +481,40 @@
               "api_secret": {
                 "title": "Api Secret",
                 "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "api_user": {
                 "title": "Api User",
                 "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "board_key": {
                 "title": "Board Key",
                 "description": "HrFlow.ai board key",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "sync": {
                 "title": "Sync",
                 "description": "When enabled only pushed jobs will remain in the board",
                 "default": true,
+                "field_type": "Other",
                 "type": "boolean"
               },
               "update_content": {
                 "title": "Update Content",
                 "description": "When enabled jobs already present in the board are updated",
                 "default": false,
+                "field_type": "Other",
                 "type": "boolean"
               },
               "enrich_with_parsing": {
                 "title": "Enrich With Parsing",
                 "description": "When enabled jobs are enriched with HrFlow.ai parsing",
                 "default": false,
+                "field_type": "Other",
                 "type": "boolean"
               }
             },
@@ -846,21 +858,25 @@
               "api_secret": {
                 "title": "Api Secret",
                 "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "api_user": {
                 "title": "Api User",
                 "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "source_key": {
                 "title": "Source Key",
                 "description": "HrFlow.ai source key",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "profile_key": {
                 "title": "Profile Key",
                 "description": "HrFlow.ai profile key",
+                "field_type": "Query Param",
                 "type": "string"
               }
             },
@@ -1341,11 +1357,13 @@
               "x_smart_token": {
                 "title": "X Smart Token",
                 "description": "X-SmartToken used to access SmartRecruiters API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "job_id": {
                 "title": "Job Id",
                 "description": "Id of a Job to which you want to assign a candidates when it\u2019s created. Profiles are sent to this URL `https://api.smartrecruiters.com/jobs/{job_id}/candidates` ",
+                "field_type": "Query Param",
                 "type": "string"
               }
             },
@@ -1651,32 +1669,38 @@
               "client_id": {
                 "title": "Client Id",
                 "description": "Client ID used to access TalentSoft API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "client_secret": {
                 "title": "Client Secret",
                 "description": "Client Secret used to access TalentSoft API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "client_url": {
                 "title": "Client Url",
                 "description": "URL of TalentSoft client integration",
+                "field_type": "Other",
                 "type": "string"
               },
               "filter": {
                 "title": "Filter",
                 "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get . Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "fileId": {
                 "title": "Fileid",
                 "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left.",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "only_resume": {
                 "title": "Only Resume",
                 "description": "If enabled only resume attachments are returned",
                 "const": true,
+                "field_type": "Query Param",
                 "type": "boolean"
               }
             },
@@ -1700,22 +1724,26 @@
               "api_secret": {
                 "title": "Api Secret",
                 "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "api_user": {
                 "title": "Api User",
                 "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "source_key": {
                 "title": "Source Key",
                 "description": "HrFlow.ai source key",
+                "field_type": "Other",
                 "type": "string"
               },
               "only_insert": {
                 "title": "Only Insert",
                 "description": "When enabled the profile is written only if it doesn't exist in the source",
                 "const": true,
+                "field_type": "Other",
                 "type": "boolean"
               }
             },
@@ -1870,32 +1898,38 @@
               "client_id": {
                 "title": "Client Id",
                 "description": "Client ID used to access TalentSoft API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "client_secret": {
                 "title": "Client Secret",
                 "description": "Client Secret used to access TalentSoft API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "client_url": {
                 "title": "Client Url",
                 "description": "URL of TalentSoft client integration",
+                "field_type": "Other",
                 "type": "string"
               },
               "filter": {
                 "title": "Filter",
                 "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get . Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "fileId": {
                 "title": "Fileid",
                 "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left.",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "only_resume": {
                 "title": "Only Resume",
                 "description": "If enabled only resume attachments are returned",
                 "const": true,
+                "field_type": "Query Param",
                 "type": "boolean"
               }
             },
@@ -1919,22 +1953,26 @@
               "api_secret": {
                 "title": "Api Secret",
                 "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "api_user": {
                 "title": "Api User",
                 "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "source_key": {
                 "title": "Source Key",
                 "description": "HrFlow.ai source key",
+                "field_type": "Other",
                 "type": "string"
               },
               "only_insert": {
                 "title": "Only Insert",
                 "description": "When enabled the profile is written only if it doesn't exist in the source",
                 "const": false,
+                "field_type": "Other",
                 "type": "boolean"
               }
             },
@@ -2089,32 +2127,38 @@
               "client_id": {
                 "title": "Client Id",
                 "description": "Client ID used to access TalentSoft API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "client_secret": {
                 "title": "Client Secret",
                 "description": "Client Secret used to access TalentSoft API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "client_url": {
                 "title": "Client Url",
                 "description": "URL of TalentSoft client integration",
+                "field_type": "Other",
                 "type": "string"
               },
               "filter": {
                 "title": "Filter",
                 "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get . Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "fileId": {
                 "title": "Fileid",
                 "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left.",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "only_resume": {
                 "title": "Only Resume",
                 "description": "If enabled only resume attachments are returned",
                 "default": false,
+                "field_type": "Query Param",
                 "type": "boolean"
               }
             },
@@ -2138,22 +2182,26 @@
               "api_secret": {
                 "title": "Api Secret",
                 "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "api_user": {
                 "title": "Api User",
                 "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "source_key": {
                 "title": "Source Key",
                 "description": "HrFlow.ai source key",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "edit": {
                 "title": "Edit",
                 "description": "When enabled the profile must exist in the source",
                 "const": true,
+                "field_type": "Other",
                 "type": "boolean"
               },
               "only_edit_fields": {
@@ -2162,6 +2210,7 @@
                 "const": [
                   "tags"
                 ],
+                "field_type": "Other",
                 "type": "string"
               }
             },
@@ -2689,32 +2738,38 @@
               "client_id": {
                 "title": "Client Id",
                 "description": "Client ID used to access TalentSoft API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "client_secret": {
                 "title": "Client Secret",
                 "description": "Client Secret used to access TalentSoft API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "client_url": {
                 "title": "Client Url",
                 "description": "URL of TalentSoft client integration",
+                "field_type": "Other",
                 "type": "string"
               },
               "filter": {
                 "title": "Filter",
                 "description": "Filter to apply when reading profiles. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-candidates-get . Examples : By id Single Item 'id::_TS-00001'; By id Multiple Items 'id::_TS-00001,_TS-00002'; By email 'email::john.doe@company.corp'; By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921'",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "fileId": {
                 "title": "Fileid",
                 "description": "If provided only the attachment matching with fileId is left in 'attachments'. If not found all attachments are left.",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "only_resume": {
                 "title": "Only Resume",
                 "description": "If enabled only resume attachments are returned",
                 "const": true,
+                "field_type": "Query Param",
                 "type": "boolean"
               }
             },
@@ -2738,22 +2793,26 @@
               "api_secret": {
                 "title": "Api Secret",
                 "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "api_user": {
                 "title": "Api User",
                 "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "source_key": {
                 "title": "Source Key",
                 "description": "HrFlow.ai source key",
+                "field_type": "Other",
                 "type": "string"
               },
               "only_insert": {
                 "title": "Only Insert",
                 "description": "When enabled the profile is written only if it doesn't exist in the source",
                 "default": false,
+                "field_type": "Other",
                 "type": "boolean"
               }
             },
@@ -2901,26 +2960,31 @@
               "client_id": {
                 "title": "Client Id",
                 "description": "Client ID used to access TalentSoft API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "client_secret": {
                 "title": "Client Secret",
                 "description": "Client Secret used to access TalentSoft API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "client_url": {
                 "title": "Client Url",
                 "description": "URL of TalentSoft client integration",
+                "field_type": "Other",
                 "type": "string"
               },
               "q": {
                 "title": "Q",
                 "description": "Query search to get vacancies",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "filter": {
                 "title": "Filter",
                 "description": "Filter to apply when reading vacancies. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-vacancies-get . . You can filter by **chronoNumber**, **updateDate**, **reference** **vacancyStatus**, **clientVacancyStatus**, **publicationMedia**  **publishedOnTheMedia**. Examples : By reference Single Item 'reference::2019-01'; By reference Multiple Items 'reference::2019-01,2019-02,2019-03';  By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921' . ",
+                "field_type": "Query Param",
                 "type": "string"
               }
             },
@@ -2944,34 +3008,40 @@
               "api_secret": {
                 "title": "Api Secret",
                 "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "api_user": {
                 "title": "Api User",
                 "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "board_key": {
                 "title": "Board Key",
                 "description": "HrFlow.ai board key",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "sync": {
                 "title": "Sync",
                 "description": "When enabled only pushed jobs will remain in the board",
                 "default": true,
+                "field_type": "Other",
                 "type": "boolean"
               },
               "update_content": {
                 "title": "Update Content",
                 "description": "When enabled jobs already present in the board are updated",
                 "default": false,
+                "field_type": "Other",
                 "type": "boolean"
               },
               "enrich_with_parsing": {
                 "title": "Enrich With Parsing",
                 "description": "When enabled jobs are enriched with HrFlow.ai parsing",
                 "default": false,
+                "field_type": "Other",
                 "type": "boolean"
               }
             },
@@ -3314,13 +3384,13 @@
               "auth": {
                 "title": "Auth",
                 "description": "API KEY",
-                "is_auth": true,
-                "field_type": "auth",
+                "field_type": "Auth",
                 "type": "string"
               },
               "subdomain": {
                 "title": "Subdomain",
                 "description": "Subdomain",
+                "field_type": "Auth",
                 "type": "string"
               }
             },
@@ -3343,34 +3413,40 @@
               "api_secret": {
                 "title": "Api Secret",
                 "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "api_user": {
                 "title": "Api User",
                 "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "board_key": {
                 "title": "Board Key",
                 "description": "HrFlow.ai board key",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "sync": {
                 "title": "Sync",
                 "description": "When enabled only pushed jobs will remain in the board",
                 "default": true,
+                "field_type": "Other",
                 "type": "boolean"
               },
               "update_content": {
                 "title": "Update Content",
                 "description": "When enabled jobs already present in the board are updated",
                 "default": false,
+                "field_type": "Other",
                 "type": "boolean"
               },
               "enrich_with_parsing": {
                 "title": "Enrich With Parsing",
                 "description": "When enabled jobs are enriched with HrFlow.ai parsing",
                 "default": false,
+                "field_type": "Other",
                 "type": "boolean"
               }
             },
@@ -3714,21 +3790,25 @@
               "api_secret": {
                 "title": "Api Secret",
                 "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "api_user": {
                 "title": "Api User",
                 "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "source_key": {
                 "title": "Source Key",
                 "description": "HrFlow.ai source key",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "profile_key": {
                 "title": "Profile Key",
                 "description": "HrFlow.ai profile key",
+                "field_type": "Query Param",
                 "type": "string"
               }
             },
@@ -4209,18 +4289,19 @@
               "auth": {
                 "title": "Auth",
                 "description": "API KEY",
-                "is_auth": true,
-                "field_type": "auth",
+                "field_type": "Auth",
                 "type": "string"
               },
               "subdomain": {
                 "title": "Subdomain",
                 "description": "Subdomain",
+                "field_type": "Other",
                 "type": "string"
               },
               "shortcode": {
                 "title": "Shortcode",
                 "description": "Job shortcode",
+                "field_type": "Other",
                 "type": "string"
               }
             },

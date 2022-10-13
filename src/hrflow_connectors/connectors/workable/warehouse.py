@@ -2,18 +2,29 @@ import typing as t
 from logging import LoggerAdapter
 
 import requests
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from hrflow_connectors.connectors.workable.schemas import WorkableJobModel
-from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction
+from hrflow_connectors.core import (
+    DataType,
+    FieldType,
+    ParametersModel,
+    ReadMode,
+    Warehouse,
+    WarehouseReadAction,
+)
 from hrflow_connectors.core.warehouse import WarehouseWriteAction
 
 
-class WorkableReadParameters(BaseModel):
-    auth: str = Field(
-        ..., description="API KEY", repr=False, is_auth=True, field_type="auth"
-    )
-    subdomain: str = Field(..., description="Subdomain")
+class WorkableReadParameters(ParametersModel):
+    auth: str = Field(..., description="API KEY", field_type=FieldType.Auth)
+    subdomain: str = Field(..., description="Subdomain", field_type=FieldType.Auth)
+
+
+class WorkableWriteParameters(ParametersModel):
+    auth: str = Field(..., description="API KEY", field_type=FieldType.Auth)
+    subdomain: str = Field(..., description="Subdomain", field_type=FieldType.Other)
+    shortcode: str = Field(..., description="Job shortcode", field_type=FieldType.Other)
 
 
 def read(
@@ -38,14 +49,6 @@ def read(
 
     for job in response.json().get("jobs"):
         yield job
-
-
-class WorkableWriteParameters(BaseModel):
-    auth: str = Field(
-        ..., description="API KEY", repr=False, is_auth=True, field_type="auth"
-    )
-    subdomain: str = Field(..., description="Subdomain")
-    shortcode: str = Field(..., description="Job shortcode")
 
 
 def write(
