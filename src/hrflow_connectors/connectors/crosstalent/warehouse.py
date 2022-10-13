@@ -2,20 +2,29 @@ import typing as t
 from logging import LoggerAdapter
 
 import requests
-from pydantic import BaseModel, Field
+from pydantic import Field
 
-from hrflow_connectors.core import DataType, ReadMode, Warehouse, WarehouseReadAction
+from hrflow_connectors.core import (
+    DataType,
+    FieldType,
+    ParametersModel,
+    ReadMode,
+    Warehouse,
+    WarehouseReadAction,
+)
 from hrflow_connectors.core.warehouse import WarehouseWriteAction
 
 
-class CrossTalentParameters(BaseModel):
-    client_id: str = Field(..., description="Client id")
-    client_secret: str = Field(..., description="Client Secret")
+class CrossTalentParameters(ParametersModel):
+    client_id: str = Field(..., description="Client id", field_type=FieldType.Auth)
+    client_secret: str = Field(
+        ..., description="Client Secret", field_type=FieldType.Auth
+    )
 
-    username: str = Field(..., description="Username")
-    password: str = Field(..., description="Password")
+    username: str = Field(..., description="Username", field_type=FieldType.Other)
+    password: str = Field(..., description="Password", field_type=FieldType.Auth)
 
-    env: str = Field(..., description="env")
+    env: str = Field(..., description="env", field_type=FieldType.Other)
     subdomain: str = Field(
         ...,
         description=(
@@ -23,6 +32,7 @@ class CrossTalentParameters(BaseModel):
             " subdomain=`my_subdomain.my` in"
             " `http://my_subdomain.my.salesforce.com/ABC`"
         ),
+        field_type=FieldType.Other,
     )
 
 

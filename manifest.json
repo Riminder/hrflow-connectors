@@ -3384,31 +3384,37 @@
               "client_id": {
                 "title": "Client Id",
                 "description": "Client id",
+                "field_type": "Auth",
                 "type": "string"
               },
               "client_secret": {
                 "title": "Client Secret",
                 "description": "Client Secret",
+                "field_type": "Auth",
                 "type": "string"
               },
               "username": {
                 "title": "Username",
                 "description": "Username",
+                "field_type": "Other",
                 "type": "string"
               },
               "password": {
                 "title": "Password",
                 "description": "Password",
+                "field_type": "Auth",
                 "type": "string"
               },
               "env": {
                 "title": "Env",
                 "description": "env",
+                "field_type": "Other",
                 "type": "string"
               },
               "subdomain": {
                 "title": "Subdomain",
                 "description": "Subdomain Crosstalent just before `salesforce.com`. For example subdomain=`my_subdomain.my` in `http://my_subdomain.my.salesforce.com/ABC`",
+                "field_type": "Other",
                 "type": "string"
               }
             },
@@ -3435,34 +3441,40 @@
               "api_secret": {
                 "title": "Api Secret",
                 "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "api_user": {
                 "title": "Api User",
                 "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "board_key": {
                 "title": "Board Key",
                 "description": "HrFlow.ai board key",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "sync": {
                 "title": "Sync",
                 "description": "When enabled only pushed jobs will remain in the board",
                 "default": true,
+                "field_type": "Other",
                 "type": "boolean"
               },
               "update_content": {
                 "title": "Update Content",
                 "description": "When enabled jobs already present in the board are updated",
                 "default": false,
+                "field_type": "Other",
                 "type": "boolean"
               },
               "enrich_with_parsing": {
                 "title": "Enrich With Parsing",
                 "description": "When enabled jobs are enriched with HrFlow.ai parsing",
                 "default": false,
+                "field_type": "Other",
                 "type": "boolean"
               }
             },
@@ -3806,21 +3818,25 @@
               "api_secret": {
                 "title": "Api Secret",
                 "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "api_user": {
                 "title": "Api User",
                 "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
                 "type": "string"
               },
               "source_key": {
                 "title": "Source Key",
                 "description": "HrFlow.ai source key",
+                "field_type": "Query Param",
                 "type": "string"
               },
               "profile_key": {
                 "title": "Profile Key",
                 "description": "HrFlow.ai profile key",
+                "field_type": "Query Param",
                 "type": "string"
               }
             },
@@ -4301,31 +4317,37 @@
               "client_id": {
                 "title": "Client Id",
                 "description": "Client id",
+                "field_type": "Auth",
                 "type": "string"
               },
               "client_secret": {
                 "title": "Client Secret",
                 "description": "Client Secret",
+                "field_type": "Auth",
                 "type": "string"
               },
               "username": {
                 "title": "Username",
                 "description": "Username",
+                "field_type": "Other",
                 "type": "string"
               },
               "password": {
                 "title": "Password",
                 "description": "Password",
+                "field_type": "Auth",
                 "type": "string"
               },
               "env": {
                 "title": "Env",
                 "description": "env",
+                "field_type": "Other",
                 "type": "string"
               },
               "subdomain": {
                 "title": "Subdomain",
                 "description": "Subdomain Crosstalent just before `salesforce.com`. For example subdomain=`my_subdomain.my` in `http://my_subdomain.my.salesforce.com/ABC`",
+                "field_type": "Other",
                 "type": "string"
               }
             },
