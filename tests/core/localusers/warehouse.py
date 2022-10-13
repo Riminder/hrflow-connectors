@@ -2,11 +2,13 @@ import enum
 import typing as t
 from logging import LoggerAdapter
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from hrflow_connectors.core import (
     ActionEndpoints,
     DataType,
+    FieldType,
+    ParametersModel,
     ReadMode,
     Warehouse,
     WarehouseReadAction,
@@ -58,8 +60,8 @@ def add_user():
     return new_user
 
 
-class ReadUsersParameters(BaseModel):
-    gender: t.Optional[Gender] = None
+class ReadUsersParameters(ParametersModel):
+    gender: t.Optional[Gender] = Field(None, field_type=FieldType.Other)
 
 
 def read(
