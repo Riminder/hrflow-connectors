@@ -3,7 +3,7 @@ import typing as t
 from logging import LoggerAdapter
 
 import requests
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from hrflow_connectors.connectors.greenhouse.schemas import (
     GreenhouseJobModel,
@@ -12,6 +12,8 @@ from hrflow_connectors.connectors.greenhouse.schemas import (
 from hrflow_connectors.core import (
     ActionEndpoints,
     DataType,
+    FieldType,
+    ParametersModel,
     ReadMode,
     Warehouse,
     WarehouseReadAction,
@@ -36,24 +38,21 @@ POST_CANDIDATE_ENDPOINT = ActionEndpoints(
 )
 
 
-class WriteProfilesParameters(BaseModel):
-    auth: str = Field(
-        ...,
-        description="XAPIKeyAuth",
-    )
+class WriteProfilesParameters(ParametersModel):
+    auth: str = Field(..., description="XAPIKeyAuth", field_type=FieldType.Auth)
     on_behalf_of: str = Field(
         ...,
         description=(
             "The ID of the user sending the profile, or the person he is sending the"
             " profile on behalf of"
         ),
+        field_type=FieldType.QueryParam,
     )
 
 
-class ReadJobsParameters(BaseModel):
+class ReadJobsParameters(ParametersModel):
     board_token: str = Field(
-        ...,
-        description="Board_token",
+        ..., description="Board_token", field_type=FieldType.QueryParam
     )
 
 
