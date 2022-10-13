@@ -1,20 +1,25 @@
 import pytest
-from pydantic import BaseModel, Field, PositiveInt, ValidationError
+from pydantic import Field, PositiveInt, ValidationError
 
 from hrflow_connectors.core.warehouse import (
+    BadFieldTypeError,
     DataType,
     FieldNotFoundError,
+    FieldType,
     FixedValueValidationError,
+    InvalidFieldError,
+    NoFieldTypeError,
+    ParametersModel,
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
 )
 
 
-class Parameters(BaseModel):
-    age: int = Field(..., gt=0)
-    distance: PositiveInt
-    name: str
+class Parameters(ParametersModel):
+    age: int = Field(..., gt=0, field_type=FieldType.Other)
+    distance: PositiveInt = Field(..., field_type=FieldType.Other)
+    name: str = Field(..., field_type=FieldType.Other)
 
 
 TestWarehouse = Warehouse(
@@ -95,3 +100,20 @@ def test_read_action_incremental_validation():
             supports_incremental=True,
         )
     assert "item_to_read_from must be provided" in excinfo.value.errors()[0]["msg"]
+
+
+def test_field_type_validation():
+    with pytest.raises(InvalidFieldError):
+
+        class MyParameters1(ParametersModel):
+            name: str
+
+    with pytest.raises(NoFieldTypeError):
+
+        class MyParameters2(ParametersModel):
+            name: str = Field(...)
+
+    with pytest.raises(BadFieldTypeError):
+
+        class MyParameters3(ParametersModel):
+            name: str = Field(..., field_type="Auth")
