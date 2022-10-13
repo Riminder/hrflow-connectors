@@ -2,11 +2,13 @@ import typing as t
 from collections import defaultdict
 from logging import LoggerAdapter
 
-from pydantic import BaseModel, ConstrainedStr
+from pydantic import BaseModel, ConstrainedStr, Field
 
 from hrflow_connectors.core import (
     ActionEndpoints,
     DataType,
+    FieldType,
+    ParametersModel,
     Warehouse,
     WarehouseWriteAction,
 )
@@ -26,11 +28,13 @@ class Lead(BaseModel):
     email: str
 
 
-class WriteLeadsParameters(BaseModel):
-    campaign_id: str
-    dummy_int: t.Optional[int]
-    dummy_str: str = "xxx"
-    dummy_const_str: t.Optional[ConstrainedStr]
+class WriteLeadsParameters(ParametersModel):
+    campaign_id: str = Field(..., field_type=FieldType.Other)
+    dummy_int: t.Optional[int] = Field(None, field_type=FieldType.Other)
+    dummy_str: str = Field("xxx", field_type=FieldType.Other)
+    dummy_const_str: t.Optional[ConstrainedStr] = Field(
+        None, field_type=FieldType.Other
+    )
 
 
 def write(
