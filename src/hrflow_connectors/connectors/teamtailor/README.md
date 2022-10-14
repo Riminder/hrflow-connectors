@@ -1,7 +1,7 @@
 
 # Teamtailor Connector
 
-> Teamtailor
+> The new way to attract, nurture and hire top talent. Grow faster by focusing on what matters the most — your candidates
 
 
 🔗 https://www.teamtailor.com/

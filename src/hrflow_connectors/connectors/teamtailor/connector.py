@@ -1,12 +1,12 @@
 import re
 import typing as t
 
-from hrflow_connectors.connectors.hrflow.schemas import HrFlowJob
+from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
     HrFlowProfileWarehouse,
 )
-from hrflow_connectors.connectors.teamtailor.schema import TeamtailorCandidateAttribute
+from hrflow_connectors.connectors.teamtailor.schema import TeamtailorJob
 from hrflow_connectors.connectors.teamtailor.warehouse import (
     TeamtailorJobWarehouse,
     TeamtailorProfileWarehouse,
@@ -37,16 +37,7 @@ def str_to_float(value: str) -> float:
     return 0
 
 
-def create_tag(field_name: str, attribute: t.Dict, job: t.Dict) -> None:
-    tag_name = "teamtailor_{}".format(field_name)
-    tag_value = attribute.get(field_name)
-
-    if tag_value is not None:
-        tag = dict(name=tag_name, value=tag_value)
-        job["tags"].append(tag)
-
-
-def format_job(data: t.Dict) -> HrFlowJob:
+def format_job(data: TeamtailorJob) -> t.Dict:
     """
     Format a Teamtailor job object into a Hrflow job object
     Args:
@@ -79,12 +70,27 @@ def format_job(data: t.Dict) -> HrFlowJob:
             description=description,
         )
     ]
+
     # tags
-    job["tags"] = []
+    t = lambda name, value: dict(name=name, value=value)
+    job["tags"] = [
+        t("start-date", attribute.get("start-date")),
+        t("end-date", attribute.get("end-date")),
+        t("status", attribute.get("status")),
+        t("employment-type", attribute.get("employment-type")),
+        t("employment-level", attribute.get("employment-level")),
+        t("remote-status", attribute.get("remote-status")),
+        t("salary-time-unit", attribute.get("salary-time-unit")),
+        t("min-salary", attribute.get("min-salary")),
+        t("max-salary", attribute.get("max-salary")),
+        t("currency", attribute.get("currency")),
+        t("internal", attribute.get("internal")),
+    ]
+
     return job
 
 
-def format_profile(data: t.Dict) -> TeamtailorCandidateAttribute:
+def format_profile(data: HrFlowProfile) -> t.Dict:
     """
     Format a Hrflow profile object into a Teamtailor profile object
     Args:
@@ -111,7 +117,10 @@ def format_profile(data: t.Dict) -> TeamtailorCandidateAttribute:
     return profile_obj
 
 
-DESCRIPTION = "Teamtailor"
+DESCRIPTION = (
+    "The new way to attract, nurture and hire top talent. Grow faster by focusing on"
+    " what matters the most — your candidates"
+)
 
 Teamtailor = Connector(
     name="Teamtailor",
@@ -136,7 +145,6 @@ Teamtailor = Connector(
             trigger_type=WorkflowType.catch,
             description=(
                 "Writes a profile from an Hrflow.ai Source to Teamtailor via the API"
-                " for a given `job_id`."
             ),
             parameters=BaseActionParameters.with_defaults(
                 "WriteProfileActionParameters", format=format_profile

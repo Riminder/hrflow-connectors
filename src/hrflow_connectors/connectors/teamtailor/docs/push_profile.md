@@ -2,7 +2,7 @@
 # Push profile
 `HrFlow.ai Profiles` :arrow_right: `Teamtailor Profiles`
 
-Writes a profile from an Hrflow.ai Source to Teamtailor via the API for a given `job_id`.
+Writes a profile from an Hrflow.ai Source to Teamtailor via the API
 
 
 
@@ -11,7 +11,7 @@ Writes a profile from an Hrflow.ai Source to Teamtailor via the API for a given 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_profile`](../connector.py#L87) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_profile`](../connector.py#L93) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
