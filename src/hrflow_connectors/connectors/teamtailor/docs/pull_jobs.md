@@ -2,7 +2,7 @@
 # Pull jobs
 `Teamtailor Jobs` :arrow_right: `HrFlow.ai Jobs`
 
-Retrieves all jobs via the ***Teamtailor*** API and send them to a ***Hrflow.ai Board***.
+Retrieve all jobs via the ***Teamtailor*** API and send them to an ***Hrflow.ai Board***.
 
 
 

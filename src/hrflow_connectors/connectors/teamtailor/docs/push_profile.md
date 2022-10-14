@@ -2,7 +2,7 @@
 # Push profile
 `HrFlow.ai Profiles` :arrow_right: `Teamtailor Profiles`
 
-Writes a profile from Hrflow.ai Source to Teamtailor via the API for the given `job_id`.
+Writes a profile from an Hrflow.ai Source to Teamtailor via the API for a given `job_id`.
 
 
 
