@@ -4423,7 +4423,7 @@
               "api_key": {
                 "title": "Api Key",
                 "description": "API Key used to authenticate on the SAP API",
-                "field_type": "Other",
+                "field_type": "Auth",
                 "type": "string"
               }
             },

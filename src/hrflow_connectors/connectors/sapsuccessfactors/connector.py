@@ -1,8 +1,9 @@
 import datetime
 import re
+import typing as t
 from typing import Any, Dict
 
-from hrflow_connectors.connectors.hrflow.schemas import HrFlowJob, HrFlowProfile
+from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
     HrFlowProfileWarehouse,
@@ -18,10 +19,12 @@ from hrflow_connectors.core import (
     WorkflowType,
 )
 
-from .schemas import SapCandidateModel, SAPSuccessFactorsJob
+from .schemas import SAPSuccessFactorsJob
 from .utils.datetime_converter import from_str_to_datetime
 
 DEFAULT_COUNTRY = "France"
+DEFAULT_JOB_NAME = "Undefined"
+DEFAULT_ADDRESS = "Undefined"
 
 
 def remove_html_tags(text: str) -> str:
@@ -74,7 +77,7 @@ def format_end_date(date_str: str) -> str:
     return format_date(converted_date)
 
 
-def format_job(data: SAPSuccessFactorsJob) -> HrFlowJob:
+def format_job(data: SAPSuccessFactorsJob) -> t.Dict:
     """
     Format retrieved jobs into a HrFlow job object
     Args:
@@ -94,7 +97,7 @@ def format_job(data: SAPSuccessFactorsJob) -> HrFlowJob:
     if data.get("jobTitle") is not None:
         job["name"] = data.get("jobTitle")
     else:
-        job["name"] = "Undefined"
+        job["name"] = DEFAULT_JOB_NAME
 
     # reference
     job["reference"] = data.get("jobReqId")
@@ -132,38 +135,30 @@ def format_job(data: SAPSuccessFactorsJob) -> HrFlowJob:
         job["sections"].append(description_section)
 
     # tags
-    annual_salary = jobRequisition.get("annual_SA")
-    department = jobRequisition.get("department")
-    division = jobRequisition.get("division")
-    function = jobRequisition.get("function")
-    industry = jobRequisition.get("industry")
-    monthly_salary = jobRequisition.get("monthly_salary")
-    other_bonus = jobRequisition.get("otherBonus")
-    salary_base = jobRequisition.get("salaryBase")
-    salary_max = jobRequisition.get("salaryMax")
-    salary_min = jobRequisition.get("salaryMin")
-    job_start_date = jobRequisition.get("jobStartDate")
+    t = lambda name, value: dict(name=name, value=value)
     job["tags"] = [
-        dict(name="sap_annual_SA", value=annual_salary),
-        dict(name="sap_department", value=department),
-        dict(name="sap_function", value=function),
-        dict(name="sap_division", value=division),
-        dict(name="sap_industry", value=industry),
-        dict(name="sap_monthly_salary", value=monthly_salary),
-        dict(name="sap_otherBonus", value=other_bonus),
-        dict(name="sap_salaryBase", value=salary_base),
-        dict(name="sap_salaryMax", value=salary_max),
-        dict(name="sap_salaryMin", value=salary_min),
-        dict(name="sap_jobStartDate", value=job_start_date),
+        t("sapsuccessfactors_annual_SA", jobRequisition.get("annual_SA")),
+        t("sapsuccessfactors_department", jobRequisition.get("department")),
+        t("sapsuccessfactors_function", jobRequisition.get("function")),
+        t("sapsuccessfactors_division", jobRequisition.get("division")),
+        t("sapsuccessfactors_industry", jobRequisition.get("industry")),
+        t("sapsuccessfactors_monthly_salary", jobRequisition.get("monthly_salary")),
+        t("sapsuccessfactors_otherBonus", jobRequisition.get("otherBonus")),
+        t("sapsuccessfactors_salaryBase", jobRequisition.get("salaryBase")),
+        t("sapsuccessfactors_salaryMax", jobRequisition.get("salaryMax")),
+        t("sapsuccessfactors_salaryMin", jobRequisition.get("salaryMin")),
+        t("sapsuccessfactors_jobStartDate", jobRequisition.get("jobStartDate")),
     ]
+
     job["metadatas"] = [
-        dict(name="sap_recruiterTeam", value=jobRequisition.get("recruiterTeam")),
-        dict(name="sap_sourcerTeam", value=jobRequisition.get("sourcerTeam")),
-        dict(
-            name="sap_hiringManagerTeam",
-            value=jobRequisition.get("hiringManagerTeam"),
+        t("sapsuccessfactors_recruiterTeam", jobRequisition.get("recruiterTeam")),
+        t("sapsuccessfactors_sourcerTeam", jobRequisition.get("sourcerTeam")),
+        t(
+            "sapsuccessfactors_hiringManagerTeam",
+            jobRequisition.get("hiringManagerTeam"),
         ),
     ]
+
     return job
 
 
@@ -189,7 +184,7 @@ def format_education(education: Dict[str, Any]) -> Dict[str, Any]:
     school_location = education.get("location", {})
     school_address = school_location.get("text")
     if school_address is None:
-        school_address = "Undefined"
+        school_address = DEFAULT_ADDRESS
     sap_education["schoolAddress"] = school_address
     return sap_education
 
@@ -208,7 +203,7 @@ def format_experience(experience: Dict[str, Any]) -> Dict[str, Any]:
     experience_location = experience.get("location", {})
     experience_address = experience_location.get("text")
     if experience_address is None:
-        experience_address = "Undefined"
+        experience_address = DEFAULT_ADDRESS
     sap_experience["employerAddress"] = experience_address
 
     date_start = experience.get("date_start")
@@ -222,7 +217,7 @@ def format_experience(experience: Dict[str, Any]) -> Dict[str, Any]:
     return sap_experience
 
 
-def format_profile(profile: HrFlowProfile) -> SapCandidateModel:
+def format_profile(profile: HrFlowProfile) -> t.Dict:
     """
     Formats an hrflow profile into a sap successfactors candidate
     Args:
@@ -264,7 +259,11 @@ def format_profile(profile: HrFlowProfile) -> SapCandidateModel:
     return sap_profile
 
 
-DESCRIPTION = "SAP"
+DESCRIPTION = (
+    "By understanding what employees need, how they work, and what motivates them, you"
+    " can put people at the heart of your HR strategy."
+)
+
 SAPSuccessFactors = Connector(
     name="SAPSuccessFactors",
     description=DESCRIPTION,
@@ -274,7 +273,7 @@ SAPSuccessFactors = Connector(
             name="pull_jobs",
             trigger_type=WorkflowType.pull,
             description=(
-                "Retrieves all jobs via the ***SAP*** API and sends them"
+                "Retrieves all jobs via the ***SAPSuccessFactors*** API and sends them"
                 " to a ***Hrflow.ai Board***."
             ),
             parameters=BaseActionParameters.with_defaults(
@@ -287,7 +286,8 @@ SAPSuccessFactors = Connector(
             name="push_profile",
             trigger_type=WorkflowType.catch,
             description=(
-                "Writes a profile taken from a Hrflow.ai Source to SAP via the SAP API"
+                "Writes a profile taken from a Hrflow.ai Source to SAPSuccessFactors"
+                " via the SAP API"
             ),
             parameters=BaseActionParameters.with_defaults(
                 "WriteProfileActionParameters", format=format_profile

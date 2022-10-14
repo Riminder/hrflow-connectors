@@ -28,7 +28,7 @@ class WriteProfilesParameters(ParametersModel):
     api_key: str = Field(
         ...,
         description="API Key used to authenticate on the SAP API",
-        field_type=FieldType.Other,
+        field_type=FieldType.Auth,
     )
 
 
