@@ -1,5 +1,6 @@
+import typing as t
+
 from hrflow_connectors.connectors.ceridian.warehouse import CeridianJobWarehouse
-from hrflow_connectors.connectors.hrflow.schemas import HrFlowJob
 from hrflow_connectors.connectors.hrflow.warehouse import HrFlowJobWarehouse
 from hrflow_connectors.core import (
     BaseActionParameters,
@@ -11,7 +12,7 @@ from hrflow_connectors.core import (
 from .schemas import CeridianDayforceJobModel
 
 
-def format_job(data: CeridianDayforceJobModel) -> HrFlowJob:
+def format_job(data: CeridianDayforceJobModel) -> t.Dict:
     """
     format a job into the hrflow job object format
     Args:
@@ -64,13 +65,14 @@ def format_job(data: CeridianDayforceJobModel) -> HrFlowJob:
         dict(name="dayforce_remote", value=remote),
     ]
 
-    # Verify if job is a valid HrFlowJob object
-    HrFlowJob.parse_obj(job)
-
     return job
 
 
-DESCRIPTION = "Ceridian"
+DESCRIPTION = (
+    "Dayforce enterprise HCM software combines payroll, HR, benefits, talent and"
+    " workforce management in a single cloud application to power the future of"
+    " work.Ceridian"
+)
 
 Ceridian = Connector(
     name="Ceridian",

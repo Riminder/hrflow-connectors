@@ -14,9 +14,6 @@ from hrflow_connectors.core import (
     WarehouseReadAction,
 )
 
-CERIDIAN_JOBS_ENDPOINT_LIMIT = 0
-CERIDIAN_JOBS_ENDPOINT = None
-
 
 class ReadJobsParameters(ParametersModel):
     subdomain: str = Field(

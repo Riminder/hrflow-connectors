@@ -1,7 +1,7 @@
 
 # Ceridian Connector
 
-> Ceridian
+> Dayforce enterprise HCM software combines payroll, HR, benefits, talent and workforce management in a single cloud application to power the future of work.Ceridian
 
 
 🔗 https://www.ceridian.com/
