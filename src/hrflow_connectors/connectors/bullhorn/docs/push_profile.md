@@ -27,10 +27,10 @@ Writes a profile from Hrflow.ai Source to Bullhorn via the API
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `client_id` :red_circle: | `str` | None |  |
-| `client_secret` :red_circle: | `str` | None |  |
-| `password` :red_circle: | `str` | None |  |
-| `username` :red_circle: | `str` | None |  |
+| `client_id` :red_circle: | `str` | None | Client identifier for Bullhorn |
+| `client_secret` :red_circle: | `str` | None | Client secret identifier for Bullhorn |
+| `password` :red_circle: | `str` | None | Passoword for Bullhorn login |
+| `username` :red_circle: | `str` | None | Username for Bullhorn login |
 
 :red_circle: : *required*
 

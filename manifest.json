@@ -3888,21 +3888,25 @@
             "properties": {
               "client_id": {
                 "title": "Client Id",
+                "description": "Client identifier for Bullhorn",
                 "field_type": "Auth",
                 "type": "string"
               },
               "client_secret": {
                 "title": "Client Secret",
+                "description": "Client secret identifier for Bullhorn",
                 "field_type": "Auth",
                 "type": "string"
               },
               "password": {
                 "title": "Password",
+                "description": "Passoword for Bullhorn login",
                 "field_type": "Auth",
                 "type": "string"
               },
               "username": {
                 "title": "Username",
+                "description": "Username for Bullhorn login",
                 "field_type": "Auth",
                 "type": "string"
               }

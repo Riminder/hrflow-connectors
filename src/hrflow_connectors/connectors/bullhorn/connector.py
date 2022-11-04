@@ -15,13 +15,13 @@ from hrflow_connectors.core import (
 )
 
 
-def to_int(elm):
+def to_int(elm: t.Any) -> int:
     if elm is None:
         return 0
     return int(elm)
 
 
-def get_location(info):
+def get_location(info: t.Dict) -> t.Dict:
     if info is not None:
         location = info.get("location")
         if location is None:
@@ -39,7 +39,7 @@ def get_location(info):
     return None
 
 
-def get_skills(data):
+def get_skills(data: t.Dict) -> t.Dict:
     skills = ""
     if data.get("skills") is not None:
         for i in range(len(data["skills"]) - 1):
@@ -48,7 +48,7 @@ def get_skills(data):
     return skills
 
 
-def get_education(education_list):
+def get_education(education_list: t.Dict) -> t.Dict:
     educations_json = []
     for hrflow_education in education_list:
         location = hrflow_education["location"]
@@ -78,7 +78,7 @@ def get_education(education_list):
     return educations_json
 
 
-def get_experience(experience_list):
+def get_experience(experience_list: t.Dict) -> t.Dict:
     experience_json = []
     for hrflow_experience in experience_list:
         experience = {
@@ -106,7 +106,7 @@ def get_experience(experience_list):
     return experience_json
 
 
-def get_attachments(attachment_list):
+def get_attachments(attachment_list: t.Dict) -> t.Dict:
     attachments_json = []
     for hrflow_attachment in attachment_list:
         url = hrflow_attachment["public_url"]
@@ -154,8 +154,8 @@ def format_profile(data: HrFlowProfile) -> t.Dict:
     enrich_profile_education = get_education(data.get("educations"))
     enrich_profile_experience = get_experience(data.get("experiences"))
     enrich_profile_attachment = get_attachments(data.get("attachments"))
-    # When the action needs to send several requests to push a profile
-    # We group the formats of the different requests in a `profile_body_dict`.
+    # Four querys are needed to index a Candidate to Bullhorn
+    # The querys's body are grouped in a profile_body_dict
     profile_body_dict = dict(
         create_profile_body=create_profile_body,
         enrich_profile_education=enrich_profile_education,

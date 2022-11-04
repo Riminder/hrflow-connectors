@@ -18,28 +18,28 @@ from hrflow_connectors.core import (
 class WriteProfilesParameters(ParametersModel):
     client_id: str = Field(
         ...,
-        description="",
+        description="Client identifier for Bullhorn",
         repr=False,
         field_type=FieldType.Auth,
     )
 
     client_secret: str = Field(
         ...,
-        description="",
+        description="Client secret identifier for Bullhorn",
         repr=False,
         field_type=FieldType.Auth,
     )
 
     password: str = Field(
         ...,
-        description="",
+        description="Passoword for Bullhorn login",
         repr=False,
         field_type=FieldType.Auth,
     )
 
     username: str = Field(
         ...,
-        description="",
+        description="Username for Bullhorn login",
         repr=False,
         field_type=FieldType.Auth,
     )
@@ -60,6 +60,8 @@ def write(
     )
 
     for profile in profiles:
+
+        # Split profile in four parts: Body, Education, Experience and Attachements
         profile_body_dict = profile
         create_profile_body = profile_body_dict["create_profile_body"]
         enrich_profile_education = profile_body_dict["enrich_profile_education"]
@@ -73,13 +75,22 @@ def write(
         response = requests.put(
             url=candidate_url, json=create_profile_body, params=params
         )
+
+        # Unable to push profile
         if response.status_code // 100 != 2:
+            adapter.error(
+                "Failed to push profile from to Bullhorn"
+                " status_code={} response={}".format(
+                    response.status_code, response.text
+                )
+            )
             failed_profiles.append(profile)
             continue
 
         candidate_id = response.json()
         candidate_id = str(candidate_id["changedEntityId"])
 
+        # Enrich profile education
         for education in enrich_profile_education:
             print("ed")
             education = education
@@ -87,12 +98,14 @@ def write(
             education_url = rest_url + "entity/CandidateEducation"
             response = requests.put(url=education_url, json=education, params=params)
 
+        # Enrich profile experience
         for experience in enrich_profile_experience:
             print("exp")
             experience["candidate"]["id"] = candidate_id
             experience_url = rest_url + "entity/CandidateWorkHistory"
             response = requests.put(url=experience_url, json=experience, params=params)
 
+        # Enrich profile attachements
         for attachment in enrich_profile_attachment:
             print("att")
             attachment_url = rest_url + "file/Candidate/" + str(candidate_id)
