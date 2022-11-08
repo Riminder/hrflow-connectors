@@ -77,4 +77,11 @@ def auth(username, password, client_id, client_secret):
     return response
 
 
-# print(auth("riminder.api", "b!QnRcd5ncKza3j$", "ab76f803-844b-4a2b-9c1a-d0f2eaf0e411", "wVOSavmPmjyJDwdiSqP6yOoc"))
+print(
+    auth(
+        "riminder.api",
+        "hrflow.ai41",
+        "ab76f803-844b-4a2b-9c1a-d0f2eaf0e411",
+        "wVOSavmPmjyJDwdiSqP6yOoc",
+    )
+)

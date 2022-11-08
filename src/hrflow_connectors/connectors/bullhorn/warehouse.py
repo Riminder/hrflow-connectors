@@ -211,13 +211,13 @@ def read_jobs(
             raise Exception("Failed to pull jobs from Bullhorn")
         response = response.json()
 
-        start = response["start"]
+        start = response["start"] + response["count"]
         data = response["data"]
 
         for job in data:
             yield job
 
-        if (response["count"] + start) >= response["count"]:
+        if start >= response["total"]:
             break
 
 
@@ -255,13 +255,13 @@ def read_profiles(
             raise Exception("Failed to pull profiles from Bullhorn")
         response = response.json()
 
-        start = response["start"]
+        start = response["start"] + response["count"]
         data = response["data"]
 
         for profile in data:
             yield profile
 
-        if (response["count"] + start) >= response["count"]:
+        if start >= response["total"]:
             break
 
 

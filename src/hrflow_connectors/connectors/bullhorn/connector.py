@@ -194,6 +194,27 @@ def format_job(data: t.Dict) -> t.Dict:
     hrlflow_sections = [section_description]
 
     # Tags
+    degree_list = data.get("degreeList")
+    if degree_list:
+        degree_list = ", ".join(degree_list)
+
+    tags = []
+    tags.append({"name": "durationWeeks", "value": data.get("durationWeeks")})
+    tags.append({"name": "degreeList", "value": degree_list})
+    tags.append({"name": "employmentType", "value": data.get("employmentType")})
+    tags.append({"name": "numOpenings", "value": data.get("numOpenings")})
+    tags.append({"name": "onSite", "value": data.get("onSite")})
+    tags.append({"name": "salaryUnit", "value": data.get("salaryUnit")})
+    tags.append({"name": "startDate", "value": data.get("startDate")})
+    tags.append({"name": "status", "value": data.get("status")})
+    tags.append({"name": "type", "value": data.get("type")})
+    tags.append({"name": "willRelocate", "value": data.get("willRelocate")})
+    tags.append({"name": "salary", "value": data.get("salary")})
+    tags.append({"name": "isWorkFromHome", "value": data.get("isWorkFromHome")})
+    tags.append({"name": "hoursPerWeek", "value": data.get("hoursPerWeek")})
+    tags.append({"name": "hoursOfOperation", "value": data.get("hoursOfOperation")})
+    tags.append({"name": "dateAdded", "value": data.get("dateAdded")})
+
     # TBD
 
     # Skills
@@ -203,7 +224,7 @@ def format_job(data: t.Dict) -> t.Dict:
         skill_list = skill_list.split(",")
         if skill_list:
             for skill in skill_list:
-                new_skill = {"name": skill, "type": "hard", "value": None}
+                new_skill = {"name": skill, "type": "undefined", "value": None}
                 hrflow_skills.append(new_skill)
 
     hrflow_job = {
@@ -212,6 +233,7 @@ def format_job(data: t.Dict) -> t.Dict:
         "location": hrflow_location,
         "sections": hrlflow_sections,
         "skills": hrflow_skills,
+        "tags": tags,
     }
 
     print(hrflow_job)
@@ -245,8 +267,17 @@ def profile_format(data: BullhornProfile) -> t.Dict:
     }
 
     # Education
+
     # Experience
+
     # Tags
+    tags = []
+    tags.append({"name": "dateAvailable", "value": data.get("dateAvailable")})
+    tags.append({"name": "status", "value": data.get("status")})
+    tags.append({"name": "employeeType", "value": data.get("employeeType")})
+    tags.append(
+        {"name": "activePlacements", "value": data.get("activePlacements").get("total")}
+    )
 
     # Skills
     hrflow_skills = []
@@ -262,7 +293,7 @@ def profile_format(data: BullhornProfile) -> t.Dict:
         "info": info,
         "skills": hrflow_skills,
         "experiences": [],
-        "tags": [],
+        "tags": tags,
         "educations": [],
     }
 

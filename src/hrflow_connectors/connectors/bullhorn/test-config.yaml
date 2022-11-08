@@ -12,6 +12,31 @@ actions:
         source_key: $__SOURCE_KEY
         only_edit_fields: []
       status: success
+  pull_job:
+    - id: valid_parameters
+      origin_parameters:
+        username: $__USERNAME
+        password: $__PASSWORD
+        client_id: $__CLIENT_ID
+        client_secret: $__CLIENT_SECRET
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+  push_profile:
+    - id: valid_parameters
+      origin_parameters:
+          api_secret: $__API_SECRET
+          api_user: $__API_USER
+          source_key: $__SOURCE_KEY
+      target_parameters:
+          username: $__USERNAME
+          password: $__PASSWORD
+          client_id: $__CLIENT_ID
+          client_secret: $__CLIENT_SECRET
+
+  
   
 
 
