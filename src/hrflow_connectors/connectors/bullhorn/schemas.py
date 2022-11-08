@@ -125,3 +125,9 @@ class BullhornEducationEnrichment(BaseModel):
     endDate: Optional[Optional[int]] = Field(
         None, Description="Date when Candidate finished this education"
     )
+
+
+class BullhornJob(BaseModel):
+    id: Optional[Optional[int]] = Field(
+        None, Description="Unique identifier for this entity"
+    )

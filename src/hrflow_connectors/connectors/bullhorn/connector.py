@@ -3,9 +3,14 @@ import typing as t
 
 import requests
 
+from hrflow_connectors.connectors.bullhorn.schemas import BullhornProfile
 from hrflow_connectors.connectors.bullhorn.utils import date_format
-from hrflow_connectors.connectors.bullhorn.warehouse import BullhornProfileWarehouse
+from hrflow_connectors.connectors.bullhorn.warehouse import (
+    BullhornJobWarehouse,
+    BullhornProfileWarehouse,
+)
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
+from hrflow_connectors.connectors.hrflow.warehouse.job import HrFlowJobWarehouse
 from hrflow_connectors.connectors.hrflow.warehouse.profile import HrFlowProfileWarehouse
 from hrflow_connectors.core import (
     BaseActionParameters,
@@ -165,6 +170,105 @@ def format_profile(data: HrFlowProfile) -> t.Dict:
     return profile_body_dict
 
 
+def format_job(data: t.Dict) -> t.Dict:
+
+    # Info
+    hrflow_name = data.get("title")
+    hrflow_ref = str(data.get("id"))
+
+    # Location
+    address = data.get("address")
+    hrflow_fields = {
+        "city": address["city"],
+        "country": address["countryCode"],
+        "postal_code": address["zip"],
+    }
+    hrflow_location = {"text": address["address1"], "fields": hrflow_fields}
+
+    # Sections
+    section_description = {
+        "name": "Bullhorn_description",
+        "title": "Bullhorn_description",
+        "description": data["publicDescription"],
+    }
+    hrlflow_sections = [section_description]
+
+    # Tags
+    # TBD
+
+    # Skills
+    hrflow_skills = []
+    skill_list = data["skillList"]
+    if skill_list:
+        skill_list = skill_list.split(",")
+        if skill_list:
+            for skill in skill_list:
+                new_skill = {"name": skill, "type": "hard", "value": None}
+                hrflow_skills.append(new_skill)
+
+    hrflow_job = {
+        "name": hrflow_name,
+        "reference": hrflow_ref,
+        "location": hrflow_location,
+        "sections": hrlflow_sections,
+        "skills": hrflow_skills,
+    }
+
+    print(hrflow_job)
+    return hrflow_job
+
+
+def profile_format(data: BullhornProfile) -> t.Dict:
+
+    # Info
+    first_name = data["firstName"]
+    last_name = data["lastName"]
+    full_name = data["name"]
+    email = data["email"]
+    phone = data["mobile"]
+    date_birth = data["dateOfBirth"]
+    gender = data["gender"]
+
+    # Location
+    location_text = data["address"]["address1"]
+    location = {"text": location_text}
+
+    info = {
+        "full_name": full_name,
+        "first_name": first_name,
+        "last_name": last_name,
+        "email": email,
+        "phone": phone,
+        "date_birth": date_birth,
+        "location": location,
+        "gender": gender,
+    }
+
+    # Education
+    # Experience
+    # Tags
+
+    # Skills
+    hrflow_skills = []
+    skill_list = data["skillSet"]
+    if skill_list:
+        skill_list = skill_list.split(",")
+        if skill_list:
+            for skill in skill_list:
+                new_skill = {"name": skill, "type": "hard", "value": None}
+                hrflow_skills.append(new_skill)
+
+    profile = {
+        "info": info,
+        "skills": hrflow_skills,
+        "experiences": [],
+        "tags": [],
+        "educations": [],
+    }
+
+    return profile
+
+
 DESCRIPTION = "Transform Your Business with Bullhorn Staffing and Recruitment Software"
 
 Bullhorn = Connector(
@@ -183,6 +287,26 @@ Bullhorn = Connector(
             ),
             origin=HrFlowProfileWarehouse,
             target=BullhornProfileWarehouse,
+        ),
+        ConnectorAction(
+            name="pull_job",
+            trigger_type=WorkflowType.pull,
+            description="Writes a job to Hrflow.ai Board from Bullhorn via the API",
+            parameters=BaseActionParameters.with_defaults(
+                "ReadJobsActionParameters", format=format_job
+            ),
+            origin=BullhornJobWarehouse,
+            target=HrFlowJobWarehouse,
+        ),
+        ConnectorAction(
+            name="pull_profile",
+            trigger_type=WorkflowType.pull,
+            description="Writes a profile to Hrflow.ai Board from Bullhorn via the API",
+            parameters=BaseActionParameters.with_defaults(
+                "ReadProfileActionParameters", format=profile_format
+            ),
+            origin=BullhornProfileWarehouse,
+            target=HrFlowProfileWarehouse,
         ),
     ],
 )
