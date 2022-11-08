@@ -18,6 +18,7 @@ Imports the visited profiles, in synchronization with the Waalaxy campaign (Visi
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
+| `profile`  | `Any` | None | Profile object recieved from the Webhook |
 
 ## Destination Parameters
 
@@ -50,6 +51,7 @@ Waalaxy.trigger_view(
         read_mode=ReadMode.sync,
     ),
     origin_parameters=dict(
+        profile=***,
     ),
     target_parameters=dict(
         api_secret="your_api_secret",

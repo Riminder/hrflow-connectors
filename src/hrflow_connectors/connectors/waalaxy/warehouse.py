@@ -27,7 +27,7 @@ def read(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-    return parameters.profile
+    return [parameters.profile]
 
 
 WaalaxyProfilesWarehouse = Warehouse(

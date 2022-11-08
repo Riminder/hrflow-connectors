@@ -18,6 +18,7 @@ Imports the profiles just connected with, in synchronisation with the Waalaxy ca
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
+| `profile`  | `Any` | None | Profile object recieved from the Webhook |
 
 ## Destination Parameters
 
@@ -50,6 +51,7 @@ Waalaxy.trigger_connexion(
         read_mode=ReadMode.sync,
     ),
     origin_parameters=dict(
+        profile=***,
     ),
     target_parameters=dict(
         api_secret="your_api_secret",
