@@ -1,17 +1,22 @@
+import datetime
+import mimetypes
 import typing as t
-from hrflow_connectors.connectors.hrflow.warehouse import (
-    HrFlowJobWarehouse,
-)
-from hrflow_connectors.connectors.hrflow.warehouse.profile import HrFlowProfileParsingWarehouse
-from hrflow_connectors.connectors.monster.warehouse import MonsterJobWarehouse, MonsterProfileWarehouse
 
+from hrflow_connectors.connectors.hrflow.warehouse import HrFlowJobWarehouse
+from hrflow_connectors.connectors.hrflow.warehouse.profile import (
+    HrFlowProfileParsingWarehouse,
+)
+from hrflow_connectors.connectors.monster.warehouse import (
+    MonsterJobWarehouse,
+    MonsterProfileWarehouse,
+)
 from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
     WorkflowType,
 )
-#https://webhook.site/360f0dec-c55b-4a29-92d9-210b70d14ad3
+
 
 def format_job(data: t.Dict) -> str:
     xml_job_str = """<?xml version="1.0" encoding="UTF-8"?>
@@ -32,7 +37,7 @@ def format_job(data: t.Dict) -> str:
   </SOAP-ENV:Header>
   <SOAP-ENV:Body>
     <Job jobRefCode={jobRefCode} jobAction="addOrUpdate"
-    inventoryType="transactional" 
+    inventoryType="transactional"
     xmlns="http://schemas.monster.com/Monster"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://schemas.monster.com/Monster
@@ -81,14 +86,14 @@ def format_job(data: t.Dict) -> str:
 </SOAP-ENV:Envelope>"""
 
     def find_in_tags(tag_list, keyword):
-        if tag_list == None:
+        if tag_list is None:
             return None
         for tag in tag_list:
             if tag["name"] == keyword:
                 return tag["value"]
 
     def find_in_range_list(range_list, keyword):
-        if range_list == None:
+        if range_list is None:
             return None
         for range_ in range_list:
             if range_["name"] == keyword:
@@ -104,18 +109,16 @@ def format_job(data: t.Dict) -> str:
         formater["JobStatus"] = ""
 
         JobLevel = find_in_tags(hrflow_job["tags"], "JobLevel")
-        if JobLevel != None:
+        if JobLevel is not None:
             formater["JobLevel"] = f'\n        <JobLevel monsterId="{JobLevel}"/>'
 
         JobType = find_in_tags(hrflow_job["tags"], "JobType")
-        if JobType != None:
+        if JobType is not None:
             formater["JobType"] = f'\n        <JobType monsterId="{JobType}"/>'
 
         JobStatus = find_in_tags(hrflow_job["tags"], "JobStatus")
-        if JobStatus != None:
-            formater[
-                "JobStatus"
-            ] = f'\n        <JobStatus monsterId="{JobStatus}"/>'
+        if JobStatus is not None:
+            formater["JobStatus"] = f'\n        <JobStatus monsterId="{JobStatus}"/>'
 
     def format_job_reference(formater, hrflow_job):
         formater["jobRefCode"] = f'"{hrflow_job["key"]}"'
@@ -127,23 +130,19 @@ def format_job(data: t.Dict) -> str:
         formater["CompensationType"] = ""
 
         Currency = find_in_tags(hrflow_job.get("tags"), "Currency")
-        if Currency != None:
+        if Currency is not None:
             formater["Currency"] = f'\n          <Currency monsterId="{Currency}"/>'
 
         Salary_range = find_in_range_list(hrflow_job.get("ranges_float"), "Salary")
 
-        if Salary_range != None:
+        if Salary_range is not None:
             SalaryMin = Salary_range[0]
-            formater[
-                "SalaryMin"
-            ] = f"\n          <SalaryMin>{SalaryMin}</SalaryMin>"
+            formater["SalaryMin"] = f"\n          <SalaryMin>{SalaryMin}</SalaryMin>"
             SalaryMax = Salary_range[1]
-            formater[
-                "SalaryMax"
-            ] = f"\n          <SalaryMax>{SalaryMax}</SalaryMax>"
+            formater["SalaryMax"] = f"\n          <SalaryMax>{SalaryMax}</SalaryMax>"
 
         CompensationType = find_in_tags(hrflow_job.get("tags"), "CompensationType")
-        if CompensationType != None:
+        if CompensationType is not None:
             formater[
                 "CompensationType"
             ] = f'\n          <CompensationType monsterId="{CompensationType}"/>'
@@ -154,22 +153,22 @@ def format_job(data: t.Dict) -> str:
         location = hrflow_job["location"]
         StreetAddress = location.get("text")
 
-        if StreetAddress != None:
+        if StreetAddress is not None:
             formater["StreetAddress"] = StreetAddress
 
     def format_description(formater, hrflow_job):
-            formater["JobBody"] = hrflow_job["summary"]
+        formater["JobBody"] = hrflow_job["summary"]
 
     def format_duration(formater, hrflow_job):
         formater["desiredDuration"] = ""
         duration = find_in_tags(hrflow_job.get("tags"), "desiredDuration")
-        if duration != None:
+        if duration is not None:
             formater["desiredDuration"] = f' desiredDuration="{duration}"'
 
     def format_autorefresh(formater, hrflow_job):
         formater["Autorefresh"] = ""
         Autorefresh = find_in_tags(hrflow_job.get("tags"), "Autorefresh")
-        if Autorefresh != None:
+        if Autorefresh is not None:
             formater[
                 "Autorefresh"
             ] = """\n            <Autorefresh desired="true">
@@ -181,7 +180,7 @@ def format_job(data: t.Dict) -> str:
     def format_careeradnetwork(formater, hrflow_job):
         formater["CareerAdNetwork"] = ""
         CareerAdNetwork = find_in_tags(hrflow_job.get("tags"), "CareerAdNetwork")
-        if CareerAdNetwork != None:
+        if CareerAdNetwork is not None:
             formater[
                 "CareerAdNetwork"
             ] = """\n            <CareerAdNetwork desired="true">
@@ -193,19 +192,19 @@ def format_job(data: t.Dict) -> str:
     def format_jobcategory(formater, hrflow_job):
         formater["JobCategory"] = "11"
         JobCategory = find_in_tags(hrflow_job.get("tags"), "JobCategory")
-        if JobCategory != None:
+        if JobCategory is not None:
             formater["JobCategory"] = JobCategory
 
     def format_joboccupation(formater, hrflow_job):
         formater["JobOccupation"] = "11892"
         JobOccupation = find_in_tags(hrflow_job.get("tags"), "JobOccupation")
-        if JobOccupation != None:
+        if JobOccupation is not None:
             formater["JobOccupation"] = JobOccupation
 
     def format_industries(formater, hrflow_job):
         formater["Industry"] = ""
         Industry = find_in_tags(hrflow_job.get("tags"), "Industry")
-        if Industry != None:
+        if Industry is not None:
             formater[
                 "Industry"
             ] = """\n          <Industries>
@@ -215,10 +214,6 @@ def format_job(data: t.Dict) -> str:
                 </Industries>""".format(
                 IndustryName=Industry
             )
-
-    #def format_credentials(formater, hrflow_job):
-    #    formater["username"] = "{username}"
-    #    formater["password"] = "{password}"
 
     creation_pipeline = [
         format_job_informations,
@@ -244,6 +239,9 @@ def format_job(data: t.Dict) -> str:
     return job.encode("utf-8")
 
 
+def get_content_type_from_extension(extension: str) -> str:
+    mimetypes.init()
+    return mimetypes.types_map[extension]
 
 
 def format_profile(Monster_profile: t.Dict) -> t.Dict:
@@ -254,33 +252,37 @@ def format_profile(Monster_profile: t.Dict) -> t.Dict:
     Returns:
         Dict[str, Any]: parameters to put in the parsing endpoint
     """
-    
+
     def get_binary_resume(FileContents):
         byte_array = bytearray(FileContents)
         binary_resume = bytes(byte_array)
         return binary_resume
-    print(dict(Monster_profile))
-    raise Exception(Monster_profile)
+
     hrflow_tags = [{"name": "JobRefID", "value": Monster_profile["JobRefID"]}]
 
     output_data = {
-        "profile_file": get_binary_resume(Monster_profile["FileContents"]),
+        "resume": {
+            "raw": get_binary_resume(Monster_profile["FileContents"]),
+            "content_type": get_content_type_from_extension(Monster_profile["FileExt"]),
+        },
+        "reference": Monster_profile["ResumeValue"],
         "tags": hrflow_tags,
+        "metadatas": [],
+        "created_at": datetime.datetime.now().isoformat(),
     }
     return output_data
 
 
+def profile_new_parser(event: t.Dict) -> t.Dict:
+    return dict(profile=event)
+
 
 DESCRIPTION = (
-    "facilitate those who share our singular goal to help seekers and employers"
-    " Find Better. By partnering with us, your business can gain incredible value by"
-    " leveraging Monster's power to reach and connect, for solutions from posting and applying"
-    " to jobs to searching for resumes and reaching local talent." 
+    "facilitate those who share our singular goal to help seekers and employers Find"
+    " Better. By partnering with us, your business can gain incredible value by"
+    " leveraging Monster's power to reach and connect, for solutions from posting and"
+    " applying to jobs to searching for resumes and reaching local talent."
 )
-def profile_new_parser(
-    event: t.Dict
-):
-    return dict(profile=event)
 
 Monster = Connector(
     name="Monster",
@@ -291,9 +293,10 @@ Monster = Connector(
             name="push_jobs",
             trigger_type=WorkflowType.pull,
             description=(
-                "push a job from  ***Hrflow***"
-                " to ***Monster*** API. To see job pushed, go to http://jobview.monster.com/getjob.aspx?jobid=xxx "
-                "with xxx jobposting id findable in response. Test manual push here: https://integrations.monster.com/Toolkit/"
+                "push a job from  ***Hrflow*** to ***Monster*** API. To see job pushed,"
+                " go to http://jobview.monster.com/getjob.aspx?jobid=xxx with xxx is"
+                " jobposting id, findable in response. Manual Test for push here:"
+                " https://integrations.monster.com/Toolkit/"
             ),
             parameters=BaseActionParameters.with_defaults(
                 "WriteJobsActionParameters", format=format_job
@@ -304,12 +307,11 @@ Monster = Connector(
         ConnectorAction(
             name="catch_profile",
             trigger_type=WorkflowType.catch,
-            description=(
-                "catches a Monster profile to Hrflow.ai."
-            ),
+            description="catches a Monster profile to Hrflow.ai",
             parameters=BaseActionParameters.with_defaults(
-                "WriteProfileActionParameters", format=format_profile,
-                event_parser=profile_new_parser
+                "WriteProfileActionParameters",
+                format=format_profile,
+                event_parser=profile_new_parser,
             ),
             origin=MonsterProfileWarehouse,
             target=HrFlowProfileParsingWarehouse,

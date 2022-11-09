@@ -1,6 +1,6 @@
+from hrflow_connectors.connectors.monster import Monster
 from hrflow_connectors.connectors.smartrecruiters import SmartRecruiters
 from hrflow_connectors.connectors.talentsoft import TalentSoft
-from hrflow_connectors.connectors.monster import Monster
 from hrflow_connectors.core import backend
 from hrflow_connectors.core.connector import hrflow_connectors_manifest  # noqa
 from hrflow_connectors.core.documentation import generate_docs  # noqa

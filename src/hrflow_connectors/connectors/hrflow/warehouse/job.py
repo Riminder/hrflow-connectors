@@ -7,7 +7,6 @@ from hrflow import Hrflow
 from pydantic import Field
 
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowJob
-from hrflow_connectors.connectors.smartrecruiters.warehouse import ReadJobsParameters
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -31,7 +30,8 @@ SKILL_LABEL_TO_TYPE = dict(Skill=None, HardSkill="hard", SoftSkill="soft")
 class JobParsingException(Exception):
     def __init__(self, *args, client_response: t.Dict):
         self.client_response = client_response
-    
+
+
 class ReadJobParameters(ParametersModel):
     api_secret: str = Field(
         ...,
@@ -50,6 +50,8 @@ class ReadJobParameters(ParametersModel):
     job_key: str = Field(
         ..., description="HrFlow.ai job key", field_type=FieldType.QueryParam
     )
+
+
 class WriteJobParameters(ParametersModel):
     api_secret: str = Field(
         ...,
@@ -141,6 +143,7 @@ def enrich_job_with_parsing(hrflow_client: Hrflow, job: t.Dict) -> None:
             job["skills"].append(dict(name=entity_text, type=skill_type, value=None))
 
     return
+
 
 def read(
     adapter: LoggerAdapter,
@@ -335,6 +338,5 @@ HrFlowJobWarehouse = Warehouse(
     data_schema=HrFlowJob,
     data_type=DataType.job,
     write=WarehouseWriteAction(parameters=WriteJobParameters, function=write),
-    read=WarehouseReadAction(parameters=ReadJobParameters, function=read)
+    read=WarehouseReadAction(parameters=ReadJobParameters, function=read),
 )
-
