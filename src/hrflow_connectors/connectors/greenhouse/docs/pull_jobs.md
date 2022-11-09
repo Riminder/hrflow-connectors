@@ -2,13 +2,13 @@
 # Pull jobs
 `Greenhouse Jobs` :arrow_right: `HrFlow.ai Jobs`
 
-Retrieves all jobs via the ***Greenhouse*** API and send them to a ***Hrflow.ai Board***.
+Retrieves all jobs of a board via the ***Greenhouse*** API and send them to a ***Hrflow.ai Board***.
 
 
 **Greenhouse Jobs endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
-| [**Get job**](https://developers.greenhouse.io/harvest.html?shell#get-retrieve-job) | Endpoint to get the content of a job with a given id, a jobId parameter is required, the request method is `GET` |
+| [**Get job**](https://developers.greenhouse.io/harvest.html?shell#get-retrieve-job) | Endpoint to get the content of a job with a given id. The request method is `GET` |
 
 
 

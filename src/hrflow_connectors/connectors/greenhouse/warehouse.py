@@ -23,8 +23,8 @@ from hrflow_connectors.core import (
 GET_JOB_ENDPOINT = ActionEndpoints(
     name="Get job",
     description=(
-        "Endpoint to get the content of a job with a given id, a jobId parameter is"
-        " required, the request method is `GET`"
+        "Endpoint to get the content of a job with a given id."
+        " The request method is `GET`"
     ),
     url="https://developers.greenhouse.io/harvest.html?shell#get-retrieve-job",
 )

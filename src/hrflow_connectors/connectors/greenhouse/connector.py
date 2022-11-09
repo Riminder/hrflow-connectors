@@ -170,8 +170,8 @@ Greenhouse = Connector(
             name="pull_jobs",
             trigger_type=WorkflowType.pull,
             description=(
-                "Retrieves all jobs via the ***Greenhouse*** API and send them"
-                " to a ***Hrflow.ai Board***."
+                "Retrieves all jobs of a board via the ***Greenhouse*** API and send"
+                " them to a ***Hrflow.ai Board***."
             ),
             parameters=BaseActionParameters.with_defaults(
                 "ReadJobsActionParameters", format=format_job
