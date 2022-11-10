@@ -19,13 +19,21 @@ from hrflow_connectors.core import (
     WarehouseWriteAction,
 )
 
-## !! Note: This endpoint is for the STAGING ENVIRONMENT !! ##
-RECRUITEE_ENDPOINT = "https://api.s.recruitee.com/c"
-
 
 class Sort(str, Enum):
     BY_DATE = "by_date"
     BY_LAST_MESSAGE = "by_last_message"
+
+
+class Endpoint(str, Enum):
+    STAGING_ENDPOINT = "STAGING ENDPOINT"
+    PRODUCTION_ENDPOINT = "PRODUCTION ENDPOINT"
+
+
+ENDPOINT_MAPPING = {
+    Endpoint.STAGING_ENDPOINT: "https://api.s.recruitee.com/c",
+    Endpoint.PRODUCTION_ENDPOINT: "https://api.recruitee.com/c",
+}
 
 
 class ReadProfilesParameters(ParametersModel):
@@ -35,7 +43,7 @@ class ReadProfilesParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-    API_Token: str = Field(
+    api_token: str = Field(
         ...,
         description=(
             "Personal API Token allowing access to the Recruitee API from external"
@@ -43,6 +51,11 @@ class ReadProfilesParameters(ParametersModel):
         ),
         repr=False,
         field_type=FieldType.Auth,
+    )
+    recruitee_endpoint: Endpoint = Field(
+        ...,
+        description="Specifies which endpoint to be used, satging or production.",
+        field_type=FieldType.Other,
     )
     limit: int = Field(
         None,
@@ -122,7 +135,7 @@ class WriteProfilesParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-    API_Token: str = Field(
+    api_token: str = Field(
         ...,
         description=(
             "Personal API Token allowing access to the Recruitee API from external"
@@ -131,7 +144,12 @@ class WriteProfilesParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-    offers: t.List[int] = Field(
+    recruitee_endpoint: Endpoint = Field(
+        ...,
+        description="Specifies which endpoint to be used, satging or production.",
+        field_type=FieldType.Other,
+    )
+    offer_ids: t.List[int] = Field(
         None,
         description=(
             "Offers to which the candidate will be assigned with default stage. You can"
@@ -153,7 +171,7 @@ class ReadJobsParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-    API_Token: str = Field(
+    api_token: str = Field(
         ...,
         description=(
             "Personal API Token allowing access to the Recruitee API from external"
@@ -162,6 +180,12 @@ class ReadJobsParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
+    recruitee_endpoint: Endpoint = Field(
+        ...,
+        description="Specifies which endpoint to be used, satging or production.",
+        field_type=FieldType.Other,
+    )
+
     kind: str = Field(
         None,
         description=(
@@ -196,7 +220,7 @@ class WriteJobsParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-    API_Token: str = Field(
+    api_token: str = Field(
         ...,
         description=(
             "Personal API Token allowing access to the Recruitee API from external"
@@ -204,6 +228,11 @@ class WriteJobsParameters(ParametersModel):
         ),
         repr=False,
         field_type=FieldType.Auth,
+    )
+    recruitee_endpoint: Endpoint = Field(
+        ...,
+        description="Specifies which endpoint to be used, satging or production.",
+        field_type=FieldType.Other,
     )
 
 
@@ -213,20 +242,21 @@ def read_candidates(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
+    RECRUITEE_ENDPOINT = ENDPOINT_MAPPING[parameters.recruitee_endpoint]
     params = parameters.dict()
-    del params["API_Token"]
+    del params["api_token"]
     del params["company_id"]
+    del params["recruitee_endpoint"]
 
     response = requests.get(
         "{}/{}/candidates".format(RECRUITEE_ENDPOINT, parameters.company_id),
         headers={
-            "Authorization": "Bearer {}".format(parameters.API_Token),
+            "Authorization": "Bearer {}".format(parameters.api_token),
         },
         params=params,
     )
     if response.status_code // 100 != 2:
-        raise Exception(
-            "Failed to pull candidates list from Recruitee."
+        adapter.error(
             "Failed to pull candidates list from Recruitee params={}"
             " status_code={} response={}".format(
                 params, response.status_code, response.text
@@ -243,16 +273,17 @@ def write_candidates(
     profiles: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
     adapter.info("Adding {} profiles to Recruitee ".format(len(profiles)))
+    RECRUITEE_ENDPOINT = ENDPOINT_MAPPING[parameters.recruitee_endpoint]
     failed_profiles = []
     for profile in profiles:
-        payload = {"candidate": profile, "offers": parameters.offers}
+        payload = {"candidate": profile, "offers": parameters.offer_ids}
 
         response = requests.post(
             "{}/{}/candidates".format(RECRUITEE_ENDPOINT, parameters.company_id),
             headers={
                 "Accept": "application/json",
                 "Content-Type": "application/json",
-                "Authorization": "Bearer {}".format(parameters.API_Token),
+                "Authorization": "Bearer {}".format(parameters.api_token),
             },
             json=payload,
         )
@@ -274,6 +305,7 @@ def read_jobs(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
+    RECRUITEE_ENDPOINT = ENDPOINT_MAPPING[parameters.recruitee_endpoint]
     params = dict(
         kind=parameters.kind,
         scope=parameters.scope,
@@ -282,7 +314,7 @@ def read_jobs(
 
     response = requests.get(
         "{}/{}/offers".format(RECRUITEE_ENDPOINT, parameters.company_id),
-        headers={"Authorization": "Bearer {}".format(parameters.API_Token)},
+        headers={"Authorization": "Bearer {}".format(parameters.api_token)},
         params=params,
     )
     if response.status_code // 100 != 2:
@@ -299,7 +331,7 @@ def read_jobs(
             "{}/{}/offers/{}".format(
                 RECRUITEE_ENDPOINT, parameters.company_id, job["id"]
             ),
-            headers={"Authorization": "Bearer {}".format(parameters.API_Token)},
+            headers={"Authorization": "Bearer {}".format(parameters.api_token)},
         )
         if full_job_response.status_code // 100 != 2:
             adapter.error(
@@ -320,6 +352,7 @@ def write_jobs(
     jobs: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
     adapter.info("Adding {} job offers to Recruitee ".format(len(jobs)))
+    RECRUITEE_ENDPOINT = ENDPOINT_MAPPING[parameters.recruitee_endpoint]
     failed_jobs = []
     for job in jobs:
         payload = {"offer": job}
@@ -328,7 +361,7 @@ def write_jobs(
             headers={
                 "Accept": "application/json",
                 "Content-Type": "application/json",
-                "Authorization": "Bearer {}".format(parameters.API_Token),
+                "Authorization": "Bearer {}".format(parameters.api_token),
             },
             json=payload,
         )

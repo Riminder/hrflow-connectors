@@ -17,9 +17,9 @@ from hrflow_connectors.core import (
 
 
 def get_profile_cv_url(attachments: t.List[t.Dict]):
-    cv_url = next(filter(lambda x: x.get("type") == "resume", attachments))[
-        "public_url"
-    ]
+    cv_url = next(
+        (attachment for attachment in attachments if attachment.get("type") == "resume")
+    )["public_url"]
     return cv_url
 
 
@@ -47,18 +47,6 @@ def format_profile(hrflow_profile: t.Dict) -> t.Dict:
         sources=[hrflow_profile["source"]["name"]],
     )
     return profile
-
-
-def get_sections(recruitee_job: t.Dict) -> t.List[t.Dict]:
-    sections = []
-    sections.append(
-        dict(
-            name="recruitee_job_requirements",
-            title="Job Requirements",
-            description=recruitee_job["requirements"],
-        )
-    )
-    return sections
 
 
 def get_tags(recruitee_job: t.Dict) -> t.List[t.Dict]:
@@ -111,6 +99,13 @@ def get_ranges_float(recruitee_job: t.Dict) -> t.List[t.Dict]:
 
 
 def format_job(recruitee_job: t.Dict) -> t.Dict:
+    sections = [
+        dict(
+            name="recruitee_job_requirements",
+            title="Job Requirements",
+            description=recruitee_job["requirements"],
+        )
+    ]
     job = dict(
         name=recruitee_job.get("title"),
         reference=str(recruitee_job.get("id")),
@@ -119,7 +114,7 @@ def format_job(recruitee_job: t.Dict) -> t.Dict:
         location=dict(lat=None, lng=None, text=recruitee_job.get("location")),
         url=recruitee_job.get("url"),
         summary=recruitee_job.get("description"),
-        sections=get_sections(recruitee_job),
+        sections=sections,
         tags=get_tags(recruitee_job),
         ranges_float=get_ranges_float(recruitee_job),
     )

@@ -11,7 +11,7 @@ Retrieves all jobs via the ***Recruitee*** API and send them to a ***Hrflow.ai B
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L113) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L101) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
@@ -19,7 +19,8 @@ Retrieves all jobs via the ***Recruitee*** API and send them to a ***Hrflow.ai B
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `company_id` :red_circle: | `str` | None | Company ID. A company subdomain can also be used. |
-| `API_Token` :red_circle: | `str` | None | Personal API Token allowing access to the Recruitee API from external services. |
+| `api_token` :red_circle: | `str` | None | Personal API Token allowing access to the Recruitee API from external services. |
+| `recruitee_endpoint` :red_circle: | `str` | None | Specifies which endpoint to be used, satging or production. |
 | `kind`  | `str` | None | If no kind is given, returns all job offers, if kind is job then lists only jobs, if scope is talent_pool, lists only talent pools |
 | `scope`  | `str` | None | If no scope is given list all job offers. archived returns only archived job offers, active returns published, internal and closed job offers, not_archived returns all but archived jobs |
 | `view_mode`  | `str` | brief | default (default mode, includes most of offer details); brief (only offer’s id, title, status and kind) |
@@ -57,7 +58,8 @@ Recruitee.pull_jobs(
     ),
     origin_parameters=dict(
         company_id="your_company_id",
-        API_Token="your_API_Token",
+        api_token="your_api_token",
+        recruitee_endpoint="STAGING ENDPOINT",
         kind="your_kind",
         scope="your_scope",
         view_mode=brief,

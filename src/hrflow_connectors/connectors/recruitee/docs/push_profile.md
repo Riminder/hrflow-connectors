@@ -28,8 +28,9 @@ Writes a profile from Hrflow.ai Source as a candidate on Recruitee via the API
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `company_id` :red_circle: | `str` | None | Company ID. A company subdomain can also be used. |
-| `API_Token` :red_circle: | `str` | None | Personal API Token allowing access to the Recruitee API from external services. |
-| `offers`  | `int` | None | Offers to which the candidate will be assigned with default stage. You can also pass one ID as offer_id |
+| `api_token` :red_circle: | `str` | None | Personal API Token allowing access to the Recruitee API from external services. |
+| `recruitee_endpoint` :red_circle: | `str` | None | Specifies which endpoint to be used, satging or production. |
+| `offer_ids`  | `int` | None | Offers to which the candidate will be assigned with default stage. You can also pass one ID as offer_id |
 
 :red_circle: : *required*
 
@@ -59,8 +60,9 @@ Recruitee.push_profile(
     ),
     target_parameters=dict(
         company_id="your_company_id",
-        API_Token="your_API_Token",
-        offers=***,
+        api_token="your_api_token",
+        recruitee_endpoint="STAGING ENDPOINT",
+        offer_ids=***,
     )
 )
 ```

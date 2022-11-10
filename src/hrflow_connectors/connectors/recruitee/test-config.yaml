@@ -1,10 +1,17 @@
-warehouse: {}
+warehouse:
+  RecruiteeProfileWarehouse:
+    read:
+      - parameters:
+          company_id: $__COMPANY_ID
+          api_token:  $__API_TOKEN
+          recruitee_endpoint: "STAGING ENDPOINT"
 actions:
   pull_jobs:
     - id: valid_parameters
       origin_parameters:
         company_id: $__COMPANY_ID
-        API_Token:  $__API_TOKEN
+        api_token:  $__API_TOKEN
+        recruitee_endpoint: "STAGING ENDPOINT"
         view_mode: "default"
       target_parameters:
         api_secret: $__API_SECRET
@@ -13,6 +20,7 @@ actions:
       status: success
     - id: no_client_credentials
       origin_parameters:
+        recruitee_endpoint: "STAGING ENDPOINT"
         view_mode: "default"
       target_parameters:
         api_secret: $__API_SECRET
@@ -23,7 +31,8 @@ actions:
     - id: no_hrflow_board_key
       origin_parameters:
         company_id: $__COMPANY_ID
-        API_Token:  $__API_TOKEN
+        api_token:  $__API_TOKEN
+        recruitee_endpoint: "STAGING ENDPOINT"
       target_parameters:
         api_secret: $__API_SECRET
         api_user: $__API_USER
@@ -32,7 +41,8 @@ actions:
     - id: invalid_client_credentials
       origin_parameters:
         company_id: bad_company_id
-        API_Token:  bad_api_token
+        api_token:  bad_api_token
+        recruitee_endpoint: "STAGING ENDPOINT"
       target_parameters:
         api_secret: $__API_SECRET
         api_user: $__API_USER
@@ -42,7 +52,8 @@ actions:
     - id: invalid_hrflow_api_secret
       origin_parameters: 
         company_id: $__COMPANY_ID
-        API_Token:  $__API_TOKEN
+        api_token:  $__API_TOKEN
+        recruitee_endpoint: "STAGING ENDPOINT"
       target_parameters:
         api_secret: bad_api_secret
         api_user: $__API_USER
@@ -58,8 +69,9 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         company_id: $__COMPANY_ID
-        API_Token:  $__API_TOKEN
-        offers: [699480,698005]
+        api_token:  $__API_TOKEN
+        recruitee_endpoint: "STAGING ENDPOINT"
+        offer_ids: [699480,698005]
       status: success
     - id: no_access_token
       origin_parameters:
@@ -69,7 +81,8 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         company_id: $__COMPANY_ID
-        offers: [699480,698005]
+        recruitee_endpoint: "STAGING ENDPOINT"
+        offer_ids: [699480,698005]
       status: fatal
       reason: bad_target_parameters    
     - id: invalid_access_token
@@ -80,8 +93,9 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         company_id: $__COMPANY_ID
-        API_Token:  bad_api_token
-        offers: [699480,698005]
+        api_token:  bad_api_token
+        recruitee_endpoint: "STAGING ENDPOINT"
+        offer_ids: [699480,698005]
       status: fatal
       reason: write_failure
     - id: no_hrflow_source_key
@@ -91,8 +105,9 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         company_id: $__COMPANY_ID
-        API_Token:  $__API_TOKEN
-        offers: [699480,698005]
+        api_token:  $__API_TOKEN
+        recruitee_endpoint: "STAGING ENDPOINT"
+        offer_ids: [699480,698005]
       status: fatal
       reason: bad_origin_parameters
     - id: no_hrflow_profile_key
@@ -102,8 +117,9 @@ actions:
         source_key: $__SOURCE_KEY
       target_parameters:
         company_id: $__COMPANY_ID
-        API_Token:  $__API_TOKEN
-        offers: [699480,698005]
+        api_token:  $__API_TOKEN
+        recruitee_endpoint: "STAGING ENDPOINT"
+        offer_ids: [699480,698005]
       status: fatal
       reason: bad_origin_parameters
     - id: invalid_hrflow_api_secret      
@@ -114,7 +130,8 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         company_id: $__COMPANY_ID
-        API_Token:  $__API_TOKEN
-        offers: [699480,698005]
+        api_token:  $__API_TOKEN
+        recruitee_endpoint: "STAGING ENDPOINT"
+        offer_ids: [699480,698005]
       status: fatal
       reason: read_failure
