@@ -18,6 +18,141 @@ from hrflow_connectors.core import (
 )
 
 
+def find_in_tags(tag_list: t.List, keyword: t.AnyStr) -> t.AnyStr:
+    return next(iter(tag["value"] for tag in tag_list if tag["name"] == keyword), None)
+
+
+def find_in_range_list(range_list: t.List, keyword: t.AnyStr) -> t.Tuple:
+    return next(
+        iter(
+            (range["value_min"], range["value_max"])
+            for range in range_list
+            if range["name"] == keyword
+        ),
+        None,
+    )
+
+
+def format_created_at(formater: t.Dict, hrflow_job: t.Dict) -> None:
+    formater["today"] = hrflow_job["created_at"]
+
+
+def format_job_informations(formater: t.Dict, hrflow_job: t.Dict) -> None:
+    formater["JobTitle"] = hrflow_job["name"]
+
+    JobLevel = find_in_tags(hrflow_job["tags"], "JobLevel")
+    formater["JobLevel"] = (
+        f'\n        <JobLevel monsterId="{JobLevel}"/>' if JobLevel else ""
+    )
+
+    JobType = find_in_tags(hrflow_job["tags"], "JobType")
+    formater["JobType"] = (
+        f'\n        <JobType monsterId="{JobType}"/>' if JobType else ""
+    )
+
+    JobStatus = find_in_tags(hrflow_job["tags"], "JobStatus")
+    formater["JobStatus"] = (
+        f'\n        <JobStatus monsterId="{JobStatus}"/>' if JobStatus else ""
+    )
+
+
+def format_job_reference(formater: t.Dict, hrflow_job: t.Dict) -> None:
+    formater["jobRefCode"] = f'"{hrflow_job["key"]}"'
+
+
+def format_salary(formater: t.Dict, hrflow_job: t.Dict) -> None:
+    Currency = find_in_tags(hrflow_job.get("tags"), "Currency")
+    formater["Currency"] = (
+        f'\n          <Currency monsterId="{Currency}"/>' if Currency else ""
+    )
+
+    formater["SalaryMin"] = ""
+    formater["SalaryMax"] = ""
+    Salary_range = find_in_range_list(hrflow_job.get("ranges_float"), "Salary")
+    if Salary_range:
+        SalaryMin = Salary_range[0]
+        formater["SalaryMin"] = (
+            f"\n          <SalaryMin>{SalaryMin}</SalaryMin>" if SalaryMin else ""
+        )
+        SalaryMax = Salary_range[1]
+        formater["SalaryMax"] = (
+            f"\n          <SalaryMax>{SalaryMax}</SalaryMax>" if SalaryMax else ""
+        )
+
+    CompensationType = find_in_tags(hrflow_job.get("tags"), "CompensationType")
+    formater["CompensationType"] = (
+        f'\n          <CompensationType monsterId="{CompensationType}"/>'
+        if CompensationType
+        else ""
+    )
+
+
+def format_location(formater: t.Dict, hrflow_job: t.Dict) -> None:
+    location = hrflow_job["location"]
+    StreetAddress = location.get("text")
+    formater["StreetAddress"] = StreetAddress if StreetAddress else ""
+
+
+def format_description(formater: t.Dict, hrflow_job: t.Dict) -> None:
+    formater["JobBody"] = hrflow_job["summary"]
+
+
+def format_duration(formater: t.Dict, hrflow_job: t.Dict) -> None:
+    duration = find_in_tags(hrflow_job.get("tags"), "desiredDuration")
+    formater["desiredDuration"] = f' desiredDuration="{duration}"' if duration else ""
+
+
+def format_autorefresh(formater: t.Dict, hrflow_job: t.Dict) -> None:
+    Autorefresh = find_in_tags(hrflow_job.get("tags"), "Autorefresh")
+    formater["Autorefresh"] = (
+        """\n            <Autorefresh desired="true">
+            <Frequency>{frequency}</Frequency>
+        </Autorefresh>""".format(
+            frequency=Autorefresh
+        )
+        if Autorefresh
+        else ""
+    )
+
+
+def format_careeradnetwork(formater: t.Dict, hrflow_job: t.Dict) -> None:
+    CareerAdNetwork = find_in_tags(hrflow_job.get("tags"), "CareerAdNetwork")
+    formater["CareerAdNetwork"] = (
+        """\n            <CareerAdNetwork desired="true">
+            <Duration>{frequency}</Duration>
+        </CareerAdNetwork>""".format(
+            frequency=CareerAdNetwork
+        )
+        if CareerAdNetwork
+        else ""
+    )
+
+
+def format_jobcategory(formater: t.Dict, hrflow_job: t.Dict) -> None:
+    JobCategory = find_in_tags(hrflow_job.get("tags"), "JobCategory")
+    formater["JobCategory"] = JobCategory if JobCategory else "11"
+
+
+def format_joboccupation(formater: t.Dict, hrflow_job: t.Dict) -> None:
+    JobOccupation = find_in_tags(hrflow_job.get("tags"), "JobOccupation")
+    formater["JobOccupation"] = JobOccupation if JobOccupation else "11892"
+
+
+def format_industries(formater: t.Dict, hrflow_job: t.Dict) -> None:
+    Industry = find_in_tags(hrflow_job.get("tags"), "Industry")
+    formater["Industry"] = (
+        """\n          <Industries>
+        <Industry>
+            <IndustryName monsterId="{IndustryName}"/>
+        </Industry>
+        </Industries>""".format(
+            IndustryName=Industry
+        )
+        if Industry
+        else ""
+    )
+
+
 def format_job(data: t.Dict) -> str:
     xml_job_str = """<?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
@@ -85,136 +220,6 @@ def format_job(data: t.Dict) -> str:
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>"""
 
-    def find_in_tags(tag_list, keyword):
-        if tag_list is None:
-            return None
-        for tag in tag_list:
-            if tag["name"] == keyword:
-                return tag["value"]
-
-    def find_in_range_list(range_list, keyword):
-        if range_list is None:
-            return None
-        for range_ in range_list:
-            if range_["name"] == keyword:
-                return (range_["value_min"], range_["value_max"])
-
-    def format_created_at(formater, hrflow_job):
-        formater["today"] = hrflow_job["created_at"]
-
-    def format_job_informations(formater, hrflow_job):
-        formater["JobTitle"] = hrflow_job["name"]
-        formater["JobLevel"] = ""
-        formater["JobType"] = ""
-        formater["JobStatus"] = ""
-
-        JobLevel = find_in_tags(hrflow_job["tags"], "JobLevel")
-        if JobLevel is not None:
-            formater["JobLevel"] = f'\n        <JobLevel monsterId="{JobLevel}"/>'
-
-        JobType = find_in_tags(hrflow_job["tags"], "JobType")
-        if JobType is not None:
-            formater["JobType"] = f'\n        <JobType monsterId="{JobType}"/>'
-
-        JobStatus = find_in_tags(hrflow_job["tags"], "JobStatus")
-        if JobStatus is not None:
-            formater["JobStatus"] = f'\n        <JobStatus monsterId="{JobStatus}"/>'
-
-    def format_job_reference(formater, hrflow_job):
-        formater["jobRefCode"] = f'"{hrflow_job["key"]}"'
-
-    def format_salary(formater, hrflow_job):
-        formater["Currency"] = ""
-        formater["SalaryMin"] = ""
-        formater["SalaryMax"] = ""
-        formater["CompensationType"] = ""
-
-        Currency = find_in_tags(hrflow_job.get("tags"), "Currency")
-        if Currency is not None:
-            formater["Currency"] = f'\n          <Currency monsterId="{Currency}"/>'
-
-        Salary_range = find_in_range_list(hrflow_job.get("ranges_float"), "Salary")
-
-        if Salary_range is not None:
-            SalaryMin = Salary_range[0]
-            formater["SalaryMin"] = f"\n          <SalaryMin>{SalaryMin}</SalaryMin>"
-            SalaryMax = Salary_range[1]
-            formater["SalaryMax"] = f"\n          <SalaryMax>{SalaryMax}</SalaryMax>"
-
-        CompensationType = find_in_tags(hrflow_job.get("tags"), "CompensationType")
-        if CompensationType is not None:
-            formater[
-                "CompensationType"
-            ] = f'\n          <CompensationType monsterId="{CompensationType}"/>'
-
-    def format_location(formater, hrflow_job):
-        formater["StreetAddress"] = ""
-
-        location = hrflow_job["location"]
-        StreetAddress = location.get("text")
-
-        if StreetAddress is not None:
-            formater["StreetAddress"] = StreetAddress
-
-    def format_description(formater, hrflow_job):
-        formater["JobBody"] = hrflow_job["summary"]
-
-    def format_duration(formater, hrflow_job):
-        formater["desiredDuration"] = ""
-        duration = find_in_tags(hrflow_job.get("tags"), "desiredDuration")
-        if duration is not None:
-            formater["desiredDuration"] = f' desiredDuration="{duration}"'
-
-    def format_autorefresh(formater, hrflow_job):
-        formater["Autorefresh"] = ""
-        Autorefresh = find_in_tags(hrflow_job.get("tags"), "Autorefresh")
-        if Autorefresh is not None:
-            formater[
-                "Autorefresh"
-            ] = """\n            <Autorefresh desired="true">
-                    <Frequency>{frequency}</Frequency>
-                </Autorefresh>""".format(
-                frequency=Autorefresh
-            )
-
-    def format_careeradnetwork(formater, hrflow_job):
-        formater["CareerAdNetwork"] = ""
-        CareerAdNetwork = find_in_tags(hrflow_job.get("tags"), "CareerAdNetwork")
-        if CareerAdNetwork is not None:
-            formater[
-                "CareerAdNetwork"
-            ] = """\n            <CareerAdNetwork desired="true">
-                    <Duration>{frequency}</Duration>
-                </CareerAdNetwork>""".format(
-                frequency=CareerAdNetwork
-            )
-
-    def format_jobcategory(formater, hrflow_job):
-        formater["JobCategory"] = "11"
-        JobCategory = find_in_tags(hrflow_job.get("tags"), "JobCategory")
-        if JobCategory is not None:
-            formater["JobCategory"] = JobCategory
-
-    def format_joboccupation(formater, hrflow_job):
-        formater["JobOccupation"] = "11892"
-        JobOccupation = find_in_tags(hrflow_job.get("tags"), "JobOccupation")
-        if JobOccupation is not None:
-            formater["JobOccupation"] = JobOccupation
-
-    def format_industries(formater, hrflow_job):
-        formater["Industry"] = ""
-        Industry = find_in_tags(hrflow_job.get("tags"), "Industry")
-        if Industry is not None:
-            formater[
-                "Industry"
-            ] = """\n          <Industries>
-                <Industry>
-                    <IndustryName monsterId="{IndustryName}"/>
-                </Industry>
-                </Industries>""".format(
-                IndustryName=Industry
-            )
-
     creation_pipeline = [
         format_job_informations,
         format_created_at,
@@ -231,10 +236,8 @@ def format_job(data: t.Dict) -> str:
     ]
 
     formater = dict()
-
     for function in creation_pipeline:
         function(formater, data)
-
     job = xml_job_str.format(**formater)
     return job.encode("utf-8")
 
