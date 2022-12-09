@@ -1,0 +1,36 @@
+
+actions:
+  push_profile:
+    - id: valid_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        auth: $__AUTH
+        vacancy: $__VACANCY
+        company: $__COMPANY
+      status: success
+    - id: invalid_origin_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+      target_parameters:
+        auth: $__AUTH
+        vacancy: $__VACANCY
+        company: $__COMPANY
+      status: fatal
+      reason: bad_origin_parameters
+    - id: bad_target_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        vacancy: $__VACANCY
+        company: $__COMPANY
+      status: fatal
+      reason: bad_target_parameters
