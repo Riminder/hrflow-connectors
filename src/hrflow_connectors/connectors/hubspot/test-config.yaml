@@ -1,4 +1,9 @@
-warehouse: {}
+warehouse:
+  HubspotContactWarehouse:
+    read:
+      - parameters:
+          access_token: $__ACCESS_TOKEN
+          dealID: 5311882214
 actions:
   push_profile:
     - id: valid_parameters

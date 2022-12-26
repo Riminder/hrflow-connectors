@@ -22,12 +22,6 @@ def format_profile(hrflow_profile: t.Dict) -> t.Dict:
         state=fields.get("state") or "Undefined",
         country=fields.get("country") or "Undefined",
         company="",
-        # annualrevenue="",
-        # jobtitle = "",
-        # website=dict(hrflow_profile_info["urls"]),
-        # experiences=get_profile_experiences(hrflow_profile["experiences"]),
-        # educations=get_profile_educations(hrflow_profile["educations"]),
-        # languages="",
     )
     profile = dict(properties=properties)
     return profile

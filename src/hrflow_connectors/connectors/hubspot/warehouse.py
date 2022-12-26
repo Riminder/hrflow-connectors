@@ -14,10 +14,11 @@ from hrflow_connectors.core import (
     ParametersModel,
     ReadMode,
     Warehouse,
+    WarehouseReadAction,
     WarehouseWriteAction,
 )
 
-baseUrl = "https://api.hubapi.com/crm/v3"
+BASE_URL = "https://api.hubapi.com/crm/v3"
 
 
 class Properties(str, Enum):  # more properrties can be added later to enrich
@@ -134,7 +135,7 @@ def read(
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
 
-    url = f"{baseUrl}/objects/contacts"
+    url = "{}/objects/contacts".format(BASE_URL)
     params = parameters.dict()
     del params["access_token"]
 
@@ -165,17 +166,15 @@ def write(
 ) -> t.List[t.Dict]:
     adapter.info("Adding {} profiles to Hubspot ".format(len(profiles)))
     failed_profiles = []
-    contacts_endpoint = f"{baseUrl}/objects/contacts"
+    contacts_endpoint = "{}/objects/contacts".format(BASE_URL)
     for profile in profiles:
-        payload = json.dumps(profile)
 
         response = requests.post(
             contacts_endpoint,
             headers={
-                "Content-Type": "application/json",
                 "Authorization": "Bearer {}".format(parameters.access_token),
             },
-            data=payload,
+            json=profile,
         )
         if response.status_code // 100 != 2:
             adapter.error(
@@ -191,8 +190,9 @@ def write(
             dealId = parameters.dealID
             if dealId is not None:
                 deals_endpoint = (
-                    f"{baseUrl}/objects/deals/{dealId}"
-                    "/associations/contacts/{contactId}/3"
+                    "{}/objects/deals/{}/associations/contacts/{}/3".format(
+                        BASE_URL, dealId, contactId
+                    )
                 )
                 headers = {
                     "Authorization": "Bearer {}".format(parameters.access_token),
@@ -215,6 +215,6 @@ HubspotContactWarehouse = Warehouse(
     name="Hubspot Contacts",
     data_schema=ContactObject,
     data_type=DataType.profile,
-    # read=WarehouseReadAction(parameters=ReadProfilesParameters, function=read),
+    read=WarehouseReadAction(parameters=ReadProfilesParameters, function=read),
     write=WarehouseWriteAction(parameters=WriteProfilesParameters, function=write),
 )
