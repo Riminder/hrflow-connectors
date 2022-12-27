@@ -34,7 +34,7 @@ class ContractTime(str, Enum):
 
 class Company(BaseModel):
     __CLASS__: str
-    display_name: t.Optional[str]
+    display_name: str
     canonical_name: t.Optional[str]
     count: t.Optional[int]
 
@@ -58,12 +58,12 @@ class AdzunaJob(BaseModel):
     contract_time: ContractTime
 
     @validator("created")
-    def validate_date(value: t.Any) -> t.Any:
+    def validate_date(value: t.Any) -> str:
         try:
             _ = datetime.date.fromisoformat(value)
             return value
         except ValueError:
             raise ValueError(
-                f"Invalid time format given {value}, expected format ISO 8601 format"
-                " ISO-8601 (YYYY-MM-DDTHH:MM:SSZ)"
+                "Invalid time format given {}, expected format ISO 8601 format"
+                " ISO-8601 (YYYY-MM-DDTHH:MM:SSZ)".format(value)
             )

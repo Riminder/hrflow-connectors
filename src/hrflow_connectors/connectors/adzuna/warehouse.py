@@ -65,7 +65,7 @@ class Filter(str, Enum):
 class ReadJobsParameters(ParametersModel):
     country: CountryCode = Field(
         ...,
-        description="ISO 8601 country code of the country of interes",
+        description="ISO 8601 country code of the country of interest",
         field_type=FieldType.QueryParam,
     )
     app_id: str = Field(
@@ -80,7 +80,6 @@ class ReadJobsParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-    # page: int = Field(..., description="Page number")
     results_per_page: int = Field(
         None,
         description="The number of results to include on a page of search results.",
@@ -249,19 +248,14 @@ def read(
 ) -> t.Iterable[t.Dict]:
     params = parameters.dict()
     page = 1
-    country = params["country"]
-    del params["country"]
+    country = params.pop("country")
 
-    iterate_over_pages = True
-
-    while iterate_over_pages:
-        ADZUNA_JOBS_SEARCH_ENDPOINT = (
-            f"""{ADZUNA_ENDPOINT}/jobs/{country}/search/{page}"""
+    while True:
+        ADZUNA_JOBS_SEARCH_ENDPOINT = "{}/jobs/{}/search/{}".format(
+            ADZUNA_ENDPOINT, country, page
         )
-        # del params["page"]
         response = requests.get(
             ADZUNA_JOBS_SEARCH_ENDPOINT,
-            headers={},
             params=params,
         )
         if response.status_code // 100 != 2:
@@ -272,16 +266,13 @@ def read(
                 )
             )
             raise Exception("Failed to pull jobs from Adzuna")
-        jobs = response.json()["results"]
 
-        if jobs:
-            for job in jobs:
-                yield job
-        else:
-            iterate_over_pages = False
+        jobs = response.json()["results"]
+        for job in jobs:
+            yield job
 
         page += 1
-        if page == MAX_NUMBER_OF_PAGES:
+        if len(jobs) == 0 or page == MAX_NUMBER_OF_PAGES:
             break
 
 

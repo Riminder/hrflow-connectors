@@ -17,14 +17,14 @@ Retrieves jobs via the ***Adzuna'*** API Search endpointand send them to a ***Hr
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L42) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L39) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `country` :red_circle: | `str` | None | ISO 8601 country code of the country of interes |
+| `country` :red_circle: | `str` | None | ISO 8601 country code of the country of interest |
 | `app_id` :red_circle: | `str` | None | Application ID, supplied by Adzuna |
 | `app_key` :red_circle: | `str` | None | Application key, supplied by Adzuna |
 | `results_per_page`  | `int` | None | The number of results to include on a page of search results. |

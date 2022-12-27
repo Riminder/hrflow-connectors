@@ -1,10 +1,17 @@
-warehouse: {}
+warehouse:
+  AdzunaJobWarehouse:
+    read:
+      - parameters:
+          country: "gb"
+          app_id: $__APP_ID
+          app_key: $__APP_KEY
+          what: "Software Engineer"
+          where: "Paris"
 actions:
   pull_jobs:
     - id: valid_parameters
       origin_parameters:
         country: "gb"
-        #page: 1
         app_id: $__APP_ID
         app_key: $__APP_KEY
         results_per_page: 20
@@ -32,7 +39,6 @@ actions:
     - id: no_hrflow_board_key
       origin_parameters:
         country: "us"
-        #page: 1
         app_id: $__APP_ID
         app_key: $__APP_KEY
       target_parameters:
@@ -43,7 +49,6 @@ actions:
     - id: invalid_client_credentials
       origin_parameters:
         country: "us"
-        #page: 1
         app_id: bad_client_id
         app_key: bad_client_secret
       target_parameters:
@@ -55,7 +60,6 @@ actions:
     - id: invalid_hrflow_api_secret
       origin_parameters: 
         country: "fr"
-        #page: 1
         app_id: $__APP_ID
         app_key: $__APP_KEY
       target_parameters:

@@ -11,22 +11,19 @@ from hrflow_connectors.core import (
 
 
 def get_job_location(adzuna_job: t.Dict) -> t.Dict:
-
     lat = adzuna_job.get("latitude")
     lat = float(lat) if lat is not None else lat
 
     lng = adzuna_job.get("longitude")
     lng = float(lng) if lng is not None else lng
 
-    return dict(lat=lat, lng=lng, text=adzuna_job.get("location").get("display_name"))
+    return dict(lat=lat, lng=lng, text=adzuna_job.get("location")["display_name"])
 
 
 def get_tags(adzuna_job: t.Dict) -> t.List[t.Dict]:
     job = adzuna_job
     tags = []
-    salaries_are_predicted = False
-    if job.get("salary_is_predicted") == "1":
-        salaries_are_predicted = True
+    salaries_are_predicted = job.get("salary_is_predicted") == "1"
 
     t = lambda name, value: dict(name=name, value=value)
     tags = [

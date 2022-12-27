@@ -3382,7 +3382,7 @@
             "type": "object",
             "properties": {
               "country": {
-                "description": "ISO 8601 country code of the country of interes",
+                "description": "ISO 8601 country code of the country of interest",
                 "field_type": "Query Param",
                 "allOf": [
                   {
@@ -3793,7 +3793,10 @@
                     "title": "Count",
                     "type": "integer"
                   }
-                }
+                },
+                "required": [
+                  "display_name"
+                ]
               },
               "ContractType": {
                 "title": "ContractType",
