@@ -1,0 +1,86 @@
+
+actions:
+  push_jobs:
+    - id: valid_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+        job_key: $__JOB_KEY
+      target_parameters:
+        username: $__USERNAME
+        password: $__PASSWORD
+        api_key: $__API_KEY
+        subdomain: $__SUBDOMAIN
+      status: success
+    - id: no_hrflow_board_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        job_key: $__JOB_KEY
+      target_parameters:
+        username: $__USERNAME
+        password: $__PASSWORD
+        api_key: $__API_KEY
+        subdomain: $__SUBDOMAIN
+      status: fatal
+      reason: bad_origin_parameters
+    - id: no_subdomain
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+        job_key: $__JOB_KEY
+      target_parameters:
+        username: $__USERNAME
+        password: $__PASSWORD
+        api_key: $__API_KEY
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_api_secret
+      origin_parameters:
+        api_secret: "xxxx"
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+        job_key: $__JOB_KEY
+      target_parameters:
+        username: $__USERNAME
+        password: $__PASSWORD
+        api_key: $__API_KEY
+        subdomain: $__SUBDOMAIN
+      status: fatal
+      reason: read_failure
+    
+
+  
+  catch_profile:
+    - id: valid_parameters
+      origin_parameters:
+        profile: $__PROFILE
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+      status: success
+    - id: bad_target_parameters
+      origin_parameters:
+        profile: $__PROFILE
+      target_parameters:
+        api_secret: "xxxx"
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+      status: fatal
+      reason: write_failure
+    - id: no_hrflow_source_key
+      origin_parameters:
+        profile: $__PROFILE
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      status: fatal
+      reason: bad_target_parameters
+    
+
+        
+
+  
