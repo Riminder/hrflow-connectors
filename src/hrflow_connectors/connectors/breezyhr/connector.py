@@ -165,7 +165,7 @@ def format_profile(hrflow_profile: HrFlowProfile) -> BreezyProfileModel:
                             # To bypass Breezy invalid_url when is valid_url
                             link = "https://" + link
                         profile.get("social_profiles").update({type: link})
-                except:
+                except Exception:
                     continue
         attachments = info.get("attachments")
         if isinstance(attachments, list):
