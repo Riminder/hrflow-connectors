@@ -28,7 +28,6 @@ def format_jobs(breezy_jobs: BreezyJobModel) -> HrFlowJob:
         HrflowJob: a job object in the hrflow job format
     """
     data = breezy_jobs
-    print(data)
     job = dict()
     # Basic information
     job["name"] = data.get("name")
@@ -103,12 +102,6 @@ def format_profile(hrflow_profile: HrFlowProfile) -> BreezyProfileModel:
     profile["email_address"] = info.get("email")
     profile["phone_number"] = info.get("phone")
     profile["summary"] = info.get("summary")
-
-    """
-    if self.origin is not None:
-        profile["origin"] = self.origin
-    """
-
     profile["work_history"] = []
 
     def format_experiences():
@@ -164,14 +157,16 @@ def format_profile(hrflow_profile: HrFlowProfile) -> BreezyProfileModel:
         urls = info.get("urls")
         if isinstance(urls, list):
             for url in urls:
-                type = url.get("type")
-                link = url.get("url")
-                if isinstance(link, str):
-                    if not re.match(r"http(s)?:\/\/.*", link):
-                        # To bypass Breezy invalid_url when is valid_url
-                        link = "https://" + link
-                    profile.get("social_profiles").update({type: link})
-
+                try:
+                    type = url.get("type")
+                    link = url.get("url")
+                    if isinstance(link, str):
+                        if not re.match(r"http(s)?:\/\/.*", link):
+                            # To bypass Breezy invalid_url when is valid_url
+                            link = "https://" + link
+                        profile.get("social_profiles").update({type: link})
+                except:
+                    continue
         attachments = info.get("attachments")
         if isinstance(attachments, list):
             for attachment in attachments:
@@ -181,10 +176,6 @@ def format_profile(hrflow_profile: HrFlowProfile) -> BreezyProfileModel:
                     profile.get("social_profiles").update({file_name: public_url})
 
     format_urls()
-    """
-    if self.cover_letter is not None:
-        profile["cover_letter"] = self.cover_letter
-    """
 
     # add profile skills to tags
     profile["tags"] = []
@@ -200,9 +191,8 @@ def format_profile(hrflow_profile: HrFlowProfile) -> BreezyProfileModel:
 BreezyHR = Connector(
     name="BreezyHR",
     description=(
-        "More than an applicant tracking system, Workable's talent acquisition software"
-        " helps teams find candidates, evaluate applicants and make the right hire,"
-        " faster."
+        "Breezyhr is an end-to-end recruiting software "
+        "to help you attract & hire great employees with less effort"
     ),
     url="https://breezy.hr/",
     actions=[
