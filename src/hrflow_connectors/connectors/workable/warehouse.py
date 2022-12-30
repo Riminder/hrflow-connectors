@@ -75,6 +75,7 @@ def write(
 
         response = requests.post(url, headers=headers, data=payload)
         if not response.ok:
+            adapter.info(f"Error append with this profile : {profile}")
             failed_profiles.append(profile)
 
     return failed_profiles

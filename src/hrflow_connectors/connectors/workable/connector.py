@@ -31,7 +31,7 @@ def remove_html_tags(text: str) -> str:
     return re.sub("<[^<]+?>", "", text)
 
 
-def format_jobs(workable_jobs: WorkableJobModel) -> HrFlowJob:
+def format_jobs(workable_job: WorkableJobModel) -> HrFlowJob:
     """
     Format a job into the hrflow job object format
     Args:
@@ -39,15 +39,14 @@ def format_jobs(workable_jobs: WorkableJobModel) -> HrFlowJob:
     Returns:
         HrflowJob: a job into the hrflow job object format
     """
-    job = dict()
-    data = workable_jobs
+    hrflow_job = dict()
     # name and reference
-    job["name"] = data.get("title")
-    job["reference"] = data.get("shortcode")
+    hrflow_job["name"] = workable_job.get("title")
+    hrflow_job["reference"] = workable_job.get("shortcode")
     # url
-    job["url"] = data.get("url")
+    hrflow_job["url"] = workable_job.get("url")
     # location
-    location = data.get("location")
+    location = workable_job.get("location")
     location_str = location.get("location_str")
     text = None
     if isinstance(location_str, str):
@@ -65,32 +64,32 @@ def format_jobs(workable_jobs: WorkableJobModel) -> HrFlowJob:
     get_geojson("city")
     get_geojson("zip_code")
     get_geojson("telecommuting")
-    job["location"] = dict(text=text, geojson=geojson)
+    hrflow_job["location"] = dict(text=text, geojson=geojson)
     # sections
-    job["sections"] = []
+    hrflow_job["sections"] = []
 
     def create_section(field_name: str):
-        title_name = "workable_{}".format(field_name)
-        field_value = data.get(field_name)
+        title_name = f"workable_{field_name}"
+        field_value = workable_job.get(field_name)
         if isinstance(field_value, str):
             description = remove_html_tags(field_value)
             section = dict(name=title_name, title=title_name, description=description)
-            job["sections"].append(section)
+            hrflow_job["sections"].append(section)
 
     create_section("description")
     create_section("requirements")
     create_section("benefits")
     # creation_date
-    job["created_at"] = data.get("created_at")
+    hrflow_job["created_at"] = workable_job.get("created_at")
     # tags
-    job["tags"] = []
+    hrflow_job["tags"] = []
 
     def create_tag(field_name):
-        name = "workable_{}".format(field_name)
-        field_value = data.get("field_name")
+        name = f"workable_{field_name}"
+        field_value = workable_job.get("field_name")
         if field_value is not None:
             tag = dict(name=name, value=field_value)
-            job["tags"].append(tag)
+            hrflow_job["tags"].append(tag)
 
     create_tag("employment_type")
     create_tag("full_title")
@@ -102,12 +101,12 @@ def format_jobs(workable_jobs: WorkableJobModel) -> HrFlowJob:
     create_tag("shortlink")
     create_tag("employment_type")
 
-    return job
+    return hrflow_job
 
 
 def format_profile(
-    profile: HrFlowProfile,
-) -> WorkableCandidate:  # HrFlow profiles -> Workable Profiles
+    hrflow_profile: HrFlowProfile,
+) -> WorkableCandidate:
     """
     Format a HrflowProfile object into a WorkableCandidate object
     Args:
@@ -115,27 +114,28 @@ def format_profile(
     Returns:
         WorkableCandidate: WorkableCandidate object
     """
-    data = profile
-    info = data.get("info")
-    profile = dict()
-    profile["name"] = info.get("full_name")
-    profile["summary"] = info.get("summary")
-    profile["email"] = info.get("email")
-    profile["phone"] = info.get("phone")
+    candidate_profile = dict()
+
+    info = hrflow_profile.get("info")
+
+    candidate_profile["name"] = info.get("full_name")
+    candidate_profile["summary"] = info.get("summary")
+    candidate_profile["email"] = info.get("email")
+    candidate_profile["phone"] = info.get("phone")
     location = info.get("location")
 
     if isinstance(location.get("text"), str):
-        profile["address"] = location.get("text")
-    attachments = data.get("attachments")
+        candidate_profile["address"] = location.get("text")
+    attachments = hrflow_profile.get("attachments")
 
     if isinstance(attachments, list):
         for attachment in attachments:
             if isinstance(attachment, dict):
                 if attachment["type"] == "resume":
-                    profile["resume_url"] = attachment["public_url"]
+                    candidate_profile["resume_url"] = attachment["public_url"]
 
-    candidate_profile = dict(sourced=True, candidate=profile)
-    return json.dumps(candidate_profile)
+    workable_profile = dict(sourced=True, candidate=candidate_profile)
+    return json.dumps(workable_profile)
 
 
 Workable = Connector(
