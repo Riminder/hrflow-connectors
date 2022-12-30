@@ -110,23 +110,21 @@ class ReadJobsParameters(ParametersModel):
     )
     posting_status: t.Optional[JobPostingStatus] = Field(
         None,
-        description="Posting status of a job. One of {}".format(
-            [e.value for e in JobPostingStatus]
+        description=(
+            f"Posting status of a job. One of {[e.value for e in JobPostingStatus]}"
         ),
         field_type=FieldType.QueryParam,
     )
     job_status: t.Optional[JobStatus] = Field(
         None,
-        description="Status of a job. One of {}".format([e.value for e in JobStatus]),
+        description=f"Status of a job. One of {[e.value for e in JobStatus]}",
         field_type=FieldType.QueryParam,
     )
     limit: t.Optional[int] = Field(
         SMARTRECRUITERS_JOBS_ENDPOINT_LIMIT,
         description=(
             "Number of items to pull from SmartRecruiters at a time. Not matter what"
-            " value is supplied it is capped at {}".format(
-                SMARTRECRUITERS_JOBS_ENDPOINT_LIMIT
-            )
+            f" value is supplied it is capped at {SMARTRECRUITERS_JOBS_ENDPOINT_LIMIT}"
         ),
         field_type=FieldType.QueryParam,
     )
@@ -155,10 +153,8 @@ def read(
         )
         if response.status_code // 100 != 2:
             adapter.error(
-                "Failed to pull jobs from SmartRecruiters params={}"
-                " status_code={} response={}".format(
-                    params, response.status_code, response.text
-                )
+                f"Failed to pull jobs from SmartRecruiters params={params}"
+                f" status_code={response.status_code} response={response.text}"
             )
             raise Exception("Failed to pull jobs from SmartRecruiters")
         response = response.json()
@@ -167,23 +163,20 @@ def read(
             break
 
         adapter.info(
-            "Pulling {} jobs from page {} out of total jobs {}".format(
-                len(jobs), page if page is not None else 1, response["totalFound"]
-            )
+            f"Pulling {len(jobs)} jobs from page {page if page is not None else 1} "
+            f"out of total jobs {response['totalFound']}"
         )
         for job in jobs:
             full_job_response = requests.get(
-                "{}/{}".format(SMARTRECRUITERS_JOBS_ENDPOINT, job["id"]),
+                f"{SMARTRECRUITERS_JOBS_ENDPOINT}/{job['id']}",
                 headers={"X-SmartToken": parameters.x_smart_token},
             )
             if full_job_response.status_code // 100 != 2:
                 adapter.error(
-                    "Failed to pull jobs details from SmartRecruiters job_id={}"
-                    " status_code={} response={}".format(
-                        job["id"],
-                        full_job_response.status_code,
-                        full_job_response.text,
-                    )
+                    "Failed to pull jobs details from SmartRecruiters"
+                    f" job_id={job['id']}"
+                    f" status_code={full_job_response.status_code}"
+                    f" response={full_job_response.text}"
                 )
                 raise Exception("Failed to pull jobs from SmartRecruiters")
             yield full_job_response.json()
@@ -198,24 +191,18 @@ def write(
     parameters: WriteProfilesParameters,
     profiles: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
-    adapter.info(
-        "Pushing {} profiles with job_id={}".format(len(profiles), parameters.job_id)
-    )
+    adapter.info(f"Pushing {len(profiles)} profiles with job_id={parameters.job_id}")
     failed_profiles = []
     for profile in profiles:
         response = requests.post(
-            "{}/{}/candidates".format(SMARTRECRUITERS_JOBS_ENDPOINT, parameters.job_id),
+            f"{SMARTRECRUITERS_JOBS_ENDPOINT}/{parameters.job_id}/candidates",
             headers={"X-SmartToken": parameters.x_smart_token},
             json=profile,
         )
         if response.status_code // 100 != 2:
             adapter.error(
-                "Failed to push profile to SmartRecruiters job_id={}"
-                " status_code={} response={}".format(
-                    parameters.job_id,
-                    response.status_code,
-                    response.text,
-                )
+                f"Failed to push profile to SmartRecruiters job_id={parameters.job_id}"
+                f" status_code={response.status_code} response={response.text}"
             )
             failed_profiles.append(profile)
     return failed_profiles

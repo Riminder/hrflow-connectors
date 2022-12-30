@@ -38,11 +38,8 @@ def configure_store():
         store_class = NAME_TO_STORE[store_name]
     except KeyError:
         raise Exception(
-            "{}='{}' is not a valid store use one of {}".format(
-                STORE_NAME_ENVIRONMENT_VARIABLE,
-                store_name,
-                list(NAME_TO_STORE.keys()),
-            )
+            f"{STORE_NAME_ENVIRONMENT_VARIABLE}='{store_name}' "
+            f"is not a valid store use one of {list(NAME_TO_STORE.keys())}"
         )
 
     store = store_class()

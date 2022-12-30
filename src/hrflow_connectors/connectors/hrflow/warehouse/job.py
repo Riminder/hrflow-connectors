@@ -145,10 +145,8 @@ def write(
             )
             if response["code"] >= 400:
                 adapter.error(
-                    "Failed to list jobs in board board_key={} "
-                    "limit={} page={} response={}".format(
-                        parameters.board_key, LIST_JOBS_LIMIT, page, response
-                    )
+                    f"Failed to list jobs in board board_key={parameters.board_key} "
+                    f"limit={LIST_JOBS_LIMIT} page={page} response={response}"
                 )
                 raise Exception("Failed to list jobs in board")
             references_in_board.update(
@@ -165,9 +163,8 @@ def write(
 
         references_to_archive = references_in_board - references_to_push
         adapter.info(
-            "Sync mode enabled. Archiving {} items from board".format(
-                len(references_to_archive)
-            )
+            f"Sync mode enabled. Archiving {len(references_to_archive)} items from"
+            " board"
         )
         for reference in references_to_archive:
             response = hrflow_client.job.indexing.archive(
@@ -175,10 +172,8 @@ def write(
             )
             if response["code"] >= 400:
                 adapter.error(
-                    "Failed to archive job in board board_key={} "
-                    "reference={} response={}".format(
-                        parameters.board_key, reference, response
-                    )
+                    f"Failed to archive job in board board_key={parameters.board_key} "
+                    f"reference={reference} response={response}"
                 )
                 raise Exception("Failed to archive job")
         adapter.info("Archiving finished")
@@ -191,9 +186,7 @@ def write(
                 enrich_job_with_parsing(hrflow_client, job)
                 jobs_to_write.append(job)
             except JobParsingException as e:
-                adapter.error(
-                    "Failed to parse job response={}".format(e.client_response)
-                )
+                adapter.error(f"Failed to parse job response={e.client_response}")
                 failed_jobs.append(job)
         adapter.info("Parsing finished")
     else:
@@ -208,7 +201,7 @@ def write(
             if response["code"] >= 400:
                 adapter.error(
                     "Failed to index job with no reference "
-                    "board_key={} response={}".format(parameters.board_key, response)
+                    f"board_key={parameters.board_key} response={response}"
                 )
                 failed_jobs.append(job)
             continue
@@ -222,9 +215,8 @@ def write(
             )
             if response["code"] >= 400:
                 adapter.error(
-                    "Failed to index job board_key={} reference={} response={}".format(
-                        parameters.board_key, reference, response
-                    )
+                    f"Failed to index job board_key={parameters.board_key} "
+                    f"reference={reference} response={response}"
                 )
                 failed_jobs.append(job)
                 continue
@@ -238,10 +230,8 @@ def write(
                     )
                     if response["code"] >= 400:
                         adapter.error(
-                            "Failed to edit job board_key={} "
-                            "reference={} response={}".format(
-                                parameters.board_key, reference, response
-                            )
+                            f"Failed to edit job board_key={parameters.board_key} "
+                            f"reference={reference} response={response}"
                         )
                         failed_jobs.append(job)
                         continue
@@ -251,10 +241,8 @@ def write(
                 )
                 if response["code"] >= 400:
                     adapter.error(
-                        "Failed to unarchive job board_key={} "
-                        "reference={} response={}".format(
-                            parameters.board_key, reference, response
-                        )
+                        f"Failed to unarchive job board_key={parameters.board_key} "
+                        f"reference={reference} response={response}"
                     )
                     failed_jobs.append(job)
                     continue
@@ -263,19 +251,15 @@ def write(
                 )
                 if response["code"] >= 400:
                     adapter.error(
-                        "Failed to edit job board_key={} "
-                        "reference={} response={}".format(
-                            parameters.board_key, reference, response
-                        )
+                        f"Failed to edit job board_key={parameters.board_key} "
+                        f"reference={reference} response={response}"
                     )
                     failed_jobs.append(job)
                     continue
         else:
             adapter.error(
-                "Failed to get job from board board_key={} "
-                "reference={} response={}".format(
-                    parameters.board_key, reference, response
-                )
+                f"Failed to get job from board board_key={parameters.board_key} "
+                f"reference={reference} response={response}"
             )
             failed_jobs.append(job)
             continue

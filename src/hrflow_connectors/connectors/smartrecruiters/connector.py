@@ -53,7 +53,7 @@ def get_sections(smartrecruiters_job: t.Dict) -> t.List[t.Dict]:
         if section is not None:
             sections.append(
                 dict(
-                    name="smartrecruiters_jobAd-sections-{}".format(section_name),
+                    name=f"smartrecruiters_jobAd-sections-{section_name}",
                     title=section.get("title"),
                     description=section.get("text"),
                 )
@@ -135,7 +135,7 @@ def get_profile_experiences(hrflow_experiences: t.List[t.Dict]) -> t.List[t.Dict
         dict(
             title=experience["title"] or "Undefined",
             company=experience["company"] or "Undefined",
-            **get_profile_occupation(experience)
+            **get_profile_occupation(experience),
         )
         for experience in hrflow_experiences
     ]
@@ -147,7 +147,7 @@ def get_profile_educations(hrflow_educations: t.List[t.Dict]) -> t.List[t.Dict]:
             institution=education["school"] or "Undefined",
             degree=education["title"] or "Undefined",
             major="Undefined",
-            **get_profile_occupation(education)
+            **get_profile_occupation(education),
         )
         for education in hrflow_educations
     ]

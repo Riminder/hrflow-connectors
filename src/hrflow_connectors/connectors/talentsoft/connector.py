@@ -246,31 +246,29 @@ def ts_callback(
             ],
         )
         response = requests.post(
-            "{}/api/exports/v1/reports".format(origin_parameters.client_url),
+            f"{origin_parameters.client_url}/api/exports/v1/reports",
             headers={
-                "Authorization": "bearer {}".format(token),
+                "Authorization": f"bearer {token}",
             },
             json=report,
         )
         if not response.ok:
             raise Exception(
-                "Talentsoft callback report failed error={} evens={}".format(
-                    response.text,
-                    events,
-                )
+                f"Talentsoft callback report failed error={response.text}"
+                f" evens={events}"
             )
 
 
 def applicant_new_parser(event: t.Dict) -> t.Dict:
-    return dict(filter="id::{}".format(event["applicantId"]))
+    return dict(filter=f"id::{event['applicantId']}")
 
 
 def applicant_resume_update_parser(event: t.Dict) -> t.Dict:
-    return dict(filter="id::{}".format(event["applicantId"]), fileId=event["fileId"])
+    return dict(filter=f"id::{event['applicantId']}", fileId=event["fileId"])
 
 
 def applicant_update_parser(event: t.Dict) -> t.Dict:
-    return dict(filter="id::{}".format(event["applicantId"]))
+    return dict(filter=f"id::{event['applicantId']}")
 
 
 DESCRIPTION = "TalentSoft"

@@ -112,7 +112,7 @@ def get_talentsoft_auth_token(
     client_url: str, client_id: str, client_secret: str
 ) -> str:
     response = requests.post(
-        "{}/api/token".format(client_url),
+        f"{client_url}/api/token",
         headers={
             "Content-Type": "application/x-www-form-urlencoded",
         },
@@ -125,14 +125,12 @@ def get_talentsoft_auth_token(
     )
     if not response.ok:
         raise Exception(
-            "Failed to get authentication token with error={}".format(response.text)
+            f"Failed to get authentication token with error={response.text}"
         )
     try:
         return response.json()["access_token"]
     except (KeyError, requests.exceptions.JSONDecodeError) as e:
-        raise Exception(
-            "Failed to get token from response with error={}".format(repr(e))
-        )
+        raise Exception(f"Failed to get token from response with error={repr(e)}")
 
 
 def read_jobs(
@@ -154,23 +152,22 @@ def read_jobs(
 
     while True:
         response = requests.get(
-            "{}/api/exports/v1/vacancies".format(parameters.client_url),
+            f"{parameters.client_url}/api/exports/v1/vacancies",
             params=params,
             headers={
-                "Authorization": "bearer {}".format(token),
+                "Authorization": f"bearer {token}",
             },
         )
         if not response.ok:
             raise Exception(
-                "Failed to fetch jobs with params={} from TalentSoft with"
-                " error={}".format(params, response.text)
+                f"Failed to fetch jobs with params={params} from TalentSoft with"
+                f" error={response.text}"
             )
         if response.headers.get("Content-Length") == 0 or not response.content:
             if params["offset"] == 0:
                 adapter.info(
-                    "No jobs found with params={} text={} headers={}".format(
-                        params, response.text, response.headers
-                    )
+                    f"No jobs found with params={params} "
+                    f"text={response.text} headers={response.headers}"
                 )
             return
 
@@ -203,23 +200,22 @@ def read_profiles(
 
     while True:
         response = requests.get(
-            "{}/api/exports/v1/candidates".format(parameters.client_url),
+            f"{parameters.client_url}/api/exports/v1/candidates",
             params=params,
             headers={
-                "Authorization": "bearer {}".format(token),
+                "Authorization": f"bearer {token}",
             },
         )
         if not response.ok:
             raise Exception(
-                "Failed to fetch candidates with params={} from TalentSoft with"
-                " error={}".format(params, response.text)
+                f"Failed to fetch candidates with params={params} from TalentSoft with"
+                f" error={response.text}"
             )
         if response.headers.get("Content-Length") == 0 or not response.content:
             if params["offset"] == 0:
                 adapter.info(
-                    "No profiles found with params={} text={} headers={}".format(
-                        params, response.text, response.headers
-                    )
+                    f"No profiles found with params={params} "
+                    f"text={response.text} headers={response.headers}"
                 )
             return
 

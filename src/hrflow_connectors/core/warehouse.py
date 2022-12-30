@@ -177,8 +177,8 @@ class Warehouse(BaseModel):
         for field, value in tofix.items():
             if field not in original_fields:
                 raise FieldNotFoundError(
-                    "The field you are trying to fix '{}' is not part of the available"
-                    " parameters {}".format(field, list(original_fields.keys()))
+                    f"The field you are trying to fix '{field}' is not part of the"
+                    f" available parameters {list(original_fields.keys())}"
                 )
             try:
                 action_to_fix.parameters(**{field: value})
@@ -189,10 +189,9 @@ class Warehouse(BaseModel):
                 )
                 if field_error is not None:
                     raise FixedValueValidationError(
-                        "The value='{}' you are trying to use for field='{}' does not"
-                        " pass the original validation with error={}".format(
-                            value, field, field_error
-                        )
+                        f"The value='{value}' you are trying to use for field='{field}'"
+                        " does not pass the original validation with"
+                        f" error={field_error}"
                     )
             original = action_to_fix.parameters.__fields__[field]
             fixed[field] = (
@@ -201,13 +200,13 @@ class Warehouse(BaseModel):
                     value,
                     const=True,
                     description=original.field_info.description,
-                    **original.field_info.extra
+                    **original.field_info.extra,
                 ),
             )
         with_fixed_parameters = create_model(
-            "Fixed{}Parameters".format(action_type.name.capitalize()),
+            f"Fixed{action_type.name.capitalize()}Parameters",
             __base__=action_to_fix.parameters,
-            **fixed
+            **fixed,
         )
         if action_type is ActionType.read:
             return Warehouse(

@@ -56,8 +56,8 @@ def secrets(connector_name: str, connectors_directory: Path):
             }
         except json.JSONDecodeError as e:
             raise InvalidJSONException(
-                "Failed to JSON decode global secrets file for connector {} with"
-                " error {}".format(connector_name, e)
+                "Failed to JSON decode global secrets file for connector"
+                f" {connector_name} with error {e}"
             )
     else:
         global_secrets = dict()
@@ -70,8 +70,8 @@ def secrets(connector_name: str, connectors_directory: Path):
             connector_secrets = json.loads(connector_secrets_file.read_text())
         except json.JSONDecodeError as e:
             raise InvalidJSONException(
-                "Failed to JSON decode secrets file for connector {} "
-                "with error {}".format(connector_name, e)
+                f"Failed to JSON decode secrets file for connector {connector_name} "
+                f"with error {e}"
             )
     else:
         connector_secrets = dict()
@@ -99,14 +99,12 @@ def actions(connector: Connector):
 def warehouses(connector_name: str, connectors_directory: Path):
     if connectors_directory is CONNECTORS_DIRECTORY:  # pragma: no cover
         warehouse_module = import_module(
-            "hrflow_connectors.connectors.{}.warehouse".format(connector_name.lower())
+            f"hrflow_connectors.connectors.{connector_name.lower()}.warehouse"
         )
     else:
         import_from = connectors_directory.relative_to(PROJECT_DIRECTORY)
         warehouse_module = import_module(
-            "{}.{}.warehouse".format(
-                str(import_from).replace("/", "."), connector_name.lower()
-            )
+            f"{str(import_from).replace('/', '.')}.{connector_name.lower()}.warehouse"
         )
     warehouse_names = []
     for attribute, value in warehouse_module.__dict__.items():
@@ -124,9 +122,7 @@ class ParameterValue(object):
             key = v.replace(SECRETS_PREFIX, "", 1)
             if key not in Secrets.get(dict()):
                 raise TypeError(
-                    "{} not found in secrets for connector {}".format(
-                        key, ConnectorName.get("")
-                    )
+                    f"{key} not found in secrets for connector {ConnectorName.get('')}"
                 )
             return Secrets.get()[key]
         return v
@@ -139,8 +135,8 @@ class ParameterValue(object):
     def __modify_schema__(cls, field_schema):
         field_schema.update(
             description=(
-                "If the value is a string starting with {} then it's fetched from"
-                " environnment and secrets.json file".format(SECRETS_PREFIX)
+                f"If the value is a string starting with {SECRETS_PREFIX} then it's"
+                " fetched from environnment and secrets.json file"
             ),
             examples=["$API_KEY"],
         )
@@ -152,9 +148,8 @@ class ActionName(StrictStr):
         action_names = ActionNames.get([])
         if v not in action_names:
             raise TypeError(
-                "No action '{}' found for connector {}. Should be one of {}".format(
-                    v, ConnectorName.get(""), action_names
-                )
+                f"No action '{v}' found for connector {ConnectorName.get('')}. Should"
+                f" be one of {action_names}"
             )
         return v
 
@@ -171,9 +166,8 @@ class WarehouseName(StrictStr):
         warehoue_names = WarehouseNames.get([])
         if v not in warehoue_names:
             raise TypeError(
-                "Warehouse '{}' not found for connector {}. Should be one of {}".format(
-                    v, ConnectorName.get(""), warehoue_names
-                )
+                f"Warehouse '{v}' not found for connector {ConnectorName.get('')}."
+                f" Should be one of {warehoue_names}"
             )
         return v
 
@@ -219,17 +213,15 @@ def collect_connector_tests(
     )
     if test_config_file.exists() is False:
         raise NoTestConfigException(
-            "No test configuration found for connector {} at {}".format(
-                connector_name, test_config_file
-            )
+            f"No test configuration found for connector {connector_name} at"
+            f" {test_config_file}"
         )
     try:
         test_config = yaml.safe_load(test_config_file.read_bytes())
     except yaml.YAMLError as e:
         raise InvalidYAMLException(
-            "Failed to parse yaml test config for connector {} with error {} ".format(
-                connector_name, str(e)
-            )
+            f"Failed to parse yaml test config for connector {connector_name} with"
+            f" error {str(e)}"
         )
 
     try:

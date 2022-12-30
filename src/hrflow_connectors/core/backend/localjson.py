@@ -18,23 +18,20 @@ class LocalJsonStore(BackendStore):
         directory = os.environ.get(LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE)
         if directory is None:
             raise Exception(
-                "Missing environment variable {} in"
-                " order to setup LocalJson store".format(
-                    LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE
-                )
+                "Missing environment variable"
+                f" {LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE} in order to setup"
+                " LocalJson store"
             )
         directory = Path(directory)
         if directory.is_absolute() is False:
             raise Exception(
-                "{}={} should be an absolute filepath".format(
-                    LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE, directory
-                )
+                f"{LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE}={directory} should be"
+                " an absolute filepath"
             )
         if directory.exists() is False:
             raise Exception(
-                "{}={} does not exist".format(
-                    LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE, directory
-                )
+                f"{LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE}={directory} does not"
+                " exist"
             )
         self.store_fd = directory / LocalJsonStore.STORE_FILENAME
         if self.store_fd.exists() is False:

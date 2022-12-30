@@ -18,15 +18,9 @@ logger = logging.getLogger(__name__)
 
 class ConnectorActionAdapter(logging.LoggerAdapter):
     def process(self, msg: str, kwargs: t.Dict) -> t.Tuple[str, t.Dict]:
-        tags = [
-            "[{}={}]".format(tag["name"], tag["value"])
-            for tag in self.extra["log_tags"]
-        ]
+        tags = [f"[{tag['name']}={tag['value']}]" for tag in self.extra["log_tags"]]
         return (
-            "{}: {}".format(
-                "".join(tags),
-                msg,
-            ),
+            f"{''.join(tags)}: {msg}",
             kwargs,
         )
 
@@ -202,8 +196,8 @@ class BaseActionParameters(BaseModel):
                 "title": "logics",
                 "description": (
                     "List of logic functions. Each function should have"
-                    " the following signature {}. The final list should be exposed "
-                    "in a variable named 'logics'.".format(LogicFunctionType)
+                    f" the following signature {LogicFunctionType}."
+                    " The final list should be exposed in a variable named 'logics'."
                 ),
                 "template": LogicsTemplate,
                 "type": "code_editor",
@@ -213,9 +207,7 @@ class BaseActionParameters(BaseModel):
                 "title": "format",
                 "description": (
                     "Formatting function. You should expose a function"
-                    " named 'format' with following signature {}".format(
-                        FormatFunctionType
-                    )
+                    f" named 'format' with following signature {FormatFunctionType}"
                 ),
                 "template": FormatTemplate,
                 "type": "code_editor",
@@ -226,7 +218,7 @@ class BaseActionParameters(BaseModel):
                 "description": (
                     "Event parsing function for **CATCH** integrations. You should"
                     " expose a function named 'event_parser' with following"
-                    " signature {}".format(EventParserFunctionType)
+                    f" signature {EventParserFunctionType}"
                 ),
                 "template": EventParserTemplate,
                 "type": "code_editor",
@@ -348,9 +340,8 @@ class ConnectorAction(BaseModel):
 
         if init_error is not None:
             adapter.error(
-                "Failed to parse event with reason={} data={}".format(
-                    repr(init_error.reason), init_error.data
-                )
+                "Failed to parse event with"
+                f" reason={repr(init_error.reason)} data={init_error.data}"
             )
             return RunResult(
                 status=Status.fatal,
@@ -362,7 +353,7 @@ class ConnectorAction(BaseModel):
             parameters = self.parameters(**action_parameters)
         except ValidationError as e:
             adapter.warning(
-                "Failed to parse action_parameters with errors={}".format(e.errors())
+                f"Failed to parse action_parameters with errors={e.errors()}"
             )
             return RunResult(status=Status.fatal, reason=Reason.bad_action_parameters)
 
@@ -370,7 +361,7 @@ class ConnectorAction(BaseModel):
             origin_parameters = self.origin.read.parameters(**origin_parameters)
         except ValidationError as e:
             adapter.warning(
-                "Failed to parse origin_parameters with errors={}".format(e.errors())
+                f"Failed to parse origin_parameters with errors={e.errors()}"
             )
             return RunResult(status=Status.fatal, reason=Reason.bad_origin_parameters)
 
@@ -378,16 +369,15 @@ class ConnectorAction(BaseModel):
             target_parameters = self.target.write.parameters(**target_parameters)
         except ValidationError as e:
             adapter.warning(
-                "Failed to parse target_parameters with errors={}".format(e.errors())
+                f"Failed to parse target_parameters with errors={e.errors()}"
             )
             return RunResult(status=Status.fatal, reason=Reason.bad_target_parameters)
 
         if parameters.read_mode is ReadMode.incremental:
             if self.origin.supports_incremental is False:
                 adapter.warning(
-                    "Origin warehouse {} does not support '{}' read mode".format(
-                        self.origin.name, ReadMode.incremental.value
-                    )
+                    f"Origin warehouse {self.origin.name} "
+                    f"does not support '{ReadMode.incremental.value}' read mode"
                 )
                 return RunResult(
                     status=Status.fatal,
@@ -396,9 +386,8 @@ class ConnectorAction(BaseModel):
 
             if backend.is_configured is False:
                 adapter.warning(
-                    "For '{}' read_mode backend must be configured".format(
-                        ReadMode.incremental.value
-                    )
+                    f"For '{ReadMode.incremental.value}' "
+                    "read_mode backend must be configured"
                 )
                 return RunResult(
                     status=Status.fatal,
@@ -408,9 +397,7 @@ class ConnectorAction(BaseModel):
         read_from = None
         if parameters.read_mode is ReadMode.incremental:
             adapter.info(
-                "Read mode is '{}' fetching last run results".format(
-                    ReadMode.incremental.value
-                )
+                f"Read mode is '{ReadMode.incremental.value}' fetching last run results"
             )
             last_results = backend.store.load(key=workflow_id, parse_as=RunResult)
             read_from = last_results.read_from if last_results is not None else None
@@ -418,13 +405,9 @@ class ConnectorAction(BaseModel):
         events = Event.empty_counter()
 
         adapter.info(
-            "Starting to read from warehouse={} with mode={} read_from={} parameters={}"
-            .format(
-                self.origin.name,
-                parameters.read_mode,
-                read_from,
-                origin_parameters,
-            )
+            f"Starting to read from warehouse={self.origin.name} "
+            f"with mode={parameters.read_mode} "
+            f"read_from={read_from} parameters={origin_parameters}"
         )
         origin_adapter = ConnectorActionAdapter(
             logger,
@@ -449,16 +432,13 @@ class ConnectorAction(BaseModel):
         except Exception as e:
             events[Event.read_failure] += 1
             adapter.error(
-                "Failed to read from warehouse={} with parameters={} error={}".format(
-                    self.origin.name, origin_parameters, repr(e)
-                )
+                f"Failed to read from warehouse={self.origin.name} "
+                f"with parameters={origin_parameters} error={repr(e)}"
             )
         adapter.info(
-            "Finished reading from warehouse={} n_items={} read_failure={}".format(
-                self.origin.name,
-                len(origin_items),
-                events[Event.read_failure] > 0,
-            )
+            f"Finished reading from warehouse={self.origin.name} "
+            f"n_items={len(origin_items)} "
+            f"read_failure={events[Event.read_failure] > 0}"
         )
 
         next_read_from = read_from
@@ -469,10 +449,8 @@ class ConnectorAction(BaseModel):
             except Exception as e:
                 events[Event.item_to_read_from_failure] += 1
                 adapter.error(
-                    "Failed to get read_from from warehouse={} with parameters={}"
-                    " item={} error={}".format(
-                        self.origin.name, origin_parameters, last_item, repr(e)
-                    )
+                    f"Failed to get read_from from warehouse={self.origin.name} with"
+                    f" parameters={origin_parameters} item={last_item} error={repr(e)}"
                 )
                 return RunResult(
                     status=Status.fatal,
@@ -482,9 +460,8 @@ class ConnectorAction(BaseModel):
 
         using_default_format = not bool(action_parameters.get("format"))
         adapter.info(
-            "Starting to format origin items using {} function".format(
-                "default" if using_default_format else "user defined"
-            )
+            "Starting to format origin items "
+            f"using {'default' if using_default_format else 'user defined'} function"
         )
         formatted_items = []
         for item in origin_items:
@@ -493,20 +470,19 @@ class ConnectorAction(BaseModel):
             except Exception as e:
                 events[Event.format_failure] += 1
                 adapter.error(
-                    "Failed to format origin item using {} function error={}".format(
-                        "default" if using_default_format else "user defined", repr(e)
-                    )
+                    "Failed to format origin item using "
+                    f"{'default' if using_default_format else 'user defined'} "
+                    f"function error={repr(e)}"
                 )
         adapter.info(
-            "Finished formatting origin items success={} failures={}".format(
-                len(formatted_items), events[Event.format_failure]
-            )
+            f"Finished formatting origin items success={len(formatted_items)} "
+            f"failures={events[Event.format_failure]}"
         )
 
         if len(parameters.logics) > 0:
             adapter.info(
                 "Starting to apply logic functions: "
-                "n_items={} before applying logics".format(len(formatted_items))
+                f"n_items={len(formatted_items)} before applying logics"
             )
             items_to_write = []
             for item in formatted_items:
@@ -515,9 +491,7 @@ class ConnectorAction(BaseModel):
                         item = logic(item)
                     except Exception as e:
                         adapter.error(
-                            "Failed to apply logic function number={} error={}".format(
-                                i, repr(e)
-                            )
+                            f"Failed to apply logic function number={i} error={repr(e)}"
                         )
                         events[Event.logics_failure] += 1
                         break
@@ -528,20 +502,18 @@ class ConnectorAction(BaseModel):
                     items_to_write.append(item)
             adapter.info(
                 "Finished applying logic functions: "
-                "success={} discarded={} failures={}".format(
-                    len(items_to_write),
-                    events[Event.logics_discard],
-                    events[Event.logics_failure],
-                )
+                f"success={len(items_to_write)} "
+                f"discarded={events[Event.logics_discard]} "
+                f"failures={events[Event.logics_failure]}"
             )
         else:
             adapter.info("No logic functions supplied. Skipping")
             items_to_write = formatted_items
 
         adapter.info(
-            "Starting to write to warehouse={} with parameters={} n_items={}".format(
-                self.target.name, target_parameters, len(items_to_write)
-            )
+            f"Starting to write to warehouse={self.target.name} "
+            f"with parameters={target_parameters} "
+            f"n_items={len(items_to_write)}"
         )
         target_adapter = ConnectorActionAdapter(
             logger,
@@ -560,9 +532,8 @@ class ConnectorAction(BaseModel):
             events[Event.write_failure] += len(failed_items)
         except Exception as e:
             adapter.error(
-                "Failed to write to warehouse={} with parameters={} error={}".format(
-                    self.target.name, target_parameters, repr(e)
-                )
+                f"Failed to write to warehouse={self.target.name} "
+                f"with parameters={target_parameters} error={repr(e)}"
             )
             events[Event.write_failure] += len(items_to_write)
             return RunResult(
@@ -571,11 +542,9 @@ class ConnectorAction(BaseModel):
                 events=events,
             )
         adapter.info(
-            "Finished writing to warehouse={} success={} failures={}".format(
-                self.target.name,
-                len(items_to_write) - events[Event.write_failure],
-                events[Event.write_failure],
-            )
+            f"Finished writing to warehouse={self.target.name} "
+            f"success={len(items_to_write) - events[Event.write_failure]} "
+            f"failures={events[Event.write_failure]}"
         )
 
         if self.callback is not None:
@@ -586,14 +555,14 @@ class ConnectorAction(BaseModel):
                 )
             except Exception as e:
                 events[Event.callback_failure] += 1
-                adapter.error("Failed to run callback with error={}".format(repr(e)))
+                adapter.error(f"Failed to run callback with error={repr(e)}")
             finally:
                 events[Event.callback_executed] += 1
 
         results = RunResult.from_events(events)
         results.read_from = next_read_from
         if backend.is_configured:
-            adapter.info("Saving run results in {} backend".format(backend.store.name))
+            adapter.info(f"Saving run results in {backend.store.name} backend")
             backend.store.save(key=workflow_id, data=results)
 
         adapter.info("Finished action")
@@ -665,5 +634,5 @@ def hrflow_connectors_manifest(
         name="HrFlow.ai Connectors",
         connectors=[connector.manifest() for connector in connectors],
     )
-    with open("{}/manifest.json".format(directory_path), "w") as f:
+    with open(f"{directory_path}/manifest.json", "w") as f:
         json.dump(manifest, f, indent=2)

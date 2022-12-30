@@ -100,9 +100,8 @@ def generate_docs(
         connector_directory = connectors_directory / model.name.lower()
         if not connector_directory.is_dir():
             logging.error(
-                "Skipping documentation for {}: no directory found at {}".format(
-                    model.name, connector_directory
-                )
+                f"Skipping documentation for {model.name}: "
+                f"no directory found at {connector_directory}"
             )
             continue
         readme_content = CONNECTOR_README_TEMPLATE.render(
@@ -142,7 +141,5 @@ def generate_docs(
                     target_fields=target_fields,
                     target_endpoints=action.target.write.endpoints,
                 )
-                action_documentation = action_docs_directory / "{}.md".format(
-                    action.name
-                )
+                action_documentation = action_docs_directory / f"{action.name}.md"
                 action_documentation.write_bytes(action_documentation_content.encode())

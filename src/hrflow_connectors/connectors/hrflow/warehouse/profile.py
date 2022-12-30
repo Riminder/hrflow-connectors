@@ -107,16 +107,14 @@ def read(
     )
     if "Unable to find object" in response["message"]:
         adapter.info(
-            "No profile found for source_key={} profile_key={} response={}".format(
-                parameters.source_key, parameters.profile_key, response
-            )
+            f"No profile found for source_key={parameters.source_key}"
+            f" profile_key={parameters.profile_key} response={response}"
         )
         return []
     elif response["code"] >= 400:
         adapter.error(
-            "Failed to get profile source_key={} profile_key={} response={}".format(
-                parameters.source_key, parameters.profile_key, response
-            )
+            f"Failed to get profile source_key={parameters.source_key}"
+            f" profile_key={parameters.profile_key} response={response}"
         )
         raise Exception("Failed to get profile")
     return [response["data"]]
@@ -138,8 +136,9 @@ def write(
             ).get("data")
             if not current_profile:
                 adapter.warning(
-                    "Mode edit is activated and profile with reference={} not found"
-                    " in source. Failing for profile...".format(profile["reference"])
+                    "Mode edit is activated and profile with"
+                    f" reference={profile['reference']} not found in source. Failing"
+                    " for profile..."
                 )
                 failed.append(profile)
                 continue
@@ -158,10 +157,8 @@ def write(
             )
             if response["code"] != 200:
                 adapter.error(
-                    "Failed to edit profile with reference={} key={} response={}"
-                    .format(
-                        profile_to_index["key"], profile_to_index["reference"], response
-                    )
+                    f"Failed to edit profile with reference={profile_to_index['key']}"
+                    f" key={profile_to_index['reference']} response={response}"
                 )
                 failed.append(profile)
         else:
@@ -169,7 +166,7 @@ def write(
                 source_key=parameters.source_key, profile_json=profile
             )
             if response["code"] // 100 != 2:
-                adapter.error("Failed to add profile with response={}".format(response))
+                adapter.error(f"Failed to add profile with response={response}")
                 failed.append(profile)
     return failed
 
@@ -188,8 +185,8 @@ def write_parsing(
             source_key=parameters.source_key, reference=profile["reference"]
         ).get("data"):
             adapter.info(
-                "Mode only_insert is activated. Profile with reference={} already"
-                " in source. Skipping...".format(profile["reference"])
+                "Mode only_insert is activated. Profile with"
+                f" reference={profile['reference']} already in source. Skipping..."
             )
             continue
 
@@ -204,9 +201,8 @@ def write_parsing(
         )
         if response["code"] != 202:
             adapter.error(
-                "Failed to parse profile with reference={} response={}".format(
-                    profile["reference"], response
-                )
+                f"Failed to parse profile with reference={profile['reference']}"
+                f" response={response}"
             )
             failed.append(profile)
     return failed
