@@ -4,15 +4,38 @@ CONNECTOR_README_TEMPLATE = Template(
     """
 # {{ connector_name }} Connector
 {% if description %}
+
+## About {{ connector_name }} :
 > {{ description }}
 {% endif %}
 
-🔗 {{ url }}
 
-| Actions |
-| ------- |
-{% for action in actions %}| [**{{ action.name | title | replace("_", " ")}}**](docs/{{ action.name }}.md) |
+{% if actions %}
+## Connector features:
+{% for action in actions %}
+- **[**{{ action.name | title | replace("_", " ")}}**](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/{{ (connector_name.lower()) }}/docs/{{ action.name }}.md) :** {{ action.description}}
 {% endfor %}
+{% endif %}
+
+
+## 🔗 Useful links:
+📝 Visit [{{ connector_name }}]({{ url }}) to learn more
+<br>
+💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/{{ (connector_name.lower()) }}) on our Github
+
+
+## 📷 Screenshots:
+
+{% if actions %}
+    {% for action in actions %}
+        {% if action.screenshot_urls %}
+- **[**{{ action.name | title | replace("_", " ")}}**](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/{{ (connector_name.lower()) }}/docs/{{ action.name }}.md) :**
+            {% for screenshot in action.screenshot_urls %}
+![]({{ screenshot }} ) 
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
 """
 )
 ACTION_DOCUMENTATION_TEMAPLTE = Template(

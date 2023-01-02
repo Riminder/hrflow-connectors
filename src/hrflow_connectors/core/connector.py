@@ -288,6 +288,7 @@ class ConnectorAction(BaseModel):
     callback: t.Optional[
         t.Callable[[BaseModel, BaseModel, t.Counter[Event], t.List[t.Dict]], None]
     ] = None
+    screenshot_urls: t.Optional[t.List[str]]
 
     @validator("origin", pre=False)
     def origin_is_readable(cls, origin):

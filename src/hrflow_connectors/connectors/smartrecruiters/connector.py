@@ -194,6 +194,7 @@ SmartRecruiters = Connector(
             ),
             origin=SmartRecruitersJobWarehouse,
             target=HrFlowJobWarehouse,
+            screenshot_urls=["https://www.smartrecruiters.com/wp-content/themes/smartrecruiters/new-template/img/en_us/home/ash-screen-select.jpg"]
         ),
         ConnectorAction(
             name="push_profile",
@@ -207,6 +208,7 @@ SmartRecruiters = Connector(
             ),
             origin=HrFlowProfileWarehouse,
             target=SmartRecruitersProfileWarehouse,
+            screenshot_urls=["https://www.smartrecruiters.com/wp-content/themes/smartrecruiters/new-template/img/en_us/home/ash-screen-attract.jpg"]
         ),
     ],
 )
