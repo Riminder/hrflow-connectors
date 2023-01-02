@@ -30,14 +30,14 @@
         
 - **[**Pull jobs**](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/smartrecruiters/docs/pull_jobs.md) :**
             
-![](https://www.smartrecruiters.com/wp-content/themes/smartrecruiters/new-template/img/en_us/home/ash-screen-select.jpg ) 
+![](https://www.smartrecruiters.com/wp-content/themes/smartrecruiters/new-template/img/en_us/home/ash-screen-select.jpg )
             
         
     
         
 - **[**Push profile**](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/smartrecruiters/docs/push_profile.md) :**
             
-![](https://www.smartrecruiters.com/wp-content/themes/smartrecruiters/new-template/img/en_us/home/ash-screen-attract.jpg ) 
+![](https://www.smartrecruiters.com/wp-content/themes/smartrecruiters/new-template/img/en_us/home/ash-screen-attract.jpg )
             
         
     

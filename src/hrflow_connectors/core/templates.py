@@ -31,7 +31,7 @@ CONNECTOR_README_TEMPLATE = Template(
         {% if action.screenshot_urls %}
 - **[**{{ action.name | title | replace("_", " ")}}**](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/{{ (connector_name.lower()) }}/docs/{{ action.name }}.md) :**
             {% for screenshot in action.screenshot_urls %}
-![]({{ screenshot }} ) 
+![]({{ screenshot }} )
             {% endfor %}
         {% endif %}
     {% endfor %}
