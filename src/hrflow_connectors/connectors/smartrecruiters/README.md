@@ -28,16 +28,16 @@
 
     
         
-- **[**Pull jobs**](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/smartrecruiters/docs/pull_jobs.md) :**
+* **[**Pull jobs**](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/smartrecruiters/docs/pull_jobs.md) :**
             
-![](https://www.smartrecruiters.com/wp-content/themes/smartrecruiters/new-template/img/en_us/home/ash-screen-select.jpg )
+  * <img src=https://www.smartrecruiters.com/wp-content/themes/smartrecruiters/new-template/img/en_us/home/ash-screen-select.jpg width="90%" height="90%">
             
         
     
         
-- **[**Push profile**](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/smartrecruiters/docs/push_profile.md) :**
+* **[**Push profile**](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/smartrecruiters/docs/push_profile.md) :**
             
-![](https://www.smartrecruiters.com/wp-content/themes/smartrecruiters/new-template/img/en_us/home/ash-screen-attract.jpg )
+  * <img src=https://www.smartrecruiters.com/wp-content/themes/smartrecruiters/new-template/img/en_us/home/ash-screen-attract.jpg width="90%" height="90%">
             
         
     

@@ -29,9 +29,9 @@ CONNECTOR_README_TEMPLATE = Template(
 {% if actions %}
     {% for action in actions %}
         {% if action.screenshot_urls %}
-- **[**{{ action.name | title | replace("_", " ")}}**](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/{{ (connector_name.lower()) }}/docs/{{ action.name }}.md) :**
+* **[**{{ action.name | title | replace("_", " ")}}**](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/{{ (connector_name.lower()) }}/docs/{{ action.name }}.md) :**
             {% for screenshot in action.screenshot_urls %}
-![]({{ screenshot }} )
+  * <img src={{ screenshot }} width="90%" height="90%">
             {% endfor %}
         {% endif %}
     {% endfor %}
