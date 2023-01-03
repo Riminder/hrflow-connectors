@@ -1,5 +1,11 @@
 import re
 
+from hrflow_connectors.connectors.breezyhr.utils.datetime_converter import (
+    from_str_to_datetime,
+)
+from hrflow_connectors.connectors.breezyhr.utils.remove_html_tags import (
+    remove_html_tags,
+)
 from hrflow_connectors.connectors.breezyhr.warehouse import (
     BreezyHRJobWarehouse,
     BreezyHRProfileWarehouse,
@@ -14,8 +20,6 @@ from hrflow_connectors.core.connector import (
     ConnectorAction,
     WorkflowType,
 )
-from hrflow_connectors.connectors.breezyhr.utils.datetime_converter import from_str_to_datetime
-from hrflow_connectors.connectors.breezyhr.utils.remove_html_tags import remove_html_tags
 
 from ..hrflow.schemas import HrFlowJob, HrFlowProfile
 from .schemas import BreezyJobModel, BreezyProfileModel
