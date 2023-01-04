@@ -31,6 +31,8 @@ def field_example(field: ModelField) -> str:
         return "lambda *args, **kwargs: None # Put your code logic here"
 
     if field.default is not None:
+        if isinstance(field.default, str):
+            return '"{}"'.format(field.default)
         return str(field.default)
 
     if field.default_factory is not None:
