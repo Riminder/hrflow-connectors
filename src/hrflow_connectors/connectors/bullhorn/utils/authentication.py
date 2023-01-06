@@ -24,7 +24,7 @@ class AuthCodeRedirectHandler(urllib2.HTTPRedirectHandler):
 
 
 def build_auth_code_request(username, password, client_id):
-    d = {
+    data = {
         "client_id": client_id,
         "response_type": "code",
         "username": username,
@@ -32,10 +32,10 @@ def build_auth_code_request(username, password, client_id):
         "action": "Login",
     }
 
-    f = urlparse.urlencode(d)
-    f = f.encode("utf-8")
+    encoded = urlparse.urlencode(data)
+    encoded = encoded.encode("utf-8")
 
-    req = urllib2.Request(url=base_url + "/authorize", data=f)
+    req = urllib2.Request(url=base_url + "/authorize", data=encoded)
     return req
 
 
@@ -43,18 +43,17 @@ def get_access_token(code, client_id, client_secret):
     """
     Gets an OAuth access token given an OAuth authorization code
     """
-    d = {
+    data = {
         "grant_type": "authorization_code",
         "client_id": client_id,
         "client_secret": client_secret,
         "code": code,
     }
-    f = urlparse.urlencode(d)
-    f = f.encode("utf-8")
+    encoded = urlparse.urlencode(data)
+    encoded = encoded.encode("utf-8")
 
-    req = urllib2.Request(base_url + "/token", f)
-    X = urllib2.urlopen(req)
-    return X.read()
+    req = urllib2.Request(base_url + "/token", encoded)
+    return urllib2.urlopen(req).read()
 
 
 def auth(username, password, client_id, client_secret):

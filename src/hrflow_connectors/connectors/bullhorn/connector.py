@@ -48,7 +48,7 @@ def get_location(info: t.Dict) -> t.Dict:
     return None
 
 
-def get_skills(data: t.Dict) -> t.Dict:
+def get_skills(data: t.Dict) -> str:
     skills = ""
     if data.get("skills") is not None:
         for i in range(len(data["skills"]) - 1):
@@ -57,8 +57,8 @@ def get_skills(data: t.Dict) -> t.Dict:
     return skills
 
 
-def get_education(education_list: t.Dict) -> t.Dict:
-    educations_json = []
+def get_education(education_list: t.List[t.Dict]) -> t.List[t.Dict]:
+    educations = []
     for hrflow_education in education_list:
         location = hrflow_education["location"]
         education = {
@@ -83,11 +83,11 @@ def get_education(education_list: t.Dict) -> t.Dict:
             if hrflow_education.get("date_start")
             else None,
         }
-        educations_json.append(education)
-    return educations_json
+        educations.append(education)
+    return educations
 
 
-def get_experience(experience_list: t.Dict) -> t.Dict:
+def get_experience(experience_list: t.List[t.Dict]) -> t.List[t.Dict]:
     experience_json = []
     for hrflow_experience in experience_list:
         experience = {
@@ -115,7 +115,7 @@ def get_experience(experience_list: t.Dict) -> t.Dict:
     return experience_json
 
 
-def get_attachments(attachment_list: t.Dict) -> t.Dict:
+def get_attachments(attachment_list: t.List[t.Dict]) -> t.List[t.Dict]:
     attachments_json = []
     for hrflow_attachment in attachment_list:
         url = hrflow_attachment["public_url"]
@@ -138,13 +138,13 @@ def get_attachments(attachment_list: t.Dict) -> t.Dict:
 def format_profile(data: HrFlowProfile) -> t.Dict:
     info = data.get("info")
 
-    dateOfBirth = None
+    date_of_birth = None
     if info is not None and info.get("date_birth"):
         date_birth_field = info.get("date_birth")
         date_birth_timestamp = date_format.from_str_to_datetime(
             date_birth_field
         ).timestamp()
-        dateOfBirth = int(date_birth_timestamp)
+        date_of_birth = int(date_birth_timestamp)
 
     create_profile_body = {
         "id": data.get("reference"),
@@ -155,7 +155,7 @@ def format_profile(data: HrFlowProfile) -> t.Dict:
         "lastName": info.get("last_name") if info else None,
         "email": info.get("email") if info else None,
         "mobile": info.get("phone") if info else None,
-        "dateOfBirth": dateOfBirth,
+        "dateOfBirth": date_of_birth,
         "experience": to_int(data.get("experiences_duration")),  # TODO
         "skillSet": get_skills(data) if data.get("skills") else None,
     }
