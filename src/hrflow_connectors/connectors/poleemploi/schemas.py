@@ -5,14 +5,14 @@ from typing import Any, List
 
 from pydantic import BaseModel, Field, validator
 
-POLEEMPLOI_REFERENCES_ENDPOINT = (
+POLE_EMPLOI_REFERENCES_ENDPOINT = (
     "https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/"
 )
 
 
 def validate_date(value: Any) -> Any:
     try:
-        _ = datetime.date.fromisoformat(value)
+        datetime.date.fromisoformat(value)
         return value
     except ValueError:
         raise ValueError(
@@ -32,7 +32,7 @@ class JobLocation(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            f" {POLEEMPLOI_REFERENCES_ENDPOINT}communes"
+            f" {POLE_EMPLOI_REFERENCES_ENDPOINT}communes"
         ),
     )
 
@@ -45,32 +45,32 @@ class Entreprise(BaseModel):
     entrepriseAdaptee: bool
 
 
-class Partenaire(BaseModel):
+class Partner(BaseModel):
     nom: str
     url: str
     logo: str
 
 
-class OrigineOffreTag(IntEnum):
-    poleEmploi = 1
-    partenaire = 2
+class OfferOriginTag(IntEnum):
+    POLE_EMPLOI = 1
+    PARTNER = 2
 
 
-class OrigineOffre(BaseModel):
-    origine: OrigineOffreTag
+class OfferOrigin(BaseModel):
+    origine: OfferOriginTag
     urlOrigine: t.Optional[str]
-    partenaires: List[Partenaire]
+    partenaires: List[Partner]
 
 
-class ExperienceExige(str, Enum):
-    d = "D"  # Débutant accepté
-    s = "S"  # Expérience souhaitée
-    e = "E"  # Expérience exigée
+class ExperienceRequirement(str, Enum):
+    BEGINNER_ACCEPTED = "D"
+    EXPERIENCE_DESIRED = "S"
+    EXPERIENCE_REQUIRED = "E"
 
 
 class Exigence(Enum):
-    e = "E"  # Exigé
-    s = "S"  # Souhaité
+    REQUIRED = "E"
+    DESIRED = "S"
 
 
 class Formation(BaseModel):
@@ -81,7 +81,7 @@ class Formation(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            f" {POLEEMPLOI_REFERENCES_ENDPOINT}referentiel/niveauxFormations"
+            f" {POLE_EMPLOI_REFERENCES_ENDPOINT}referentiel/niveauxFormations"
         ),
     )
     commentaire: str
@@ -95,7 +95,7 @@ class Langue(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            f" {POLEEMPLOI_REFERENCES_ENDPOINT}referentiel/langues"
+            f" {POLE_EMPLOI_REFERENCES_ENDPOINT}referentiel/langues"
         ),
     )
     exigence: t.Optional[Exigence]
@@ -108,7 +108,7 @@ class Permis(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            f" {POLEEMPLOI_REFERENCES_ENDPOINT}referentiel/permis"
+            f" {POLE_EMPLOI_REFERENCES_ENDPOINT}referentiel/permis"
         ),
     )
     exigence: t.Optional[Exigence]
@@ -145,27 +145,27 @@ class Agence(BaseModel):
 
 
 class QualificationCode(str, Enum):
-    a = "1"  # 1 → Manœuvre
-    b = "2"  # 2 → Ouvrier spécialisé
-    c = "3"  # 3 → Ouvrier qualifié (P1, P2)
-    d = "4"  # 4 → Ouvrier qualifié (P3, P4, OHQ)
-    e = "5"  # 5 → Employé non qualifié
-    f = "6"  # 6 → Employé qualifié
-    g = "7"  # 7 → Technicien
-    h = "8"  # 8 → Agent de maîtrise
-    i = "9"  # 9 → Cadre
+    MANOEUVRE = "1"
+    SPECIALIZED_WORKER = "2"
+    QUALIFIED_WORKER_P1_P2 = "3"
+    QUALIFIED_WORKER_P3_P4_OHQ = "4"
+    UNQUALIFIED_EMPLOYEE = "5"
+    QUALIFIED_EMPLOYEE = "6"
+    TECHNICIAN = "7"
+    SUPERVISORY_AGENT = "8"
+    EXECUTIVE = "9"
 
 
 class QualificationLibelle(str, Enum):
-    a = "Manœuvre"
-    b = "Ouvrier spécialisé"
-    c = "Ouvrier qualifié (P1, P2)"
-    d = "Ouvrier qualifié (P3, P4, OHQ)"
-    e = "Employé non qualifié"
-    f = "Employé qualifié"
-    g = "Technicien"
-    h = "Agent de maîtrise"
-    i = "Cadre"
+    MANOEUVRE = "Manœuvre"
+    SPECIALIZED_WORKER = "Ouvrier spécialisé"
+    QUALIFIED_WORKER_P1_P2 = "Ouvrier qualifié (P1, P2)"
+    QUALIFIED_WORKER_P3_P4_OHQ = "Ouvrier qualifié (P3, P4, OHQ)"
+    UNQUALIFIED_EMPLOYEE = "Employé non qualifié"
+    QUALIFIED_EMPLOYEE = "Employé qualifié"
+    TECHNICIAN = "Technicien"
+    SUPERVISORY_AGENT = "Agent de maîtrise"
+    EXECUTIVE = "Cadre"
 
 
 class QualitePro(BaseModel):
@@ -186,7 +186,7 @@ class PoleEmploiJobOffer(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            f" {POLEEMPLOI_REFERENCES_ENDPOINT}metiers"
+            f" {POLE_EMPLOI_REFERENCES_ENDPOINT}metiers"
         ),
     )
     romeLibelle: t.Optional[str]
@@ -196,7 +196,7 @@ class PoleEmploiJobOffer(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            f" {POLEEMPLOI_REFERENCES_ENDPOINT}appellations"
+            f" {POLE_EMPLOI_REFERENCES_ENDPOINT}appellations"
         ),
     )
     entreprise: t.Optional[Entreprise]
@@ -206,7 +206,7 @@ class PoleEmploiJobOffer(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            f" {POLEEMPLOI_REFERENCES_ENDPOINT}typesContrats"
+            f" {POLE_EMPLOI_REFERENCES_ENDPOINT}typesContrats"
         ),
     )
     typeContratLibelle: t.Optional[str] = Field(
@@ -216,7 +216,7 @@ class PoleEmploiJobOffer(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            f" {POLEEMPLOI_REFERENCES_ENDPOINT}typesContrats"
+            f" {POLE_EMPLOI_REFERENCES_ENDPOINT}typesContrats"
         ),
     )
     natureContrat: t.Optional[str] = Field(
@@ -225,12 +225,12 @@ class PoleEmploiJobOffer(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            f" {POLEEMPLOI_REFERENCES_ENDPOINT}naturesContrats"
+            f" {POLE_EMPLOI_REFERENCES_ENDPOINT}naturesContrats"
         ),
     )
-    origineOffre: t.Optional[OrigineOffre]
+    origineOffre: t.Optional[OfferOrigin]
     offresManqueCandidats: t.Optional[bool]
-    experienceExige: t.Optional[ExperienceExige]
+    experienceExige: t.Optional[ExperienceRequirement]
     experienceLibelle: t.Optional[str]
     experienceCommentaire: t.Optional[str]
     formations: t.Optional[List[Formation]]
@@ -260,7 +260,7 @@ class PoleEmploiJobOffer(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            f" {POLEEMPLOI_REFERENCES_ENDPOINT}secteursActivites"
+            f" {POLE_EMPLOI_REFERENCES_ENDPOINT}secteursActivites"
         ),
     )
     secteurActiviteLibelle: t.Optional[str] = Field(
@@ -269,7 +269,7 @@ class PoleEmploiJobOffer(BaseModel):
             "A GET request for the list of accepted choices from the Offres"
             " d'emploi API"
             "to this endpoint :"
-            f" {POLEEMPLOI_REFERENCES_ENDPOINT}secteursActivites"
+            f" {POLE_EMPLOI_REFERENCES_ENDPOINT}secteursActivites"
         ),
     )
     qualitesProfessionnelles: t.Optional[List[QualitePro]]
