@@ -10,14 +10,14 @@ from hrflow_connectors.core import (
 )
 
 
-def get_job_location(poleemploi_location: t.Union[t.Dict, None]) -> t.Dict:
-    if poleemploi_location is None:
+def get_job_location(pole_emploi_location: t.Union[t.Dict, None]) -> t.Dict:
+    if pole_emploi_location is None:
         return dict(lat=None, lng=None, text="")
 
-    lat = poleemploi_location.get("latitude")
+    lat = pole_emploi_location.get("latitude")
     lat = float(lat) if lat is not None else lat
 
-    lng = poleemploi_location.get("longitude")
+    lng = pole_emploi_location.get("longitude")
     lng = float(lng) if lng is not None else lng
 
     return dict(
@@ -25,65 +25,68 @@ def get_job_location(poleemploi_location: t.Union[t.Dict, None]) -> t.Dict:
         lng=lng,
         text=" ".join(
             [
-                poleemploi_location.get(field)
+                pole_emploi_location.get(field)
                 for field in ["libelle", "codePostal"]
-                if poleemploi_location.get(field)
+                if pole_emploi_location.get(field)
             ]
         ),
     )
 
 
-def get_sections(poleemploi_job: t.Dict) -> t.List[t.Dict]:
+def get_sections(pole_emploi_job: t.Dict) -> t.List[t.Dict]:
     sections = []
-    if "entreprise" in poleemploi_job and "description" in poleemploi_job["entreprise"]:
+    if (
+        "entreprise" in pole_emploi_job
+        and "description" in pole_emploi_job["entreprise"]
+    ):
         sections.append(
             dict(
-                name="poleemploi_company_description",
+                name="pole_emploi_company_description",
                 title="Company Description",
-                description=poleemploi_job["entreprise"]["description"],
+                description=pole_emploi_job["entreprise"]["description"],
             )
         )
     return sections
 
 
-def get_tags(poleemploi_job: t.Dict) -> t.List[t.Dict]:
-    job = poleemploi_job
+def get_tags(pole_emploi_job: t.Dict) -> t.List[t.Dict]:
+    job = pole_emploi_job
     contact = job.get("contact", {})
-    salaire = job.get("salaire", {})
+    salary = job.get("salaire", {})
     tags = []
 
     t = lambda name, value: dict(name=name, value=value)
     tags = [
-        t("poleemploi_romeCode", job.get("romeCode")),
-        t("poleemploi_romeLibelle", job.get("romeLibelle")),
-        t("poleemploi_appellationLibelle", job.get("appellationLibelle")),
-        t("poleemploi_contratNature", job.get("natureContrat")),
-        t("poleemploi_contractType", job.get("typeContratLibelle")),
-        t("poleemploi_experience", job.get("experienceLibelle")),
-        t("poleemploi_salary", salaire.get("libelle")),
-        t("poleemploi_working_hours", job.get("dureeTravailLibelle")),
-        t("poleemploi_qualification", job.get("qualificationLibelle")),
-        t("poleemploi_secteurActivite", job.get("secteurActiviteLibelle")),
-        t("poleemploi_contact-name", contact.get("nom")),
-        t("poleemploi_contact-email", contact.get("courriel")),
-        t("poleemploi_contact-phone", contact.get("telephone")),
+        t("pole_emploi_romeCode", job.get("romeCode")),
+        t("pole_emploi_romeLibelle", job.get("romeLibelle")),
+        t("pole_emploi_appellationLibelle", job.get("appellationLibelle")),
+        t("pole_emploi_contractNature", job.get("natureContrat")),
+        t("pole_emploi_contractType", job.get("typeContratLibelle")),
+        t("pole_emploi_experience", job.get("experienceLibelle")),
+        t("pole_emploi_salary", salary.get("libelle")),
+        t("pole_emploi_working_hours", job.get("dureeTravailLibelle")),
+        t("pole_emploi_qualification", job.get("qualificationLibelle")),
+        t("pole_emploi_secteurActivite", job.get("secteurActiviteLibelle")),
+        t("pole_emploi_contact-name", contact.get("nom")),
+        t("pole_emploi_contact-email", contact.get("courriel")),
+        t("pole_emploi_contact-phone", contact.get("telephone")),
     ]
     return tags
 
 
 def format_job(
-    poleemploi_job: t.Dict,
+    pole_emploi_job: t.Dict,
 ) -> t.Dict:
     job = dict(
-        name=poleemploi_job.get("intitule"),
-        reference=poleemploi_job.get("id"),
-        created_at=poleemploi_job.get("dateCreation"),
-        updated_at=poleemploi_job.get("dateActualisation"),
-        location=get_job_location(poleemploi_job.get("lieuTravail")),
+        name=pole_emploi_job.get("intitule"),
+        reference=pole_emploi_job.get("id"),
+        created_at=pole_emploi_job.get("dateCreation"),
+        updated_at=pole_emploi_job.get("dateActualisation"),
+        location=get_job_location(pole_emploi_job.get("lieuTravail")),
         url=None,
-        summary=poleemploi_job.get("description"),
-        sections=get_sections(poleemploi_job),
-        tags=get_tags(poleemploi_job),
+        summary=pole_emploi_job.get("description"),
+        sections=get_sections(pole_emploi_job),
+        tags=get_tags(pole_emploi_job),
     )
     return job
 

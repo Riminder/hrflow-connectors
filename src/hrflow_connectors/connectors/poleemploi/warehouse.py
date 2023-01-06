@@ -6,8 +6,8 @@ import requests
 from pydantic import BaseModel, Field, validator
 
 from hrflow_connectors.connectors.poleemploi.schemas import (
-    ExperienceExige,
-    OrigineOffreTag,
+    ExperienceRequirement,
+    OfferOriginTag,
     PoleEmploiJobOffer,
     validate_date,
 )
@@ -86,77 +86,66 @@ Note: In all cases, if originOffer = 1, then only the Pole Emploi offers
 will be returned"""
 
 
-class JobLocation(BaseModel):
-    libelle: str
-    latitude: float
-    longitude: float
-    codePostal: str
-
-
 class Experience(str, Enum):
-    lessthanoneyear = "1"  # 1 -> Moins d'un an d'expérience
-    lessthanthree = "2"  # 2 -> De 1 à 3 ans d'expérience
-    morethanthree = "3"  # 3 -> Plus de 3 ans d'expérience
+    LESS_THAN_ONE_YEAR = "1"
+    ONE_TO_THREE_YEARS = "2"
+    MORE_THAN_THREE_YEARS = "3"
 
 
 class Qualification(IntEnum):
-    nonCadre = 0
-    cadre = 9
+    NON_EXECUTIVE = 0
+    EXECUTIVE = 9
 
 
-class PeriodeSalaire(str, Enum):
-    Mensuel = "M"
-    Annuel = "A"
-    Horaire = "H"
-    Cachet = "C"
+class SalaryPeriod(str, Enum):
+    MONTHLY = "M"
+    ANNUALLY = "A"
+    HOURLY = "H"
+    FEE_FOR_SERVICE = "C"
 
 
-class GrandDomaine(str, Enum):
-    agriculture = (  # A -> Agriculture/Pêche/
-        # /Espaces verts et naturels/Soins aux animaux
-        "A"
-    )
-    arts = "B"  # B -> Arts / Artisanat d’art
-    banque = "C"  # C -> Banque / Assurance
-    immobilier = "C15"  # C15 -> Immobilier
-    commerce = "D"  # D -> Commerce / Vente
-    communication = "E"  # E -> Communication / Multimédia
-    batiment = "F"  # F -> Bâtiment / Travaux Publics
-    hotellerie = "G"  # G -> Hôtellerie – Restauration / Tourisme / Animation
-    industrie = "H"  # H -> Industrie
-    installation = "I"  # I -> Installation / Maintenance
-    sante = "J"  # J -> Santé
-    services = "K"  # K -> Services à la personne / à la collectivité
-    spectacle = "L"  # L -> Spectacle
-    sport = "L14"  # L14 -> Sport
-    achats = "M"  # M -> Achats / Comptabilité / Gestion
-    direction = "M13"  # M13 -> Direction d’entreprise
-    conseil = "M14"  # M14 -> Conseil/Etudes
-    ressources = "M15"  # M15 -> Ressources Humaines
-    secretariat = "M16"  # M16 -> Secrétariat/Assistanat
-    marketing = "M17"  # M17 -> Marketing /Stratégie commerciale
-    informatique = "M18"  # M18 -> Informatique / Télécommunication
-    transport = "N"  # N -> Transport / Logistique
+class IndustryDomain(str, Enum):
+    AGRICULTURE = "A"
+    ARTS = "B"
+    BANKING_INSURANCE = "C"
+    REAL_ESTATE = "C15"
+    RETAIL = "D"
+    MEDIA_COMMUNICATION = "E"
+    CONSTRUCTION = "F"
+    HOSPITALITY_TOURISM = "G"
+    INDUSTRY = "H"
+    INSTALLATION_MAINTENANCE = "I"
+    HEALTHCARE = "J"
+    PERSONAL_COMMUNITY_SERVICES = "K"
+    PERFORMING_ARTS = "L"
+    SPORT = "L14"
+    PURCHASING_ACCOUNTING_MANAGEMENT = "M"
+    EXECUTIVE_MANAGEMENT = "M13"
+    CONSULTING_RESEARCH = "M14"
+    HUMAN_RESOURCES = "M15"
+    SECRETARIAL_ASSISTANTSHIP = "M16"
+    MARKETING_SALES_STRATEGY = "M17"
+    COMPUTER_TELECOMMUNICATION = "M18"
+    TRANSPORTATION_LOGISTICS = "N"
 
 
-class PublieeDepuis(IntEnum):
-    # Valeurs possibles : 1, 3, 7, 14, 31
-    a = 1
-    b = 3
-    c = 7
-    d = 14
-    e = 31
+class PublishedSince(IntEnum):
+    ONE_DAY = 1
+    THREE_DAYS = 3
+    SEVEN_DAYS = 7
+    FOURTEEN_DAYS = 14
+    THIRTY_ONE_DAYS = 31
 
 
-class ModeSelectionPartenaires(str, Enum):
-    inclus = "INCLUS"
-    exclu = "EXCLU"
+class PartnerSelectionMode(str, Enum):
+    INCLUDE = "INCLUS"
+    EXCLUDE = "EXCLU"
 
 
-class DureeHebdo(str, Enum):
-    nonPrecise = "0"
-    tempsPlein = "1"
-    tempsPartiel = "2"
+class WeeklyDuration(str, Enum):
+    NOT_SPECIFIED = "0"
+    FULL_TIME = "1"
+    PART_TIME = "2"
 
 
 class ReadJobsParameters(ParametersModel):
@@ -261,7 +250,7 @@ class ReadJobsParameters(ParametersModel):
         ),
         field_type=FieldType.QueryParam,
     )
-    origineOffre: t.Optional[OrigineOffreTag] = Field(
+    origineOffre: t.Optional[OfferOriginTag] = Field(
         description=(
             "Origin of the offer\nPossible values:\n1 -> Job center\n2 -> Partner"
         ),
@@ -367,7 +356,7 @@ class ReadJobsParameters(ParametersModel):
         ),
         field_type=FieldType.QueryParam,
     )  # If this field is set, then periodeSalaire is required.
-    periodeSalaire: t.Optional[PeriodeSalaire] = Field(
+    periodeSalaire: t.Optional[SalaryPeriod] = Field(
         description=(
             "Period for the calculation of the minimum wage.\nIf this data is filled"
             " in, the minimum wage is mandatory.\nPossible values:\nM -> Monthly\nA ->"
@@ -388,15 +377,15 @@ class ReadJobsParameters(ParametersModel):
         ),
         field_type=FieldType.QueryParam,
     )
-    grandDomaine: t.Optional[GrandDomaine] = Field(
+    grandDomaine: t.Optional[IndustryDomain] = Field(
         description="Code of the major area of the offer",
         field_type=FieldType.QueryParam,
     )
-    experienceExigence: t.Optional[ExperienceExige] = Field(
+    experienceExige: t.Optional[ExperienceRequirement] = Field(
         description="Filter offers by experience level.",
         field_type=FieldType.QueryParam,
     )
-    publieeDepuis: t.Optional[PublieeDepuis] = Field(
+    publieeDepuis: t.Optional[PublishedSince] = Field(
         description=(
             "Maximum number of days since the publication of the offer\nPossible"
             " values: 1, 3, 7, 14, 31"
@@ -427,12 +416,12 @@ class ReadJobsParameters(ParametersModel):
         ),
         field_type=FieldType.QueryParam,
     )  # Il est possible de saisir plusieurs codes (séparateur ",").
-    modeSelectionPartenaires: t.Optional[ModeSelectionPartenaires] = Field(
+    modeSelectionPartenaires: t.Optional[PartnerSelectionMode] = Field(
         description=MODESELECTIONPARTENAIRES_DESCRIPTION,
         field_type=FieldType.QueryParam,
     )  # If this field is set, then maxCreationDate is required.
 
-    dureeHebdo: t.Optional[DureeHebdo] = Field(
+    dureeHebdo: t.Optional[WeeklyDuration] = Field(
         description=(
             "Filtre les offres selon la durée hebdomadaire.\nValeurs possibles :\n0 ->"
             " Non précisé\n1 -> Temps plein\n2 -> Temps partiel"

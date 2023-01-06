@@ -1,4 +1,13 @@
-warehouse: {}
+warehouse:
+  PoleEmploiJobWarehouse:
+    read:
+      - parameters:
+          client_id: $__CLIENT_ID
+          client_secret:  $__CLIENT_SECRET
+          theme: "5"
+          secteurActivite: "72"
+          typeContrat: "CDI"
+          natureContrat: "E1"
 actions:
   pull_jobs:
     - id: valid_parameters
