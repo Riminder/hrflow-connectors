@@ -263,7 +263,7 @@ SAPProfileWarehouse = Warehouse(
     ),
 )
 
-SAPProfileWarehouse = Warehouse(
+SAPProfileParsingWarehouse = Warehouse(
     name="SAP Profiles Parsing",
     data_schema=SapCandidateModel,
     data_type=DataType.profile,
@@ -284,3 +284,5 @@ SAPJobWarehouse = Warehouse(
         endpoints=[],
     ),
 )
+
+
