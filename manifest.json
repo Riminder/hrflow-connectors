@@ -3333,7 +3333,7 @@
       ]
     },
     {
-      "name": "Adzuna",
+      "name": "PoleEmploi",
       "actions": [
         {
           "name": "pull_jobs",
@@ -3376,445 +3376,935 @@
           },
           "data_type": "job",
           "trigger_type": "schedule",
-          "origin": "Adzuna Jobs",
+          "origin": "Pole Emploi Jobs",
           "origin_parameters": {
             "title": "ReadJobsParameters",
             "type": "object",
             "properties": {
-              "country": {
-                "description": "ISO 8601 country code of the country of interest",
+              "client_id": {
+                "title": "Client Id",
+                "description": "Client ID used to access Pole Emploi API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Client Secret used to access Pole Emploi API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "range": {
+                "title": "Range",
+                "description": "Pagination of data. The range of results is limited to 150.",
                 "field_type": "Query Param",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/CountryCode"
-                  }
-                ]
-              },
-              "app_id": {
-                "title": "App Id",
-                "description": "Application ID, supplied by Adzuna",
-                "field_type": "Auth",
                 "type": "string"
               },
-              "app_key": {
-                "title": "App Key",
-                "description": "Application key, supplied by Adzuna",
-                "field_type": "Auth",
-                "type": "string"
-              },
-              "results_per_page": {
-                "title": "Results Per Page",
-                "description": "The number of results to include on a page of search results.",
+              "sort": {
+                "title": "Sort",
+                "description": "Sorting of data",
                 "field_type": "Query Param",
                 "type": "integer"
               },
-              "what": {
-                "title": "What",
-                "description": "The keywords to search for. Multiple terms may be space separated.",
+              "domaine": {
+                "title": "Domaine",
+                "description": "Professional field codeA GET request for the list of accepted choices from the Offres d'emploi API to this endpoint :https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//domaines",
                 "field_type": "Query Param",
                 "type": "string"
               },
-              "what_and": {
-                "title": "What And",
-                "description": "The keywords to search for, all keywords must be found.",
+              "codeROME": {
+                "title": "Coderome",
+                "description": "ROME code of the professionA GET request for the list of accepted choices from the Offres d'emploi API to this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//metiers",
                 "field_type": "Query Param",
                 "type": "string"
               },
-              "what_phrase": {
-                "title": "What Phrase",
-                "description": "An entire phrase which must be found in the description or title.",
+              "theme": {
+                "title": "Theme",
+                "description": "Theme of the professionA GET request for the list of accepted choices from the Offres d'emploi API to this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//themes",
                 "field_type": "Query Param",
                 "type": "string"
               },
-              "what_or": {
-                "title": "What Or",
-                "description": "The keywords to search for, any keywords may be found. Multiple terms may be space separated.",
+              "appellation": {
+                "title": "Appellation",
+                "description": "Code of the appellationA GET request for the list of accepted choices from the Offres d'emploi API to this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//appellations",
                 "field_type": "Query Param",
                 "type": "string"
               },
-              "what_exclude": {
-                "title": "What Exclude",
-                "description": "Keywords to exclude from the search. Multiple terms may be space separated.",
+              "secteurActivite": {
+                "title": "Secteuractivite",
+                "description": "NAF codes for sectors of activity. It is possible to specify two NAF codes by separating them with a comma in the character string.Example : 01,02A GET request for the list of accepted choices from the Offres d'emploi API to this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//secteursActivites",
                 "field_type": "Query Param",
                 "type": "string"
               },
-              "title_only": {
-                "title": "Title Only",
-                "description": "Keywords to find, but only in the title. Multiple terms may be space separated.",
+              "experience": {
+                "description": "Level of experience required\nPossible values:\n1 -> Less than 1 year of experience\n2 -> From 1 to 3 years of experience\n3 -> More than 3 years of experience",
+                "field_type": "Query Param",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Experience"
+                  }
+                ]
+              },
+              "typeContrat": {
+                "title": "Typecontrat",
+                "description": "Contract type codeExample : CDI,CDDA GET request for the list of accepted choices from the Offres d'emploi API to this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//typesContrats",
                 "field_type": "Query Param",
                 "type": "string"
               },
-              "where": {
-                "title": "Where",
-                "description": "The geographic centre of the search. Place names, postal codes, etc. may be used.\t",
+              "natureContrat": {
+                "title": "Naturecontrat",
+                "description": "Code of the nature of contractA GET request for the list of accepted choices from the Offres d'emploi API to this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//naturesContrats",
                 "field_type": "Query Param",
                 "type": "string"
+              },
+              "origineOffre": {
+                "description": "Origin of the offer\nPossible values:\n1 -> Job center\n2 -> Partner",
+                "field_type": "Query Param",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OrigineOffreTag"
+                  }
+                ]
+              },
+              "qualification": {
+                "description": "Qualification Code\nPossible values:\n0 -> Non-executive\n9 -> Executive",
+                "field_type": "Query Param",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Qualification"
+                  }
+                ]
+              },
+              "tempsPlein": {
+                "title": "Tempsplein",
+                "description": "Promote the use of the WeeklyDuration filter\nPossible values:\nfalse -> Part-time\ntrue -> Full time\nIf the parameter is not filled, then all the offers are returned",
+                "field_type": "Query Param",
+                "type": "boolean"
+              },
+              "commune": {
+                "title": "Commune",
+                "description": "INSEE code of the communeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//communes",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "departement": {
+                "title": "Departement",
+                "description": "INSEE code of the departmentA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//departements",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "inclureLimitrophes": {
+                "title": "Inclurelimitrophes",
+                "description": "Include bordering departments in the search",
+                "field_type": "Query Param",
+                "type": "boolean"
+              },
+              "region": {
+                "title": "Region",
+                "description": "Code of the region of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//regions",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "paysContinent": {
+                "title": "Payscontinent",
+                "description": "Code of the country or continent of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//paysAND https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//continents",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "niveauFormation": {
+                "title": "Niveauformation",
+                "description": "Level of education requiredA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//niveauxFormations",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "permis": {
+                "title": "Permis",
+                "description": "Code of the requested licenseA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//permis",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "motsCles": {
+                "title": "Motscles",
+                "description": "Search by keyword\n\nEach keyword (or expression) is at least 2 characters long and must\nbe separated by a comma.\nThe search on several keywords is processed via the logical operator \"AND\".\nThe keyword search can be used to search on :\n\n- The title of the offer (title field in the search return)\n- The ROME code (romeCode field in the search return)\n- The ROME label (field romeLibelle in return for the search)\n- The competences label (field competences.libelle in return of the search)\n- The wording of the training fields (field formations.domaineLibelle in\nreturn of the research)\n- The wording of the permits (field permits.label in return of the search)\n- The language label (field languages.label in return of the search)\n- The offer description if found in the offer title and/or the ROME label\n(description field in the search return)\n\nAllowed characters: [aA-zZ]+[0-9]+[space]+[@#$%^&+./-\"\"]",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "salaireMin": {
+                "title": "Salairemin",
+                "description": "Minimum wage, expressed in Euro.If this data is filled in, the code of the type of minimum wage is mandatory.",
+                "field_type": "Query Param",
+                "type": "number"
+              },
+              "periodeSalaire": {
+                "description": "Period for the calculation of the minimum wage.\nIf this data is filled in, the minimum wage is mandatory.\nPossible values:\nM -> Monthly\nA -> Annual\nH -> Hourly\nC -> Fee",
+                "field_type": "Query Param",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/PeriodeSalaire"
+                  }
+                ]
+              },
+              "accesTravailleurHandicape": {
+                "title": "Accestravailleurhandicape",
+                "description": "Allows you to search for offers for which the employer is handi friendly",
+                "field_type": "Query Param",
+                "type": "boolean"
+              },
+              "offresMRS": {
+                "title": "Offresmrs",
+                "description": " Allows you to search for jobs that offer the simulation recruitment method",
+                "field_type": "Query Param",
+                "type": "boolean"
+              },
+              "grandDomaine": {
+                "description": "Code of the major area of the offer",
+                "field_type": "Query Param",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/GrandDomaine"
+                  }
+                ]
+              },
+              "experienceExigence": {
+                "description": "Filter offers by experience level.",
+                "field_type": "Query Param",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ExperienceExige"
+                  }
+                ]
+              },
+              "publieeDepuis": {
+                "description": "Maximum number of days since the publication of the offer\nPossible values: 1, 3, 7, 14, 31",
+                "field_type": "Query Param",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/PublieeDepuis"
+                  }
+                ]
+              },
+              "minCreationDate": {
+                "title": "Mincreationdate",
+                "description": "Minimum offer creation date.\nIf this data is filled in, the maximum offer creation date is mandatory.\nISO-8601 standard (YYYY-MM-DDTHH:MM:SSZ)",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "maxCreationDate": {
+                "title": "Maxcreationdate",
+                "description": "Maximum offer creation date.\nIf this data is filled in, the minimum offer creation date is mandatory.\nISO-8601 standard (YYYY-MM-DDTHH:MM:SSZ)",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "partenaires": {
+                "title": "Partenaires",
+                "description": " This filter allows you to enter your partner code in order to include or exclude your offers from the results according to the selectionmade in the PartnerSelection mode filter\nIt is possible to enter several codes (separator ','). ",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "modeSelectionPartenaires": {
+                "description": "Selection mode of the partner offers.\n\nThis filter works with the partner criterion and is dependent on the originOffer\ncriterion. Possible values with the results obtained according to the two other filters:\n\n- INCLUS(INCLUDED)\noriginOffer empty : Returns the PE offers and the Partners listed in the Partners\ncriterion\noriginOffer at 2 : Only the offers of the Partners listed in the Partners\ncriterion\n- EXCLU(EXCLUDED)\noriginOffer empty : Return the offers of PE and Partners not listed in the Partners\ncriterion\noriginOffer at 2 : Only the offers of the Partners not listed in the Partners\ncriterion\nNote: In all cases, if originOffer = 1, then only the Pole Emploi offers\nwill be returned",
+                "field_type": "Query Param",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ModeSelectionPartenaires"
+                  }
+                ]
+              },
+              "dureeHebdo": {
+                "description": "Filtre les offres selon la dur\u00e9e hebdomadaire.\nValeurs possibles :\n0 -> Non pr\u00e9cis\u00e9\n1 -> Temps plein\n2 -> Temps partiel",
+                "field_type": "Query Param",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/DureeHebdo"
+                  }
+                ]
+              },
+              "dureeHebdoMin": {
+                "title": "Dureehebdomin",
+                "description": "Minimum weekly duration of the offer\nThe value must be in HHMM format, for example : 8h => 800 ; 24h30 => 2430",
+                "field_type": "Query Param",
+                "type": "integer"
+              },
+              "dureeHebdoMax": {
+                "title": "Dureehebdomax",
+                "description": "Maximum weekly duration of the offer\nThe value must be in HHMM format, for example: 8h => 800; 24h30 => 2430",
+                "field_type": "Query Param",
+                "type": "integer"
+              },
+              "dureeContratMin": {
+                "title": "Dureecontratmin",
+                "description": "Minimum duration of the sought contract.\nThe search is done in months (ex: 0.5 for 15 days, 1.0 for 1 month,2.0 for 2 months).\nPositive decimal (Decimal separator: '.')",
+                "field_type": "Query Param",
+                "type": "number"
+              },
+              "dureeContratMax": {
+                "title": "Dureecontratmax",
+                "description": "Maximum duration of the sought contract.\nThe search is made in months (ex: 0.5 for 15 days, 1.0 for 1 month,2.0 for 2 months).\nPositive decimal (Decimal separator: '.')",
+                "field_type": "Query Param",
+                "type": "number"
+              },
+              "offresManqueCandidats": {
+                "title": "Offresmanquecandidats",
+                "description": "Filters offers older than 15 days, with less than 4 applications (of which P\u00f4le emploi is informed)\nfalse -> Offers not concerned\ntrue -> Offers with few candidates",
+                "field_type": "Query Param",
+                "type": "boolean"
+              },
+              "entreprisesAdaptees": {
+                "title": "Entreprisesadaptees",
+                "description": "Filter the offers where the adapted company allows a disabled worker to exercise a professional activity in  conditions adapted to his capacities\nfalse -> Offers not concerned\ntrue -> Offers from adapted companies",
+                "field_type": "Query Param",
+                "type": "boolean"
               },
               "distance": {
                 "title": "Distance",
-                "description": "The distance in kilometres from the centre of the place described by the 'where' parameter. Defaults to 5km.",
+                "description": "Kilometric distance of the search radius\nDefault value: 10Note: to obtain only the offers of a specific commune, then you must fill in the parameter 'distance=0'.",
+                "default": 10,
                 "field_type": "Query Param",
                 "type": "integer"
-              },
-              "location0": {
-                "title": "Location0",
-                "description": "The location fields may be used to describe a location, in a similar form to that returned in a Adzuna::API::Response::Location object.For example, \"location0=UK&location1=South East England&location2=Surrey\"  will performn a search over the county of Surrey.",
-                "field_type": "Query Param",
-                "type": "string"
-              },
-              "location1": {
-                "title": "Location1",
-                "field_type": "Query Param",
-                "type": "string"
-              },
-              "location2": {
-                "title": "Location2",
-                "field_type": "Query Param",
-                "type": "string"
-              },
-              "location3": {
-                "title": "Location3",
-                "field_type": "Query Param",
-                "type": "string"
-              },
-              "location4": {
-                "title": "Location4",
-                "field_type": "Query Param",
-                "type": "string"
-              },
-              "location5": {
-                "title": "Location5",
-                "field_type": "Query Param",
-                "type": "string"
-              },
-              "location6": {
-                "title": "Location6",
-                "field_type": "Query Param",
-                "type": "string"
-              },
-              "location7": {
-                "title": "Location7",
-                "field_type": "Query Param",
-                "type": "string"
-              },
-              "max_days_old": {
-                "title": "Max Days Old",
-                "description": "The age of the oldest advertisment in days that will be returned.",
-                "field_type": "Query Param",
-                "type": "integer"
-              },
-              "category": {
-                "title": "Category",
-                "description": "The category tag, as returned by the \"category\" endpoint.",
-                "field_type": "Query Param",
-                "type": "string"
-              },
-              "sort_dir": {
-                "description": "The direction to order the search results.",
-                "field_type": "Query Param",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/SortDir"
-                  }
-                ]
-              },
-              "sort_by": {
-                "description": "The ordering of the search results.",
-                "field_type": "Query Param",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/SortKey"
-                  }
-                ]
-              },
-              "salary_min": {
-                "title": "Salary Min",
-                "description": "The minimum salary we wish to get results for.",
-                "field_type": "Query Param",
-                "type": "integer"
-              },
-              "salary_max": {
-                "title": "Salary Max",
-                "description": "The maximum salary we wish to get results for.",
-                "field_type": "Query Param",
-                "type": "integer"
-              },
-              "salary_include_unknown": {
-                "description": "If set it \"1\", jobs without a known salary are returned.",
-                "field_type": "Query Param",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/Filter"
-                  }
-                ]
-              },
-              "full_time": {
-                "description": "If set to \"1\", only full time jobs will be returned.",
-                "field_type": "Query Param",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/Filter"
-                  }
-                ]
-              },
-              "part_time": {
-                "description": "If set to \"1\", only part time jobs will be returned.",
-                "field_type": "Query Param",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/Filter"
-                  }
-                ]
-              },
-              "contract": {
-                "description": "If set to \"1\", only contract jobs will be returned.",
-                "field_type": "Query Param",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/Filter"
-                  }
-                ]
-              },
-              "permanent": {
-                "description": "If set to \"1\", only permanent jobs will be returned.",
-                "field_type": "Query Param",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/Filter"
-                  }
-                ]
-              },
-              "company": {
-                "title": "Company",
-                "description": "The canonical company name. This may be returned in a Adzuna::API::Response::Company object when a job is returned. A full list of allowed terms in not available through the API.",
-                "field_type": "Query Param",
-                "type": "string"
               }
             },
             "required": [
-              "country",
-              "app_id",
-              "app_key"
+              "client_id",
+              "client_secret"
             ],
             "definitions": {
-              "CountryCode": {
-                "title": "CountryCode",
+              "Experience": {
+                "title": "Experience",
                 "description": "An enumeration.",
                 "enum": [
-                  "gb",
-                  "at",
-                  "au",
-                  "br",
-                  "ca",
-                  "de",
-                  "fr",
-                  "in",
-                  "it",
-                  "nl",
-                  "nz",
-                  "pl",
-                  "ru",
-                  "sg",
-                  "us",
-                  "za"
+                  "1",
+                  "2",
+                  "3"
                 ],
                 "type": "string"
               },
-              "SortDir": {
-                "title": "SortDir",
+              "OrigineOffreTag": {
+                "title": "OrigineOffreTag",
                 "description": "An enumeration.",
                 "enum": [
-                  "up",
-                  "down"
+                  1,
+                  2
+                ],
+                "type": "integer"
+              },
+              "Qualification": {
+                "title": "Qualification",
+                "description": "An enumeration.",
+                "enum": [
+                  0,
+                  9
+                ],
+                "type": "integer"
+              },
+              "PeriodeSalaire": {
+                "title": "PeriodeSalaire",
+                "description": "An enumeration.",
+                "enum": [
+                  "M",
+                  "A",
+                  "H",
+                  "C"
                 ],
                 "type": "string"
               },
-              "SortKey": {
-                "title": "SortKey",
+              "GrandDomaine": {
+                "title": "GrandDomaine",
                 "description": "An enumeration.",
                 "enum": [
-                  "default",
-                  "hybrid",
-                  "date",
-                  "salary",
-                  "relevance"
+                  "A",
+                  "B",
+                  "C",
+                  "C15",
+                  "D",
+                  "E",
+                  "F",
+                  "G",
+                  "H",
+                  "I",
+                  "J",
+                  "K",
+                  "L",
+                  "L14",
+                  "M",
+                  "M13",
+                  "M14",
+                  "M15",
+                  "M16",
+                  "M17",
+                  "M18",
+                  "N"
                 ],
                 "type": "string"
               },
-              "Filter": {
-                "title": "Filter",
+              "ExperienceExige": {
+                "title": "ExperienceExige",
                 "description": "An enumeration.",
                 "enum": [
-                  "1"
+                  "D",
+                  "S",
+                  "E"
+                ],
+                "type": "string"
+              },
+              "PublieeDepuis": {
+                "title": "PublieeDepuis",
+                "description": "An enumeration.",
+                "enum": [
+                  1,
+                  3,
+                  7,
+                  14,
+                  31
+                ],
+                "type": "integer"
+              },
+              "ModeSelectionPartenaires": {
+                "title": "ModeSelectionPartenaires",
+                "description": "An enumeration.",
+                "enum": [
+                  "INCLUS",
+                  "EXCLU"
+                ],
+                "type": "string"
+              },
+              "DureeHebdo": {
+                "title": "DureeHebdo",
+                "description": "An enumeration.",
+                "enum": [
+                  "0",
+                  "1",
+                  "2"
                 ],
                 "type": "string"
               }
             }
           },
           "origin_data_schema": {
-            "title": "AdzunaJob",
+            "title": "PoleEmploiJobOffer",
             "type": "object",
             "properties": {
               "id": {
                 "title": "Id",
-                "type": "string"
+                "type": "integer"
               },
-              "created": {
-                "title": "Created",
-                "type": "string"
-              },
-              "title": {
-                "title": "Title",
+              "intitule": {
+                "title": "Intitule",
                 "type": "string"
               },
               "description": {
                 "title": "Description",
                 "type": "string"
               },
-              "full_description": {
-                "title": "Full Description",
+              "dateCreation": {
+                "title": "Datecreation",
                 "type": "string"
               },
-              "redirect_url": {
-                "title": "Redirect Url",
+              "dateActualisation": {
+                "title": "Dateactualisation",
                 "type": "string"
               },
-              "latitude": {
-                "title": "Latitude",
-                "type": "number"
+              "lieuTravail": {
+                "$ref": "#/definitions/JobLocation"
               },
-              "longitude": {
-                "title": "Longitude",
-                "type": "number"
+              "romeCode": {
+                "title": "Romecode",
+                "description": "ROME code of the professionA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/metiers",
+                "type": "string"
               },
-              "category": {
-                "$ref": "#/definitions/Category"
+              "romeLibelle": {
+                "title": "Romelibelle",
+                "type": "string"
               },
-              "location": {
-                "$ref": "#/definitions/Location"
+              "appellationLibelle": {
+                "title": "Appellationlibelle",
+                "description": "Code of the appellationA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/appellations",
+                "type": "string"
               },
-              "salary_min": {
-                "title": "Salary Min",
+              "entreprise": {
+                "$ref": "#/definitions/Entreprise"
+              },
+              "typeContrat": {
+                "title": "Typecontrat",
+                "description": "Contract type codeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/typesContrats",
+                "type": "string"
+              },
+              "typeContratLibelle": {
+                "title": "Typecontratlibelle",
+                "description": "Contract type labelExample : CDI,CDDA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/typesContrats",
+                "type": "string"
+              },
+              "natureContrat": {
+                "title": "Naturecontrat",
+                "description": "Code of the nature of contractA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/naturesContrats",
+                "type": "string"
+              },
+              "origineOffre": {
+                "$ref": "#/definitions/OrigineOffre"
+              },
+              "offresManqueCandidats": {
+                "title": "Offresmanquecandidats",
+                "type": "boolean"
+              },
+              "experienceExige": {
+                "$ref": "#/definitions/ExperienceExige"
+              },
+              "experienceLibelle": {
+                "title": "Experiencelibelle",
+                "type": "string"
+              },
+              "experienceCommentaire": {
+                "title": "Experiencecommentaire",
+                "type": "string"
+              },
+              "formations": {
+                "title": "Formations",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Formation"
+                }
+              },
+              "langues": {
+                "title": "Langues",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Langue"
+                }
+              },
+              "permis": {
+                "title": "Permis",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permis"
+                }
+              },
+              "outilsBureautiques": {
+                "title": "Outilsbureautiques",
+                "type": "string"
+              },
+              "competences": {
+                "title": "Competences",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Competence"
+                }
+              },
+              "salaire": {
+                "$ref": "#/definitions/Salaire"
+              },
+              "dureeTravailLibelle": {
+                "title": "Dureetravaillibelle",
+                "type": "string"
+              },
+              "dureeTravailLibelleConverti": {
+                "title": "Dureetravaillibelleconverti",
+                "type": "string"
+              },
+              "complementExercice": {
+                "title": "Complementexercice",
+                "type": "string"
+              },
+              "conditionExercice": {
+                "title": "Conditionexercice",
+                "type": "string"
+              },
+              "alternance": {
+                "title": "Alternance",
+                "type": "boolean"
+              },
+              "contact": {
+                "$ref": "#/definitions/Contact"
+              },
+              "agence": {
+                "$ref": "#/definitions/Agence"
+              },
+              "nombrePostes": {
+                "title": "Nombrepostes",
                 "type": "integer"
               },
-              "salary_max": {
-                "title": "Salary Max",
-                "type": "integer"
+              "accessibleTH": {
+                "title": "Accessibleth",
+                "type": "boolean"
               },
-              "salary_is_predicted": {
-                "$ref": "#/definitions/Flag"
+              "deplacementCode": {
+                "title": "Deplacementcode",
+                "type": "string"
               },
-              "company": {
-                "$ref": "#/definitions/Company"
+              "deplacementLibelle": {
+                "title": "Deplacementlibelle",
+                "type": "string"
               },
-              "contract_type": {
-                "$ref": "#/definitions/ContractType"
+              "qualificationCode": {
+                "$ref": "#/definitions/QualificationCode"
               },
-              "contract_time": {
-                "$ref": "#/definitions/ContractTime"
+              "qualificationLibelle": {
+                "$ref": "#/definitions/QualificationLibelle"
+              },
+              "secteurActivite": {
+                "title": "Secteuractivite",
+                "description": "NAF codes for sectors of activity. It is possible to specify two NAF codes by separating them with a comma in the character string.Example : 01,02A GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/secteursActivites",
+                "type": "string"
+              },
+              "secteurActiviteLibelle": {
+                "title": "Secteuractivitelibelle",
+                "description": "Sector of activitylabelA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/secteursActivites",
+                "type": "string"
+              },
+              "qualitesProfessionnelles": {
+                "title": "Qualitesprofessionnelles",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/QualitePro"
+                }
               }
             },
             "required": [
               "id",
-              "created",
-              "title",
-              "description",
-              "redirect_url",
-              "category",
-              "location",
-              "salary_min",
-              "salary_max",
-              "salary_is_predicted",
-              "company",
-              "contract_time"
+              "intitule",
+              "description"
             ],
             "definitions": {
-              "Category": {
-                "title": "Category",
+              "JobLocation": {
+                "title": "JobLocation",
                 "type": "object",
                 "properties": {
-                  "tag": {
-                    "title": "Tag",
+                  "libelle": {
+                    "title": "Libelle",
                     "type": "string"
                   },
-                  "label": {
-                    "title": "Label",
+                  "latitude": {
+                    "title": "Latitude",
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "title": "Longitude",
+                    "type": "number"
+                  },
+                  "codepostal": {
+                    "title": "Codepostal",
+                    "type": "string"
+                  },
+                  "commune": {
+                    "title": "Commune",
+                    "description": "INSEE code of the communeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/communes",
                     "type": "string"
                   }
                 },
                 "required": [
-                  "tag",
-                  "label"
+                  "libelle",
+                  "latitude",
+                  "longitude",
+                  "codepostal",
+                  "commune"
                 ]
               },
-              "Location": {
-                "title": "Location",
+              "Entreprise": {
+                "title": "Entreprise",
                 "type": "object",
                 "properties": {
-                  "area": {
-                    "title": "Area",
+                  "nom": {
+                    "title": "Nom",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "type": "string"
+                  },
+                  "url": {
+                    "title": "Url",
+                    "type": "string"
+                  },
+                  "entrepriseAdaptee": {
+                    "title": "Entrepriseadaptee",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "entrepriseAdaptee"
+                ]
+              },
+              "OrigineOffreTag": {
+                "title": "OrigineOffreTag",
+                "description": "An enumeration.",
+                "enum": [
+                  1,
+                  2
+                ],
+                "type": "integer"
+              },
+              "Partenaire": {
+                "title": "Partenaire",
+                "type": "object",
+                "properties": {
+                  "nom": {
+                    "title": "Nom",
+                    "type": "string"
+                  },
+                  "url": {
+                    "title": "Url",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "nom",
+                  "url",
+                  "logo"
+                ]
+              },
+              "OrigineOffre": {
+                "title": "OrigineOffre",
+                "type": "object",
+                "properties": {
+                  "origine": {
+                    "$ref": "#/definitions/OrigineOffreTag"
+                  },
+                  "urlOrigine": {
+                    "title": "Urlorigine",
+                    "type": "string"
+                  },
+                  "partenaires": {
+                    "title": "Partenaires",
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "$ref": "#/definitions/Partenaire"
                     }
-                  },
-                  "display_name": {
-                    "title": "Display Name",
-                    "type": "string"
                   }
                 },
                 "required": [
-                  "area",
-                  "display_name"
+                  "origine",
+                  "partenaires"
                 ]
               },
-              "Flag": {
-                "title": "Flag",
+              "ExperienceExige": {
+                "title": "ExperienceExige",
+                "description": "An enumeration.",
+                "enum": [
+                  "D",
+                  "S",
+                  "E"
+                ],
+                "type": "string"
+              },
+              "Exigence": {
+                "title": "Exigence",
+                "description": "An enumeration.",
+                "enum": [
+                  "E",
+                  "S"
+                ]
+              },
+              "Formation": {
+                "title": "Formation",
+                "type": "object",
+                "properties": {
+                  "domaineLibelle": {
+                    "title": "Domainelibelle",
+                    "type": "string"
+                  },
+                  "niveauLibelle": {
+                    "title": "Niveaulibelle",
+                    "description": "Label of the level of the education requiredA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/referentiel/niveauxFormations",
+                    "type": "string"
+                  },
+                  "commentaire": {
+                    "title": "Commentaire",
+                    "type": "string"
+                  },
+                  "exigence": {
+                    "$ref": "#/definitions/Exigence"
+                  }
+                },
+                "required": [
+                  "domaineLibelle",
+                  "niveauLibelle",
+                  "commentaire",
+                  "exigence"
+                ]
+              },
+              "Langue": {
+                "title": "Langue",
+                "type": "object",
+                "properties": {
+                  "libelle": {
+                    "title": "Libelle",
+                    "description": "Language labelA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/referentiel/langues",
+                    "type": "string"
+                  },
+                  "exigence": {
+                    "$ref": "#/definitions/Exigence"
+                  }
+                },
+                "required": [
+                  "libelle"
+                ]
+              },
+              "Permis": {
+                "title": "Permis",
+                "type": "object",
+                "properties": {
+                  "libelle": {
+                    "title": "Libelle",
+                    "description": "requested licenseA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel/referentiel/permis",
+                    "type": "string"
+                  },
+                  "exigence": {
+                    "$ref": "#/definitions/Exigence"
+                  }
+                },
+                "required": [
+                  "libelle"
+                ]
+              },
+              "Competence": {
+                "title": "Competence",
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "title": "Code",
+                    "type": "string"
+                  },
+                  "libelle": {
+                    "title": "Libelle",
+                    "type": "string"
+                  },
+                  "exigence": {
+                    "$ref": "#/definitions/Exigence"
+                  }
+                },
+                "required": [
+                  "code",
+                  "libelle"
+                ]
+              },
+              "Salaire": {
+                "title": "Salaire",
+                "type": "object",
+                "properties": {
+                  "libelle": {
+                    "title": "Libelle",
+                    "type": "string"
+                  },
+                  "commentaire": {
+                    "title": "Commentaire",
+                    "type": "string"
+                  },
+                  "complement1": {
+                    "title": "Complement1",
+                    "type": "string"
+                  },
+                  "complement2": {
+                    "title": "Complement2",
+                    "type": "string"
+                  }
+                }
+              },
+              "Contact": {
+                "title": "Contact",
+                "type": "object",
+                "properties": {
+                  "nom": {
+                    "title": "Nom",
+                    "type": "string"
+                  },
+                  "coordonnees1": {
+                    "title": "Coordonnees1",
+                    "type": "string"
+                  },
+                  "coordonnees2": {
+                    "title": "Coordonnees2",
+                    "type": "string"
+                  },
+                  "coordonnees3": {
+                    "title": "Coordonnees3",
+                    "type": "string"
+                  },
+                  "telephone": {
+                    "title": "Telephone",
+                    "type": "string"
+                  },
+                  "courriel": {
+                    "title": "Courriel",
+                    "type": "string"
+                  },
+                  "commentaire": {
+                    "title": "Commentaire",
+                    "type": "string"
+                  },
+                  "urlRecruteur": {
+                    "title": "Urlrecruteur",
+                    "type": "string"
+                  },
+                  "urlPostulation": {
+                    "title": "Urlpostulation",
+                    "type": "string"
+                  }
+                }
+              },
+              "Agence": {
+                "title": "Agence",
+                "type": "object",
+                "properties": {
+                  "telephone": {
+                    "title": "Telephone",
+                    "type": "string"
+                  },
+                  "courriel": {
+                    "title": "Courriel",
+                    "type": "string"
+                  }
+                }
+              },
+              "QualificationCode": {
+                "title": "QualificationCode",
                 "description": "An enumeration.",
                 "enum": [
                   "1",
-                  "0"
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6",
+                  "7",
+                  "8",
+                  "9"
                 ],
                 "type": "string"
               },
-              "Company": {
-                "title": "Company",
+              "QualificationLibelle": {
+                "title": "QualificationLibelle",
+                "description": "An enumeration.",
+                "enum": [
+                  "Man\u0153uvre",
+                  "Ouvrier sp\u00e9cialis\u00e9",
+                  "Ouvrier qualifi\u00e9 (P1, P2)",
+                  "Ouvrier qualifi\u00e9 (P3, P4, OHQ)",
+                  "Employ\u00e9 non qualifi\u00e9",
+                  "Employ\u00e9 qualifi\u00e9",
+                  "Technicien",
+                  "Agent de ma\u00eetrise",
+                  "Cadre"
+                ],
+                "type": "string"
+              },
+              "QualitePro": {
+                "title": "QualitePro",
                 "type": "object",
                 "properties": {
-                  "display_name": {
-                    "title": "Display Name",
+                  "libelle": {
+                    "title": "Libelle",
                     "type": "string"
                   },
-                  "canonical_name": {
-                    "title": "Canonical Name",
+                  "description": {
+                    "title": "Description",
                     "type": "string"
-                  },
-                  "count": {
-                    "title": "Count",
-                    "type": "integer"
                   }
-                },
-                "required": [
-                  "display_name"
-                ]
-              },
-              "ContractType": {
-                "title": "ContractType",
-                "description": "An enumeration.",
-                "enum": [
-                  "permanent",
-                  "contract"
-                ],
-                "type": "string"
-              },
-              "ContractTime": {
-                "title": "ContractTime",
-                "description": "An enumeration.",
-                "enum": [
-                  "full_time",
-                  "part_time"
-                ],
-                "type": "string"
+                }
               }
             }
           },
@@ -4142,7 +4632,7 @@
               }
             }
           },
-          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import Adzuna\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Adzuna.pull_jobs(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['country', 'app_id', 'app_key', 'results_per_page', 'what', 'what_and', 'what_phrase', 'what_or', 'what_exclude', 'title_only', 'where', 'distance', 'location0', 'location1', 'location2', 'location3', 'location4', 'location5', 'location6', 'location7', 'max_days_old', 'category', 'sort_dir', 'sort_by', 'salary_min', 'salary_max', 'salary_include_unknown', 'full_time', 'part_time', 'contract', 'permanent', 'company']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Adzuna.pull_jobs(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import PoleEmploi\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return PoleEmploi.pull_jobs(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'range', 'sort', 'domaine', 'codeROME', 'theme', 'appellation', 'secteurActivite', 'experience', 'typeContrat', 'natureContrat', 'origineOffre', 'qualification', 'tempsPlein', 'commune', 'departement', 'inclureLimitrophes', 'region', 'paysContinent', 'niveauFormation', 'permis', 'motsCles', 'salaireMin', 'periodeSalaire', 'accesTravailleurHandicape', 'offresMRS', 'grandDomaine', 'experienceExigence', 'publieeDepuis', 'minCreationDate', 'maxCreationDate', 'partenaires', 'modeSelectionPartenaires', 'dureeHebdo', 'dureeHebdoMin', 'dureeHebdoMax', 'dureeContratMin', 'dureeContratMax', 'offresManqueCandidats', 'entreprisesAdaptees', 'distance']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return PoleEmploi.pull_jobs(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
           "workflow_code_workflow_id_settings_key": "__workflow_id",
