@@ -1,4 +1,4 @@
-from hrflow_connectors.connectors.sapsuccessfactors.connector import SAPSuccessFactors
+from hrflow_connectors.connectors.sapsuccessfactors import SAPSuccessFactors
 from hrflow_connectors.connectors.smartrecruiters import SmartRecruiters
 from hrflow_connectors.connectors.talentsoft import TalentSoft
 from hrflow_connectors.core import backend
