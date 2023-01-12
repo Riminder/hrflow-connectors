@@ -25,9 +25,6 @@
   2. **Understand**: Leverage our AI solutions to process your Talent Data.
   3. **Automate**: Sync data between your tools and build workflows that meet your business logic.
 
-  **`hrflow-connectors`** is an open-source project created by **HrFlow.ai**
-to democratize Talent Data integration within the HR Tech landscape. 
-
 **HrFlow-Connectors** is an open-source project created by HrFlow.ai to democratize Talent Data integration within the HR Tech landscape.
 
 We invite developers to join us in our mission to bring AI and data integration to the HR industr, as a developper you can: 
