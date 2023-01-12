@@ -88,9 +88,9 @@ def format_job(data: SAPSuccessFactorsJob) -> t.Dict:
 
     job = dict()
 
-    jobRequisition = data.get("requisition")
-    if jobRequisition is None:
-        jobRequisition = dict()
+    job_requisition = data.get("requisition")
+    if job_requisition is None:
+        job_requisition = dict()
     data = data.get("job")
 
     # name
@@ -104,14 +104,14 @@ def format_job(data: SAPSuccessFactorsJob) -> t.Dict:
 
     # location
     geojson = dict(
-        city=jobRequisition.get("city"),
-        country=jobRequisition.get("country"),
-        facility=jobRequisition.get("facility"),
-        province=jobRequisition.get("stateProvince"),
+        city=job_requisition.get("city"),
+        country=job_requisition.get("country"),
+        facility=job_requisition.get("facility"),
+        province=job_requisition.get("stateProvince"),
     )
     job["location"] = dict(
-        text=jobRequisition.get("location"),
-        city=jobRequisition.get("city"),
+        text=job_requisition.get("location"),
+        city=job_requisition.get("city"),
         geojson=geojson,
         lat=None,
         lng=None,
@@ -137,25 +137,25 @@ def format_job(data: SAPSuccessFactorsJob) -> t.Dict:
     # tags
     t = lambda name, value: dict(name=name, value=value)
     job["tags"] = [
-        t("sapsuccessfactors_annual_SA", jobRequisition.get("annual_SA")),
-        t("sapsuccessfactors_department", jobRequisition.get("department")),
-        t("sapsuccessfactors_function", jobRequisition.get("function")),
-        t("sapsuccessfactors_division", jobRequisition.get("division")),
-        t("sapsuccessfactors_industry", jobRequisition.get("industry")),
-        t("sapsuccessfactors_monthly_salary", jobRequisition.get("monthly_salary")),
-        t("sapsuccessfactors_otherBonus", jobRequisition.get("otherBonus")),
-        t("sapsuccessfactors_salaryBase", jobRequisition.get("salaryBase")),
-        t("sapsuccessfactors_salaryMax", jobRequisition.get("salaryMax")),
-        t("sapsuccessfactors_salaryMin", jobRequisition.get("salaryMin")),
-        t("sapsuccessfactors_jobStartDate", jobRequisition.get("jobStartDate")),
+        t("sapsuccessfactors_annual_SA", job_requisition.get("annual_SA")),
+        t("sapsuccessfactors_department", job_requisition.get("department")),
+        t("sapsuccessfactors_function", job_requisition.get("function")),
+        t("sapsuccessfactors_division", job_requisition.get("division")),
+        t("sapsuccessfactors_industry", job_requisition.get("industry")),
+        t("sapsuccessfactors_monthly_salary", job_requisition.get("monthly_salary")),
+        t("sapsuccessfactors_otherBonus", job_requisition.get("otherBonus")),
+        t("sapsuccessfactors_salaryBase", job_requisition.get("salaryBase")),
+        t("sapsuccessfactors_salaryMax", job_requisition.get("salaryMax")),
+        t("sapsuccessfactors_salaryMin", job_requisition.get("salaryMin")),
+        t("sapsuccessfactors_jobStartDate", job_requisition.get("jobStartDate")),
     ]
 
     job["metadatas"] = [
-        t("sapsuccessfactors_recruiterTeam", jobRequisition.get("recruiterTeam")),
-        t("sapsuccessfactors_sourcerTeam", jobRequisition.get("sourcerTeam")),
+        t("sapsuccessfactors_recruiterTeam", job_requisition.get("recruiterTeam")),
+        t("sapsuccessfactors_sourcerTeam", job_requisition.get("sourcerTeam")),
         t(
             "sapsuccessfactors_hiringManagerTeam",
-            jobRequisition.get("hiringManagerTeam"),
+            job_requisition.get("hiringManagerTeam"),
         ),
     ]
 

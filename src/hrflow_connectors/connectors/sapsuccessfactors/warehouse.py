@@ -195,6 +195,7 @@ def read_parsing(
     
     # Check if the request was successful
     if response.status_code != 200:
+        adapter.error(f"Failed to retrieve candidate CVs. Response: {response.text}")
         raise Exception(f"Failed to retrieve candidate CVs. Response: {response.text}")
     
     # Extract the candidate data from the response
@@ -242,6 +243,7 @@ def read_profiles(
     
     # Check if the request was successful
     if response.status_code != 200:
+        adapter.error(f"Failed to retrieve candidates. Response: {response.text}")
         raise Exception(f"Failed to retrieve candidates. Response: {response.text}")
     
     # Extract the candidate data from the response
