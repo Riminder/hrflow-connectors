@@ -1,4 +1,34 @@
-warehouse: {}
+warehouse:
+  WaalaxyProfilesWarehouse:
+    read:
+      - parameters:
+          profile: {
+    "_id": "63579da9dc3ed5f5b5556725",
+    "email": "",
+    "company_linkedinUrl": "https://www.linkedin.com/company/hrflowai",
+    "company_name": "HrFlow.ai",
+    "connectedAt": "",
+    "company_website": "https://hrflow.ai",
+    "premium": "No",
+    "prospectList": "Invitation Workflow",
+    "firstName": "Léo",
+    "jobSeeker": "No",
+    "tags": "",
+    "lastName": "FERRETTI",
+    "linkedinUrl": "https://www.linkedin.com/in/léo-ferretti/",
+    "dropcontactEmail": "",
+    "emailReplied": "No",
+    "occupation": "Étudiant(e) à EPITA: Ecole d'Ingénieurs en Informatique",
+    "phoneNumbers": "",
+    "emailSent": "No",
+    "firstMessageAt": "",
+    "location": "Carpentras  Provence-Alpes-Côte d'Azur  France",
+    "messageReplied": "Yes",
+    "messageSent": "No",
+    "profileStatus": "pending",
+    "salesNavigatorUrl": "https://www.linkedin.com/sales/people/ACwAADlFw4UBM68oBJlIWKiHPCaHfKv7nQwG-7o,NAME_SEARCH",
+    "__typename": "FormattedProspect",
+}
 actions:
   trigger_view:
     - id: valid_parameters
