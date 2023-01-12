@@ -1,0 +1,66 @@
+warehouse:
+  PoleEmploiJobWarehouse:
+    read:
+      - parameters:
+          client_id: $__CLIENT_ID
+          client_secret:  $__CLIENT_SECRET
+          theme: "5"
+          secteurActivite: "72"
+          typeContrat: "CDI"
+          natureContrat: "E1"
+actions:
+  pull_jobs:
+    - id: valid_parameters
+      origin_parameters:
+        client_id: $__CLIENT_ID
+        client_secret:  $__CLIENT_SECRET
+        theme: "5"
+        secteurActivite: "72"
+        typeContrat: "CDI"
+        natureContrat: "E1"
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+    - id: no_client_credentials
+      origin_parameters:
+        motsCles: INFORMATIQUE
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+    - id: no_hrflow_board_key
+      origin_parameters:
+        client_id: $__CLIENT_ID
+        client_secret:  $__CLIENT_SECRET
+        motsCles : Software
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_client_credentials
+      origin_parameters:
+        client_id: bad_client_id
+        client_secret:  bad_client_secret
+        motsCles : Software
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+    - id: invalid_hrflow_api_secret
+      origin_parameters: 
+        client_id: $__CLIENT_ID
+        client_secret:  $__CLIENT_SECRET
+        motsCles : Software
+      target_parameters:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: write_failure
