@@ -1,0 +1,67 @@
+warehouse:
+  GreenhouseJobWarehouse:
+    read:
+      - parameters:
+          board_token: $__BOARD_TOKEN
+
+
+actions:
+  pull_jobs:
+    - id: valid_parameters
+      origin_parameters:
+        board_token: $__BOARD_TOKEN
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+    - id: bad target param
+      origin_parameters:
+        board_token: $__BOARD_TOKEN
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: "123"
+      status: fatal
+    - id: bad origin param
+      origin_parameters:
+        board_token: "123"
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+
+  push_profile:
+    - id: valid_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY       
+      
+      target_parameters:
+        auth: $__AUTH
+        on_behalf_of: $__ON_BEHALF_OF
+      status: success
+    - id: invalid_origin_parameters
+      origin_parameters:
+        api_secret: "123"
+        api_user: "123"
+        source_key: "123"
+        profile_key: "123"       
+      
+      target_parameters:
+        auth: $__AUTH
+        on_behalf_of: $__ON_BEHALF_OF
+      status: fatal
+    - id: invalid_target_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY       
+      
+      target_parameters:
+        auth: $__AUTH
+        on_behalf_of: "arthur"
+      status: fatal
