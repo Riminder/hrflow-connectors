@@ -1,0 +1,239 @@
+warehouse:
+  BreezyHRJobWarehouse:
+    read:
+      - parameters:
+          email: $__EMAIL
+          password: $__PASSWORD
+          company_id : $__COMPANY_ID
+          company_name : $__COMPANY_NAME
+
+      - parameters:
+          email: $__EMAIL
+          password: $__PASSWORD
+          company_id : $__COMPANY_ID
+
+      - parameters:
+          email: $__EMAIL
+          password: $__PASSWORD
+          company_name : $__COMPANY_NAME
+
+actions:
+  pull_jobs:
+    - id: valid_parameters
+      origin_parameters:
+          email: $__EMAIL
+          password: $__PASSWORD
+          company_id : $__COMPANY_ID
+          company_name : $__COMPANY_NAME
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+
+    - id: valid_parameters_without_company_name
+      origin_parameters:
+          email: $__EMAIL
+          password: $__PASSWORD
+          company_id : $__COMPANY_ID
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+
+    - id: valid_parameters_without_company_id
+      origin_parameters:
+          email: $__EMAIL
+          password: $__PASSWORD
+          company_name : $__COMPANY_NAME
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+      
+    - id: invalid_parameters_missing_company_id_or_name
+      origin_parameters:
+          email: $__EMAIL
+          password: $__PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      
+    - id: invalid_parameters_email
+      origin_parameters:
+          email: invalid
+          password: $__PASSWORD
+          company_name : $__COMPANY_NAME
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      
+    - id: missing_parameters_email
+      origin_parameters:
+          password: $__PASSWORD
+          company_name : $__COMPANY_NAME
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      
+    - id: invalid_parameters_password
+      origin_parameters:
+          email: $__EMAIL
+          password: invalid
+          company_name : $__COMPANY_NAME
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      
+    - id: missing_parameters_password
+      origin_parameters:
+          email: $__EMAIL
+          company_name : $__COMPANY_NAME
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+
+    - id: invalid_parameters_company_id
+      origin_parameters:
+          email: $__EMAIL
+          password: $__PASSWORD
+          company_id: invalid
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+
+    - id: invalid_parameters_company_name
+      origin_parameters:
+          email: $__EMAIL
+          password: $__PASSWORD
+          company_id : invalid
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+
+  push_profiles:
+    - id: valid_parameters_update_profile
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        email: $__EMAIL
+        password: $__PASSWORD
+        company_id : $__COMPANY_ID
+        company_name : $__COMPANY_NAME
+        position_id : $__POSITION_ID
+      status: success
+
+    - id: valid_parameters_send_profile
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY_WITH_NO_EMAIL
+      target_parameters:
+        email: $__EMAIL
+        password: $__PASSWORD
+        company_id : $__COMPANY_ID
+        company_name : $__COMPANY_NAME
+        position_id : $__POSITION_ID
+      status: success
+
+    - id: invalid_parameters_mail
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        email: invalid
+        password: $__PASSWORD
+        company_id : $__COMPANY_ID
+        company_name : $__COMPANY_NAME
+        position_id : $__POSITION_ID
+      status: fatal
+
+    - id: missing_parameters_mail
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        password: $__PASSWORD
+        company_id : $__COMPANY_ID
+        company_name : $__COMPANY_NAME
+        position_id : $__POSITION_ID
+      status: fatal
+
+    - id: invalid_parameters_password
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        email: $__EMAIL
+        password: invalid
+        company_id : $__COMPANY_ID
+        company_name : $__COMPANY_NAME
+        position_id : $__POSITION_ID
+      status: fatal
+
+
+    - id: missing_parameters_password
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        email: $__EMAIL
+        company_id : $__COMPANY_ID
+        company_name : $__COMPANY_NAME
+        position_id : $__POSITION_ID
+      status: fatal
+
+    - id: invalid_parameters_position_id
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        email: $__EMAIL
+        password: $__PASSWORD
+        company_id : $__COMPANY_ID
+        company_name : $__COMPANY_NAME
+        position_id : invalid
+      status: fatal
+
+    - id: missing_parameters_position_id
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        email: $__EMAIL
+        password: $__PASSWORD
+        company_id : $__COMPANY_ID
+        company_name : $__COMPANY_NAME
+      status: fatal
