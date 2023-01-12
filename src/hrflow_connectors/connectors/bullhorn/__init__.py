@@ -1,1 +1,1 @@
-from hrflow_connectors.connectors.bullhorn.connector import Bullhorn
+from hrflow_connectors.connectors.bullhorn.connector import Bullhorn  # noqa
