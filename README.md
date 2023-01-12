@@ -25,37 +25,50 @@
   2. **Understand**: Leverage our AI solutions to process your Talent Data.
   3. **Automate**: Sync data between your tools and build workflows that meet your business logic.
 
-  `hrflow-connectors` is an open-source project created by **HrFlow.ai**
-to democratize Talent Data integration within the HR Tech landscape.
+  **`hrflow-connectors`** is an open-source project created by **HrFlow.ai**
+to democratize Talent Data integration within the HR Tech landscape. 
+
+**HrFlow-Connectors** is an open-source project created by HrFlow.ai to democratize Talent Data integration within the HR Tech landscape.
+
+We invite developers to join us in our mission to bring AI and data integration to the HR industr, as a developper you can: 
+
+- Create new connectors quickly and easily with our low-code connector approach and abstracted concepts
+- Contribute to the Connectors' framework with your own code
+- Leverage our AI solutions to process your Talent Data
+- Sync data between your tools and build workflows that meet your business logic
+- Link your Talent Data channels with a few clicks, so they can share data
+
+📃 **More instructions are available in the Documentation section below** 
 
 ## :electric_plug: List of Connectors
 
-| Name | Type | Available | Release date | Last update
+| Name 🔌 | Type 🔧  | Available 📦 | Release date 📅 | Last update 🔁 
 | - | - | - | - | - |
-| **ADP** | HCM Cloud | :hourglass: |  |  |
+| **ADP** | HCM Cloud | :hourglass: |   |  |
 | **ADENCLASSIFIEDS** | Job Board | :hourglass: |  |  |
-| **Adzuna** | Job Board | :hourglass: |  |  |
+| **Adzuna** | Job Board | :heavy_check_mark: | *08/09/2022* | *12/01/2023* |
 | **Agefiph** | Job Board | :hourglass: |  |  |
 | **APEC** | Job Board | :hourglass: |  |  |
-| **Bullhorn** | ATS | :hourglass: |  |  |
-| Breezy.hr | ATS | :hourglass: |  |  |
+| **Bullhorn** | ATS | :heavy_check_mark: | *26/01/2022* | *12/01/2023* |
+| **Breezy.hr** | ATS | :heavy_check_mark: | *19/01/2022* | *12/01/2023* |
 | **Cadreemploi** | Job Board | :hourglass: |  |  |
 | **Cegid (Meta4)** |  | :hourglass: |  |  |
-| Ceridian | HCM | :hourglass: |  |  |
+| **Ceridian** | HCM | :heavy_check_mark: | *19/01/2022* | *12/01/2023* |
 | **Cornerjob** | Job Board | :hourglass: |  |  |
 | **Cornerstone OnDemand** |  | :hourglass: |  |  |
-| Crosstalent | ATS | :hourglass: |  |  |
+| **Crosstalent** | ATS | :wrench: | *19/01/2022* | |
 | **Digitalrecruiters** | ATS | :hourglass: |  |  |
 | **Distrijob** | Job Board | :hourglass: |  |  |
 | **Engagement Jeunes** | Job Board | :hourglass: |  |  |
 | **FashionJobs** | Job Board | :hourglass: |  |  |
 | **Fieldglass SAP** | Recruiting Software | :hourglass: |  |  |
-| Flatchr | :hourglass: |  |  |
+| **Flatchr** | ATS  | :wrench: | *21/04/2022* | |
 | **Glassdoor** | Job Board | :hourglass: |  |  |
 | **GoldenBees** | Job Board | :hourglass: |  |  |
-| Greenhouse | :hourglass: |  |  |
+| **Greenhouse** | ATS  | :heavy_check_mark: | *19/01/2022* | *12/01/2023* |
 | **Handicap-Job** | Job Board | :hourglass: |  |  |
 | **HelloWork** | Job Board | :hourglass: |  |  |
+| **Hubspot** | CRM | :heavy_check_mark: | *27/10/2022* | *12/01/2023* |
 | **ICIMS** | ATS | :hourglass: |  |  |
 | **Indeed** | Job Board | :hourglass: |  |  |
 | **Inzojob** | Job Board | :hourglass: |  |  |
@@ -69,39 +82,40 @@ to democratize Talent Data integration within the HR Tech landscape.
 | **Keljob** | Job Board | :hourglass: |  |  |
 | **Kronos (UKG)** | HCM Cloud | :hourglass: |  |  |
 | **Laponi** | Job Board | :hourglass: |  |  |
+|**Leboncoin** |     | :wrench: | *13/07/2022* | |
 | **LesJeudis** | Job Board | :hourglass: |  |  |
 | **Lever** | CRM-ATS | :hourglass:  |  |  |
 | **LinkedIn** | Job Board | :hourglass: |  |  |
 | **Mailchimp** | Marketing Tools | :hourglass: |  |  |
 | **Meteojob** | Job Board | :hourglass: |  |  |
 | **Microsoft Dynamics** | HCM Cloud | :hourglass: |  |  |
-| Monster | Job Board | :hourglass: |  |  |
-| **Monster** | Job Board | :hourglass: |  |  |
+| **Monster** | Job Board | :wrench: | *23/11/2022* | |
 | **Nuevoo** | Job Board | :hourglass: |  |  |
 | **Optioncarriere** | Job Board | :hourglass: |  |  |
 | **Oracle** | Cloud Apps | :hourglass: |  |  |
-| **Pôle Emploi** | Job Board | :hourglass: |  |  |
-| Recruitee | ATS | :hourglass: |  |  |
+| **Pole Emploi** | Job Board | :heavy_check_mark: |*15/07/2022* | *12/01/2023* |
+| **Recruitee** | ATS | :heavy_check_mark: | *30/10/2022* | *12/01/2023* |
 | **RecruitBox** |  | :hourglass: |  |  |
 | **RegionsJob** | Job Board | :hourglass: |  |  |
-| SAPSuccessfactors | Cloud Apps for HR | :hourglass: |  |  |
+| **SAPSuccessfactors** | Cloud Apps for HR | :heavy_check_mark: | *19/01/2022* | *12/01/2023* |
 | **Salesforce** | CRM-ATS | :hourglass: |  |  |
 | [**Smartrecruiters**](src/hrflow_connectors/connectors/smartrecruiters/) | ATS | :heavy_check_mark: | *21/03/2022* | *30/06/2022* |
 | **Staffme** | Job Board | :hourglass: |  |  |
 | **Staffsante** | Job Board | :hourglass: |  |  |
-| Taleez| ATS | :hourglass: |  |  |
+| **Taleez** | ATS | :wrench: |*19/01/2022* | |
 | **Talentsoft** | HCM | :heavy_check_mark: | *19/04/2022* | *09/05/2022* |
 | **Talentlink** |  | :hourglass: |  |  |
-| Teamtailor| ATS | :hourglass: |  |  |
+| **Teamtailor** | ATS | :heavy_check_mark: | *06/10/2022* | *12/01/2023* |
 | **Tekkit** | Job Board | :hourglass: |  |  |
 | **Turnover-IT** | Job Board | :hourglass: |  |  |
 | **Twilio** | Marketing Tools | :hourglass: |  |  |
 | **Ultimate Software (UKG)** |  | :hourglass: |  |  |
-| Workable | :hourglass: |  |  |
+| **Waalaxy** |  | :heavy_check_mark: |*18/11/2022* | *12/01/2023* |
+| **Workable** | HCM | :heavy_check_mark: | *27/09/2022* | *12/01/2023* |
 | **Welcome To The Jungle** | Job Board | :hourglass: |  |  |
 | **Wizbii** | Job Board | :hourglass: |  |  |
-| **Workday** | HCM Cloud | :hourglass: |  |  |
-| XML | Job Board | :hourglass: |  |  |
+| **Workday** | HCM Cloud | :heavy_check_mark: |  |  |
+| **XML** | Job Board | :wrench: |  |  |
 
 
 ## 🪄 Quickstart
