@@ -1,0 +1,148 @@
+warehouse:
+  WorkableJobWarehouse:
+    read:
+      - parameters:
+          auth: $__AUTH
+          subdomain: $__SUBDOMAIN
+
+
+actions:
+  pull_jobs:
+    - id: valid_parameters
+      origin_parameters:
+        auth: $__AUTH
+        subdomain: $__SUBDOMAIN
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+
+    - id: missing_auth
+      origin_parameters:
+        subdomain: $__SUBDOMAIN
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+    
+    - id: missing_subdomain
+      origin_parameters:
+        auth: $__AUTH
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+    
+    - id: invalid_auth
+      origin_parameters:
+        auth: "invalid"
+        subdomain: $__SUBDOMAIN
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+
+    - id: invalid_subdomain
+      origin_parameters:
+        auth: $__AUTH
+        subdomain: "invalid_subdomain"
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+
+  push_profile:
+    - id: valid_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+        
+      target_parameters:
+        auth: $__AUTH
+        subdomain: $__SUBDOMAIN
+        shortcode : $__SHORTCODE
+      status: success
+
+    - id: missing_auth
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+        
+      target_parameters:
+        subdomain: $__SUBDOMAIN
+        shortcode : $__SHORTCODE
+      status: fatal
+
+    - id: missing_subdomain
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+        
+      target_parameters:
+        subdomain: $__SUBDOMAIN
+        shortcode : $__SHORTCODE
+      status: fatal
+
+    
+    - id: missing_shortcode
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+        
+      target_parameters:
+        auth: $__AUTH
+        subdomain: $__SUBDOMAIN
+      status: fatal
+
+
+    - id: invalid_auth
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+        
+      target_parameters:
+        auth: invalid
+        subdomain: $__SUBDOMAIN
+        shortcode : $__SHORTCODE
+      status: fatal
+
+    - id: invalid_subdomain
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+        
+      target_parameters:
+        auth: $__AUTH
+        subdomain: "invalid"
+        shortcode : $__SHORTCODE
+      status: fatal
+
+    - id: invalid_shortcode
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+        
+      target_parameters:
+        auth: $__AUTH
+        subdomain: $__SUBDOMAIN
+        shortcode : "invalid"
+      status: fatal
