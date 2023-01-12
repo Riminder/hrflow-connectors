@@ -17,7 +17,7 @@ push a job from  ***Hrflow*** to ***Monster*** API. To see job pushed, go to htt
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L17) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L164) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
