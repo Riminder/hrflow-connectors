@@ -3,7 +3,7 @@ from enum import Enum, IntEnum
 from logging import LoggerAdapter
 
 import requests
-from pydantic import BaseModel, Field, validator
+from pydantic import Field, validator
 
 from hrflow_connectors.connectors.poleemploi.schemas import (
     ExperienceRequirement,
