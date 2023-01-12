@@ -31,6 +31,7 @@ class WriteProfilesParameters(ParametersModel):
         field_type=FieldType.Auth,
     )
 
+
 class ReadProfilesParameters(ParametersModel):
     api_server: str = Field(
         ..., description="Server to be accessed", repr=False, field_type=FieldType.Other
@@ -60,6 +61,7 @@ class ReadProfilesParameters(ParametersModel):
         repr=False,
         field_type=FieldType.QueryParam,
     )
+
 
 class ReadJobsParameters(ParametersModel):
     api_server: str = Field(
@@ -176,37 +178,37 @@ def read_parsing(
     params["filter"] = parameters.filter
     params["search"] = parameters.search
 
-
     url = f"{parameters.api_server}/odata/v2/Candidate"
     headers = {
         "api_key": parameters.api_key,
         "Content-Type": "application/json",
         "Accept": "application/pdf",  # Request PDF format for the CV content
     }
-    
+
     # Set the parameters for the API call
     params = {
         "$select": "ID,Resume",  # Only retrieve the ID and Resume fields
-        "$expand": "Resume($select=ID,Content)",  # Also retrieve the ID and Content of the Resume entity
+        "$expand": "Resume($select=ID,Content)",  # Also retrieve the ID
+        # and Content of the Resume entity
     }
-    
+
     # Make the GET request
     response = requests.get(url, headers=headers, params=params)
-    
+
     # Check if the request was successful
     if response.status_code != 200:
         adapter.error(f"Failed to retrieve candidate CVs. Response: {response.text}")
         raise Exception(f"Failed to retrieve candidate CVs. Response: {response.text}")
-    
+
     # Extract the candidate data from the response
     candidates_data = response.json()["value"]
-    
+
     # Extract the CV content for each candidate
     cvs = []
     for candidate in candidates_data:
         cv_content = candidate["Resume"]["Content"]
         cvs.append(cv_content)
-    
+
     return cvs
 
 
@@ -223,35 +225,33 @@ def read_profiles(
     params["filter"] = parameters.filter
     params["search"] = parameters.search
 
-
-   # Set the API endpoint URL
+    # Set the API endpoint URL
     endpoint_url = f"{parameters.api_server}/odata/v2/Candidate"
-    
+
     # Set the headers with the API key
     headers = {
         "api_key": parameters.api_key,
         "Content-Type": "application/json",
     }
-    
+
     # Set the parameters for the API call
     params = {
-        "$select": "ID,FirstName,LastName",  # Only retrieve the ID, FirstName, and LastName fields
+        "$select": "ID,FirstName,LastName",  # Only retrieve the ID,
+        # FirstName, and LastName fields
     }
-    
+
     # Make the GET request
     response = requests.get(endpoint_url, headers=headers, params=params)
-    
+
     # Check if the request was successful
     if response.status_code != 200:
         adapter.error(f"Failed to retrieve candidates. Response: {response.text}")
         raise Exception(f"Failed to retrieve candidates. Response: {response.text}")
-    
+
     # Extract the candidate data from the response
     candidates_data = response.json()["value"]
-    
+
     return candidates_data
-
-
 
 
 SAPProfileWarehouse = Warehouse(
@@ -286,5 +286,3 @@ SAPJobWarehouse = Warehouse(
         endpoints=[],
     ),
 )
-
-

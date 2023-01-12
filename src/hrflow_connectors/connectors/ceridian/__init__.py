@@ -1,1 +1,1 @@
-from hrflow_connectors.connectors.ceridian.connector import Ceridian
+from hrflow_connectors.connectors.ceridian.connector import Ceridian  # noqa
