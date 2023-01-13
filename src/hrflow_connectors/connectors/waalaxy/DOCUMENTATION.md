@@ -18,3 +18,5 @@ BreezyHR is a recruiting software that simplifies the process of attracting and 
 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/waalaxy) on our Github.
 
 **Screenshots :**
+![Hrflow side](https://user-images.githubusercontent.com/107410704/212360096-2f4a26fc-cfcb-4129-ae9a-8ee9a8303b19.png)
+![Waalaxy side](https://user-images.githubusercontent.com/107410704/212360182-426ce709-08c3-42ce-b17c-9eccb5822206.png)
