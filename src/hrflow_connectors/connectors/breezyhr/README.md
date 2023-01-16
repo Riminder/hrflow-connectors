@@ -6,6 +6,9 @@ It helps streamline the recruitment process and identify the best fit for a posi
 
 ## Connector features :
 
+![BreezyHR](https://user-images.githubusercontent.com/55802491/212667728-8a1d7eab-04b0-453b-9381-444ff47751cd.jpg)
+
+
 - **[Push profiles :](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/breezyhr/docs/pull_jobs.md)**  Retrieves profiles from HrFlow Souce export API and sends them to BreezyHR ATS
 
 ```python
@@ -40,10 +43,10 @@ BreezyHR.push_profiles(
     )
 )
 ```
+![image](https://user-images.githubusercontent.com/55802491/212358414-f29104b6-c54b-4f91-b376-1fe7b5fb8eb1.png)
 
 
 - **[Pull Jobs :](https://github.com/Riminder/hrflow-connectors/blob/master/src/hrflow_connectors/connectors/breezyhr/docs/pull_jobs.md)** Retrieves jobs from BreezyHR vacancies export API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board
-
 
 
 ```python
@@ -78,6 +81,8 @@ BreezyHR.pull_jobs(
     )
 )
 ```
+![image](https://user-images.githubusercontent.com/55802491/210258882-e9e0abda-62a5-4267-89f0-61460c10abe1.png)
+
 
 
 | Actions |
@@ -91,15 +96,6 @@ BreezyHR.pull_jobs(
 
 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/breezyhr) on our Github.
 
-
-**Screenshots :**
-
-- **Push profiles :**
-![image](https://user-images.githubusercontent.com/55802491/212358414-f29104b6-c54b-4f91-b376-1fe7b5fb8eb1.png)
-
-    
-- **Pull Jobs :**
-![image](https://user-images.githubusercontent.com/55802491/210258882-e9e0abda-62a5-4267-89f0-61460c10abe1.png)
 
 
 
