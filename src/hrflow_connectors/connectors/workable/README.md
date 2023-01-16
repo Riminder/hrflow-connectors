@@ -6,6 +6,8 @@
 
 ## Connector features :
 
+![BreezyHR(3)](https://user-images.githubusercontent.com/55802491/212697884-75682f55-3de4-40c1-9cc3-31955f7a9e9d.jpg)
+
 - [**Pull jobs**](docs/pull_jobs.md) : Retrieves profiles from HrFlow Souce export API and sends them to Workable ATS
 
 
