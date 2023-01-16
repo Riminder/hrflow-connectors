@@ -213,7 +213,7 @@ BreezyHR = Connector(
             target=HrFlowJobWarehouse,
         ),
         ConnectorAction(
-            name="push_profiles",
+            name="push_profile",
             trigger_type=WorkflowType.catch,
             description=(
                 "Push all profiles from ***Hrflow.ai Source*** via ***BreezyHR*** API"
