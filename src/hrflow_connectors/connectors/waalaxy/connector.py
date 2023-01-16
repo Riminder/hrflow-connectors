@@ -55,7 +55,7 @@ Waalaxy = Connector(
     url="https://www.waalaxy.com/fr/",
     actions=[
         ConnectorAction(
-            name="trigger_view",
+            name="catch_profile_trigger_view",
             trigger_type=WorkflowType.catch,
             description=(
                 "Imports the visited profiles, in synchronization with the Waalaxy"
@@ -70,14 +70,14 @@ Waalaxy = Connector(
             target=HrFlowProfileWarehouse,
         ),
         ConnectorAction(
-            name="trigger_connexion",
+            name="catch_profile_trigger_connection",
             trigger_type=WorkflowType.catch,
             description=(
                 "Imports the profiles just connected with, in synchronisation with the"
                 " Waalaxy campaign (Visit + Invitation + CRM Sync)"
             ),
             parameters=BaseActionParameters.with_defaults(
-                "TriggerConnexionActionParameters",
+                "TriggerConnectionActionParameters",
                 format=format_waalaxy_profile,
                 event_parser=event_parser,
             ),

@@ -2,7 +2,9 @@
 
 ## About Waalaxy :
 
-BreezyHR is a recruiting software that simplifies the process of attracting and hiring top talent. It offers a range of tools and features to make the hiring process more efficient and effective.
+Waalaxy (ex ProspectIn)
+Find prospects on every channel with Waalaxy. Reach your prospects wherever they are. Obtain the best conversion rates in your market. All in an automated fashion
+Waalaxy allows you to automatically contact your prospects on different channels, mainly on LinkedIn and by email, via fully automated sequences.
 
 ## Connector features :
             ),
