@@ -2,7 +2,7 @@
 
 ## About BreezyHR :
 
-BreezyHr is a software designed to assist teams in finding the right candidates, evaluating applicants, and making a hire more quickly. 
+BreezyHr is a software designed to assist teams in finding the right candidates, evaluating applicants, and making a hire more quickly.
 
 It helps streamline the recruitment process and identify the best fit for a position.
 
