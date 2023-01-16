@@ -82,6 +82,7 @@ def write(
     parameters: CrossTalentParameters,
     profiles: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
+    failed_profiles = []
     url = (
         f"https://{parameters.subdomain}.salesforce.com/"
         "services/apexrest/crta/HrFlowCreateProfile"
@@ -92,15 +93,19 @@ def write(
         "Authorization": f"OAuth {token}",
         "Content-Type": "application/json",
     }
-    try:
-        response = requests.post(url, headers=headers, json=profiles)
-        adapter.info(
-            "Profile sent to Crosstalent and got the following response"
-            f" {response.status_code}"
-        )
-    except requests.exceptions.RequestException:
-        adapter.error(f"Request failed for {profiles}")
-    return []
+    for profile in profiles:
+        try:
+            response = requests.post(url, headers=headers, json=profile)
+            if not response.ok:
+                raise Exception(f"Error with this {profile}")
+            adapter.info(
+                "Profile sent to Crosstalent and got the following response"
+                f" {response.status_code}"
+            )
+        except Exception:
+            failed_profiles.append(profile)
+            adapter.error(f"Request failed for {profile}")
+    return failed_profiles
 
 
 CrosstalentJobWarehouse = Warehouse(
