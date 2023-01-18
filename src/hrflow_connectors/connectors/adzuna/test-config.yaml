@@ -1,0 +1,70 @@
+warehouse:
+  AdzunaJobWarehouse:
+    read:
+      - parameters:
+          country: "gb"
+          app_id: $__APP_ID
+          app_key: $__APP_KEY
+          what: "Software Engineer"
+          where: "Paris"
+actions:
+  pull_jobs:
+    - id: valid_parameters
+      origin_parameters:
+        country: "gb"
+        app_id: $__APP_ID
+        app_key: $__APP_KEY
+        results_per_page: 20
+        what: "javascript developer"
+        what_exclude: "java"
+        where: "london"
+        sort_by: "salary"
+        salary_min: 30000
+        full_time: "1"
+        permanent: "1"
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+    - id: no_client_credentials
+      origin_parameters:
+        what: "javascript developer"
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+    - id: no_hrflow_board_key
+      origin_parameters:
+        country: "us"
+        app_id: $__APP_ID
+        app_key: $__APP_KEY
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_client_credentials
+      origin_parameters:
+        country: "us"
+        app_id: bad_client_id
+        app_key: bad_client_secret
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+    - id: invalid_hrflow_api_secret
+      origin_parameters: 
+        country: "fr"
+        app_id: $__APP_ID
+        app_key: $__APP_KEY
+      target_parameters:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: write_failure
