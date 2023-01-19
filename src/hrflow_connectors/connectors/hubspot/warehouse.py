@@ -1,5 +1,4 @@
 import typing as t
-from enum import Enum
 from logging import LoggerAdapter
 from typing import List
 
@@ -18,15 +17,7 @@ from hrflow_connectors.core import (
 )
 
 BASE_URL = "https://api.hubapi.com/crm/v3"
-
-
-class Properties(str, Enum):  # more properrties can be added later to enrich
-    COMPANY = "company"
-    EMAIL = "email"
-    FIRSTNAME = "firstname"
-    LASTNAME = "lastname"
-    PHONE = "phone"
-    WEBSITE = "website"
+CONTACTS_ENDPOINT = "{}/objects/contacts".format(BASE_URL)
 
 
 class ReadProfilesParameters(ParametersModel):
@@ -53,8 +44,11 @@ class ReadProfilesParameters(ParametersModel):
         ),
         field_type=FieldType.QueryParam,
     )
-    properties: List[Properties] = Field(
-        None,
+    properties: str = Field(
+        default=(
+            "firstname,lastname,date_of_birth,email,phone"
+            ",company,address,zip,city,state,country"
+        ),
         description=(
             "A comma separated list of the properties to be returned in the response."
             " If any of the specified properties are not present on the requested"
@@ -62,7 +56,7 @@ class ReadProfilesParameters(ParametersModel):
         ),
         field_type=FieldType.QueryParam,
     )
-    propertiesWithHistory: List[Properties] = Field(
+    propertiesWithHistory: str = Field(
         None,
         description=(
             "A comma separated list of the properties to be returned along with their"
@@ -125,34 +119,44 @@ class WriteProfilesParameters(ParametersModel):
     )
 
 
-# TODO: Improve how the contact's profile info is collected individually,
-# take into account paggination
 def read(
     adapter: LoggerAdapter,
     parameters: ReadProfilesParameters,
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-    url = "{}/objects/contacts".format(BASE_URL)
+    headers = {"Authorization": f"Bearer {parameters.access_token}"}
     params = parameters.dict()
     del params["access_token"]
 
     response = requests.get(
-        url,
-        headers={"Authorization": "Bearer {}".format(parameters.access_token)},
+        CONTACTS_ENDPOINT,
+        headers=headers,
         params=params,
     )
     if response.status_code // 100 != 2:
         adapter.error(
-            "Failed to pull contacts list from Hubspot params={}"
-            " status_code={} response={}".format(
-                params, response.status_code, response.text
-            )
+            f"Failed to pull contacts list from Hubspot.  params={params}"
+            f" status_code={response.status_code} response={response.text}"
         )
         raise Exception("Failed to pull contacts list from Hubspot")
     contacts = response.json()["results"]
     for contact in contacts:
         yield contact
+    while "paging" in response.json() and "next" in response.json()["paging"]:
+        next_url = response.json()["paging"]["next"]["link"]
+        response = requests.get(
+            next_url, headers=headers, params=dict(properties=parameters.properties)
+        )
+        if response.status_code // 100 != 2:
+            adapter.error(
+                "Failed to pull contacts list from Hubspot."
+                f" status_code={response.status_code} response={response.text}"
+            )
+            raise Exception("Failed to pull contacts list from Hubspot")
+        contacts = response.json()["results"]
+        for contact in contacts:
+            yield contact
 
 
 # TODO: custom pipelines using the endpoint
@@ -164,10 +168,9 @@ def write(
 ) -> t.List[t.Dict]:
     adapter.info("Adding {} profiles to Hubspot ".format(len(profiles)))
     failed_profiles = []
-    contacts_endpoint = "{}/objects/contacts".format(BASE_URL)
     for profile in profiles:
         response = requests.post(
-            contacts_endpoint,
+            CONTACTS_ENDPOINT,
             headers={
                 "Authorization": "Bearer {}".format(parameters.access_token),
             },
