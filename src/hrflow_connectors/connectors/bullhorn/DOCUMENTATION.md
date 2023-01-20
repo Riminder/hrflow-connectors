@@ -33,7 +33,7 @@ In this section, we outline the data flow between different components of the co
 | ------- |  -------- |
 | [**Pull jobs**](docs/pull_jobs.md) | Retrieves jobs from Bullhorn API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board |
 | [**Pull profiles**](docs/push_profiles.md) | Retrieves profiles from Bullhorn ATS and sends them to a [HrFlow.ai](http://HrFlow.ai) Source|
-| [**Push profiles**](docs/push_profiles.md) | Retrieves profiles from a HrFlow Source and sends them to Bullhorn ATS|
+| [**Push profiles**](docs/push_profiles.md) | Retrieves profiles from a [HrFlow.ai](http://HrFlow.ai) Source and sends them to Bullhorn ATS|
 
 </p>
 
