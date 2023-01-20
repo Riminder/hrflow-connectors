@@ -41,80 +41,28 @@ In this section, we outline the data flow between different components of the co
 # 🐍 Quick Start Examples
 ## **Push Profiles Action**
 
-<p align="center">
-
-```python
-import logging
-from hrflow_connectors import BreezyHR
-from hrflow_connectors.core import ReadMode
-
-
-logging.basicConfig(level=logging.INFO)
-
-
-BreezyHR.push_profiles(
-    workflow_id="some_string_identifier",
-    action_parameters=dict(
-        logics=[],
-        format=lambda *args, **kwargs: None # Put your code logic here,
-        read_mode=ReadMode.sync,
-    ),
-    origin_parameters=dict(
-        api_secret="your_api_secret",
-        api_user="your_api_user",
-        source_key="your_source_key",
-        profile_key="your_profile_key",
-    ),
-    target_parameters=dict(
-        email="your_email",
-        password="your_password",
-        company_id="your_company_id",
-        company_name="your_company_name",
-        position_id="your_position_id",
-        origin=sourced,
-    )
-)
+To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**. To do this, execute the following steps in a new virtual environment:
+```bash
+pip hrflow-connectors
 ```
 
-</p>
 
-## **Pull Jobs Action**
+To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
 
 <p align="center">
 
 ```python
 import logging
 from hrflow_connectors import BreezyHR
-from hrflow_connectors.core import ReadMode
-
-
-logging.basicConfig(level=logging.INFO)
-
-
-BreezyHR.pull_jobs(
-    workflow_id="some_string_identifier",
-    action_parameters=dict(
-        logics=[],
-        format=lambda *args, **kwargs: None # Put your code logic here,
-        read_mode=ReadMode.sync,
-    ),
-    origin_parameters=dict(
-        email="your_email",
-        password="your_password",
-        company_id="your_company_id",
-        company_name="your_company_name",
-    ),
-    target_parameters=dict(
-        api_secret="your_api_secret",
-        api_user="your_api_user",
-        board_key="your_board_key",
-        sync=True,
-        update_content=False,
-        enrich_with_parsing=False,
-    )
-)
 ```
+
 </p>
+
+Once the connector module is imported, you can leverage all the different actions that it offers. 
+
+For more code details checkout connector code 
+
+
 # 🔗 Useful Links
 
 - 📄Visit [BreezyHR](https://breezy.hr/) to learn more.
@@ -123,8 +71,8 @@ BreezyHR.pull_jobs(
 
 
 # 🙏 Special Thanks  
-- 💻 [Limam VADHEL](https://github.com/limamvadhel)
-- 💻 [Leo FERRETTI](https://github.com/Sprenger07)
-- 💻 [Corentin DUCHENE](https://github.com/CorentinDuchene)
-- 🤝 [Breezy HR for the partnership and accessible documentation](https://breezy.hr/)
+- 💻 HrFlow.ai :  [Limam VADHEL](https://github.com/limamvadhel) - Software Engineer
+- 💻 HrFlow.ai : [Leo FERRETTI](https://github.com/Sprenger07) - Software Engineer
+- 💻 HrFlow.ai :[Corentin DUCHENE](https://github.com/CorentinDuchene) - Software Engineer
+- 🤝 BreezyHR :[Breezy HR for the partnership and accessible documentation](https://breezy.hr/)
 
