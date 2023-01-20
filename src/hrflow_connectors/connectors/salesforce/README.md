@@ -7,7 +7,7 @@
   - [**Push Profiles Action**](#push-profiles-action)
   - [**Pull Jobs Action**](#pull-jobs-action)
 - [🔗 Useful Links](#-useful-links)
-- [👍 Special Thanks](#-special-thanks)
+- [👏 Special Thanks](#-special-thanks)
 
 
 # 📝 About Salesforce
@@ -131,6 +131,6 @@ For more code details checkout connector code
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/salesforce) on our Github.
 
 
-# 👍 Special Thanks
+# 👏 Special Thanks
 - 💻 HrFlow.ai : [the-forest-tree](https://github.com/the-forest-tree) - Software Engineer
 - 🤝 Salesforce : [Salesforce Developer Centers](https://developer.salesforce.com/)
