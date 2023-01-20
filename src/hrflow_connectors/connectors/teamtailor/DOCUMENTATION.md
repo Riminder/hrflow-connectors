@@ -1,26 +1,72 @@
+# 📖 Summary
+- [📖 Summary](#-summary)
+- [📝 About Teamtailor](#-about-teamtailor)
+- [📊 Data Flow](#-data-flow)
+- [🔌 Connector Actions](#-connector-actions)
+- [🐍 Quick Start Examples](#-quick-start-examples)
+- [🔗 Useful Links](#-useful-links)
+- [🙏 Special Thanks](#-special-thanks)
 
 
-
-# TeamTailor Connector
-
-## About TeamTailor:
+# 📝 About Teamtailor
 
 Teamtailor is the applicant tracking system made for all types of companies. With modern features optimized for you and your candidates, you will get everything you need to recruit successfully.
 
-## Connector features
+<p align="center">
+<image src=https://user-images.githubusercontent.com/46778695/213715215-b043d2ee-60aa-4e70-9edd-b7c003386c24.png width=90% height=100% >
+</p>
 
--   **Pull_Jobs:** Retrieves a list of job IDs from the TeamTailor API, retrieves the corresponding job information and location information for each ID, and sends the formatted data to an HrFlow board.
--   **Push_Profiles:** Retrieves candidate data from an HrFlow source, formats the data as a JSON object, and posts it to the TeamTailor API to create new candidates.
+# 📊 Data Flow 
+In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
-## Requirements:
+<p align="center">
+<image src=https://user-images.githubusercontent.com/46778695/213188767-7ddef358-0f0b-4d68-a14f-f0dcc42e4851.jpg width=90% height=100% >
+</p>
 
-To use the connector, you will need the following:
+ 
+# 🔌 Connector Actions
+<p align="center">
 
--   A TeamTailor API token and API version, which can be obtained by creating an API key in your TeamTailor account.
--   An HrFlow board and source, which can be created at [https://hrflow.ai/](https://hrflow.ai/).
+| Action | Description |
+| ------- |  -------- |
+| [**Pull jobs**](docs/pull_jobs.md) | Retrieves jobs from Teamtailor API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board | 
+| [**Push profiles**](docs/push_profiles.md) | Retrieves profiles from a HrFlow Souce and sends them to BreezyHR ATS|
 
-## Useful links:
+  
+</p>
 
-📄Visit [Teamtailor](https://www.teamtailor.com/) to learn more.
 
-💻 [Connector code]([https://github.com/Sprenger07/hrflow-connectors/tree/feature/update-connector-workable/src/hrflow_connectors/connectors/workable](https://github.com/Sprenger07/hrflow-connectors/tree/feature/update-connector-workable/src/hrflow_connectors/connectors/workable)) on our Github.
+# 🐍 Quick Start Examples
+
+To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**. To do this, execute the following steps in a new virtual environment:
+```bash
+pip hrflow-connectors
+```
+
+
+To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
+
+<p align="center">
+
+```python
+import logging
+from hrflow_connectors import BreezyHR
+```
+
+</p>
+
+Once the connector module is imported, you can leverage all the different actions that it offers. 
+
+For more code details checkout connector code 
+
+
+# 🔗 Useful Links
+
+- 📄Visit [Teamtailor](https://teamtailor.com/) to learn more.
+- ⚙️ API documentation : (https://docs.teamtailor.com/)
+- 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/teamtailor) on our Github.
+
+
+# 🙏 Special Thanks  
+- 💻 HrFlow.ai :  [Daniel ROSA](https://github.com/DanielRosa73) - Software Engineer
+- 🤝 Teamtailor :[Teamtailor for the partnership and accessible documentation](https://teamtailor.com/)
