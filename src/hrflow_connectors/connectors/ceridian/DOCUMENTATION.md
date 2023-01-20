@@ -1,18 +1,73 @@
+# 📖 Summary
+- [📖 Summary](#-summary)
+- [📝 About Ceridian](#-about-ceridian)
+- [📊 Data Flow](#-data-flow)
+- [🔌 Connector Actions](#-connector-actions)
+- [🐍 Quick Start Examples](#-quick-start-examples)
+- [🔗 Useful Links](#-useful-links)
+- [🙏 Special Thanks](#-special-thanks)
 
 
-
-# Ceridian Connector
-
-## About Ceridian:
+# 📝 About Ceridian 
 
 Cloud HCM software that brings together real-time payroll, HR, benefits, time reporting, talent and workforce management to empower your people.
 
-## Connector features:
+<p align="center">
+<image src=https://user-images.githubusercontent.com/46778695/213708839-35e09e59-8535-423b-bd01-55c37b5fbddd.png width=90% height=100% >
+</p>
 
--   **Pull jobs** The connector retrieves job information from the Ceridian website using the Ceridian API and indexes it to an HrFlow Board.
+# 📊 Data Flow 
+In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
-## Useful links:
+<p align="center">
+<image src=https://user-images.githubusercontent.com/46778695/213160807-9df403fa-7891-4852-a8a6-d43a942bd629.jpg width=90% height=100% >
+</p>
 
-📄Visit [Ceridian](https://www.workable.com/) to learn more.
 
-💻 [Connector code]([https://github.com/Sprenger07/hrflow-connectors/tree/feature/update-connector-workable/src/hrflow_connectors/connectors/workable](https://github.com/Sprenger07/hrflow-connectors/tree/feature/update-connector-workable/src/hrflow_connectors/connectors/workable)) on our Github.
+# 🔌 Connector Actions
+<p align="center">
+
+| Action | Description |
+| ------- |  -------- |
+| [**Pull jobs**](docs/pull_jobs.md) | Retrieves jobs from Ceridian API and sends them to a [HrFlow.ai](http://HrFlow.ai) Board | 
+
+
+</p>
+
+
+# 🐍 Quick Start Examples
+
+To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**. To do this, execute the following steps in a new virtual environment:
+```bash
+pip hrflow-connectors
+```
+
+
+To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
+
+<p align="center">
+
+```python
+import logging
+from hrflow_connectors import Ceridian
+```
+
+</p>
+
+Once the connector module is imported, you can leverage all the different actions that it offers. 
+
+For more code details checkout connector code 
+
+
+# 🔗 Useful Links
+
+- 📄Visit [Ceridian](https://ceridian.com/) to learn more.
+- ⚙️ API documentation : (https://developers.dayforce.com/Build/Download-documentation.aspx)
+- 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/ceridian) on our Github.
+
+
+# 🙏 Special Thanks  
+- 💻 HrFlow.ai: [Daniel ROSA](https://github.com/DanielRosa73) - Software Engineer
+- 💻 HrFlow.ai:  [Limam VADHEL](https://github.com/limamvadhel) - Software Engineer
+- 💻 HrFlow.ai: [Corentin DUCHENE](https://github.com/CorentinDuchene) - Software Engineer
+- 🤝 Ceridian: [Ceridian for the partnership and accessible documentation](https://ceridian.com/)
