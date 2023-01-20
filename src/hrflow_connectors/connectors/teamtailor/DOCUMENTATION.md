@@ -12,8 +12,10 @@
 
 Teamtailor is the applicant tracking system made for all types of companies. With modern features optimized for you and your candidates, you will get everything you need to recruit successfully.
 
+
+
 <p align="center">
-<image src=https://user-images.githubusercontent.com/46778695/213715215-b043d2ee-60aa-4e70-9edd-b7c003386c24.png width=90% height=100% >
+<image src=https://user-images.githubusercontent.com/46778695/213733804-e5383200-1371-493f-854f-ea70d80a1e8c.png width=90% height=100% >
 </p>
 
 # 📊 Data Flow 
@@ -30,7 +32,7 @@ In this section, we outline the data flow between different components of the co
 | Action | Description |
 | ------- |  -------- |
 | [**Pull jobs**](docs/pull_jobs.md) | Retrieves jobs from Teamtailor API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board | 
-| [**Push profiles**](docs/push_profiles.md) | Retrieves profiles from a HrFlow Souce and sends them to BreezyHR ATS|
+| [**Push profiles**](docs/push_profiles.md) | Retrieves profiles from a [HrFlow.ai](http://HrFlow.ai) Souce and sends them to BreezyHR ATS|
 
   
 </p>
@@ -50,7 +52,7 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 
 ```python
 import logging
-from hrflow_connectors import BreezyHR
+from hrflow_connectors import Teamtailor
 ```
 
 </p>
