@@ -127,7 +127,7 @@ Recruitee = Connector(
     url="https://recruitee.com/",
     actions=[
         ConnectorAction(
-            name="push_profile",
+            name="push_profile_list",
             trigger_type=WorkflowType.catch,
             description=(
                 "Writes a profile from Hrflow.ai Source as a candidate on Recruitee via"
@@ -140,7 +140,7 @@ Recruitee = Connector(
             target=RecruiteeProfileWarehouse,
         ),
         ConnectorAction(
-            name="pull_jobs",
+            name="pull_job_list",
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves all jobs via the ***Recruitee*** API and send them"

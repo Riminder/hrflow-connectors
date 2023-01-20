@@ -6,7 +6,7 @@ warehouse:
           api_token:  $__API_TOKEN
           recruitee_endpoint: "STAGING ENDPOINT"
 actions:
-  pull_jobs:
+  pull_job_list:
     - id: valid_parameters
       origin_parameters:
         company_id: $__COMPANY_ID
@@ -60,7 +60,7 @@ actions:
         board_key: $__BOARD_KEY
       status: fatal
       reason: write_failure
-  push_profile:
+  push_profile_list:
     - id: valid_parameters
       origin_parameters:
         api_secret: $__API_SECRET
