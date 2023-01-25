@@ -4,8 +4,6 @@
 - [📊 Data Flow](#-data-flow)
 - [🔌 Connector Actions](#-connector-actions)
 - [🐍 Quick Start Examples](#-quick-start-examples)
-  - [**Push Profiles Action**](#push-profiles-action)
-  - [**Pull Jobs Action**](#pull-jobs-action)
 - [🔗 Useful Links](#-useful-links)
 - [🙏 Special Thanks](#-special-thanks)
 
