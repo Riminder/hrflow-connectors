@@ -23,7 +23,7 @@ Workable is more than an applicant tracking system, Workable's talent acquisitio
 In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
 <p align="center">
-<image src=https://user-images.githubusercontent.com/55802491/212667728-8a1d7eab-04b0-453b-9381-444ff47751cd.jpg width=90% height=100% >
+<image src=https://user-images.githubusercontent.com/55802491/214537920-a1937578-039f-4619-8533-72759ccab258.jpg width=90% height=100% >
 </p>
 
 # 🔌 Connector Actions
