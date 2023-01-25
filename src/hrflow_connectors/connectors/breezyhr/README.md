@@ -39,8 +39,6 @@ In this section, we outline the data flow between different components of the co
 
 
 # 🐍 Quick Start Examples
-## **Push Profiles Action**
-
 To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**. To do this, execute the following steps in a new virtual environment:
 ```bash
 pip hrflow-connectors
