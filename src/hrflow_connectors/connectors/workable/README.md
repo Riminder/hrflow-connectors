@@ -1,91 +1,76 @@
-
-# Workable Connector
-
-> More than an applicant tracking system, Workable's talent acquisition software helps teams find candidates, evaluate applicants and make the right hire, faster.
-
-
-## Connector features :
-
-![BreezyHR(3)](https://user-images.githubusercontent.com/55802491/212697884-75682f55-3de4-40c1-9cc3-31955f7a9e9d.jpg)
-
-- [**Pull jobs**](docs/pull_jobs.md) : Retrieves profiles from HrFlow Souce export API and sends them to Workable ATS
-
-
-```py
-import logging
-from hrflow_connectors import Workable
-from hrflow_connectors.core import ReadMode
+# 📖 Summary
+- [📖 Summary](#-summary)
+- [📝 About Workable](#-about-workable)
+- [📊 Data Flow](#-data-flow)
+- [🔌 Connector Actions](#-connector-actions)
+- [🐍 Quick Start Examples](#-quick-start-examples)
+  - [**Push Profiles Action**](#push-profiles-action)
+  - [**Pull Jobs Action**](#pull-jobs-action)
+- [🔗 Useful Links](#-useful-links)
+- [🙏 Special Thanks](#-special-thanks)
 
 
-logging.basicConfig(level=logging.INFO)
+# 📝 About Workable
+
+Workable is more than an applicant tracking system, Workable's talent acquisition software helps teams find candidates, evaluate applicants and make the right hire, faster.
 
 
-Workable.pull_jobs(
-    workflow_id="some_string_identifier",
-    action_parameters=dict(
-        logics=[],
-        format=lambda *args, **kwargs: None # Put your code logic here,
-        read_mode=ReadMode.sync,
-    ),
-    origin_parameters=dict(
-        auth="your_auth",
-        subdomain="your_subdomain",
-    ),
-    target_parameters=dict(
-        api_secret="your_api_secret",
-        api_user="your_api_user",
-        board_key="your_board_key",
-        sync=True,
-        update_content=False,
-        enrich_with_parsing=False,
-    )
-)
-```
-![image](https://user-images.githubusercontent.com/55802491/212356711-8edfc9df-bf96-4dda-825b-f5bf1f324edf.png)
+<p align="center">
+<image src=https://user-images.githubusercontent.com/55802491/212356711-8edfc9df-bf96-4dda-825b-f5bf1f324edf.png width=90% height=100% >
+</p>
 
-- [**Push profile**](docs/push_profile.md)
- : Retrieves jobs from Workable vacancies export API and sends them to a HrFlow.ai Board
+# 📊 Data Flow 
+In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
-```py
-import logging
-from hrflow_connectors import Workable
-from hrflow_connectors.core import ReadMode
+<p align="center">
+<image src=https://user-images.githubusercontent.com/55802491/212667728-8a1d7eab-04b0-453b-9381-444ff47751cd.jpg width=90% height=100% >
+</p>
+
+# 🔌 Connector Actions
+<p align="center">
+
+| Action | Description |
+| ------- |  -------- |
+| [**Pull jobs**](docs/pull_jobs.md) | Retrieves profiles from HrFlow Souce export API and sends them to Workable ATS | 
+| [**Push profiles**](docs/push_profiles.md) | Retrieves jobs from Workable vacancies export API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board|
+
+</p>
 
 
-logging.basicConfig(level=logging.INFO)
+# 🐍 Quick Start Examples
+## **Push Profiles Action**
 
-
-Workable.push_profile(
-    workflow_id="some_string_identifier",
-    action_parameters=dict(
-        logics=[],
-        format=lambda *args, **kwargs: None # Put your code logic here,
-        read_mode=ReadMode.sync,
-    ),
-    origin_parameters=dict(
-        api_secret="your_api_secret",
-        api_user="your_api_user",
-        source_key="your_source_key",
-        profile_key="your_profile_key",
-    ),
-    target_parameters=dict(
-        auth="your_auth",
-        subdomain="your_subdomain",
-        shortcode="your_shortcode",
-    )
-)
+To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**. To do this, execute the following steps in a new virtual environment:
+```bash
+pip install hrflow-connectors
 ```
 
-![image](https://user-images.githubusercontent.com/55802491/210259130-5fc9d163-29aa-47ed-9d19-0559385e4edc.png)
 
-| Actions |
-| ------- |
-| [**Pull jobs**](docs/pull_jobs.md) |
-| [**Push profile**](docs/push_profile.md) |
+To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
+
+<p align="center">
+
+```python
+import logging
+from hrflow_connectors import Workable
+```
+
+</p>
+
+Once the connector module is imported, you can leverage all the different actions that it offers. 
+
+For more code details checkout connector code 
 
 
-## **Useful links:**
+# 🔗 Useful Links
 
-📄Visit [Workable](https://www.workable.com/) to learn more.
+- 📄Visit [Workable](https://www.workable.com/) to learn more.
+- ⚙️ API documentation : (https://workable.readme.io/reference/generate-an-access-token)
+- 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/workable) on our Github.
 
-💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/workable) on our Github.
+
+# 🙏 Special Thanks  
+- 💻 HrFlow.ai :  [Limam VADHEL](https://github.com/limamvadhel) - Software Engineer
+- 💻 HrFlow.ai : [Leo FERRETTI](https://github.com/Sprenger07) - Software Engineer
+- 💻 HrFlow.ai :[Corentin DUCHENE](https://github.com/CorentinDuchene) - Software Engineer
+- 🤝 Workable :[Workable for the partnership and accessible documentation](https://www.workable.com/)
