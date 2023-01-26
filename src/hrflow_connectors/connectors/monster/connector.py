@@ -127,15 +127,15 @@ def format_careeradnetwork(formater: t.Dict, hrflow_job: t.Dict) -> None:
         else ""
     )
 
-
+DEFAULT_JOB_CATEGORY = "11"
 def format_jobcategory(formater: t.Dict, hrflow_job: t.Dict) -> None:
     JobCategory = find_in_tags(hrflow_job.get("tags"), "JobCategory")
-    formater["JobCategory"] = JobCategory if JobCategory else "11"
+    formater["JobCategory"] = JobCategory if JobCategory else DEFAULT_JOB_CATEGORY
 
-
+DEFAULT_JOB_OCCUPATION = "11892"
 def format_joboccupation(formater: t.Dict, hrflow_job: t.Dict) -> None:
     JobOccupation = find_in_tags(hrflow_job.get("tags"), "JobOccupation")
-    formater["JobOccupation"] = JobOccupation if JobOccupation else "11892"
+    formater["JobOccupation"] = JobOccupation if JobOccupation else DEFAULT_JOB_OCCUPATION
 
 
 def format_industries(formater: t.Dict, hrflow_job: t.Dict) -> None:
