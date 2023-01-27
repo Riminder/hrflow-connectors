@@ -1,6 +1,6 @@
 # 📖 Summary
 - [📖 Summary](#-summary)
-- [📝 About Broadbean](#-about-bullhorn)
+- [📝 About Broadbean](#-about-broadbean)
 - [📊 Data Flow](#-data-flow)
 - [🔌 Connector Actions](#-connector-actions)
 - [🐍 Quick Start Examples](#-quick-start-examples)
