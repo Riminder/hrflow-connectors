@@ -12,9 +12,9 @@
 
 Monster is a career development and job search platform. It offers a wide range of services for job seekers, including resume and cover letter building tools, job search features, career advice, and more. Additionally, Monster provides recruiting and hiring solutions for employers, such as job posting, candidate screening, and applicant tracking tools. The platform is available in more than 40 countries and is available in multiple languages.
 
-
-
 <p align="center">
+<image src=https://user-images.githubusercontent.com/113343504/215118273-67b2dfd3-8d94-4f64-b89d-1c61381513bb.png width=90% height=100% >
+</p>
 
 
 # 📊 Data Flow 
@@ -67,7 +67,7 @@ For more code details checkout connector code
 
 
 # 🙏 Special Thanks  
-- 💻 HrFlow.ai: [Arthur Stievenard](https://github.com/arthurstiev) - Software Engineer
+- 💻 HrFlow.ai: [Arthur STIEVENARD](https://github.com/arthurstiev) - Software Engineer
 - 💻 HrFlow.ai: [Limam VADHEL](https://github.com/limamvadhel) - Software Engineer
 - 💻 HrFlow.ai: [Clement NEGRE](https://github.com/ClemNeg0) - Software Engineer
 - 🤝 Monster
