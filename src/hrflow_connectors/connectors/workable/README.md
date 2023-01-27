@@ -49,7 +49,6 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 <p align="center">
 
 ```python
-import logging
 from hrflow_connectors import Workable
 ```
 
