@@ -70,4 +70,4 @@ For more code details checkout connector code
 
 # 🙏 Special Thanks  
 - 💻 HrFlow.ai: [Stievenard Arthur](https://github.com/arthurstiev) - Software Engineer
-- 🤝 Bullhorn: [Broadbean for the partnership and accessible documentation](https://broadbean.com/)
+- 🤝 Broadbean: [Broadbean for the partnership and accessible documentation](https://broadbean.com/)
