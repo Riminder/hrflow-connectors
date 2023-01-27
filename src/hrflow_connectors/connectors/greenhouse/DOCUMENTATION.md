@@ -19,6 +19,10 @@ Greenhouse is an applicant tracking system and recruitment software that helps c
  width=90% height=100% >
 </p>
 
+# 📊 Data Flow 
+In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
+
+![image](https://user-images.githubusercontent.com/113343504/215127610-4936bffa-3262-4e72-942b-43ba22dd2ccd.png)
 
 # 🔌 Connector Actions
 <p align="center">
