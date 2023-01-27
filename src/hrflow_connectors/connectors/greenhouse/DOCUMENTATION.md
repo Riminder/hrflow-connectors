@@ -27,7 +27,7 @@ Greenhouse is an applicant tracking system and recruitment software that helps c
 | Action | Description |
 | ------- |  -------- |
 | [**Pull jobs**](docs/pull_jobs.md) | Retrieves jobs from Greenhouse API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board |
-| [**Push profiles**](docs/push_profiles.md) | Retrieves profiles from a [HrFlow.ai](http://HrFlow.ai) Source and sends them to Bullhorn ATS|
+| [**Push profiles**](docs/push_profiles.md) | Retrieves profiles from a [HrFlow.ai](http://HrFlow.ai) Source and sends them to Greenhouse ATS|
 
 </p>
 
@@ -67,4 +67,4 @@ For more code details checkout connector code
 - 💻 HrFlow.ai: [Arthur STIEVENARD](https://github.com/arthurstiev) - Software Engineer
 - 💻 HrFlow.ai: [Limam VADHEL](https://github.com/limamvadhel) - Software Engineer
 - 💻 HrFlow.ai: [Clement NEGRE](https://github.com/ClemNeg0) - Software Engineer
-- 🤝 greenhouse: [greenhouse for the partnership and accessible documentation](https://greenhouse.com/)
+- 🤝 Greenhouse: [Greenhouse for the partnership and accessible documentation](https://greenhouse.com/)
