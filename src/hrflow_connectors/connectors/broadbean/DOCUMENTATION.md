@@ -12,14 +12,20 @@
 
 Broadbean is a recruiting software company that provides a range of tools for job posting, candidate management, and applicant tracking. Their software allows users to post job listings to multiple job boards and social media sites, track applicant progress through the hiring process, and manage communication with candidates. Some of the features of Broadbean include resume parsing, automated job posting, and integration with other HR software.
 
+<p align="center">
+<image src=https://user-images.githubusercontent.com/113343504/215106838-2a2467b5-0b89-46e6-91cb-9097b5bdee51.png width=90% height=100% >
+</p>
 
+# 📊 Data Flow 
+In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
+
+![image](https://user-images.githubusercontent.com/113343504/215125424-49eadcc1-6b1f-4c3b-8f00-19a874440ac1.png)
 
 
 
 
 # 🔌 Connector Actions
-<p align="center">
-<image src=https://user-images.githubusercontent.com/113343504/215106838-2a2467b5-0b89-46e6-91cb-9097b5bdee51.png>
+
 
 
 | Action | Description |
