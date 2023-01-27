@@ -20,7 +20,7 @@ Monster is a career development and job search platform. It offers a wide range 
 # 📊 Data Flow 
 In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
-{to be added}
+![image](https://user-images.githubusercontent.com/113343504/215128002-4b3b5d57-8059-40e9-b3a5-d37a7ada610c.png)
 
 # 🔌 Connector Actions
 <p align="center">
