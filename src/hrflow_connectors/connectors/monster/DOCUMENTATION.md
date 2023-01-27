@@ -60,6 +60,7 @@ For more code details checkout connector code
 # 🔗 Useful Links
 
 - 📄Visit [Monster](https://www.monster.com/) to learn more.
+- ⚙️ API documentation : (http://integrations.monster.com/doc/)
 - ⚙️ toolkit for testing json: (https://integrations.monster.com/Toolkit/)
 - To see job pushed: (http://jobview.monster.com/getjob.aspx?jobid=xxx) with xxx is jobposting id, findable in response. (see picture below)
 <image src=https://user-images.githubusercontent.com/113343504/209932759-ba04c5f5-ba39-45cb-a54d-3d3e49a3d1f1.png>
