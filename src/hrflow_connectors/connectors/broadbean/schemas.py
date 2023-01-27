@@ -2,11 +2,11 @@ import typing as t
 
 from pydantic import BaseModel
 
-class Document:
+class Document(BaseModel):
     filename: str
     type: str
     content: str
-class Context:
+class Context(BaseModel):
     id: str
     shortlist_id: t.Optional[str]
     aplitrak_email_address: t.Optional[str]

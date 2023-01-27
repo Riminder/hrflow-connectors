@@ -109,7 +109,7 @@ DESCRIPTION = (
     "recruiters and talent acquisition professionals who want to streamline their "
     "recruitment process."
 )
-SmartRecruiters = Connector(
+Broadbean = Connector(
     name="Broadbean",
     description=DESCRIPTION,
     url="https://www.broadbean.com",

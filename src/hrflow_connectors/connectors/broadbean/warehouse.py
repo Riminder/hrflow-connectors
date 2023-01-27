@@ -76,14 +76,14 @@ class ReadCandidateParameters(ParametersModel):
         description="secret provided by Broadbean",
         repr=False,
         field_type = FieldType.Auth,
-    ),
+    )
     api_key: str = Field(
         ...,
         description=("The API Key used to generate the signature. "
         "This is provided by Broadbean at the time of setup"),
         repr=False,
         field_type=FieldType.Auth,
-    ),
+    )
     profile: t.Optional[t.Dict] = Field(
         None,
         description="Optional profile for testing",
