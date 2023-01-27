@@ -24,7 +24,7 @@ Broadbean is a recruiting software company that provides a range of tools for jo
 
 | Action | Description |
 | ------- |  -------- |
-| [**Catch profiles**](docs/push_profiles.md) | Retrieves profiles from Bullhorn ATS and sends them to a [HrFlow.ai](http://HrFlow.ai) Source|
+| [**Catch profiles**](docs/push_profiles.md) | Retrieves profiles from Broadbean ATS and sends them to a [HrFlow.ai](http://HrFlow.ai) Source|
 | [**Push profile**](docs/push_profiles.md) | Retrieves profiles from a [HrFlow.ai](http://HrFlow.ai) Source and sends them to Broadbean ATS|
 
 </p>
@@ -64,5 +64,5 @@ For more code details checkout connector code
 
 # 🙏 Special Thanks  
 - 💻 HrFlow.ai: [Stievenard Arthur](https://github.com/arthurstiev) - Software Engineer
-- 🤝 Bullhorn: [Bullhorn for the partnership and accessible documentation](https://broadbean.com/)
+- 🤝 Bullhorn: [Broadbean for the partnership and accessible documentation](https://broadbean.com/)
 
