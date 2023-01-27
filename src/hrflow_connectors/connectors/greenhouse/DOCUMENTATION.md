@@ -64,7 +64,7 @@ For more code details checkout connector code
 
 
 # 🙏 Special Thanks  
-- 💻 HrFlow.ai: [Daniel ROSA](https://github.com/DanielRosa73) - Software Engineer
+- 💻 HrFlow.ai: [Arthur STIEVENARD](https://github.com/arthurstiev) - Software Engineer
 - 💻 HrFlow.ai: [Limam VADHEL](https://github.com/limamvadhel) - Software Engineer
 - 💻 HrFlow.ai: [Clement NEGRE](https://github.com/ClemNeg0) - Software Engineer
 - 🤝 greenhouse: [greenhouse for the partnership and accessible documentation](https://greenhouse.com/)
