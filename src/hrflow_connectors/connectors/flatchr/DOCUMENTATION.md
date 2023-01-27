@@ -19,6 +19,10 @@ Flatchr is a web-based Applicant Tracking System (ATS) and recruitment software.
  width=90% height=100% >
 </p>
 
+# 📊 Data Flow 
+In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
+![image](https://user-images.githubusercontent.com/113343504/215127248-6dc5dff3-f64e-4d50-a8ff-093077b45c32.png)
+
 
 # 🔌 Connector Actions
 <p align="center">
