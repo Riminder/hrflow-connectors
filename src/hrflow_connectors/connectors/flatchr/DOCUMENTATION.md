@@ -1,6 +1,6 @@
 # 📖 Summary
 - [📖 Summary](#-summary)
-- [📝 About Bullhorn](#-about-flatchr)
+- [📝 About flatchr](#-about-flatchr)
 - [📊 Data Flow](#-data-flow)
 - [🔌 Connector Actions](#-connector-actions)
 - [🐍 Quick Start Examples](#-quick-start-examples)
@@ -15,7 +15,8 @@ Flatchr is a web-based Applicant Tracking System (ATS) and recruitment software.
 
 
 <p align="center">
-<image src=https://user-images.githubusercontent.com/46778695/213147416-a4e473ca-093b-47d6-82a0-5bfd0f67a46f.png width=90% height=100% >
+<image src=https://user-images.githubusercontent.com/113343504/215117691-36605f2d-ddcf-48be-9d82-b4c660b1cc20.png
+ width=90% height=100% >
 </p>
 
 
@@ -25,7 +26,7 @@ Flatchr is a web-based Applicant Tracking System (ATS) and recruitment software.
 
 | Action | Description |
 | ------- |  -------- |
-| [**Push profiles**](docs/push_profiles.md) | Retrieves profiles from a [HrFlow.ai](http://HrFlow.ai) Source and sends them to Bullhorn ATS|
+| [**Push profiles**](docs/push_profiles.md) | Retrieves profiles from a [HrFlow.ai](http://HrFlow.ai) Source and sends them to Flatchr ATS|
 
 </p>
 
