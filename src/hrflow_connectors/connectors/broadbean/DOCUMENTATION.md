@@ -1,6 +1,6 @@
 # 📖 Summary
 - [📖 Summary](#-summary)
-- [📝 About Broadbean](#-about-bullhorn)
+- [📝 About Broadbean](#-about-broadbean)
 - [📊 Data Flow](#-data-flow)
 - [🔌 Connector Actions](#-connector-actions)
 - [🐍 Quick Start Examples](#-quick-start-examples)
@@ -20,7 +20,6 @@ Broadbean is a recruiting software company that provides a range of tools for jo
 In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
 ![image](https://user-images.githubusercontent.com/113343504/215125424-49eadcc1-6b1f-4c3b-8f00-19a874440ac1.png)
-
 
 
 
