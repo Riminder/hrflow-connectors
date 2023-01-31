@@ -137,13 +137,15 @@ The features offered by this package:
 * [✨ Create a Workspace](https://hrflow.ai/signup/)
 * [🔑 Get your API Key](https://developers.hrflow.ai/docs/api-authentification)
 
-1. **`pip install hrflow-connectors`**
-2. Pick the connector you would like to use. Let's say it's **SmartRecruiters**
-3. Navigate to the connector's _README_. That would be [here](src/hrflow_connectors/connectors/smartrecruiters/README.md) for **SmartRecruiters**
-4. Choose from the available actions the one you would like to use
-5. Navigate to the action's documentation to find ready for copy/paste integration code
+1. Spin of a terminal shell
+2. **`pip install hrflow-connectors`**
+3. Pick the connector you would like to use. Let's say it's **SAPSuccessFactors**
 
 :checkered_flag: **TADA! You have just used your first connector.**
+
+<p align="center">
+<image src=https://user-images.githubusercontent.com/57711045/215884679-33f754e2-2a21-4aad-97c8-181f6d75235e.png width=90% height=100% >
+</p>
 
 
 ## 📖 Documentation
