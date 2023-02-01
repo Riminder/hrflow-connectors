@@ -66,5 +66,5 @@ For more code details checkout connector code
 
 
 # 🙏 Special Thanks  
-- 💻 HrFlow.ai : [Jamal GOURINDA](https://github.com/the-forest-tree) - Software Engineer
+- 💻 HrFlow.ai : [the-forest-tree](https://github.com/the-forest-tree) - Software Engineer
 - 🤝 Cegid Talentsoft :[Cegid Talentsoft for the partnership and accessible documentation](https://www.cegidtalentsoft.com/)
