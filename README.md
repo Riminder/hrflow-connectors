@@ -10,6 +10,13 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/Riminder/hrflow-connectors?style=social) ![](https://img.shields.io/github/v/release/Riminder/hrflow-connectors) ![](https://img.shields.io/github/license/Riminder/hrflow-connectors)
 
 
+# 💼 About HrFlow.ai
+
+**[HrFlow.ai](https://hrflow.ai/) is on a mission to make AI and data integration pipelines a commodity in the HR Industry:**
+  1. **Unify**: Link your Talent Data channels with a few clicks, so they can share data.
+  2. **Understand**: Leverage our AI solutions to process your Talent Data.
+  3. **Automate**: Sync data between your tools and build workflows that meet your business logic.
+
 <p align="center">
   <a href="https://hrflow.ai">
     <img alt="hrflow" src="https://hrflow-ai.imgix.net/corporate.svg"/>
@@ -18,13 +25,7 @@
 
 <br/>
 
-## About HrFlow.ai
-
-**[HrFlow.ai](https://hrflow.ai/) is on a mission to make AI and data integration pipelines a commodity in the HR Industry:**
-  1. **Unify**: Link your Talent Data channels with a few clicks, so they can share data.
-  2. **Understand**: Leverage our AI solutions to process your Talent Data.
-  3. **Automate**: Sync data between your tools and build workflows that meet your business logic.
-
+# 💻 About **HrFlow-Connectors** 
 **HrFlow-Connectors** is an open-source project created by HrFlow.ai to democratize Talent Data integration within the HR Tech landscape.
 
 We invite developers to join us in our mission to bring AI and data integration to the HR industr, as a developper you can: 
@@ -35,9 +36,13 @@ We invite developers to join us in our mission to bring AI and data integration 
 - Sync data between your tools and build workflows that meet your business logic
 - Link your Talent Data channels with a few clicks, so they can share data
 
+<p align="center">
+<image src=https://user-images.githubusercontent.com/57711045/215884679-33f754e2-2a21-4aad-97c8-181f6d75235e.png width=90% height=100% >
+</p>
+
 📃 **More instructions are available in the Documentation section below** 
 
-## :electric_plug: List of Connectors
+# 🤝 List of Connectors
 
 | Name 🔌 | Type 🔧  | Available 📦 | Release date 📅 | Last update 🔁 
 | - | - | - | - | - |
@@ -116,8 +121,8 @@ We invite developers to join us in our mission to bring AI and data integration 
 
 
 
-## 🪄 Quickstart
-### What I can do?
+# 🪄 Quickstart
+## What I can do?
 With Hrflow Connector, you can **synchronize** and **process** multiple **HR data streams** in just a few lines of code.
 
 You can do any kind of data transfer between HrFlow.ai and external destinations :
@@ -132,7 +137,7 @@ The features offered by this package:
 * **Format the data as you wish** or use the default formatting that we propose adapted to each connector : [`format`](DOCUMENTATION.md#format)
 * **Leverage the provider *Hrflow.ai's ** Job and Profile Warehouse * with a many available options like [`hydrate_with_parsing`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L42) or [`update_content`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L39)
 
-### How to use a connector ?
+## ❓ How to use a connector ?
 **Prerequisites**
 * [✨ Create a Workspace](https://hrflow.ai/signup/)
 * [🔑 Get your API Key](https://developers.hrflow.ai/docs/api-authentification)
@@ -141,17 +146,13 @@ The features offered by this package:
 2. **`pip install hrflow-connectors`**
 3. Pick the connector you would like to use. Let's say it's **SAPSuccessFactors**
 
-:checkered_flag: **TADA! You have just used your first connector.**
-
-<p align="center">
-<image src=https://user-images.githubusercontent.com/57711045/215884679-33f754e2-2a21-4aad-97c8-181f6d75235e.png width=90% height=100% >
-</p>
+🏁 **TADA! You have just used your first connector.**
 
 
 ## 📖 Documentation
 To find out **more about the HrFlow.ai Connectors framework** take a look at the [📖 documentation](DOCUMENTATION.md).
 
-## :bulb: Contributions
+## 💡 Contributions
 
 Please feel free to contribute to the quality of this content by
 submitting PRs for improvements to code, architecture, etc.
@@ -161,11 +162,11 @@ appreciated.
 
 👉 **To find out more about how to proceed, the rules and conventions to follow, read carefully [`CONTRIBUTING.md`](CONTRIBUTING.md).**
 
-## 🔗 Resources
+# 🔗 Resources
 * Our Developers documentation : https://developers.hrflow.ai/
 * Our API list (Parsing, Revealing, Embedding, Searching, Scoring, Reasoning) : https://www.hrflow.ai/api
 * Our cool demos labs : https://labs.hrflow.ai
 
-## :page_with_curl: License
+# 📃 License
 
 See the [`LICENSE`](LICENSE) file for licensing information.
