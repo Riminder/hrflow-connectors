@@ -43,6 +43,11 @@ This new connector will enable:
 - Extract, Structure, and Categorize Talent & Workforce data
 - Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Bullhorn**)
 
+<p align="center">
+<image src=https://user-images.githubusercontent.com/57711045/216298029-deb44e1d-a499-4223-a614-47809ab0c632.jpg width=90% height=100% >
+</p>
+
+
 
 # 🔌 Connector Actions
 <p align="center">
