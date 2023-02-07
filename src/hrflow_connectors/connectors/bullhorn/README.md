@@ -44,10 +44,8 @@ This new connector will enable:
 - Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Bullhorn**)
 
 <p align="center">
-<image src=https://user-images.githubusercontent.com/57711045/216305326-17ce5375-5e17-4dac-afd3-16bd5952f221.png width=90% height=100% >
+<image src=https://user-images.githubusercontent.com/57711045/217298819-29d43799-422d-48f4-8995-272d0af66cbe.gif width=90% height=100% >
 </p>
-
-
 
 # 🔌 Connector Actions
 <p align="center">
