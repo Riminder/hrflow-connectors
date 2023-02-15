@@ -42,25 +42,19 @@ In this section, we outline the data flow between different components of the co
 
 # 🐍 Quick Start Example
 
-To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**. To do this, execute the following steps in a new virtual environment:
-```bash
-pip hrflow-connectors
-```
 
-
+To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**.
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
 
+
 <p align="center">
-
-```python
-from hrflow_connectors import PoleEmploi
-```
-
+<image src=https://user-images.githubusercontent.com/107410704/219022492-3fae3597-3713-4e91-ae69-91a5d05764d6.png width=90% height=100% >
 </p>
 
 Once the connector module is imported, you can leverage all the different actions that it offers. 
 
 For more code details checkout connector code 
+
 
 
 # 🔗 Useful Links
