@@ -41,7 +41,7 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 
 
 <p align="center">
-<image src=https://user-images.githubusercontent.com/107410704/219012812-59a94a26-3316-4d86-82b5-0bf2ede6c1b4.png width=90% height=100% >
+<image src=https://user-images.githubusercontent.com/57711045/219327857-d3f3ec48-38cc-466a-ad48-7dce0c37e7ad.png width=90% height=100% >
 </p>
 
 Once the connector module is imported, you can leverage all the different actions that it offers. 
