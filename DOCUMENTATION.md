@@ -1,3 +1,44 @@
+- [📖 Documentation](#-documentation)
+  - [Introduction to HrFlow.ai Connectors' framework](#introduction-to-hrflowai-connectors-framework)
+  - [Prerequisites](#prerequisites)
+  - [Connector Developpment Tutorial `LocalJSON`](#connector-developpment-tutorial-localjson)
+    - [Folder structure](#folder-structure)
+    - [`warehouse.py`](#warehousepy)
+    - [`schemas.py`](#schemaspy)
+    - [`connector.py`](#connectorpy)
+      - [`ConnectorAction` in details](#connectoraction-in-details)
+        - [`format`](#format)
+        - [`logics`](#logics)
+        - [`trigger_type`](#trigger_type)
+    - [Plugging `LocalJSON`](#plugging-localjson)
+    - [Add `LocalJson` to the HrFlow.ai Connectors' manifest](#add-localjson-to-the-hrflowai-connectors-manifest)
+    - [Generate documentation for `LocalJson`](#generate-documentation-for-localjson)
+    - [Connectors Actions](#connectors-actions)
+      - [Profiles](#profiles)
+      - [Jobs](#jobs)
+    - [Best Paractices](#best-paractices)
+      - [What are tags](#what-are-tags)
+      - [What are metadatas](#what-are-metadatas)
+  - [How to use a Connector](#how-to-use-a-connector)
+    - [✨🚀 Understanding `RunResult` ✨🚀](#-understanding-runresult-)
+  - [Testing](#testing)
+    - [Testing a `Warehouse`](#testing-a-warehouse)
+    - [Testing a `ConnectorAction`](#testing-a-connectoraction)
+    - [Using **secrets** in tests](#using-secrets-in-tests)
+  - [Advanced topics](#advanced-topics)
+    - [Mutating a `Warehouse` to fix some parameters](#mutating-a-warehouse-to-fix-some-parameters)
+    - [Addind a callback to your `ConnectorAction`](#addind-a-callback-to-your-connectoraction)
+    - [How to do _incremental_ reading](#how-to-do-incremental-reading)
+      - [Concepts](#concepts)
+      - [Backend](#backend)
+      - [Interface](#interface)
+      - [Example](#example)
+      - [Running the action](#running-the-action)
+  - [Backend Configuration](#backend-configuration)
+    - [`LocalJSONStore`](#localjsonstore)
+    - [`S3Store`](#s3store)
+
+
 # 📖 Documentation
 ## Introduction to HrFlow.ai Connectors' framework
 
@@ -445,6 +486,54 @@ In order to reflect the addition of `LocalJSON` to the list of connectors you ne
 ### Generate documentation for `LocalJson`
 Run `make docs` and you should see documentation generated in [`src/hrflow_connectors/connectors/localjson`](src/hrflow_connectors/connectors/localjson)
 
+### Connectors Actions
+#### Profiles
+| Action Name         | Trigger             | Description                                                                                                                                    |
+| ------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pull_profile_list` | **Clock**           | Recurrently at a defined rate, the connector retrieves profiles from the origin warehouse and sends them to Hrflow.ai (as a target warehouse). |
+| `push_profile`      | **HrFlow.ai Event** | Following an internal hrflow.ai event, the connector sends a Profile from Hrflow.ai (as an origin warehouse) to a target Warehouse.            |
+| `push_profile_list` | **Clock**           | Recurrently at a defined rate, the connector sends profiles from Hrflow.ai ( as an origin Warehouse) to a target Warehouse.                    |
+| `catch_profile`     | **External Event**  | Following an external event, the connector fetches profile from an origin warehouse and sends it to HrFlow.ai (as a target warehouse)          |
+#### Jobs
+| Action Name     | Trigger             | Description                                                                                                                                |
+| --------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `pull_job_list` | **Clock**           | Recurrently at a defined rate, the connector retrieves jobs from the origin warehouse and sends them to Hrflow.ai (as a target warehouse). |
+| `push_job`      | **HrFlow.ai Event** | Following an internal hrflow.ai event, the connector sends a job from Hrflow.ai (as an origin warehouse) to a target Warehouse.            |
+| `push_job_list` | **Clock**           | Recurrently at a defined rate, the connector sends jobs from Hrflow.ai ( as an origin Warehouse) to a target Warehouse.                    |
+| `catch_job`     | **External Event**  | Following an external event, the connector fetches job from an origin warehouse and sends it to HrFlow.ai (as a target warehouse)          |
+
+### Best Paractices
+#### What are tags 
+**`Tags`** are labels used to categorize and classify objects. They are commonly used to group objects together, indicate the status of an object, or to categorize objects.
+In HrFlow.ai object their primary purpose is to make objects asier to find and categorize.
+Concretely tags in HrFlow.ai are dynamic list of objects `{"name": <tag name>, "value": <tag value>}` 
+
+Here are examples of HrFlow.ai tags for profiles : (example with SAP profile)
+```python
+{
+    "tags": [
+        {"name": "sap_availability", "value": "immediate"}, # immediate is a value from SAP availability dropdown list
+        {"name": "sap_application_status", "value": "ref00001_inProgress"}, # ref00001 is reference of the job and inProgress is the status
+        {"name": "sap_application_status", "value": "ref00002_inProgress"},
+    ]
+}
+```
+ 
+Here are examples of HrFlow.ai tags for jobs : (example with SAP job)
+```python
+{
+    "tags": [
+        {"name": "sap_recruiter_id", "value": "16140"}, # recruiter who opened the job in SAP 
+        {"name": "sap_url_applying", "value": "https://sap.com/apply/00001-fulltime-dev/applying"}, # application url for the job opening
+        {"name": "sap_job_status", "value": "published"}, # This could be a value from the list of possible values for the job status ie. {published, closed, archived, deleted}
+    ]
+}
+```
+⚡ When writing custom fields as tags in HrFlow.ai, it's recommended to use a prefix of the connector_name and the name of the original field name joined by an underscore
+ 
+#### What are metadatas
+**`Metadatas`** are used to store contextual information about the object that can help determine its purpose. 
+In HrFlow.ai, metadatas are similar to **Tags** in terms of structure, however Metadata is not indexed in search engines, meaning it should contain data that won't be used to retrieve the object. Instead, it should be used to provide additional information about the object that can help users make decisions about how to use the object or provide context about the object's purpose.   
 ## How to use a Connector
 **TL;DR** : Check the corresponding documentation in the connectors directory under [`src/hrflow_connectors/connectors/`](src/hrflow_connectors/connectors/)
 
