@@ -1,0 +1,753 @@
+{
+    "page": 0,
+    "pageSize": 100,
+    "listSize": 13,
+    "list": [
+        {
+            "id": 51935,
+            "key": "Disponibilité",
+            "name": "Votre disponibilité",
+            "nameEn": "Your availability",
+            "type": "DATE",
+            "choices": []
+        },
+        {
+            "id": 51936,
+            "key": "Salaire €",
+            "name": "Salaire souhaité (brut par an)",
+            "nameEn": "Salary wanted (per year)",
+            "type": "SELECT",
+            "choices": [
+                {
+                    "id": 600952,
+                    "labelFr": "5 000 à 10 000 € brut annuel",
+                    "labelEn": "5 000 to 10 000 € gross annual",
+                    "order": 0,
+                    "category": false
+                },
+                {
+                    "id": 600953,
+                    "labelFr": "10 000 à 15 000 € brut annuel",
+                    "labelEn": "10 000 to 15 000 € gross annual",
+                    "order": 1,
+                    "category": false
+                },
+                {
+                    "id": 600954,
+                    "labelFr": "15 000 à 20 000 € brut annuel",
+                    "labelEn": "15 000 to 20 000 € gross annual",
+                    "order": 2,
+                    "category": false
+                },
+                {
+                    "id": 600955,
+                    "labelFr": "20 000 à 25 000 € brut annuel",
+                    "labelEn": "20 000 to 25 000 € gross annual",
+                    "order": 3,
+                    "category": false
+                },
+                {
+                    "id": 600956,
+                    "labelFr": "25 000 à 30 000 € brut annuel",
+                    "labelEn": "25 000 to 30 000 € gross annual",
+                    "order": 4,
+                    "category": false
+                },
+                {
+                    "id": 600957,
+                    "labelFr": "30 000 à 35 000 € brut annuel",
+                    "labelEn": "30 000 to 35 000 € gross annual",
+                    "order": 5,
+                    "category": false
+                },
+                {
+                    "id": 600958,
+                    "labelFr": "35 000 à 40 000 € brut annuel",
+                    "labelEn": "35 000 to 40 000 € gross annual",
+                    "order": 6,
+                    "category": false
+                },
+                {
+                    "id": 600959,
+                    "labelFr": "40 000 à 45 000 € brut annuel",
+                    "labelEn": "40 000 to 45 000 € gross annual",
+                    "order": 7,
+                    "category": false
+                },
+                {
+                    "id": 600960,
+                    "labelFr": "45 000 à 50 000 € brut annuel",
+                    "labelEn": "45 000 to 50 000 € gross annual",
+                    "order": 8,
+                    "category": false
+                },
+                {
+                    "id": 600961,
+                    "labelFr": "50 000 à 55 000 € brut annuel",
+                    "labelEn": "50 000 to 55 000 € gross annual",
+                    "order": 9,
+                    "category": false
+                },
+                {
+                    "id": 600962,
+                    "labelFr": "55 000 à 60 000 € brut annuel",
+                    "labelEn": "55 000 to 60 000 € gross annual",
+                    "order": 10,
+                    "category": false
+                },
+                {
+                    "id": 600963,
+                    "labelFr": "60 000 à 65 000 € brut annuel",
+                    "labelEn": "60 000 to 65 000 € gross annual",
+                    "order": 11,
+                    "category": false
+                },
+                {
+                    "id": 600964,
+                    "labelFr": "65 000 à 70 000 € brut annuel",
+                    "labelEn": "65 000 to 70 000 € gross annual",
+                    "order": 12,
+                    "category": false
+                },
+                {
+                    "id": 600965,
+                    "labelFr": "70 000 à 75 000 € brut annuel",
+                    "labelEn": "70 000 to 75 000 € gross annual",
+                    "order": 13,
+                    "category": false
+                },
+                {
+                    "id": 600966,
+                    "labelFr": "75 000 à 80 000 € brut annuel",
+                    "labelEn": "75 000 to 80 000 € gross annual",
+                    "order": 14,
+                    "category": false
+                },
+                {
+                    "id": 600967,
+                    "labelFr": "80 000 à 85 000 € brut annuel",
+                    "labelEn": "80 000 to 85 000 € gross annual",
+                    "order": 15,
+                    "category": false
+                },
+                {
+                    "id": 600968,
+                    "labelFr": "85 000 à 90 000 € brut annuel",
+                    "labelEn": "85 000 to 90 000 € gross annual",
+                    "order": 16,
+                    "category": false
+                },
+                {
+                    "id": 600969,
+                    "labelFr": "90 000 à 95 000 € brut annuel",
+                    "labelEn": "90 000 to 95 000 € gross annual",
+                    "order": 17,
+                    "category": false
+                },
+                {
+                    "id": 600970,
+                    "labelFr": "95 000 à 100 000 € brut annuel",
+                    "labelEn": "95 000 to 100 000 € gross annual",
+                    "order": 18,
+                    "category": false
+                },
+                {
+                    "id": 600971,
+                    "labelFr": "100 000 à 105 000 € brut annuel",
+                    "labelEn": "100 000 to 105 000 € gross annual",
+                    "order": 19,
+                    "category": false
+                },
+                {
+                    "id": 600972,
+                    "labelFr": "105 000 à 110 000 € brut annuel",
+                    "labelEn": "105 000 to 110 000 € gross annual",
+                    "order": 20,
+                    "category": false
+                },
+                {
+                    "id": 600973,
+                    "labelFr": "110 000 à 115 000 € brut annuel",
+                    "labelEn": "110 000 to 115 000 € gross annual",
+                    "order": 21,
+                    "category": false
+                },
+                {
+                    "id": 600974,
+                    "labelFr": "115 000 à 120 000 € brut annuel",
+                    "labelEn": "115 000 to 120 000 € gross annual",
+                    "order": 22,
+                    "category": false
+                },
+                {
+                    "id": 600975,
+                    "labelFr": "120 000 à 125 000 € brut annuel",
+                    "labelEn": "120 000 to 125 000 € gross annual",
+                    "order": 23,
+                    "category": false
+                },
+                {
+                    "id": 600976,
+                    "labelFr": "125 000 à 130 000 € brut annuel",
+                    "labelEn": "125 000 to 130 000 € gross annual",
+                    "order": 24,
+                    "category": false
+                },
+                {
+                    "id": 600977,
+                    "labelFr": "130 000 à 135 000 € brut annuel",
+                    "labelEn": "130 000 to 135 000 € gross annual",
+                    "order": 25,
+                    "category": false
+                },
+                {
+                    "id": 600978,
+                    "labelFr": "135 000 à 140 000 € brut annuel",
+                    "labelEn": "135 000 to 140 000 € gross annual",
+                    "order": 26,
+                    "category": false
+                },
+                {
+                    "id": 600979,
+                    "labelFr": "140 000 à 145 000 € brut annuel",
+                    "labelEn": "140 000 to 145 000 € gross annual",
+                    "order": 27,
+                    "category": false
+                },
+                {
+                    "id": 600980,
+                    "labelFr": "145 000 à 150 000 € brut annuel",
+                    "labelEn": "145 000 to 150 000 € gross annual",
+                    "order": 28,
+                    "category": false
+                },
+                {
+                    "id": 600981,
+                    "labelFr": "150 000 à 155 000 € brut annuel",
+                    "labelEn": "150 000 to 155 000 € gross annual",
+                    "order": 29,
+                    "category": false
+                },
+                {
+                    "id": 600982,
+                    "labelFr": "155 000 à 160 000 € brut annuel",
+                    "labelEn": "155 000 to 160 000 € gross annual",
+                    "order": 30,
+                    "category": false
+                },
+                {
+                    "id": 600983,
+                    "labelFr": "160 000 à 165 000 € brut annuel",
+                    "labelEn": "160 000 to 165 000 € gross annual",
+                    "order": 31,
+                    "category": false
+                },
+                {
+                    "id": 600984,
+                    "labelFr": "165 000 à 170 000 € brut annuel",
+                    "labelEn": "165 000 to 170 000 € gross annual",
+                    "order": 32,
+                    "category": false
+                },
+                {
+                    "id": 600985,
+                    "labelFr": "170 000 à 175 000 € brut annuel",
+                    "labelEn": "170 000 to 175 000 € gross annual",
+                    "order": 33,
+                    "category": false
+                },
+                {
+                    "id": 600986,
+                    "labelFr": "175 000 à 180 000 € brut annuel",
+                    "labelEn": "175 000 to 180 000 € gross annual",
+                    "order": 34,
+                    "category": false
+                },
+                {
+                    "id": 600987,
+                    "labelFr": "180 000 à 185 000 € brut annuel",
+                    "labelEn": "180 000 to 185 000 € gross annual",
+                    "order": 35,
+                    "category": false
+                },
+                {
+                    "id": 600988,
+                    "labelFr": "185 000 à 190 000 € brut annuel",
+                    "labelEn": "185 000 to 190 000 € gross annual",
+                    "order": 36,
+                    "category": false
+                },
+                {
+                    "id": 600989,
+                    "labelFr": "190 000 à 195 000 € brut annuel",
+                    "labelEn": "190 000 to 195 000 € gross annual",
+                    "order": 37,
+                    "category": false
+                },
+                {
+                    "id": 600990,
+                    "labelFr": "195 000 à 200 000 € brut annuel",
+                    "labelEn": "195 000 to 200 000 € gross annual",
+                    "order": 38,
+                    "category": false
+                }
+            ]
+        },
+        {
+            "id": 51937,
+            "key": "Profil candidat",
+            "name": "Votre profil",
+            "nameEn": "Your profile",
+            "type": "SELECTMUL",
+            "choices": [
+                {
+                    "id": 600991,
+                    "labelFr": "Comptabilité",
+                    "labelEn": "Accounting",
+                    "order": 0,
+                    "category": false
+                },
+                {
+                    "id": 600992,
+                    "labelFr": "Administration",
+                    "labelEn": "Administration",
+                    "order": 1,
+                    "category": false
+                },
+                {
+                    "id": 600993,
+                    "labelFr": "Art et design",
+                    "labelEn": "Art and design",
+                    "order": 2,
+                    "category": false
+                },
+                {
+                    "id": 600994,
+                    "labelFr": "Commercial",
+                    "labelEn": "Commercial",
+                    "order": 3,
+                    "category": false
+                },
+                {
+                    "id": 600995,
+                    "labelFr": "Social et communauté",
+                    "labelEn": "Community management",
+                    "order": 4,
+                    "category": false
+                },
+                {
+                    "id": 600996,
+                    "labelFr": "Conseil",
+                    "labelEn": "Council",
+                    "order": 5,
+                    "category": false
+                },
+                {
+                    "id": 600997,
+                    "labelFr": "Enseignement",
+                    "labelEn": "Teaching",
+                    "order": 6,
+                    "category": false
+                },
+                {
+                    "id": 600998,
+                    "labelFr": "Ingénierie",
+                    "labelEn": "Engineering",
+                    "order": 7,
+                    "category": false
+                },
+                {
+                    "id": 600999,
+                    "labelFr": "Entreprenariat",
+                    "labelEn": "Entrepreneurship",
+                    "order": 8,
+                    "category": false
+                },
+                {
+                    "id": 601000,
+                    "labelFr": "Finance",
+                    "labelEn": "Finance",
+                    "order": 9,
+                    "category": false
+                },
+                {
+                    "id": 601001,
+                    "labelFr": "Service de santé",
+                    "labelEn": "Health Service",
+                    "order": 10,
+                    "category": false
+                },
+                {
+                    "id": 601002,
+                    "labelFr": "Ressources humaines",
+                    "labelEn": "Human Resources",
+                    "order": 11,
+                    "category": false
+                },
+                {
+                    "id": 601003,
+                    "labelFr": "IT",
+                    "labelEn": "IT",
+                    "order": 12,
+                    "category": false
+                },
+                {
+                    "id": 601004,
+                    "labelFr": "Service juridique",
+                    "labelEn": "Legal Service",
+                    "order": 13,
+                    "category": false
+                },
+                {
+                    "id": 601005,
+                    "labelFr": "Marketing",
+                    "labelEn": "Marketing",
+                    "order": 14,
+                    "category": false
+                },
+                {
+                    "id": 601006,
+                    "labelFr": "Médias et communication",
+                    "labelEn": "Media and communication",
+                    "order": 15,
+                    "category": false
+                },
+                {
+                    "id": 601007,
+                    "labelFr": "Opérations",
+                    "labelEn": "Operations",
+                    "order": 16,
+                    "category": false
+                },
+                {
+                    "id": 601008,
+                    "labelFr": "Responsable produit",
+                    "labelEn": "Product Manager",
+                    "order": 17,
+                    "category": false
+                },
+                {
+                    "id": 601009,
+                    "labelFr": "Management de projet",
+                    "labelEn": "Project Management",
+                    "order": 18,
+                    "category": false
+                },
+                {
+                    "id": 601010,
+                    "labelFr": "Achats",
+                    "labelEn": "Purchasing",
+                    "order": 19,
+                    "category": false
+                },
+                {
+                    "id": 601011,
+                    "labelFr": "Contrôle qualité",
+                    "labelEn": "Quality control",
+                    "order": 20,
+                    "category": false
+                },
+                {
+                    "id": 601012,
+                    "labelFr": "Immobilier",
+                    "labelEn": "Real Estate",
+                    "order": 21,
+                    "category": false
+                },
+                {
+                    "id": 601013,
+                    "labelFr": "Recherche",
+                    "labelEn": "Search",
+                    "order": 22,
+                    "category": false
+                },
+                {
+                    "id": 601014,
+                    "labelFr": "Ventes",
+                    "labelEn": "Sales",
+                    "order": 23,
+                    "category": false
+                },
+                {
+                    "id": 601015,
+                    "labelFr": "Assistance",
+                    "labelEn": "Assistance",
+                    "order": 24,
+                    "category": false
+                },
+                {
+                    "id": 601016,
+                    "labelFr": "Autres",
+                    "labelEn": "Other",
+                    "order": 25,
+                    "category": false
+                }
+            ]
+        },
+        {
+            "id": 51938,
+            "key": "Contrat candidat",
+            "name": "Contrat souhaité",
+            "nameEn": null,
+            "type": "SELECTMUL",
+            "choices": [
+                {
+                    "id": 601017,
+                    "labelFr": "CDI (contrat à durée indéterminée)",
+                    "labelEn": null,
+                    "order": 0,
+                    "category": false
+                },
+                {
+                    "id": 601018,
+                    "labelFr": "CDD (contrat à durée déterminée)",
+                    "labelEn": null,
+                    "order": 1,
+                    "category": false
+                },
+                {
+                    "id": 601019,
+                    "labelFr": "Intérim (contrat de travail temporaire)",
+                    "labelEn": null,
+                    "order": 2,
+                    "category": false
+                },
+                {
+                    "id": 601020,
+                    "labelFr": "Freelance",
+                    "labelEn": null,
+                    "order": 3,
+                    "category": false
+                },
+                {
+                    "id": 601021,
+                    "labelFr": "Stage",
+                    "labelEn": null,
+                    "order": 4,
+                    "category": false
+                },
+                {
+                    "id": 601022,
+                    "labelFr": "Alternance (contrat d'apprentissage)",
+                    "labelEn": null,
+                    "order": 5,
+                    "category": false
+                },
+                {
+                    "id": 601023,
+                    "labelFr": "Alternance (contrat de professionalisation)",
+                    "labelEn": null,
+                    "order": 6,
+                    "category": false
+                },
+                {
+                    "id": 601024,
+                    "labelFr": "VIE (volontariat international en entreprise)",
+                    "labelEn": null,
+                    "order": 7,
+                    "category": false
+                },
+                {
+                    "id": 601025,
+                    "labelFr": "Job étudiant",
+                    "labelEn": null,
+                    "order": 8,
+                    "category": false
+                },
+                {
+                    "id": 601026,
+                    "labelFr": "Franchisé",
+                    "labelEn": null,
+                    "order": 9,
+                    "category": false
+                },
+                {
+                    "id": 601027,
+                    "labelFr": "Statutaire",
+                    "labelEn": null,
+                    "order": 10,
+                    "category": false
+                },
+                {
+                    "id": 601028,
+                    "labelFr": "Intermittent",
+                    "labelEn": null,
+                    "order": 11,
+                    "category": false
+                },
+                {
+                    "id": 601029,
+                    "labelFr": "Service civique",
+                    "labelEn": null,
+                    "order": 12,
+                    "category": false
+                },
+                {
+                    "id": 601030,
+                    "labelFr": "CEE (contrat d'engagement éducatif)",
+                    "labelEn": null,
+                    "order": 13,
+                    "category": false
+                },
+                {
+                    "id": 601031,
+                    "labelFr": "Autre",
+                    "labelEn": null,
+                    "order": 14,
+                    "category": false
+                }
+            ]
+        },
+        {
+            "id": 51939,
+            "key": "CV",
+            "name": "CV",
+            "nameEn": "Resume",
+            "type": "DOC",
+            "choices": []
+        },
+        {
+            "id": 51940,
+            "key": "Source candidat",
+            "name": "",
+            "nameEn": null,
+            "type": "INPUT",
+            "choices": []
+        },
+        {
+            "id": 56258,
+            "key": "Education level",
+            "name": null,
+            "nameEn": "Your education level",
+            "type": "SELECT",
+            "choices": [
+                {
+                    "id": 654024,
+                    "labelFr": null,
+                    "labelEn": "No degree",
+                    "order": 0,
+                    "category": false
+                },
+                {
+                    "id": 654025,
+                    "labelFr": null,
+                    "labelEn": "Technical diploma",
+                    "order": 1,
+                    "category": false
+                },
+                {
+                    "id": 654026,
+                    "labelFr": null,
+                    "labelEn": "High School diploma",
+                    "order": 2,
+                    "category": false
+                },
+                {
+                    "id": 654027,
+                    "labelFr": null,
+                    "labelEn": "Bachelor degree",
+                    "order": 3,
+                    "category": false
+                },
+                {
+                    "id": 654028,
+                    "labelFr": null,
+                    "labelEn": "Master degree",
+                    "order": 4,
+                    "category": false
+                },
+                {
+                    "id": 654029,
+                    "labelFr": null,
+                    "labelEn": "PhD",
+                    "order": 5,
+                    "category": false
+                }
+            ]
+        },
+        {
+            "id": 56259,
+            "key": "Candidate contract",
+            "name": null,
+            "nameEn": "Contract wanted",
+            "type": "SELECTMUL",
+            "choices": [
+                {
+                    "id": 654030,
+                    "labelFr": null,
+                    "labelEn": "Permanent contract",
+                    "order": 0,
+                    "category": false
+                },
+                {
+                    "id": 654031,
+                    "labelFr": null,
+                    "labelEn": "Temporary contract",
+                    "order": 1,
+                    "category": false
+                },
+                {
+                    "id": 654032,
+                    "labelFr": null,
+                    "labelEn": "Internship",
+                    "order": 2,
+                    "category": false
+                },
+                {
+                    "id": 654033,
+                    "labelFr": null,
+                    "labelEn": "Freelance",
+                    "order": 3,
+                    "category": false
+                },
+                {
+                    "id": 654034,
+                    "labelFr": null,
+                    "labelEn": "Other",
+                    "order": 4,
+                    "category": false
+                }
+            ]
+        },
+        {
+            "id": 56260,
+            "key": "Hard Skills",
+            "name": "Compétences Techniques",
+            "nameEn": "Hard Skills",
+            "type": "TEXTAREA",
+            "choices": []
+        },
+        {
+            "id": 56261,
+            "key": "Languages",
+            "name": "Langues",
+            "nameEn": "Languages",
+            "type": "TEXTAREA",
+            "choices": []
+        },
+        {
+            "id": 56262,
+            "key": "Courses",
+            "name": "Cours Suivis",
+            "nameEn": "Courses",
+            "type": "TEXTAREA",
+            "choices": []
+        },
+        {
+            "id": 56263,
+            "key": "Last position held",
+            "name": "Dernier poste occupé",
+            "nameEn": "Last position held",
+            "type": "INPUT",
+            "choices": []
+        },
+        {
+            "id": 59898,
+            "key": "Last education",
+            "name": "Last education",
+            "nameEn": "Last education",
+            "type": "INPUT",
+            "choices": []
+        }
+    ]
+}
