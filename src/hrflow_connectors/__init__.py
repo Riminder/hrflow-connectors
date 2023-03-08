@@ -8,6 +8,7 @@ from hrflow_connectors.connectors.poleemploi import PoleEmploi
 from hrflow_connectors.connectors.recruitee import Recruitee
 from hrflow_connectors.connectors.sapsuccessfactors import SAPSuccessFactors
 from hrflow_connectors.connectors.smartrecruiters import SmartRecruiters
+from hrflow_connectors.connectors.taleez.connector import Taleez
 from hrflow_connectors.connectors.talentsoft import TalentSoft
 from hrflow_connectors.connectors.teamtailor import Teamtailor
 from hrflow_connectors.connectors.waalaxy import Waalaxy
@@ -32,6 +33,7 @@ __CONNECTORS__ = [
     Teamtailor,
     Waalaxy,
     Hubspot,
+    Taleez,
 ]
 
 # This makes sure that connector are in module namespace
