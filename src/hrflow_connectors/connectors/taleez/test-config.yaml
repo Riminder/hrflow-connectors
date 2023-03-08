@@ -1,0 +1,207 @@
+warehouse:
+  TaleezJobWarehouse:
+    read:
+      - parameters:
+          accept: "application/json;charset=UTF-8"
+          x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+          with_details: true
+          posting_status: PUBLIC
+          limit: 1
+        expected_number_of_items: 6
+actions:
+  pull_jobs:
+    - id : valid_parameters
+      origin_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        with_details: true
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+    - id: missing_x_taleez_api_secret
+      origin_parameters:
+        accept: "application/json;charset=UTF-8"
+        with_details: true
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+    - id: missing_api_secret
+      origin_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        with_details: true
+      target_parameters:
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+    - id: invalid_api_secret
+      origin_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        with_details: true
+      target_parameters:
+        api_secret: "Not_API_KEY"
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+    - id : missing_board_key
+      origin_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        with_details: true
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      status: fatal
+    - id: invalid_board_key
+      origin_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        with_details: true
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: "Not_BOARD_KEY"
+      status: fatal
+    - id : missing_api_user
+      origin_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        with_details: true
+      target_parameters:
+        api_secret: $__API_SECRET
+        board_key: $__BOARD_KEY
+      status: fatal
+  push_profiles:
+    - id: valid_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: "application/json"
+      status: 'success'
+      events:
+        read_success: 1
+        read_failure: 0
+        write_failure: 0
+    - id: missing_api_secret
+      origin_parameters:
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: "application/json"
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+      status: 'fatal'
+    - id: missing_profile_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+      target_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: "application/json"
+      status: 'fatal'
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+    - id: invalid_profile_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        profile_key: "Not_A_JOB_KEY"
+        source_key: $__SOURCE_KEY
+      target_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: "application/json"
+      status: 'success'
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+    - id: missing_source_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: "application/json"
+      status: 'fatal'
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+    - id: invalid_source_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: ""  
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: "application/json"
+      status: 'success'
+      events:
+        read_success: 0
+        read_failure: 0
+        write_failure: 0
+    - id: invalid_api_user
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: " "
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: "application/json"
+      status: 'fatal'
+    - id: missing_secret_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json;charset=UTF-8"
+        content_type: "application/json"
+      status: 'fatal'
+    - id: missing_accept
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+        content_type: "application/json"
+      status: 'success'
+    - id: missing_content_type
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        accept: "application/json;charset=UTF-8"
+        x_taleez_api_secret: $__X_TALEEZ_API_SECRET
+      status: 'fatal'
