@@ -140,7 +140,7 @@ def write(
         references_in_board = set()
         page = 1
         while True:
-            response = hrflow_client.job.searching.list(
+            response = hrflow_client.job.storing.list(
                 board_keys=[parameters.board_key], limit=LIST_JOBS_LIMIT, page=page
             )
             if response["code"] >= 400:
@@ -154,7 +154,7 @@ def write(
             references_in_board.update(
                 [
                     job.get("reference")
-                    for job in response["data"]["jobs"]
+                    for job in response["data"]
                     if job.get("reference")
                 ]
             )
