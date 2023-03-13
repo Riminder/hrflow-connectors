@@ -19,7 +19,7 @@ exclude = ["Makefile", ".pre-commit-config.yaml", "manifest.json", "tests", "poe
 python = "3.10.5"
 pydantic = "^1.9.0"
 Jinja2 = "^3.0.3"
-hrflow = "^1.9.0"
+hrflow = "2.1.0"
 requests = "^2.27.1"
 boto3 = {version = "^1.24.66", optional = true}
 
