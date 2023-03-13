@@ -448,7 +448,7 @@ class ConnectorAction(BaseModel):
                 events[Event.read_success] += 1
         except Exception as e:
             events[Event.read_failure] += 1
-            adapter.error(
+            adapter.exception(
                 "Failed to read from warehouse={} with parameters={} error={}".format(
                     self.origin.name, origin_parameters, repr(e)
                 )
@@ -468,7 +468,7 @@ class ConnectorAction(BaseModel):
                 next_read_from = self.origin.item_to_read_from(last_item)
             except Exception as e:
                 events[Event.item_to_read_from_failure] += 1
-                adapter.error(
+                adapter.exception(
                     "Failed to get read_from from warehouse={} with parameters={}"
                     " item={} error={}".format(
                         self.origin.name, origin_parameters, last_item, repr(e)
@@ -492,7 +492,7 @@ class ConnectorAction(BaseModel):
                 formatted_items.append(parameters.format(item))
             except Exception as e:
                 events[Event.format_failure] += 1
-                adapter.error(
+                adapter.exception(
                     "Failed to format origin item using {} function error={}".format(
                         "default" if using_default_format else "user defined", repr(e)
                     )
@@ -514,7 +514,7 @@ class ConnectorAction(BaseModel):
                     try:
                         item = logic(item)
                     except Exception as e:
-                        adapter.error(
+                        adapter.exception(
                             "Failed to apply logic function number={} error={}".format(
                                 i, repr(e)
                             )
@@ -559,7 +559,7 @@ class ConnectorAction(BaseModel):
             )
             events[Event.write_failure] += len(failed_items)
         except Exception as e:
-            adapter.error(
+            adapter.exception(
                 "Failed to write to warehouse={} with parameters={} error={}".format(
                     self.target.name, target_parameters, repr(e)
                 )
@@ -586,7 +586,9 @@ class ConnectorAction(BaseModel):
                 )
             except Exception as e:
                 events[Event.callback_failure] += 1
-                adapter.error("Failed to run callback with error={}".format(repr(e)))
+                adapter.exception(
+                    "Failed to run callback with error={}".format(repr(e))
+                )
             finally:
                 events[Event.callback_executed] += 1
 
