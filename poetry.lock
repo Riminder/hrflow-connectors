@@ -759,8 +759,8 @@ s3 = ["boto3"]
 
 [metadata]
 lock-version = "1.1"
-python-versions = "3.10.5"
-content-hash = "841bedb34a50095ee7e2cfd37397c64d0cd3b2b2d84cf05dbcf61cb301fa7e49"
+python-versions = ">=3.10"
+content-hash = "4d2bc1666584989b9191a0258c5145def814b8ee457ed13456fb2b93aba6c7a4"
 
 [metadata.files]
 appnope = [
