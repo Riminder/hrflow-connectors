@@ -1524,5 +1524,7 @@ Configuration is based on environment variables that must be properly set during
 - `HRFLOW_CONNECTORS_S3_BUCKET`: **[Required]** S3 bucket
 - `HRFLOW_CONNECTORS_S3_PREFIX`: **[Optional]** S3 key prefix for all data stored by backend
 - `HRFLOW_CONNECTORS_S3_AWS_REGION`: **[Required]** AWS region name
-- `HRFLOW_CONNECTORS_S3_AWS_ACCESS_KEY_ID`: **[Required]** AWS ACCESS KEY ID
-- `HRFLOW_CONNECTORS_S3_AWS_SECRET_ACCESS_KEY`: **[Required]** AWS SECRET ACCESS KEY
+- `HRFLOW_CONNECTORS_S3_AWS_ACCESS_KEY_ID`: **[Optional]** If present passed to S3 Client as `aws_access_key_id`
+- `HRFLOW_CONNECTORS_S3_AWS_SECRET_ACCESS_KEY`: **[Optional]** If present passed to S3 Client as `aws_secret_access_key`
+
+_**N.B.**: Mind that `HRFLOW_CONNECTORS_S3_AWS_ACCESS_KEY_ID` and `HRFLOW_CONNECTORS_S3_AWS_SECRET_ACCESS_KEY` work by pair_
