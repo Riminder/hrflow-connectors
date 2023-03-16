@@ -29,6 +29,7 @@ def configure_store():
 
     enable_store = os.environ.get(ENABLE_STORE_ENVIRONMENT_VARIABLE, None)
     if not enable_store or enable_store in ["false", "False", "0"]:
+        logger.info("No backend configured. Incremental mode is not possible.")
         store = None
         is_configured = False
         return
@@ -45,5 +46,6 @@ def configure_store():
             )
         )
 
+    logger.info("Starting {} Backend configuration".format(store_name))
     store = store_class()
     is_configured = True
