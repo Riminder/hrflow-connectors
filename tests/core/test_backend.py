@@ -272,6 +272,35 @@ def test_s3_store(backend_restore, s3_restore):
 
 
 @pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
+def test_s3_store_implicit_credentials(backend_restore, s3_restore):
+    key = "xxx_TestS3Store"
+    data = TestModel(key1="xxx", key2=3, key3=dict(test=True))
+
+    with mock.patch.dict(
+        os.environ,
+        {
+            backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
+            backend.STORE_NAME_ENVIRONMENT_VARIABLE: "s3",
+            backend.S3Store.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_BUCKET"
+            ),
+            backend.S3Store.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_REGION"
+            ),
+            "AWS_ACCESS_KEY_ID": os.environ.get("S3_STORE_TEST_AWS_ACCESS_KEY_ID"),
+            "AWS_SECRET_ACCESS_KEY": os.environ.get(
+                "S3_STORE_TEST_AWS_SECRET_ACCESS_KEY"
+            ),
+        },
+    ):
+        backend.configure_store()
+
+        assert backend.store.load(key, TestModel) is None
+        backend.store.save(key, data)
+        assert backend.store.load(key, TestModel) == data
+
+
+@pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
 def test_s3_store_prefix_working(backend_restore, s3_restore, s3_resource):
     key = "xxx_TestS3StoreWithPrefix"
     data = TestModel(key1="xxx", key2=3, key3=dict(test=True))
@@ -325,4 +354,4 @@ def test_remove_s3_from_coverage_report(cov):
     # https://coverage.readthedocs.io/en/coverage-5.4/api_coveragedata.html
     measured_files = cov.get_data().measured_files()
     s3_file = next((file for file in measured_files if file.endswith("backend/s3.py")))
-    cov.get_data().add_lines({s3_file: list(range(94))})
+    cov.get_data().add_lines({s3_file: list(range(200))})
