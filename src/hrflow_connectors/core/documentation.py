@@ -107,14 +107,15 @@ def generate_docs(
                 )
             )
             continue
-        readme_content = CONNECTOR_README_TEMPLATE.render(
-            connector_name=model.name.capitalize(),
-            description=model.description,
-            url=model.url,
-            actions=model.actions,
-        )
         readme = connector_directory / "README.md"
-        readme.write_bytes(readme_content.encode())
+        if readme.exists() is False:
+            readme_content = CONNECTOR_README_TEMPLATE.render(
+                connector_name=model.name.capitalize(),
+                description=model.description,
+                url=model.url,
+                actions=model.actions,
+            )
+            readme.write_bytes(readme_content.encode())
         if len(model.actions) > 0:
             action_docs_directory = connector_directory / "docs"
             if not action_docs_directory.is_dir():
