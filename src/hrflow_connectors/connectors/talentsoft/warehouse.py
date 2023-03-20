@@ -1,5 +1,6 @@
 import json
 import typing as t
+from datetime import date
 from io import BytesIO
 from logging import LoggerAdapter
 from zipfile import ZipFile
@@ -141,13 +142,22 @@ def read_jobs(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
+    if parameters.filter and read_mode is ReadMode.incremental:
+        raise Exception("filter cannot be set when read_mode is incremental")
+
+    adapter.info("Requesting Authentication Token from TS")
     token = get_talentsoft_auth_token(
         client_url=parameters.client_url,
         client_id=parameters.client_id,
         client_secret=parameters.client_secret,
     )
+    adapter.info("Authentication with TS API Endpoint finished")
     params = dict(offset=0, limit=LIMIT)
-    if parameters.filter:
+    if read_mode is ReadMode.incremental:
+        if read_from is None:
+            read_from = date.today().isoformat()
+        params["filter"] = "updateDate:gt:{}".format(read_from)
+    elif parameters.filter:
         params["filter"] = parameters.filter
     if parameters.q:
         params["q"] = parameters.q
@@ -262,5 +272,7 @@ TalentSoftJobsWarehouse = Warehouse(
     read=WarehouseReadAction(
         parameters=ReadJobsParameters,
         function=read_jobs,
+        supports_incremental=True,
+        item_to_read_from=lambda job: job["modificationDate"],
     ),
 )

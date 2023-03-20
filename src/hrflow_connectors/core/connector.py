@@ -458,6 +458,14 @@ class ConnectorAction(BaseModel):
                     self.origin.name, origin_parameters, repr(e)
                 )
             )
+        if len(origin_items) == 0:
+            if events[Event.read_failure] > 0:
+                adapter.warning(
+                    "No items fetched from origin warehoue. Aborting action after"
+                    " read_failure"
+                )
+            return RunResult.from_events(events)
+
         adapter.info(
             "Finished reading from warehouse={} n_items={} read_failure={}".format(
                 self.origin.name,
