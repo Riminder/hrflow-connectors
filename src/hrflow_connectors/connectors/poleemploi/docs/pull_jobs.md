@@ -90,7 +90,7 @@ C -> Fee |
 | `accesTravailleurHandicape`  | `bool` | None | Allows you to search for offers for which the employer is handi friendly |
 | `offresMRS`  | `bool` | None |  Allows you to search for jobs that offer the simulation recruitment method |
 | `grandDomaine`  | `str` | None | Code of the major area of the offer |
-| `experienceExigence`  | `str` | None | Filter offers by experience level. |
+| `experienceExige`  | `str` | None | Filter offers by experience level. |
 | `publieeDepuis`  | `str` | None | Maximum number of days since the publication of the offer
 Possible values: 1, 3, 7, 14, 31 |
 | `minCreationDate`  | `str` | None | Minimum offer creation date.
@@ -202,7 +202,7 @@ PoleEmploi.pull_jobs(
         accesTravailleurHandicape=False,
         offresMRS=False,
         grandDomaine="A",
-        experienceExigence="D",
+        experienceExige="D",
         publieeDepuis="1",
         minCreationDate="your_minCreationDate",
         maxCreationDate="your_maxCreationDate",
