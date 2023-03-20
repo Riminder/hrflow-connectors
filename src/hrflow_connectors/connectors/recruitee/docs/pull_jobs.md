@@ -62,7 +62,7 @@ Recruitee.pull_jobs(
         recruitee_endpoint="STAGING ENDPOINT",
         kind="your_kind",
         scope="your_scope",
-        view_mode=brief,
+        view_mode="brief",
     ),
     target_parameters=dict(
         api_secret="your_api_secret",
