@@ -69,11 +69,22 @@ def field_default(field: ModelField, documentation_path: Path) -> str:
 
 
 def field_type(field: ModelField) -> str:
+    # In python 3.9.13 typing.Any has no attribute __name__
+    # Yet the attribute is present for later versions
+    # This make documentation generation inconsistent accross
+    # different versions of Python.
+    # The block below makes sure that the resolved string name
+    # is the same.
+    if field.type_ is t.Any:
+        return "Any"
     if isinstance(field.outer_type_, enum.EnumMeta):
         return "str"
-    if field.type_.__name__ == "Callable":
+    type_name = getattr(field.type_, "__name__", None) or getattr(
+        field.type_, "_name", None
+    )
+    if type_name == "Callable":
         return str(field.outer_type_)
-    return field.type_.__name__
+    return getattr(field.type_, "__name__", str(field.type_))
 
 
 def get_template_fields(
