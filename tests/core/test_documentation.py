@@ -41,9 +41,14 @@ def connectors_directory():
     action_documentation = actions_documentation_directory / "{}.md".format(
         SmartLeads.model.actions[0].name
     )
-
-    readme.unlink(missing_ok=True)
-    action_documentation.unlink(missing_ok=True)
+    try:
+        readme.unlink()
+    except FileNotFoundError:
+        pass
+    try:
+        action_documentation.unlink()
+    except FileNotFoundError:
+        pass
     if actions_documentation_directory.is_dir():
         actions_documentation_directory.rmdir()
 
