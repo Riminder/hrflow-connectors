@@ -35,6 +35,7 @@ class WriteLeadsParameters(ParametersModel):
     dummy_const_str: t.Optional[ConstrainedStr] = Field(
         None, field_type=FieldType.Other
     )
+    dummy_any: t.Optional[t.Any] = Field(None, field_type=FieldType.Other)
 
 
 def write(

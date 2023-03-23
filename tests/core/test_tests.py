@@ -64,7 +64,10 @@ def connectors_directory():
 def global_secrets_file(connectors_directory):
     secrets_file = connectors_directory / "secrets.json"
     yield secrets_file
-    secrets_file.unlink(missing_ok=True)
+    try:
+        secrets_file.unlink()
+    except FileNotFoundError:
+        pass
 
 
 @pytest.fixture
@@ -73,14 +76,20 @@ def smartleads_test_config(connectors_directory):
         connectors_directory / SmartLeads.model.name.lower() / "test-config.yaml"
     )
     yield test_config
-    test_config.unlink(missing_ok=True)
+    try:
+        test_config.unlink()
+    except FileNotFoundError:
+        pass
 
 
 @pytest.fixture
 def smartleads_secrets_file(connectors_directory):
     secrets_file = connectors_directory / SmartLeads.model.name.lower() / "secrets.json"
     yield secrets_file
-    secrets_file.unlink(missing_ok=True)
+    try:
+        secrets_file.unlink()
+    except FileNotFoundError:
+        pass
 
 
 @pytest.fixture
@@ -89,14 +98,20 @@ def localusers_test_config(connectors_directory):
         connectors_directory / LocalUsers.model.name.lower() / "test-config.yaml"
     )
     yield test_config
-    test_config.unlink(missing_ok=True)
+    try:
+        test_config.unlink()
+    except FileNotFoundError:
+        pass
 
 
 @pytest.fixture
 def localusers_secrets_file(connectors_directory):
     secrets_file = connectors_directory / LocalUsers.model.name.lower() / "secrets.json"
     yield secrets_file
-    secrets_file.unlink(missing_ok=True)
+    try:
+        secrets_file.unlink()
+    except FileNotFoundError:
+        pass
 
 
 def test_schema():
