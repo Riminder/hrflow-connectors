@@ -1699,6 +1699,7 @@
               "only_resume": {
                 "title": "Only Resume",
                 "description": "If enabled only resume attachments are returned",
+                "default": true,
                 "const": true,
                 "field_type": "Query Param",
                 "type": "boolean"
@@ -1742,6 +1743,7 @@
               "only_insert": {
                 "title": "Only Insert",
                 "description": "When enabled the profile is written only if it doesn't exist in the source",
+                "default": true,
                 "const": true,
                 "field_type": "Other",
                 "type": "boolean"
@@ -1928,6 +1930,7 @@
               "only_resume": {
                 "title": "Only Resume",
                 "description": "If enabled only resume attachments are returned",
+                "default": true,
                 "const": true,
                 "field_type": "Query Param",
                 "type": "boolean"
@@ -1971,6 +1974,7 @@
               "only_insert": {
                 "title": "Only Insert",
                 "description": "When enabled the profile is written only if it doesn't exist in the source",
+                "default": false,
                 "const": false,
                 "field_type": "Other",
                 "type": "boolean"
@@ -2200,6 +2204,7 @@
               "edit": {
                 "title": "Edit",
                 "description": "When enabled the profile must exist in the source",
+                "default": true,
                 "const": true,
                 "field_type": "Other",
                 "type": "boolean"
@@ -2207,6 +2212,9 @@
               "only_edit_fields": {
                 "title": "Only Edit Fields",
                 "description": "List of attributes to use for the edit operation e.g. ['tags', 'metadatas']",
+                "default": [
+                  "tags"
+                ],
                 "const": [
                   "tags"
                 ],
@@ -2768,6 +2776,7 @@
               "only_resume": {
                 "title": "Only Resume",
                 "description": "If enabled only resume attachments are returned",
+                "default": true,
                 "const": true,
                 "field_type": "Query Param",
                 "type": "boolean"
@@ -17561,6 +17570,7 @@
             "properties": {
               "accept": {
                 "title": "Accept",
+                "default": "application/json;charset=UTF-8",
                 "const": "application/json;charset=UTF-8",
                 "field_type": "Query Param",
                 "type": "string"
