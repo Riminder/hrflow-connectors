@@ -4,6 +4,7 @@ import json
 import logging
 import typing as t
 import uuid
+import warnings
 from collections import Counter
 from functools import partial
 
@@ -139,6 +140,10 @@ class RunResult(BaseModel):
 
 
 LogicFunctionType = t.Callable[[t.Dict], t.Union[t.Dict, None]]
+# Different versions of Python produce different string
+# reprensentations for t.Union[t.Any, None] to avoid
+# inconsistencies in manifest this is hardcoded belo
+LogicFunctionTypeStr = "typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]"
 LogicsTemplate = """
 import typing as t
 
@@ -197,13 +202,13 @@ class BaseActionParameters(BaseModel):
             schema: t.Dict[str, t.Any], model: t.Type["BaseActionParameters"]
         ) -> None:
             # JSON has no equivalent for Callable type which is used for
-            # logics and format. Thus we hardcode properties for both here
+            # logics, format and event_parser. Thus we hardcode properties here
             schema["properties"]["logics"] = {
                 "title": "logics",
                 "description": (
                     "List of logic functions. Each function should have"
                     " the following signature {}. The final list should be exposed "
-                    "in a variable named 'logics'.".format(LogicFunctionType)
+                    "in a variable named 'logics'.".format(LogicFunctionTypeStr)
                 ),
                 "template": LogicsTemplate,
                 "type": "code_editor",
@@ -663,9 +668,15 @@ class Connector:
 def hrflow_connectors_manifest(
     connectors: t.List[Connector], directory_path: str = "."
 ) -> None:
-    manifest = dict(
-        name="HrFlow.ai Connectors",
-        connectors=[connector.manifest() for connector in connectors],
-    )
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            action="ignore",
+            message="Callable (_logics|format|event_parser) was excluded",
+            category=UserWarning,
+        )
+        manifest = dict(
+            name="HrFlow.ai Connectors",
+            connectors=[connector.manifest() for connector in connectors],
+        )
     with open("{}/manifest.json".format(directory_path), "w") as f:
-        json.dump(manifest, f, indent=2)
+        f.write(json.dumps(manifest, indent=2))
