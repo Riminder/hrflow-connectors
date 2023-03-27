@@ -3,7 +3,8 @@ import typing as t
 from logging import LoggerAdapter
 
 from pydantic import BaseModel, Field, ValidationError, create_model, root_validator
-from pydantic.main import FieldInfo, ModelMetaclass
+from pydantic.fields import FieldInfo
+from pydantic.main import ModelMetaclass
 
 
 class FieldNotFoundError(RuntimeError):
