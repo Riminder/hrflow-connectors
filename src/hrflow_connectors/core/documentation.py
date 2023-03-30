@@ -1,6 +1,7 @@
 import enum
 import logging
 import os
+import re
 import typing as t
 from pathlib import Path
 
@@ -69,22 +70,11 @@ def field_default(field: ModelField, documentation_path: Path) -> str:
 
 
 def field_type(field: ModelField) -> str:
-    # In python 3.9.13 typing.Any has no attribute __name__
-    # Yet the attribute is present for later versions
-    # This make documentation generation inconsistent accross
-    # different versions of Python.
-    # The block below makes sure that the resolved string name
-    # is the same.
-    if field.type_ is t.Any:
-        return "Any"
+    if field.outer_type_ in [int, float, str, bool]:
+        return field.outer_type_.__name__
     if isinstance(field.outer_type_, enum.EnumMeta):
         return "str"
-    type_name = getattr(field.type_, "__name__", None) or getattr(
-        field.type_, "_name", None
-    )
-    if type_name == "Callable":
-        return str(field.outer_type_)
-    return getattr(field.type_, "__name__", str(field.type_))
+    return str(field.outer_type_)
 
 
 def get_template_fields(
@@ -103,6 +93,21 @@ def get_template_fields(
         if not field.field_info.const
         and field.field_info.extra.get("skip_from_docs", False) is False
     ]
+
+
+def py_37_38_compat_patch(content: str) -> str:
+    """
+    The way t.Optional[T] is stringified is different accross supported python versions:
+        - Python 3.7, 3.8 --> typing.Union[T, NoneType]
+        - Python >= 3.9 --> t.Optional[T]
+    This creates inconsistency when generating the doc with accross these versions.
+    This function changes any older string versions to match with >=3.9
+    """
+    return re.sub(
+        r"Union\[([\w\.]+), NoneType\]",
+        lambda match: f"Optional[{match.group(1)}]",
+        content,
+    )
 
 
 def generate_docs(
@@ -126,6 +131,7 @@ def generate_docs(
                 url=model.url,
                 actions=model.actions,
             )
+            readme_content = py_37_38_compat_patch(readme_content)
             readme.write_bytes(readme_content.encode())
         if len(model.actions) > 0:
             action_docs_directory = connector_directory / "docs"
@@ -155,6 +161,9 @@ def generate_docs(
                     target_name=action.target.name,
                     target_fields=target_fields,
                     target_endpoints=action.target.write.endpoints,
+                )
+                action_documentation_content = py_37_38_compat_patch(
+                    action_documentation_content
                 )
                 action_documentation = action_docs_directory / "{}.md".format(
                     action.name

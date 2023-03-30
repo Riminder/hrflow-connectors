@@ -30,7 +30,7 @@ Writes a profile from Hrflow.ai Source as a contact on Hubspot via the API
 | `access_token` :red_circle: | `str` | None | The token used to authenticate any API calls made for to your HubSpot account. |
 | `dealID`  | `int` | None |  |
 | `ticketID`  | `int` | None |  |
-| `pipeline`  | `Pipeline` | None |  |
+| `pipeline`  | `<class 'hrflow_connectors.connectors.hubspot.warehouse.Pipeline'>` | None |  |
 
 :red_circle: : *required*
 
