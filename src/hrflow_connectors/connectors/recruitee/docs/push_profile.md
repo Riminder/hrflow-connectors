@@ -30,7 +30,7 @@ Writes a profile from Hrflow.ai Source as a candidate on Recruitee via the API
 | `company_id` :red_circle: | `str` | None | Company ID. A company subdomain can also be used. |
 | `api_token` :red_circle: | `str` | None | Personal API Token allowing access to the Recruitee API from external services. |
 | `recruitee_endpoint` :red_circle: | `str` | None | Specifies which endpoint to be used, satging or production. |
-| `offer_ids`  | `int` | None | Offers to which the candidate will be assigned with default stage. You can also pass one ID as offer_id |
+| `offer_ids`  | `typing.List[int]` | None | Offers to which the candidate will be assigned with default stage. You can also pass one ID as offer_id |
 
 :red_circle: : *required*
 

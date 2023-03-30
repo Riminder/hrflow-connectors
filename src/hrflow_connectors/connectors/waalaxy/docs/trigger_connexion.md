@@ -18,7 +18,7 @@ Imports the profiles just connected with, in synchronisation with the Waalaxy ca
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `profile`  | `Any` | None | Profile object recieved from the Webhook |
+| `profile`  | `typing.Dict` | None | Profile object recieved from the Webhook |
 
 ## Destination Parameters
 
@@ -28,7 +28,7 @@ Imports the profiles just connected with, in synchronisation with the Waalaxy ca
 | `api_user` :red_circle: | `str` | None | X-USER-EMAIL used to access HrFlow.ai API |
 | `source_key` :red_circle: | `str` | None | HrFlow.ai source key |
 | `edit`  | `bool` | False | When enabled the profile must exist in the source |
-| `only_edit_fields` :red_circle: | `str` | None | List of attributes to use for the edit operation e.g. ['tags', 'metadatas'] |
+| `only_edit_fields` :red_circle: | `typing.List[str]` | None | List of attributes to use for the edit operation e.g. ['tags', 'metadatas'] |
 
 :red_circle: : *required*
 
