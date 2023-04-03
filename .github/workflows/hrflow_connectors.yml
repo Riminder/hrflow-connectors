@@ -8,6 +8,7 @@ on:
 
 env:
   POETRY_VERSION: 1.1.12
+  BASELINE_PYTHON_VERSION: 3.10.10
   NOX_ENV_DIR: ./.nox
   PYTHONPATH: ./src/
 
@@ -27,11 +28,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           lfs: true
 
-      # This action sets up a Python environment with Nox by:
-      # - Activating every version of Python that GitHub Actions supports.
-      # - Installing Nox.
-      # ==> https://github.com/marketplace/actions/setup-nox
-      - uses: excitedleigh/setup-nox@v2.0.0
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.BASELINE_PYTHON_VERSION }}
 
       - name: Load cached Poetry installation
         id: cached-poetry-install
@@ -46,6 +45,26 @@ jobs:
 
       - name: Add poetry to PATH
         run: export PATH="$HOME/.local/bin:$PATH"
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ env.BASELINE_PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install python dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: POETRY_INSTALLER_PARALLEL=1 POETRY_VIRTUALENVS_IN_PROJECT=1 poetry install -E s3
+
+      - name: Run commit hooks
+        run: poetry run pre-commit run --hook-stage commit --all-files
+
+      # This action sets up a Python environment with Nox by:
+      # - Activating every version of Python that GitHub Actions supports.
+      # - Installing Nox.
+      # ==> https://github.com/marketplace/actions/setup-nox
+      - uses: excitedleigh/setup-nox@v2.0.0
 
       - name: Load cached nox venvs
         id: cached-nox-venvs
