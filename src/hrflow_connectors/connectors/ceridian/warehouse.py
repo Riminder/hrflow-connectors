@@ -65,7 +65,6 @@ def read(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-
     params = dict()
     params["companyName"] = parameters.companyName
     params["parentCompanyName"] = parameters.parentCompanyName

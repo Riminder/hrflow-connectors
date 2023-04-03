@@ -54,7 +54,6 @@ def connectors_directory():
 
 
 def test_documentation(connectors_directory):
-
     readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
     action_documentation = (
         connectors_directory

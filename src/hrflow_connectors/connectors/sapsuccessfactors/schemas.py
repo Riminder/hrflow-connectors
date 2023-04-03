@@ -37,7 +37,6 @@ class SAPSuccessFactorsJob(BaseModel):
 
 
 class Result(BaseModel):
-
     endDate: Optional[str]
     school: str
     schoolAddress: str
