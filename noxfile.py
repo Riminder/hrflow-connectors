@@ -1,6 +1,7 @@
 import difflib
 import inspect
 import json
+import os
 import tempfile
 import typing as t
 from contextlib import contextmanager
@@ -11,32 +12,81 @@ import nox
 nox.options.reuse_existing_virtualenvs = True
 
 PYTHON_VERSIONS = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+REQUIREMENTS_CONTENT = {}
 
 
 @contextmanager
-def requirements_file(session) -> None:
-    with tempfile.NamedTemporaryFile() as requirements:
-        session.run(
-            "poetry",
-            "export",
-            "--dev",
-            "--without-hashes",
-            "--format=requirements.txt",
-            f"--output={requirements.name}",
-            external=True,
-        )
-        yield requirements
+def requirements_file(session, s3_extra: bool = False) -> None:
+    global REQUIREMENTS_CONTENT
+    extra_args = tuple()
+    if s3_extra is True:
+        extra_args = ("-E", "s3")
+
+    if REQUIREMENTS_CONTENT.get(s3_extra) is None:
+        with tempfile.NamedTemporaryFile("rb") as requirements:
+            session.run(
+                "poetry",
+                "export",
+                "--dev",
+                *extra_args,
+                "--without-hashes",
+                "--format=requirements.txt",
+                f"--output={requirements.name}",
+                external=True,
+            )
+            REQUIREMENTS_CONTENT[s3_extra] = requirements.read()
+            yield requirements
+    else:
+        with tempfile.NamedTemporaryFile("wb") as requirements:
+            requirements.write(REQUIREMENTS_CONTENT[s3_extra])
+            yield requirements
 
 
 @nox.session(python=PYTHON_VERSIONS)
-def core(session):
+def tests(session):
     with requirements_file(session) as requirements:
         session.install("-r", requirements.name)
         session.run(
             "pytest",
+            *session.posargs,
             env={
                 "HRFLOW_CONNECTORS_STORE_ENABLED": "1",
                 "HRFLOW_CONNECTORS_LOCALJSON_DIR": "/tmp/",
+                "PYTHONPATH": "./src/",
+            },
+        )
+
+
+@nox.session(python=PYTHON_VERSIONS)
+def tests_s3(session):
+    with requirements_file(session, s3_extra=True) as requirements:
+        session.install("-r", requirements.name)
+        session.run(
+            "pytest",
+            *session.posargs,
+            env={
+                "HRFLOW_CONNECTORS_STORE_ENABLED": "1",
+                "HRFLOW_CONNECTORS_LOCALJSON_DIR": "/tmp/",
+                "S3_STORE_TEST_BUCKET": os.getenv("S3_STORE_TEST_BUCKET"),
+                "S3_STORE_TEST_AWS_REGION": os.getenv("S3_STORE_TEST_AWS_REGION"),
+                "S3_STORE_TEST_AWS_ACCESS_KEY_ID": os.getenv(
+                    "S3_STORE_TEST_AWS_ACCESS_KEY_ID"
+                ),
+                "S3_STORE_TEST_AWS_SECRET_ACCESS_KEY": os.getenv(
+                    "S3_STORE_TEST_AWS_SECRET_ACCESS_KEY"
+                ),
+                "S3_STORE_TEST_READ_ONLY_AWS_ACCESS_KEY_ID": os.getenv(
+                    "S3_STORE_TEST_READ_ONLY_AWS_ACCESS_KEY_ID"
+                ),
+                "S3_STORE_TEST_READ_ONLY_AWS_SECRET_ACCESS_KEY": os.getenv(
+                    "S3_STORE_TEST_READ_ONLY_AWS_SECRET_ACCESS_KEY"
+                ),
+                "S3_STORE_TEST_WRITE_ONLY_AWS_ACCESS_KEY_ID": os.getenv(
+                    "S3_STORE_TEST_WRITE_ONLY_AWS_ACCESS_KEY_ID"
+                ),
+                "S3_STORE_TEST_WRITE_ONLY_AWS_SECRET_ACCESS_KEY": os.getenv(
+                    "S3_STORE_TEST_WRITE_ONLY_AWS_SECRET_ACCESS_KEY"
+                ),
                 "PYTHONPATH": "./src/",
             },
         )
