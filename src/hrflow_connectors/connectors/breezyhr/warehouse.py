@@ -131,7 +131,6 @@ def revoke_access_token(access_token):
 def get_compagnie_id(
     adapter: LoggerAdapter, parameters: BreezyhrReadParameters, access_token: str
 ):
-
     if parameters.company_id is not None:
         return parameters.company_id
 
@@ -189,7 +188,6 @@ def send_profile(
     company_id: str,
     candidate_id: str = "",
 ):
-
     base_url = (
         f"https://api.breezy.hr/v3/company/{company_id}/"
         f"position/{parameters.position_id}/candidate"
@@ -200,7 +198,6 @@ def send_profile(
     headers = {"Content-Type": "application/json", "Authorization": f"{access_token}"}
 
     if candidate_id == "":
-
         url = f"{base_url}s/"
 
         # If the candidate doesn't already exist we "POST" his profile
@@ -227,13 +224,11 @@ def write(
     parameters: BreezyHRWriteParameters,
     profiles: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
-
     failed_profiles = []
     access_token = get_access_token(adapter, parameters)
     compagnie_id = get_compagnie_id(adapter, parameters, access_token)
 
     for profile in profiles:
-
         profile.update({"origin": parameters.origin})
 
         mail = profile.get("email_address")

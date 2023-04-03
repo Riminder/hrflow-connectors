@@ -133,7 +133,6 @@ def read(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-
     url = "{}/objects/contacts".format(BASE_URL)
     params = parameters.dict()
     del params["access_token"]
@@ -167,7 +166,6 @@ def write(
     failed_profiles = []
     contacts_endpoint = "{}/objects/contacts".format(BASE_URL)
     for profile in profiles:
-
         response = requests.post(
             contacts_endpoint,
             headers={
