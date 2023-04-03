@@ -9,6 +9,7 @@ on:
 env:
   POETRY_VERSION: 1.1.12
   NOX_ENV_DIR: ./.nox
+  PYTHONPATH: ./src/
 
 jobs:
   core-tests:
