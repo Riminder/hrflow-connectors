@@ -50,7 +50,6 @@ In order to run the `nox` sessions you must:
 > # Core + All Connectors + Coverage
 > poetry run nox -s (tests|tests_s3) -- --allconnectors
 > ```
-> &nbsp;
 
 >In order to run the `tests_s3` session you need to export the following environment variables
 > ```bash
@@ -69,7 +68,6 @@ In order to run the `nox` sessions you must:
 > export S3_STORE_TEST_WRITE_ONLY_AWS_ACCESS_KEY_ID="==========FILL==ME=========="
 > export S3_STORE_TEST_WRITE_ONLY_AWS_SECRET_ACCESS_KEY="==========FILL==ME=========="
 > ```
-> &nbsp;
 
 ### Instructions for `pyenv` users
 #### Instructions for the basic setup
