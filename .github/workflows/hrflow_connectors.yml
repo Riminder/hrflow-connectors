@@ -7,8 +7,8 @@ on:
       - "master"
 
 env:
-  PYTHON_VERSION: 3.10.5
   POETRY_VERSION: 1.1.12
+  NOX_ENV_DIR: ./.nox
 
 jobs:
   core-tests:
@@ -26,9 +26,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           lfs: true
 
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+      # This action sets up a Python environment with Nox by:
+      # - Activating every version of Python that GitHub Actions supports.
+      # - Installing Nox.
+      # ==> https://github.com/marketplace/actions/setup-nox
+      - uses: excitedleigh/setup-nox@v2.0.0
 
       - name: Load cached Poetry installation
         id: cached-poetry-install
@@ -44,29 +46,21 @@ jobs:
       - name: Add poetry to PATH
         run: export PATH="$HOME/.local/bin:$PATH"
 
-      - name: Load cached venv
-        id: cached-poetry-dependencies
+      - name: Load cached nox venvs
+        id: cached-nox-venvs
         uses: actions/cache@v2
         with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+          path: ${{ env.NOX_ENV_DIR }}
+          key: nox-venvs-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
-      - name: Install python dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: POETRY_INSTALLER_PARALLEL=1 POETRY_VIRTUALENVS_IN_PROJECT=1 poetry install -E s3
+      - name: Check manifest
+        run: poetry run nox --envdir ${{ env.NOX_ENV_DIR }} -s manifest
 
-      - name: Run commit hooks
-        run: poetry run pre-commit run --hook-stage commit --all-files
-
-      - name: Check manifest is up to date
-        run: poetry run pre-commit run --hook-stage push --all-files hrflow_connectors_manifest
-
-      - name: Check documentation is up to date
-        run: poetry run pre-commit run --hook-stage push --all-files hrflow_connectors_docs
+      - name: Check docs
+        run: poetry run nox --envdir ${{ env.NOX_ENV_DIR }} -s docs
 
       - name: Run Core tests
-        run: |
-          poetry run pytest
+        run: poetry run nox --envdir ${{ env.NOX_ENV_DIR }} -s tests_s3
         env:
           HRFLOW_CONNECTORS_STORE_ENABLED: "1"
           HRFLOW_CONNECTORS_LOCALJSON_DIR: "/tmp/"
@@ -95,9 +89,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           lfs: true
 
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+      # This action sets up a Python environment with Nox by:
+      # - Activating every version of Python that GitHub Actions supports.
+      # - Installing Nox.
+      # ==> https://github.com/marketplace/actions/setup-nox
+      - uses: excitedleigh/setup-nox@v2.0.0
 
       - name: Load cached Poetry installation
         id: cached-poetry-install
@@ -106,12 +102,12 @@ jobs:
           path: ~/.local
           key: poetry-${{ env.POETRY_VERSION }}
 
-      - name: Load cached venv
-        id: cached-poetry-dependencies
+      - name: Load cached nox venvs
+        id: cached-nox-venvs
         uses: actions/cache@v2
         with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+          path: ${{ env.NOX_ENV_DIR }}
+          key: nox-venvs-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Add poetry to PATH
         run: export PATH="$HOME/.local/bin:$PATH"
@@ -119,7 +115,7 @@ jobs:
       - name: Run Connector tests
         run: |
           echo $ALL_SECRETS > src/hrflow_connectors/connectors/secrets.json
-          poetry run pytest --no-cov --ignore tests/core --allconnectors
+          poetry run nox -s tests -- --no-cov --ignore tests/core --allconnectors
         env:
           ALL_SECRETS: ${{ toJson(secrets) }}
           HRFLOW_CONNECTORS_STORE_ENABLED: "1"
