@@ -114,7 +114,6 @@ def read(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-
     params = dict()
     params["top"] = parameters.top
     params["skip"] = parameters.skip
@@ -171,7 +170,6 @@ def read_parsing(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-
     params = dict()
     params["top"] = parameters.top
     params["skip"] = parameters.skip
@@ -218,7 +216,6 @@ def read_profiles(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-
     params = dict()
     params["top"] = parameters.top
     params["skip"] = parameters.skip

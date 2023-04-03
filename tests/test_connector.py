@@ -8,8 +8,10 @@ from hrflow_connectors.core.tests import collect_connector_tests
 
 ConnectorActionTestParams = namedtuple(
     "ConnectorActionTestParams",
-    "action, origin_parameters, target_parameters, expected_status,"
-    " expected_reason, expected_events, workflow_id",
+    (
+        "action, origin_parameters, target_parameters, expected_status,"
+        " expected_reason, expected_events, workflow_id"
+    ),
 )
 
 

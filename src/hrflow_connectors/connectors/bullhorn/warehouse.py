@@ -122,7 +122,6 @@ def write(
     )
 
     for profile in profiles:
-
         # Split profile in four parts: Body, Education, Experience and Attachements
         profile_body_dict = profile
         create_profile_body = profile_body_dict["create_profile_body"]
@@ -178,7 +177,6 @@ def read_jobs(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-
     authentication = auth(
         parameters.username,
         parameters.password,
@@ -188,7 +186,6 @@ def read_jobs(
     start = 0
 
     while True:
-
         jobs_url = (
             authentication["restUrl"]
             + "search/JobOrder?query=(isOpen:true)&fields=*&BhRestToken="
@@ -223,7 +220,6 @@ def read_profiles_parsing(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-
     authentication = auth(
         parameters.username,
         parameters.password,
@@ -232,7 +228,6 @@ def read_profiles_parsing(
     )
     start = 0
     while True:
-
         profiles_url = (
             authentication["restUrl"] + "myCandidates?fields=*&start=" + str(start)
         )
@@ -254,7 +249,6 @@ def read_profiles_parsing(
         total = response["total"]
 
         for profile in data:
-
             profile["cvFile"] = None
             url_files = (
                 authentication["restUrl"]
@@ -278,7 +272,6 @@ def read_profiles_parsing(
                             last_cv = entity_file["id"]
 
             if last_cv is not None:
-
                 url_cv = (
                     authentication["restUrl"]
                     + "/file/Candidate/"
@@ -309,7 +302,6 @@ def read_profiles(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-
     authentication = auth(
         parameters.username,
         parameters.password,
@@ -320,7 +312,6 @@ def read_profiles(
     skillSet,id,educations,workHistories"""
     start = 0
     while True:
-
         profiles_url = (
             authentication["restUrl"]
             + "myCandidates?fields="

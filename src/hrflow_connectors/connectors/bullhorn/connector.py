@@ -175,7 +175,6 @@ def format_profile(data: HrFlowProfile) -> t.Dict:
 
 
 def format_job(data: t.Dict) -> t.Dict:
-
     # Info
     hrflow_name = data.get("title")
     hrflow_ref = str(data.get("id"))
@@ -242,7 +241,6 @@ def format_job(data: t.Dict) -> t.Dict:
 
 
 def profile_format_parsing(data: BullhornProfile) -> t.Dict:
-
     profile = {}
 
     # Tags

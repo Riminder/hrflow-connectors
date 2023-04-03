@@ -33,7 +33,6 @@ def read(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterator[WorkableJobModel]:
-
     url = f"https://{parameters.subdomain}.workable.com/spi/v3/jobs?state=published"
 
     payload = {}
@@ -56,7 +55,6 @@ def write(
     parameters: WorkableWriteParameters,
     profiles: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
-
     failed_profiles = []
 
     for profile in profiles:
