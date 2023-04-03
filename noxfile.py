@@ -207,10 +207,10 @@ def docs(session):
         connectors_directory = Path("./src/hrflow_connectors/connectors")
         difference = []
         for connector, digests in baseline_doc_digest.items():
-            if digests["readme"] != generated_digest[connector]["readme"]:
+            if digests["readme"] != generated_digest.get(connector, {}).get("readme"):
                 file = str(connectors_directory / connector / "README.md")
                 baseline = baseline_content[connector]["readme"]
-                generated = generated_content[connector]["readme"]
+                generated = generated_content.get(connector, {}).get("readme", "")
                 difference.append(
                     difflib.unified_diff(
                         a=baseline.splitlines(keepends=True),
@@ -220,12 +220,18 @@ def docs(session):
                     )
                 )
             for action, digest in digests["actions"].items():
-                if digest != generated_digest[connector]["actions"][action]:
+                if digest != generated_digest.get(connector, {}).get("actions", {}).get(
+                    action
+                ):
                     file = str(
                         connectors_directory / connector / "docs" / f"{action}.md"
                     )
                     baseline = baseline_content[connector]["actions"][action]
-                    generated = generated_content[connector]["actions"][action]
+                    generated = (
+                        generated_content.get(connector, {})
+                        .get("actions", {})
+                        .get(action, "")
+                    )
                     difference.append(
                         difflib.unified_diff(
                             a=baseline.splitlines(keepends=True),
