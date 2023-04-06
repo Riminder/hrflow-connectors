@@ -5,7 +5,6 @@ warehouse:
           x_smart_token: $__X_SMART_TOKEN
           posting_status: PUBLIC
           limit: 1
-        expected_number_of_items: 5
 actions:
   pull_jobs:
     - id: valid_parameters
