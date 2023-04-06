@@ -54,6 +54,8 @@ false -> Part-time
 true -> Full time
 If the parameter is not filled, then all the offers are returned |
 | `commune`  | `str` | None | INSEE code of the communeA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//communes |
+| `distance`  | `int` | None | Kilometric distance of the search radius
+Default value: 10Note: to obtain only the offers of a specific commune, then you must fill in the parameter 'distance=0'. |
 | `departement`  | `str` | None | INSEE code of the departmentA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//departements |
 | `inclureLimitrophes`  | `bool` | None | Include bordering departments in the search |
 | `region`  | `str` | None | Code of the region of the offerA GET request for the list of accepted choices from the Offres d'emploi APIto this endpoint : https://api.emploi-store.fr/partenaire/offresdemploi/v2/referentiel//regions |
@@ -139,8 +141,6 @@ true -> Offers with few candidates |
 | `entreprisesAdaptees`  | `bool` | None | Filter the offers where the adapted company allows a disabled worker to exercise a professional activity in  conditions adapted to his capacities
 false -> Offers not concerned
 true -> Offers from adapted companies |
-| `distance`  | `int` | 10 | Kilometric distance of the search radius
-Default value: 10Note: to obtain only the offers of a specific commune, then you must fill in the parameter 'distance=0'. |
 
 ## Destination Parameters
 
@@ -190,6 +190,7 @@ PoleEmploi.pull_jobs(
         qualification="0",
         tempsPlein=False,
         commune="your_commune",
+        distance=0,
         departement="your_departement",
         inclureLimitrophes=False,
         region="your_region",
@@ -215,7 +216,6 @@ PoleEmploi.pull_jobs(
         dureeContratMax=0.0,
         offresManqueCandidats=False,
         entreprisesAdaptees=False,
-        distance=10,
     ),
     target_parameters=dict(
         api_secret="your_api_secret",
