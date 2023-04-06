@@ -149,7 +149,7 @@ jobs:
 
       - name: Run Connector tests
         run: |
-          poetry run nox -s tests -- --no-cov --ignore tests/core --connector=SmartRecruiters
+          poetry run nox -s tests -- --no-cov --ignore tests/core --connector=SmartRecruiters --connector=PoleEmploi
         env:
           ALL_SECRETS: ${{ toJson(secrets) }}
           HRFLOW_CONNECTORS_STORE_ENABLED: "1"
