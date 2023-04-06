@@ -280,8 +280,7 @@ class ReadJobsParameters(ParametersModel):
         ),
         field_type=FieldType.QueryParam,
     )
-    distance = Field(
-        10,
+    distance: t.Optional[int] = Field(
         description=(
             "Kilometric distance of the search radius\nDefault value: 10Note: to obtain"
             " only the offers of a specific commune, then you must fill in the"
@@ -520,7 +519,7 @@ def read(
         client_id=parameters.client_id,
         client_secret=parameters.client_secret,
     )
-    params = parameters.dict()
+    params = parameters.dict(exclude_none=True)
     del params["client_id"]
     del params["client_secret"]
 
