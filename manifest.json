@@ -2995,6 +2995,14 @@
                 "description": "Filter to apply when reading vacancies. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-vacancies-get . . You can filter by **chronoNumber**, **updateDate**, **reference** **vacancyStatus**, **clientVacancyStatus**, **publicationMedia**  **publishedOnTheMedia**. Examples : By reference Single Item 'reference::2019-01'; By reference Multiple Items 'reference::2019-01,2019-02,2019-03';  By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921' . ",
                 "field_type": "Query Param",
                 "type": "string"
+              },
+              "max_read": {
+                "title": "Max Read",
+                "description": "The maximum number of jobs to pull during the execution. Proper tuning of this parameter should allow to control the execution time and avoid overtimes",
+                "default": 100,
+                "field_type": "Other",
+                "exclusiveMinimum": 0,
+                "type": "integer"
               }
             },
             "required": [
@@ -3008,7 +3016,7 @@
             "type": "object",
             "properties": {}
           },
-          "supports_incremental": false,
+          "supports_incremental": true,
           "target": "HrFlow.ai Jobs",
           "target_parameters": {
             "title": "WriteJobParameters",
@@ -3332,7 +3340,7 @@
               }
             }
           },
-          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return TalentSoft.pull_jobs(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'client_url', 'q', 'filter']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return TalentSoft.pull_jobs(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import TalentSoft\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return TalentSoft.pull_jobs(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'client_url', 'q', 'filter', 'max_read']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return TalentSoft.pull_jobs(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
           "workflow_code_workflow_id_settings_key": "__workflow_id",
