@@ -23,6 +23,7 @@ Retrieves jobs from TalentSoft vacancies export API and send them to a ***Hrflow
 | `client_url` :red_circle: | `str` | None | URL of TalentSoft client integration |
 | `q`  | `str` | None | Query search to get vacancies |
 | `filter`  | `str` | None | Filter to apply when reading vacancies. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-vacancies-get . . You can filter by **chronoNumber**, **updateDate**, **reference** **vacancyStatus**, **clientVacancyStatus**, **publicationMedia**  **publishedOnTheMedia**. Examples : By reference Single Item 'reference::2019-01'; By reference Multiple Items 'reference::2019-01,2019-02,2019-03';  By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921' .  |
+| `max_read`  | `<class 'pydantic.types.PositiveInt'>` | 100 | The maximum number of jobs to pull during the execution. Proper tuning of this parameter should allow to control the execution time and avoid overtimes |
 
 ## Destination Parameters
 
@@ -61,6 +62,7 @@ TalentSoft.pull_jobs(
         client_url="your_client_url",
         q="your_q",
         filter="your_filter",
+        max_read=100,
     ),
     target_parameters=dict(
         api_secret="your_api_secret",
