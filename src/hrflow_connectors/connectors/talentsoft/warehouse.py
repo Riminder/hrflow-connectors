@@ -6,7 +6,7 @@ from logging import LoggerAdapter
 from zipfile import ZipFile
 
 import requests
-from pydantic import Field
+from pydantic import Field, PositiveInt
 
 from hrflow_connectors.core import (
     DataType,
@@ -21,6 +21,7 @@ GRANT_TYPE = "client_credentials"
 TOKEN_SCOPE = "MatchingIndexation"
 LIMIT = 100
 TIMEOUT = 10
+JOBS_DEFAULT_MAX_READ = 100
 
 
 class ReadProfilesParameters(ParametersModel):
@@ -108,6 +109,15 @@ class ReadJobsParameters(ParametersModel):
         ),
         field_type=FieldType.QueryParam,
     )
+    max_read: t.Optional[PositiveInt] = Field(
+        JOBS_DEFAULT_MAX_READ,
+        description=(
+            "The maximum number of jobs to pull during the execution. Proper tuning of"
+            " this parameter should allow to control the execution time and avoid"
+            " overtimes"
+        ),
+        field_type=FieldType.Other,
+    )
 
 
 def get_talentsoft_auth_token(
@@ -155,7 +165,8 @@ def read_jobs(
     )
     adapter.info("Authentication with TS API Endpoint finished")
 
-    params = dict(offset=0, limit=LIMIT)
+    limit = min(LIMIT, parameters.max_read)
+    params = dict(offset=0, limit=limit)
     if read_mode is ReadMode.incremental:
         if read_from is None:
             read_from = date.today().isoformat()
@@ -166,6 +177,7 @@ def read_jobs(
     if parameters.q:
         params["q"] = parameters.q
 
+    item_counter = 0
     while True:
         response = requests.get(
             "{}/api/exports/v1/vacancies".format(parameters.client_url),
@@ -195,8 +207,11 @@ def read_jobs(
             zip_data = ZipFile(BytesIO(data[4 : 4 + read_up_to]))
             job = json.loads(zip_data.read("offerdetail").decode())["offerDetail"]
             yield job
+            item_counter += 1
+            if item_counter >= parameters.max_read:
+                return
             data = data[4 + read_up_to :]
-        params["offset"] += LIMIT
+        params["offset"] += limit
 
 
 def read_profiles(
