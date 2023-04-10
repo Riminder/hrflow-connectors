@@ -252,7 +252,7 @@ def read(
 
     while True:
         ADZUNA_JOBS_SEARCH_ENDPOINT = "{}/jobs/{}/search/{}".format(
-            ADZUNA_ENDPOINT, country, page
+            ADZUNA_ENDPOINT, country.value, page
         )
         response = requests.get(
             ADZUNA_JOBS_SEARCH_ENDPOINT,
