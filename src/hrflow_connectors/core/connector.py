@@ -2,10 +2,12 @@ import copy
 import enum
 import json
 import logging
+import time
 import typing as t
 import uuid
 import warnings
 from collections import Counter
+from datetime import datetime
 from functools import partial
 
 from pydantic import BaseModel, Field, ValidationError, create_model, validator
@@ -339,10 +341,12 @@ class ConnectorAction(BaseModel):
         init_error: t.Optional[ActionInitError] = None,
     ) -> RunResult:
         action_id = uuid.uuid4()
+        started_at = datetime.utcnow()
         adapter = ConnectorActionAdapter(
             logger,
             dict(
                 log_tags=[
+                    dict(name="started_at", value=started_at.isoformat()),
                     dict(name="connector", value=connector_name),
                     dict(name="action_name", value=self.name),
                     dict(name="workflow_id", value=workflow_id),
@@ -422,6 +426,7 @@ class ConnectorAction(BaseModel):
 
         events = Event.empty_counter()
 
+        read_started_at = time.time()
         adapter.info(
             "Starting to read from warehouse={} with mode={} read_from={} parameters={}"
             .format(
@@ -466,8 +471,11 @@ class ConnectorAction(BaseModel):
                 )
             return RunResult.from_events(events)
 
+        read_finished_at = time.time()
         adapter.info(
-            "Finished reading from warehouse={} n_items={} read_failure={}".format(
+            "Finished reading in {} from warehouse={} n_items={} read_failure={}"
+            .format(
+                read_finished_at - read_started_at,
                 self.origin.name,
                 len(origin_items),
                 events[Event.read_failure] > 0,
@@ -551,6 +559,7 @@ class ConnectorAction(BaseModel):
             adapter.info("No logic functions supplied. Skipping")
             items_to_write = formatted_items
 
+        write_started_at = time.time()
         adapter.info(
             "Starting to write to warehouse={} with parameters={} n_items={}".format(
                 self.target.name, target_parameters, len(items_to_write)
@@ -583,8 +592,10 @@ class ConnectorAction(BaseModel):
                 reason=Reason.write_failure,
                 events=events,
             )
+        write_finished_at = time.time()
         adapter.info(
-            "Finished writing to warehouse={} success={} failures={}".format(
+            "Finished writing in {} to warehouse={} success={} failures={}".format(
+                write_finished_at - write_started_at,
                 self.target.name,
                 len(items_to_write) - events[Event.write_failure],
                 events[Event.write_failure],
