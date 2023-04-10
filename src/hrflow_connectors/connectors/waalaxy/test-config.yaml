@@ -31,7 +31,7 @@ warehouse:
 }
 actions:
   trigger_view:
-    - id: valid_parameters
+    - id: write_fails_because_of_existing_profile
       origin_parameters:
         profile: {
     "_id": "63579da9dc3ed5f5b5556725",
@@ -65,7 +65,8 @@ actions:
         api_user: $__API_USER
         source_key: $__SOURCE_KEY
         only_edit_fields: ["tags"]
-      status: success
+      status: fatal
+      reason: write_failure
     - id: no_hrflow_source_key
       origin_parameters:
         profile: {
@@ -138,7 +139,7 @@ actions:
       status: fatal
       reason: write_failure
   trigger_connexion:
-    - id: valid_parameters
+    - id: write_fails_because_of_existing_profile
       origin_parameters:
         profile: {
   "_id": "6356515f55f4f3ecfa4e92e2",
@@ -172,7 +173,8 @@ actions:
         api_user: $__API_USER
         source_key: $__SOURCE_KEY
         only_edit_fields: ["tags"]
-      status: success
+      status: fatal
+      reason: write_failure
     - id: no_hrflow_source_key
       origin_parameters:
         profile: {
