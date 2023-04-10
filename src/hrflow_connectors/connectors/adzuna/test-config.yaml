@@ -5,8 +5,10 @@ warehouse:
           country: "gb"
           app_id: $__APP_ID
           app_key: $__APP_KEY
-          what: "Software Engineer"
-          where: "Paris"
+          what: "javascript developer"
+          where: "london"
+          results_per_page: 1
+          salary_min: 90000
 actions:
   pull_jobs:
     - id: valid_parameters
@@ -19,7 +21,7 @@ actions:
         what_exclude: "java"
         where: "london"
         sort_by: "salary"
-        salary_min: 30000
+        salary_min: 90000
         full_time: "1"
         permanent: "1"
       target_parameters:
@@ -58,10 +60,18 @@ actions:
       status: fatal
       reason: read_failure
     - id: invalid_hrflow_api_secret
-      origin_parameters: 
-        country: "fr"
+      origin_parameters:
+        country: "gb"
         app_id: $__APP_ID
         app_key: $__APP_KEY
+        results_per_page: 20
+        what: "javascript developer"
+        what_exclude: "java"
+        where: "london"
+        sort_by: "salary"
+        salary_min: 90000
+        full_time: "1"
+        permanent: "1"
       target_parameters:
         api_secret: bad_api_secret
         api_user: $__API_USER
