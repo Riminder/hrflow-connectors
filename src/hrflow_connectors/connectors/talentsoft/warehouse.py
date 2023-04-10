@@ -20,6 +20,7 @@ from hrflow_connectors.core import (
 GRANT_TYPE = "client_credentials"
 TOKEN_SCOPE = "MatchingIndexation"
 LIMIT = 100
+TIMEOUT = 10
 
 
 class ReadProfilesParameters(ParametersModel):
@@ -117,6 +118,7 @@ def get_talentsoft_auth_token(
         headers={
             "Content-Type": "application/x-www-form-urlencoded",
         },
+        timeout=TIMEOUT,
         data=dict(
             grant_type=GRANT_TYPE,
             scope=TOKEN_SCOPE,
@@ -152,6 +154,7 @@ def read_jobs(
         client_secret=parameters.client_secret,
     )
     adapter.info("Authentication with TS API Endpoint finished")
+
     params = dict(offset=0, limit=LIMIT)
     if read_mode is ReadMode.incremental:
         if read_from is None:
@@ -159,6 +162,7 @@ def read_jobs(
         params["filter"] = "updateDate:gt:{}".format(read_from)
     elif parameters.filter:
         params["filter"] = parameters.filter
+
     if parameters.q:
         params["q"] = parameters.q
 
@@ -166,6 +170,7 @@ def read_jobs(
         response = requests.get(
             "{}/api/exports/v1/vacancies".format(parameters.client_url),
             params=params,
+            timeout=TIMEOUT,
             headers={
                 "Authorization": "bearer {}".format(token),
             },
@@ -215,6 +220,7 @@ def read_profiles(
         response = requests.get(
             "{}/api/exports/v1/candidates".format(parameters.client_url),
             params=params,
+            timeout=TIMEOUT,
             headers={
                 "Authorization": "bearer {}".format(token),
             },
