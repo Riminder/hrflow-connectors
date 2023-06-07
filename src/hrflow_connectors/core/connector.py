@@ -288,9 +288,21 @@ class ActionName(str, enum.Enum):
     push_job_list = "push_job_list"
     catch_profile = "catch_profile"
     catch_job = "catch_job"
+    # TalentSoft actions
+    applicant_new = "applicant_new"
+    applicant_resume_update = "applicant_resume_update"
+    applicant_update = "applicant_update"
 
 
 class ActionType(str, enum.Enum):
+    """
+    ActionType is used to distinguish between inbound and outbound actions.
+    Inbound actions are used to fetch data from external sources and push
+    it to HrFlow.ai.
+    Outbound actions are used to fetch data from HrFlow.ai and push it
+    to external sources.
+    """
+
     inbound = "inbound"
     outbound = "outbound"
 

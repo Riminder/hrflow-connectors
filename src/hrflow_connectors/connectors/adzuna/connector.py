@@ -3,6 +3,8 @@ import typing as t
 from hrflow_connectors.connectors.adzuna.warehouse import AdzunaJobWarehouse
 from hrflow_connectors.connectors.hrflow.warehouse import HrFlowJobWarehouse
 from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -58,7 +60,7 @@ Adzuna = Connector(
     url="https://www.adzuna.fr/",
     actions=[
         ConnectorAction(
-            name="pull_jobs",
+            name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves jobs via the ***Adzuna'*** API Search endpoint"
@@ -69,6 +71,7 @@ Adzuna = Connector(
             ),
             origin=AdzunaJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
         ),
     ],
 )

@@ -15,6 +15,8 @@ from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowProfileWarehouse,
 )
 from hrflow_connectors.core.connector import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -200,7 +202,7 @@ BreezyHR = Connector(
     url="https://breezy.hr/",
     actions=[
         ConnectorAction(
-            name="pull_jobs",
+            name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves all jobs via the ***BreezyHR*** API and send them"
@@ -211,9 +213,10 @@ BreezyHR = Connector(
             ),
             origin=BreezyHRJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name="push_profiles",
+            name=ActionName.push_profile_list,
             trigger_type=WorkflowType.catch,
             description=(
                 "Push all profiles from ***Hrflow.ai Source*** via ***BreezyHR*** API"
@@ -224,6 +227,7 @@ BreezyHR = Connector(
             ),
             origin=HrFlowProfileWarehouse,
             target=BreezyHRProfileWarehouse,
+            action_type=ActionType.outbound,
         ),
     ],
 )

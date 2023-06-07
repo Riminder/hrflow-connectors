@@ -3,6 +3,8 @@ import typing as t
 from hrflow_connectors.connectors.hrflow.warehouse import HrFlowJobWarehouse
 from hrflow_connectors.connectors.poleemploi.warehouse import PoleEmploiJobWarehouse
 from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -102,7 +104,7 @@ PoleEmploi = Connector(
     url="https://www.pole-emploi.fr/",
     actions=[
         ConnectorAction(
-            name="pull_jobs",
+            name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves jobs via the ***Offres d'emploi v2*** API from the Pôle"
@@ -114,6 +116,7 @@ PoleEmploi = Connector(
             ),
             origin=PoleEmploiJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
         ),
     ],
 )

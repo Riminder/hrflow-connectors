@@ -17,6 +17,8 @@ from hrflow_connectors.connectors.hrflow.warehouse.profile import (
     HrFlowProfileWarehouse,
 )
 from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -368,7 +370,7 @@ Bullhorn = Connector(
     url="https://www.bullhorn.com/",
     actions=[
         ConnectorAction(
-            name="push_profile",
+            name=ActionName.push_profile,
             trigger_type=WorkflowType.catch,
             description=(
                 "Writes a profile from Hrflow.ai Source to Bullhorn via the API"
@@ -378,40 +380,47 @@ Bullhorn = Connector(
             ),
             origin=HrFlowProfileWarehouse,
             target=BullhornProfileWarehouse,
+            action_type=ActionType.outbound,
         ),
         ConnectorAction(
-            name="pull_job",
+            name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
-            description="Writes a job to Hrflow.ai Board from Bullhorn via the API",
+            description=(
+                "Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board"
+            ),
             parameters=BaseActionParameters.with_defaults(
                 "ReadJobsActionParameters", format=format_job
             ),
             origin=BullhornJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name="pull_profile_parsing",
+            name=ActionName.pull_resume_attachment_list,
             trigger_type=WorkflowType.pull,
             description=(
-                "Parses a CV profile to Hrflow.ai source from Bullhorn via the API"
+                "retrieves profiles attachments from Bullhorn and Parses them and sends"
+                " them to Hrflow.ai source"
             ),
             parameters=BaseActionParameters.with_defaults(
                 "ReadProfileActionParameters", format=profile_format_parsing
             ),
             origin=BullhornProfileParsingWarehouse,
             target=HrFlowProfileParsingWarehouse,
+            action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name="pull_profile",
+            name=ActionName.pull_profile_list,
             trigger_type=WorkflowType.pull,
             description=(
-                "Writes a profile to Hrflow.ai source from Bullhorn via the API"
+                "Retrieves profiles from Bullhorn and writes them to Hrflow.ai source"
             ),
             parameters=BaseActionParameters.with_defaults(
                 "ReadProfileActionParameters", format=profile_format
             ),
             origin=BullhornProfileWarehouse,
             target=HrFlowProfileWarehouse,
+            action_type=ActionType.inbound,
         ),
     ],
 )

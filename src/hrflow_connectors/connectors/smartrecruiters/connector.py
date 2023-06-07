@@ -9,6 +9,8 @@ from hrflow_connectors.connectors.smartrecruiters.warehouse import (
     SmartRecruitersProfileWarehouse,
 )
 from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -183,7 +185,7 @@ SmartRecruiters = Connector(
     url="https://www.smartrecruiters.com/",
     actions=[
         ConnectorAction(
-            name="pull_jobs",
+            name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves all jobs via the ***SmartRecruiter*** API and send them"
@@ -194,9 +196,10 @@ SmartRecruiters = Connector(
             ),
             origin=SmartRecruitersJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name="push_profile",
+            name=ActionName.push_profile,
             trigger_type=WorkflowType.catch,
             description=(
                 "Writes a profile from Hrflow.ai Source to SmartRecruiters via the API"
@@ -207,6 +210,7 @@ SmartRecruiters = Connector(
             ),
             origin=HrFlowProfileWarehouse,
             target=SmartRecruitersProfileWarehouse,
+            action_type=ActionType.outbound,
         ),
     ],
 )
