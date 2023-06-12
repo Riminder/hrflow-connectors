@@ -3,6 +3,8 @@ import typing as t
 from hrflow_connectors.connectors.ceridian.warehouse import CeridianJobWarehouse
 from hrflow_connectors.connectors.hrflow.warehouse import HrFlowJobWarehouse
 from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -80,10 +82,10 @@ Ceridian = Connector(
     url="https://www.ceridian.com/",
     actions=[
         ConnectorAction(
-            name="pull_jobs",
+            name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
             description=(
-                "Retrieve all jobs via the ***Ceridian*** API and send them"
+                "Retrieves all jobs via the ***Ceridian*** API and send them"
                 " to an ***Hrflow.ai Board***."
             ),
             parameters=BaseActionParameters.with_defaults(
@@ -91,6 +93,7 @@ Ceridian = Connector(
             ),
             origin=CeridianJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
         ),
     ],
 )

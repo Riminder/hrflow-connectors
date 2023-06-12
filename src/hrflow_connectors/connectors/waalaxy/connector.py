@@ -3,6 +3,8 @@ import typing as t
 from hrflow_connectors.connectors.hrflow.warehouse import HrFlowProfileWarehouse
 from hrflow_connectors.connectors.waalaxy.warehouse import WaalaxyProfilesWarehouse
 from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -55,7 +57,8 @@ Waalaxy = Connector(
     url="https://www.waalaxy.com/fr/",
     actions=[
         ConnectorAction(
-            name="trigger_view",
+            # FIXME: previously called "trigger_view"
+            name=ActionName.pull_profile_list,
             trigger_type=WorkflowType.catch,
             description=(
                 "Imports the visited profiles, in synchronization with the Waalaxy"
@@ -68,9 +71,11 @@ Waalaxy = Connector(
             ),
             origin=WaalaxyProfilesWarehouse,
             target=HrFlowProfileWarehouse,
+            action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name="trigger_connexion",
+            # FIXME previously called "trigger_connexion"
+            name=ActionName.pull_profile_list,
             trigger_type=WorkflowType.catch,
             description=(
                 "Imports the profiles just connected with, in synchronisation with the"
@@ -83,6 +88,7 @@ Waalaxy = Connector(
             ),
             origin=WaalaxyProfilesWarehouse,
             target=HrFlowProfileWarehouse,
+            action_type=ActionType.inbound,
         ),
     ],
 )

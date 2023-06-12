@@ -278,6 +278,35 @@ class WorkflowType(str, enum.Enum):
     pull = "schedule"
 
 
+class ActionName(str, enum.Enum):
+    pull_job_list = "pull_job_list"
+    pull_profile_list = "pull_profile_list"
+    pull_resume_attachment_list = "pull_resume_attachment_list"
+    push_profile = "push_profile"
+    push_job = "push_job"
+    push_profile_list = "push_profile_list"
+    push_job_list = "push_job_list"
+    catch_profile = "catch_profile"
+    catch_job = "catch_job"
+    # TalentSoft actions
+    applicant_new = "applicant_new"
+    applicant_resume_update = "applicant_resume_update"
+    applicant_update = "applicant_update"
+
+
+class ActionType(str, enum.Enum):
+    """
+    ActionType is used to distinguish between inbound and outbound actions.
+    Inbound actions are used to fetch data from external sources and push
+    it to HrFlow.ai.
+    Outbound actions are used to fetch data from HrFlow.ai and push it
+    to external sources.
+    """
+
+    inbound = "inbound"
+    outbound = "outbound"
+
+
 class ConnectorAction(BaseModel):
     WORKFLOW_FORMAT_PLACEHOLDER = "# << format_placeholder >>"
     WORKFLOW_LOGICS_PLACEHOLDER = "# << logics_placeholder >>"
@@ -285,8 +314,7 @@ class ConnectorAction(BaseModel):
     ORIGIN_SETTINGS_PREFIX = "origin_"
     TARGET_SETTINGS_PREFIX = "target_"
     WORKFLOW_ID_SETTINGS_KEY = "__workflow_id"
-
-    name: str
+    name: ActionName
     description: str
     trigger_type: WorkflowType
     parameters: t.Type[BaseModel]
@@ -295,6 +323,7 @@ class ConnectorAction(BaseModel):
     callback: t.Optional[
         t.Callable[[BaseModel, BaseModel, t.Counter[Event], t.List[t.Dict]], None]
     ] = None
+    action_type: ActionType
 
     @validator("origin", pre=False)
     def origin_is_readable(cls, origin):
@@ -656,6 +685,7 @@ class Connector:
             event_parser_placeholder = action.WORKFLOW_EVENT_PARSER_PLACEHOLDER
             action_manifest = dict(
                 name=action.name,
+                action_type=action.action_type.value,
                 action_parameters=copy.deepcopy(action.parameters.schema()),
                 data_type=action.data_type,
                 trigger_type=action.trigger_type.value,

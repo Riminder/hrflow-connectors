@@ -15,6 +15,8 @@ from hrflow_connectors.connectors.talentsoft.warehouse import (
     get_talentsoft_auth_token,
 )
 from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -280,7 +282,7 @@ TalentSoft = Connector(
     url="https://www.cegid.com/fr/produits/cegid-talentsoft/",
     actions=[
         ConnectorAction(
-            name="applicant_new",
+            name=ActionName.applicant_new,
             trigger_type=WorkflowType.catch,
             description=(
                 "Handle TalentSoft 'applicant_new' event by fetching profile from"
@@ -298,9 +300,10 @@ TalentSoft = Connector(
                 only_insert=True
             ),
             callback=ts_callback,
+            action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name="applicant_resume_update",
+            name=ActionName.applicant_resume_update,
             trigger_type=WorkflowType.catch,
             description=(
                 "Handle TalentSoft 'applicant_resume_update' event by"
@@ -318,9 +321,10 @@ TalentSoft = Connector(
                 only_insert=False
             ),
             callback=ts_callback,
+            action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name="applicant_update",
+            name=ActionName.applicant_update,
             trigger_type=WorkflowType.catch,
             description=(
                 "Handle TalentSoft 'applicant_update' event by"
@@ -335,9 +339,10 @@ TalentSoft = Connector(
             target=HrFlowProfileWarehouse.with_fixed_write_parameters(
                 edit=True, only_edit_fields=["tags"]
             ),
+            action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name="pull_profiles",
+            name=ActionName.pull_profile_list,
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves profiles from TalentSoft candidates export API and send them"
@@ -351,9 +356,10 @@ TalentSoft = Connector(
                 only_resume=True
             ),
             target=HrFlowProfileParsingWarehouse,
+            action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name="pull_jobs",
+            name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves jobs from TalentSoft vacancies export API and send them"
@@ -365,6 +371,7 @@ TalentSoft = Connector(
             ),
             origin=TalentSoftJobsWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
         ),
     ],
 )
