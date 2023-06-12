@@ -10,6 +10,8 @@ from hrflow_connectors.connectors.workable.warehouse import (
     WorkableProfileWarehouse,
 )
 from hrflow_connectors.core.connector import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -148,7 +150,7 @@ Workable = Connector(
     url="https://www.workable.com/",
     actions=[
         ConnectorAction(
-            name="pull_jobs",
+            name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves all jobs via the ***Workable*** API and send them"
@@ -159,9 +161,10 @@ Workable = Connector(
             ),
             origin=WorkableJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name="push_profile",
+            name=ActionName.push_profile,
             trigger_type=WorkflowType.catch,
             description=(
                 "Writes a profile from ***Hrflow.ai Source*** to ***Workable*** via the"
@@ -172,6 +175,7 @@ Workable = Connector(
             ),
             origin=HrFlowProfileWarehouse,
             target=WorkableProfileWarehouse,
+            action_type=ActionType.outbound,
         ),
     ],
 )

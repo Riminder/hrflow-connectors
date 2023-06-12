@@ -12,6 +12,8 @@ from hrflow_connectors.connectors.teamtailor.warehouse import (
     TeamtailorProfileWarehouse,
 )
 from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -128,7 +130,7 @@ Teamtailor = Connector(
     url="https://www.teamtailor.com/",
     actions=[
         ConnectorAction(
-            name="pull_jobs",
+            name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieve all jobs via the ***Teamtailor*** API and send them"
@@ -139,9 +141,10 @@ Teamtailor = Connector(
             ),
             origin=TeamtailorJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name="push_profile",
+            name=ActionName.push_profile,
             trigger_type=WorkflowType.catch,
             description=(
                 "Writes a profile from an Hrflow.ai Source to Teamtailor via the API"
@@ -151,6 +154,7 @@ Teamtailor = Connector(
             ),
             origin=HrFlowProfileWarehouse,
             target=TeamtailorProfileWarehouse,
+            action_type=ActionType.outbound,
         ),
     ],
 )

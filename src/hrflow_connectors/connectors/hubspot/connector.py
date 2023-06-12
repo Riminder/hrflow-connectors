@@ -2,8 +2,14 @@ import typing as t
 
 from hrflow_connectors.connectors.hrflow.warehouse.profile import HrFlowProfileWarehouse
 from hrflow_connectors.connectors.hubspot.warehouse import HubspotContactWarehouse
-from hrflow_connectors.core import BaseActionParameters, Connector, ConnectorAction
-from hrflow_connectors.core.connector import WorkflowType
+from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    WorkflowType,
+)
 
 
 def format_profile(hrflow_profile: t.Dict) -> t.Dict:
@@ -33,7 +39,7 @@ Hubspot = Connector(
     url="https://www.hubspot.com/",
     actions=[
         ConnectorAction(
-            name="push_profile",
+            name=ActionName.push_profile,
             trigger_type=WorkflowType.catch,
             description=(
                 "Writes a profile from Hrflow.ai Source as a contact on Hubspot via"
@@ -44,6 +50,7 @@ Hubspot = Connector(
             ),
             origin=HrFlowProfileWarehouse,
             target=HubspotContactWarehouse,
+            action_type=ActionType.outbound,
         ),
     ],
 )

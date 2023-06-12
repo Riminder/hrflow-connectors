@@ -13,6 +13,8 @@ from hrflow_connectors.connectors.sapsuccessfactors.warehouse import (
     SAPProfileWarehouse,
 )
 from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -270,7 +272,7 @@ SAPSuccessFactors = Connector(
     url="https://www.sap.com/",
     actions=[
         ConnectorAction(
-            name="pull_jobs",
+            name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves all jobs via the ***SAPSuccessFactors*** API and sends them"
@@ -281,9 +283,10 @@ SAPSuccessFactors = Connector(
             ),
             origin=SAPJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name="push_profile",
+            name=ActionName.push_profile,
             trigger_type=WorkflowType.catch,
             description=(
                 "Writes a profile taken from a Hrflow.ai Source to SAPSuccessFactors"
@@ -294,6 +297,7 @@ SAPSuccessFactors = Connector(
             ),
             origin=HrFlowProfileWarehouse,
             target=SAPProfileWarehouse,
+            action_type=ActionType.outbound,
         ),
     ],
 )

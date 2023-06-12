@@ -9,6 +9,8 @@ from hrflow_connectors.connectors.recruitee.warehouse import (
     RecruiteeProfileWarehouse,
 )
 from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -127,7 +129,7 @@ Recruitee = Connector(
     url="https://recruitee.com/",
     actions=[
         ConnectorAction(
-            name="push_profile",
+            name=ActionName.push_profile,
             trigger_type=WorkflowType.catch,
             description=(
                 "Writes a profile from Hrflow.ai Source as a candidate on Recruitee via"
@@ -138,9 +140,10 @@ Recruitee = Connector(
             ),
             origin=HrFlowProfileWarehouse,
             target=RecruiteeProfileWarehouse,
+            action_type=ActionType.outbound,
         ),
         ConnectorAction(
-            name="pull_jobs",
+            name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves all jobs via the ***Recruitee*** API and send them"
@@ -151,6 +154,7 @@ Recruitee = Connector(
             ),
             origin=RecruiteeJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
         ),
     ],
 )

@@ -13,12 +13,14 @@ from hrflow_connectors.connectors.taleez.warehouse import (
     TaleezProfilesWarehouse,
 )
 from hrflow_connectors.core import (
-    ActionEndpoints,
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
     WorkflowType,
 )
+from hrflow_connectors.core.warehouse import ActionEndpoints
 
 # TODO: These are examples custom properties
 # --> Should be added as parameters to configure for each customer
@@ -358,20 +360,23 @@ Taleez = Connector(
     url="https://taleez.com/",
     actions=[
         ConnectorAction(
-            name="push_profiles",
+            name=ActionName.push_profile,
             trigger_type=WorkflowType.catch,
             description=(
-                "Retrieves profiles from HrFlow Sources and posts them to Taleez ATS "
-                "enriching them with properties extracted from the profile"
+                "Retrieves a profile from HrFlow Source and posts it to Taleez ATS "
+                "enriching it with properties extracted from the profile"
             ),
             parameters=BaseActionParameters.with_defaults(
-                "ReadJobsActionParameters", format=format_profile
+                # FIXME : why is it called ReadJobsActionParameters ?
+                "ReadJobsActionParameters",
+                format=format_profile,
             ),
             origin=HrFlowProfileWarehouse,
             target=TaleezProfilesWarehouse,
+            action_type=ActionType.outbound,
         ),
         ConnectorAction(
-            name="pull_jobs",
+            name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves all jobs via the ***Taleez*** API and send them"
@@ -382,6 +387,7 @@ Taleez = Connector(
             ),
             origin=TaleezJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
         ),
     ],
 )

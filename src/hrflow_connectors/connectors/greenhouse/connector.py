@@ -10,6 +10,8 @@ from hrflow_connectors.connectors.hrflow.warehouse import (
 )
 from hrflow_connectors.connectors.hrflow.warehouse.job import remove_html_tags
 from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -167,7 +169,7 @@ Greenhouse = Connector(
     url="https://www.greenhouse.io/",
     actions=[
         ConnectorAction(
-            name="pull_jobs",
+            name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves all jobs of a board via the ***Greenhouse*** API and send"
@@ -178,9 +180,10 @@ Greenhouse = Connector(
             ),
             origin=GreenhouseJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name="push_profile",
+            name=ActionName.push_profile,
             trigger_type=WorkflowType.catch,
             description=(
                 "Writes a profile from Hrflow.ai Source to Greenhouse  via the API"
@@ -191,6 +194,7 @@ Greenhouse = Connector(
             ),
             origin=HrFlowProfileWarehouse,
             target=GreenhouseProfileWarehouse,
+            action_type=ActionType.outbound,
         ),
     ],
 )
