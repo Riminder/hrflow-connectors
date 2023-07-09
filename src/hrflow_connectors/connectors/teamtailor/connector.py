@@ -5,6 +5,7 @@ from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
     HrFlowProfileWarehouse,
+    HrFlowProfileParsingWarehouse,
 )
 from hrflow_connectors.connectors.teamtailor.schema import TeamtailorJob
 from hrflow_connectors.connectors.teamtailor.warehouse import (
@@ -156,5 +157,21 @@ Teamtailor = Connector(
             target=TeamtailorProfileWarehouse,
             action_type=ActionType.outbound,
         ),
-    ],
+        ConnectorAction(
+            name=ActionName.pull_profile_list,
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves candidates from Teamtailor API and sends them to an"
+                " ***Hrflow.ai Source***. "
+        ),
+        parameters=BaseActionParameters.with_defaults(
+            "PullTeamTailorProfileActionParameters"
+        ),
+        origin=TeamtailorProfileWarehouse,
+        target=HrFlowProfileParsingWarehouse.with_fixed_write_parameters(
+            only_insert=True
+            ),
+        action_type=ActionType.inbound,
+    ),  
+    ]
 )
