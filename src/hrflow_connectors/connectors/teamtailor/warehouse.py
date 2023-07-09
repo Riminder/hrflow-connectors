@@ -23,7 +23,7 @@ from hrflow_connectors.core import (
 GET_ALL_JOBS_ENDPOINT = "https://api.teamtailor.com/v1/jobs"
 GET_JOB_ENDPOINT = "https://api.teamtailor.com/v1/jobs"
 POST_CANDIDATE_ENDPOINT = "https://api.teamtailor.com/v1/candidates"
-
+CANDIDATE_ENDPOINT = "https://api.teamtailor.com/v1/candidates"
 
 class RemoteStatus(str, enum.Enum):
     none = "NONE"
@@ -36,6 +36,29 @@ class JobFeed(str, enum.Enum):
     public = "PUBLIC"
     private = "PRIVATE"
 
+
+class ReadProfilesParameters(ParametersModel):
+    api_token: str = Field(
+        ...,
+        description="Authorisation token used to access Teamtailor API",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+
+    x_api_version: str = Field(
+        ..., description="Dated version of the API", field_type=FieldType.Auth
+    )
+
+    filter_updated_at_from: t.Optional[str] = Field(
+        description=(
+            "Filter candidates by created-at newer than this date."
+        ),
+        field_type=FieldType.QueryParam,
+    )
+
+    def get_authorization(self) -> str:
+        return f"Token token={self.api_token}"
+    
 
 class WriteProfilesParameters(ParametersModel):
     Authorization: str = Field(
@@ -116,7 +139,7 @@ def enrich_location(job_id: str, headers: t.Dict) -> t.Dict:
     return dict(text="", geojson="", lat="", lng="")
 
 
-def read(
+def read_jobs(
     adapter: LoggerAdapter,
     parameters: ReadJobsParameters,
     read_mode: t.Optional[ReadMode] = None,
@@ -178,7 +201,7 @@ def read(
         yield job_and_location
 
 
-def write(
+def write_profile(
     adapter: LoggerAdapter,
     parameters: WriteProfilesParameters,
     profiles: t.Iterable[t.Dict],
@@ -208,13 +231,107 @@ def write(
     return failed_profiles
 
 
+def download_file(url):
+    response = requests.get(url)
+    if response.ok:
+        return response.content
+    else:
+        return None
+    
+def read_profiles(
+    adapter: LoggerAdapter,
+    parameters: ReadProfilesParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
+) -> t.Iterable[t.Dict]:
+    params = dict()
+
+    if read_mode == ReadMode.incremental:
+        if read_from:
+            params["filter[updated_at][from]"] = read_from
+    else:
+        if parameters.filter_updated_at_from:
+            params["filter[updated_at][from]"] = parameters.filter_updated_at_from
+    
+
+    headers = {
+        "Authorization": parameters.get_authorization(),
+        "X-Api-Version": parameters.x_api_version,
+    }
+
+    page = 1
+    while True:
+        response = requests.get(
+            CANDIDATE_ENDPOINT,
+            headers=headers,
+            params=params,
+            timeout=10,
+        )
+
+
+        if not response.ok:
+            error_detail = response.json()["errors"][0]["detail"]
+            raise Exception(
+                f"Error while fetching candidates with params: {params} and error {error_detail}"
+            )
+
+        data = response.json()["data"]
+
+        if not data:
+            break
+
+        adapter.info(
+            "Pulling {} candidates from page {} out of total {} candidates".format(
+                len(data), page, response.json()["meta"]["record-count"]
+        )
+        )
+
+        for candidate in data:
+            # Get candidate resume using the id since each resume
+            # Link is signed and available for 30sec only
+            candidate_id = candidate["id"]
+            candidate_response = requests.get(
+                f"{CANDIDATE_ENDPOINT}/{candidate_id}",
+                headers=headers,
+                timeout=10,
+            )
+            if not candidate_response.ok:
+                error_detail = candidate_response.json()["errors"][0]["detail"]
+                raise Exception(
+                    f"Error while fetching candidate {candidate_id} with error {error_detail}"
+                )
+            
+            candidate_updated_at = candidate_response.json()["data"]["attributes"]["updated-at"]
+            candidate_resume_url = candidate_response.json()["data"]["attributes"]["original-resume"]
+            if candidate_resume_url:
+                binary_resume_content =  download_file(candidate_resume_url)
+                
+                # TODO : this can be put outside in format function
+                resume = dict(
+                    raw=binary_resume_content,
+                    content_type="application/pdf",
+                )
+                profile = dict(
+                    reference=candidate_id,
+                    created_at=candidate["attributes"]["created-at"],
+                    updated_at=candidate_updated_at,
+                    resume=resume,
+                    tags=[],
+                    metadatas=[],
+                )
+                yield profile
+
+        page += 1
+        params["page"] = page
+
+
 TeamtailorJobWarehouse = Warehouse(
     name="Teamtailor Jobs",
     data_schema=TeamtailorJob,
     data_type=DataType.job,
     read=WarehouseReadAction(
         parameters=ReadJobsParameters,
-        function=read,
+        function=read_jobs,
         endpoints=[],
     ),
 )
@@ -225,7 +342,14 @@ TeamtailorProfileWarehouse = Warehouse(
     data_type=DataType.profile,
     write=WarehouseWriteAction(
         parameters=WriteProfilesParameters,
-        function=write,
+        function=write_profile,
         endpoints=[],
+    ),
+    read=WarehouseReadAction(
+        parameters=ReadProfilesParameters,
+        function=read_profiles,
+        endpoints=[],
+        supports_incremental=True,
+        item_to_read_from=lambda profile: profile["updated_at"],
     ),
 )
