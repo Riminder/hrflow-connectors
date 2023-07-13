@@ -32,8 +32,10 @@ In this section, we outline the data flow between different components of the co
 
 | Action | Description |
 | ------- |  -------- |
-| [**Pull jobs**](docs/pull_jobs.md) | Retrieves profiles from HrFlow Souce export API and sends them to BreezyHR ATS | 
-| [**Push profiles**](docs/push_profiles.md) | Retrieves jobs from BreezyHR vacancies export API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board|
+| [**Pull jobs**](docs/pull_job_list.md) | Retrieves jobs from BreezyHr API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board | 
+| [**Pull profiles**](docs/pull_profile_list.md) | Retrieves profiles from BreezyHr API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Source | 
+| [**Push profile**](docs/push_profile.md) |Push all profiles from ***Hrflow.ai Source*** via ***BreezyHR*** API and send them to a ***BreezyHR*** |
+
 
 </p>
 
