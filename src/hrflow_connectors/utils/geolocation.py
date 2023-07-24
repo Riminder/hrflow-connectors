@@ -177,14 +177,15 @@ def get_geolocation_photon_api(
     return None, None, None
 
 def get_geolocation_data(
-    location: str, cities_codes_dict:dict=None, cities_names_dict:dict=None, departments_codes_dict:dict=None, here_api_key=None
+    location: str, france_only:bool=True, cities_codes_dict:dict=None, cities_names_dict:dict=None, departments_codes_dict:dict=None, here_api_key=None
 ):
     """
-    Get the tuple latitude, longitude of a location with a 4 level of fall back.
+    Get the tuple latitude, longitude of a location with a 4 level of fall back if the france_only option is set to True.
         level 1: cities's postcode.
         level 2: cities's name.
         level 3: departments postcode.
         level 4: call here API.
+    Otherwise, it will call the Geopy's Nominatim or Photon APIs or Here API if the api_key is set.
 
     Args:
         location: the string of the location we want to get latitude and longitude.
@@ -196,20 +197,21 @@ def get_geolocation_data(
     Returns:
         search_level, latitude, longitude of the location.
     """
-    cities_codes_dict = cities_codes_dict or CITIES_CODES_DICT
-    cities_names_dict = cities_names_dict or CITIES_NAMES_DICT
-    departments_codes_dict = departments_codes_dict or DEPARTMENTS_CODES_DICT
-    
-    fall_back_list = [cities_codes_dict, cities_names_dict, departments_codes_dict]
-    for fall_back in fall_back_list:
-        # get each word of the location.
-        words_list = re.split("[,;._()/ ]+", accent_replacer(location))
-        for word in words_list:
-            value = fall_back.get(word.lower())
-            if value:
-                name = fall_back["name"]
-                lat, long = value
-                return name, lat, long
+    if france_only:
+        cities_codes_dict = cities_codes_dict or CITIES_CODES_DICT
+        cities_names_dict = cities_names_dict or CITIES_NAMES_DICT
+        departments_codes_dict = departments_codes_dict or DEPARTMENTS_CODES_DICT
+        
+        fall_back_list = [cities_codes_dict, cities_names_dict, departments_codes_dict]
+        for fall_back in fall_back_list:
+            # get each word of the location.
+            words_list = re.split("[,;._()/ ]+", accent_replacer(location))
+            for word in words_list:
+                value = fall_back.get(word.lower())
+                if value:
+                    name = fall_back["name"]
+                    lat, long = value
+                    return name, lat, long
 
     nominatim_location = get_geolocation_nominatim_api(location)
     if nominatim_location[0]:
