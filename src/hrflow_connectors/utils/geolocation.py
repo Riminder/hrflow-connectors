@@ -5,6 +5,8 @@ import requests
 import pkgutil
 import re
 
+from geopy.geocoders import Nominatim, Photon
+
 
 # French Departements File 
 FRENCH_DEPARTMENTS_FILE = "../data/french_departement_geo_mapping.csv"
@@ -107,8 +109,69 @@ CITIES_NAMES_DICT = get_cities_names_lat_long_mapping()
 DEPARTMENTS_CODES_DICT = get_departments_codes_lat_long_mapping()   
 
 
+def get_geolocation_here_api(
+        location: str, api_key=None
+):
+    """
+    Get the tuple latitude, longitude of a location using Here API.
+
+    Args:
+        location: the string of the location we want to get latitude and longitude.
+        api_key: Here's api_key.
+    
+    Returns:
+        search_level, latitude, longitude of the location.
+    """
+    URL = "https://geocode.search.hereapi.com/v1/geocode"
+    PARAMS = {"apikey": api_key, "q": location}
+    # sending get request and saving the response as response object
+    r = requests.get(url=URL, params=PARAMS)
+    data = r.json()
+    if data.get("items"):
+        # Acquiring the latitude and longitude from JSON
+        latitude = data["items"][0]["position"]["lat"]
+        longitude = data["items"][0]["position"]["lng"]
+        return "here", latitude, longitude
+    return None, None, None
+
+def get_geolocation_nominatim_api(
+        location: str
+):
+    """
+    Get the tuple latitude, longitude of a location using Nominatim API.
+
+    Args:
+        location: the string of the location we want to get latitude and longitude.
+    
+    Returns:
+        search_level, latitude, longitude of the location.
+    """
+    geolocator = Nominatim(user_agent="Nominatim")
+    location = geolocator.geocode(location, language="en")
+    if location:
+        return "geopy-nominatim", location.latitude, location.longitude
+    return None, None, None
+
+def get_geolocation_photon_api(
+        location: str
+):
+    """
+    Get the tuple latitude, longitude of a location using Photon API.
+
+    Args:
+        location: the string of the location we want to get latitude and longitude.
+    
+    Returns:
+        search_level, latitude, longitude of the location.
+    """
+    geolocator = Photon(user_agent="Photon")
+    location = geolocator.geocode(location, language="en")
+    if location:
+        return "geopy-photon", location.latitude, location.longitude
+    return None, None, None
+
 def get_geolocation_data(
-    location: str, cities_codes_dict:dict=None, cities_names_dict:dict=None, departments_codes_dict:dict=None, api_key=None
+    location: str, cities_codes_dict:dict=None, cities_names_dict:dict=None, departments_codes_dict:dict=None, here_api_key=None
 ):
     """
     Get the tuple latitude, longitude of a location with a 4 level of fall back.
@@ -119,13 +182,13 @@ def get_geolocation_data(
 
     Args:
         location: the string of the location we want to get latitude and longitude.
-        api_key: Here's api_key permitting the last fall back.
+        here_api_key: Here's api_key permitting the last fall back.
         cities_codes_dict:
         cities_names_dict:
         departments_codes_dict:
 
     Returns:
-        latitude, longitude of the location.
+        search_level, latitude, longitude of the location.
     """
     cities_codes_dict = cities_codes_dict or CITIES_CODES_DICT
     cities_names_dict = cities_names_dict or CITIES_NAMES_DICT
@@ -142,18 +205,17 @@ def get_geolocation_data(
                 lat, long = value
                 return name, lat, long
 
-    if api_key is None:
-        return None, None, None
+    nominatim_location = get_geolocation_nominatim_api(location)
+    if nominatim_location[0]:
+        return nominatim_location
     
-    # If provided api_key, call here API to decode.
-    URL = "https://geocode.search.hereapi.com/v1/geocode"
-    PARAMS = {"apikey": api_key, "q": location}
-    # sending get request and saving the response as response object
-    r = requests.get(url=URL, params=PARAMS)
-    data = r.json()
-    if data.get("items"):
-        # Acquiring the latitude and longitude from JSON
-        latitude = data["items"][0]["position"]["lat"]
-        longitude = data["items"][0]["position"]["lng"]
-        return "here", latitude, longitude
+    photon_location = get_geolocation_photon_api(location)
+    if photon_location[0]:
+        return photon_location
+
+    if here_api_key:
+        location = get_geolocation_here_api(location, here_api_key)
+        if location[0]:
+            return location
+    
     return None, None, None

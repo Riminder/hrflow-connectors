@@ -22,6 +22,7 @@ Jinja2 = "^3.0.3"
 hrflow = "2.1.0"
 requests = "^2.27.1"
 boto3 = {version = "^1.24.66", optional = true}
+geopy = "^2.3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
