@@ -147,7 +147,10 @@ def get_geolocation_nominatim_api(
         search_level, latitude, longitude of the location.
     """
     geolocator = Nominatim(user_agent="Nominatim")
-    location = geolocator.geocode(location, language="en")
+    try :
+        location = geolocator.geocode(location, language="en")
+    except :
+        return None, None, None
     if location:
         return "geopy-nominatim", location.latitude, location.longitude
     return None, None, None
@@ -165,7 +168,10 @@ def get_geolocation_photon_api(
         search_level, latitude, longitude of the location.
     """
     geolocator = Photon(user_agent="Photon")
-    location = geolocator.geocode(location, language="en")
+    try :
+        location = geolocator.geocode(location, language="en")
+    except :
+        return None, None, None
     if location:
         return "geopy-photon", location.latitude, location.longitude
     return None, None, None
