@@ -1,12 +1,12 @@
 # This code originally came from Legacy-master branch
 # https://github.com/Riminder/hrflow-connectors/blob/legacy-master-ts-1663850377/src/hrflow_connectors/utils/adress_to_lat_long.py
 # and was directly copied into the current branch without any changes.
-import requests
 import pkgutil
 import re
 
+import requests
 
-# French Departements File 
+# French Departements File
 FRENCH_DEPARTMENTS_FILE = "../data/french_departement_geo_mapping.csv"
 # French Cities File
 FRENCH_CITIES_FILE = "../data/french_citycode_geo_mapping.csv"
@@ -14,7 +14,7 @@ FRENCH_CITIES_FILE = "../data/french_citycode_geo_mapping.csv"
 FRENCH_CITIES_NAME_FILE = "../data/french_cityname_geo_mapping.csv"
 
 
-def accent_replacer(s:str) -> str:
+def accent_replacer(s: str) -> str:
     """
     Replace the accentuated characters by same character without accent.
 
@@ -104,11 +104,15 @@ def get_departments_codes_lat_long_mapping() -> dict:
 # Constant Dicts to avoid loading the files each time.
 CITIES_CODES_DICT = get_cities_code_lat_long_mapping()
 CITIES_NAMES_DICT = get_cities_names_lat_long_mapping()
-DEPARTMENTS_CODES_DICT = get_departments_codes_lat_long_mapping()   
+DEPARTMENTS_CODES_DICT = get_departments_codes_lat_long_mapping()
 
 
 def get_geolocation_data(
-    location: str, cities_codes_dict:dict=None, cities_names_dict:dict=None, departments_codes_dict:dict=None, api_key=None
+    location: str,
+    cities_codes_dict: dict = None,
+    cities_names_dict: dict = None,
+    departments_codes_dict: dict = None,
+    api_key=None,
 ):
     """
     Get the tuple latitude, longitude of a location with a 4 level of fall back.
@@ -130,7 +134,7 @@ def get_geolocation_data(
     cities_codes_dict = cities_codes_dict or CITIES_CODES_DICT
     cities_names_dict = cities_names_dict or CITIES_NAMES_DICT
     departments_codes_dict = departments_codes_dict or DEPARTMENTS_CODES_DICT
-    
+
     fall_back_list = [cities_codes_dict, cities_names_dict, departments_codes_dict]
     for fall_back in fall_back_list:
         # get each word of the location.
@@ -144,7 +148,7 @@ def get_geolocation_data(
 
     if api_key is None:
         return None, None, None
-    
+
     # If provided api_key, call here API to decode.
     URL = "https://geocode.search.hereapi.com/v1/geocode"
     PARAMS = {"apikey": api_key, "q": location}
