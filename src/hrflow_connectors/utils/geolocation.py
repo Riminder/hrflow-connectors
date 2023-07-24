@@ -108,16 +108,14 @@ CITIES_NAMES_DICT = get_cities_names_lat_long_mapping()
 DEPARTMENTS_CODES_DICT = get_departments_codes_lat_long_mapping()
 
 
-def get_geolocation_here_api(
-        location: str, api_key=None
-):
+def get_geolocation_here_api(location: str, api_key=None):
     """
     Get the tuple latitude, longitude of a location using Here API.
 
     Args:
         location: the string of the location we want to get latitude and longitude.
         api_key: Here's api_key.
-    
+
     Returns:
         search_level, latitude, longitude of the location.
     """
@@ -133,66 +131,62 @@ def get_geolocation_here_api(
         return "here", latitude, longitude
     return None, None, None
 
-def get_geolocation_nominatim_api(
-        location: str
-):
+
+def get_geolocation_nominatim_api(location: str):
     """
     Get the tuple latitude, longitude of a location using Nominatim API.
 
     Args:
         location: the string of the location we want to get latitude and longitude.
-    
+
     Returns:
         search_level, latitude, longitude of the location.
     """
     geolocator = Nominatim(user_agent="Nominatim")
-    try :
-        location = geolocator.geocode(location, language="en")
-    except :
-        return None, None, None
+    location = geolocator.geocode(location, language="en")
     if location:
         return "geopy-nominatim", location.latitude, location.longitude
     return None, None, None
 
-def get_geolocation_photon_api(
-        location: str
-):
+
+def get_geolocation_photon_api(location: str):
     """
     Get the tuple latitude, longitude of a location using Photon API.
 
     Args:
         location: the string of the location we want to get latitude and longitude.
-    
+
     Returns:
         search_level, latitude, longitude of the location.
     """
     geolocator = Photon(user_agent="Photon")
-    try :
-        location = geolocator.geocode(location, language="en")
-    except :
-        return None, None, None
+    location = geolocator.geocode(location, language="en")
     if location:
         return "geopy-photon", location.latitude, location.longitude
     return None, None, None
 
+
 def get_geolocation_data(
-    location: str, 
-    france_only: bool = True, 
-    cities_codes_dict: dict = None, 
-    cities_names_dict: dict = None, 
-    departments_codes_dict: dict = None, 
-    here_api_key: str = None
+    location: str,
+    france_only: bool = True,
+    cities_codes_dict: dict = None,
+    cities_names_dict: dict = None,
+    departments_codes_dict: dict = None,
+    here_api_key: str = None,
 ):
     """
-    Get the tuple latitude, longitude of a location with a 4 level of fall back if the france_only option is set to True.
+    Get the tuple latitude, longitude of a location with a 4 level of fall back if
+    the france_only option is set to True.
         level 1: cities's postcode.
         level 2: cities's name.
         level 3: departments postcode.
         level 4: call here API.
-    Otherwise, it will call the Geopy's Nominatim or Photon APIs or Here API if the api_key is set.
+    Otherwise, it will call the Geopy's Nominatim or Photon APIs or Here API
+    if the api_key is set.
 
     Args:
         location: the string of the location we want to get latitude and longitude.
+        france_only: return latitude, longitude of a french address.
         here_api_key: Here's api_key permitting the last fall back.
         cities_codes_dict:
         cities_names_dict:
@@ -205,7 +199,7 @@ def get_geolocation_data(
         cities_codes_dict = cities_codes_dict or CITIES_CODES_DICT
         cities_names_dict = cities_names_dict or CITIES_NAMES_DICT
         departments_codes_dict = departments_codes_dict or DEPARTMENTS_CODES_DICT
-        
+
         fall_back_list = [cities_codes_dict, cities_names_dict, departments_codes_dict]
         for fall_back in fall_back_list:
             # get each word of the location.
@@ -220,7 +214,7 @@ def get_geolocation_data(
     nominatim_location = get_geolocation_nominatim_api(location)
     if nominatim_location[0]:
         return nominatim_location
-    
+
     photon_location = get_geolocation_photon_api(location)
     if photon_location[0]:
         return photon_location
