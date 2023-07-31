@@ -1,6 +1,5 @@
 import json
 import typing as t
-from datetime import datetime
 
 from hrflow_connectors.connectors.hrflow.warehouse.profile import HrFlowProfileWarehouse
 from hrflow_connectors.connectors.salesforce.schemas import SalesforceHrFlowProfile

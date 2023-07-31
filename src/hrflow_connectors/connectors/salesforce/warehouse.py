@@ -17,24 +17,24 @@ from hrflow_connectors.core import (
 )
 
 SELECT_PROFILES_SOQL = """
-SELECT 
+SELECT
     LastModifiedDate,
     FIELDS(CUSTOM),
     (
-        SELECT 
-            FIELDS(CUSTOM) 
+        SELECT
+            FIELDS(CUSTOM)
         FROM HrFlow_Profile_Experiences__r
         LIMIT 200
     ),
     (
-        SELECT 
-            FIELDS(CUSTOM) 
+        SELECT
+            FIELDS(CUSTOM)
         FROM HrFlow_Profile_Educations__r
         LIMIT 200
     ),
     (
-        SELECT 
-            FIELDS(CUSTOM) 
+        SELECT
+            FIELDS(CUSTOM)
         FROM HrFlow_Profile_Attachments__r
         LIMIT 200
     )
