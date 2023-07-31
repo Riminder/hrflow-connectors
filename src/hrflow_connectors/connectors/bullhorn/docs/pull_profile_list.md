@@ -1,8 +1,8 @@
 
-# Pull profile parsing
-`Bullhorn Profiles` :arrow_right: `HrFlow.ai Profile Parsing`
+# Pull profile list
+`Bullhorn Profiles` :arrow_right: `HrFlow.ai Profiles`
 
-Parses a CV profile to Hrflow.ai source from Bullhorn via the API
+Retrieves profiles from Bullhorn and writes them to Hrflow.ai source
 
 
 
@@ -11,7 +11,7 @@ Parses a CV profile to Hrflow.ai source from Bullhorn via the API
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`profile_format_parsing`](../connector.py#L243) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`profile_format`](../connector.py#L267) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
@@ -30,7 +30,8 @@ Parses a CV profile to Hrflow.ai source from Bullhorn via the API
 | `api_secret` :red_circle: | `str` | None | X-API-KEY used to access HrFlow.ai API |
 | `api_user` :red_circle: | `str` | None | X-USER-EMAIL used to access HrFlow.ai API |
 | `source_key` :red_circle: | `str` | None | HrFlow.ai source key |
-| `only_insert`  | `bool` | False | When enabled the profile is written only if it doesn't exist in the source |
+| `edit`  | `bool` | False | When enabled the profile must exist in the source |
+| `only_edit_fields` :red_circle: | `typing.List[str]` | None | List of attributes to use for the edit operation e.g. ['tags', 'metadatas'] |
 
 :red_circle: : *required*
 
@@ -45,7 +46,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-Bullhorn.pull_profile_parsing(
+Bullhorn.pull_profile_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
@@ -62,7 +63,8 @@ Bullhorn.pull_profile_parsing(
         api_secret="your_api_secret",
         api_user="your_api_user",
         source_key="your_source_key",
-        only_insert=False,
+        edit=False,
+        only_edit_fields=***,
     )
 )
 ```

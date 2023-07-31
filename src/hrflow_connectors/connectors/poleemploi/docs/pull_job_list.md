@@ -1,5 +1,5 @@
 
-# Pull jobs
+# Pull job list
 `Pole Emploi Jobs` :arrow_right: `HrFlow.ai Jobs`
 
 Retrieves jobs via the ***Offres d'emploi v2*** API from the Pôle emploi website based on selection criteria set in the and send them to a ***Hrflow.ai Board***.
@@ -17,7 +17,7 @@ Retrieves jobs via the ***Offres d'emploi v2*** API from the Pôle emploi websit
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L77) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L79) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
@@ -166,7 +166,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-PoleEmploi.pull_jobs(
+PoleEmploi.pull_job_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
