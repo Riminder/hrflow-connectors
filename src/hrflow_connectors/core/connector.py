@@ -199,6 +199,8 @@ class BaseActionParameters(BaseModel):
     )
 
     class Config:
+        extra = "forbid"
+
         @staticmethod
         def schema_extra(
             schema: t.Dict[str, t.Any], model: t.Type["BaseActionParameters"]
