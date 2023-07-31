@@ -18,12 +18,14 @@ SalesforceRecordT = t.TypeVar("SalesforceRecordT", bound=SalesforceRecord)
 
 class SalesforceRelationship(GenericModel, t.Generic[SalesforceRecordT]):
     totalSize: int
-    done: bool 
+    done: bool
     records: list[SalesforceRecordT]
 
+
 class GeneralEntitySchema(BaseModel):
-    name: str 
+    name: str
     value: t.Optional[str]
+
 
 class Skill(BaseModel):
     name: str
@@ -81,7 +83,7 @@ class SalesforceAttachment(SalesforceRecord):
     Original_File_Name__c: str
     Profile__c: str
     Text__c: t.Optional[str]
-    Timestamp__c: t.str
+    Timestamp__c: str
     Type__c: str
     URL__c: str
 
@@ -99,12 +101,18 @@ class URLs(BaseModel):
     facebook: t.Optional[str]
     github: t.Optional[str]
 
- 
+
 class SalesforceHrFlowProfile(SalesforceRecord):
     LastModifiedDate: str
-    HrFlow_Profile_Experiences__r: t.Optional[SalesforceRelationship[SalesforceExperience]]
-    HrFlow_Profile_Educations__r: t.Optional[SalesforceRelationship[SalesforceEducation]]
-    HrFlow_Profile_Attachments__r: t.Optional[SalesforceRelationship[SalesforceAttachment]]
+    HrFlow_Profile_Experiences__r: t.Optional[
+        SalesforceRelationship[SalesforceExperience]
+    ]
+    HrFlow_Profile_Educations__r: t.Optional[
+        SalesforceRelationship[SalesforceEducation]
+    ]
+    HrFlow_Profile_Attachments__r: t.Optional[
+        SalesforceRelationship[SalesforceAttachment]
+    ]
     Archive__c: t.Optional[str]
     Certifications__c: Json[t.List[GeneralEntitySchema]]
     Consent_Embedding_Controller__c: t.Optional[IntFlag]
