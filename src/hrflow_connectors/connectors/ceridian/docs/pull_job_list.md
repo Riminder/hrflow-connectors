@@ -1,14 +1,8 @@
 
-# Pull jobs
-`Greenhouse Jobs` :arrow_right: `HrFlow.ai Jobs`
+# Pull job list
+`Ceridian Jobs` :arrow_right: `HrFlow.ai Jobs`
 
-Retrieves all jobs of a board via the ***Greenhouse*** API and send them to a ***Hrflow.ai Board***.
-
-
-**Greenhouse Jobs endpoints used :**
-| Endpoints | Description |
-| --------- | ----------- |
-| [**Get job**](https://developers.greenhouse.io/harvest.html?shell#get-retrieve-job) | Endpoint to get the content of a job with a given id. The request method is `GET` |
+Retrieves all jobs via the ***Ceridian*** API and send them to an ***Hrflow.ai Board***.
 
 
 
@@ -17,14 +11,19 @@ Retrieves all jobs of a board via the ***Greenhouse*** API and send them to a **
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L22) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L17) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `board_token` :red_circle: | `str` | None | Board_token |
+| `subdomain` :red_circle: | `str` | None | Subdomain used to access Ceridian API |
+| `client_name_space` :red_circle: | `str` | None | Client name space used to access Ceridian API |
+| `companyName`  | `str` | None | Company name. Example: XYZ Co. |
+| `parentCompanyName`  | `str` | None | Parent Company name. Example: Ceridian |
+| `lastUpdateTimeFrom`  | `str` | None | A starting timestamp of job posting date. Example: 2017-01-01T13:24:56 |
+| `htmlDescription`  | `bool` | None | A flag to feed the jobs over with html formatting or plain text description |
 
 ## Destination Parameters
 
@@ -43,14 +42,14 @@ Retrieves all jobs of a board via the ***Greenhouse*** API and send them to a **
 
 ```python
 import logging
-from hrflow_connectors import Greenhouse
+from hrflow_connectors import Ceridian
 from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
-Greenhouse.pull_jobs(
+Ceridian.pull_job_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
@@ -58,7 +57,12 @@ Greenhouse.pull_jobs(
         read_mode=ReadMode.sync,
     ),
     origin_parameters=dict(
-        board_token="your_board_token",
+        subdomain="your_subdomain",
+        client_name_space="your_client_name_space",
+        companyName="your_companyName",
+        parentCompanyName="your_parentCompanyName",
+        lastUpdateTimeFrom="your_lastUpdateTimeFrom",
+        htmlDescription=False,
     ),
     target_parameters=dict(
         api_secret="your_api_secret",
