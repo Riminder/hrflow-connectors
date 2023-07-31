@@ -99,6 +99,7 @@
             "required": [
               "x_smart_token"
             ],
+            "additionalProperties": false,
             "definitions": {
               "JobPostingStatus": {
                 "title": "JobPostingStatus",
@@ -524,7 +525,8 @@
               "api_secret",
               "api_user",
               "board_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowJob",
@@ -889,7 +891,8 @@
               "api_user",
               "source_key",
               "profile_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "HrFlowProfile",
@@ -1374,7 +1377,8 @@
             "required": [
               "x_smart_token",
               "job_id"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "SmartRecruitersProfile",
@@ -1715,7 +1719,8 @@
               "client_id",
               "client_secret",
               "client_url"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "BaseModel",
@@ -1759,7 +1764,8 @@
               "api_secret",
               "api_user",
               "source_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowProfileParsing",
@@ -1948,7 +1954,8 @@
               "client_id",
               "client_secret",
               "client_url"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "BaseModel",
@@ -1992,7 +1999,8 @@
               "api_secret",
               "api_user",
               "source_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowProfileParsing",
@@ -2180,7 +2188,8 @@
               "client_id",
               "client_secret",
               "client_url"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "BaseModel",
@@ -2236,7 +2245,8 @@
               "api_secret",
               "api_user",
               "source_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowProfile",
@@ -2798,7 +2808,8 @@
               "client_id",
               "client_secret",
               "client_url"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "BaseModel",
@@ -2841,7 +2852,8 @@
               "api_secret",
               "api_user",
               "source_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowProfileParsing",
@@ -3023,7 +3035,8 @@
               "client_id",
               "client_secret",
               "client_url"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "BaseModel",
@@ -3080,7 +3093,8 @@
               "api_secret",
               "api_user",
               "board_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowJob",
@@ -3698,6 +3712,7 @@
               "client_id",
               "client_secret"
             ],
+            "additionalProperties": false,
             "definitions": {
               "Experience": {
                 "title": "Experience",
@@ -4390,7 +4405,8 @@
               "api_secret",
               "api_user",
               "board_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowJob",
@@ -4939,6 +4955,7 @@
               "app_id",
               "app_key"
             ],
+            "additionalProperties": false,
             "definitions": {
               "CountryCode": {
                 "title": "CountryCode",
@@ -5211,7 +5228,8 @@
               "api_secret",
               "api_user",
               "board_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowJob",
@@ -5581,7 +5599,8 @@
               "api_user",
               "source_key",
               "profile_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "HrFlowProfile",
@@ -6086,6 +6105,7 @@
               "api_token",
               "recruitee_endpoint"
             ],
+            "additionalProperties": false,
             "definitions": {
               "Endpoint": {
                 "title": "Endpoint",
@@ -6259,6 +6279,7 @@
               "api_token",
               "recruitee_endpoint"
             ],
+            "additionalProperties": false,
             "definitions": {
               "Endpoint": {
                 "title": "Endpoint",
@@ -6396,7 +6417,8 @@
               "api_secret",
               "api_user",
               "board_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowJob",
@@ -6746,7 +6768,8 @@
             "required": [
               "auth",
               "subdomain"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "BaseModel",
@@ -6803,7 +6826,8 @@
               "api_secret",
               "api_user",
               "board_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowJob",
@@ -7168,7 +7192,8 @@
               "api_user",
               "source_key",
               "profile_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "HrFlowProfile",
@@ -7660,7 +7685,8 @@
               "auth",
               "subdomain",
               "shortcode"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "BaseModel",
@@ -7756,7 +7782,8 @@
             "required": [
               "email",
               "password"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "BaseModel",
@@ -7813,7 +7840,8 @@
               "api_secret",
               "api_user",
               "board_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowJob",
@@ -8178,7 +8206,8 @@
               "api_user",
               "source_key",
               "profile_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "HrFlowProfile",
@@ -8689,7 +8718,8 @@
               "email",
               "password",
               "position_id"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "BaseModel",
@@ -8798,7 +8828,8 @@
             "required": [
               "api_server",
               "api_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "SAPSuccessFactorsJob",
@@ -8958,7 +8989,8 @@
               "api_secret",
               "api_user",
               "board_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowJob",
@@ -9323,7 +9355,8 @@
               "api_user",
               "source_key",
               "profile_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "HrFlowProfile",
@@ -9808,7 +9841,8 @@
             "required": [
               "api_server",
               "api_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "SapCandidateModel",
@@ -10055,7 +10089,8 @@
               "api_user",
               "source_key",
               "profile_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "HrFlowProfile",
@@ -10554,7 +10589,8 @@
               "client_secret",
               "password",
               "username"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "BullhornProfile",
@@ -10734,7 +10770,8 @@
               "client_secret",
               "password",
               "username"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "BullhornJob",
@@ -10797,7 +10834,8 @@
               "api_secret",
               "api_user",
               "board_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowJob",
@@ -11156,7 +11194,8 @@
               "client_secret",
               "password",
               "username"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "BullhornProfile",
@@ -11286,7 +11325,8 @@
               "api_secret",
               "api_user",
               "source_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowProfileParsing",
@@ -11455,7 +11495,8 @@
               "client_secret",
               "password",
               "username"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "BullhornProfile",
@@ -11595,7 +11636,8 @@
               "api_user",
               "source_key",
               "only_edit_fields"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowProfile",
@@ -12158,7 +12200,8 @@
             "required": [
               "subdomain",
               "client_name_space"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "CeridianDayforceJobModel",
@@ -12293,7 +12336,8 @@
               "api_secret",
               "api_user",
               "board_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowJob",
@@ -12636,7 +12680,8 @@
             },
             "required": [
               "board_token"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "GreenhouseJobModel",
@@ -12834,7 +12879,8 @@
               "api_secret",
               "api_user",
               "board_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowJob",
@@ -13199,7 +13245,8 @@
               "api_user",
               "source_key",
               "profile_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "HrFlowProfile",
@@ -13684,7 +13731,8 @@
             "required": [
               "auth",
               "on_behalf_of"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "GreenhouseProfileModel",
@@ -14077,6 +14125,7 @@
               "Authorization",
               "X_Api_Version"
             ],
+            "additionalProperties": false,
             "definitions": {
               "RemoteStatus": {
                 "title": "RemoteStatus",
@@ -14259,7 +14308,8 @@
               "api_secret",
               "api_user",
               "board_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowJob",
@@ -14624,7 +14674,8 @@
               "api_user",
               "source_key",
               "profile_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "HrFlowProfile",
@@ -15109,7 +15160,8 @@
             "required": [
               "Authorization",
               "X_Api_Version"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "TeamtailorCandidateAttribute",
@@ -15230,7 +15282,8 @@
                 "field_type": "Other",
                 "type": "object"
               }
-            }
+            },
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "BaseModel",
@@ -15283,7 +15336,8 @@
               "api_user",
               "source_key",
               "only_edit_fields"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowProfile",
@@ -15814,7 +15868,8 @@
                 "field_type": "Other",
                 "type": "object"
               }
-            }
+            },
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "BaseModel",
@@ -15867,7 +15922,8 @@
               "api_user",
               "source_key",
               "only_edit_fields"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowProfile",
@@ -16427,7 +16483,8 @@
               "api_user",
               "source_key",
               "profile_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "HrFlowProfile",
@@ -16925,6 +16982,7 @@
             "required": [
               "access_token"
             ],
+            "additionalProperties": false,
             "definitions": {
               "Stage": {
                 "title": "Stage",
@@ -17166,7 +17224,8 @@
               "api_user",
               "source_key",
               "profile_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "HrFlowProfile",
@@ -17658,7 +17717,8 @@
             "required": [
               "x_taleez_api_secret",
               "content_type"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "Candidate",
@@ -17795,6 +17855,7 @@
               "x_taleez_api_secret",
               "with_details"
             ],
+            "additionalProperties": false,
             "definitions": {
               "JobStatus": {
                 "title": "JobStatus",
@@ -18020,7 +18081,8 @@
               "api_secret",
               "api_user",
               "board_key"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowJob",
@@ -18397,7 +18459,8 @@
               "sf_password",
               "sf_security_token",
               "sf_organization_id"
-            ]
+            ],
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "SalesforceHrFlowProfile",
@@ -19277,7 +19340,8 @@
               "api_user",
               "source_key",
               "only_edit_fields"
-            ]
+            ],
+            "additionalProperties": false
           },
           "target_data_schema": {
             "title": "HrFlowProfile",
