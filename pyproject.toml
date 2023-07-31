@@ -22,6 +22,7 @@ Jinja2 = "^3.0.3"
 hrflow = "2.1.0"
 requests = "^2.27.1"
 boto3 = {version = "^1.24.66", optional = true}
+simple-salesforce = "^1.12.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
