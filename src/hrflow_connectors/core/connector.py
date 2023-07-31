@@ -555,6 +555,13 @@ class ConnectorAction(BaseModel):
             )
         )
 
+        if len(formatted_items) == 0:
+            adapter.warning(
+                "Formatting failed for all items. Review supplied format function."
+                " Aborting action."
+            )
+            return RunResult.from_events(events)
+
         if len(parameters.logics) > 0:
             adapter.info(
                 "Starting to apply logic functions: "
@@ -578,6 +585,13 @@ class ConnectorAction(BaseModel):
                         break
                 else:
                     items_to_write.append(item)
+
+            if len(items_to_write) == 0:
+                adapter.warning(
+                    "Logics failed for all items. Review supplied logic functions."
+                    " Aborting action."
+                )
+                return RunResult.from_events(events)
             adapter.info(
                 "Finished applying logic functions: "
                 "success={} discarded={} failures={}".format(
