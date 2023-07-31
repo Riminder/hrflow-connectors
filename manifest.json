@@ -33,6 +33,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -839,6 +840,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -1651,6 +1653,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -1883,6 +1886,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -2115,6 +2119,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -2731,6 +2736,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -2955,6 +2961,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -3388,6 +3395,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -4697,6 +4705,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -5523,6 +5532,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -6181,6 +6191,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -6700,6 +6711,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -7107,6 +7119,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -7696,6 +7709,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -8115,6 +8129,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -8723,6 +8738,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -9258,6 +9274,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -9989,6 +10006,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -10667,6 +10685,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -11088,6 +11107,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -11386,6 +11406,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -12078,6 +12099,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -12586,6 +12608,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -13127,6 +13150,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -13999,6 +14023,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -14550,6 +14575,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -15179,6 +15205,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -15762,6 +15789,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -16350,6 +16378,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -17088,6 +17117,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
@@ -17720,6 +17750,7 @@
                 "type": "code_editor"
               }
             },
+            "additionalProperties": false,
             "definitions": {
               "ReadMode": {
                 "title": "ReadMode",
