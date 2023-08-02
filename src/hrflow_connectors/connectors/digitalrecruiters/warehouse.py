@@ -44,12 +44,18 @@ class WriteProfilesParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Other,
 	)
-    reference: str = Field(
+    job_reference: str = Field(
         ...,
-        description="Job reference.",
+        description="reference of the job to which the candidate is applying.",
 		repr=False,
 		field_type=FieldType.Other,
 	)
+    message: t.Optional[str] = Field(
+        "message du candidat",
+        description="Application message.",
+        repr=False,
+        field_type=FieldType.Other,
+    )
 			
 
 def remove_trailing_slash(url: str) -> str:
@@ -103,7 +109,10 @@ def write(
 
     for profile in profiles:
         json_data = profile
-        json_data["reference"] = parameters.reference
+        json_data["reference"] = parameters.job_reference
+        json_data["ApplicationMessage"] = dict(
+                              message=parameters.message  # You can customize this message if needed
+                              )
         try:
             response = requests.post(url,json=json_data)
             response.raise_for_status()
