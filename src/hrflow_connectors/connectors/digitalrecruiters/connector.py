@@ -9,7 +9,6 @@ from hrflow_connectors.connectors.digitalrecruiters.warehouse import (
     DigitalRecruitersJobWarehouse,
     DigitalRecruitersProfileWarehouse,
 )
-from hrflow_connectors.connectors.digitalrecruiters.schema import DigitalRecruitersJob, DigitalRecruitersImportCandidateProfile
 from hrflow_connectors.core import (
     ActionName,
     ActionType,
@@ -69,8 +68,8 @@ def get_sections(digital_recruiters_job: t.Dict) -> t.List[t.Dict]:
         if section is not None:
             sections.append(
                 dict(
-                    name="digitalrecruiters_ads-sections-{}".format(section_name),
-                    title="digitalrecruiters_ads-sections-{}".format(section_name),
+                    name=section_name,
+                    title=section_name,
                     description=html_to_plain_text(section),
                 )
             )
@@ -102,29 +101,29 @@ def get_tags(digital_recruiters_job: t.Dict) -> t.List[t.Dict]:
 
     compensation = job.get("salary", {})
     if compensation:
-        add_tag("digitalrecruiters_compensation-min", compensation.get("min", None))
-        add_tag("digitalrecruiters_compensation-max", compensation.get("max", None))
-        add_tag("digitalrecruiters_compensation-currency", compensation.get("currency", None))
+        add_tag("digitalrecruiters_compensation_min", compensation.get("min", None))
+        add_tag("digitalrecruiters_compensation_max", compensation.get("max", None))
+        add_tag("digitalrecruiters_compensation_currency", compensation.get("currency", None))
 
     manager = job.get("entity", {}).get("manager", {})
     if manager:
-        add_tag("digitalrecruiters_manager-firstName", manager.get("firstname", None))
-        add_tag("digitalrecruiters_manager-lastName", manager.get("lastname", None))
-        add_tag("digitalrecruiters_manager-position", manager.get("position", None))
-        add_tag("digitalrecruiters_manager-picture", manager.get("picture_url", None))
+        add_tag("digitalrecruiters_manager_firstName", manager.get("firstname", None))
+        add_tag("digitalrecruiters_manager_lastName", manager.get("lastname", None))
+        add_tag("digitalrecruiters_manager_position", manager.get("position", None))
+        add_tag("digitalrecruiters_manager_picture", manager.get("picture_url", None))
 
     recruiter = job.get("referent_recruiter", {})
     if recruiter:
-        add_tag("digitalrecruiters_recruiter-email", recruiter.get("email", None))
-        add_tag("digitalrecruiters_recruiter-phoneNumber", recruiter.get("phoneNumber", None))
-        add_tag("digitalrecruiters_recruiter-picture", recruiter.get("picture_url", None))
+        add_tag("digitalrecruiters_recruiter_email", recruiter.get("email", None))
+        add_tag("digitalrecruiters_recruiter_phoneNumber", recruiter.get("phoneNumber", None))
+        add_tag("digitalrecruiters_recruiter_picture", recruiter.get("picture_url", None))
 
     hierarchy_list = digital_recruiters_job.get("hierarchy", [])
     for item in hierarchy_list:
         depth = item.get("depth", None)
         column_name = item.get("column_name", None)
         public_name = item.get("public_name", None)
-        add_tag(f"hierarchy-{depth}", f"{column_name}:{public_name}")
+        add_tag(f"hierarchy_{depth}", f"{column_name}:{public_name}")
 
     custom_fields = job.get("custom_fields", [])
     if custom_fields:
@@ -154,6 +153,7 @@ def format_job(digital_recruiters_job: t.Dict) -> t.Dict:
         created_at=digital_recruiters_job.get("published_at",None),	
         location=get_job_location(digital_recruiters_job.get("address", {})),
         sections = get_sections(digital_recruiters_job),
+        requirements = html_to_plain_text(digital_recruiters_job.get("profile", None)),		
         skills = format_skills(digital_recruiters_job.get("skills", [])),
         tags=get_tags(digital_recruiters_job),
     )
@@ -177,16 +177,11 @@ def format_profile(profile_hrflow: t.Dict) -> t.Dict:
         fields = fields[0]
     dr_profile_dict["addressZip"] = fields.get("postcode")
     dr_profile_dict["addressCity"] = fields.get("state_district")
-    
-    dr_message_dict = dict(
-        message="Generated message for the candidate"  # You can customize this message if needed
-    )
 
     profile = dict()
     profile["consent_date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     profile["s_o"] = profile_hrflow.get("s_o", "")
     profile["locale"] = "fr_FR"
-    profile["ApplicationMessage"] = dr_message_dict
     profile["ApplicationProfile"] = dr_profile_dict
 
     return profile
