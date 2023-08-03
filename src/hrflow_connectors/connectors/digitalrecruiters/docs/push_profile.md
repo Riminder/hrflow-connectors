@@ -32,7 +32,7 @@ Pushes a profile from Hrflow.ai to Digital Recruiters.
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `digital_recruiters_token` :red_circle: | `str` | None | Digital Recruiters API token. |
-| `digital_recruiters_environment_url` :red_circle: | `str` | None | Digital Recruiters API url environnement. |
+| `digital_recruiters_environment_url` :red_circle: | `str` | None | Digital Recruiters API environment url. |
 | `job_reference` :red_circle: | `str` | None | reference of the job to which the candidate is applying. |
 | `message`  | `str` | message du candidat | Application message. |
 
