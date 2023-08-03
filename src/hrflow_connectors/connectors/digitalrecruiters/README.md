@@ -14,6 +14,7 @@
 # 💼 About Digitalrecruiters
 
 > Digital Recruiters: Tech-driven hiring platform with job posting, automation, and analytics. Simplify recruitment, reduce time-to-hire, and elevate candidate experience. Streamline the hiring process for businesses with advanced features and integration capabilities.
+![image](https://github.com/Riminder/hrflow-connectors/assets/135601200/a13c8f06-4321-4878-85bb-212c5d1f4bd3)
 
 ## 😍 Why is it a big deal for Digitalrecruiters customers & partners?
 
