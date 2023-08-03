@@ -9,7 +9,8 @@ from pathlib import Path
 import yaml
 from pydantic import BaseModel, Field, StrictStr, ValidationError
 
-from hrflow_connectors.core.connector import Connector, Event, Reason, Status, ActionName as ActionNameEnum
+from hrflow_connectors.core.connector import ActionName as ActionNameEnum
+from hrflow_connectors.core.connector import Connector, Event, Reason, Status
 from hrflow_connectors.core.warehouse import ReadMode, Warehouse
 
 PROJECT_DIRECTORY = Path(__file__).parent.parent.parent.parent
@@ -152,9 +153,11 @@ class ActionName(StrictStr):
         try:
             ActionNameEnum[v]
         except KeyError:
-            raise TypeError("'{}' is not a valid action name. Should be one of {}".format(
-                v, [name.value for name in ActionNameEnum]
-            ))
+            raise TypeError(
+                "'{}' is not a valid action name. Should be one of {}".format(
+                    v, [name.value for name in ActionNameEnum]
+                )
+            )
         action_names = ActionNames.get([])
         if v not in action_names:
             raise TypeError(

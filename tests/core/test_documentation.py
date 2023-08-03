@@ -6,11 +6,11 @@ import pytest
 from hrflow_connectors import generate_docs
 from hrflow_connectors.core import (
     ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
     WorkflowType,
-    ActionType
 )
 from tests.core.localusers.warehouse import UsersWarehouse
 from tests.core.smartleads.warehouse import LeadsWarehouse

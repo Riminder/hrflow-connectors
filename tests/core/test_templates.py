@@ -3,11 +3,11 @@ import pytest
 import hrflow_connectors
 from hrflow_connectors.core import (
     ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
     WorkflowType,
-    ActionType
 )
 from hrflow_connectors.core.connector import Event, Reason, Status
 from tests.conftest import random_workflow_id
