@@ -4,8 +4,7 @@
 - [💼 About Digitalrecruiters](#💼-about-digitalrecruiters)
   - [😍 Why is it a big deal for Digitalrecruiters customers & partners?](#😍-why-is-it-a-big-deal-for-digitalrecruiters-customers--partners)
 - [🔧 How does it work?](#🔧-how-does-it-work)
-  - [📊 Data integration capabilities:](#📊-data-integration-capabilities)
-  - [🧠 Artificial Intelligence capabilities:](#🧠-artificial-intelligence-capabilities)
+  - [📊 Data Flow:](#📊-data-flow)
 - [🔌 Connector Actions](#🔌-connector-actions)
 - [💍 Quick Start Examples](#💍-quick-start-examples)
 - [🔗 Useful Links](#🔗-useful-links)
@@ -14,7 +13,7 @@
 # 💼 About Digitalrecruiters
 
 > Digital Recruiters: Tech-driven hiring platform with job posting, automation, and analytics. Simplify recruitment, reduce time-to-hire, and elevate candidate experience. Streamline the hiring process for businesses with advanced features and integration capabilities.
-> 
+>
 <p align="center">
 <image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/690cb006-7342-482c-afdb-8d25a122ae40
  width=90% height=100% >
@@ -29,17 +28,9 @@ This new connector will enable:
 
 # 🔧 How does it work?
 
-## 📊 Data integration capabilities
+## 📊 Data Flow
 
-- ⬅️ Send Profiles data from Digitalrecruiters to a Destination of your choice.
-- ➡️ Send Profiles data from a Source of your choice to Digitalrecruiters.
-- ⬅️ Send Jobs data from Digitalrecruiters to a Destination of your choice.
-- ➡️ Send Jobs data from a Source of your choice to Digitalrecruiters.
-
-## 🧠 Artificial Intelligence capabilities
-
-- Extract, Structure, and Categorize Talent & Workforce data
-- Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Digitalrecruiters**)
+In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
 # 🔌 Connector Actions
 
