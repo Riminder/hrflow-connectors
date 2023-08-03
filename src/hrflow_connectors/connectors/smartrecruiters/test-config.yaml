@@ -6,7 +6,7 @@ warehouse:
           posting_status: PUBLIC
           limit: 1
 actions:
-  pull_jobs:
+  pull_job_list:
     - id: valid_parameters
       origin_parameters:
         x_smart_token: $__X_SMART_TOKEN
