@@ -3,12 +3,12 @@
 
 `HrFlow.ai Profiles` :arrow_right: `DigitalRecruiters Profiles`
 
-Pushes a profile from Hrflow.ai to Digital Recruiters.
+Pushes a profile from Hrflow.ai to DigitalRecruiters.
 
 **DigitalRecruiters Profiles endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
-| [**Write Profiles**]({digital_recruiters_environment_url}/api/candidate/apply/{token}) | Write profiles to Digital Recruiters |
+| [**Write Profiles**]({digital_recruiters_environment_url}/api/candidate/apply/{token}) | Write profiles to DigitalRecruiters |
 
 ## Action Parameters
 
@@ -31,8 +31,8 @@ Pushes a profile from Hrflow.ai to Digital Recruiters.
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `digital_recruiters_token` :red_circle: | `str` | None | Digital Recruiters API token. |
-| `digital_recruiters_environment_url` :red_circle: | `str` | None | Digital Recruiters API environment url. |
+| `digital_recruiters_token` :red_circle: | `str` | None | DigitalRecruiters API token. |
+| `digital_recruiters_environment_url` :red_circle: | `str` | None | DigitalRecruiters API environment url. |
 | `job_reference` :red_circle: | `str` | None | reference of the job to which the candidate is applying. |
 | `message`  | `str` | message du candidat | Application message. |
 
