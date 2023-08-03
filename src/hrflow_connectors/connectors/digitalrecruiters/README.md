@@ -1,14 +1,14 @@
 # 📖 Summary
 
-- [📖 Summary](#📖-summary)
-- [💼 About Digitalrecruiters](#💼-about-digitalrecruiters)
-  - [😍 Why is it a big deal for Digitalrecruiters customers & partners?](#😍-why-is-it-a-big-deal-for-digitalrecruiters-customers--partners)
+- [📖 Summary](#-summary)
+- [💼 About Digitalrecruiters](#-about-digitalrecruiters)
+  - [😍 Why is it a big deal for Digitalrecruiters customers & partners?](#-why-is-it-a-big-deal-for-digitalrecruiters-customers--partners)
 - [🔧 How does it work?](#🔧-how-does-it-work)
-  - [📊 Data Flow:](#📊-data-flow)
-- [🔌 Connector Actions](#🔌-connector-actions)
-- [💍 Quick Start Examples](#💍-quick-start-examples)
-- [🔗 Useful Links](#🔗-useful-links)
-- [👏 Special Thanks](#👏-special-thanks)
+  - [📊 Data Flow:](#-data-flow)
+- [🔌 Connector Actions](#-connector-actions)
+- [🐍 Quick Start Examples](#-quick-start-examples)
+- [🔗 Useful Links](#-useful-links)
+- [👏 Special Thanks](#-special-thanks)
 
 # 💼 About Digitalrecruiters
 
@@ -39,7 +39,7 @@ In this section, we outline the data flow between different components of the co
 | [**Pull job list**](docs/ActionName.pull_job_list.md) | Retrieves all jobs from Digital Recruiters and sends them to an Hrflow.ai Board. |
 | [**Push profile**](docs/ActionName.push_profile.md) | Pushes a profile from Hrflow.ai to Digital Recruiters. |
 
-# 💍 Quick Start Examples
+# 🐍 Quick Start Examples
 
 To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**.
 
