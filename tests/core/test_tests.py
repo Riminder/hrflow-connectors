@@ -5,12 +5,12 @@ from unittest import mock
 import pytest
 
 from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
     WorkflowType,
-    ActionName,
-    ActionType
 )
 from hrflow_connectors.core.connector import Event, Reason, Status
 from hrflow_connectors.core.tests import (
@@ -309,9 +309,7 @@ actions:
     assert len(errors) == 1
     assert errors[0]["loc"] == ("actions", "__key__")
     assert errors[0]["msg"].startswith(
-        "No action 'push_job' found for connector {}".format(
-            SmartLeads.model.name
-        )
+        "No action 'push_job' found for connector {}".format(SmartLeads.model.name)
     )
 
 

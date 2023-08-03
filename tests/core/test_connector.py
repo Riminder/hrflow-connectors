@@ -105,10 +105,11 @@ def test_hrflow_connectors_manifest(manifest_directory):
 
 
 def test_action_by_name():
-    assert SmartLeads.model.action_by_name("push_profile") is SmartLeads.model.actions[0]
     assert (
-        SmartLeads.model.action_by_name("push_job_list")
-        is SmartLeads.model.actions[1]
+        SmartLeads.model.action_by_name("push_profile") is SmartLeads.model.actions[0]
+    )
+    assert (
+        SmartLeads.model.action_by_name("push_job_list") is SmartLeads.model.actions[1]
     )
     assert SmartLeads.model.action_by_name("doest_not_exist") is None
 
