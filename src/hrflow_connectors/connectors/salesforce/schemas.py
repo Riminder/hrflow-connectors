@@ -1,5 +1,12 @@
 import typing as t
 
+try:
+    t.Literal
+except AttributeError:
+    from typing_extensions import Literal
+
+    setattr(t, "Literal", Literal)
+
 from pydantic import BaseModel, Json
 from pydantic.generics import GenericModel
 
@@ -19,7 +26,7 @@ SalesforceRecordT = t.TypeVar("SalesforceRecordT", bound=SalesforceRecord)
 class SalesforceRelationship(GenericModel, t.Generic[SalesforceRecordT]):
     totalSize: int
     done: bool
-    records: list[SalesforceRecordT]
+    records: t.List[SalesforceRecordT]
 
 
 class GeneralEntitySchema(BaseModel):
