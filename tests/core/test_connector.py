@@ -113,6 +113,30 @@ def test_action_by_name():
     assert SmartLeads.model.action_by_name("doest_not_exist") is None
 
 
+def test_action_name_constraint():
+    with pytest.raises(ValidationError) as excinfo:
+        Connector(
+            name="SmartLeads",
+            description=DESCRIPTION,
+            url="https://www.smartleads.test/",
+            actions=[
+                ConnectorAction(
+                    name="not_a_valid_action_name",
+                    action_type=ActionType.inbound,
+                    trigger_type=WorkflowType.pull,
+                    description="Test action",
+                    parameters=BaseActionParameters,
+                    origin=UsersWarehouse,
+                    target=LeadsWarehouse,
+                ),
+            ],
+        )
+
+    errors = excinfo.value.errors()
+    assert errors[0]["loc"] == ("name",)
+    assert errors[0]["msg"].startswith("value is not a valid enumeration member;")
+
+
 def test_connector_failures():
     campaign_id = "camp_xxx1"
     result = SmartLeads.push_profile(
