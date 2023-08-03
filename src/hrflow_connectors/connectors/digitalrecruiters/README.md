@@ -12,19 +12,19 @@
 
 # 💼 About Digitalrecruiters
 
-> Digital Recruiters: Tech-driven hiring platform with job posting, automation, and analytics. Simplify recruitment, reduce time-to-hire, and elevate candidate experience. Streamline the hiring process for businesses with advanced features and integration capabilities.
+> DigitalRecruiters: Tech-driven hiring platform with job posting, automation, and analytics. Simplify recruitment, reduce time-to-hire, and elevate candidate experience. Streamline the hiring process for businesses with advanced features and integration capabilities.
 >
 <p align="center">
 <image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/690cb006-7342-482c-afdb-8d25a122ae40
  width=90% height=100% >
 </p>
   
-## 😍 Why is it a big deal for Digitalrecruiters customers & partners?
+## 😍 Why is it a big deal for DigitalRecruiters customers & partners?
 
 This new connector will enable:
 
-- ⚡ A Fastlane Talent & Workforce data integration for Digitalrecruiters customers & partners
-- 🤖 Cutting-edge AI-powered Talent Experiences & Recruiter Experiences for Digitalrecruiters customers
+- ⚡ A Fastlane Talent & Workforce data integration for DigitalRecruiters customers & partners
+- 🤖 Cutting-edge AI-powered Talent Experiences & Recruiter Experiences for DigitalRecruiters customers
 
 # 🔧 How does it work?
 
@@ -36,8 +36,8 @@ In this section, we outline the data flow between different components of the co
 
 | Actions | Description |
 | ------- | ----------- |
-| [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs from Digital Recruiters and sends them to an Hrflow.ai Board. |
-| [**Push profile**](docs/push_profile.md) | Pushes a profile from Hrflow.ai to Digital Recruiters. |
+| [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs from DigitalRecruiters and sends them to an Hrflow.ai Board. |
+| [**Push profile**](docs/push_profile.md) | Pushes a profile from Hrflow.ai to DigitalRecruiters. |
 
 # 🐍 Quick Start Examples
 
@@ -57,4 +57,4 @@ For more code details checkout connector code.
 # 👏 Special Thanks
 
 - 💻 HrFlow.ai : Abdellahi Mezid - Software Engineer
-- 🤝 Digitalrecruiters : [Digitalrecruiters](https://www.digitalrecruiters.com/)
+- 🤝 Digitalrecruiters : [DigitalRecruiters](https://www.digitalrecruiters.com/)
