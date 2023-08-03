@@ -5,10 +5,12 @@ import pytest
 
 from hrflow_connectors import generate_docs
 from hrflow_connectors.core import (
+    ActionName,
     BaseActionParameters,
     Connector,
     ConnectorAction,
     WorkflowType,
+    ActionType
 )
 from tests.core.localusers.warehouse import UsersWarehouse
 from tests.core.smartleads.warehouse import LeadsWarehouse
@@ -21,9 +23,10 @@ SmartLeads = Connector(
     url="https://www.smartleads.test/",
     actions=[
         ConnectorAction(
-            name="pull_leads",
+            name=ActionName.pull_profile_list,
+            action_type=ActionType.inbound,
             trigger_type=WorkflowType.pull,
-            description="Send users as leads",
+            description="Test action",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
             target=LeadsWarehouse,
@@ -39,7 +42,7 @@ def connectors_directory():
     readme = path / SmartLeads.model.name.lower() / "README.md"
     actions_documentation_directory = path / SmartLeads.model.name.lower() / "docs"
     action_documentation = actions_documentation_directory / "{}.md".format(
-        SmartLeads.model.actions[0].name
+        SmartLeads.model.actions[0].name.value
     )
     try:
         readme.unlink()
@@ -59,7 +62,7 @@ def test_documentation(connectors_directory):
         connectors_directory
         / SmartLeads.model.name.lower()
         / "docs"
-        / "{}.md".format(SmartLeads.model.actions[0].name)
+        / "{}.md".format(SmartLeads.model.actions[0].name.value)
     )
 
     assert readme.exists() is False
@@ -80,9 +83,10 @@ def test_documentation_connector_directory_not_found(caplog, connectors_director
         url="https://www.smartleads.test/",
         actions=[
             ConnectorAction(
-                name="pull_leads",
+                name=ActionName.pull_profile_list,
+                action_type=ActionType.inbound,
                 trigger_type=WorkflowType.pull,
-                description="Send users as leads",
+                description="Test action",
                 parameters=BaseActionParameters,
                 origin=UsersWarehouse,
                 target=LeadsWarehouse,
@@ -97,7 +101,7 @@ def test_documentation_connector_directory_not_found(caplog, connectors_director
         connectors_directory
         / NameMismatchSmartLeads.model.name.lower()
         / "docs"
-        / "{}.md".format(NameMismatchSmartLeads.model.actions[0].name)
+        / "{}.md".format(NameMismatchSmartLeads.model.actions[0].name.value)
     )
 
     assert readme.exists() is False

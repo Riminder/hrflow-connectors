@@ -9,6 +9,8 @@ from hrflow_connectors.core import (
     Connector,
     ConnectorAction,
     WorkflowType,
+    ActionName,
+    ActionType
 )
 from hrflow_connectors.core.connector import Event, Reason, Status
 from hrflow_connectors.core.tests import (
@@ -29,17 +31,19 @@ SmartLeads = Connector(
     url="https://www.smartleads.test/",
     actions=[
         ConnectorAction(
-            name="first_action",
+            name=ActionName.pull_profile_list,
+            action_type=ActionType.inbound,
             trigger_type=WorkflowType.pull,
-            description="Send users as leads",
+            description="Test action",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
             target=LeadsWarehouse,
         ),
         ConnectorAction(
-            name="second_action",
+            name=ActionName.pull_job_list,
+            action_type=ActionType.inbound,
             trigger_type=WorkflowType.pull,
-            description="Send users as leads",
+            description="Test action",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
             target=LeadsWarehouse,
@@ -133,7 +137,7 @@ def test_bad_yaml_test_config(smartleads_test_config, connectors_directory):
         """
 actions:
   XXXXX
-  first_action:
+  pull_profile_list:
     - id: first_test
       origin_parameters:
       target_parameters:
@@ -155,7 +159,7 @@ def test_invalid_action_test_config(smartleads_test_config, connectors_directory
         """
 # Missing mandatory origin_parameters
 actions:
-  first_action:
+  pull_profile_list:
     - id: first_test
       target_parameters: {}
       status: success
@@ -169,14 +173,14 @@ actions:
         )
     errors = excinfo.value.args[0]
     assert len(errors) == 1
-    assert errors[0]["loc"] == ("actions", "first_action", 0, "origin_parameters")
+    assert errors[0]["loc"] == ("actions", "pull_profile_list", 0, "origin_parameters")
     assert errors[0]["type"] == "value_error.missing"
 
     smartleads_test_config.write_bytes(
         """
 # Missing target_parameters
 actions:
-  first_action:
+  pull_profile_list:
     - id: first_test
       origin_parameters: {}
       status: success
@@ -190,14 +194,14 @@ actions:
         )
     errors = excinfo.value.args[0]
     assert len(errors) == 1
-    assert errors[0]["loc"] == ("actions", "first_action", 0, "target_parameters")
+    assert errors[0]["loc"] == ("actions", "pull_profile_list", 0, "target_parameters")
     assert errors[0]["type"] == "value_error.missing"
 
     smartleads_test_config.write_bytes(
         """
 # Invalid status
 actions:
-  first_action:
+  pull_profile_list:
     - id: first_test
       origin_parameters: {}
       target_parameters: {}
@@ -212,14 +216,14 @@ actions:
         )
     errors = excinfo.value.args[0]
     assert len(errors) == 1
-    assert errors[0]["loc"] == ("actions", "first_action", 0, "status")
+    assert errors[0]["loc"] == ("actions", "pull_profile_list", 0, "status")
     assert errors[0]["type"] == "type_error.enum"
 
     smartleads_test_config.write_bytes(
         """
 # Invalid reason
 actions:
-  first_action:
+  pull_profile_list:
     - id: first_test
       origin_parameters: {}
       target_parameters: {}
@@ -234,14 +238,14 @@ actions:
         )
     errors = excinfo.value.args[0]
     assert len(errors) == 1
-    assert errors[0]["loc"] == ("actions", "first_action", 0, "reason")
+    assert errors[0]["loc"] == ("actions", "pull_profile_list", 0, "reason")
     assert errors[0]["type"] == "type_error.enum"
 
     smartleads_test_config.write_bytes(
         """
 # Invalid events
 actions:
-  first_action:
+  pull_profile_list:
     - id: first_test
       origin_parameters: {}
       target_parameters: {}
@@ -257,7 +261,7 @@ actions:
         )
     errors = excinfo.value.args[0]
     assert len(errors) == 1
-    assert errors[0]["loc"] == ("actions", "first_action", 0, "events", "__key__")
+    assert errors[0]["loc"] == ("actions", "pull_profile_list", 0, "events", "__key__")
     assert errors[0]["type"] == "type_error.enum"
 
     smartleads_test_config.write_bytes(
@@ -337,7 +341,7 @@ def test_valid_action_config_no_secrets(smartleads_test_config, connectors_direc
     smartleads_test_config.write_bytes(
         """
 actions:
-  first_action:
+  pull_profile_list:
     - id: first_test
       origin_parameters: {}
       target_parameters: {}
@@ -355,7 +359,7 @@ actions:
         read_success: 4
         read_failure: 1
         write_failure: 3
-  second_action:
+  pull_job_list:
     - origin_parameters:
         gender: male
       target_parameters:
@@ -373,8 +377,8 @@ actions:
     )
     assert test_suite.warehouse == dict()
     assert len(test_suite.actions) == 2
-    first_action_tests = test_suite.actions["first_action"]
-    second_action_tests = test_suite.actions["second_action"]
+    first_action_tests = test_suite.actions["pull_profile_list"]
+    second_action_tests = test_suite.actions["pull_job_list"]
 
     assert len(first_action_tests) == 3
 
@@ -483,7 +487,7 @@ warehouse:
       - parameters:
           my_secret: $__SECRET_KEY
 actions:
-  first_action:
+  pull_profile_list:
     - id: first_test
       origin_parameters:
         my_secret: $__SECRET_TOKEN
@@ -512,7 +516,7 @@ actions:
     )
     assert errors[1]["loc"] == (
         "actions",
-        "first_action",
+        "pull_profile_list",
         0,
         "origin_parameters",
         "my_secret",
@@ -535,7 +539,7 @@ def test_failure_invalid_json_secrets(
     smartleads_test_config.write_bytes(
         """
 actions:
-  first_action:
+  pull_profile_list:
     - id: first_test
       origin_parameters:
         my_secret: $__SECRET_TOKEN
@@ -588,7 +592,7 @@ warehouse:
       - parameters:
           my_secret: $__SECRET_KEY
 actions:
-  first_action:
+  pull_profile_list:
     - id: first_test
       origin_parameters:
         my_secret: $__SECRET_TOKEN
@@ -611,7 +615,7 @@ actions:
         connectors_directory=connectors_directory,
     )
     assert (
-        test_suite.actions["first_action"][0].origin_parameters["my_secret"]
+        test_suite.actions["pull_profile_list"][0].origin_parameters["my_secret"]
         == "xxxToken"
     )
     assert (
@@ -637,7 +641,7 @@ warehouse:
       - parameters:
           my_secret: $__SECRET_KEY
 actions:
-  first_action:
+  pull_profile_list:
     - id: first_test
       origin_parameters:
         my_secret: $__SECRET_TOKEN
@@ -655,7 +659,7 @@ actions:
         connectors_directory=connectors_directory,
     )
     assert (
-        test_suite.actions["first_action"][0].origin_parameters["my_secret"]
+        test_suite.actions["pull_profile_list"][0].origin_parameters["my_secret"]
         == "xxxToken"
     )
     assert (
@@ -679,7 +683,7 @@ warehouse:
       - parameters:
           my_secret: $__SECRET_KEY
 actions:
-  first_action:
+  pull_profile_list:
     - id: first_test
       origin_parameters:
         my_secret: $__SECRET_TOKEN
@@ -703,7 +707,7 @@ actions:
                 connectors_directory=connectors_directory,
             )
     assert (
-        test_suite.actions["first_action"][0].origin_parameters["my_secret"]
+        test_suite.actions["pull_profile_list"][0].origin_parameters["my_secret"]
         == "xxxTokenFromEnv"
     )
     assert (
