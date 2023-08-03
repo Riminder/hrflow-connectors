@@ -266,7 +266,7 @@ actions:
 
     smartleads_test_config.write_bytes(
         """
-# Action does not exist
+# Action name is not valid
 actions:
   invalid_action_name:
     - id: first_test
@@ -285,7 +285,31 @@ actions:
     assert len(errors) == 1
     assert errors[0]["loc"] == ("actions", "__key__")
     assert errors[0]["msg"].startswith(
-        "No action 'invalid_action_name' found for connector {}".format(
+        "'invalid_action_name' is not a valid action name"
+    )
+
+    smartleads_test_config.write_bytes(
+        """
+# Action is not defined for connector
+actions:
+  push_job:
+    - id: first_test
+      origin_parameters: {}
+      target_parameters: {}
+      status: success
+
+        """.encode()
+    )
+    with pytest.raises(InvalidTestConfigException) as excinfo:
+        collect_connector_tests(
+            connector=SmartLeads,
+            connectors_directory=connectors_directory,
+        )
+    errors = excinfo.value.args[0]
+    assert len(errors) == 1
+    assert errors[0]["loc"] == ("actions", "__key__")
+    assert errors[0]["msg"].startswith(
+        "No action 'push_job' found for connector {}".format(
             SmartLeads.model.name
         )
     )
