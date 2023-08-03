@@ -3,12 +3,12 @@
 
 `DigitalRecruiters Jobs` :arrow_right: `HrFlow.ai Jobs`
 
-Retrieves all jobs from Digital Recruiters and sends them to an Hrflow.ai Board.
+Retrieves all jobs from DigitalRecruiters and sends them to an Hrflow.ai Board.
 
 **DigitalRecruiters Jobs endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
-| [**Read Jobs**]({environment_url}/export/job-ads/{token}) | Read jobs from Digital Recruiters |
+| [**Read Jobs**]({environment_url}/export/job-ads/{token}) | Read jobs from DigitalRecruiters |
 
 ## Action Parameters
 
@@ -22,8 +22,8 @@ Retrieves all jobs from Digital Recruiters and sends them to an Hrflow.ai Board.
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `digital_recruiters_token` :red_circle: | `str` | None | Digital Recruiters API token. |
-| `digital_recruiters_environment_url` :red_circle: | `str` | None | Digital Recruiters API environment url. |
+| `digital_recruiters_token` :red_circle: | `str` | None | DigitalRecruiters API token. |
+| `digital_recruiters_environment_url` :red_circle: | `str` | None | DigitalRecruiters API environment url. |
 
 ## Destination Parameters
 
