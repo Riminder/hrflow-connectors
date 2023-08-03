@@ -36,8 +36,8 @@ In this section, we outline the data flow between different components of the co
 
 | Actions | Description |
 | ------- | ----------- |
-| [**Pull job list**](docs/ActionName.pull_job_list.md) | Retrieves all jobs from Digital Recruiters and sends them to an Hrflow.ai Board. |
-| [**Push profile**](docs/ActionName.push_profile.md) | Pushes a profile from Hrflow.ai to Digital Recruiters. |
+| [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs from Digital Recruiters and sends them to an Hrflow.ai Board. |
+| [**Push profile**](docs/push_profile.md) | Pushes a profile from Hrflow.ai to Digital Recruiters. |
 
 # 🐍 Quick Start Examples
 
