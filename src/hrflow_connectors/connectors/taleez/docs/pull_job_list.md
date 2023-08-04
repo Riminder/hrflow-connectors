@@ -1,15 +1,14 @@
 
-# Pull jobs
-`SmartRecruiters Jobs` :arrow_right: `HrFlow.ai Jobs`
+# Pull job list
+`Taleez Jobs Warehouse` :arrow_right: `HrFlow.ai Jobs`
 
-Retrieves all jobs via the ***SmartRecruiter*** API and send them to a ***Hrflow.ai Board***.
+Retrieves all jobs via the ***Taleez*** API and send them to a ***Hrflow.ai Board***.
 
 
-**SmartRecruiters Jobs endpoints used :**
+**Taleez Jobs Warehouse endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
-| [**Get all jobs**](https://dev.smartrecruiters.com/customer-api/live-docs/job-api/#/jobs/jobs.all) | Endpoint to search jobs by traditional params (offset, limit...) and get the list of all jobs with their ids, the request method is `GET` |
-| [**Get job**](https://dev.smartrecruiters.com/customer-api/live-docs/job-api/#/jobs/jobs.get) | Endpoint to get the content of a job with a given id, a jobId parameter is required, the request method is `GET` |
+| [**Get all jobs**](https://api.taleez.com/0/jobs) | Endpoint to retrieve all jobs. and get the list of all jobs with their ids, the request method is `GET` |
 
 
 
@@ -18,19 +17,16 @@ Retrieves all jobs via the ***SmartRecruiter*** API and send them to a ***Hrflow
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L96) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L336) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `x_smart_token` :red_circle: | `str` | None | X-SmartToken used to access SmartRecruiters API |
-| `query`  | `str` | None | Case insensitive full-text query against job title e.g. java developer |
-| `updated_after`  | `str` | None | ISO8601-formatted time boundaries for the job update time |
-| `posting_status`  | `str` | None | Posting status of a job. One of ['PUBLIC', 'INTERNAL', 'NOT_PUBLISHED', 'PRIVATE'] |
-| `job_status`  | `str` | None | Status of a job. One of ['CREATED', 'SOURCING', 'FILLED', 'INTERVIEW', 'OFFER', 'CANCELLED', 'ON_HOLD'] |
-| `limit`  | `int` | 100 | Number of items to pull from SmartRecruiters at a time. Not matter what value is supplied it is capped at 100 |
+| `x_taleez_api_secret` :red_circle: | `str` | None | X-taleez-api-secret used to access Taleez API |
+| `with_details` :red_circle: | `bool` | None | xxx |
+| `job_status`  | `str` | None | Posting status of a job. One of ['PUBLISHED'] |
 
 ## Destination Parameters
 
@@ -49,14 +45,14 @@ Retrieves all jobs via the ***SmartRecruiter*** API and send them to a ***Hrflow
 
 ```python
 import logging
-from hrflow_connectors import SmartRecruiters
+from hrflow_connectors import Taleez
 from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
-SmartRecruiters.pull_jobs(
+Taleez.pull_job_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
@@ -64,12 +60,9 @@ SmartRecruiters.pull_jobs(
         read_mode=ReadMode.sync,
     ),
     origin_parameters=dict(
-        x_smart_token="your_x_smart_token",
-        query="your_query",
-        updated_after="your_updated_after",
-        posting_status="PUBLIC",
-        job_status="CREATED",
-        limit=100,
+        x_taleez_api_secret="your_x_taleez_api_secret",
+        with_details=False,
+        job_status="PUBLISHED",
     ),
     target_parameters=dict(
         api_secret="your_api_secret",

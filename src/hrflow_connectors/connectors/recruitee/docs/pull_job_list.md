@@ -1,14 +1,8 @@
 
-# Pull jobs
-`Taleez Jobs Warehouse` :arrow_right: `HrFlow.ai Jobs`
+# Pull job list
+`Recruitee Jobs` :arrow_right: `HrFlow.ai Jobs`
 
-Retrieves all jobs via the ***Taleez*** API and send them to a ***Hrflow.ai Board***.
-
-
-**Taleez Jobs Warehouse endpoints used :**
-| Endpoints | Description |
-| --------- | ----------- |
-| [**Get all jobs**](https://api.taleez.com/0/jobs) | Endpoint to retrieve all jobs. and get the list of all jobs with their ids, the request method is `GET` |
+Retrieves all jobs via the ***Recruitee*** API and send them to a ***Hrflow.ai Board***.
 
 
 
@@ -17,16 +11,19 @@ Retrieves all jobs via the ***Taleez*** API and send them to a ***Hrflow.ai Boar
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L334) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L103) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `x_taleez_api_secret` :red_circle: | `str` | None | X-taleez-api-secret used to access Taleez API |
-| `with_details` :red_circle: | `bool` | None | xxx |
-| `job_status`  | `str` | None | Posting status of a job. One of ['PUBLISHED'] |
+| `company_id` :red_circle: | `str` | None | Company ID. A company subdomain can also be used. |
+| `api_token` :red_circle: | `str` | None | Personal API Token allowing access to the Recruitee API from external services. |
+| `recruitee_endpoint` :red_circle: | `str` | None | Specifies which endpoint to be used, satging or production. |
+| `kind`  | `str` | None | If no kind is given, returns all job offers, if kind is job then lists only jobs, if scope is talent_pool, lists only talent pools |
+| `scope`  | `str` | None | If no scope is given list all job offers. archived returns only archived job offers, active returns published, internal and closed job offers, not_archived returns all but archived jobs |
+| `view_mode`  | `str` | brief | default (default mode, includes most of offer details); brief (only offer’s id, title, status and kind) |
 
 ## Destination Parameters
 
@@ -45,14 +42,14 @@ Retrieves all jobs via the ***Taleez*** API and send them to a ***Hrflow.ai Boar
 
 ```python
 import logging
-from hrflow_connectors import Taleez
+from hrflow_connectors import Recruitee
 from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
-Taleez.pull_jobs(
+Recruitee.pull_job_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
@@ -60,9 +57,12 @@ Taleez.pull_jobs(
         read_mode=ReadMode.sync,
     ),
     origin_parameters=dict(
-        x_taleez_api_secret="your_x_taleez_api_secret",
-        with_details=False,
-        job_status="PUBLISHED",
+        company_id="your_company_id",
+        api_token="your_api_token",
+        recruitee_endpoint="STAGING ENDPOINT",
+        kind="your_kind",
+        scope="your_scope",
+        view_mode="brief",
     ),
     target_parameters=dict(
         api_secret="your_api_secret",

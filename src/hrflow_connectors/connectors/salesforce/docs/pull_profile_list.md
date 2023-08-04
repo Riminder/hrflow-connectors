@@ -1,8 +1,8 @@
 
-# Trigger view
-`Waalaxy Profiles` :arrow_right: `HrFlow.ai Profiles`
+# Pull profile list
+`Salesforce Profiles` :arrow_right: `HrFlow.ai Profiles`
 
-Imports the visited profiles, in synchronization with the Waalaxy campaign (Visit + CRM Sync)
+Retrieves profiles from Salesforce HrFlow Profile & Co Custom Objects and writes them to an Hrflow.ai source
 
 
 
@@ -11,14 +11,19 @@ Imports the visited profiles, in synchronization with the Waalaxy campaign (Visi
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_waalaxy_profile`](../connector.py#L13) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_profile`](../connector.py#L17) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `profile`  | `typing.Dict` | None | Profile object recieved from the Webhook |
+| `sf_username` :red_circle: | `str` | None | username used to access Salesforce API |
+| `sf_password` :red_circle: | `str` | None | password used to access Salesforce API |
+| `sf_security_token` :red_circle: | `str` | None | Security Token to access Salesforce API.See below for instructions: How Can I Find My Security Token and Use It in Data Loader | Salesforce Platform  https://www.youtube.com/watch?v=nYbfxeSGKFM&ab_channel=SalesforceSupport |
+| `sf_organization_id` :red_circle: | `str` | None | Security Token to access Salesforce API.See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1 |
+| `last_modified_date`  | `str` | None | Last modified date |
+| `limit`  | `int` | 500 | Number of profiles to pull from Salesforce. Maximum value is 500 |
 
 ## Destination Parameters
 
@@ -36,14 +41,14 @@ Imports the visited profiles, in synchronization with the Waalaxy campaign (Visi
 
 ```python
 import logging
-from hrflow_connectors import Waalaxy
+from hrflow_connectors import Salesforce
 from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
-Waalaxy.trigger_view(
+Salesforce.pull_profile_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
@@ -51,7 +56,12 @@ Waalaxy.trigger_view(
         read_mode=ReadMode.sync,
     ),
     origin_parameters=dict(
-        profile=***,
+        sf_username="your_sf_username",
+        sf_password="your_sf_password",
+        sf_security_token="your_sf_security_token",
+        sf_organization_id="your_sf_organization_id",
+        last_modified_date="your_last_modified_date",
+        limit=500,
     ),
     target_parameters=dict(
         api_secret="your_api_secret",

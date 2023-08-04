@@ -17,11 +17,13 @@ exclude = ["Makefile", ".pre-commit-config.yaml", "manifest.json", "tests", "poe
 
 [tool.poetry.dependencies]
 python = ">=3.7"
-pydantic = "^1.10.7"
+pydantic = "1.10.8"
 Jinja2 = "^3.0.3"
 hrflow = "2.1.0"
 requests = "^2.27.1"
 boto3 = {version = "^1.24.66", optional = true}
+simple-salesforce = "^1.12.4"
+typing-extensions = "^4.7.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"

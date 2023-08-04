@@ -104,7 +104,8 @@ class ParametersMeta(ModelMetaclass):
 
 
 class ParametersModel(BaseModel, metaclass=ParametersMeta):
-    pass
+    class Config:
+        extra = "forbid"
 
 
 class WarehouseReadAction(BaseModel):

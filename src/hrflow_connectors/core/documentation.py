@@ -138,6 +138,7 @@ def generate_docs(
             if not action_docs_directory.is_dir():
                 action_docs_directory.mkdir()
             for action in model.actions:
+                action_name = action.name.value
                 action_fields = get_template_fields(
                     fields=action.parameters.__fields__.values(),
                     documentation_path=action_docs_directory,
@@ -152,7 +153,7 @@ def generate_docs(
                 )
                 action_documentation_content = ACTION_DOCUMENTATION_TEMAPLTE.render(
                     connector_name=model.name,
-                    action_name=action.name,
+                    action_name=action_name,
                     description=action.description,
                     action_fields=action_fields,
                     origin_name=action.origin.name,
@@ -166,6 +167,6 @@ def generate_docs(
                     action_documentation_content
                 )
                 action_documentation = action_docs_directory / "{}.md".format(
-                    action.name
+                    action_name
                 )
                 action_documentation.write_bytes(action_documentation_content.encode())

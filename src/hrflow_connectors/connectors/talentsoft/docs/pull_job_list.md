@@ -1,5 +1,5 @@
 
-# Pull jobs
+# Pull job list
 `TalentSoft Jobs` :arrow_right: `HrFlow.ai Jobs`
 
 Retrieves jobs from TalentSoft vacancies export API and send them to a ***Hrflow.ai Board***.
@@ -11,7 +11,7 @@ Retrieves jobs from TalentSoft vacancies export API and send them to a ***Hrflow
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_vacancy`](../connector.py#L26) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_ts_vacancy`](../connector.py#L28) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
@@ -49,7 +49,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-TalentSoft.pull_jobs(
+TalentSoft.pull_job_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],

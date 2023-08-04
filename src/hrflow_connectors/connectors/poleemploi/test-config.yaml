@@ -10,7 +10,7 @@ warehouse:
           range: "0-1"
         expected_number_of_items: 2
 actions:
-  pull_jobs:
+  pull_job_list:
     - id: valid_parameters
       origin_parameters:
         client_id: $__CLIENT_ID

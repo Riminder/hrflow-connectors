@@ -199,6 +199,8 @@ class BaseActionParameters(BaseModel):
     )
 
     class Config:
+        extra = "forbid"
+
         @staticmethod
         def schema_extra(
             schema: t.Dict[str, t.Any], model: t.Type["BaseActionParameters"]
@@ -350,7 +352,7 @@ class ConnectorAction(BaseModel):
             origin_settings_prefix=self.ORIGIN_SETTINGS_PREFIX,
             target_settings_prefix=self.TARGET_SETTINGS_PREFIX,
             connector_name=connector_name,
-            action_name=self.name,
+            action_name=self.name.value,
             type=workflow_type.name,
             origin_parameters=[
                 parameter for parameter in self.origin.read.parameters.__fields__
@@ -553,6 +555,13 @@ class ConnectorAction(BaseModel):
             )
         )
 
+        if len(formatted_items) == 0:
+            adapter.warning(
+                "Formatting failed for all items. Review supplied format function."
+                " Aborting action."
+            )
+            return RunResult.from_events(events)
+
         if len(parameters.logics) > 0:
             adapter.info(
                 "Starting to apply logic functions: "
@@ -576,6 +585,13 @@ class ConnectorAction(BaseModel):
                         break
                 else:
                     items_to_write.append(item)
+
+            if len(items_to_write) == 0:
+                adapter.warning(
+                    "Logics failed for all items. Review supplied logic functions."
+                    " Aborting action."
+                )
+                return RunResult.from_events(events)
             adapter.info(
                 "Finished applying logic functions: "
                 "success={} discarded={} failures={}".format(
@@ -664,7 +680,7 @@ class ConnectorModel(BaseModel):
     def action_by_name(self, action_name: str) -> t.Optional[ConnectorAction]:
         if "__actions_by_name" not in self.__dict__:
             self.__dict__["__actions_by_name"] = {
-                action.name: action for action in self.actions
+                action.name.value: action for action in self.actions
             }
         return self.__dict__["__actions_by_name"].get(action_name)
 
@@ -674,7 +690,7 @@ class Connector:
         self.model = ConnectorModel(*args, **kwargs)
         for action in self.model.actions:
             with_connector_name = partial(action.run, connector_name=self.model.name)
-            setattr(self, action.name, with_connector_name)
+            setattr(self, action.name.value, with_connector_name)
 
     def manifest(self) -> t.Dict:
         model = self.model
@@ -684,7 +700,7 @@ class Connector:
             logics_placeholder = action.WORKFLOW_LOGICS_PLACEHOLDER
             event_parser_placeholder = action.WORKFLOW_EVENT_PARSER_PLACEHOLDER
             action_manifest = dict(
-                name=action.name,
+                name=action.name.value,
                 action_type=action.action_type.value,
                 action_parameters=copy.deepcopy(action.parameters.schema()),
                 data_type=action.data_type,

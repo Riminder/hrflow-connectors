@@ -91,7 +91,7 @@ Once logged to your Salesforce environment go to Setup then click Create > Custo
 In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
 <p align="center">
-<image src=https://github.com/Riminder/hrflow-connectors/assets/65894619/50dbf3dd-7d96-4d88-865b-d17e383d75ed width=90% height=100% >
+<image src=https://github.com/Riminder/hrflow-connectors/assets/65894619/6550ac4f-bc62-47e5-9340-a1475e612bb9 width=90% height=100% >
 </p>
 
 # 🔌 Connector Actions

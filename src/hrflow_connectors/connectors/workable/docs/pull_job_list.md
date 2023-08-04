@@ -1,8 +1,8 @@
 
-# Pull jobs
-`SAP Job` :arrow_right: `HrFlow.ai Jobs`
+# Pull job list
+`WorkableJobWarehouse` :arrow_right: `HrFlow.ai Jobs`
 
-Retrieves all jobs via the ***SAPSuccessFactors*** API and sends them to a ***Hrflow.ai Board***.
+Retrieves all jobs via the ***Workable*** API and send them to a ***Hrflow.ai Board***.
 
 
 
@@ -11,19 +11,15 @@ Retrieves all jobs via the ***SAPSuccessFactors*** API and sends them to a ***Hr
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L80) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_jobs`](../connector.py#L36) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `api_server` :red_circle: | `str` | None | Server to be accessed |
-| `api_key` :red_circle: | `str` | None | API Key used to authenticate on the SAP API |
-| `top`  | `int` | 100 | Show only the first N items value is capped at 100 |
-| `skip`  | `int` | None | Search items by search phrases |
-| `filter`  | `str` | None | Filter items by property values |
-| `search`  | `str` | None | Search items by search phrases |
+| `auth` :red_circle: | `str` | None | API KEY |
+| `subdomain` :red_circle: | `str` | None | Subdomain |
 
 ## Destination Parameters
 
@@ -42,14 +38,14 @@ Retrieves all jobs via the ***SAPSuccessFactors*** API and sends them to a ***Hr
 
 ```python
 import logging
-from hrflow_connectors import SAPSuccessFactors
+from hrflow_connectors import Workable
 from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
-SAPSuccessFactors.pull_jobs(
+Workable.pull_job_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
@@ -57,12 +53,8 @@ SAPSuccessFactors.pull_jobs(
         read_mode=ReadMode.sync,
     ),
     origin_parameters=dict(
-        api_server="your_api_server",
-        api_key="your_api_key",
-        top=100,
-        skip=0,
-        filter="your_filter",
-        search="your_search",
+        auth="your_auth",
+        subdomain="your_subdomain",
     ),
     target_parameters=dict(
         api_secret="your_api_secret",

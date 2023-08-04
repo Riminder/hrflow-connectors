@@ -1,8 +1,8 @@
 
-# Pull jobs
-`BreezyHRJobWarehouse` :arrow_right: `HrFlow.ai Jobs`
+# Pull job list
+`Bullhorn Jobs` :arrow_right: `HrFlow.ai Jobs`
 
-Retrieves all jobs via the ***BreezyHR*** API and send them to a ***Hrflow.ai Board***.
+Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board
 
 
 
@@ -11,17 +11,17 @@ Retrieves all jobs via the ***BreezyHR*** API and send them to a ***Hrflow.ai Bo
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_jobs`](../connector.py#L28) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L179) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `email` :red_circle: | `str` | None | email |
-| `password` :red_circle: | `str` | None | password |
-| `company_id`  | `str` | None | ID of company to pull jobs from in Breezy HR database associated with the authenticated user |
-| `company_name`  | `str` | None | [⚠️ Requiered if company_id is not specified], the company associated with the authenticated user |
+| `client_id` :red_circle: | `str` | None | Client identifier for Bullhorn |
+| `client_secret` :red_circle: | `str` | None | Client secret identifier for Bullhorn |
+| `password` :red_circle: | `str` | None | Passoword for Bullhorn login |
+| `username` :red_circle: | `str` | None | Username for Bullhorn login |
 
 ## Destination Parameters
 
@@ -40,14 +40,14 @@ Retrieves all jobs via the ***BreezyHR*** API and send them to a ***Hrflow.ai Bo
 
 ```python
 import logging
-from hrflow_connectors import BreezyHR
+from hrflow_connectors import Bullhorn
 from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
-BreezyHR.pull_jobs(
+Bullhorn.pull_job_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
@@ -55,10 +55,10 @@ BreezyHR.pull_jobs(
         read_mode=ReadMode.sync,
     ),
     origin_parameters=dict(
-        email="your_email",
+        client_id="your_client_id",
+        client_secret="your_client_secret",
         password="your_password",
-        company_id="your_company_id",
-        company_name="your_company_name",
+        username="your_username",
     ),
     target_parameters=dict(
         api_secret="your_api_secret",

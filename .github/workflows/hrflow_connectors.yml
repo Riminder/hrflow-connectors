@@ -73,6 +73,20 @@ jobs:
           path: ${{ env.NOX_ENV_DIR }}
           key: nox-venvs-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Get Connector Secrets
+        uses: aws-actions/aws-secretsmanager-get-secrets@v1
+        with:
+          secret-ids: |
+            S3_STORE_TEST
+          parse-json-secrets: true
+
       - name: Check manifest
         run: poetry run nox --envdir ${{ env.NOX_ENV_DIR }} -s manifest
 
@@ -84,14 +98,6 @@ jobs:
         env:
           HRFLOW_CONNECTORS_STORE_ENABLED: "1"
           HRFLOW_CONNECTORS_LOCALJSON_DIR: "/tmp/"
-          S3_STORE_TEST_BUCKET: ${{ secrets.S3_STORE_TEST_BUCKET }}
-          S3_STORE_TEST_AWS_REGION: ${{ secrets.S3_STORE_TEST_AWS_REGION }}
-          S3_STORE_TEST_AWS_ACCESS_KEY_ID: ${{ secrets.S3_STORE_TEST_AWS_ACCESS_KEY_ID }}
-          S3_STORE_TEST_AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_STORE_TEST_AWS_SECRET_ACCESS_KEY }}
-          S3_STORE_TEST_READ_ONLY_AWS_ACCESS_KEY_ID: ${{ secrets.S3_STORE_TEST_READ_ONLY_AWS_ACCESS_KEY_ID }}
-          S3_STORE_TEST_READ_ONLY_AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_STORE_TEST_READ_ONLY_AWS_SECRET_ACCESS_KEY }}
-          S3_STORE_TEST_WRITE_ONLY_AWS_ACCESS_KEY_ID: ${{ secrets.S3_STORE_TEST_WRITE_ONLY_AWS_ACCESS_KEY_ID }}
-          S3_STORE_TEST_WRITE_ONLY_AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_STORE_TEST_WRITE_ONLY_AWS_SECRET_ACCESS_KEY }}
 
   connectors-integration-tests:
     runs-on: ubuntu-latest
@@ -149,9 +155,8 @@ jobs:
 
       - name: Run Connector tests
         run: |
-          poetry run nox -s tests -- --no-cov --ignore tests/core --connector=SmartRecruiters --connector=PoleEmploi --connector=Adzuna --connector=Hubspot --connector=Waalaxy
+          poetry run nox -- -s tests -- --no-cov --ignore tests/core --connector=SmartRecruiters --connector=PoleEmploi --connector=Adzuna --connector=Hubspot --connector=Waalaxy
         env:
-          ALL_SECRETS: ${{ toJson(secrets) }}
           HRFLOW_CONNECTORS_STORE_ENABLED: "1"
           HRFLOW_CONNECTORS_LOCALJSON_DIR: "/tmp/"
 

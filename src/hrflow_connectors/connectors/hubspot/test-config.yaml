@@ -3,7 +3,6 @@ warehouse:
     read:
       - parameters:
           access_token: $__ACCESS_TOKEN
-          dealID: 5311882214
 actions:
   push_profile:
     - id: write_fails_because_of_existing_profile

@@ -8,6 +8,8 @@ from pydantic import ValidationError
 
 from hrflow_connectors import hrflow_connectors_manifest
 from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
     BaseActionParameters,
     Connector,
     ConnectorAction,
@@ -41,25 +43,28 @@ SmartLeads = Connector(
     url="https://www.smartleads.test/",
     actions=[
         ConnectorAction(
-            name="pull_leads",
+            name=ActionName.push_profile,
+            action_type=ActionType.inbound,
             trigger_type=WorkflowType.pull,
-            description="Send users as leads",
+            description="Test action",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
             target=LeadsWarehouse,
         ),
         ConnectorAction(
-            name="same_pull_leads",
+            name=ActionName.push_job_list,
+            action_type=ActionType.inbound,
             trigger_type=WorkflowType.pull,
-            description="Send users as leads",
+            description="Same as first action",
             parameters=BaseActionParameters,
             origin=UsersWarehouse,
             target=LeadsWarehouse,
         ),
         ConnectorAction(
-            name="pull_leads_incremental",
+            name=ActionName.push_profile_list,
+            action_type=ActionType.inbound,
             trigger_type=WorkflowType.pull,
-            description="Send users as leads with support for incremental",
+            description="Action with support for incremental",
             parameters=BaseActionParameters,
             origin=UsersIncrementalWarehouse,
             target=LeadsWarehouse,
@@ -100,17 +105,42 @@ def test_hrflow_connectors_manifest(manifest_directory):
 
 
 def test_action_by_name():
-    assert SmartLeads.model.action_by_name("pull_leads") is SmartLeads.model.actions[0]
     assert (
-        SmartLeads.model.action_by_name("same_pull_leads")
-        is SmartLeads.model.actions[1]
+        SmartLeads.model.action_by_name("push_profile") is SmartLeads.model.actions[0]
+    )
+    assert (
+        SmartLeads.model.action_by_name("push_job_list") is SmartLeads.model.actions[1]
     )
     assert SmartLeads.model.action_by_name("doest_not_exist") is None
 
 
+def test_action_name_constraint():
+    with pytest.raises(ValidationError) as excinfo:
+        Connector(
+            name="SmartLeads",
+            description=DESCRIPTION,
+            url="https://www.smartleads.test/",
+            actions=[
+                ConnectorAction(
+                    name="not_a_valid_action_name",
+                    action_type=ActionType.inbound,
+                    trigger_type=WorkflowType.pull,
+                    description="Test action",
+                    parameters=BaseActionParameters,
+                    origin=UsersWarehouse,
+                    target=LeadsWarehouse,
+                ),
+            ],
+        )
+
+    errors = excinfo.value.errors()
+    assert errors[0]["loc"] == ("name",)
+    assert errors[0]["msg"].startswith("value is not a valid enumeration member;")
+
+
 def test_connector_failures():
     campaign_id = "camp_xxx1"
-    result = SmartLeads.pull_leads(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(format=1),
         origin_parameters=dict(),
@@ -119,7 +149,7 @@ def test_connector_failures():
     assert result.status == Status.fatal
     assert result.reason == Reason.bad_action_parameters
 
-    result = SmartLeads.pull_leads(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(gender="M"),
@@ -128,7 +158,7 @@ def test_connector_failures():
     assert result.status == Status.fatal
     assert result.reason == Reason.bad_origin_parameters
 
-    result = SmartLeads.pull_leads(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(),
@@ -137,7 +167,7 @@ def test_connector_failures():
     assert result.status == Status.fatal
     assert result.reason == Reason.bad_target_parameters
 
-    result = SmartLeads.pull_leads(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(format=lambda user: 10 / 0),
         origin_parameters=dict(),
@@ -146,7 +176,7 @@ def test_connector_failures():
     assert result.status == Status.fatal
     assert result.reason == Reason.format_failure
 
-    result = SmartLeads.pull_leads(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(logics=[lambda user: 10 / 0]),
         origin_parameters=dict(),
@@ -163,16 +193,17 @@ def test_origin_warehouse_failure():
         url="https://www.smartleads.test/",
         actions=[
             ConnectorAction(
-                name="pull_leads",
+                name=ActionName.push_profile,
+                action_type=ActionType.inbound,
                 trigger_type=WorkflowType.pull,
-                description="Send users as leads",
+                description="Test action",
                 parameters=BaseActionParameters,
                 origin=BadUsersWarehouse,
                 target=LeadsWarehouse,
             ),
         ],
     )
-    result = connector.pull_leads(
+    result = connector.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(),
@@ -192,9 +223,10 @@ def test_origin_not_readable_failure():
             url="https://www.smartleads.test/",
             actions=[
                 ConnectorAction(
-                    name="pull_leads",
+                    name=ActionName.push_profile,
+                    action_type=ActionType.inbound,
                     trigger_type=WorkflowType.pull,
-                    description="Send users as leads",
+                    description="Test action",
                     parameters=BaseActionParameters,
                     origin=LeadsWarehouse,
                     target=LeadsWarehouse,
@@ -214,16 +246,17 @@ def test_target_warehouse_failure():
         url="https://www.smartleads.test/",
         actions=[
             ConnectorAction(
-                name="pull_leads",
+                name=ActionName.push_profile,
+                action_type=ActionType.inbound,
                 trigger_type=WorkflowType.pull,
-                description="Send users as leads",
+                description="Test action",
                 parameters=BaseActionParameters,
                 origin=UsersWarehouse,
                 target=BadLeadsWarehouse,
             ),
         ],
     )
-    result = connector.pull_leads(
+    result = connector.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(),
@@ -243,9 +276,10 @@ def test_target_not_writable_failure():
             url="https://www.smartleads.test/",
             actions=[
                 ConnectorAction(
-                    name="pull_leads",
+                    name=ActionName.push_profile,
+                    action_type=ActionType.inbound,
                     trigger_type=WorkflowType.pull,
-                    description="Send users as leads",
+                    description="Test action",
                     parameters=BaseActionParameters,
                     origin=UsersWarehouse,
                     target=UsersWarehouse,
@@ -262,7 +296,7 @@ def test_connector_simple_success():
     campaign_id = "camp_xxx1"
     assert len(LEADS_DB[campaign_id]) == 0
 
-    result = SmartLeads.pull_leads(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(),
@@ -287,7 +321,7 @@ def test_connector_with_format():
         return user
 
     assert len(LEADS_DB[campaign_id]) == 0
-    result = SmartLeads.pull_leads(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(format=format),
         origin_parameters=dict(),
@@ -311,7 +345,7 @@ def test_connector_with_logics():
     # With logic that always returns None
     assert len(LEADS_DB[campaign_id]) == 0
 
-    result = SmartLeads.pull_leads(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(logics=[lambda u: u, lambda u: None, lambda u: u]),
         origin_parameters=dict(),
@@ -330,7 +364,7 @@ def test_connector_with_logics():
     # With logic that always returns None
     assert len(LEADS_DB[campaign_id]) == 0
 
-    result = SmartLeads.pull_leads(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(logics=[lambda u: u, lambda u: u, lambda u: None]),
         origin_parameters=dict(),
@@ -349,7 +383,7 @@ def test_connector_with_logics():
     # With pass-through logics
     assert len(LEADS_DB[campaign_id]) == 0
 
-    result = SmartLeads.pull_leads(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(logics=[lambda u: u, lambda u: u, lambda u: u]),
         origin_parameters=dict(),
@@ -374,7 +408,7 @@ def test_connector_with_logics():
             return user
 
     assert len(LEADS_DB[campaign_id]) == 0
-    result = SmartLeads.pull_leads(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(logics=[lambda u: u, logic, lambda u: u]),
         origin_parameters=dict(),
@@ -403,9 +437,10 @@ def test_connector_default_format():
         url="https://www.smartleads.test/",
         actions=[
             ConnectorAction(
-                name="pull_leads",
+                name=ActionName.push_profile,
+                action_type=ActionType.inbound,
                 trigger_type=WorkflowType.pull,
-                description="Send users as leads",
+                description="Test action",
                 parameters=BaseActionParameters.with_defaults(
                     "even_smarter_leads_connector", format=smarter_format
                 ),
@@ -417,7 +452,7 @@ def test_connector_default_format():
     # Without default format
     campaign_id = "camp_xxx1"
     assert len(LEADS_DB[campaign_id]) == 0
-    result = EvenSmarterLeads.pull_leads(
+    result = EvenSmarterLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(format=lambda user: user),
         origin_parameters=dict(),
@@ -436,7 +471,7 @@ def test_connector_default_format():
     # With default format
     campaign_id = "camp_xxx2"
     assert len(LEADS_DB[campaign_id]) == 0
-    result = EvenSmarterLeads.pull_leads(
+    result = EvenSmarterLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(),
@@ -485,9 +520,10 @@ def test_action_with_failures():
         url="https://www.smartleads.test/",
         actions=[
             ConnectorAction(
-                name="pull_leads",
+                name=ActionName.push_profile,
+                action_type=ActionType.inbound,
                 trigger_type=WorkflowType.pull,
-                description="Send users as leads",
+                description="Test action",
                 parameters=BaseActionParameters,
                 origin=FailingUsersWarehouse,
                 target=FailingLeadsWarehouse,
@@ -498,7 +534,7 @@ def test_action_with_failures():
     campaign_id = "camp_xxx1"
     assert len(LEADS_DB[campaign_id]) == 0
 
-    result = FailingSmartLeads.pull_leads(
+    result = FailingSmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(format=failing_format, logics=[failing_logic]),
         origin_parameters=dict(),
@@ -629,9 +665,10 @@ def test_action_with_callback_success():
         url="https://www.smartleads.test/",
         actions=[
             ConnectorAction(
-                name="pull_leads_with_callback",
+                name=ActionName.push_profile,
+                action_type=ActionType.inbound,
                 trigger_type=WorkflowType.pull,
-                description="Send users as leads",
+                description="Test action",
                 parameters=BaseActionParameters,
                 origin=UsersWarehouse,
                 target=LeadsWarehouse,
@@ -640,7 +677,7 @@ def test_action_with_callback_success():
         ],
     )
 
-    result = SmartLeads.pull_leads_with_callback(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(gender="male"),
@@ -671,9 +708,10 @@ def test_action_with_callback_failure():
         url="https://www.smartleads.test/",
         actions=[
             ConnectorAction(
-                name="pull_leads_with_callback",
+                name=ActionName.push_profile,
+                action_type=ActionType.inbound,
                 trigger_type=WorkflowType.pull,
-                description="Send users as leads",
+                description="Test action",
                 parameters=BaseActionParameters,
                 origin=UsersWarehouse,
                 target=LeadsWarehouse,
@@ -684,7 +722,7 @@ def test_action_with_callback_failure():
 
     campaign_id = "camp_xxx1"
 
-    result = SmartLeads.pull_leads_with_callback(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(),
         origin_parameters=dict(),
@@ -707,7 +745,7 @@ def test_connector_incremental_read_not_supported():
     campaign_id = "camp_xxx1"
     assert len(LEADS_DB[campaign_id]) == 0
 
-    result = SmartLeads.pull_leads(
+    result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
         action_parameters=dict(read_mode=ReadMode.incremental),
         origin_parameters=dict(),
@@ -728,7 +766,7 @@ def test_connector_incremental_backend_not_configured():
         with mock.patch.object(
             SmartLeads.model.actions[0].origin.read, "supports_incremental", new=True
         ):
-            result = SmartLeads.pull_leads(
+            result = SmartLeads.push_profile(
                 workflow_id=random_workflow_id(),
                 action_parameters=dict(read_mode=ReadMode.incremental),
                 origin_parameters=dict(),
@@ -751,7 +789,7 @@ def test_connector_incremental_item_to_read_from_failing():
         "item_to_read_from",
         new=lambda item: 1 / 0,
     ):
-        result = SmartLeads.pull_leads_incremental(
+        result = SmartLeads.push_profile_list(
             workflow_id=workflow_id,
             action_parameters=dict(read_mode=ReadMode.incremental),
             origin_parameters=dict(),
@@ -771,7 +809,7 @@ def test_connector_incremental_read():
     initial_users = len(USERS_DB)
 
     workflow_id = random_workflow_id()
-    result = SmartLeads.pull_leads_incremental(
+    result = SmartLeads.push_profile_list(
         workflow_id=workflow_id,
         action_parameters=dict(read_mode=ReadMode.incremental),
         origin_parameters=dict(),
@@ -788,7 +826,7 @@ def test_connector_incremental_read():
     add_user()
     last_id = add_user()["id"]
 
-    result = SmartLeads.pull_leads_incremental(
+    result = SmartLeads.push_profile_list(
         workflow_id=workflow_id,
         action_parameters=dict(read_mode=ReadMode.incremental),
         origin_parameters=dict(),
@@ -806,7 +844,7 @@ def test_read_from_is_persisted_after_failure():
     assert len(LEADS_DB[campaign_id]) == 0
 
     workflow_id = random_workflow_id()
-    result = SmartLeads.pull_leads_incremental(
+    result = SmartLeads.push_profile_list(
         workflow_id=workflow_id,
         action_parameters=dict(read_mode=ReadMode.incremental),
         origin_parameters=dict(),
@@ -825,7 +863,7 @@ def test_read_from_is_persisted_after_failure():
     # Init error
     init_error = mock.MagicMock()
     init_error.reason = Reason.workflow_id_not_found
-    result = SmartLeads.pull_leads_incremental(
+    result = SmartLeads.push_profile_list(
         workflow_id=workflow_id,
         action_parameters=dict(read_mode=ReadMode.incremental),
         origin_parameters=dict(),
@@ -839,7 +877,7 @@ def test_read_from_is_persisted_after_failure():
     )
 
     # Bad paramaters
-    result = SmartLeads.pull_leads_incremental(
+    result = SmartLeads.push_profile_list(
         workflow_id=workflow_id,
         action_parameters=dict(read_mode=5),
         origin_parameters=dict(),
@@ -851,7 +889,7 @@ def test_read_from_is_persisted_after_failure():
         USERS_DB[-1]["id"]
     )
 
-    result = SmartLeads.pull_leads_incremental(
+    result = SmartLeads.push_profile_list(
         workflow_id=workflow_id,
         action_parameters=dict(read_mode=ReadMode.incremental),
         origin_parameters=dict(gender="XFRE"),
@@ -863,7 +901,7 @@ def test_read_from_is_persisted_after_failure():
         USERS_DB[-1]["id"]
     )
 
-    result = SmartLeads.pull_leads_incremental(
+    result = SmartLeads.push_profile_list(
         workflow_id=workflow_id,
         action_parameters=dict(read_mode=ReadMode.incremental),
         origin_parameters=dict(),
@@ -877,7 +915,7 @@ def test_read_from_is_persisted_after_failure():
 
     # Backend not configured
     with mock.patch.object(backend, "is_configured", new=False):
-        result = SmartLeads.pull_leads_incremental(
+        result = SmartLeads.push_profile_list(
             workflow_id=workflow_id,
             action_parameters=dict(read_mode=ReadMode.incremental),
             origin_parameters=dict(),
@@ -895,7 +933,7 @@ def test_read_from_is_persisted_after_failure():
         "function",
         new=lambda *args, **kwargs: 1 / 0,
     ):
-        result = SmartLeads.pull_leads_incremental(
+        result = SmartLeads.push_profile_list(
             workflow_id=workflow_id,
             action_parameters=dict(read_mode=ReadMode.incremental),
             origin_parameters=dict(),
@@ -914,7 +952,7 @@ def test_read_from_is_persisted_after_failure():
         "item_to_read_from",
         new=lambda item: 1 / 0,
     ):
-        result = SmartLeads.pull_leads_incremental(
+        result = SmartLeads.push_profile_list(
             workflow_id=workflow_id,
             action_parameters=dict(read_mode=ReadMode.incremental),
             origin_parameters=dict(),

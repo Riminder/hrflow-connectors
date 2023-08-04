@@ -1,8 +1,8 @@
 
-# Pull jobs
-`WorkableJobWarehouse` :arrow_right: `HrFlow.ai Jobs`
+# Pull resume attachment list
+`Bullhorn Profiles` :arrow_right: `HrFlow.ai Profile Parsing`
 
-Retrieves all jobs via the ***Workable*** API and send them to a ***Hrflow.ai Board***.
+retrieves profiles attachments from Bullhorn and Parses them and sends them to Hrflow.ai source
 
 
 
@@ -11,15 +11,17 @@ Retrieves all jobs via the ***Workable*** API and send them to a ***Hrflow.ai Bo
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_jobs`](../connector.py#L34) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`profile_format_parsing`](../connector.py#L245) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `auth` :red_circle: | `str` | None | API KEY |
-| `subdomain` :red_circle: | `str` | None | Subdomain |
+| `client_id` :red_circle: | `str` | None | Client identifier for Bullhorn |
+| `client_secret` :red_circle: | `str` | None | Client secret identifier for Bullhorn |
+| `password` :red_circle: | `str` | None | Passoword for Bullhorn login |
+| `username` :red_circle: | `str` | None | Username for Bullhorn login |
 
 ## Destination Parameters
 
@@ -27,10 +29,8 @@ Retrieves all jobs via the ***Workable*** API and send them to a ***Hrflow.ai Bo
 | ----- | ---- | ------- | ----------- |
 | `api_secret` :red_circle: | `str` | None | X-API-KEY used to access HrFlow.ai API |
 | `api_user` :red_circle: | `str` | None | X-USER-EMAIL used to access HrFlow.ai API |
-| `board_key` :red_circle: | `str` | None | HrFlow.ai board key |
-| `sync`  | `bool` | True | When enabled only pushed jobs will remain in the board |
-| `update_content`  | `bool` | False | When enabled jobs already present in the board are updated |
-| `enrich_with_parsing`  | `bool` | False | When enabled jobs are enriched with HrFlow.ai parsing |
+| `source_key` :red_circle: | `str` | None | HrFlow.ai source key |
+| `only_insert`  | `bool` | False | When enabled the profile is written only if it doesn't exist in the source |
 
 :red_circle: : *required*
 
@@ -38,14 +38,14 @@ Retrieves all jobs via the ***Workable*** API and send them to a ***Hrflow.ai Bo
 
 ```python
 import logging
-from hrflow_connectors import Workable
+from hrflow_connectors import Bullhorn
 from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
-Workable.pull_jobs(
+Bullhorn.pull_resume_attachment_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
@@ -53,16 +53,16 @@ Workable.pull_jobs(
         read_mode=ReadMode.sync,
     ),
     origin_parameters=dict(
-        auth="your_auth",
-        subdomain="your_subdomain",
+        client_id="your_client_id",
+        client_secret="your_client_secret",
+        password="your_password",
+        username="your_username",
     ),
     target_parameters=dict(
         api_secret="your_api_secret",
         api_user="your_api_user",
-        board_key="your_board_key",
-        sync=True,
-        update_content=False,
-        enrich_with_parsing=False,
+        source_key="your_source_key",
+        only_insert=False,
     )
 )
 ```
