@@ -182,7 +182,7 @@ class SalesforceHrFlowProfile(SalesforceRecord):
     Text_Language__c: t.Optional[str]
     Text__c: t.Optional[str]
     Timestamp__c: t.Optional[str]
-    URLs__c: t.Optional[URLs]
+    URLs__c: t.Optional[Json[URLs]]
     Viewers__c: t.Optional[Json[t.List]]
 
 

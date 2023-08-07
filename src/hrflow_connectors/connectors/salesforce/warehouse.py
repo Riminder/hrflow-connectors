@@ -4,7 +4,8 @@ from datetime import datetime, timezone
 from logging import LoggerAdapter
 
 from pydantic import Field
-from simple_salesforce import Salesforce
+from simple_salesforce import Salesforce, SalesforceError
+from simple_salesforce.bulk import SFBulkType
 
 from hrflow_connectors.connectors.salesforce.schemas import (
     SalesforceHrFlowJob,
@@ -17,6 +18,7 @@ from hrflow_connectors.core import (
     ReadMode,
     Warehouse,
     WarehouseReadAction,
+    WarehouseWriteAction,
 )
 
 SELECT_PROFILES_SOQL = """
@@ -62,7 +64,7 @@ MAX_SOQL_LIMIT = 200
 MAX_ITEMS = 500
 
 
-class ReadFromSalesforceParameters(ParametersModel):
+class SalesforceBaseParameters(ParametersModel):
     sf_username: str = Field(
         ...,
         description="username used to access Salesforce API",
@@ -97,6 +99,9 @@ class ReadFromSalesforceParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
+
+
+class ReadFromSalesforceParameters(SalesforceBaseParameters):
     last_modified_date: t.Optional[str] = Field(
         None,
         description="Last modified date",
@@ -193,6 +198,86 @@ def generic_read_factory(
     return _read_items
 
 
+def delete_from_salesforce(data: t.List[t.Tuple[SFBulkType, t.List[str]]]) -> None:
+    for sf_bulk_type, sf_ids in data:
+        if len(sf_ids) > 0:
+            sf_bulk_type.delete(data=[dict(Id=sf_id) for sf_id in sf_ids])
+
+
+def write_profiles(
+    adapter: LoggerAdapter,
+    parameters: ReadFromSalesforceParameters,
+    profiles: t.Iterable[t.Dict],
+) -> t.List[t.Dict]:
+    failed = []
+    sf = Salesforce(
+        username=parameters.sf_username,
+        password=parameters.sf_password,
+        security_token=parameters.sf_security_token,
+        organizationId=parameters.sf_organization_id,
+    )
+    for profile in profiles:
+        experiences, experience_sf_ids = (
+            profile.pop("HrFlow_Profile_Experiences__r", None),
+            [],
+        )
+        educations, education_sf_ids = (
+            profile.pop("HrFlow_Profile_Educations__r", None),
+            [],
+        )
+        attachments, attachment_sf_ids = (
+            profile.pop("HrFlow_Profile_Attachments__r", None),
+            [],
+        )
+
+        try:
+            sf_profile_id = sf.HrFlow_Profile__c.create(profile)["id"]
+        except SalesforceError as e:
+            adapter.error(
+                "Failed to push profile(reference={}, id={}) to HrFlow_Profile__c with"
+                " error={}".format(profile["Reference__c"], profile["Id__c"], e.content)
+            )
+            failed.append(profile)
+            continue
+
+        try:
+            for related, sf_type, record_ids in [
+                (experiences, sf.HrFlow_Experience__c, experience_sf_ids),
+                (educations, sf.HrFlow_Education__c, education_sf_ids),
+                (attachments, sf.HrFlow_Attachment__c, attachment_sf_ids),
+            ]:
+                records = related["records"] if related else []
+                for i, record in enumerate(records):
+                    record["Profile__c"] = sf_profile_id
+                    record_ids.append(sf_type.create(record)["id"])
+        except SalesforceError as e:
+            adapter.error(
+                "Failed to push related {} number={} for profile(reference={}, id={},"
+                " sf_id={}) data={} with error={}. Cleaning profile and related from"
+                " Salesforce and adding as failed item".format(
+                    e.resource_name,
+                    i,
+                    profile["Reference__c"],
+                    profile["Id__c"],
+                    sf_profile_id,
+                    record,
+                    e.content,
+                )
+            )
+            delete_from_salesforce(
+                data=[
+                    (sf.bulk.HrFlow_Profile__c, [sf_profile_id]),
+                    (sf.bulk.HrFlow_Experience__c, experience_sf_ids),
+                    (sf.bulk.HrFlow_Education__c, education_sf_ids),
+                    (sf.bulk.HrFlow_Attachment__c, attachment_sf_ids),
+                ]
+            )
+            failed.append(profile)
+            continue
+
+    return failed
+
+
 def item_to_read_from(item: t.Dict) -> str:
     return json.dumps(
         dict(
@@ -211,6 +296,10 @@ SalesforceProfileWarehouse = Warehouse(
         function=generic_read_factory(soql_query=SELECT_PROFILES_SOQL),
         supports_incremental=True,
         item_to_read_from=item_to_read_from,
+    ),
+    write=WarehouseWriteAction(
+        parameters=SalesforceBaseParameters,
+        function=write_profiles,
     ),
 )
 
