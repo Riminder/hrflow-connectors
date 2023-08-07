@@ -6,7 +6,10 @@ from logging import LoggerAdapter
 from pydantic import Field
 from simple_salesforce import Salesforce
 
-from hrflow_connectors.connectors.salesforce.schemas import SalesforceHrFlowProfile
+from hrflow_connectors.connectors.salesforce.schemas import (
+    SalesforceHrFlowJob,
+    SalesforceHrFlowProfile,
+)
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -44,11 +47,22 @@ ORDER BY LastModifiedDate, Id__c
 LIMIT {limit}
 OFFSET {offset}
 """
+
+SELECT_JOBS_SOQL = """
+SELECT
+    LastModifiedDate,
+    FIELDS(CUSTOM)
+FROM HrFlow_Job__c
+WHERE LastModifiedDate >= {last_modified_date}
+ORDER BY LastModifiedDate, Id__c
+LIMIT {limit}
+OFFSET {offset}
+"""
 MAX_SOQL_LIMIT = 200
-MAX_PROFILES = 500
+MAX_ITEMS = 500
 
 
-class ReadProfilesParameters(ParametersModel):
+class ReadFromSalesforceParameters(ParametersModel):
     sf_username: str = Field(
         ...,
         description="username used to access Salesforce API",
@@ -89,83 +103,103 @@ class ReadProfilesParameters(ParametersModel):
         field_type=FieldType.QueryParam,
     )
     limit: t.Optional[int] = Field(
-        MAX_PROFILES,
+        MAX_ITEMS,
         description=(
-            "Number of profiles to pull from Salesforce. Maximum value is {}".format(
-                MAX_PROFILES
+            "Number of items to pull from Salesforce. Maximum value is {}".format(
+                MAX_ITEMS
             )
         ),
         field_type=FieldType.QueryParam,
     )
 
 
-def read(
-    adapter: LoggerAdapter,
-    parameters: ReadProfilesParameters,
-    read_mode: t.Optional[ReadMode] = None,
-    read_from: t.Optional[str] = None,
-) -> t.Iterable[t.Dict]:
-    sf = Salesforce(
-        username=parameters.sf_username,
-        password=parameters.sf_password,
-        security_token=parameters.sf_security_token,
-        organizationId=parameters.sf_organization_id,
-    )
-    if read_mode is ReadMode.sync:
-        if parameters.last_modified_date is None:
-            raise Exception("last_modified_date cannot be None in ReadMode.sync")
-        last_modified_date = parameters.last_modified_date
-    else:
-        if parameters.last_modified_date is not None:
-            raise Exception(
-                "last_modified_date should not be supplied in ReadMode.incremental"
-            )
-        if read_from:
-            try:
-                read_from = json.loads(read_from)
-                last_modified_date = read_from["last_modified_date"]
-                last_id = read_from["hrflow_id"]
-            except json.JSONDecodeError as e:
-                raise Exception(f"Failed to JSON parse read_from={read_from} error={e}")
-            except KeyError as e:
-                raise Exception(
-                    "Failed to find expected key in"
-                    f" read_from={read_from} error={repr(e)}"
-                )
-        else:
-            last_modified_date = (
-                datetime.now(tz=timezone.utc)
-                .replace(hour=0, minute=0, second=0, microsecond=0)
-                .isoformat()
-            )
-            last_id = 0
-
-    offset = 0
-    profiles_to_pull = min(MAX_PROFILES, parameters.limit)
-    limit = min(MAX_SOQL_LIMIT, profiles_to_pull)
-
-    while profiles_to_pull > 0:
-        query = SELECT_PROFILES_SOQL.format(
-            last_modified_date=last_modified_date,
-            limit=limit,
-            offset=offset,
+def generic_read_factory(
+    soql_query: str,
+) -> t.Callable[
+    [LoggerAdapter, ParametersModel, t.Optional[ReadMode], t.Optional[str]],
+    t.Iterable[t.Dict],
+]:
+    def _read_items(
+        adapter: LoggerAdapter,
+        parameters: ReadFromSalesforceParameters,
+        read_mode: t.Optional[ReadMode] = None,
+        read_from: t.Optional[str] = None,
+    ) -> t.Iterable[t.Dict]:
+        sf = Salesforce(
+            username=parameters.sf_username,
+            password=parameters.sf_password,
+            security_token=parameters.sf_security_token,
+            organizationId=parameters.sf_organization_id,
         )
-        profiles = sf.query_all(query)["records"]
-        if len(profiles) == 0:
-            break
-        new_profiles = 0
-        for profile in profiles:
-            if (
-                profile["LastModifiedDate"] == last_modified_date
-                and profile["Id__c"] <= last_id
-            ):
-                continue
-            new_profiles += 1
-            yield profile
+        if read_mode is ReadMode.sync:
+            if parameters.last_modified_date is None:
+                raise Exception("last_modified_date cannot be None in ReadMode.sync")
+            last_modified_date = parameters.last_modified_date
+        else:
+            if parameters.last_modified_date is not None:
+                raise Exception(
+                    "last_modified_date should not be supplied in ReadMode.incremental"
+                )
+            if read_from:
+                try:
+                    read_from = json.loads(read_from)
+                    last_modified_date = read_from["last_modified_date"]
+                    last_id = read_from["hrflow_id"]
+                except json.JSONDecodeError as e:
+                    raise Exception(
+                        f"Failed to JSON parse read_from={read_from} error={e}"
+                    )
+                except KeyError as e:
+                    raise Exception(
+                        "Failed to find expected key in"
+                        f" read_from={read_from} error={repr(e)}"
+                    )
+            else:
+                last_modified_date = (
+                    datetime.now(tz=timezone.utc)
+                    .replace(year=2020)
+                    .replace(hour=0, minute=0, second=0, microsecond=0)
+                    .isoformat()
+                )
+                last_id = 0
 
-        offset += len(profiles)
-        profiles_to_pull -= new_profiles
-        limit = min(MAX_SOQL_LIMIT, profiles_to_pull)
+        offset = 0
+        items_to_pull = min(MAX_ITEMS, parameters.limit)
+        limit = min(MAX_SOQL_LIMIT, items_to_pull)
+
+        while items_to_pull > 0:
+            query = soql_query.format(
+                last_modified_date=last_modified_date,
+                limit=limit,
+                offset=offset,
+            )
+            items = sf.query_all(query)["records"]
+            if len(items) == 0:
+                break
+            new_items = 0
+            for item in items:
+                if (
+                    item["LastModifiedDate"] == last_modified_date
+                    and item["Id__c"] <= last_id
+                ):
+                    continue
+                new_items += 1
+                yield item
+
+            offset += len(items)
+            items_to_pull -= new_items
+            limit = min(MAX_SOQL_LIMIT, items_to_pull)
+
+    return _read_items
+
+
+def item_to_read_from(item: t.Dict) -> str:
+    return json.dumps(
+        dict(
+            last_modified_date=item["LastModifiedDate"],
+            hrflow_id=item["Id__c"],
+        )
+    )
 
 
 SalesforceProfileWarehouse = Warehouse(
@@ -173,14 +207,21 @@ SalesforceProfileWarehouse = Warehouse(
     data_schema=SalesforceHrFlowProfile,
     data_type=DataType.profile,
     read=WarehouseReadAction(
-        parameters=ReadProfilesParameters,
-        function=read,
+        parameters=ReadFromSalesforceParameters,
+        function=generic_read_factory(soql_query=SELECT_PROFILES_SOQL),
         supports_incremental=True,
-        item_to_read_from=lambda profile: json.dumps(
-            dict(
-                last_modified_date=profile["LastModifiedDate"],
-                hrflow_id=profile["Id__c"],
-            )
-        ),
+        item_to_read_from=item_to_read_from,
+    ),
+)
+
+SalesforceJobWarehouse = Warehouse(
+    name="Salesforce Jobs",
+    data_schema=SalesforceHrFlowJob,
+    data_type=DataType.job,
+    read=WarehouseReadAction(
+        parameters=ReadFromSalesforceParameters,
+        function=generic_read_factory(soql_query=SELECT_JOBS_SOQL),
+        supports_incremental=True,
+        item_to_read_from=item_to_read_from,
     ),
 )

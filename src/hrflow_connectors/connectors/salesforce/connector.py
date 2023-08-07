@@ -1,9 +1,18 @@
 import json
 import typing as t
 
-from hrflow_connectors.connectors.hrflow.warehouse.profile import HrFlowProfileWarehouse
-from hrflow_connectors.connectors.salesforce.schemas import SalesforceHrFlowProfile
-from hrflow_connectors.connectors.salesforce.warehouse import SalesforceProfileWarehouse
+from hrflow_connectors.connectors.hrflow.warehouse import (
+    HrFlowJobWarehouse,
+    HrFlowProfileWarehouse,
+)
+from hrflow_connectors.connectors.salesforce.schemas import (
+    SalesforceHrFlowJob,
+    SalesforceHrFlowProfile,
+)
+from hrflow_connectors.connectors.salesforce.warehouse import (
+    SalesforceJobWarehouse,
+    SalesforceProfileWarehouse,
+)
 from hrflow_connectors.core import (
     ActionName,
     ActionType,
@@ -110,6 +119,35 @@ def format_profile(data: SalesforceHrFlowProfile) -> t.Dict:
     )
 
 
+def format_job(data: SalesforceHrFlowJob) -> t.Dict:
+    return dict(
+        archived_at=data["Archive__c"],
+        archive=data["Archive__c"],
+        name=data["Name__c"],
+        reference=data["Reference__c"],
+        url=data["URL__c"],
+        picture=data["Picture__c"],
+        summary=data["Summary__c"],
+        location=dict(
+            text=data["Location_Text__c"],
+            lat=data["Location_Lat__c"],
+            lng=data["Location_Lng__c"],
+        ),
+        culture=data["Culture__c"],
+        responsibilities=data["Responsibilities__c"],
+        requirements=data["Requirements__c"],
+        benefits=data["Benefits__c"],
+        interviews=data["Interviews__c"],
+        sections=json.loads(data["Sections__c"]),
+        skills=json.loads(data["Skills__c"]),
+        languages=json.loads(data["Languages__c"]),
+        tags=json.loads(data["Tags__c"]),
+        ranges_date=json.loads(data["Ranges_Date__c"]),
+        ranges_float=json.loads(data["Ranges_Float__c"]),
+        metadatas=json.loads(data["Metadatas__c"]),
+    )
+
+
 DESCRIPTION = (
     "Salesforce is the customer company. We make cloud-based software "
     "designed to help businesses connect to their customers in a whole "
@@ -134,6 +172,20 @@ Salesforce = Connector(
             ),
             origin=SalesforceProfileWarehouse,
             target=HrFlowProfileWarehouse,
+            action_type=ActionType.inbound,
+        ),
+        ConnectorAction(
+            name=ActionName.pull_job_list,
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves jobs from Salesforce HrFlow Job Custom Object"
+                " and writes them to an Hrflow.ai board"
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadJobActionParameters", format=format_job
+            ),
+            origin=SalesforceJobWarehouse,
+            target=HrFlowJobWarehouse,
             action_type=ActionType.inbound,
         ),
     ],
