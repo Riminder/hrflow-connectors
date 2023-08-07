@@ -410,8 +410,7 @@
                 "label": "Searching_Enabled",
                 "type": "Number",
                 "scale": 0,
-                "precision": 1,
-                "required": true
+                "precision": 1
             },
             {
                 "fullName": "Searching_Date_Edition__c",
@@ -423,8 +422,7 @@
                 "label": "Scoring_Enabled",
                 "type": "Number",
                 "scale": 0,
-                "precision": 1,
-                "required": true
+                "precision": 1
             },
             {
                 "fullName": "Scoring_Date_Edition__c",

@@ -18273,9 +18273,7 @@
               "Hash_Id__c",
               "Id__c",
               "LastModifiedDate",
-              "Location_Text__c",
-              "Scoring_Enabled__c",
-              "Searching_Enabled__c"
+              "Location_Text__c"
             ],
             "definitions": {
               "Attributes": {
@@ -20209,9 +20207,7 @@
               "Hash_Id__c",
               "Id__c",
               "LastModifiedDate",
-              "Location_Text__c",
-              "Scoring_Enabled__c",
-              "Searching_Enabled__c"
+              "Location_Text__c"
             ],
             "definitions": {
               "Attributes": {

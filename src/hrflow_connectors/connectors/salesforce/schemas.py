@@ -167,9 +167,9 @@ class SalesforceHrFlowProfile(SalesforceRecord):
     Picture__c: t.Optional[str]
     Reference__c: t.Optional[str]
     Scoring_Date_Edition__c: t.Optional[str]
-    Scoring_Enabled__c: IntFlag
+    Scoring_Enabled__c: t.Optional[IntFlag]
     Searching_Date_Edition__c: t.Optional[str]
-    Searching_Enabled__c: IntFlag
+    Searching_Enabled__c: t.Optional[IntFlag]
     Seniority__c: t.Optional[Seniority]
     Skills__c: t.Optional[Json[t.List[Skill]]]
     Status_Embedding__c: t.Optional[Status]
