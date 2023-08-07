@@ -17827,7 +17827,7 @@
           "trigger_type": "schedule",
           "origin": "Salesforce Profiles",
           "origin_parameters": {
-            "title": "ReadProfilesParameters",
+            "title": "ReadFromSalesforceParameters",
             "type": "object",
             "properties": {
               "sf_username": {
@@ -17862,7 +17862,7 @@
               },
               "limit": {
                 "title": "Limit",
-                "description": "Number of profiles to pull from Salesforce. Maximum value is 500",
+                "description": "Number of items to pull from Salesforce. Maximum value is 500",
                 "default": 500,
                 "field_type": "Query Param",
                 "type": "integer"
@@ -17882,10 +17882,6 @@
             "properties": {
               "attributes": {
                 "$ref": "#/definitions/Attributes"
-              },
-              "LastModifiedDate": {
-                "title": "Lastmodifieddate",
-                "type": "string"
               },
               "HrFlow_Profile_Experiences__r": {
                 "$ref": "#/definitions/SalesforceRelationship_SalesforceExperience_"
@@ -18099,6 +18095,10 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
+              "LastModifiedDate": {
+                "title": "Lastmodifieddate",
+                "type": "string"
+              },
               "Last_Name__c": {
                 "title": "Last Name  C",
                 "type": "string"
@@ -18268,11 +18268,11 @@
             },
             "required": [
               "attributes",
-              "LastModifiedDate",
               "Certifications__c",
               "Dataset_Id__c",
               "Hash_Id__c",
               "Id__c",
+              "LastModifiedDate",
               "Location_Text__c",
               "Scoring_Enabled__c",
               "Searching_Enabled__c"
@@ -19219,6 +19219,857 @@
             }
           },
           "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import Salesforce\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Salesforce.pull_profile_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['sf_username', 'sf_password', 'sf_security_token', 'sf_organization_id', 'last_modified_date', 'limit']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'edit', 'only_edit_fields']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Salesforce.pull_profile_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "pull_job_list",
+          "action_type": "inbound",
+          "action_parameters": {
+            "title": "ReadJobActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "additionalProperties": false,
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "job",
+          "trigger_type": "schedule",
+          "origin": "Salesforce Jobs",
+          "origin_parameters": {
+            "title": "ReadFromSalesforceParameters",
+            "type": "object",
+            "properties": {
+              "sf_username": {
+                "title": "Sf Username",
+                "description": "username used to access Salesforce API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "sf_password": {
+                "title": "Sf Password",
+                "description": "password used to access Salesforce API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "sf_security_token": {
+                "title": "Sf Security Token",
+                "description": "Security Token to access Salesforce API.See below for instructions: How Can I Find My Security Token and Use It in Data Loader | Salesforce Platform  https://www.youtube.com/watch?v=nYbfxeSGKFM&ab_channel=SalesforceSupport",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "sf_organization_id": {
+                "title": "Sf Organization Id",
+                "description": "Security Token to access Salesforce API.See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "last_modified_date": {
+                "title": "Last Modified Date",
+                "description": "Last modified date",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "limit": {
+                "title": "Limit",
+                "description": "Number of items to pull from Salesforce. Maximum value is 500",
+                "default": 500,
+                "field_type": "Query Param",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "sf_username",
+              "sf_password",
+              "sf_security_token",
+              "sf_organization_id"
+            ],
+            "additionalProperties": false
+          },
+          "origin_data_schema": {
+            "title": "SalesforceHrFlowJob",
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "$ref": "#/definitions/Attributes"
+              },
+              "Archive__c": {
+                "title": "Archive  C",
+                "type": "string"
+              },
+              "Benefits__c": {
+                "title": "Benefits  C",
+                "type": "string"
+              },
+              "Board_Id__c": {
+                "title": "Board Id  C",
+                "type": "integer"
+              },
+              "Certifications__c": {
+                "title": "Certifications  C",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "Courses__c": {
+                "title": "Courses  C",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "Culture__c": {
+                "title": "Culture  C",
+                "type": "string"
+              },
+              "Date_Edition__c": {
+                "title": "Date Edition  C",
+                "type": "string"
+              },
+              "Hash_Id__c": {
+                "title": "Hash Id  C",
+                "type": "string"
+              },
+              "Id__c": {
+                "title": "Id  C",
+                "type": "integer"
+              },
+              "Interviews__c": {
+                "title": "Interviews  C",
+                "type": "string"
+              },
+              "Item_Key__c": {
+                "title": "Item Key  C",
+                "type": "string"
+              },
+              "Item_Type__c": {
+                "title": "Item Type  C",
+                "type": "string"
+              },
+              "Item_URL__c": {
+                "title": "Item Url  C",
+                "type": "string"
+              },
+              "Languages__c": {
+                "title": "Languages  C",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "LastModifiedDate": {
+                "title": "Lastmodifieddate",
+                "type": "string"
+              },
+              "Location_Fields__c": {
+                "title": "Location Fields  C",
+                "type": "string",
+                "format": "json-string"
+              },
+              "Location_Gmaps__c": {
+                "title": "Location Gmaps  C",
+                "type": "string"
+              },
+              "Location_Lat__c": {
+                "title": "Location Lat  C",
+                "type": "number"
+              },
+              "Location_Lng__c": {
+                "title": "Location Lng  C",
+                "type": "number"
+              },
+              "Location_Text__c": {
+                "title": "Location Text  C",
+                "type": "string"
+              },
+              "Members__c": {
+                "title": "Members  C",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "Metadatas__c": {
+                "title": "Metadatas  C",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "Name__c": {
+                "title": "Name  C",
+                "type": "string"
+              },
+              "Notification__c": {
+                "title": "Notification  C",
+                "enum": [
+                  0,
+                  1
+                ],
+                "type": "integer"
+              },
+              "Picture__c": {
+                "title": "Picture  C",
+                "type": "string"
+              },
+              "Query_Id__c": {
+                "title": "Query Id  C",
+                "type": "integer"
+              },
+              "Ranges_Date__c": {
+                "title": "Ranges Date  C",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangeDate"
+                }
+              },
+              "Ranges_Float__c": {
+                "title": "Ranges Float  C",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangeFloat"
+                }
+              },
+              "Reference__c": {
+                "title": "Reference  C",
+                "type": "string"
+              },
+              "Requirements__c": {
+                "title": "Requirements  C",
+                "type": "string"
+              },
+              "Responsibilities__c": {
+                "title": "Responsibilities  C",
+                "type": "string"
+              },
+              "Scoring_Date_Edition__c": {
+                "title": "Scoring Date Edition  C",
+                "type": "string"
+              },
+              "Scoring_Enabled__c": {
+                "title": "Scoring Enabled  C",
+                "enum": [
+                  0,
+                  1
+                ],
+                "type": "integer"
+              },
+              "Searching_Date_Edition__c": {
+                "title": "Searching Date Edition  C",
+                "type": "string"
+              },
+              "Searching_Enabled__c": {
+                "title": "Searching Enabled  C",
+                "enum": [
+                  0,
+                  1
+                ],
+                "type": "integer"
+              },
+              "Sections__c": {
+                "title": "Sections  C",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Section"
+                }
+              },
+              "Skills__c": {
+                "title": "Skills  C",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "Slug__c": {
+                "title": "Slug  C",
+                "type": "string"
+              },
+              "Status__c": {
+                "title": "Status  C",
+                "enum": [
+                  0,
+                  1
+                ],
+                "type": "integer"
+              },
+              "Status_Embedding__c": {
+                "title": "Status Embedding  C",
+                "enum": [
+                  "inactive"
+                ],
+                "type": "string"
+              },
+              "Status_Parsing__c": {
+                "title": "Status Parsing  C",
+                "enum": [
+                  "inactive"
+                ],
+                "type": "string"
+              },
+              "Status_Revealing__c": {
+                "title": "Status Revealing  C",
+                "enum": [
+                  "inactive"
+                ],
+                "type": "string"
+              },
+              "Status_Searching__c": {
+                "title": "Status Searching  C",
+                "enum": [
+                  "inactive"
+                ],
+                "type": "string"
+              },
+              "Summary__c": {
+                "title": "Summary  C",
+                "type": "string"
+              },
+              "Tags__c": {
+                "title": "Tags  C",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "Tasks__c": {
+                "title": "Tasks  C",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "Threshold__c": {
+                "title": "Threshold  C",
+                "type": "number"
+              },
+              "Timestamp__c": {
+                "title": "Timestamp  C",
+                "type": "string"
+              },
+              "Trello_Tag_Id__c": {
+                "title": "Trello Tag Id  C",
+                "type": "string"
+              },
+              "URL__c": {
+                "title": "Url  C",
+                "type": "string"
+              },
+              "User_Id__c": {
+                "title": "User Id  C",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "attributes",
+              "Board_Id__c",
+              "Certifications__c",
+              "Hash_Id__c",
+              "Id__c",
+              "LastModifiedDate",
+              "Location_Text__c",
+              "Members__c",
+              "Name__c",
+              "Ranges_Date__c",
+              "Ranges_Float__c",
+              "Scoring_Enabled__c",
+              "Searching_Enabled__c",
+              "Sections__c",
+              "Slug__c",
+              "Status__c"
+            ],
+            "definitions": {
+              "Attributes": {
+                "title": "Attributes",
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "title": "Type",
+                    "type": "string"
+                  },
+                  "url": {
+                    "title": "Url",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "url"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangeDate": {
+                "title": "RangeDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "type": "string"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "value_min",
+                  "value_max"
+                ]
+              },
+              "RangeFloat": {
+                "title": "RangeFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "type": "number"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "value_min",
+                  "value_max",
+                  "unit"
+                ]
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "title",
+                  "description"
+                ]
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "supports_incremental": true,
+          "target": "HrFlow.ai Jobs",
+          "target_parameters": {
+            "title": "WriteJobParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "board_key": {
+                "title": "Board Key",
+                "description": "HrFlow.ai board key",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "sync": {
+                "title": "Sync",
+                "description": "When enabled only pushed jobs will remain in the board",
+                "default": true,
+                "field_type": "Other",
+                "type": "boolean"
+              },
+              "update_content": {
+                "title": "Update Content",
+                "description": "When enabled jobs already present in the board are updated",
+                "default": false,
+                "field_type": "Other",
+                "type": "boolean"
+              },
+              "enrich_with_parsing": {
+                "title": "Enrich With Parsing",
+                "description": "When enabled jobs are enriched with HrFlow.ai parsing",
+                "default": false,
+                "field_type": "Other",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "board_key"
+            ],
+            "additionalProperties": false
+          },
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Job.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Job.",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "title": "Location",
+                "description": "Job location object.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Location"
+                  }
+                ]
+              },
+              "sections": {
+                "title": "Sections",
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Section"
+                }
+              },
+              "url": {
+                "title": "Url",
+                "description": "Job post original URL.",
+                "type": "string"
+              },
+              "summary": {
+                "title": "Summary",
+                "description": "Brief summary of the Job.",
+                "type": "string"
+              },
+              "archieved_at": {
+                "title": "Archieved At",
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "type": "string"
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "t.List of skills of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "t.List of spoken languages of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "t.List of certifications of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "t.List of courses of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "t.List of tasks of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "t.List of tags of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "t.List of metadatas of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "ranges_float": {
+                "title": "Ranges Float",
+                "description": "t.List of ranges of floats",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesFloat"
+                }
+              },
+              "ranges_date": {
+                "title": "Ranges Date",
+                "description": "t.List of ranges of dates",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesDate"
+                }
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value. Example: 500.",
+                    "type": "number"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value. Example: 100.",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "description": "Unit of the value. Example: euros.",
+                    "type": "string"
+                  }
+                }
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "type": "string"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import Salesforce\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Salesforce.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['sf_username', 'sf_password', 'sf_security_token', 'sf_organization_id', 'last_modified_date', 'limit']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Salesforce.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
           "workflow_code_workflow_id_settings_key": "__workflow_id",

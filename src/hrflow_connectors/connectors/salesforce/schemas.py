@@ -110,7 +110,6 @@ class URLs(BaseModel):
 
 
 class SalesforceHrFlowProfile(SalesforceRecord):
-    LastModifiedDate: str
     HrFlow_Profile_Experiences__r: t.Optional[
         SalesforceRelationship[SalesforceExperience]
     ]
@@ -153,6 +152,7 @@ class SalesforceHrFlowProfile(SalesforceRecord):
     Item_URL__c: t.Optional[str]
     Labels__c: t.Optional[Json[t.List[GeneralEntitySchema]]]
     Languages__c: t.Optional[Json[t.List[GeneralEntitySchema]]]
+    LastModifiedDate: str
     Last_Name__c: t.Optional[str]
     Location_Fields__c: Json
     Location_Gmaps__c: t.Optional[str]
@@ -184,3 +184,76 @@ class SalesforceHrFlowProfile(SalesforceRecord):
     Timestamp__c: t.Optional[str]
     URLs__c: t.Optional[URLs]
     Viewers__c: t.Optional[Json[t.List]]
+
+
+class Section(BaseModel):
+    name: str
+    title: str
+    description: str
+
+
+class RangeFloat(BaseModel):
+    name: str
+    value_min: float
+    value_max: float
+    unit: str
+
+
+class RangeDate(BaseModel):
+    name: str
+    value_min: str
+    value_max: str
+
+
+class SalesforceHrFlowJob(SalesforceRecord):
+    Archive__c: t.Optional[str]
+    Benefits__c: t.Optional[str]
+    Board_Id__c: int
+    Certifications__c: Json[t.List[GeneralEntitySchema]]
+    Courses__c: t.Optional[Json[t.List[GeneralEntitySchema]]]
+    Culture__c: t.Optional[str]
+    Date_Edition__c: t.Optional[str]
+    Hash_Id__c: str
+    Id__c: int
+    Interviews__c: t.Optional[str]
+    Item_Key__c: t.Optional[str]
+    Item_Type__c: t.Optional[str]
+    Item_URL__c: t.Optional[str]
+    Languages__c: t.Optional[Json[t.List[GeneralEntitySchema]]]
+    LastModifiedDate: str
+    Location_Fields__c: Json
+    Location_Gmaps__c: t.Optional[str]
+    Location_Lat__c: t.Optional[float]
+    Location_Lng__c: t.Optional[float]
+    Location_Text__c: str
+    Members__c: t.List[str]
+    Metadatas__c: t.Optional[Json[t.List[GeneralEntitySchema]]]
+    Name__c: str
+    Notification__c: t.Optional[IntFlag]
+    Picture__c: t.Optional[str]
+    Query_Id__c: t.Optional[int]
+    Ranges_Date__c: t.List[RangeDate]
+    Ranges_Float__c: t.List[RangeFloat]
+    Reference__c: t.Optional[str]
+    Requirements__c: t.Optional[str]
+    Responsibilities__c: t.Optional[str]
+    Scoring_Date_Edition__c: t.Optional[str]
+    Scoring_Enabled__c: IntFlag
+    Searching_Date_Edition__c: t.Optional[str]
+    Searching_Enabled__c: IntFlag
+    Sections__c: t.List[Section]
+    Skills__c: t.Optional[Json[t.List[Skill]]]
+    Slug__c: str
+    Status__c: IntFlag
+    Status_Embedding__c: t.Optional[Status]
+    Status_Parsing__c: t.Optional[Status]
+    Status_Revealing__c: t.Optional[Status]
+    Status_Searching__c: t.Optional[Status]
+    Summary__c: t.Optional[str]
+    Tags__c: t.Optional[Json[t.List[GeneralEntitySchema]]]
+    Tasks__c: t.Optional[Json[t.List[GeneralEntitySchema]]]
+    Threshold__c: t.Optional[float]
+    Timestamp__c: t.Optional[str]
+    Trello_Tag_Id__c: t.Optional[str]
+    URL__c: t.Optional[str]
+    User_Id__c: t.Optional[int]
