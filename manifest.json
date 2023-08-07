@@ -908,8 +908,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
@@ -2262,8 +2262,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
@@ -5616,8 +5616,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
@@ -7209,8 +7209,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
@@ -8223,8 +8223,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
@@ -9372,8 +9372,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
@@ -10106,8 +10106,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
@@ -11653,8 +11653,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
@@ -13262,8 +13262,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
@@ -14691,8 +14691,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
@@ -15353,8 +15353,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
@@ -15914,8 +15914,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
@@ -16655,8 +16655,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
@@ -18771,8 +18771,8 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archieved_at": {
-                "title": "Archieved At",
+              "archived_at": {
+                "title": "Archived At",
                 "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
                 "type": "string"
               },
