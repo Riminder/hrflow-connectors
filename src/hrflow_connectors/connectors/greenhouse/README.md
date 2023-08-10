@@ -30,8 +30,10 @@ In this section, we outline the data flow between different components of the co
 
 | Action | Description |
 | ------- |  -------- |
-| [**Pull jobs**](docs/pull_jobs.md) | Retrieves jobs from Greenhouse API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board |
-| [**Push profiles**](docs/push_profiles.md) | Retrieves profiles from a [HrFlow.ai](http://HrFlow.ai) Source and sends them to Greenhouse ATS|
+| [**Pull jobs**](docs/pull_job_list.md) | Retrieves jobs from Greenhouse API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board | 
+| [**Pull profiles**](docs/pull_profile_list.md) | Retrieves profiles from Greenhouse API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Source | 
+| [**Push profile**](docs/push_profile.md) |Writes a profile from Hrflow.ai Source to Greenhouse  via the API for the given job_id(s) provided in tags. |
+
 
 </p>
 
