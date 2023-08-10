@@ -1,5 +1,5 @@
 
-# Pull profile list
+# Catch profile
 `Waalaxy Profiles` :arrow_right: `HrFlow.ai Profiles`
 
 Imports the visited profiles, in synchronization with the Waalaxy campaign (Visit + CRM Sync)
@@ -43,7 +43,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-Waalaxy.pull_profile_list(
+Waalaxy.catch_profile(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],

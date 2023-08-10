@@ -8,5 +8,4 @@
 
 | Actions |
 | ------- |
-| [**Trigger view**](docs/trigger_view.md) |
-| [**Trigger connexion**](docs/trigger_connexion.md) |
+| [**Catch profile**](docs/catch_profile.md) |

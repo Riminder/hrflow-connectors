@@ -57,7 +57,7 @@ Waalaxy = Connector(
     url="https://www.waalaxy.com/fr/",
     actions=[
         ConnectorAction(
-            name=ActionName.pull_profile_list,
+            name=ActionName.catch_profile,
             trigger_type=WorkflowType.catch,
             description=(
                 "Imports the visited profiles, in synchronization with the Waalaxy"
