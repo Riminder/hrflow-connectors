@@ -20425,18 +20425,6 @@
                 "title": "Interviews  C",
                 "type": "string"
               },
-              "Item_Key__c": {
-                "title": "Item Key  C",
-                "type": "string"
-              },
-              "Item_Type__c": {
-                "title": "Item Type  C",
-                "type": "string"
-              },
-              "Item_URL__c": {
-                "title": "Item Url  C",
-                "type": "string"
-              },
               "Languages__c": {
                 "title": "Languages  C",
                 "type": "array",
@@ -20469,13 +20457,6 @@
                 "title": "Location Text  C",
                 "type": "string"
               },
-              "Members__c": {
-                "title": "Members  C",
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
               "Metadatas__c": {
                 "title": "Metadatas  C",
                 "type": "array",
@@ -20487,21 +20468,9 @@
                 "title": "Name  C",
                 "type": "string"
               },
-              "Notification__c": {
-                "title": "Notification  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
               "Picture__c": {
                 "title": "Picture  C",
                 "type": "string"
-              },
-              "Query_Id__c": {
-                "title": "Query Id  C",
-                "type": "integer"
               },
               "Ranges_Date__c": {
                 "title": "Ranges Date  C",
@@ -20529,30 +20498,6 @@
                 "title": "Responsibilities  C",
                 "type": "string"
               },
-              "Scoring_Date_Edition__c": {
-                "title": "Scoring Date Edition  C",
-                "type": "string"
-              },
-              "Scoring_Enabled__c": {
-                "title": "Scoring Enabled  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Searching_Date_Edition__c": {
-                "title": "Searching Date Edition  C",
-                "type": "string"
-              },
-              "Searching_Enabled__c": {
-                "title": "Searching Enabled  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
               "Sections__c": {
                 "title": "Sections  C",
                 "type": "array",
@@ -20579,34 +20524,6 @@
                 ],
                 "type": "integer"
               },
-              "Status_Embedding__c": {
-                "title": "Status Embedding  C",
-                "enum": [
-                  "inactive"
-                ],
-                "type": "string"
-              },
-              "Status_Parsing__c": {
-                "title": "Status Parsing  C",
-                "enum": [
-                  "inactive"
-                ],
-                "type": "string"
-              },
-              "Status_Revealing__c": {
-                "title": "Status Revealing  C",
-                "enum": [
-                  "inactive"
-                ],
-                "type": "string"
-              },
-              "Status_Searching__c": {
-                "title": "Status Searching  C",
-                "enum": [
-                  "inactive"
-                ],
-                "type": "string"
-              },
               "Summary__c": {
                 "title": "Summary  C",
                 "type": "string"
@@ -20625,25 +20542,9 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "Threshold__c": {
-                "title": "Threshold  C",
-                "type": "number"
-              },
-              "Timestamp__c": {
-                "title": "Timestamp  C",
-                "type": "string"
-              },
-              "Trello_Tag_Id__c": {
-                "title": "Trello Tag Id  C",
-                "type": "string"
-              },
               "URL__c": {
                 "title": "Url  C",
                 "type": "string"
-              },
-              "User_Id__c": {
-                "title": "User Id  C",
-                "type": "integer"
               }
             },
             "required": [
@@ -20654,12 +20555,9 @@
               "Id__c",
               "LastModifiedDate",
               "Location_Text__c",
-              "Members__c",
               "Name__c",
               "Ranges_Date__c",
               "Ranges_Float__c",
-              "Scoring_Enabled__c",
-              "Searching_Enabled__c",
               "Sections__c",
               "Slug__c",
               "Status__c"

@@ -257,13 +257,6 @@
                 "unique": true
             },
             {
-                "fullName": "User_Id__c",
-                "label": "User_Id",
-                "type": "Number",
-                "scale": 0,
-                "precision": 18
-            },
-            {
                 "fullName": "Name__c",
                 "label": "Name",
                 "type": "Text",
@@ -281,12 +274,6 @@
             {
                 "fullName": "URL__c",
                 "label": "URL",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Trello_Tag_Id__c",
-                "label": "Trello_Tag_Id",
                 "type": "Text",
                 "length": 255
             },
@@ -316,13 +303,6 @@
                 "type": "LongTextArea",
                 "visibleLines": 3,
                 "length": 32768
-            },
-            {
-                "fullName": "Threshold__c",
-                "label": "Threshold",
-                "type": "Number",
-                "scale": 2,
-                "precision": 18
             },
             {
                 "fullName": "Archive__c",
@@ -356,14 +336,6 @@
                 "precision": 18
             },
             {
-                "fullName": "Notification__c",
-                "label": "Notification",
-                "type": "Number",
-                "scale": 0, 
-                "precision": 1,
-                "required": false
-            },
-            {
                 "fullName": "Tags__c",
                 "label": "Tags",
                 "type": "LongTextArea",
@@ -376,14 +348,6 @@
                 "type": "Number",
                 "scale": 0,
                 "precision": 18
-            },
-            {
-                "fullName": "Query_Id__c",
-                "label": "Query_Id",
-                "type": "Number",
-                "scale": 0,
-                "precision": 18,
-                "unique": true
             },
             {
                 "fullName": "Sections__c",
@@ -420,13 +384,6 @@
                 "length": 256
             },
             {
-                "fullName": "Members__c",
-                "label": "Members",
-                "type": "LongTextArea",
-                "visibleLines": 3,
-                "length": 256
-            },
-            {
                 "fullName": "Location_Gmaps__c",
                 "label": "Location_Gmaps",
                 "type": "Text",
@@ -438,48 +395,6 @@
                 "type": "LongTextArea",
                 "visibleLines": 3,
                 "length": 32768
-            },
-            {
-                "fullName": "Status_Searching__c",
-                "label": "Status_Searching",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Status_Parsing__c",
-                "label": "Status_Parsing",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Status_Revealing__c",
-                "label": "Status_Revealing",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Status_Embedding__c",
-                "label": "Status_Embedding",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Item_Key__c",
-                "label": "Item_Key",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Item_Type__c",
-                "label": "Item_Type",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Item_URL__c",
-                "label": "Item_URL",
-                "type": "Text",
-                "length": 255
             },
             {
                 "fullName": "Metadatas__c",
@@ -508,32 +423,6 @@
                 "type": "LongTextArea",
                 "visibleLines": 3,
                 "length": 32768
-            },
-            {
-                "fullName": "Searching_Enabled__c",
-                "label": "Searching_Enabled",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": true
-            },
-            {
-                "fullName": "Searching_Date_Edition__c",
-                "label": "Searching_Date_Edition",
-                "type": "DateTime"
-            },
-            {
-                "fullName": "Scoring_Enabled__c",
-                "label": "Scoring_Enabled",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": true
-            },
-            {
-                "fullName": "Scoring_Date_Edition__c",
-                "label": "Scoring_Date_Edition",
-                "type": "DateTime"
             },
             {
                 "fullName": "Picture__c",
