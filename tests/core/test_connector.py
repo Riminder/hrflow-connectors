@@ -138,6 +138,62 @@ def test_action_name_constraint():
     assert errors[0]["msg"].startswith("value is not a valid enumeration member;")
 
 
+def test_action_pull_profile_list_only_with_trigger_type_pull():
+    with pytest.raises(ValidationError) as excinfo:
+        Connector(
+            name="SmartLeads",
+            description=DESCRIPTION,
+            url="https://www.smartleads.test/",
+            actions=[
+                ConnectorAction(
+                    name="pull_profile_list",
+                    action_type=ActionType.inbound,
+                    trigger_type=WorkflowType.catch,
+                    description="Test action",
+                    parameters=BaseActionParameters,
+                    origin=UsersWarehouse,
+                    target=LeadsWarehouse,
+                ),
+            ],
+        )
+
+    errors = excinfo.value.errors()
+    assert errors[0]["loc"] == ("name",)
+    assert errors[0][
+        "msg"
+    ] == "`pull_job_list` and `pull_profile_list` are only available for trigger_type={}".format(  # noqa: E501
+        WorkflowType.pull
+    )
+
+
+def test_action_pull_job_list_only_with_trigger_type_pull():
+    with pytest.raises(ValidationError) as excinfo:
+        Connector(
+            name="SmartLeads",
+            description=DESCRIPTION,
+            url="https://www.smartleads.test/",
+            actions=[
+                ConnectorAction(
+                    name="pull_job_list",
+                    action_type=ActionType.inbound,
+                    trigger_type=WorkflowType.catch,
+                    description="Test action",
+                    parameters=BaseActionParameters,
+                    origin=UsersWarehouse,
+                    target=LeadsWarehouse,
+                ),
+            ],
+        )
+
+    errors = excinfo.value.errors()
+    assert errors[0]["loc"] == ("name",)
+    assert errors[0][
+        "msg"
+    ] == "`pull_job_list` and `pull_profile_list` are only available for trigger_type={}".format(  # noqa: E501
+        WorkflowType.pull
+    )
+
+
 def test_connector_failures():
     campaign_id = "camp_xxx1"
     result = SmartLeads.push_profile(
