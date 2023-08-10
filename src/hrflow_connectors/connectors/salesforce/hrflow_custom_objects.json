@@ -111,20 +111,8 @@
                 "length": 255
             },
             {
-                "fullName": "Filename__c",
-                "label": "Filename",
-                "type": "Text",
-                "length": 255
-            },
-            {
                 "fullName": "Text_Language__c",
                 "label": "Text_Language",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Miscellaneous__c",
-                "label": "Miscellaneous",
                 "type": "Text",
                 "length": 255
             },
@@ -162,13 +150,6 @@
                 "length": 255
             },
             {
-                "fullName": "Viewers__c",
-                "label": "Viewers",
-                "type": "LongTextArea",
-                "visibleLines": 3,
-                "length": 256
-            },
-            {
                 "fullName": "Location_Fields__c",
                 "label": "Location_Fields",
                 "type": "LongTextArea",
@@ -201,14 +182,6 @@
                 "length": 255
             },
             {
-                "fullName": "Notification__c",
-                "label": "Notification",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": false
-            },
-            {
                 "fullName": "First_Name__c",
                 "label": "First_Name",
                 "type": "Text",
@@ -217,48 +190,6 @@
             {
                 "fullName": "Last_Name__c",
                 "label": "Last_Name",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Status_Searching__c",
-                "label": "Status_Searching",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Status_Parsing__c",
-                "label": "Status_Parsing",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Status_Revealing__c",
-                "label": "Status_Revealing",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Status_Embedding__c",
-                "label": "Status_Embedding",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Item_Key__c",
-                "label": "Item_Key",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Item_Type__c",
-                "label": "Item_Type",
-                "type": "Text",
-                "length": 255
-            },
-            {
-                "fullName": "Item_URL__c",
-                "label": "Item_URL",
                 "type": "Text",
                 "length": 255
             },
@@ -282,102 +213,6 @@
                 "type": "LongTextArea",
                 "visibleLines": 3,
                 "length": 65536
-            },
-            {
-                "fullName": "Consent_Parsing_Owner__c",
-                "label": "Consent_Parsing_Owner",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": false
-            },
-            {
-                "fullName": "Consent_Revealing_Owner__c",
-                "label": "Consent_Revealing_Owner",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": false
-            },
-            {
-                "fullName": "Consent_Embedding_Owner__c",
-                "label": "Consent_Embedding_Owner",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": false
-            },
-            {
-                "fullName": "Consent_Searching_Owner__c",
-                "label": "Consent_Searching_Owner",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": false
-            },
-            {
-                "fullName": "Consent_Scoring_Owner__c",
-                "label": "Consent_Scoring_Owner",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": false
-            },
-            {
-                "fullName": "Consent_Reasoning_Owner__c",
-                "label": "Consent_Reasoning_Owner",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": false
-            },
-            {
-                "fullName": "Consent_Parsing_Controller__c",
-                "label": "Consent_Parsing_Controller",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": false
-            },
-            {
-                "fullName": "Consent_Revealing_Controller__c",
-                "label": "Consent_Revealing_Controller",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": false
-            },
-            {
-                "fullName": "Consent_Embedding_Controller__c",
-                "label": "Consent_Embedding_Controller",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": false
-            },
-            {
-                "fullName": "Consent_Searching_Controller__c",
-                "label": "Consent_Searching_Controller",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": false
-            },
-            {
-                "fullName": "Consent_Scoring_Controller__c",
-                "label": "Consent_Scoring_Controller",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": false
-            },
-            {
-                "fullName": "Consent_Reasoning_Controller__c",
-                "label": "Consent_Reasoning_Controller",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1,
-                "required": false
             },
             {
                 "fullName": "Certifications__c",
@@ -404,30 +239,6 @@
                 "fullName": "Date_Birth__c",
                 "label": "Date_Birth",
                 "type": "Date"
-            },
-            {
-                "fullName": "Searching_Enabled__c",
-                "label": "Searching_Enabled",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1
-            },
-            {
-                "fullName": "Searching_Date_Edition__c",
-                "label": "Searching_Date_Edition",
-                "type": "DateTime"
-            },
-            {
-                "fullName": "Scoring_Enabled__c",
-                "label": "Scoring_Enabled",
-                "type": "Number",
-                "scale": 0,
-                "precision": 1
-            },
-            {
-                "fullName": "Scoring_Date_Edition__c",
-                "label": "Scoring_Date_Edition",
-                "type": "DateTime"
             }
         ]
     },
@@ -493,12 +304,6 @@
                 "scale": 0,
                 "precision": 1,
                 "required": false
-            },
-            {
-                "fullName": "Timestamp__c",
-                "label": "Timestamp",
-                "type": "DateTime",
-                "required": true
             },
             {
                 "fullName": "Date_Edition__c",

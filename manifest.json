@@ -17903,102 +17903,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "Consent_Embedding_Controller__c": {
-                "title": "Consent Embedding Controller  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Embedding_Owner__c": {
-                "title": "Consent Embedding Owner  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Parsing_Controller__c": {
-                "title": "Consent Parsing Controller  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Parsing_Owner__c": {
-                "title": "Consent Parsing Owner  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Reasoning_Controller__c": {
-                "title": "Consent Reasoning Controller  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Reasoning_Owner__c": {
-                "title": "Consent Reasoning Owner  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Revealing_Controller__c": {
-                "title": "Consent Revealing Controller  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Revealing_Owner__c": {
-                "title": "Consent Revealing Owner  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Scoring_Controller__c": {
-                "title": "Consent Scoring Controller  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Scoring_Owner__c": {
-                "title": "Consent Scoring Owner  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Searching_Controller__c": {
-                "title": "Consent Searching Controller  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Searching_Owner__c": {
-                "title": "Consent Searching Owner  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
               "Courses__c": {
                 "title": "Courses  C",
                 "type": "array",
@@ -18034,10 +17938,6 @@
                 "title": "Experiences Duration  C",
                 "type": "number"
               },
-              "Filename__c": {
-                "title": "Filename  C",
-                "type": "string"
-              },
               "First_Name__c": {
                 "title": "First Name  C",
                 "type": "string"
@@ -18068,18 +17968,6 @@
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
-              },
-              "Item_Key__c": {
-                "title": "Item Key  C",
-                "type": "string"
-              },
-              "Item_Type__c": {
-                "title": "Item Type  C",
-                "type": "string"
-              },
-              "Item_URL__c": {
-                "title": "Item Url  C",
-                "type": "string"
               },
               "Labels__c": {
                 "title": "Labels  C",
@@ -18131,21 +18019,9 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "Miscellaneous__c": {
-                "title": "Miscellaneous  C",
-                "type": "string"
-              },
               "Name__c": {
                 "title": "Name  C",
                 "type": "string"
-              },
-              "Notification__c": {
-                "title": "Notification  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
               },
               "Phone__c": {
                 "title": "Phone  C",
@@ -18158,30 +18034,6 @@
               "Reference__c": {
                 "title": "Reference  C",
                 "type": "string"
-              },
-              "Scoring_Date_Edition__c": {
-                "title": "Scoring Date Edition  C",
-                "type": "string"
-              },
-              "Scoring_Enabled__c": {
-                "title": "Scoring Enabled  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Searching_Date_Edition__c": {
-                "title": "Searching Date Edition  C",
-                "type": "string"
-              },
-              "Searching_Enabled__c": {
-                "title": "Searching Enabled  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
               },
               "Seniority__c": {
                 "title": "Seniority  C",
@@ -18198,34 +18050,6 @@
                 "items": {
                   "$ref": "#/definitions/Skill"
                 }
-              },
-              "Status_Embedding__c": {
-                "title": "Status Embedding  C",
-                "enum": [
-                  "inactive"
-                ],
-                "type": "string"
-              },
-              "Status_Parsing__c": {
-                "title": "Status Parsing  C",
-                "enum": [
-                  "inactive"
-                ],
-                "type": "string"
-              },
-              "Status_Revealing__c": {
-                "title": "Status Revealing  C",
-                "enum": [
-                  "inactive"
-                ],
-                "type": "string"
-              },
-              "Status_Searching__c": {
-                "title": "Status Searching  C",
-                "enum": [
-                  "inactive"
-                ],
-                "type": "string"
               },
               "Summary__c": {
                 "title": "Summary  C",
@@ -18253,17 +18077,8 @@
                 "title": "Text  C",
                 "type": "string"
               },
-              "Timestamp__c": {
-                "title": "Timestamp  C",
-                "type": "string"
-              },
               "URLs__c": {
                 "$ref": "#/definitions/URLs"
-              },
-              "Viewers__c": {
-                "title": "Viewers  C",
-                "type": "array",
-                "items": {}
               }
             },
             "required": [
@@ -19837,102 +19652,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "Consent_Embedding_Controller__c": {
-                "title": "Consent Embedding Controller  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Embedding_Owner__c": {
-                "title": "Consent Embedding Owner  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Parsing_Controller__c": {
-                "title": "Consent Parsing Controller  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Parsing_Owner__c": {
-                "title": "Consent Parsing Owner  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Reasoning_Controller__c": {
-                "title": "Consent Reasoning Controller  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Reasoning_Owner__c": {
-                "title": "Consent Reasoning Owner  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Revealing_Controller__c": {
-                "title": "Consent Revealing Controller  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Revealing_Owner__c": {
-                "title": "Consent Revealing Owner  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Scoring_Controller__c": {
-                "title": "Consent Scoring Controller  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Scoring_Owner__c": {
-                "title": "Consent Scoring Owner  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Searching_Controller__c": {
-                "title": "Consent Searching Controller  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Consent_Searching_Owner__c": {
-                "title": "Consent Searching Owner  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
               "Courses__c": {
                 "title": "Courses  C",
                 "type": "array",
@@ -19968,10 +19687,6 @@
                 "title": "Experiences Duration  C",
                 "type": "number"
               },
-              "Filename__c": {
-                "title": "Filename  C",
-                "type": "string"
-              },
               "First_Name__c": {
                 "title": "First Name  C",
                 "type": "string"
@@ -20002,18 +19717,6 @@
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
-              },
-              "Item_Key__c": {
-                "title": "Item Key  C",
-                "type": "string"
-              },
-              "Item_Type__c": {
-                "title": "Item Type  C",
-                "type": "string"
-              },
-              "Item_URL__c": {
-                "title": "Item Url  C",
-                "type": "string"
               },
               "Labels__c": {
                 "title": "Labels  C",
@@ -20065,21 +19768,9 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "Miscellaneous__c": {
-                "title": "Miscellaneous  C",
-                "type": "string"
-              },
               "Name__c": {
                 "title": "Name  C",
                 "type": "string"
-              },
-              "Notification__c": {
-                "title": "Notification  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
               },
               "Phone__c": {
                 "title": "Phone  C",
@@ -20092,30 +19783,6 @@
               "Reference__c": {
                 "title": "Reference  C",
                 "type": "string"
-              },
-              "Scoring_Date_Edition__c": {
-                "title": "Scoring Date Edition  C",
-                "type": "string"
-              },
-              "Scoring_Enabled__c": {
-                "title": "Scoring Enabled  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
-              },
-              "Searching_Date_Edition__c": {
-                "title": "Searching Date Edition  C",
-                "type": "string"
-              },
-              "Searching_Enabled__c": {
-                "title": "Searching Enabled  C",
-                "enum": [
-                  0,
-                  1
-                ],
-                "type": "integer"
               },
               "Seniority__c": {
                 "title": "Seniority  C",
@@ -20132,34 +19799,6 @@
                 "items": {
                   "$ref": "#/definitions/Skill"
                 }
-              },
-              "Status_Embedding__c": {
-                "title": "Status Embedding  C",
-                "enum": [
-                  "inactive"
-                ],
-                "type": "string"
-              },
-              "Status_Parsing__c": {
-                "title": "Status Parsing  C",
-                "enum": [
-                  "inactive"
-                ],
-                "type": "string"
-              },
-              "Status_Revealing__c": {
-                "title": "Status Revealing  C",
-                "enum": [
-                  "inactive"
-                ],
-                "type": "string"
-              },
-              "Status_Searching__c": {
-                "title": "Status Searching  C",
-                "enum": [
-                  "inactive"
-                ],
-                "type": "string"
               },
               "Summary__c": {
                 "title": "Summary  C",
@@ -20187,17 +19826,8 @@
                 "title": "Text  C",
                 "type": "string"
               },
-              "Timestamp__c": {
-                "title": "Timestamp  C",
-                "type": "string"
-              },
               "URLs__c": {
                 "$ref": "#/definitions/URLs"
-              },
-              "Viewers__c": {
-                "title": "Viewers  C",
-                "type": "array",
-                "items": {}
               }
             },
             "required": [
