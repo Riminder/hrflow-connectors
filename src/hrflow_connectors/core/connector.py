@@ -316,9 +316,9 @@ class ConnectorAction(BaseModel):
     ORIGIN_SETTINGS_PREFIX = "origin_"
     TARGET_SETTINGS_PREFIX = "target_"
     WORKFLOW_ID_SETTINGS_KEY = "__workflow_id"
+    trigger_type: WorkflowType
     name: ActionName
     description: str
-    trigger_type: WorkflowType
     parameters: t.Type[BaseModel]
     origin: Warehouse
     target: Warehouse
@@ -338,6 +338,18 @@ class ConnectorAction(BaseModel):
         if target.is_writable is False:
             raise ValueError("Target warehouse is not writable")
         return target
+
+    @validator("name", pre=False)
+    def name_is_coherent_with_trigger_type(cls, v, values, **kwargs):
+        if (
+            v in [ActionName.pull_job_list, ActionName.pull_profile_list]
+            and values["trigger_type"] != WorkflowType.pull
+        ):
+            raise ValueError(
+                "`pull_job_list` and `pull_profile_list` are only available for"
+                " trigger_type={}".format(WorkflowType.pull)
+            )
+        return v
 
     @property
     def data_type(self) -> str:

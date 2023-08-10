@@ -31,7 +31,7 @@ SmartLeads = Connector(
             target=LeadsWarehouse,
         ),
         ConnectorAction(
-            name=ActionName.pull_profile_list,
+            name=ActionName.push_profile,
             action_type=ActionType.inbound,
             trigger_type=WorkflowType.catch,
             description="Test action CATCH",
@@ -234,7 +234,7 @@ logics = [logic]
 
 def test_catch_workflow_code(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][1]
-    assert action_manifest["name"] == "pull_profile_list"
+    assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
     assert "event_parser" in action_manifest["action_parameters"]["properties"]
@@ -273,7 +273,7 @@ def test_catch_workflow_code(with_smartleads):
 
 def test_catch_workflow_code_with_format(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][1]
-    assert action_manifest["name"] == "pull_profile_list"
+    assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
     assert "event_parser" in action_manifest["action_parameters"]["properties"]
@@ -336,7 +336,7 @@ def format(item):
 
 def test_catch_workflow_code_with_logics(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][1]
-    assert action_manifest["name"] == "pull_profile_list"
+    assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
     assert "event_parser" in action_manifest["action_parameters"]["properties"]
@@ -400,7 +400,7 @@ logics = [logic]
 
 def test_catch_workflow_code_with_event_parser(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][1]
-    assert action_manifest["name"] == "pull_profile_list"
+    assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
     assert "event_parser" in action_manifest["action_parameters"]["properties"]
@@ -464,7 +464,7 @@ def event_parser(event):
 
 def test_catch_workflow_code_with_default_event_parser(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][1]
-    assert action_manifest["name"] == "pull_profile_list"
+    assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
     assert "event_parser" in action_manifest["action_parameters"]["properties"]
@@ -526,7 +526,7 @@ def test_catch_workflow_code_with_default_event_parser(with_smartleads):
 
 def test_catch_workflow_code_with_event_parser_failure(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][1]
-    assert action_manifest["name"] == "pull_profile_list"
+    assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
     assert "event_parser" in action_manifest["action_parameters"]["properties"]
@@ -567,7 +567,7 @@ def event_parser(event):
 
 def test_catch_workflow_code_with_no_workflow_id(with_smartleads):
     action_manifest = SmartLeads.manifest()["actions"][1]
-    assert action_manifest["name"] == "pull_profile_list"
+    assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
     assert "event_parser" in action_manifest["action_parameters"]["properties"]
