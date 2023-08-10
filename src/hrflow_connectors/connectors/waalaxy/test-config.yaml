@@ -30,7 +30,7 @@ warehouse:
     "__typename": "FormattedProspect",
 }
 actions:
-  pull_profile_list:
+  catch_profile:
     - id: write_fails_because_of_existing_profile
       origin_parameters:
         profile: {
