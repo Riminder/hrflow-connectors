@@ -134,7 +134,7 @@ class SalesforceHrFlowProfile(SalesforceRecord):
     Hash_Id__c: str
     Id__c: int
     Interests__c: t.Optional[Json[t.List[GeneralEntitySchema]]]
-    Labels__c: t.Optional[Json[t.List[GeneralEntitySchema]]]
+    Labels__c: t.Optional[Json]
     Languages__c: t.Optional[Json[t.List[GeneralEntitySchema]]]
     LastModifiedDate: str
     Last_Name__c: t.Optional[str]

@@ -17971,10 +17971,8 @@
               },
               "Labels__c": {
                 "title": "Labels  C",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
+                "type": "string",
+                "format": "json-string"
               },
               "Languages__c": {
                 "title": "Languages  C",
@@ -19720,10 +19718,8 @@
               },
               "Labels__c": {
                 "title": "Labels  C",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
+                "type": "string",
+                "format": "json-string"
               },
               "Languages__c": {
                 "title": "Languages  C",
