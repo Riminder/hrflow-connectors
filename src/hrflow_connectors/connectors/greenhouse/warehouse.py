@@ -50,10 +50,91 @@ class WriteProfilesParameters(ParametersModel):
     )
 
 
+class ReadProfilesParameters(ParametersModel):
+    auth: str = Field(..., description="XAPIKeyAuth", field_type=FieldType.Auth)
+    created_after: str = Field(
+        None,
+        description=(
+            "Return only candidates that were created at or after this timestamp."
+            " Timestamp must be in in ISO-8601 format."
+        ),
+        field_type=FieldType.QueryParam,
+    )
+    updated_after: str = Field(
+        None,
+        description=(
+            "Return only candidates that were updated at or after this timestamp."
+            " Timestamp must be in in ISO-8601 format."
+        ),
+        field_type=FieldType.QueryParam,
+    )
+    job_id: str = Field(
+        None,
+        description=(
+            "If supplied, only return candidates that have applied to this job. Will"
+            " return both when a candidate has applied to a job and when they’re a"
+            " prospect for a job."
+        ),
+        field_type=FieldType.QueryParam,
+    )
+    email: str = Field(
+        None,
+        description=(
+            "If supplied, only return candidates who have a matching e-mail address. If"
+            " supplied with job_id, only return a candidate with a matching e-mail with"
+            " an application on the job. If email and candidate_ids are included,"
+            " candidate_ids will be ignored."
+        ),
+        field_type=FieldType.QueryParam,
+    )
+    candidate_ids: str = Field(
+        None,
+        description=(
+            "If supplied, only return candidates with matching ids. If supplied with"
+            " job_id, only return a candidate with a matching id with an application on"
+            " the job. If email and candidate_ids are included, candidate_ids will be"
+            " ignored."
+        ),
+        field_type=FieldType.QueryParam,
+    )
+
+
 class ReadJobsParameters(ParametersModel):
     board_token: str = Field(
         ..., description="Board_token", field_type=FieldType.QueryParam
     )
+
+
+def read_profiles(
+    adapter: LoggerAdapter,
+    parameters: ReadProfilesParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
+) -> t.Iterable[t.Dict]:
+    parameters.auth = parameters.auth + ":"
+    authorization = base64.b64encode(parameters.auth.encode("ascii"))
+    params = parameters.dict()
+    del params["auth"]
+    response = requests.get(
+        "https://harvest.greenhouse.io/v1/candidates",
+        headers={
+            "Authorization": b"Basic " + authorization,
+        },
+        params=params,
+    )
+    if response.status_code // 100 != 2:
+        adapter.error(
+            "Failed to pull profiles from Greenhouse params={}"
+            " status_code={} response={}".format(
+                parameters, response.status_code, response.text
+            )
+        )
+        raise Exception("Failed to pull profiles from Greenhouse")
+    response = response.json()
+    profiles = response["candidates"]
+    adapter.info("Pulling {} profiles".format(len(profiles)))
+    for profile in profiles:
+        yield profile
 
 
 def read(
@@ -138,5 +219,9 @@ GreenhouseProfileWarehouse = Warehouse(
         parameters=WriteProfilesParameters,
         function=write,
         endpoints=[POST_CANDIDATE_ENDPOINT],
+    ),
+    read=WarehouseReadAction(
+        parameters=ReadProfilesParameters,
+        function=read_profiles,
     ),
 )
