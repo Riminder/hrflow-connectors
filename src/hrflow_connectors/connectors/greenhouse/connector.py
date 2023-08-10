@@ -164,6 +164,64 @@ def format_profile(data: t.Dict) -> t.Dict:
     return profile
 
 
+def format_to_hrflow_profile(data):
+    """
+    Format a profile greenhouse object to a hrflow profile object
+    Args:
+        profile(GreenhouseProfileModel): profile object in the greenhouse profile format
+    Returns:
+        HrFlowProfile: profile in the hrflow profile format
+    """
+    profile = dict()
+    profile["reference"] = data.get("id")
+    home_address = next(
+        (
+            address["value"]
+            for address in data["addresses"]
+            if address["type"] == "home"
+        ),
+        None,
+    )
+
+    email_addresses = data.get("email_addresses")
+    email = email_addresses[0]["value"] if email_addresses else None
+    phone_numbers = data.get("phone_numbers")
+    phone = phone_numbers[0]["value"] if phone_numbers else None
+    profile["info"] = dict(
+        first_name=data.get("first_name"),
+        last_name=data.get("last_name"),
+        email=email,
+        phone=phone,
+        location=dict(text=home_address, lat=None, lng=None),
+    )
+    profile["text"] = data.get("notes")
+    profile["attachments"] = [
+        dict(public_url=attachment["url"], type=attachment["type"])
+        for attachment in data.get("attachments")
+    ]
+    profile["experiences"] = [
+        dict(
+            title=employment["title"],
+            company=employment["company_name"],
+            date_start=employment["start_date"],
+            date_end=employment["end_date"],
+        )
+        for employment in data.get("employments")
+    ]
+
+    profile["educations"] = [
+        dict(
+            school=education["school_name"],
+            title=education["degree"] + " " + education["discipline"],
+            date_start=education["start_date"],
+            date_end=education["end_date"],
+        )
+        for education in data.get("educations")
+    ]
+
+    return profile
+
+
 Greenhouse = Connector(
     name="Greenhouse",
     type=ConnectorType.ATS,
@@ -197,6 +255,20 @@ Greenhouse = Connector(
             origin=HrFlowProfileWarehouse,
             target=GreenhouseProfileWarehouse,
             action_type=ActionType.outbound,
+        ),
+        ConnectorAction(
+            name=ActionName.pull_profile_list,
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves all profiles via the ***Greenhouse*** API and"
+                " send them to a ***Hrflow.ai Board***."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadProfilesActionParameters", format=format_to_hrflow_profile
+            ),
+            origin=GreenhouseProfileWarehouse,
+            target=HrFlowProfileWarehouse,
+            action_type=ActionType.inbound,
         ),
     ],
 )
