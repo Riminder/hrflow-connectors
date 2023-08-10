@@ -100,7 +100,7 @@ def format_into_hrflow_profile(data: SalesforceHrFlowProfile) -> t.Dict:
         reference=data["Reference__c"],
         archived_at=data["Archive__c"],
         updated_at=data["Date_Edition__c"],
-        created_at=data["Timestamp__c"],
+        created_at=data["Date_Reception__c"],
         info=info,
         text_language=data["Text_Language__c"],
         text=data["Text__c"],
@@ -199,9 +199,7 @@ def format_into_salesforce_profile(data: HrFlowProfile) -> t.Dict:
         Reference__c=data["reference"],
         Archive__c=data["archived_at"],
         Date_Edition__c=data["updated_at"],
-        # Check if created_at works for both Date_Reception and Timestamp
         Date_Reception__c=data["created_at"],
-        Timestamp__c=data["created_at"],
         First_Name__c=data["info"]["first_name"],
         Last_Name__c=data["info"]["last_name"],
         Email__c=data["info"]["email"],
