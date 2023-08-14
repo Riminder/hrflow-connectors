@@ -734,7 +734,7 @@ class ConnectorType(enum.Enum):
     ATS = "ATS"
     CRM = "CRM"
     HCM = "HCM"
-    Automation = "Automation Tools"
+    Automation = "Automation"
     JobBoard = "Job Board"
     Classifieds = "Classified Ads"
     Other = "Other"

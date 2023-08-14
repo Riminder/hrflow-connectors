@@ -269,7 +269,7 @@ DESCRIPTION = (
 
 SAPSuccessFactors = Connector(
     name="SAPSuccessFactors",
-    type=ConnectorType.HCM,
+    type=ConnectorType.ATS,
     description=DESCRIPTION,
     url="https://www.sap.com/",
     actions=[
