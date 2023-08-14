@@ -93,7 +93,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **RecruitBox**                                                                                                                        |       ATS              | 🎯                  |                |               |
 | **RecruiterFlow**                                                                                                                              | ATS                  | 🎯                 |                |                 |                     |                 |                         |                      |
 | **Recruitive**                                                                                                                              | ATS                  | 🎯                 |                |                 |                     |                 |                         |                      |
-| [**SAPSuccessfactors**](./src/hrflow_connectors/connectors/sapsuccessfactors/README.md) | HCM | :white_check_mark: | *19/01/2022* | *04/09/2023* | :x: | :white_check_mark: | :white_check_mark: | :x: |
+| [**SAPSuccessfactors**](./src/hrflow_connectors/connectors/sapsuccessfactors/README.md) | ATS | :white_check_mark: | *19/01/2022* | *04/09/2023* | :x: | :white_check_mark: | :white_check_mark: | :x: |
 | [**Salesforce**](./src/hrflow_connectors/connectors/salesforce/README.md) | CRM | :white_check_mark: | *03/08/2023* | *04/09/2023* | :white_check_mark: | :white_check_mark: | :white_check_mark: | :x: |
 | [**Smartrecruiters**](./src/hrflow_connectors/connectors/smartrecruiters/README.md) | ATS | :white_check_mark: | *21/03/2022* | *11/09/2023* | :x: | :white_check_mark: | :white_check_mark: | :x: |
 | [**Taleez**](./src/hrflow_connectors/connectors/taleez/README.md) | ATS | :white_check_mark: | *19/01/2022* | *04/09/2023* | :x: | :white_check_mark: | :white_check_mark: | :x: |
@@ -103,11 +103,11 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Talentlink**                                                                                                                        |    ATS                 | 🎯                  |                |               |
 | **TalentReef**                                                                                                                        |   ATS                  | 🎯                  |                |               |
 | [**Teamtailor**](./src/hrflow_connectors/connectors/teamtailor/README.md) | ATS | :white_check_mark: | *06/10/2022* | *04/09/2023* | :x: | :white_check_mark: | :white_check_mark: | :x: |
-| **Twilio**                                                                                                                            | Marketing Tools     | 🎯                  |                |               |
+| **Twilio**                                                                                                                            | Automation     | 🎯                  |                |               |
 | **Ultimate Software (UKG)**                                                                                                           |  ATS                   | 🎯                  |                |               |
-| [**Waalaxy**](./src/hrflow_connectors/connectors/waalaxy/README.md) | Automation Tools | :white_check_mark: | *18/11/2022* | *04/09/2023* | :x: | :x: | :x: | :x: |
+| [**Waalaxy**](./src/hrflow_connectors/connectors/waalaxy/README.md) | Automation | :white_check_mark: | *18/11/2022* | *04/09/2023* | :x: | :x: | :x: | :x: |
 | [**Workable**](./src/hrflow_connectors/connectors/workable/README.md) | HCM | :white_check_mark: | *27/09/2022* | *11/09/2023* | :x: | :white_check_mark: | :white_check_mark: | :x: |
-| **Workday**                                                                                                                           | HCM           | :white_check_mark: |                |               |
+| **Workday**                                                                                                                           | HCM           | :heavy_check_mark: |                |               |
 
 
 - :white_check_mark: : Done
@@ -140,7 +140,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Jooble**                                                                                                                            | Job Board           | 🎯                  |                |               |
 | **Keljob**                                                                                                                            | Job Board           | 🎯                  |                |               |
 | **Laponi**                                                                                                                            | Job Board           | 🎯                  |                |               |
-| **Leboncoin**                                                                                                                         |  Classified Ads                   | :hourglass:        | *13/07/2022*   |               |
+| **Leboncoin**                                                                                                                         |  Job Board                   | :hourglass:        | *13/07/2022*   |               |
 | **LesJeudis**                                                                                                                         | Job Board           | 🎯                  |                |               |
 | **LinkedIn**                                                                                                                          | Job Board           | 🎯                  |                |               |
 | **Meteojob**                                                                                                                          | Job Board           | 🎯                  |                |               |
