@@ -10,7 +10,14 @@ from collections import Counter
 from datetime import datetime
 from functools import partial
 
-from pydantic import BaseModel, Field, ValidationError, create_model, validator
+from pydantic import (
+    BaseModel,
+    Field,
+    ValidationError,
+    create_model,
+    root_validator,
+    validator,
+)
 
 from hrflow_connectors.core import backend
 from hrflow_connectors.core.templates import WORKFLOW_TEMPLATE
@@ -326,6 +333,32 @@ class ConnectorAction(BaseModel):
         t.Callable[[BaseModel, BaseModel, t.Counter[Event], t.List[t.Dict]], None]
     ] = None
     action_type: ActionType
+
+    @classmethod
+    def based_on(
+        cls: t.Type[t.Self],
+        base: t.Self,
+        connector_name: str,
+        with_format: t.Optional[FormatFunctionType] = None,
+        with_event_parser: t.Optional[EventParserFunctionType] = None,
+    ) -> t.Self:
+        default_format = base.parameters.__fields__["format"].default
+        default_event_parser = base.parameters.__fields__["event_parser"].default
+        parameters = BaseActionParameters.with_defaults(
+            "{}{}".format(connector_name, base.parameters.__name__),
+            format=with_format or default_format,
+            event_parser=with_event_parser or default_event_parser,
+        )
+        return cls(
+            name=base.name,
+            trigger_type=base.trigger_type,
+            description=base.description,
+            parameters=parameters,
+            origin=base.origin,
+            target=base.target,
+            callback=base.callback,
+            action_type=base.action_type,
+        )
 
     @validator("origin", pre=False)
     def origin_is_readable(cls, origin):
@@ -683,6 +716,18 @@ class ConnectorAction(BaseModel):
         return results
 
 
+class ParametersOverride(BaseModel):
+    name: ActionName
+    format: t.Optional[FormatFunctionType] = None
+    event_parser: t.Optional[EventParserFunctionType] = None
+
+    @root_validator
+    def not_empty(cls, values):
+        if values.get("format") is None and values.get("event_parser") is None:
+            raise ValueError("One of `format` or `event_parser` should not be None")
+        return values
+
+
 class ConnectorModel(BaseModel):
     name: str
     description: str
@@ -703,6 +748,64 @@ class Connector:
         for action in self.model.actions:
             with_connector_name = partial(action.run, connector_name=self.model.name)
             setattr(self, action.name.value, with_connector_name)
+
+    @classmethod
+    def based_on(
+        cls: t.Type[t.Self],
+        base: t.Self,
+        name: str,
+        description: str,
+        url: str,
+        with_parameters_override: t.Optional[t.List[ParametersOverride]] = None,
+        with_actions: t.Optional[t.List[ConnectorAction]] = None,
+    ) -> t.Self:
+        base_actions = base.model.actions
+
+        with_parameters_override = with_parameters_override or []
+        with_actions = with_actions or []
+
+        for parameters_override in with_parameters_override:
+            base_action = next(
+                (
+                    action
+                    for action in base_actions
+                    if action.name is parameters_override.name
+                ),
+                None,
+            )
+            if base_action is None:
+                raise ValueError(
+                    "Base connector does not have a {} action to override".format(
+                        parameters_override.name
+                    )
+                )
+            duplicate = next(
+                (
+                    action
+                    for action in with_actions
+                    if action.name is parameters_override.name
+                ),
+                None,
+            )
+            if duplicate is not None:
+                raise ValueError(
+                    "Duplicate action name {} in `with_parameters_override` and"
+                    " `with_actions`".format(parameters_override.name)
+                )
+            with_actions.append(
+                ConnectorAction.based_on(
+                    base=base_action,
+                    connector_name=name,
+                    with_format=parameters_override.format,
+                    with_event_parser=parameters_override.event_parser,
+                )
+            )
+
+        actions = {action.name: action for action in base_actions + with_actions}
+        connector = cls(
+            name=name, description=description, url=url, actions=list(actions.values())
+        )
+        return connector
 
     def manifest(self) -> t.Dict:
         model = self.model
