@@ -13,6 +13,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ParametersOverride,
     ReadMode,
     WorkflowType,
     backend,
@@ -37,7 +38,7 @@ from tests.core.smartleads.warehouse import (
 
 DESCRIPTION = "Test Connector for seamless users to leads integration"
 
-SmartLeads = Connector(
+SmartLeadsF = lambda: Connector(
     name="SmartLeads",
     description=DESCRIPTION,
     url="https://www.smartleads.test/",
@@ -90,14 +91,14 @@ def manifest_directory():
 
 
 def test_connector_manifest():
-    SmartLeads.manifest()
+    SmartLeadsF().manifest()
 
 
 def test_hrflow_connectors_manifest(manifest_directory):
     manifest = Path(__file__).parent / "manifest.json"
     assert manifest.exists() is False
 
-    connectors = [SmartLeads, SmartLeads]
+    connectors = [SmartLeadsF(), SmartLeadsF()]
     hrflow_connectors_manifest(connectors=connectors, directory_path=manifest_directory)
 
     assert manifest.exists() is True
@@ -105,6 +106,7 @@ def test_hrflow_connectors_manifest(manifest_directory):
 
 
 def test_action_by_name():
+    SmartLeads = SmartLeadsF()
     assert (
         SmartLeads.model.action_by_name("push_profile") is SmartLeads.model.actions[0]
     )
@@ -195,6 +197,7 @@ def test_action_pull_job_list_only_with_trigger_type_pull():
 
 
 def test_connector_failures():
+    SmartLeads = SmartLeadsF()
     campaign_id = "camp_xxx1"
     result = SmartLeads.push_profile(
         workflow_id=random_workflow_id(),
@@ -349,6 +352,7 @@ def test_target_not_writable_failure():
 
 
 def test_connector_simple_success():
+    SmartLeads = SmartLeadsF()
     campaign_id = "camp_xxx1"
     assert len(LEADS_DB[campaign_id]) == 0
 
@@ -370,6 +374,7 @@ def test_connector_simple_success():
 
 
 def test_connector_with_format():
+    SmartLeads = SmartLeadsF()
     campaign_id = "camp_xxx1"
 
     def format(user):
@@ -397,6 +402,7 @@ def test_connector_with_format():
 
 
 def test_connector_with_logics():
+    SmartLeads = SmartLeadsF()
     campaign_id = "camp_xxx1"
     # With logic that always returns None
     assert len(LEADS_DB[campaign_id]) == 0
@@ -798,6 +804,7 @@ def test_action_with_callback_failure():
 
 
 def test_connector_incremental_read_not_supported():
+    SmartLeads = SmartLeadsF()
     campaign_id = "camp_xxx1"
     assert len(LEADS_DB[campaign_id]) == 0
 
@@ -815,6 +822,7 @@ def test_connector_incremental_read_not_supported():
 
 
 def test_connector_incremental_backend_not_configured():
+    SmartLeads = SmartLeadsF()
     campaign_id = "camp_xxx1"
     assert len(LEADS_DB[campaign_id]) == 0
 
@@ -836,6 +844,7 @@ def test_connector_incremental_backend_not_configured():
 
 
 def test_connector_incremental_item_to_read_from_failing():
+    SmartLeads = SmartLeadsF()
     campaign_id = "camp_xxx21"
     assert len(LEADS_DB[campaign_id]) == 0
 
@@ -859,6 +868,7 @@ def test_connector_incremental_item_to_read_from_failing():
 
 
 def test_connector_incremental_read():
+    SmartLeads = SmartLeadsF()
     campaign_id = "camp_xxx35"
     assert len(LEADS_DB[campaign_id]) == 0
 
@@ -896,6 +906,7 @@ def test_connector_incremental_read():
 
 
 def test_read_from_is_persisted_after_failure():
+    SmartLeads = SmartLeadsF()
     campaign_id = "camp_xxx35"
     assert len(LEADS_DB[campaign_id]) == 0
 
@@ -1023,3 +1034,548 @@ def test_read_from_is_persisted_after_failure():
         == str(USERS_DB[-2]["id"])
         != last_id
     )
+
+
+def test_no_empty_parameters_overrride():
+    with pytest.raises(ValidationError) as excinfo:
+        ParametersOverride(
+            name=ActionName.push_job_list, format=None, event_parser=None
+        )
+
+    errors = excinfo.value.errors()
+    assert errors[0]["loc"] == ("__root__",)
+    assert errors[0]["msg"].startswith(
+        "One of `format` or `event_parser` should not be None"
+    )
+
+    with pytest.raises(ValidationError) as excinfo:
+        ParametersOverride(
+            name=ActionName.push_job_list,
+        )
+
+    errors = excinfo.value.errors()
+    assert errors[0]["loc"] == ("__root__",)
+    assert errors[0]["msg"].startswith(
+        "One of `format` or `event_parser` should not be None"
+    )
+
+
+def test_connector_action_based_on_no_override_simple():
+    original = ConnectorAction(
+        name=ActionName.push_profile,
+        action_type=ActionType.inbound,
+        trigger_type=WorkflowType.pull,
+        description="Test action",
+        parameters=BaseActionParameters,
+        origin=UsersWarehouse,
+        target=LeadsWarehouse,
+    )
+    based = ConnectorAction.based_on(
+        base=original,
+        connector_name="ZYX Inc",
+    )
+    assert based.name is original.name
+    assert based.action_type is original.action_type
+    assert based.trigger_type is original.trigger_type
+    assert based.origin == original.origin
+    assert based.target == original.target
+    assert based.parameters.__fields__.keys() == original.parameters.__fields__.keys()
+    for key, field in based.parameters.__fields__.items():
+        original_field = original.parameters.__fields__[key]
+        assert field.name == original_field.name
+        assert field.type_ == original_field.type_
+        assert field.required == original_field.required
+        assert field.default == original_field.default
+
+
+def test_connector_action_based_on_no_override_with_defaults():
+    def default_format(*args, **kwargs):
+        pass
+
+    def default_event_parser(*args, **kwargs):
+        pass
+
+    original = ConnectorAction(
+        name=ActionName.push_profile,
+        action_type=ActionType.inbound,
+        trigger_type=WorkflowType.pull,
+        description="Test action",
+        parameters=BaseActionParameters.with_defaults(
+            "WithDefault", format=default_format, event_parser=default_event_parser
+        ),
+        origin=UsersWarehouse,
+        target=LeadsWarehouse,
+    )
+    based = ConnectorAction.based_on(
+        base=original,
+        connector_name="ZYX Inc",
+    )
+    assert based.name is original.name
+    assert based.action_type is original.action_type
+    assert based.trigger_type is original.trigger_type
+    assert based.origin == original.origin
+    assert based.target == original.target
+    assert based.parameters.__fields__.keys() == original.parameters.__fields__.keys()
+    for key, field in based.parameters.__fields__.items():
+        original_field = original.parameters.__fields__[key]
+        assert field.name == original_field.name
+        assert field.type_ == original_field.type_
+        assert field.required == original_field.required
+        assert field.default == original_field.default
+
+
+def test_connector_action_based_on_format_override_with_defaults():
+    def default_format(*args, **kwargs):
+        pass
+
+    def new_format(*args, **kwargs):
+        pass
+
+    def default_event_parser(*args, **kwargs):
+        pass
+
+    original = ConnectorAction(
+        name=ActionName.push_profile,
+        action_type=ActionType.inbound,
+        trigger_type=WorkflowType.pull,
+        description="Test action",
+        parameters=BaseActionParameters.with_defaults(
+            "WithDefault", format=default_format, event_parser=default_event_parser
+        ),
+        origin=UsersWarehouse,
+        target=LeadsWarehouse,
+    )
+    based = ConnectorAction.based_on(
+        base=original, connector_name="ZYX Inc", with_format=new_format
+    )
+    assert based.name is original.name
+    assert based.action_type is original.action_type
+    assert based.trigger_type is original.trigger_type
+    assert based.origin == original.origin
+    assert based.target == original.target
+    assert based.parameters.__fields__.keys() == original.parameters.__fields__.keys()
+    for key, field in based.parameters.__fields__.items():
+        original_field = original.parameters.__fields__[key]
+        assert field.name == original_field.name
+        assert field.type_ == original_field.type_
+        assert field.required == original_field.required
+        if key != "format":
+            assert field.default == original_field.default
+        else:
+            assert field.default is new_format
+            assert original_field.default is default_format
+
+
+def test_connector_action_based_on_event_parser_override_with_defaults():
+    def default_format(*args, **kwargs):
+        pass
+
+    def default_event_parser(*args, **kwargs):
+        pass
+
+    def new_event_parser(*args, **kwargs):
+        pass
+
+    original = ConnectorAction(
+        name=ActionName.push_profile,
+        action_type=ActionType.inbound,
+        trigger_type=WorkflowType.pull,
+        description="Test action",
+        parameters=BaseActionParameters.with_defaults(
+            "WithDefault", format=default_format, event_parser=default_event_parser
+        ),
+        origin=UsersWarehouse,
+        target=LeadsWarehouse,
+    )
+    based = ConnectorAction.based_on(
+        base=original, connector_name="ZYX Inc", with_event_parser=new_event_parser
+    )
+    assert based.name is original.name
+    assert based.action_type is original.action_type
+    assert based.trigger_type is original.trigger_type
+    assert based.origin == original.origin
+    assert based.target == original.target
+    assert based.parameters.__fields__.keys() == original.parameters.__fields__.keys()
+    for key, field in based.parameters.__fields__.items():
+        original_field = original.parameters.__fields__[key]
+        assert field.name == original_field.name
+        assert field.type_ == original_field.type_
+        assert field.required == original_field.required
+        if key != "event_parser":
+            assert field.default == original_field.default
+        else:
+            assert field.default is new_event_parser
+            assert original_field.default is default_event_parser
+
+
+def test_connector_action_based_on_full_override_with_defaults():
+    def default_format(*args, **kwargs):
+        pass
+
+    def default_event_parser(*args, **kwargs):
+        pass
+
+    def new_format(*args, **kwargs):
+        pass
+
+    def new_event_parser(*args, **kwargs):
+        pass
+
+    original = ConnectorAction(
+        name=ActionName.push_profile,
+        action_type=ActionType.inbound,
+        trigger_type=WorkflowType.pull,
+        description="Test action",
+        parameters=BaseActionParameters.with_defaults(
+            "WithDefault", format=default_format, event_parser=default_event_parser
+        ),
+        origin=UsersWarehouse,
+        target=LeadsWarehouse,
+    )
+    based = ConnectorAction.based_on(
+        base=original,
+        connector_name="ZYX Inc",
+        with_format=new_format,
+        with_event_parser=new_event_parser,
+    )
+    assert based.name is original.name
+    assert based.action_type is original.action_type
+    assert based.trigger_type is original.trigger_type
+    assert based.origin == original.origin
+    assert based.target == original.target
+    assert based.parameters.__fields__.keys() == original.parameters.__fields__.keys()
+    for key, field in based.parameters.__fields__.items():
+        original_field = original.parameters.__fields__[key]
+        assert field.name == original_field.name
+        assert field.type_ == original_field.type_
+        assert field.required == original_field.required
+        if key not in ["event_parser", "format"]:
+            assert field.default == original_field.default
+        elif key == "event_parser":
+            assert field.default is new_event_parser
+            assert original_field.default is default_event_parser
+        elif key == "format":
+            assert field.default is new_format
+            assert original_field.default is default_format
+
+
+def test_connector_based_on_simple():
+    SmartLeads = SmartLeadsF()
+
+    SmartLeadsCopy = Connector.based_on(
+        base=SmartLeads,
+        name="SmartLeadsCopy",
+        description="SmartLeadsCopy",
+        url="Some URL",
+    )
+    assert SmartLeadsCopy.model != SmartLeads.model
+
+    assert SmartLeadsCopy.model.name == "SmartLeadsCopy"
+    assert SmartLeadsCopy.model.description == "SmartLeadsCopy"
+    assert SmartLeadsCopy.model.url == "Some URL"
+    assert SmartLeadsCopy.model.actions == SmartLeads.model.actions
+    for action in SmartLeads.model.actions:
+        assert hasattr(SmartLeadsCopy, action.name.name)
+
+
+def test_connector_based_on_action_override():
+    SmartLeads = SmartLeadsF()
+
+    action_to_override = ActionName.push_profile
+    assert hasattr(SmartLeads, action_to_override.name)
+
+    SmartLeadsCopy = Connector.based_on(
+        base=SmartLeads,
+        name="SmartLeadsCopy",
+        description="SmartLeadsCopy",
+        url="Some URL",
+        with_actions=[
+            ConnectorAction(
+                name=action_to_override,
+                action_type=ActionType.inbound,
+                trigger_type=WorkflowType.pull,
+                description="Action with new description",
+                parameters=BaseActionParameters,
+                origin=BadUsersWarehouse,
+                target=LeadsWarehouse,
+            )
+        ],
+    )
+    assert SmartLeadsCopy.model != SmartLeads.model
+
+    assert SmartLeadsCopy.model.name == "SmartLeadsCopy"
+    assert SmartLeadsCopy.model.description == "SmartLeadsCopy"
+    assert SmartLeadsCopy.model.url == "Some URL"
+    assert len(SmartLeadsCopy.model.actions) == len(SmartLeads.model.actions)
+    for action in SmartLeads.model.actions:
+        assert hasattr(SmartLeadsCopy, action.name.value)
+
+    new_action = next(
+        (
+            action
+            for action in SmartLeadsCopy.model.actions
+            if action.name is action_to_override
+        )
+    )
+    assert new_action.description == "Action with new description"
+    assert new_action.origin == BadUsersWarehouse
+    assert new_action.target == LeadsWarehouse
+
+
+def test_connector_based_on_new_action():
+    SmartLeads = SmartLeadsF()
+
+    new_action_name = ActionName.pull_resume_attachment_list
+    assert not hasattr(SmartLeads, new_action_name.name)
+
+    SmartLeadsCopy = Connector.based_on(
+        base=SmartLeads,
+        name="SmartLeadsCopy",
+        description="SmartLeadsCopy",
+        url="Some URL",
+        with_actions=[
+            ConnectorAction(
+                name=new_action_name,
+                action_type=ActionType.inbound,
+                trigger_type=WorkflowType.pull,
+                description="New action",
+                parameters=BaseActionParameters,
+                origin=UsersIncrementalWarehouse,
+                target=FailingLeadsWarehouse,
+            )
+        ],
+    )
+    assert SmartLeadsCopy.model != SmartLeads.model
+
+    assert SmartLeadsCopy.model.name == "SmartLeadsCopy"
+    assert SmartLeadsCopy.model.description == "SmartLeadsCopy"
+    assert SmartLeadsCopy.model.url == "Some URL"
+    assert len(SmartLeadsCopy.model.actions) == len(SmartLeads.model.actions) + 1
+    for action in SmartLeads.model.actions:
+        assert hasattr(SmartLeadsCopy, action.name.value)
+
+    new_action = next(
+        (
+            action
+            for action in SmartLeadsCopy.model.actions
+            if action.name is new_action_name
+        )
+    )
+    assert new_action.description == "New action"
+    assert new_action.origin == UsersIncrementalWarehouse
+    assert new_action.target == FailingLeadsWarehouse
+
+    SmartLeadsCopy.model.actions.remove(new_action)
+    assert SmartLeadsCopy.model.actions == SmartLeads.model.actions
+
+
+def test_connector_based_on_parameters_override():
+    SmartLeads = SmartLeadsF()
+
+    parameters_action_name = ActionName.push_profile_list
+    assert hasattr(SmartLeads, parameters_action_name.name)
+
+    def new_format(*args, **kwargs):
+        pass
+
+    def new_event_parser(*args, **kwargs):
+        pass
+
+    SmartLeadsCopy = Connector.based_on(
+        base=SmartLeads,
+        name="SmartLeadsCopy",
+        description="SmartLeadsCopy",
+        url="Some URL",
+        with_parameters_override=[
+            ParametersOverride(
+                name=parameters_action_name,
+                format=new_format,
+                event_parser=new_event_parser,
+            )
+        ],
+    )
+    assert SmartLeadsCopy.model != SmartLeads.model
+
+    assert SmartLeadsCopy.model.name == "SmartLeadsCopy"
+    assert SmartLeadsCopy.model.description == "SmartLeadsCopy"
+    assert SmartLeadsCopy.model.url == "Some URL"
+    assert len(SmartLeadsCopy.model.actions) == len(SmartLeads.model.actions)
+
+    new_action = next(
+        (
+            action
+            for action in SmartLeadsCopy.model.actions
+            if action.name is parameters_action_name
+        )
+    )
+    SmartLeadsCopy.model.actions.remove(new_action)
+    original_action = next(
+        (
+            action
+            for action in SmartLeads.model.actions
+            if action.name is parameters_action_name
+        )
+    )
+    SmartLeads.model.actions.remove(original_action)
+
+    assert SmartLeadsCopy.model.actions == SmartLeads.model.actions
+
+    assert new_action.name == original_action.name
+    assert new_action.trigger_type == original_action.trigger_type
+    assert new_action.description == original_action.description
+    assert new_action.origin == original_action.origin
+    assert new_action.target == original_action.target
+    assert new_action.callback == original_action.callback
+    assert new_action.action_type == original_action.action_type
+
+    assert new_action.parameters != original_action.parameters
+
+
+def test_connector_based_on_parameters_override_and_new_action():
+    SmartLeads = SmartLeadsF()
+
+    parameters_action_name = ActionName.push_profile_list
+    assert hasattr(SmartLeads, parameters_action_name.name)
+
+    new_action_name = ActionName.pull_resume_attachment_list
+    assert not hasattr(SmartLeads, new_action_name.name)
+
+    action_to_override = ActionName.push_profile
+    assert hasattr(SmartLeads, action_to_override.name)
+
+    def new_format(*args, **kwargs):
+        pass
+
+    def new_event_parser(*args, **kwargs):
+        pass
+
+    SmartLeadsCopy = Connector.based_on(
+        base=SmartLeads,
+        name="SmartLeadsCopy",
+        description="SmartLeadsCopy",
+        url="Some URL",
+        with_parameters_override=[
+            ParametersOverride(
+                name=parameters_action_name,
+                format=new_format,
+                event_parser=new_event_parser,
+            )
+        ],
+        with_actions=[
+            ConnectorAction(
+                name=new_action_name,
+                action_type=ActionType.inbound,
+                trigger_type=WorkflowType.pull,
+                description="New action",
+                parameters=BaseActionParameters,
+                origin=UsersIncrementalWarehouse,
+                target=FailingLeadsWarehouse,
+            ),
+            ConnectorAction(
+                name=action_to_override,
+                action_type=ActionType.inbound,
+                trigger_type=WorkflowType.pull,
+                description="Action with new description",
+                parameters=BaseActionParameters,
+                origin=BadUsersWarehouse,
+                target=LeadsWarehouse,
+            ),
+        ],
+    )
+    assert SmartLeadsCopy.model != SmartLeads.model
+
+    assert SmartLeadsCopy.model.name == "SmartLeadsCopy"
+    assert SmartLeadsCopy.model.description == "SmartLeadsCopy"
+    assert SmartLeadsCopy.model.url == "Some URL"
+    assert len(SmartLeadsCopy.model.actions) == len(SmartLeads.model.actions) + 1
+
+    for action in SmartLeads.model.actions:
+        assert hasattr(SmartLeadsCopy, action.name.value)
+
+    # Parameters Part
+    action_with_overriden_parameters = next(
+        (
+            action
+            for action in SmartLeadsCopy.model.actions
+            if action.name is parameters_action_name
+        )
+    )
+    SmartLeadsCopy.model.actions.remove(action_with_overriden_parameters)
+
+    action_with_original_parameters = next(
+        (
+            action
+            for action in SmartLeads.model.actions
+            if action.name is parameters_action_name
+        )
+    )
+    SmartLeads.model.actions.remove(action_with_original_parameters)
+
+    assert action_with_overriden_parameters.name == action_with_original_parameters.name
+    assert (
+        action_with_overriden_parameters.trigger_type
+        == action_with_original_parameters.trigger_type
+    )
+    assert (
+        action_with_overriden_parameters.description
+        == action_with_original_parameters.description
+    )
+    assert (
+        action_with_overriden_parameters.origin
+        == action_with_original_parameters.origin
+    )
+    assert (
+        action_with_overriden_parameters.target
+        == action_with_original_parameters.target
+    )
+    assert (
+        action_with_overriden_parameters.callback
+        == action_with_original_parameters.callback
+    )
+    assert (
+        action_with_overriden_parameters.action_type
+        == action_with_original_parameters.action_type
+    )
+
+    assert (
+        action_with_overriden_parameters.parameters
+        != action_with_original_parameters.parameters
+    )
+
+    # New Action Part
+    new_action = next(
+        (
+            action
+            for action in SmartLeadsCopy.model.actions
+            if action.name is new_action_name
+        )
+    )
+    SmartLeadsCopy.model.actions.remove(new_action)
+    assert new_action.description == "New action"
+    assert new_action.origin == UsersIncrementalWarehouse
+    assert new_action.target == FailingLeadsWarehouse
+
+    # Action override Part
+    overriden_action = next(
+        (
+            action
+            for action in SmartLeadsCopy.model.actions
+            if action.name is action_to_override
+        )
+    )
+    SmartLeadsCopy.model.actions.remove(overriden_action)
+
+    original_action = next(
+        (
+            action
+            for action in SmartLeads.model.actions
+            if action.name is action_to_override
+        )
+    )
+    SmartLeads.model.actions.remove(original_action)
+
+    assert overriden_action.description == "Action with new description"
+    assert overriden_action.origin == BadUsersWarehouse
+    assert overriden_action.target == LeadsWarehouse
+
+    assert SmartLeadsCopy.model.actions == SmartLeads.model.actions
