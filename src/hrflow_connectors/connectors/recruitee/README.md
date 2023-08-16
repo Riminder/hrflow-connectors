@@ -44,6 +44,7 @@ This new connector will enable Recruitee customers & partners to:
 | ------- | ----------- |
 | [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source as a candidate on Recruitee via the API |
 | [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs via the ***Recruitee*** API and send them to a ***Hrflow.ai Board***. |
+| [**Pull profile list**](docs/pull_profile_list.md) | Retrieves all profiles via the ***Recruitee*** API and send them to a ***Hrflow.ai Source***. |
 
 
 </p>

@@ -52,6 +52,79 @@ def format_profile(hrflow_profile: t.Dict) -> t.Dict:
     return profile
 
 
+def format_to_hrflow_profile(recruitee_profile: t.Dict) -> t.Dict:
+    recruitee_educations = next(
+        (
+            field["values"]
+            for field in recruitee_profile["fields"]
+            if field["kind"] == "education"
+        ),
+        [],
+    )
+
+    recruitee__experiences = next(
+        (
+            field["values"]
+            for field in recruitee_profile["fields"]
+            if field["kind"] == "experience"
+        ),
+        [],
+    )
+    educations = [
+        dict(
+            school=education["school"],
+            date_start=education["start_date"],
+            date_end=education["end_date"],
+            description=education["description"],
+            title=education["major"],
+        )
+        for education in recruitee_educations
+    ]
+    experiences = [
+        dict(
+            company=experience["company"],
+            date_start=experience["start_date"],
+            date_end=experience["end_date"],
+            description=experience["description"],
+            title=experience["title"],
+            location=dict(text=experience["location"], lat=None, lng=None),
+        )
+        for experience in recruitee__experiences
+    ]
+
+    recruitee_emails = recruitee_profile.get("emails", [])
+    recruitee_phones = recruitee_profile.get("phones", [])
+    email = recruitee_emails[0] if recruitee_emails else None
+    phone = recruitee_phones[0] if recruitee_phones else None
+
+    urls = [
+        dict(url=url, type="from_resume")
+        for url in recruitee_profile.get("social_links", [])
+        + recruitee_profile.get("links", [])
+    ]
+    profile = dict(
+        reference=str(recruitee_profile.get("id")),
+        text=recruitee_profile.get("description"),
+        info=dict(
+            full_name=recruitee_profile.get("name"),
+            email=email,
+            phone=phone,
+            urls=urls,
+        ),
+        educations=educations,
+        experiences=experiences,
+        attachments=[
+            dict(
+                type="resume",
+                public_url=recruitee_profile.get("cv_original_url"),
+                filename="original_cv",
+            )
+        ],
+        source=dict(name=recruitee_profile.get("source")),
+    )
+    return profile
+
+
 def get_tags(recruitee_job: t.Dict) -> t.List[t.Dict]:
     job = recruitee_job
     t = lambda name, value: dict(name=name, value=value)
@@ -156,6 +229,20 @@ Recruitee = Connector(
             ),
             origin=RecruiteeJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
+        ),
+        ConnectorAction(
+            name=ActionName.pull_profile_list,
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves all profiles via the ***Recruitee*** API and send them"
+                " to a ***Hrflow.ai Source***."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadProfilesActionParameters", format=format_to_hrflow_profile
+            ),
+            origin=RecruiteeProfileWarehouse,
+            target=HrFlowProfileWarehouse,
             action_type=ActionType.inbound,
         ),
     ],
