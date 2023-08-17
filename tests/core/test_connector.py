@@ -1579,3 +1579,72 @@ def test_connector_based_on_parameters_override_and_new_action():
     assert overriden_action.target == LeadsWarehouse
 
     assert SmartLeadsCopy.model.actions == SmartLeads.model.actions
+
+
+def test_connector_based_on_bad_parameters_override():
+    SmartLeads = SmartLeadsF()
+
+    parameters_action_name = ActionName.push_job
+    assert not hasattr(SmartLeads, parameters_action_name.name)
+
+    def new_format(*args, **kwargs):
+        pass
+
+    with pytest.raises(ValueError) as excinfo:
+        Connector.based_on(
+            base=SmartLeads,
+            name="SmartLeadsCopy",
+            description="SmartLeadsCopy",
+            url="Some URL",
+            with_parameters_override=[
+                ParametersOverride(
+                    name=parameters_action_name,
+                    format=new_format,
+                )
+            ],
+        )
+
+    assert str(
+        excinfo.value
+    ) == "Base connector does not have a {} action to override".format(
+        parameters_action_name.name
+    )
+
+
+def test_connector_based_on_duplicate_action():
+    SmartLeads = SmartLeadsF()
+
+    parameters_action_name = ActionName.push_profile_list
+    assert hasattr(SmartLeads, parameters_action_name.name)
+
+    def new_format(*args, **kwargs):
+        pass
+
+    with pytest.raises(ValueError) as excinfo:
+        Connector.based_on(
+            base=SmartLeads,
+            name="SmartLeadsCopy",
+            description="SmartLeadsCopy",
+            url="Some URL",
+            with_parameters_override=[
+                ParametersOverride(
+                    name=parameters_action_name,
+                    format=new_format,
+                )
+            ],
+            with_actions=[
+                ConnectorAction(
+                    name=parameters_action_name,
+                    action_type=ActionType.inbound,
+                    trigger_type=WorkflowType.pull,
+                    description="New action",
+                    parameters=BaseActionParameters,
+                    origin=UsersIncrementalWarehouse,
+                    target=FailingLeadsWarehouse,
+                ),
+            ],
+        )
+
+    assert str(excinfo.value) == (
+        "Duplicate action name {} in `with_parameters_override` and `with_actions`"
+    ).format(parameters_action_name.name)
