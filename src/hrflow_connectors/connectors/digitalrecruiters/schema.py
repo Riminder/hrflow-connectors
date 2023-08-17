@@ -1,10 +1,11 @@
 from datetime import datetime
 from typing import List, Dict, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
+
 
 class ContractDuration(BaseModel):
     min: Optional[int]
-    max: Optional[int]
+    max: Optional[int]		
 
 class Salary(BaseModel):
     min: Optional[int]
@@ -110,7 +111,7 @@ class DigitalRecruitersImportCandidateFile(BaseModel):
     content: str
     name: str
 
-class DigitalRecruitersImportCandidateProfile(BaseModel):
+class DigitalRecruitersWriteProfile(BaseModel):
     reference: str
     consent_date: str
     s_o: str
@@ -118,3 +119,53 @@ class DigitalRecruitersImportCandidateProfile(BaseModel):
     ApplicationMessage: DigitalRecruitersImportCandidateMessage
     ApplicationProfile: DigitalRecruitersCandidateProfile
     file: Optional[DigitalRecruitersImportCandidateFile] = None
+
+
+class Location(BaseModel):
+    zip: str
+    city: str
+    county: Optional[str]
+    state: Optional[str]
+    country: str
+    latitude: Optional[float]
+    longitude: Optional[float]
+
+class ContractItem(BaseModel):
+    id: int
+    name: str
+    countryNodeIds: Optional[List[int]]
+
+class JobReference(BaseModel):
+    label: str
+    hashId: str
+
+class Privacy(BaseModel):
+    status: str
+    updatedAt: Optional[datetime]
+
+class Avatar(BaseModel):
+    url: HttpUrl
+
+class CV(BaseModel):
+    url: HttpUrl
+
+class Resume(BaseModel):
+    raw: bytes
+    content_type: str
+    
+class DigitalRecruitersReadProfile(BaseModel):
+    id: int
+    firstName: str
+    lastName: str
+    createdAt: datetime
+    jobTitle: str
+    avatar: Avatar
+    gender: str
+    email: str
+    location: Location
+    contract: ContractItem
+    status: str
+    jobReference: JobReference
+    privacy: Privacy
+    cv: CV
+    resume: Optional[Resume]
