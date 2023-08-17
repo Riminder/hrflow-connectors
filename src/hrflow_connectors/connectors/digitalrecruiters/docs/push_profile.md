@@ -1,21 +1,23 @@
 
 # Push profile
+`HrFlow.ai Profiles` :arrow_right: `DigitalRecruiters Write Profile`
 
-`HrFlow.ai Profiles` :arrow_right: `DigitalRecruiters Profiles`
+Pushes a profile from Hrflow.ai to Digital Recruiters.
 
-Pushes a profile from Hrflow.ai to DigitalRecruiters.
 
-**DigitalRecruiters Profiles endpoints used :**
+
+**DigitalRecruiters Write Profile endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
-| [**Write Profiles**]({digital_recruiters_environment_url}/api/candidate/apply/{token}) | Write profiles to DigitalRecruiters |
+| [**Write Profile**]({url_environnement}/api/candidate/apply/{token}) | Write profile to Digital Recruiters |
+
 
 ## Action Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_profile`](../connector.py#L162) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_profile`](../connector.py#L242) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
@@ -31,8 +33,8 @@ Pushes a profile from Hrflow.ai to DigitalRecruiters.
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `digital_recruiters_token` :red_circle: | `str` | None | DigitalRecruiters API token. |
-| `digital_recruiters_environment_url` :red_circle: | `str` | None | DigitalRecruiters API environment url. |
+| `digital_recruiters_token` :red_circle: | `str` | None | Digital Recruiters API token. |
+| `digital_recruiters_environment_url` :red_circle: | `str` | None | Digital Recruiters API url environnement. |
 | `job_reference` :red_circle: | `str` | None | reference of the job to which the candidate is applying. |
 | `message`  | `str` | message du candidat | Application message. |
 
