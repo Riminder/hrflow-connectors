@@ -778,7 +778,7 @@ class Connector:
             if base_action is None:
                 raise ValueError(
                     "Base connector does not have a {} action to override".format(
-                        parameters_override.name
+                        parameters_override.name.name
                     )
                 )
             duplicate = next(
@@ -792,7 +792,7 @@ class Connector:
             if duplicate is not None:
                 raise ValueError(
                     "Duplicate action name {} in `with_parameters_override` and"
-                    " `with_actions`".format(parameters_override.name)
+                    " `with_actions`".format(parameters_override.name.name)
                 )
             with_actions.append(
                 ConnectorAction.based_on(
