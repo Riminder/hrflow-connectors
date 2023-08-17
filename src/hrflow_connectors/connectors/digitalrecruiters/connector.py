@@ -4,10 +4,12 @@ from datetime import datetime
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
     HrFlowProfileWarehouse,
+    HrFlowProfileParsingWarehouse
 )
 from hrflow_connectors.connectors.digitalrecruiters.warehouse import (
     DigitalRecruitersJobWarehouse,
-    DigitalRecruitersProfileWarehouse,
+    DigitalRecruitersWriteProfileWarehouse,
+    DigitalRecruitersReadProfilesWarehouse
 )
 from hrflow_connectors.core import (
     ActionName,
@@ -141,6 +143,38 @@ def format_skills(skills_list):
     formatted_skills = [{"name": skill, "type": None, "value": None} for skill in skills_list]
     return formatted_skills
 
+# format profile location retrieved from DigitlRecruiters
+def get_profile_location(Dr_location: t.Dict) -> t.Dict:
+    if not Dr_location:
+        return dict(text="",lat=None, lng=None)
+    street = Dr_location.get("street", "")
+    zip_code = Dr_location.get("zip", "")
+    city = Dr_location.get("city", "")
+    country = Dr_location.get("country", "")
+    
+    parts = []
+    
+    if street:
+        parts.append(street)
+    
+    if city:
+        parts.append(city)
+    
+    if zip_code:
+        parts.append(f"({zip_code})")
+    
+    if country:
+        parts.append(country)
+    
+    location_text = ", ".join(parts)
+    location_lat = Dr_location.get("latitude", None)
+    location_lng = Dr_location.get("longitude", None)
+    return dict(text=location_text, lat=location_lat, lng=location_lng)
+
+def normalize_link(link):
+    normalized_link = link.replace('\\', '')
+    return normalized_link
+
 def format_job(digital_recruiters_job: t.Dict) -> t.Dict:
     picture = None
     pictures = digital_recruiters_job.get("pictures", [])
@@ -159,6 +193,52 @@ def format_job(digital_recruiters_job: t.Dict) -> t.Dict:
     )
     return job
 
+def format_dr_profile(dr_candidate: t.Dict) -> t.Dict:
+    full_name = f"{dr_candidate.get('firstName', None)} {dr_candidate.get('lastName', None)}"
+    resume = dr_candidate.get("cv", {}).get("url", None)
+    resume = normalize_link(resume)
+    avatar = dr_candidate.get("avatar", {}).get("url", None)
+    reference = dr_candidate.get("id")
+    created_at = dr_candidate.get("createdAt")
+    resume = dr_candidate.get("resume")
+    location = get_profile_location(dr_candidate.get("location", {}))
+    # add tags
+    tags = []
+    
+    def add_tag(name, value):
+        if value is not None:
+            tags.append({"name": name, "value": value})
+    
+    add_tag("digitalrecruiters_profile-email", dr_candidate.get("email", None))
+    add_tag("digitalrecruiters_profile-phoneNumber", dr_candidate.get("phoneNumber", None))
+    add_tag("digitalrecruiters_profile-fullName", full_name)
+    add_tag("digitalrecruiters_avatar", avatar)
+    add_tag("digitalrecruiters_profile-resume", resume)
+    add_tag("digitalrecruiters_profile-location", location.get("text", None))
+    add_tag("digitalrecruiters_education-level", dr_candidate.get("educationLevel", None))
+    add_tag("digitalrecruiters_job-experience-level", dr_candidate.get("experienceLevel", None))
+    add_tag("digitalrecruiters_job-title", dr_candidate.get("jobTitle", None))
+    add_tag("digitalrecruiters_job-id", dr_candidate.get("jobAd", {}).get("id", None))
+    add_tag("digitalrecruiters_job-published-at", dr_candidate.get("jobAd", {}).get("publishedAt", None))
+    add_tag("digitalrecruiters_locale", dr_candidate.get("locale", None))
+    add_tag("digitalrecruiters_origin", dr_candidate.get("origin", None))
+    add_tag("digitalrecruiters_is-spontaneous", dr_candidate.get("isSpontaneous", None))
+    add_tag("digitalrecruiters_is-imported", dr_candidate.get("isImported", None))
+    add_tag("digitalrecruiters_is-from-external-api", dr_candidate.get("isFromExternalApi", None))
+    add_tag("digitalrecruiters_rejected-reason", dr_candidate.get("rejectedReason", None))
+    add_tag("digitalrecruiters_application-status", dr_candidate.get("applicationStatus", None))
+    
+    metadatas=[]
+    profile_hrflow = dict(
+        reference=reference,
+        created_at=created_at,
+        updated_at=datetime.utcnow().isoformat(),
+        resume=resume,
+        tags=tags,
+        metadatas=metadatas,
+    )
+    return profile_hrflow	
+    
 def format_profile(profile_hrflow: t.Dict) -> t.Dict:
     dr_profile_dict = dict()
 
@@ -212,6 +292,19 @@ DigitalRecruiters = Connector(
             action_type=ActionType.inbound,
         ),
         ConnectorAction(
+            name=ActionName.pull_profile_list,
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves all profiles from Digital Recruiters and sends them to an Hrflow.ai Source."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadProfilesActionParameters", format=format_dr_profile
+            ),
+            origin=DigitalRecruitersReadProfilesWarehouse,
+            target=HrFlowProfileParsingWarehouse,  
+            action_type=ActionType.inbound,
+        ),
+        ConnectorAction(
             name=ActionName.push_profile,
             trigger_type=WorkflowType.catch,
             description=(
@@ -221,7 +314,7 @@ DigitalRecruiters = Connector(
                 "WriteProfilesActionParameters", format=format_profile
 			),
             origin=HrFlowProfileWarehouse,
-            target=DigitalRecruitersProfileWarehouse,
+            target=DigitalRecruitersWriteProfileWarehouse,
 			action_type=ActionType.outbound,
 		),
         

@@ -1,29 +1,31 @@
 
 # Pull job list
-
 `DigitalRecruiters Jobs` :arrow_right: `HrFlow.ai Jobs`
 
-Retrieves all jobs from DigitalRecruiters and sends them to an Hrflow.ai Board.
+Retrieves all jobs from Digital Recruiters and sends them to an Hrflow.ai Board.
+
 
 **DigitalRecruiters Jobs endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
-| [**Read Jobs**]({environment_url}/export/job-ads/{token}) | Read jobs from DigitalRecruiters |
+| [**Read Jobs**]({url_environnement}/export/job-ads/{token}) | Read jobs from Digital Recruiters |
+
+
 
 ## Action Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L144) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L178) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `digital_recruiters_token` :red_circle: | `str` | None | DigitalRecruiters API token. |
-| `digital_recruiters_environment_url` :red_circle: | `str` | None | DigitalRecruiters API environment url. |
+| `digital_recruiters_token` :red_circle: | `str` | None | Digital Recruiters API token. |
+| `digital_recruiters_environment_url` :red_circle: | `str` | None | Digital Recruiters API url environnement. |
 
 ## Destination Parameters
 
