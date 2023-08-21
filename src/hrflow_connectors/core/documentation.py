@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import typing as t
+from contextvars import ContextVar
 from pathlib import Path
 
 from pydantic import BaseModel
@@ -16,6 +17,10 @@ from hrflow_connectors.core.templates import (
 
 logger = logging.getLogger(__name__)
 CONNECTORS_DIRECTORY = Path(__file__).parent.parent / "connectors"
+
+
+HRFLOW_CONNECTORS_REMOTE_URL = "https://github.com/Riminder/hrflow-connectors"
+USE_REMOTE_REV: ContextVar[t.Optional[str]] = ContextVar("USE_REMOTE_REV", default=None)
 
 
 class TemplateField(BaseModel):
@@ -54,12 +59,21 @@ def field_example(field: ModelField) -> str:
 
 def field_default(field: ModelField, documentation_path: Path) -> str:
     if callable(field.default):
-        relative_filepath = os.path.relpath(
+        filepath = os.path.relpath(
             field.default.__code__.co_filename, documentation_path
         )
+        if (
+            "site-packages/hrflow_connectors/" in filepath
+            and USE_REMOTE_REV.get() is not None
+        ):
+            filepath = "{}/tree/{}/src/hrflow_connectors/{}".format(
+                HRFLOW_CONNECTORS_REMOTE_URL,
+                USE_REMOTE_REV.get(),
+                filepath.split("/hrflow_connectors/")[-1],
+            )
         return "[`{}`]({}#L{})".format(
             field.default.__code__.co_name,
-            relative_filepath,
+            filepath,
             field.default.__code__.co_firstlineno,
         )
 

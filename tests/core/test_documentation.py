@@ -1,5 +1,8 @@
 import logging
+import re
+from os.path import relpath
 from pathlib import Path
+from unittest import mock
 
 import pytest
 
@@ -12,6 +15,7 @@ from hrflow_connectors.core import (
     ConnectorAction,
     WorkflowType,
 )
+from hrflow_connectors.core.documentation import USE_REMOTE_REV
 from tests.core.localusers.warehouse import UsersWarehouse
 from tests.core.smartleads.warehouse import LeadsWarehouse
 
@@ -73,6 +77,56 @@ def test_documentation(connectors_directory):
 
     assert readme.exists() is True
     assert action_documentation.exists() is True
+
+
+def test_documentation_with_remote_code_links(connectors_directory):
+    readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
+    action_documentation = (
+        connectors_directory
+        / SmartLeads.model.name.lower()
+        / "docs"
+        / "{}.md".format(SmartLeads.model.actions[0].name.value)
+    )
+
+    assert readme.exists() is False
+    assert action_documentation.exists() is False
+
+    reset_token = USE_REMOTE_REV.set("dummy_git_rev")
+
+    connectors = [SmartLeads]
+    with mock.patch(
+        "hrflow_connectors.core.documentation.os.path.relpath",
+        lambda a, b: relpath(a, b).replace(
+            "hrflow_connectors/", "site-packages/hrflow_connectors/"
+        ),
+    ):
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    links = re.findall(r"\[`\S+`\]\(\S+\)", action_documentation.read_text())
+    assert len(links) > 0
+    for link in links:
+        assert link.split("](")[1].startswith(
+            "https://github.com/Riminder/hrflow-connectors/tree/dummy_git_rev"
+        )
+        assert "site-packages/hrflow_connectors" not in link
+
+    USE_REMOTE_REV.reset(reset_token)
+    with mock.patch(
+        "hrflow_connectors.core.documentation.os.path.relpath",
+        lambda a, b: relpath(a, b).replace(
+            "hrflow_connectors/", "site-packages/hrflow_connectors/"
+        ),
+    ):
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    links = re.findall(r"\[`\S+`\]\(\S+\)", action_documentation.read_text())
+    assert len(links) > 0
+    for link in links:
+        assert (
+            "https://github.com/Riminder/hrflow-connectors/tree/dummy_git_rev"
+            not in link
+        )
+        assert "site-packages/hrflow_connectors" in link
 
 
 def test_documentation_connector_directory_not_found(caplog, connectors_directory):
