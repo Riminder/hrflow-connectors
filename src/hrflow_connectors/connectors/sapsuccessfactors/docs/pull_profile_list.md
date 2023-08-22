@@ -1,8 +1,8 @@
 
-# Pull job list
-`SAP Job` :arrow_right: `HrFlow.ai Jobs`
+# Pull profile list
+`SAP Profiles` :arrow_right: `HrFlow.ai Profile Parsing`
 
-Retrieves all jobs via the ***SAPSuccessFactors*** API and sends them to a ***Hrflow.ai Board***.
+Retrieves all profiles via the ***SAPSuccessFactors*** API and sends them to a ***Hrflow.ai Board***.
 
 
 
@@ -11,7 +11,7 @@ Retrieves all jobs via the ***SAPSuccessFactors*** API and sends them to a ***Hr
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L83) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_sap_candidate`](../connector.py#L278) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
@@ -31,10 +31,8 @@ Retrieves all jobs via the ***SAPSuccessFactors*** API and sends them to a ***Hr
 | ----- | ---- | ------- | ----------- |
 | `api_secret` :red_circle: | `str` | None | X-API-KEY used to access HrFlow.ai API |
 | `api_user` :red_circle: | `str` | None | X-USER-EMAIL used to access HrFlow.ai API |
-| `board_key` :red_circle: | `str` | None | HrFlow.ai board key |
-| `sync`  | `bool` | True | When enabled only pushed jobs will remain in the board |
-| `update_content`  | `bool` | False | When enabled jobs already present in the board are updated |
-| `enrich_with_parsing`  | `bool` | False | When enabled jobs are enriched with HrFlow.ai parsing |
+| `source_key` :red_circle: | `str` | None | HrFlow.ai source key |
+| `only_insert`  | `bool` | False | When enabled the profile is written only if it doesn't exist in the source |
 
 :red_circle: : *required*
 
@@ -49,7 +47,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-SAPSuccessFactors.pull_job_list(
+SAPSuccessFactors.pull_profile_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
@@ -67,10 +65,8 @@ SAPSuccessFactors.pull_job_list(
     target_parameters=dict(
         api_secret="your_api_secret",
         api_user="your_api_user",
-        board_key="your_board_key",
-        sync=True,
-        update_content=False,
-        enrich_with_parsing=False,
+        source_key="your_source_key",
+        only_insert=False,
     )
 )
 ```

@@ -28,8 +28,9 @@ In this section, we outline the data flow between different components of the co
 
 | Action | Description |
 | ------- |  -------- |
-| [**Pull jobs**](docs/pull_jobs.md) | Retrieves jobs from SAP API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board | 
-| [**Push profiles**](docs/push_profiles.md) |Retrieves profiles from a [HrFlow.ai](http://HrFlow.ai) Source and sends them to SAP ATS |
+| [**Pull jobs**](docs/pull_job_list.md) | Retrieves jobs from SAP API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board | 
+| [**Pull profiles**](docs/pull_profile_list.md) | Retrieves profiles from SAP API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Source | 
+| [**Push profile**](docs/push_profile.md) |Writes a profile taken from a Hrflow.ai Source to SAPSuccessFactors via the SAP API |
 
 </p>
 
@@ -52,7 +53,10 @@ For more code details checkout connector code
 # 🔗 Useful Links
 
 - 📄Visit [SAP](https://sap.com/) to learn more.
-- ⚙️ API documentation : (https://api.sap.com/)
+- ⚙️ API documentations :
+  - [Job API](https://api.sap.com/api/RCMJobRequisition/overview)
+  - [Candidate API](https://api.sap.com/api/RCMCandidate/overview)
+  
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/sapsuccessfactors) on our Github.
 
 
