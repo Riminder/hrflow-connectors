@@ -30,6 +30,7 @@ In this section, we outline the data flow between different components of the co
 | ------- | ----------- |
 | [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs via the ***SAPSuccessFactors*** API and sends them to a ***Hrflow.ai Board***. |
 | [**Push profile**](docs/push_profile.md) | Writes a profile taken from a Hrflow.ai Source to SAPSuccessFactors via the SAP API |
+| [**Pull profile list**](docs/pull_profile_list.md) | Retrieves all profiles via the ***SAPSuccessFactors*** API and sends them to a ***Hrflow.ai Board***. |
 
 
 </p>
@@ -53,7 +54,10 @@ For more code details checkout connector code
 # 🔗 Useful Links
 
 - 📄Visit [SAP](https://sap.com/) to learn more.
-- ⚙️ API documentation : (https://api.sap.com/)
+- ⚙️ API documentations :
+  - [Job API](https://api.sap.com/api/RCMJobRequisition/overview)
+  - [Candidate API](https://api.sap.com/api/RCMCandidate/overview)
+  
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/sapsuccessfactors) on our Github.
 
 
@@ -61,4 +65,5 @@ For more code details checkout connector code
 - 💻 HrFlow.ai: [Daniel ROSA](https://github.com/DanielRosa73) - Software Engineer
 - 💻 HrFlow.ai: [Limam VADHEL](https://github.com/limamvadhel) - Software Engineer
 - 💻 HrFlow.ai: [Corentin DUCHENE](https://github.com/CorentinDuchene) - Software Engineer
+-  💻 HrFlow.ai :  [Nedhir Ebnou](https://github.com/nedhirouebnou) - Software Engineer
 - 🤝 SAP: [SAP for the partnership and accessible documentation](https://sap.com)
