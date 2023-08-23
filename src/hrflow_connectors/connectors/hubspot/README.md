@@ -34,7 +34,7 @@ In this section, we outline the data flow between different components of the co
 | Action | Description |
 | ------- |  -------- |
 | [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source as a contact on Hubspot via the API | 
-| [**Pull profile list**](docs/pull_profile_list.md) | Retrieves contacts from Hubspot via API and send them to a [HrFlow.ai](http://HrFlow.ai) Source|
+| [**Pull profiles**](docs/pull_profile_list.md) | Retrieves contacts from Hubspot via API and send them to a [HrFlow.ai](http://HrFlow.ai) Source|
 
 </p>
 

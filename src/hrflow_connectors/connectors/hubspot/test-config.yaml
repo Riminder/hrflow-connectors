@@ -13,7 +13,7 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         access_token: $__ACCESS_TOKEN
-        dealID: 5311882214
+        dealID: 14789629331
       status: fatal
       reason: write_failure
     - id: no_access_token
@@ -23,7 +23,7 @@ actions:
         source_key: $__SOURCE_KEY
         profile_key: $__PROFILE_KEY
       target_parameters:
-        dealID: 5311882214
+        dealID: 14789629331
       status: fatal
       reason: bad_target_parameters
     - id: invalid_access_token
@@ -34,7 +34,7 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         access_token: bad_access_token
-        dealID: 5311882214
+        dealID: 14789629331
       status: fatal
       reason: write_failure
     - id: no_hrflow_source_key
@@ -44,7 +44,7 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         access_token: $__ACCESS_TOKEN
-        dealID: 5311882214
+        dealID: 14789629331
       status: fatal
       reason: bad_origin_parameters
     - id: no_hrflow_profile_key
@@ -54,7 +54,7 @@ actions:
         source_key: $__SOURCE_KEY
       target_parameters:
         access_token: $__ACCESS_TOKEN
-        dealID: 5311882214
+        dealID: 14789629331
       status: fatal
       reason: bad_origin_parameters
     - id: invalid_hrflow_api_secret
@@ -65,7 +65,7 @@ actions:
         profile_key: $__PROFILE_KEY
       target_parameters:
         access_token: $__ACCESS_TOKEN
-        dealID: 5311882214
+        dealID: 14789629331
       status: fatal
       reason: read_failure
   pull_profile_list:
