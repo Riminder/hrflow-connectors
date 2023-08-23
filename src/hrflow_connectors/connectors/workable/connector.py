@@ -1,5 +1,6 @@
 import json
 import re
+import typing as t
 
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
@@ -140,6 +141,103 @@ def format_profile(
     return json.dumps(workable_profile)
 
 
+def format_experiences(
+    workable_experiences: t.List,
+) -> t.List:
+    """
+    Format a Workable experience object into a Hrflow experience object
+    Args:
+        data (Workable experience): Workable experience object
+    Returns:
+        Hrflow experience: Hrflow experience object
+    """
+    experiences = []
+    for experience in workable_experiences:
+        hrflow_experience = dict()
+        hrflow_experience["title"] = experience.get("title")
+        hrflow_experience["company"] = experience.get("company")
+        hrflow_experience["description"] = experience.get("description")
+        hrflow_experience["date_start"] = experience.get("start_date")
+        hrflow_experience["date_end"] = experience.get("end_date")
+        experiences.append(hrflow_experience)
+    return experiences
+
+
+def format_educations(
+    workable_educations: t.List,
+) -> t.List:
+    """
+    Format a Workable education object into a Hrflow education object
+    Args:
+        data (Workable education): Workable education object
+    Returns:
+        Hrflow education: Hrflow education object
+    """
+    educations = []
+    for education in workable_educations:
+        hrflow_education = dict()
+        hrflow_education["school"] = education.get("school")
+        hrflow_education["title"] = education.get("degree")
+        hrflow_education["date_start"] = education.get("start_date")
+        hrflow_education["date_end"] = education.get("end_date")
+        educations.append(hrflow_education)
+    return educations
+
+
+def format_candidate(
+    workabal_candidate: t.Dict,
+) -> HrFlowProfile:
+    """
+    Format a WorkableCandidate object into a HrflowProfile object
+    Args:
+        data (WorkableCandidate): WorkableCandidate object
+    Returns:
+        HrFlowProfile: HrflowProfile object
+    """
+    hrflow_profile = dict()
+    hrflow_profile["reference"] = workabal_candidate.get("id")
+    hrflow_profile["info"] = dict()
+    hrflow_profile["info"]["full_name"] = workabal_candidate.get("name")
+    hrflow_profile["info"]["first_name"] = workabal_candidate.get("firstname")
+    hrflow_profile["info"]["last_name"] = workabal_candidate.get("lastname")
+    hrflow_profile["info"]["summary"] = workabal_candidate.get("summary")
+    hrflow_profile["info"]["email"] = workabal_candidate.get("email")
+    hrflow_profile["info"]["phone"] = workabal_candidate.get("phone")
+    hrflow_profile["info"]["location"] = dict(lat=None, lng=None)
+    hrflow_profile["info"]["location"]["text"] = workabal_candidate.get("address")
+    hrflow_profile["info"]["urls"] = [
+        dict(type=social_profile["type"], url=social_profile["url"])
+        for social_profile in workabal_candidate.get("social_profiles")
+    ]
+    hrflow_profile["experiences"] = format_experiences(
+        workabal_candidate.get("experience_entries")
+    )
+    hrflow_profile["educations"] = format_educations(
+        workabal_candidate.get("education_entries")
+    )
+    hrflow_profile["tags"] = []
+    hrflow_profile["tags"].append(
+        dict(
+            name="workable_job_shortcode",
+            value=workabal_candidate.get("job").get("shortcode"),
+        )
+    )
+    hrflow_profile["tags"].append(
+        dict(
+            name="workable_job_title", value=workabal_candidate.get("job").get("title")
+        )
+    )
+    hrflow_profile["tags"].append(
+        dict(name="workable_job_stage", value=workabal_candidate.get("stage"))
+    )
+    hrflow_profile["attachments"] = []
+    attachment = dict()
+    attachment["type"] = "resume"
+    attachment["public_url"] = workabal_candidate.get("resume_url")
+    hrflow_profile["attachments"].append(attachment)
+    return hrflow_profile
+
+
 Workable = Connector(
     name="Workable",
     description=(
@@ -176,6 +274,20 @@ Workable = Connector(
             origin=HrFlowProfileWarehouse,
             target=WorkableProfileWarehouse,
             action_type=ActionType.outbound,
+        ),
+        ConnectorAction(
+            name=ActionName.pull_profile_list,
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves all profiles via the ***Workable*** API and send them"
+                " to a ***Hrflow.ai Source***."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "PullProfilesActionParameters", format=format_candidate
+            ),
+            origin=WorkableProfileWarehouse,
+            target=HrFlowProfileWarehouse,
+            action_type=ActionType.inbound,
         ),
     ],
 )

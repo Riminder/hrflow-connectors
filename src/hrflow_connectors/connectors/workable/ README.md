@@ -29,8 +29,9 @@ In this section, we outline the data flow between different components of the co
 
 | Action | Description |
 | ------- |  -------- |
-| [**Pull jobs**](docs/pull_jobs.md) | Retrieves profiles from HrFlow Souce export API and sends them to Workable ATS | 
-| [**Push profiles**](docs/push_profiles.md) | Retrieves jobs from Workable vacancies export API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board|
+| [**pull_job_list**](docs/pull_job_list.md) | Retrieves all jobs via the ***Workable*** API and send them to a ***Hrflow.ai Board***. | 
+| [**push_profile**](docs/push_profile.md) | Writes a profile from ***Hrflow.ai Source*** to ***Workable*** via the API for the given `shortcode`.|
+| [**pull_profile_list**](docs/pull_profile_list.md) | Retrieves all profiles via the ***Workable*** API and send them to a ***Hrflow.ai Source***.|
 
 </p>
 
