@@ -97,10 +97,12 @@ In this section, we outline the data flow between different components of the co
 # 🔌 Connector Actions
 <p align="center">
 
-| Action | Description |
-| ------- |  -------- |
-| **Pull profiles** | Retrieves profiles from Salesforce Custom HrFlow Profile Object and sends them to HrFlow source | 
-| **Pull jobs** | Retrieves jobs from Salesforce Custom HrFlow Job Object and sends them to HrFlow board | 
+| Action            | Description                                                                                                  |
+| ----------------- | ------------------------------------------------------------------------------------------------------------ |
+| **Pull profiles** | Retrieves profiles from Salesforce HrFlow Profile & Co Custom Objects and writes them to an Hrflow.ai source |
+| **Pull jobs**     | Retrieves jobs from Salesforce HrFlow Job Custom Object and writes them to an Hrflow.ai board                |
+| **Push profile**  | Pushs specific Profile from HrFlow and writesit to HrFlow_Profile\_\_c & Co Custom Objects in Salesforce     |
+
 </p>
 
 # 🐍 Quick Start Examples
