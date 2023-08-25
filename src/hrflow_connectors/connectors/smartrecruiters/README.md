@@ -46,9 +46,9 @@ This new connector will enable:
 
 | Action | Description |
 | ------- |  -------- |
-| [**Pull jobs**](docs/pull_jobs.md) | Retrieves all jobs from SmartRecruiters and sends them to an HrFlow board | 
-| [**Pull profiles**](docs/pull_profiles.md) | Retrieves profiles from SmartRecruiters and sends them to an Hrflow.ai Source |
-| [**Push profiles**](docs/push_profiles.md) | Sends profiles from an HrFlow Source to SmartRecruiters as a candidate for a given job |
+| [**Pull jobs**](docs/pull_job_list.md) | Retrieves all jobs from SmartRecruiters and sends them to an HrFlow board | 
+| [**Pull profiles**](docs/pull_profile_list.md) | Retrieves profiles from SmartRecruiters and sends them to an Hrflow.ai Source |
+| [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source to SmartRecruiters via the API for the given `job_id`. |
 
 </p>
 
