@@ -4,6 +4,7 @@ from hrflow_connectors.connectors.bullhorn import Bullhorn
 from hrflow_connectors.connectors.ceridian import Ceridian
 from hrflow_connectors.connectors.greenhouse.connector import Greenhouse
 from hrflow_connectors.connectors.hubspot import Hubspot
+from hrflow_connectors.connectors.lever import Lever
 from hrflow_connectors.connectors.poleemploi import PoleEmploi
 from hrflow_connectors.connectors.recruitee import Recruitee
 from hrflow_connectors.connectors.sapsuccessfactors import SAPSuccessFactors
@@ -34,6 +35,7 @@ __CONNECTORS__ = [
     Waalaxy,
     Hubspot,
     Taleez,
+    Lever,
 ]
 
 # This makes sure that connector are in module namespace
