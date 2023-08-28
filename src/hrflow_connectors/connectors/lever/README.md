@@ -1,33 +1,26 @@
 # 📖 Summary
 
-- [📖 Summary](#📖-summary)
-- [💼 About Lever](#💼-about-lever)
-  - [😍 Why is it a big deal for Lever customers & partners?](#😍-why-is-it-a-big-deal-for-lever-customers--partners)
-- [🔧 How does it work?](#🔧-how-does-it-work)
-  - [📊 Data integration capabilities:](#📊-data-integration-capabilities)
-- [🔌 Connector Actions](#🔌-connector-actions)
-- [💍 Quick Start Examples](#💍-quick-start-examples)
-- [🔗 Useful Links](#🔗-useful-links)
-- [👏 Special Thanks](#👏-special-thanks)
+- [📖 Summary](#-summary)
+- [💼 About Lever](#-about-lever)
+- [🔧 How does it work?](#-how-does-it-work)
+  - [📊 Data Flow:](#-data-flow)
+- [🔌 Connector Actions](#-connector-actions)
+- [🐍 Quick Start Examples](#-quick-start-examples)
+- [🔗 Useful Links](#-useful-links)
+- [👏 Special Thanks](#-special-thanks)
 
 # 💼 About Lever
 
 > Lever is a modern recruitment platform that helps companies streamline their hiring process.
+<p align="center">
+<image src= https://github.com/Riminder/hrflow-connectors/assets/135601200/84dd9011-1b4f-49ca-97f7-fa8674281b77 width=90% height=100% >
+</p>
 
-## 😍 Why is it a big deal for Lever customers & partners?
-
-This new connector will enable:
-
-- ⚡ A Fastlane Talent & Workforce data integration for Lever customers & partners
-- 🤖 Cutting-edge AI-powered Talent Experiences & Recruiter Experiences for Lever customers
 
 # 🔧 How does it work?
 
-## 📊 Data integration capabilities
-
-- ⬅️ Send Profiles data from Lever to a Destination of your choice.
-- ➡️ Send Profiles data from a Source of your choice to Lever.
-- ⬅️ Send Jobs data from Lever to a Destination of your choice.
+## 📊 Data Flow
+In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process:
 
 # 🔌 Connector Actions
 
@@ -37,11 +30,12 @@ This new connector will enable:
 | [**Pull profile list**](docs/pull_profile_list.md) | Retrieves all profiles via the Lever API and sends them to the Hrflow.ai Board. |
 | [**Push profile**](docs/push_profile.md) | Writes a profile from the Hrflow.ai Source to Lever via the API. |
 
-# 💍 Quick Start Examples
+# 🐍 Quick Start Examples
 
 To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**.
 
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
+
 
 Once the connector module is imported, you can leverage all the different actions that it offers.
 
