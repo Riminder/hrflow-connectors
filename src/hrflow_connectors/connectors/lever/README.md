@@ -5,7 +5,6 @@
   - [😍 Why is it a big deal for Lever customers & partners?](#😍-why-is-it-a-big-deal-for-lever-customers--partners)
 - [🔧 How does it work?](#🔧-how-does-it-work)
   - [📊 Data integration capabilities:](#📊-data-integration-capabilities)
-  - [🧠 Artificial Intelligence capabilities:](#🧠-artificial-intelligence-capabilities)
 - [🔌 Connector Actions](#🔌-connector-actions)
 - [💍 Quick Start Examples](#💍-quick-start-examples)
 - [🔗 Useful Links](#🔗-useful-links)
