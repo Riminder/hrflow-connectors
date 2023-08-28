@@ -26,6 +26,7 @@
     - [Testing a `ConnectorAction`](#testing-a-connectoraction)
     - [Using **secrets** in tests](#using-secrets-in-tests)
   - [Advanced topics](#advanced-topics)
+    - [Creating a Connector based on another one](#creating-a-connector-based-on-another-one)
     - [Mutating a `Warehouse` to fix some parameters](#mutating-a-warehouse-to-fix-some-parameters)
     - [Addind a callback to your `ConnectorAction`](#addind-a-callback-to-your-connectoraction)
     - [How to do _incremental_ reading](#how-to-do-incremental-reading)
@@ -1041,6 +1042,77 @@ poetry run pytest --no-cov --ignore tests/core --connector=LocalJSON
 ```
 
 ## Advanced topics
+
+### Creating a `Connector` based on another one
+
+The `Connector` abstraction exposes a `based_on` class method that allows to create a new connector _based on another one_.
+The newly created connector has his own `name`, `description` and `url` while preserving all the **actions** of the _base connector_:
+
+- `with_actions: t.Optional[t.List[ConnectorAction]] = None` **Optional** parameter allows to give additionnal `ConnectorAction`s to the new connector
+- `with_parameters_override: t.Optional[t.List[ParametersOverride]] = None` **Optional** parameter allows to override either or both of the default `format` and `event_parser` for **existing actions of the _base connector_**
+
+For more details check:
+
+- [Connector.based_on](./src/hrflow_connectors/core/connector.py#L755)
+- [ParametersOverride](./src/hrflow_connectors/core/connector.py#L721)
+
+Below are a few examples
+
+```python
+from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    ParametersOverride,
+    WorkflowType
+)
+
+from hrflow_connectors import LocalJSON
+
+ExactLocalJSONCopy = Connector.based_on(
+    base=LocalJSON,
+    name="MyExactCopyOfLocalJSON",
+    description="This connector has the exact same behavior of LocalJSON. The same number of actions with the same defaults",
+    url="https://url.co"
+)
+
+LocalJSONWithExtra = Connector.based_on(
+    base=LocalJSON,
+    name="LocalJSONWithExtra",
+    description="This connectors behaves the same as LocalJSON but has one more pull_resume_attachment_list ConnectorAction",
+    url="https://url.co",
+    with_actions=[
+        ConnectorAction(
+            name=ActionName.pull_resume_attachment_list,
+            action_type=ActionType.inbound,
+            trigger_type=WorkflowType.pull,
+            description="pull_resume_attachment_list action only in LocalJSONWithExtra",
+            parameters=BaseActionParameters,
+            origin=SomeOriginWarehouse,
+            target=SomeTargetWarehouse,
+        ),
+    ]
+)
+
+def new_format(*args, **kwargs):
+    pass
+
+LocalJSONWithDifferentPullJobListFormat = Connector.based_on(
+    base=LocalJSON,
+    name="LocalJSONWithDifferentPullJobListFormat",
+    description="This connectors has the same actions as LocalJSON but the default `format` function of pull_job_list is different. Likewise event_parser can also be customized",
+    url="https://url.co",
+    with_parameters_override=[
+        ParametersOverride(
+            name=ActionName.pull_job_list,
+            format=new_format,
+        ),
+    ]
+)
+```
+
 ### Mutating a `Warehouse` to fix some parameters
 
 Let's consider the case of `LocalJSON` connector with a single action that reads profiles from `HrFlowProfileWarehouse` and writes them to a JSON file.

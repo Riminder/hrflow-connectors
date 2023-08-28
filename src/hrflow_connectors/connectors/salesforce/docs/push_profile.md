@@ -1,8 +1,8 @@
 
-# Push profiles
-`HrFlow.ai Profiles` :arrow_right: `Taleez Profiles Warehouse`
+# Push profile
+`HrFlow.ai Profiles` :arrow_right: `Salesforce Profiles`
 
-Retrieves profiles from HrFlow Sources and posts them to Taleez ATS enriching them with properties extracted from the profile
+Pushs specific Profile from HrFlow and writes it to HrFlow_Profile__c & Co Custom Objects in Salesforce
 
 
 
@@ -11,7 +11,7 @@ Retrieves profiles from HrFlow Sources and posts them to Taleez ATS enriching th
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_profile`](../connector.py#L261) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_into_salesforce_profile`](../connector.py#L123) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
@@ -27,8 +27,10 @@ Retrieves profiles from HrFlow Sources and posts them to Taleez ATS enriching th
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `x_taleez_api_secret` :red_circle: | `str` | None | Client Secret id used to access Taleez API |
-| `content_type` :red_circle: | `str` | None | Content type |
+| `sf_username` :red_circle: | `str` | None | username used to access Salesforce API |
+| `sf_password` :red_circle: | `str` | None | password used to access Salesforce API |
+| `sf_security_token` :red_circle: | `str` | None | Security Token to access Salesforce API.See below for instructions: How Can I Find My Security Token and Use It in Data Loader | Salesforce Platform  https://www.youtube.com/watch?v=nYbfxeSGKFM&ab_channel=SalesforceSupport |
+| `sf_organization_id` :red_circle: | `str` | None | Security Token to access Salesforce API.See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1 |
 
 :red_circle: : *required*
 
@@ -36,14 +38,14 @@ Retrieves profiles from HrFlow Sources and posts them to Taleez ATS enriching th
 
 ```python
 import logging
-from hrflow_connectors import Taleez
+from hrflow_connectors import Salesforce
 from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
-Taleez.push_profiles(
+Salesforce.push_profile(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
@@ -57,8 +59,10 @@ Taleez.push_profiles(
         profile_key="your_profile_key",
     ),
     target_parameters=dict(
-        x_taleez_api_secret="your_x_taleez_api_secret",
-        content_type="your_content_type",
+        sf_username="your_sf_username",
+        sf_password="your_sf_password",
+        sf_security_token="your_sf_security_token",
+        sf_organization_id="your_sf_organization_id",
     )
 )
 ```

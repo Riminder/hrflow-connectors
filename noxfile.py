@@ -37,7 +37,7 @@ def requirements_file(session, s3_extra: bool = False) -> None:
             REQUIREMENTS_CONTENT[s3_extra] = requirements.read()
             yield requirements
     else:
-        with tempfile.NamedTemporaryFile("wb") as requirements:
+        with tempfile.NamedTemporaryFile("wb", buffering=0) as requirements:
             requirements.write(REQUIREMENTS_CONTENT[s3_extra])
             yield requirements
 

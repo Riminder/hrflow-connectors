@@ -10,7 +10,7 @@ warehouse:
           results_per_page: 1
           salary_min: 90000
 actions:
-  pull_jobs:
+  pull_job_list:
     - id: valid_parameters
       origin_parameters:
         country: "gb"

@@ -1,8 +1,8 @@
 
-# Trigger connexion
+# Catch profile
 `Waalaxy Profiles` :arrow_right: `HrFlow.ai Profiles`
 
-Imports the profiles just connected with, in synchronisation with the Waalaxy campaign (Visit + Invitation + CRM Sync)
+Imports the visited profiles, in synchronization with the Waalaxy campaign (Visit + CRM Sync)
 
 
 
@@ -11,7 +11,7 @@ Imports the profiles just connected with, in synchronisation with the Waalaxy ca
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_waalaxy_profile`](../connector.py#L13) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_waalaxy_profile`](../connector.py#L15) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
@@ -43,7 +43,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-Waalaxy.trigger_connexion(
+Waalaxy.catch_profile(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],

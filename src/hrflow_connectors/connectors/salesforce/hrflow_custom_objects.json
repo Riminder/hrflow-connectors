@@ -1,0 +1,803 @@
+[
+    {
+        "object_name": "HrFlow_Profile__c",
+        "label": "HrFlow_Profile",
+        "pluralLabel": "HrFlow_Profiles",
+        "fields": [
+            {
+                "fullName": "Id__c",
+                "label": "HrFlow Id",
+                "type": "Number",
+                "scale": 0,
+                "precision": 18,
+                "externalId": true,
+                "unique": true
+            },
+            {
+                "fullName": "Dataset_Id__c",
+                "label": "Dataset_Id",
+                "type": "Number",
+                "scale": 0,
+                "precision": 18
+            },
+            {
+                "fullName": "Date_Edition__c",
+                "label": "Date_Edition",
+                "type": "DateTime"
+            },
+            {
+                "fullName": "Date_Reception__c",
+                "label": "Date_Reception",
+                "type": "DateTime"
+            },
+            {
+                "fullName": "Text__c",
+                "label": "Text",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 65536
+            },
+            {
+                "fullName": "Email__c",
+                "label": "Email",
+                "type": "Email"
+            },
+            {
+                "fullName": "URLs__c",
+                "label": "URLs",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Name__c",
+                "label": "Name",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Gender__c",
+                "label": "Gender",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Location_Text__c",
+                "label": "Location_Text",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Location_Lat__c",
+                "label": "Location_Lat",
+                "type": "Number",
+                "scale": 15,
+                "precision": 18
+            },
+            {
+                "fullName": "Location_Lng__c",
+                "label": "Location_Lng",
+                "type": "Number",
+                "scale": 15,
+                "precision": 18
+            },
+            {
+                "fullName": "Location_Gmaps__c",
+                "label": "Location_Gmaps",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Phone__c",
+                "label": "Phone",
+                "type": "Phone"
+            },
+            {
+                "fullName": "Timestamp__c",
+                "label": "Timestamp",
+                "type": "DateTime"
+            },
+            {
+                "fullName": "Summary__c",
+                "label": "Summary",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Hash_Id__c",
+                "label": "Hash_Id",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Text_Language__c",
+                "label": "Text_Language",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Reference__c",
+                "label": "Reference",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Skills__c",
+                "label": "Skills",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Languages__c",
+                "label": "Languages",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Interests__c",
+                "label": "Interests",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Seniority__c",
+                "label": "Seniority",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Location_Fields__c",
+                "label": "Location_Fields",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Experiences_Duration__c",
+                "label": "Experiences_Duration",
+                "type": "Number",
+                "scale": 2,
+                "precision": 18
+            },
+            {
+                "fullName": "Educations_Duration__c",
+                "label": "Educations_Duration",
+                "type": "Number",
+                "scale": 2,
+                "precision": 18
+            },
+            {
+                "fullName": "Archive__c",
+                "label": "Archive",
+                "type": "DateTime"
+            },
+            {
+                "fullName": "Picture__c",
+                "label": "Picture",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "First_Name__c",
+                "label": "First_Name",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Last_Name__c",
+                "label": "Last_Name",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Labels__c",
+                "label": "Labels",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 264
+            },
+            {
+                "fullName": "Metadatas__c",
+                "label": "Metadatas",
+                "type": "LongTextArea",
+                "length": 32768,
+                "visibleLines": 3
+            },
+            {
+                "fullName": "Tags__c",
+                "label": "Tags",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 65536
+            },
+            {
+                "fullName": "Certifications__c",
+                "label": "Certifications",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Courses__c",
+                "label": "Courses",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Tasks__c",
+                "label": "Tasks",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Date_Birth__c",
+                "label": "Date_Birth",
+                "type": "Date"
+            }
+        ]
+    },
+    {
+        "object_name": "HrFlow_Job__c",
+        "label": "HrFlow_Job",
+        "pluralLabel": "HrFlow_Jobs",
+        "fields": [
+            {
+                "fullName": "Id__c",
+                "label": "HrFlow Id",
+                "type": "Number",
+                "scale": 0,
+                "precision": 18,
+                "externalId": true,
+                "unique": true
+            },
+            {
+                "fullName": "Name__c",
+                "label": "Name",
+                "type": "Text",
+                "length": 255,
+                "required": true
+            },
+            {
+                "fullName": "Slug__c",
+                "label": "Slug",
+                "type": "Text",
+                "length": 255,
+                "unique": true,
+                "required": true
+            },
+            {
+                "fullName": "URL__c",
+                "label": "URL",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Summary__c",
+                "label": "Summary",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 65536
+            },
+            {
+                "fullName": "Status__c",
+                "label": "Status",
+                "type": "Number",
+                "scale": 0,
+                "precision": 1,
+                "required": false
+            },
+            {
+                "fullName": "Date_Edition__c",
+                "label": "Date_Edition",
+                "type": "DateTime"
+            },
+            {
+                "fullName": "Skills__c",
+                "label": "Skills",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Archive__c",
+                "label": "Archive",
+                "type": "DateTime"
+            },
+            {
+                "fullName": "Hash_Id__c",
+                "label": "Hash_Id",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Location_Text__c",
+                "label": "Location_Text",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Location_Lat__c",
+                "label": "Location_Lat",
+                "type": "Number",
+                "scale": 15,
+                "precision": 18
+            },
+            {
+                "fullName": "Location_Lng__c",
+                "label": "Location_Lng",
+                "type": "Number",
+                "scale": 15,
+                "precision": 18
+            },
+            {
+                "fullName": "Tags__c",
+                "label": "Tags",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Board_Id__c",
+                "label": "Board_Id",
+                "type": "Number",
+                "scale": 0,
+                "precision": 18
+            },
+            {
+                "fullName": "Sections__c",
+                "label": "Sections",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Reference__c",
+                "label": "Reference",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Languages__c",
+                "label": "Languages",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Ranges_Float__c",
+                "label": "Ranges_Float",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 256
+            },
+            {
+                "fullName": "Ranges_Date__c",
+                "label": "Ranges_Date",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 256
+            },
+            {
+                "fullName": "Location_Gmaps__c",
+                "label": "Location_Gmaps",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Location_Fields__c",
+                "label": "Location_Fields",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Metadatas__c",
+                "label": "Metadatas",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Certifications__c",
+                "label": "Certifications",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Courses__c",
+                "label": "Courses",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Tasks__c",
+                "label": "Tasks",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Picture__c",
+                "label": "Picture",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Culture__c",
+                "label": "Culture",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 256
+            },
+            {
+                "fullName": "Responsibilities__c",
+                "label": "Responsibilities",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Requirements__c",
+                "label": "Requirements",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Benefits__c",
+                "label": "Benefits",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Interviews__c",
+                "label": "Interviews",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            }
+        ]
+    },
+    {
+        "object_name": "HrFlow_Experience__c",
+        "label": "HrFlow_Experience",
+        "pluralLabel": "HrFlow_Experiences",
+        "fields": [
+            {
+                "fullName": "Id__c",
+                "label": "HrFlow Id",
+                "type": "Number",
+                "scale": 0,
+                "precision": 18,
+                "externalId": true,
+                "unique": true
+            },
+            {
+                "fullName": "Profile__c",
+                "label": "Profile",
+                "type": "Lookup",
+                "referenceTo": "HrFlow_Profile__c",
+                "relationshipName": "HrFlow_Profile_Experiences"
+            },
+            {
+                "fullName": "Company__c",
+                "label": "Company",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Title__c",
+                "label": "Title",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Location_Text__c",
+                "label": "Location_Text",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Location_Lat__c",
+                "label": "Location_Lat",
+                "type": "Number",
+                "scale": 15,
+                "precision": 18
+            },
+            {
+                "fullName": "Location_Lng__c",
+                "label": "Location_Lng",
+                "type": "Number",
+                "scale": 15,
+                "precision": 18
+            },
+            {
+                "fullName": "Location_Gmaps__c",
+                "label": "Location_Gmaps",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Date_Begin__c",
+                "label": "Date_Begin",
+                "type": "DateTime",
+                "required": false
+            },
+            {
+                "fullName": "Date_End__c",
+                "label": "Date_End",
+                "type": "DateTime",
+                "required": false
+            },
+            {
+                "fullName": "Description__c",
+                "label": "Description",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Location_Fields__c",
+                "label": "Location_Fields",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Hash_Id__c",
+                "label": "Hash_Id",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Skills__c",
+                "label": "Skills",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Certifications__c",
+                "label": "Certifications",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Courses__c",
+                "label": "Courses",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Tasks__c",
+                "label": "Tasks",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            }
+        ]
+    },
+    {
+        "object_name": "HrFlow_Education__c",
+        "label": "HrFlow_Education",
+        "pluralLabel": "HrFlow_Educations",
+        "fields": [
+            {
+                "fullName": "Id__c",
+                "label": "HrFlow Id",
+                "type": "Number",
+                "scale": 0,
+                "precision": 18,
+                "externalId": true,
+                "unique": true
+            },
+            {
+                "fullName": "Profile__c",
+                "label": "Profile",
+                "type": "Lookup",
+                "referenceTo": "HrFlow_Profile__c",
+                "relationshipName": "HrFlow_Profile_Educations"
+            },
+            {
+                "fullName": "School__c",
+                "label": "School",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Title__c",
+                "label": "Title",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Location_Text__c",
+                "label": "Location_Text",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Location_Lat__c",
+                "label": "Location_Lat",
+                "type": "Number",
+                "scale": 15,
+                "precision": 18
+            },
+            {
+                "fullName": "Location_Lng__c",
+                "label": "Location_Lng",
+                "type": "Number",
+                "scale": 15,
+                "precision": 18
+            },
+            {
+                "fullName": "Location_Gmaps__c",
+                "label": "Location_Gmaps",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Date_Begin__c",
+                "label": "Date_Begin",
+                "type": "DateTime",
+                "required": false
+            },
+            {
+                "fullName": "Date_End__c",
+                "label": "Date_End",
+                "type": "DateTime",
+                "required": false
+            },
+            {
+                "fullName": "Description__c",
+                "label": "Description",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Location_Fields__c",
+                "label": "Location_Fields",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Hash_Id__c",
+                "label": "Hash_Id",
+                "type": "Text",
+                "length": 255
+            },
+            {
+                "fullName": "Skills__c",
+                "label": "Skills",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Certifications__c",
+                "label": "Certifications",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Courses__c",
+                "label": "Courses",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            },
+            {
+                "fullName": "Tasks__c",
+                "label": "Tasks",
+                "type": "LongTextArea",
+                "visibleLines": 3,
+                "length": 32768
+            }
+        ]
+    },
+    {
+        "object_name": "HrFlow_Attachment__c",
+        "label": "HrFlow_Attachment",
+        "pluralLabel": "HrFlow_Attachments",
+        "fields": [
+            {
+                "fullName": "Id__c",
+                "label": "HrFlow Id",
+                "type": "Number",
+                "scale": 0,
+                "precision": 18,
+                "externalId": true,
+                "unique": true
+            },
+            {
+                "fullName": "Profile__c",
+                "label": "Profile",
+                "type": "Lookup",
+                "referenceTo": "HrFlow_Profile__c",
+                "relationshipName": "HrFlow_Profile_Attachments"
+            },
+            {
+                "fullName": "Type__c",
+                "label": "Type",
+                "type": "Text",
+                "length": 255,
+                "required": true
+            },
+            {
+                "fullName": "Text__c",
+                "label": "Text",
+                "type": "Text",
+                "length": 255,
+                "required": false
+            },
+            {
+                "fullName": "Alt__c",
+                "label": "Alt",
+                "type": "Text",
+                "length": 255,
+                "required": true
+            },
+            {
+                "fullName": "File_Name__c",
+                "label": "File_Name",
+                "type": "Text",
+                "length": 255,
+                "required": true
+            },
+            {
+                "fullName": "Original_File_Name__c",
+                "label": "Original_File_Name",
+                "type": "Text",
+                "length": 255,
+                "required": true
+            },
+            {
+                "fullName": "File_Size__c",
+                "label": "File_Size",
+                "type": "Number",
+                "scale": 0,
+                "precision": 11
+            },
+            {
+                "fullName": "Extension__c",
+                "label": "Extension",
+                "type": "Text",
+                "length": 255,
+                "required": true
+            },
+            {
+                "fullName": "URL__c",
+                "label": "URL",
+                "type": "Text",
+                "length": 255,
+                "required": true
+            },
+            {
+                "fullName": "Timestamp__c",
+                "label": "Timestamp",
+                "type": "DateTime",
+                "required": true
+            },
+            {
+                "fullName": "Date_Edition__c",
+                "label": "Date_Edition",
+                "type": "DateTime",
+                "required": false
+            }
+        ]
+    }
+]

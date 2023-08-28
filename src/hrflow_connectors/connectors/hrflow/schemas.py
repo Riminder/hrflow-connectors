@@ -213,7 +213,7 @@ class HrFlowProfile(BaseModel):
     reference: t.Optional[str] = Field(
         None, description="Custom identifier of the Profile."
     )
-    archieved_at: t.Optional[str] = Field(
+    archived_at: t.Optional[str] = Field(
         None,
         description=(
             "type: datetime ISO8601, Archive date of the Profile."
