@@ -36,6 +36,7 @@ pytest-cov = "^3.0.0"
 ipdb = "^0.13.9"
 nox = "^2022.11.21"
 python-semantic-release = "^8.0.8"
+pillow = "<10"
 
 [tool.poetry.extras]
 s3 = ["boto3"]
