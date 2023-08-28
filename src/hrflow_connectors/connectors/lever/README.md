@@ -34,9 +34,9 @@ This new connector will enable:
 
 | Actions | Description |
 | ------- | ----------- |
-| [**Pull job list**](docs/ActionName.pull_job_list.md) | Retrieves all jobs via the Lever API and sends them to the Hrflow.ai Board. |
-| [**Pull profile list**](docs/ActionName.pull_profile_list.md) | Retrieves all profiles via the Lever API and sends them to the Hrflow.ai Board. |
-| [**Push profile**](docs/ActionName.push_profile.md) | Writes a profile from the Hrflow.ai Source to Lever via the API. |
+| [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs via the Lever API and sends them to the Hrflow.ai Board. |
+| [**Pull profile list**](docs/pull_profile_list.md) | Retrieves all profiles via the Lever API and sends them to the Hrflow.ai Board. |
+| [**Push profile**](docs/push_profile.md) | Writes a profile from the Hrflow.ai Source to Lever via the API. |
 
 # 💍 Quick Start Examples
 
@@ -50,7 +50,7 @@ For more code details checkout connector code.
 
 # 🔗 Useful Links
 
-- 📄Visit [Lever](https://www.lever.com/) to learn more.
+- 📄Visit [Lever](https://hire.lever.co/developer/documentation) to learn more.
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/lever) on our Github.
 
 # 👏 Special Thanks
