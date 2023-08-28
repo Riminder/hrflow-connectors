@@ -1,5 +1,8 @@
 import random
 import string
+from pathlib import Path
+
+import pytest
 
 from hrflow_connectors import __CONNECTORS__
 from tests.test_connector import parameterize_connector_action_tests
@@ -41,3 +44,8 @@ def pytest_generate_tests(metafunc):
 
 def random_workflow_id() -> str:
     return "".join([random.choice(string.ascii_letters) for _ in range(10)])
+
+
+@pytest.fixture
+def test_connectors_directory():
+    return Path(__file__).parent / "core" / "src" / "hrflow_connectors" / "connectors"
