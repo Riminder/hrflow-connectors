@@ -11,10 +11,10 @@
 
 # 💼 About Lever
 
-> Lever is a modern recruitment platform that helps companies streamline their hiring process.
+Lever is a modern recruitment platform that helps companies streamline their hiring process.
 
 <p align="center">
-<image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/348b199c-ccc6-411a-9101-b0674c990265 width=90% height=100% >
+<image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/348b199c-ccc6-411a-9101-b0674c990265 width=80% height=100% >
 </p>
 
 # 🔧 How does it work?
@@ -48,5 +48,5 @@ For more code details checkout connector code.
 
 # 👏 Special Thanks
 
-- 💻 HrFlow.ai : Mezid Abdellahi - Software Engineer
+- 💻 HrFlow.ai : Abdellahi Mezid- Software Engineer
 - 🤝 Lever : Integration Support
