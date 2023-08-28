@@ -142,7 +142,6 @@ class ReadProfilesParameters(ParametersModel):
 def get_or_refresh_tokens(client_id, client_secret,grant_type, authorization_code=None, refresh_token=None):
     url = "https://sandbox-lever.auth0.com/oauth/token"
     redirect_uri = "https://marketplace-partners.hrflow.ai/partner/lever/login"
-    print("Getting access token", client_id, client_secret, authorization_code)
     if authorization_code:
         request_data = {
             "client_id": client_id,
@@ -159,18 +158,15 @@ def get_or_refresh_tokens(client_id, client_secret,grant_type, authorization_cod
             "refresh_token": refresh_token
         }
     else:
-        print("Missing authorization_code or refresh_token.")
         return None, None
 
     response = requests.post(url, data=request_data)
-    print("My Response for test:", response.text)
     if response.status_code == 200:
         response_data = response.json()
         access_token = response_data.get("access_token")
         new_refresh_token = response_data.get("refresh_token")
         return access_token, new_refresh_token
     else:
-        print("Error processing tokens. Status code:", response.status_code, "Response:", response.text)
         return None, None
 
 def read_jobs(
