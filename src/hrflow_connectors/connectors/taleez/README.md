@@ -43,10 +43,10 @@ This new connector will enable Taleez customers & partners to:
 <p align="center">
 
 | Action | Description |
-| ------- | ----------- |
-| [**Push profile**](docs/push_profile.md) | Retrieves a profile from HrFlow Source and posts it to Taleez ATS enriching it with properties extracted from the profile |
-| [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs via the ***Taleez*** API and send them to a ***Hrflow.ai Board***. |
-
+| ------- |  -------- |
+| [**Pull jobs**](docs/pull_job_list.md) | Retrieves jobs from Taleez ATS and sends them to HrFlow.ai| 
+| [**Pull profiles**](docs/pull_profile_list.md) | Retrieves profiles from Taleez ATS  and sends them to a [HrFlow.ai](http://HrFlow.ai) Source | 
+| [**Push profile**](docs/push_profile.md) | Writes a profile taken from a Hrflow.ai Source and sends them to Taleez ATS|
 
 </p>
 

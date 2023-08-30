@@ -21,7 +21,7 @@ from hrflow_connectors.core import (
     WarehouseWriteAction,
 )
 
-POST_CANDIDATE_ENDPOINT = "https://api.taleez.com/0/candidates"
+TALEEZ_CANDIDATES_ENDPOINT = "https://api.taleez.com/0/candidates"
 TALEEZ_JOBS_ENDPOINT = "https://api.taleez.com/0/jobs"
 TALEEZ_JOBS_ENDPOINT_LIMIT = 100
 ACCEPT = "application/json;charset=UTF-8"
@@ -88,6 +88,20 @@ def read(
         yield job
 
 
+class ReadProfilesParameters(ParametersModel):
+    x_taleez_api_secret: str = Field(
+        ...,
+        description="X-taleez-api-secret used to access Taleez API",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+    mail: str = Field(
+        None,
+        description="Filter by mail",
+        field_type=FieldType.QueryParam,
+    )
+
+
 class WriteProfilesParameters(ParametersModel):
     accept: str = Field(
         ACCEPT, const=True, field_type=FieldType.QueryParam
@@ -101,6 +115,55 @@ class WriteProfilesParameters(ParametersModel):
     content_type: str = Field(
         ..., description="Content type", repr=True, field_type=FieldType.QueryParam
     )
+
+
+def read_profiles(
+    adapter: LoggerAdapter,
+    parameters: ReadProfilesParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
+) -> t.Iterable[t.Dict]:
+    params = dict(mail=parameters.mail, withProps=True, page=0)
+    profiles = []
+    while True:
+        response = requests.get(
+            TALEEZ_CANDIDATES_ENDPOINT,
+            headers={"X-taleez-api-secret": parameters.x_taleez_api_secret},
+            params=params,
+        )
+        if response.status_code // 100 != 2:
+            adapter.error(
+                "Failed to pull profiles from Taleez params={}"
+                " status_code={} response={}".format(
+                    params, response.status_code, response.text
+                )
+            )
+            raise Exception("Failed to pull profiles from Taleez")
+
+        response = response.json()
+        profiles += response["list"]
+        if response["hasNextPage"]:
+            params["page"] += 1
+        else:
+            break
+
+    for profile in profiles:
+        response_documents = requests.get(
+            "{}/{}/documents".format(TALEEZ_CANDIDATES_ENDPOINT, profile["id"]),
+            headers={"X-taleez-api-secret": parameters.x_taleez_api_secret},
+        )
+        if response_documents.status_code // 100 != 2:
+            adapter.error(
+                "Failed to pull resume from Taleez status_code={} response={}".format(
+                    response_documents.status_code, response_documents.text
+                )
+            )
+            raise Exception("Failed to pull resume from Taleez")
+        resume_link = response_documents.json()[0]["path"]
+        response_resume = requests.get(resume_link)
+        resume_content = response_resume.content
+        profile["CV"] = resume_content
+        yield profile
 
 
 def write(
@@ -119,7 +182,7 @@ def write(
         }
 
         response = requests.post(
-            POST_CANDIDATE_ENDPOINT,
+            TALEEZ_CANDIDATES_ENDPOINT,
             headers=headers,
             data=json.dumps(profile["candidate"]),
         )
@@ -133,7 +196,7 @@ def write(
         id = int(re.search("[0-9]{7,8}", str(response.content)).group(0))
         binary_cv = requests.get(profile["CV"]).content
         response = requests.post(
-            "{}/{}/documents?cv=true".format(POST_CANDIDATE_ENDPOINT, id),
+            "{}/{}/documents?cv=true".format(TALEEZ_CANDIDATES_ENDPOINT, id),
             headers={
                 "accept": "{}".format(parameters.accept),
                 "X-taleez-api-secret": "{}".format(parameters.x_taleez_api_secret),
@@ -162,7 +225,7 @@ def write(
             failed_profiles.append(profile)
         if profile["properties"]:
             response = requests.post(
-                "{}/{}/properties".format(POST_CANDIDATE_ENDPOINT, id),
+                "{}/{}/properties".format(TALEEZ_CANDIDATES_ENDPOINT, id),
                 data=json.dumps(profile["properties"]),
                 headers={
                     "accept": "{}".format(parameters.accept),
@@ -189,6 +252,10 @@ TaleezProfilesWarehouse = Warehouse(
     write=WarehouseWriteAction(
         parameters=WriteProfilesParameters,
         function=write,
+    ),
+    read=WarehouseReadAction(
+        parameters=ReadProfilesParameters,
+        function=read_profiles,
     ),
 )
 TaleezJobWarehouse = Warehouse(
