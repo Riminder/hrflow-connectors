@@ -44,8 +44,9 @@ This new connector will enable Taleez customers & partners to:
 
 | Action | Description |
 | ------- |  -------- |
-| **Pull jobs** | Retrieves jobs from Taleez ATS and sends them to HrFlow.ai| 
-| **Push profiles** | Retrieves profiles from HrFlow.ai and sends them to Taleez ATS|
+| [**Pull jobs**](docs/pull_job_list.md) | Retrieves jobs from Taleez ATS and sends them to HrFlow.ai| 
+| [**Pull profiles**](docs/pull_profile_list.md) | Retrieves profiles from Taleez ATS  and sends them to a [HrFlow.ai](http://HrFlow.ai) Source | 
+| [**Push profile**](docs/push_profile.md) | Writes a profile taken from a Hrflow.ai Source and sends them to Taleez ATS|
 
 </p>
 
