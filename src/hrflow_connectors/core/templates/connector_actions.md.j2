@@ -2,5 +2,5 @@
 
 | Actions | Description |
 | ------- | ----------- |
-{% for action in actions %}| [**{{ action.name | title | replace("_", " ")}}**](docs/{{ action.name }}.md) | {{ action.description }} |
+{% for action in actions %}| [**{{ action.name | title | replace("_", " ")}}**](docs/{{ action.name.value }}.md) | {{ action.description }} |
 {% endfor %}
