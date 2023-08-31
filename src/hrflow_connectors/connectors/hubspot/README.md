@@ -4,6 +4,12 @@
 
 🔗 https://www.hubspot.com/
 
-| Actions |
-| ------- |
-| [**Push profile**](docs/push_profile.md) |
+# 🔌 Connector Actions
+<p align="center">
+
+| Action | Description |
+| ------- | ----------- |
+| [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source as a contact on Hubspot via the API |
+
+
+</p>

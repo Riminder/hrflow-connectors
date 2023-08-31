@@ -41,9 +41,10 @@ This new connector will enable Recruitee customers & partners to:
 <p align="center">
 
 | Action | Description |
-| ------- |  -------- |
-| **Pull jobs** | Retrieves jobs from Recruitee ATS and sends them to HrFlow.ai| 
-| **Push profiles** | Retrieves profiles from HrFlow.ai and sends them to Recruitee ATS|
+| ------- | ----------- |
+| [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source as a candidate on Recruitee via the API |
+| [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs via the ***Recruitee*** API and send them to a ***Hrflow.ai Board***. |
+
 
 </p>
 

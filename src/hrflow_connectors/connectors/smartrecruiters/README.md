@@ -26,28 +26,29 @@ SmartRecruiters’ Talent Acquisition Suite is used by organizations to make the
 ## 😍 Why is it a big deal for SmartRecruiters customers & partners?
 
 This new connector will enable:
+
 - ⚡ A Fastlane Talent & Workforce data integration for SmartRecruiters customers & partners
 - 🤖 Cutting-edge AI-powered Talent Experiences & Recruiter Experiences for SmartRecruiters customers
 
-
 # 🔧 How does it work?
+
 ## 📊 Data integration capabilities:
+
 - ➡️ Send Profiles data from a Source of your choice to SmartRecruiters
 - ⬅️ Send Jobs data from SmartRecruiters to a Destination of your choice
 
-
 ## 🧠 Artificial Intelligence capabilities:
+
 - Extract, Structure, and Categorize Talent & Workforce data
 - Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets
-
 
 # 🔌 Connector Actions
 <p align="center">
 
 | Action | Description |
 | ------- |  -------- |
-| [**Pull jobs**](docs/pull_job_list.md) | Retrieves all jobs from SmartRecruiters and sends them to an HrFlow board | 
-| [**Pull profiles**](docs/pull_profile_list.md) | Retrieves profiles from SmartRecruiters and sends them to an Hrflow.ai Source |
+| [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs from ***SmartRecruiter*** and sends them to an ***Hrflow.ai Board*** | 
+| [**Pull profile list**](docs/pull_profile_list.md) | Retrieves profiles from ***SmartRecruiter*** and sends them to an ***Hrflow.ai Source*** |
 | [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source to SmartRecruiters via the API for the given `job_id`. |
 
 </p>
