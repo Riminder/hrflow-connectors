@@ -1,4 +1,3 @@
-
 # Pull job list
 `Ceridian Jobs` :arrow_right: `HrFlow.ai Jobs`
 

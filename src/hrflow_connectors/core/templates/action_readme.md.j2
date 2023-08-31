@@ -1,0 +1,79 @@
+# {{ action_name | title | replace("_", " ") }}
+`{{ origin_name }}` :arrow_right: `{{ target_name }}`
+
+{{ description }}
+
+{% if origin_endpoints %}
+**{{ origin_name }} endpoints used :**
+| Endpoints | Description |
+| --------- | ----------- |
+{%- for endpoint in origin_endpoints %}
+| [**{{ endpoint.name}}**]({{ endpoint.url }}) | {{ endpoint.description }} |
+{%- endfor %}
+
+{% endif %}
+{% if target_endpoints %}
+**{{ target_name }} endpoints used :**
+| Endpoints | Description |
+| --------- | ----------- |
+{%- for endpoint in target_endpoints %}
+| [**{{ endpoint.name}}**]({{ endpoint.url }}) | {{ endpoint.description }} |
+{%- endfor %}
+
+{% endif %}
+## Action Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+{%- for field in action_fields %}
+| `{{ field.name }}` {% if field.required %}:red_circle:{% endif %} | `{{ field.type }}` | {{ field.default }} | {{ field.description }} |
+{%- endfor %}
+
+## Source Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+{%- for field in origin_fields %}
+| `{{ field.name }}` {% if field.required %}:red_circle:{% endif %} | `{{ field.type }}` | {{ field.default }} | {{ field.description }} |
+{%- endfor %}
+
+## Destination Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+{%- for field in target_fields %}
+| `{{ field.name }}` {% if field.required %}:red_circle:{% endif %} | `{{ field.type }}` | {{ field.default }} | {{ field.description }} |
+{%- endfor %}
+
+:red_circle: : *required*
+
+## Example
+
+```python
+import logging
+from hrflow_connectors import {{ connector_name }}
+from hrflow_connectors.core import ReadMode
+
+
+logging.basicConfig(level=logging.INFO)
+
+
+{{ connector_name }}.{{ action_name }}(
+    workflow_id="some_string_identifier",
+    action_parameters=dict(
+        {%- for field in action_fields %}
+        {{ field.name }}={{ field.example }},
+        {%- endfor %}
+    ),
+    origin_parameters=dict(
+        {%- for field in origin_fields %}
+        {{ field.name }}={{ field.example }},
+        {%- endfor %}
+    ),
+    target_parameters=dict(
+        {%- for field in target_fields %}
+        {{ field.name }}={{ field.example }},
+        {%- endfor %}
+    )
+)
+```

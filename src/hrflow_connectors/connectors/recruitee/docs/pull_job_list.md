@@ -1,4 +1,3 @@
-
 # Pull job list
 `Recruitee Jobs` :arrow_right: `HrFlow.ai Jobs`
 

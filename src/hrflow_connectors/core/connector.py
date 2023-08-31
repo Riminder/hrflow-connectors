@@ -22,7 +22,7 @@ from pydantic import (
 )
 
 from hrflow_connectors.core import backend
-from hrflow_connectors.core.templates import WORKFLOW_TEMPLATE
+from hrflow_connectors.core.templates import Templates
 from hrflow_connectors.core.warehouse import ReadMode, Warehouse
 
 logger = logging.getLogger(__name__)
@@ -391,7 +391,7 @@ class ConnectorAction(BaseModel):
         return self.origin.data_type.name
 
     def workflow_code(self, connector_name: str, workflow_type: WorkflowType) -> str:
-        return WORKFLOW_TEMPLATE.render(
+        return Templates.get_template("workflow.py.j2").render(
             format_placeholder=self.WORKFLOW_FORMAT_PLACEHOLDER,
             logics_placeholder=self.WORKFLOW_LOGICS_PLACEHOLDER,
             event_parser_placeholder=self.WORKFLOW_EVENT_PARSER_PLACEHOLDER,
