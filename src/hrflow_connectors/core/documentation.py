@@ -15,9 +15,16 @@ from hrflow_connectors.core.templates import Templates
 logger = logging.getLogger(__name__)
 CONNECTORS_DIRECTORY = Path(__file__).parent.parent / "connectors"
 
+ACTIONS_SECTIONS_REGEXP = (
+    r"# 🔌 Connector Actions.+?\|\s*Action\s*\|\s*Description\s*\|.+?\|\s+?<\/p>"
+)
 
 HRFLOW_CONNECTORS_REMOTE_URL = "https://github.com/Riminder/hrflow-connectors"
 USE_REMOTE_REV: ContextVar[t.Optional[str]] = ContextVar("USE_REMOTE_REV", default=None)
+
+
+class InvalidConnectorReadmeFormat(Exception):
+    pass
 
 
 class TemplateField(BaseModel):
@@ -144,6 +151,26 @@ def generate_docs(
             )
             readme_content = py_37_38_compat_patch(readme_content)
             readme.write_bytes(readme_content.encode())
+        else:
+            readme_content = readme.read_text()
+            match = re.search(ACTIONS_SECTIONS_REGEXP, readme_content, re.DOTALL)
+            if match is None:
+                raise InvalidConnectorReadmeFormat(
+                    "README.md for connector {} does not respect standard format. No"
+                    " actions section found".format(model.name)
+                )
+            updated_actions_content = Templates.get_template(
+                "connector_actions.md.j2"
+            ).render(
+                actions=model.actions,
+            )
+            updated_readme_content = "{before}{actions}{after}".format(
+                before=readme_content[: match.start()],
+                actions=updated_actions_content,
+                after=readme_content[match.end() :],
+            )
+            updated_readme_content = py_37_38_compat_patch(updated_readme_content)
+            readme.write_bytes(updated_readme_content.encode())
         if len(model.actions) > 0:
             action_docs_directory = connector_directory / "docs"
             if not action_docs_directory.is_dir():

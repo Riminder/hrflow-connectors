@@ -15,7 +15,10 @@ from hrflow_connectors.core import (
     ConnectorAction,
     WorkflowType,
 )
-from hrflow_connectors.core.documentation import USE_REMOTE_REV
+from hrflow_connectors.core.documentation import (
+    USE_REMOTE_REV,
+    InvalidConnectorReadmeFormat,
+)
 from tests.core.localusers.warehouse import UsersWarehouse
 from tests.core.smartleads.warehouse import LeadsWarehouse
 
@@ -77,6 +80,23 @@ def test_documentation(connectors_directory):
 
     assert readme.exists() is True
     assert action_documentation.exists() is True
+
+
+def test_documentation_fails_if_actions_section_not_found(connectors_directory):
+    readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
+
+    generate_docs(connectors=[SmartLeads], connectors_directory=connectors_directory)
+
+    content = readme.read_text()
+    content = content.replace(
+        "# 🔌 Connector Actions", "This breaks the expect section start"
+    )
+    readme.write_bytes(content.encode())
+
+    with pytest.raises(InvalidConnectorReadmeFormat):
+        generate_docs(
+            connectors=[SmartLeads], connectors_directory=connectors_directory
+        )
 
 
 def test_documentation_with_remote_code_links(connectors_directory):
