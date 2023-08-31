@@ -50,12 +50,13 @@ This new connector will enable:
 # 🔌 Connector Actions
 <p align="center">
 
-
 | Action | Description |
-| ------- |  -------- |
-| [**Pull jobs**](docs/pull_jobs.md) | Retrieves jobs from Bullhorn ATS and sends them to [HrFlow.ai](http://HrFlow.ai) |
-| [**Pull profiles**](docs/push_profiles.md) | Retrieves profiles from Bullhorn ATS and sends them to [HrFlow.ai](http://HrFlow.ai)|
-| [**Push profiles**](docs/push_profiles.md) | Retrieves profiles from [HrFlow.ai](http://HrFlow.ai) and sends them to Bullhorn ATS|
+| ------- | ----------- |
+| [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source to Bullhorn via the API |
+| [**Pull job list**](docs/pull_job_list.md) | Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board |
+| [**Pull resume attachment list**](docs/pull_resume_attachment_list.md) | retrieves profiles attachments from Bullhorn and Parses them and sends them to Hrflow.ai source |
+| [**Pull profile list**](docs/pull_profile_list.md) | Retrieves profiles from Bullhorn and writes them to Hrflow.ai source |
+
 
 </p>|
 
