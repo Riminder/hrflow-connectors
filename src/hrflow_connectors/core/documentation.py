@@ -18,47 +18,16 @@ from hrflow_connectors.core.templates import Templates
 logger = logging.getLogger(__name__)
 CONNECTORS_DIRECTORY = Path(__file__).parent.parent / "connectors"
 
-DONE_MARKUP = ":white_check_mark:"
-KO_MARKUP = ":x:"
-
-
-ROOT_README_TRACKED_ACTIONS = {
-    ActionName.pull_job_list,
-    ActionName.pull_profile_list,
-    ActionName.push_profile,
-    ActionName.push_job,
-    ActionName.catch_profile,
-}
-
-
-def CONNECTOR_LISTING_REGEXP_F(name: str) -> str:
-    return (
-        r"\|\s*\[?\*{0,2}(?i:(?P<name>"
-        + r" ?".join([c for c in name if c.strip()])
-        + r"))\*{0,2}(\]\([^)]+\))?\s*\|[^|]+\|[^|]+\|\s*(\*|_)(?P<release_date>[\d\/]+)(\*|_)\s*\|\s*(\*|_)(?P<update_date>[\d\/]+)(\*|_)\s*\|.+"
-    )
-
-
-ACTIONS_SECTIONS_REGEXP = (
-    r"# 🔌 Connector Actions.+?\|\s*Action\s*\|\s*Description\s*\|.+?\|\s+?<\/p>"
-)
-
-
-GIT_UPDATE_EXCLUDE_PATTERN = (
-    r"(notebooks/\.gitkeep|README\.md|test\-config\.yaml|logo\.png|docs/)"
-)
-GIT_UPDATE_TIMEOUT = 5
-GIT_UPDATE_DATE = """
-git ls-tree -r --name-only HEAD {base_connector_path}/{connector} | while read filename; do
-  echo "$(git log -1 --format="%aI" -- $filename) $filename"
-done
-"""
 
 HRFLOW_CONNECTORS_REMOTE_URL = "https://github.com/Riminder/hrflow-connectors"
 USE_REMOTE_REV: ContextVar[t.Optional[str]] = ContextVar("USE_REMOTE_REV", default=None)
 BASE_CONNECTOR_PATH: ContextVar[t.Optional[str]] = ContextVar(
     "BASE_CONNECTOR_PATH", default="src/hrflow_connectors/connectors/"
 )
+
+
+class InvalidConnectorReadmeFormat(Exception):
+    pass
 
 
 class InvalidConnectorReadmeFormat(Exception):
@@ -284,46 +253,6 @@ def generate_docs(
             )
             readme_content = py_37_38_compat_patch(readme_content)
             readme.write_bytes(readme_content.encode())
-        else:
-            readme_content = readme.read_text()
-            match = re.search(ACTIONS_SECTIONS_REGEXP, readme_content, re.DOTALL)
-            if match is None:
-                raise InvalidConnectorReadmeFormat(
-                    "README.md for connector {} does not respect standard format. No"
-                    " actions section found".format(model.name)
-                )
-            updated_actions_content = Templates.get_template(
-                "connector_actions.md.j2"
-            ).render(
-                actions=model.actions,
-            )
-            updated_readme_content = "{before}{actions}{after}".format(
-                before=readme_content[: match.start()],
-                actions=updated_actions_content,
-                after=readme_content[match.end() :],
-            )
-            updated_readme_content = py_37_38_compat_patch(updated_readme_content)
-            readme.write_bytes(updated_readme_content.encode())
-
-        notebooks_directory = connector_directory / "notebooks"
-        empty_dir_file = notebooks_directory / KEEP_EMPTY_NOTEBOOKS
-        create_empty_file = True
-
-        if notebooks_directory.is_dir():
-            for child in notebooks_directory.iterdir():
-                if not child.name == empty_dir_file.name:
-                    create_empty_file = False
-                    try:
-                        empty_dir_file.unlink()
-                    except FileNotFoundError:
-                        pass
-                    break
-        else:
-            notebooks_directory.mkdir()
-
-        if create_empty_file:
-            empty_dir_file.touch()
-
         if len(model.actions) > 0:
             action_docs_directory = connector_directory / "docs"
             if not action_docs_directory.is_dir():
