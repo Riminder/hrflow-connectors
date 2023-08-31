@@ -11,13 +11,24 @@ You can also refer to the [hrflow developers documentation](https://developers.h
 _We welcome any contributions from the community big or small._
 
 ## Code of conduct
+
 Please notice, all users and contributors are expected to be **open,
-considerate, reasonable, and respectful**. When in doubt, *Python Software
-Foundation's Code of Conduct* is a good reference in terms of behavior
+considerate, reasonable, and respectful**. When in doubt, _Python Software
+Foundation's Code of Conduct_ is a good reference in terms of behavior
 guidelines.
 
+## Branch Policy
+
+The `master` branch is the stable version of the package where tests and other enforced policies (code style, etc...) should be always passing.
+
+The `dev` branch can be used to merge various contributions and test them in conjunction while bypassing the sometimes time consuming process of conforming to `master` merging rules.
+
+Depending on the version you would like to use you can `git checkout origin (master|dev)`.
+
+**_Mind that your PR should ultimately target `master` and be based on `master`_**
 
 ## Basic Environment setup
+
 1. Fork the repository
 2. Make sure you have [one of the supported `python` versions](./pyproject.toml) installed
 3. Install [poetry](https://python-poetry.org/docs/)
@@ -26,22 +37,28 @@ guidelines.
 6. **[Optional]** Install developpment hooks `make init-hooks`. This installs `git-lfs` add `pre-commit` hooks defined in [`.pre-commit-config.yaml`](.pre-commit-config.yaml)
 
 ### Activating the S3 Extra
+
 If you are contributing work related to the [S3 backend store](./DOCUMENTATION.md#s3store) you need to update step 4 of the [Basic Environment setup](#basic-environment-setup) with:
+
 1. `poetry install -E s3`
 2. Properly configure the store as described [here](./DOCUMENTATION.md#backend-configuration)
 
 ### Runing `nox` sessions
+
 `nox` sessions are used to test core components across supported versions of Python. The following sessions are defined:
+
 - `manifest`: Generates the `manifest.json` file across supported versions. Fails if the `manifest.json` file is different for any given version
 - `docs`: Genetates documentation files accross supported versions. Fails if any file is different for any given version
 - `tests`: Run tests without **s3** extras
 - `tests_s3`: Run tests with **s3** extras
 
 In order to run the `nox` sessions you must:
+
 1. Install locally a python interpreter matching each of the supported major versions
 2. Run `poetry run nox -s manifest` to test the `poetry run nox -s manifest` suite
 
 > By default both `tests` and `tests_s3` run _core tests only_. To run tests for connectors use one of the following commands:
+>
 > ```bash
 > # Only connector's tests
 > poetry run nox -s (tests|tests_s3) -- --no-cov --ignore tests/core --allconnectors
@@ -51,7 +68,8 @@ In order to run the `nox` sessions you must:
 > poetry run nox -s (tests|tests_s3) -- --allconnectors
 > ```
 
->In order to run the `tests_s3` session you need to export the following environment variables
+> In order to run the `tests_s3` session you need to export the following environment variables
+>
 > ```bash
 > export S3_STORE_TEST_BUCKET="==========FILL==ME=========="
 > export S3_STORE_TEST_AWS_REGION="==========FILL==ME=========="
@@ -70,8 +88,11 @@ In order to run the `nox` sessions you must:
 > ```
 
 ### Instructions for `pyenv` users
+
 #### Instructions for the basic setup
+
 _Assuming you would like to use python `3.10.5`. Update instructions accordingly_
+
 1. `pyenv install 3.10.5`
 2. Activate version `pyenv local 3.10.5`
 3. Check that version is activated `python --version` should print `3.10.5`
@@ -81,26 +102,31 @@ _Assuming you would like to use python `3.10.5`. Update instructions accordingly
 7. **[Optional]** Activate **s3** extras `poetry install -E s3`
 
 #### Instruction for running `nox`
+
 _Hypothetically assuming that the supported versions are `3.10` and `3.11`. Update instructions accordingly_
+
 1. Pick versions matching `3.10` and `3.11`. Below we use `3.10.10` and `3.11.2`
 2. Run `pyenv install 3.10.10` and `pyenv install 3.11.2`
 3. Add `.python-version` file in the top directory at the same level of [noxfile.py](./noxfile.py) with following content
+
 ```txt
 3.10.10
 3.11.2
 ```
+
 4. If you run `pyenv versions` you should see that both versions are activated and set by `.python-version` file
 5. Test that `nox` can properly use the python `3.10` and `3.11` by running `poetry run nox -s manifest -p 3.10 3.11`
 
-
 ## Contribution checklist
+
 For all kind of contributions make sure that :
+
 1. Your work respects the folder and file naming conventions in the [Connector Developpment Tutorial](./DOCUMENTATION.md#folder-structure)
 2. Make sure that [`manifest.json`](./manifest.json) was updated to reflect your work. See [here](./DOCUMENTATION.md#add-localjson-to-the-hrflowai-connectors-manifest) for instructions
 3. Make sure that documentation was updated to reflect your work. See [here](./DOCUMENTATION.md#generate-documentation-for-localjson) for instructions
 4. Enforce code style by running `make style`
 5. Ensure proper linting by running `make flake8`
-6. Make sure that **core** tests are ok. These do not involve any connector code so you should'nt need to provide any kind of secrets. Run `make pytest-core`. _If you introduced new functionality in **core** make sure to maintain a _100%_ coverage score_.
+6. Make sure that **core** tests are ok. These do not involve any connector code so you should'nt need to provide any kind of secrets. Run `make pytest-core`. _If you introduced new functionality in **core** make sure to maintain a \_100%_ coverage score\_.
 7. **[Optional]** [_Only if your are contributing a new connector_] Make sure that your own connector tests are ok. Run `poetry run pytest --no-cov --ignore tests/core --connector=${YOUR_CONNECTOR_NAME}`
 8. If you reach this step then your PR is very welcome ! From your fork you can target our `master` branch
 
