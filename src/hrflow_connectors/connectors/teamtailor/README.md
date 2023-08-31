@@ -30,11 +30,11 @@ In this section, we outline the data flow between different components of the co
 <p align="center">
 
 | Action | Description |
-| ------- |  -------- |
-| [**Pull jobs**](docs/pull_jobs.md) | Retrieves jobs from Teamtailor API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board | 
-| [**Push profiles**](docs/push_profiles.md) | Retrieves profiles from a [HrFlow.ai](http://HrFlow.ai) Souce and sends them to BreezyHR ATS|
+| ------- | ----------- |
+| [**Pull job list**](docs/pull_job_list.md) | Retrieve all jobs via the ***Teamtailor*** API and send them to an ***Hrflow.ai Board***. |
+| [**Push profile**](docs/push_profile.md) | Writes a profile from an Hrflow.ai Source to Teamtailor via the API |
 
-  
+
 </p>
 
 

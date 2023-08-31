@@ -32,10 +32,13 @@ Talentsoft (by Cegid) offers a full-suite HCM solution so you can keep all your 
 <p align="center">
 
 | Action | Description |
-| ------- |  -------- |
-| [**Pull jobs**](docs/pull_jobs.md) | Retrieves all jobs from Cegid Talentsoft and sends them to an HrFlow board | 
-| [**Pull profiles**](docs/pull_profiles.md) | Retrieves profiles from Cegid Talentsoft and sends them to an Hrflow.ai Source |
-| [**Catch profiles**](docs/catch_profiles.md) | Receives profiles. It catches three different events: applicant_new, applicant_update, and applicant_resume_update |
+| ------- | ----------- |
+| [**Applicant new**](docs/applicant_new.md) | Handle TalentSoft 'applicant_new' event by fetching profile from TalentSoft and sending it to HrFlow.ai Parsing API. |
+| [**Applicant resume update**](docs/applicant_resume_update.md) | Handle TalentSoft 'applicant_resume_update' event by running a new HrFlow.ai Parsing on updated resume. |
+| [**Applicant update**](docs/applicant_update.md) | Handle TalentSoft 'applicant_update' event by only updating tags coming from TalentSoft in HrFlow.ai. |
+| [**Pull profile list**](docs/pull_profile_list.md) | Retrieves profiles from TalentSoft candidates export API and send them to a ***Hrflow.ai Source***. |
+| [**Pull job list**](docs/pull_job_list.md) | Retrieves jobs from TalentSoft vacancies export API and send them to a ***Hrflow.ai Board***. |
+
 
 </p>
 <p align="center">
