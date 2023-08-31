@@ -1,4 +1,3 @@
-
 # Pull profile list
 `Bullhorn Profiles` :arrow_right: `HrFlow.ai Profiles`
 

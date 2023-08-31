@@ -1,4 +1,3 @@
-
 # Pull job list
 `Taleez Jobs Warehouse` :arrow_right: `HrFlow.ai Jobs`
 

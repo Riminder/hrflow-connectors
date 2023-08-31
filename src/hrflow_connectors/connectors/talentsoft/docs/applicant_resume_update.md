@@ -1,4 +1,3 @@
-
 # Applicant resume update
 `TalentSoft Profiles` :arrow_right: `HrFlow.ai Profile Parsing`
 
