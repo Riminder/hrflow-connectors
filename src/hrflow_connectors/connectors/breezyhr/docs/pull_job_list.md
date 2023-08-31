@@ -1,4 +1,3 @@
-
 # Pull job list
 `BreezyHRJobWarehouse` :arrow_right: `HrFlow.ai Jobs`
 

@@ -1,4 +1,3 @@
-
 # Pull job list
 `TalentSoft Jobs` :arrow_right: `HrFlow.ai Jobs`
 

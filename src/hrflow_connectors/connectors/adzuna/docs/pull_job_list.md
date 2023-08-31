@@ -1,4 +1,3 @@
-
 # Pull job list
 `Adzuna Jobs` :arrow_right: `HrFlow.ai Jobs`
 
