@@ -14,6 +14,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -267,6 +268,7 @@ DESCRIPTION = (
 )
 SmartRecruiters = Connector(
     name="SmartRecruiters",
+    type=ConnectorType.ATS,
     description=DESCRIPTION,
     url="https://www.smartrecruiters.com/",
     actions=[

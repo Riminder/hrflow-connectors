@@ -20,6 +20,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -271,6 +272,7 @@ DESCRIPTION = (
 
 Salesforce = Connector(
     name="Salesforce",
+    type=ConnectorType.CRM,
     description=DESCRIPTION,
     url="https://www.salesforce.com",
     actions=[

@@ -17,6 +17,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -126,6 +127,7 @@ DESCRIPTION = (
 
 Teamtailor = Connector(
     name="Teamtailor",
+    type=ConnectorType.ATS,
     description=DESCRIPTION,
     url="https://www.teamtailor.com/",
     actions=[

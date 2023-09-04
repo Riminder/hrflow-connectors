@@ -15,6 +15,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -165,6 +166,7 @@ def format_profile(data: t.Dict) -> t.Dict:
 
 Greenhouse = Connector(
     name="Greenhouse",
+    type=ConnectorType.ATS,
     description="",
     url="https://www.greenhouse.io/",
     actions=[

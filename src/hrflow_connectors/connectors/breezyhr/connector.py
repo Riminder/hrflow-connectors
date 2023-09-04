@@ -20,6 +20,7 @@ from hrflow_connectors.core.connector import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -195,6 +196,7 @@ def format_profile(hrflow_profile: HrFlowProfile) -> BreezyProfileModel:
 
 BreezyHR = Connector(
     name="BreezyHR",
+    type=ConnectorType.ATS,
     description=(
         "Breezyhr is an end-to-end recruiting software "
         "to help you attract & hire great employees with less effort"

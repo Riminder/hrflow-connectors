@@ -8,6 +8,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -53,6 +54,7 @@ def event_parser(event: t.Dict) -> t.Dict:
 DESCRIPTION = "Waalaxy"
 Waalaxy = Connector(
     name="Waalaxy",
+    type=ConnectorType.Automation,
     description=DESCRIPTION,
     url="https://www.waalaxy.com/fr/",
     actions=[

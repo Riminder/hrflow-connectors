@@ -18,6 +18,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -268,6 +269,7 @@ DESCRIPTION = (
 
 SAPSuccessFactors = Connector(
     name="SAPSuccessFactors",
+    type=ConnectorType.HCM,
     description=DESCRIPTION,
     url="https://www.sap.com/",
     actions=[
