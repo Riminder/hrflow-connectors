@@ -362,10 +362,12 @@ from hrflow_connectors.core import (
     Connector,
     ConnectorAction,
     WorkflowType,
+    ConnectorType
 )
 
 LocalJSON = Connector(
     name="LocalJSON",
+    type=ConnectorType.Other,
     description="Read from JSON, Write to JSON",
     url="https://localjson.ai",
     actions=[
@@ -411,6 +413,7 @@ from hrflow_connectors.core import (
     Connector,
     ConnectorAction,
     WorkflowType,
+    ConnectorType
 )
 
 
@@ -422,6 +425,7 @@ def format_job(job: t.Dict) -> t.Dict:
 
 LocalJSON = Connector(
     name="JSON file",
+    type=ConnectorType.Other,
     description="Read from JSON, Write to JSON",
     url="https://localjson.ai",
     actions=[
@@ -1066,7 +1070,8 @@ from hrflow_connectors.core import (
     Connector,
     ConnectorAction,
     ParametersOverride,
-    WorkflowType
+    WorkflowType,
+    ConnectorType
 )
 
 from hrflow_connectors import LocalJSON
@@ -1074,6 +1079,7 @@ from hrflow_connectors import LocalJSON
 ExactLocalJSONCopy = Connector.based_on(
     base=LocalJSON,
     name="MyExactCopyOfLocalJSON",
+    type=ConnectorType.Other,
     description="This connector has the exact same behavior of LocalJSON. The same number of actions with the same defaults",
     url="https://url.co"
 )
@@ -1081,6 +1087,7 @@ ExactLocalJSONCopy = Connector.based_on(
 LocalJSONWithExtra = Connector.based_on(
     base=LocalJSON,
     name="LocalJSONWithExtra",
+    type=ConnectorType.Other,
     description="This connectors behaves the same as LocalJSON but has one more pull_resume_attachment_list ConnectorAction",
     url="https://url.co",
     with_actions=[
@@ -1102,6 +1109,7 @@ def new_format(*args, **kwargs):
 LocalJSONWithDifferentPullJobListFormat = Connector.based_on(
     base=LocalJSON,
     name="LocalJSONWithDifferentPullJobListFormat",
+    type=ConnectorType.Other,
     description="This connectors has the same actions as LocalJSON but the default `format` function of pull_job_list is different. Likewise event_parser can also be customized",
     url="https://url.co",
     with_parameters_override=[
@@ -1128,10 +1136,12 @@ from hrflow_connectors.core import (
     Connector,
     ConnectorAction,
     WorkflowType,
+    ConnectorType
 )
 
 LocalJSON = Connector(
     name="LocalJSON",
+    type=ConnectorType.Other,
     description="Read from JSON, Write to JSON",
     url="https://localjson.ai",
     actions=[
@@ -1156,6 +1166,7 @@ Below are a few examples :
 ```python
 LocalJSON = Connector(
     name="LocalJSON",
+    type=ConnectorType.Other,
     description="Read from JSON, Write to JSON",
     url="https://localjson.ai",
     actions=[
@@ -1419,10 +1430,12 @@ With the concepts and example code at hand let's put all that theory into practi
         Connector,
         ConnectorAction,
         WorkflowType,
+        ConnectorType
     )
 
     SQLiteOrders = Connector(
         name="SQLiteOrders",
+        type=ConnectorType.Other,
         description="Read from SQLite, Write to JSON",
         url="https://sqliteorder.ai",
         actions=[
