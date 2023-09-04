@@ -1,5 +1,6 @@
 import logging
 import re
+from contextlib import contextmanager
 from os.path import relpath
 from pathlib import Path
 from unittest import mock
@@ -13,19 +14,40 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 from hrflow_connectors.core.documentation import (
     USE_REMOTE_REV,
     InvalidConnectorReadmeFormat,
 )
-from tests.core.localusers.warehouse import UsersWarehouse
-from tests.core.smartleads.warehouse import LeadsWarehouse
+from tests.core.src.hrflow_connectors.connectors.localusers.warehouse import (
+    UsersWarehouse,
+)
+from tests.core.src.hrflow_connectors.connectors.smartleads.warehouse import (
+    LeadsWarehouse,
+)
 
+DUMMY_ROOT_README = """
+# Test README used for documentation tests
+
+# 🤝 List of Connectors (ATS/CRM/HCM)
+| Name    | Type       | Available   | Release date  | Last update  | Pull profile list action | Pull job list action | Push profile action | Push job action |
+|----------------|--------------|----------|----------|----------|------------|--------|-----------|--------------|
+| [**Smart Leads**](./src/hrflow_connectors/connectors/smartleads/README.md) | HCM | :white_check_mark: | *27/09/2022* | *04/09/2023* | :x: | :white_check_mark: | :white_check_mark: | :x: |
+| [**No Connector Dir**](./src/hrflow_connectors/connectors/noconnectordir/README.md) | HCM | :white_check_mark: | *20/01/2019* | *14/03/2022* | :x: | :white_check_mark: | :white_check_mark: | :x: |
+
+
+- :white_check_mark: : Done
+- :hourglass: : Work in progress
+- 🎯 : Backlog
+
+"""
 DESCRIPTION = "Test Connector for seamless users to leads integration"
 
 SmartLeads = Connector(
     name="SmartLeads",
+    type=ConnectorType.Other,
     description=DESCRIPTION,
     url="https://www.smartleads.test/",
     actions=[
@@ -42,10 +64,41 @@ SmartLeads = Connector(
 )
 
 
+@contextmanager
+def patched_subprocess(**kwargs):
+    with mock.patch(
+        "hrflow_connectors.core.documentation.subprocess.run",
+        return_value=mock.MagicMock(
+            **{
+                "stderr": None,
+                "stdout": "\n".join(
+                    [
+                        "2023-08-03T11:21:52+00:00",
+                        "2023-04-10T10:06:47+00:00",
+                        "2023-01-12T14:56:41+01:00",
+                    ]
+                ),
+                **kwargs,
+            }
+        ),
+    ):
+        yield
+
+
 @pytest.fixture
 def connectors_directory():
-    path = Path(__file__).parent
+    root_readme = Path(__file__).parent / "README.md"
+    root_readme.write_bytes(DUMMY_ROOT_README.encode())
+
+    path = Path(__file__).parent / "src" / "hrflow_connectors" / "connectors"
+
     yield path
+
+    try:
+        root_readme.unlink()
+    except FileNotFoundError:
+        pass
+
     readme = path / SmartLeads.model.name.lower() / "README.md"
     actions_documentation_directory = path / SmartLeads.model.name.lower() / "docs"
     action_documentation = actions_documentation_directory / "{}.md".format(
@@ -76,7 +129,8 @@ def test_documentation(connectors_directory):
     assert action_documentation.exists() is False
 
     connectors = [SmartLeads]
-    generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+    with patched_subprocess():
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
 
     assert readme.exists() is True
     assert action_documentation.exists() is True
@@ -84,8 +138,10 @@ def test_documentation(connectors_directory):
 
 def test_documentation_fails_if_actions_section_not_found(connectors_directory):
     readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
-
-    generate_docs(connectors=[SmartLeads], connectors_directory=connectors_directory)
+    with patched_subprocess():
+        generate_docs(
+            connectors=[SmartLeads], connectors_directory=connectors_directory
+        )
 
     content = readme.read_text()
     content = content.replace(
@@ -94,9 +150,22 @@ def test_documentation_fails_if_actions_section_not_found(connectors_directory):
     readme.write_bytes(content.encode())
 
     with pytest.raises(InvalidConnectorReadmeFormat):
-        generate_docs(
-            connectors=[SmartLeads], connectors_directory=connectors_directory
-        )
+        with mock.patch(
+            "hrflow_connectors.core.documentation.subprocess.run",
+            return_value=mock.MagicMock(
+                stderr=None,
+                stdout="\n".join(
+                    [
+                        "2023-08-03T11:21:52+00:00",
+                        "2023-04-10T10:06:47+00:00",
+                        "2023-01-12T14:56:41+01:00",
+                    ]
+                ),
+            ),
+        ):
+            generate_docs(
+                connectors=[SmartLeads], connectors_directory=connectors_directory
+            )
 
 
 def test_documentation_with_remote_code_links(connectors_directory):
@@ -120,7 +189,22 @@ def test_documentation_with_remote_code_links(connectors_directory):
             "hrflow_connectors/", "site-packages/hrflow_connectors/"
         ),
     ):
-        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+        with mock.patch(
+            "hrflow_connectors.core.documentation.subprocess.run",
+            return_value=mock.MagicMock(
+                stderr=None,
+                stdout="\n".join(
+                    [
+                        "2023-08-03T11:21:52+00:00",
+                        "2023-04-10T10:06:47+00:00",
+                        "2023-01-12T14:56:41+01:00",
+                    ]
+                ),
+            ),
+        ):
+            generate_docs(
+                connectors=connectors, connectors_directory=connectors_directory
+            )
 
     links = re.findall(r"\[`\S+`\]\(\S+\)", action_documentation.read_text())
     assert len(links) > 0
@@ -137,7 +221,22 @@ def test_documentation_with_remote_code_links(connectors_directory):
             "hrflow_connectors/", "site-packages/hrflow_connectors/"
         ),
     ):
-        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+        with mock.patch(
+            "hrflow_connectors.core.documentation.subprocess.run",
+            return_value=mock.MagicMock(
+                stderr=None,
+                stdout="\n".join(
+                    [
+                        "2023-08-03T11:21:52+00:00",
+                        "2023-04-10T10:06:47+00:00",
+                        "2023-01-12T14:56:41+01:00",
+                    ]
+                ),
+            ),
+        ):
+            generate_docs(
+                connectors=connectors, connectors_directory=connectors_directory
+            )
 
     links = re.findall(r"\[`\S+`\]\(\S+\)", action_documentation.read_text())
     assert len(links) > 0
@@ -153,6 +252,7 @@ def test_documentation_connector_directory_not_found(caplog, connectors_director
     mismatch_name = "NoConnectorDir"
     NameMismatchSmartLeads = Connector(
         name=mismatch_name,
+        type=ConnectorType.Other,
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -182,7 +282,8 @@ def test_documentation_connector_directory_not_found(caplog, connectors_director
     assert action_documentation.exists() is False
 
     connectors = [NameMismatchSmartLeads]
-    generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+    with patched_subprocess():
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
 
     assert readme.exists() is False
     assert action_documentation.exists() is False
@@ -190,4 +291,62 @@ def test_documentation_connector_directory_not_found(caplog, connectors_director
     assert caplog.record_tuples[0][1] == logging.ERROR
     assert caplog.record_tuples[0][2].startswith(
         "Skipping documentation for {}: no directory found at".format(mismatch_name)
+    )
+
+
+def test_documentation_fails_if_root_readme_not_found(connectors_directory):
+    (connectors_directory / ".." / ".." / ".." / "README.md").unlink()
+    with patched_subprocess():
+        with pytest.raises(Exception) as excinfo:
+            generate_docs(
+                connectors=[SmartLeads], connectors_directory=connectors_directory
+            )
+
+    assert excinfo.value.args[0].startswith("Failed to find root README")
+
+
+def test_documentation_fails_if_subprocess_has_stderr(connectors_directory):
+    stderr = "FATAL ERROR"
+    with patched_subprocess(stderr=stderr):
+        with pytest.raises(Exception) as excinfo:
+            generate_docs(
+                connectors=[SmartLeads], connectors_directory=connectors_directory
+            )
+
+    assert (
+        excinfo.value.args[0].startswith("Subprocess run for Git update dates failed")
+        and stderr in excinfo.value.args[0]
+    )
+
+
+def test_documentation_fails_if_connector_not_already_listed_in_root_readme(
+    connectors_directory,
+):
+    name = "Not Listed In Root README"
+    NotListed = Connector(
+        name=name,
+        type=ConnectorType.Other,
+        description=DESCRIPTION,
+        url="https://not.listed.in.root.test/",
+        actions=[
+            ConnectorAction(
+                name=ActionName.pull_profile_list,
+                action_type=ActionType.inbound,
+                trigger_type=WorkflowType.pull,
+                description="Test action",
+                parameters=BaseActionParameters,
+                origin=UsersWarehouse,
+                target=LeadsWarehouse,
+            ),
+        ],
+    )
+    with patched_subprocess():
+        with pytest.raises(Exception) as excinfo:
+            generate_docs(
+                connectors=[NotListed], connectors_directory=connectors_directory
+            )
+
+    assert (
+        excinfo.value.args[0].startswith("Could not find listing for")
+        and name in excinfo.value.args[0]
     )
