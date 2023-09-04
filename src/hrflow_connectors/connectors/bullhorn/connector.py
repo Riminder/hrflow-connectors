@@ -71,20 +71,24 @@ def get_education(education_list: t.List[t.Dict]) -> t.List[t.Dict]:
             "degree": hrflow_education.get("title"),
             "comments": hrflow_education.get("description"),
             "city": location.get("text") if location else None,
-            "startDate": int(
-                date_format.from_str_to_datetime(
-                    hrflow_education.get("date_start")
-                ).timestamp()
-            )
-            if hrflow_education.get("date_start")
-            else None,
-            "endDate": int(
-                date_format.from_str_to_datetime(
-                    hrflow_education.get("date_end")
-                ).timestamp()
-            )
-            if hrflow_education.get("date_start")
-            else None,
+            "startDate": (
+                int(
+                    date_format.from_str_to_datetime(
+                        hrflow_education.get("date_start")
+                    ).timestamp()
+                )
+                if hrflow_education.get("date_start")
+                else None
+            ),
+            "endDate": (
+                int(
+                    date_format.from_str_to_datetime(
+                        hrflow_education.get("date_end")
+                    ).timestamp()
+                )
+                if hrflow_education.get("date_start")
+                else None
+            ),
         }
         educations.append(education)
     return educations
@@ -99,20 +103,24 @@ def get_experience(experience_list: t.List[t.Dict]) -> t.List[t.Dict]:
             "companyName": hrflow_experience.get("company"),
             "title": hrflow_experience.get("title"),
             "comments": hrflow_experience.get("description"),
-            "startDate": int(
-                date_format.from_str_to_datetime(
-                    hrflow_experience.get("date_start")
-                ).timestamp()
-            )
-            if hrflow_experience.get("date_start")
-            else None,
-            "endDate": int(
-                date_format.from_str_to_datetime(
-                    hrflow_experience.get("date_end")
-                ).timestamp()
-            )
-            if hrflow_experience.get("date_end")
-            else None,
+            "startDate": (
+                int(
+                    date_format.from_str_to_datetime(
+                        hrflow_experience.get("date_start")
+                    ).timestamp()
+                )
+                if hrflow_experience.get("date_start")
+                else None
+            ),
+            "endDate": (
+                int(
+                    date_format.from_str_to_datetime(
+                        hrflow_experience.get("date_end")
+                    ).timestamp()
+                )
+                if hrflow_experience.get("date_end")
+                else None
+            ),
         }
         experience_json.append(experience)
     return experience_json
