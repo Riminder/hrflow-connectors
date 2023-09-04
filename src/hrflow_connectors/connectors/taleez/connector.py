@@ -18,6 +18,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 from hrflow_connectors.core.warehouse import ActionEndpoints
@@ -356,7 +357,8 @@ DESCRIPTION = (
 
 Taleez = Connector(
     name="Taleez",
-    description="",
+    type=ConnectorType.ATS,
+    description=DESCRIPTION,
     url="https://taleez.com/",
     actions=[
         ConnectorAction(

@@ -8,6 +8,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -35,6 +36,7 @@ def format_profile(hrflow_profile: t.Dict) -> t.Dict:
 
 Hubspot = Connector(
     name="Hubspot",
+    type=ConnectorType.CRM,
     description="",
     url="https://www.hubspot.com/",
     actions=[

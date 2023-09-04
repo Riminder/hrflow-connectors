@@ -14,6 +14,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -125,6 +126,7 @@ def format_job(recruitee_job: t.Dict) -> t.Dict:
 
 Recruitee = Connector(
     name="Recruitee",
+    type=ConnectorType.ATS,
     description="",
     url="https://recruitee.com/",
     actions=[

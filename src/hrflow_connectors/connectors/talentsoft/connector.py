@@ -20,6 +20,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     Event,
     WorkflowType,
 )
@@ -278,6 +279,7 @@ def applicant_update_parser(event: t.Dict) -> t.Dict:
 DESCRIPTION = "TalentSoft"
 TalentSoft = Connector(
     name="TalentSoft",
+    type=ConnectorType.HCM,
     description=DESCRIPTION,
     url="https://www.cegid.com/fr/produits/cegid-talentsoft/",
     actions=[
