@@ -2490,7 +2490,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "ATS"
     },
     {
       "name": "TalentSoft",
@@ -4248,7 +4249,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "HCM"
     },
     {
       "name": "PoleEmploi",
@@ -5560,7 +5562,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "Job Board"
     },
     {
       "name": "Adzuna",
@@ -6383,7 +6386,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "Job Board"
     },
     {
       "name": "Recruitee",
@@ -7572,7 +7576,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "ATS"
     },
     {
       "name": "Workable",
@@ -8574,7 +8579,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "HCM"
     },
     {
       "name": "BreezyHR",
@@ -9607,7 +9613,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "ATS"
     },
     {
       "name": "SAPSuccessFactors",
@@ -10873,7 +10880,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "HCM"
     },
     {
       "name": "Bullhorn",
@@ -12980,7 +12988,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "ATS"
     },
     {
       "name": "Ceridian",
@@ -13491,7 +13500,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "HCM"
     },
     {
       "name": "Greenhouse",
@@ -14910,7 +14920,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "ATS"
     },
     {
       "name": "Teamtailor",
@@ -16090,7 +16101,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "ATS"
     },
     {
       "name": "Waalaxy",
@@ -16681,7 +16693,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "Automation Tools"
     },
     {
       "name": "Hubspot",
@@ -17422,7 +17435,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "CRM"
     },
     {
       "name": "Taleez",
@@ -18650,7 +18664,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "ATS"
     },
     {
       "name": "Salesforce",
@@ -21896,7 +21911,8 @@
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
         }
-      ]
+      ],
+      "type": "CRM"
     }
   ]
 }
