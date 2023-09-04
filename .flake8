@@ -4,3 +4,4 @@ exclude = .pytest_cache,__pycache__,.nox
 ignore = E731, W503, E203
 per-file-ignores =
     src/hrflow_connectors/core/documentation.py: E501
+    tests/core/test_documentation.py: E501

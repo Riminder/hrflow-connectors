@@ -10,6 +10,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 from hrflow_connectors.core.connector import Event, Reason, Status
@@ -22,11 +23,16 @@ from hrflow_connectors.core.tests import (
     NoTestConfigException,
     collect_connector_tests,
 )
-from tests.core.localusers.warehouse import UsersWarehouse
-from tests.core.smartleads.warehouse import LeadsWarehouse
+from tests.core.src.hrflow_connectors.connectors.localusers.warehouse import (
+    UsersWarehouse,
+)
+from tests.core.src.hrflow_connectors.connectors.smartleads.warehouse import (
+    LeadsWarehouse,
+)
 
 SmartLeads = Connector(
     name="SmartLeads",
+    type=ConnectorType.Other,
     description="Test Connector for seamless users to leads integration",
     url="https://www.smartleads.test/",
     actions=[
@@ -52,6 +58,7 @@ SmartLeads = Connector(
 )
 LocalUsers = Connector(
     name="LocalUsers",
+    type=ConnectorType.Other,
     description="Local users connector",
     url="https://www.localusers.test/",
     actions=[],
@@ -60,7 +67,7 @@ LocalUsers = Connector(
 
 @pytest.fixture
 def connectors_directory():
-    path = Path(__file__).parent
+    path = Path(__file__).parent / "src" / "hrflow_connectors" / "connectors"
     yield path
 
 

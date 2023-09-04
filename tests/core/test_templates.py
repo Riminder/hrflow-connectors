@@ -7,17 +7,26 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 from hrflow_connectors.core.connector import Event, Reason, Status
 from tests.conftest import random_workflow_id
-from tests.core.localusers.warehouse import USERS_DB, Gender, UsersWarehouse
-from tests.core.smartleads.warehouse import LEADS_DB, LeadsWarehouse
+from tests.core.src.hrflow_connectors.connectors.localusers.warehouse import (
+    USERS_DB,
+    Gender,
+    UsersWarehouse,
+)
+from tests.core.src.hrflow_connectors.connectors.smartleads.warehouse import (
+    LEADS_DB,
+    LeadsWarehouse,
+)
 
 DESCRIPTION = "Test Connector for seamless users to leads integration"
 
 SmartLeads = Connector(
     name="SmartLeads",
+    type=ConnectorType.Other,
     description=DESCRIPTION,
     url="https://www.smartleads.test/",
     actions=[
