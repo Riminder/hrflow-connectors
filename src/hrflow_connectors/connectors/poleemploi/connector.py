@@ -8,6 +8,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -100,6 +101,7 @@ DESCRIPTION = (
 
 PoleEmploi = Connector(
     name="PoleEmploi",
+    type=ConnectorType.JobBoard,
     description=DESCRIPTION,
     url="https://www.pole-emploi.fr/",
     actions=[

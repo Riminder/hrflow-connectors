@@ -4,6 +4,7 @@ from hrflow_connectors.core.connector import (  # noqa
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     Event,
     ParametersOverride,
     WorkflowType,

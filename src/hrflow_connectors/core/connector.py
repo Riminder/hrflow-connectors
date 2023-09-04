@@ -730,10 +730,21 @@ class ParametersOverride(BaseModel):
         return values
 
 
+class ConnectorType(enum.Enum):
+    ATS = "ATS"
+    CRM = "CRM"
+    HCM = "HCM"
+    Automation = "Automation Tools"
+    JobBoard = "Job Board"
+    Classifieds = "Classified Ads"
+    Other = "Other"
+
+
 class ConnectorModel(BaseModel):
     name: str
     description: str
     url: str
+    type: ConnectorType
     actions: t.List[ConnectorAction]
 
     def action_by_name(self, action_name: str) -> t.Optional[ConnectorAction]:
@@ -756,6 +767,7 @@ class Connector:
         cls: t.Type[t.Self],
         base: t.Self,
         name: str,
+        type: ConnectorType,
         description: str,
         url: str,
         with_parameters_override: t.Optional[t.List[ParametersOverride]] = None,
@@ -805,13 +817,17 @@ class Connector:
 
         actions = {action.name: action for action in base_actions + with_actions}
         connector = cls(
-            name=name, description=description, url=url, actions=list(actions.values())
+            name=name,
+            type=type,
+            description=description,
+            url=url,
+            actions=list(actions.values()),
         )
         return connector
 
     def manifest(self) -> t.Dict:
         model = self.model
-        manifest = dict(name=model.name, actions=[])
+        manifest = dict(name=model.name, actions=[], type=model.type.value)
         for action in model.actions:
             format_placeholder = action.WORKFLOW_FORMAT_PLACEHOLDER
             logics_placeholder = action.WORKFLOW_LOGICS_PLACEHOLDER

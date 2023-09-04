@@ -8,6 +8,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -78,6 +79,7 @@ DESCRIPTION = (
 
 Ceridian = Connector(
     name="Ceridian",
+    type=ConnectorType.HCM,
     description=DESCRIPTION,
     url="https://www.ceridian.com/",
     actions=[

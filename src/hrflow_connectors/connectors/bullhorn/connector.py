@@ -22,6 +22,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -366,6 +367,7 @@ DESCRIPTION = "Transform Your Business with Bullhorn Staffing and Recruitment So
 
 Bullhorn = Connector(
     name="Bullhorn",
+    type=ConnectorType.ATS,
     description=DESCRIPTION,
     url="https://www.bullhorn.com/",
     actions=[
