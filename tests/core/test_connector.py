@@ -13,6 +13,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     ParametersOverride,
     ReadMode,
     WorkflowType,
@@ -20,7 +21,7 @@ from hrflow_connectors.core import (
 )
 from hrflow_connectors.core.connector import Event, Reason, RunResult, Status
 from tests.conftest import random_workflow_id
-from tests.core.localusers.warehouse import (
+from tests.core.src.hrflow_connectors.connectors.localusers.warehouse import (
     FAIL_AT,
     USERS_DB,
     BadUsersWarehouse,
@@ -29,7 +30,7 @@ from tests.core.localusers.warehouse import (
     UsersWarehouse,
     add_user,
 )
-from tests.core.smartleads.warehouse import (
+from tests.core.src.hrflow_connectors.connectors.smartleads.warehouse import (
     LEADS_DB,
     BadLeadsWarehouse,
     FailingLeadsWarehouse,
@@ -40,6 +41,7 @@ DESCRIPTION = "Test Connector for seamless users to leads integration"
 
 SmartLeadsF = lambda: Connector(
     name="SmartLeads",
+    type=ConnectorType.Other,
     description=DESCRIPTION,
     url="https://www.smartleads.test/",
     actions=[
@@ -120,6 +122,7 @@ def test_action_name_constraint():
     with pytest.raises(ValidationError) as excinfo:
         Connector(
             name="SmartLeads",
+            type=ConnectorType.Other,
             description=DESCRIPTION,
             url="https://www.smartleads.test/",
             actions=[
@@ -144,6 +147,7 @@ def test_action_pull_profile_list_only_with_trigger_type_pull():
     with pytest.raises(ValidationError) as excinfo:
         Connector(
             name="SmartLeads",
+            type=ConnectorType.Other,
             description=DESCRIPTION,
             url="https://www.smartleads.test/",
             actions=[
@@ -172,6 +176,7 @@ def test_action_pull_job_list_only_with_trigger_type_pull():
     with pytest.raises(ValidationError) as excinfo:
         Connector(
             name="SmartLeads",
+            type=ConnectorType.Other,
             description=DESCRIPTION,
             url="https://www.smartleads.test/",
             actions=[
@@ -248,6 +253,7 @@ def test_connector_failures():
 def test_origin_warehouse_failure():
     connector = Connector(
         name="SmartLeads",
+        type=ConnectorType.Other,
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -278,6 +284,7 @@ def test_origin_not_readable_failure():
     with pytest.raises(ValidationError) as excinfo:
         Connector(
             name="SmartLeads",
+            type=ConnectorType.Other,
             description=DESCRIPTION,
             url="https://www.smartleads.test/",
             actions=[
@@ -301,6 +308,7 @@ def test_origin_not_readable_failure():
 def test_target_warehouse_failure():
     connector = Connector(
         name="SmartLeads",
+        type=ConnectorType.Other,
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -331,6 +339,7 @@ def test_target_not_writable_failure():
     with pytest.raises(ValidationError) as excinfo:
         Connector(
             name="SmartLeads",
+            type=ConnectorType.Other,
             description=DESCRIPTION,
             url="https://www.smartleads.test/",
             actions=[
@@ -495,6 +504,7 @@ def test_connector_default_format():
 
     EvenSmarterLeads = Connector(
         name="SmartLeads",
+        type=ConnectorType.Other,
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -578,6 +588,7 @@ def test_action_with_failures():
 
     FailingSmartLeads = Connector(
         name="SmartLeads",
+        type=ConnectorType.Other,
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -723,6 +734,7 @@ def test_action_with_callback_success():
 
     SmartLeads = Connector(
         name="SmartLeads",
+        type=ConnectorType.Other,
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -766,6 +778,7 @@ def test_action_with_callback_failure():
 
     SmartLeads = Connector(
         name="SmartLeads",
+        type=ConnectorType.Other,
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -1265,6 +1278,7 @@ def test_connector_based_on_simple():
     SmartLeadsCopy = Connector.based_on(
         base=SmartLeads,
         name="SmartLeadsCopy",
+        type=ConnectorType.Other,
         description="SmartLeadsCopy",
         url="Some URL",
     )
@@ -1287,6 +1301,7 @@ def test_connector_based_on_action_override():
     SmartLeadsCopy = Connector.based_on(
         base=SmartLeads,
         name="SmartLeadsCopy",
+        type=ConnectorType.Other,
         description="SmartLeadsCopy",
         url="Some URL",
         with_actions=[
@@ -1331,6 +1346,7 @@ def test_connector_based_on_new_action():
     SmartLeadsCopy = Connector.based_on(
         base=SmartLeads,
         name="SmartLeadsCopy",
+        type=ConnectorType.Other,
         description="SmartLeadsCopy",
         url="Some URL",
         with_actions=[
@@ -1384,6 +1400,7 @@ def test_connector_based_on_parameters_override():
     SmartLeadsCopy = Connector.based_on(
         base=SmartLeads,
         name="SmartLeadsCopy",
+        type=ConnectorType.Other,
         description="SmartLeadsCopy",
         url="Some URL",
         with_parameters_override=[
@@ -1452,6 +1469,7 @@ def test_connector_based_on_parameters_override_and_new_action():
     SmartLeadsCopy = Connector.based_on(
         base=SmartLeads,
         name="SmartLeadsCopy",
+        type=ConnectorType.Other,
         description="SmartLeadsCopy",
         url="Some URL",
         with_parameters_override=[
@@ -1594,6 +1612,7 @@ def test_connector_based_on_bad_parameters_override():
         Connector.based_on(
             base=SmartLeads,
             name="SmartLeadsCopy",
+            type=ConnectorType.Other,
             description="SmartLeadsCopy",
             url="Some URL",
             with_parameters_override=[
@@ -1624,6 +1643,7 @@ def test_connector_based_on_duplicate_action():
         Connector.based_on(
             base=SmartLeads,
             name="SmartLeadsCopy",
+            type=ConnectorType.Other,
             description="SmartLeadsCopy",
             url="Some URL",
             with_parameters_override=[
