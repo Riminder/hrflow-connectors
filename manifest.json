@@ -18038,6 +18038,253 @@
           "workflow_code_workflow_id_settings_key": "__workflow_id",
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "pull_profile_list",
+          "action_type": "inbound",
+          "action_parameters": {
+            "title": "PullProfilesActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "additionalProperties": false,
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "profile",
+          "trigger_type": "schedule",
+          "origin": "Taleez Profiles Warehouse",
+          "origin_parameters": {
+            "title": "ReadProfilesParameters",
+            "type": "object",
+            "properties": {
+              "x_taleez_api_secret": {
+                "title": "X Taleez Api Secret",
+                "description": "X-taleez-api-secret used to access Taleez API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "mail": {
+                "title": "Mail",
+                "description": "Filter by mail",
+                "field_type": "Query Param",
+                "type": "string"
+              }
+            },
+            "required": [
+              "x_taleez_api_secret"
+            ],
+            "additionalProperties": false
+          },
+          "origin_data_schema": {
+            "title": "Candidate",
+            "type": "object",
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "integer"
+              },
+              "firstName": {
+                "title": "Firstname",
+                "type": "string"
+              },
+              "lastName": {
+                "title": "Lastname",
+                "type": "string"
+              },
+              "mail": {
+                "title": "Mail",
+                "type": "string"
+              },
+              "initialReferrer": {
+                "title": "Initialreferrer",
+                "type": "string"
+              },
+              "lang": {
+                "title": "Lang",
+                "type": "string"
+              },
+              "socialLinks": {
+                "title": "Sociallinks",
+                "type": "object"
+              },
+              "properties": {
+                "title": "Properties",
+                "type": "array",
+                "items": {}
+              },
+              "jobs": {
+                "title": "Jobs",
+                "type": "array",
+                "items": {}
+              }
+            },
+            "required": [
+              "id",
+              "firstName",
+              "lastName",
+              "mail",
+              "initialReferrer",
+              "lang",
+              "socialLinks"
+            ]
+          },
+          "supports_incremental": false,
+          "target": "HrFlow.ai Profile Parsing",
+          "target_parameters": {
+            "title": "WriteProfileParsingParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "source_key": {
+                "title": "Source Key",
+                "description": "HrFlow.ai source key",
+                "field_type": "Other",
+                "type": "string"
+              },
+              "only_insert": {
+                "title": "Only Insert",
+                "description": "When enabled the profile is written only if it doesn't exist in the source",
+                "default": false,
+                "field_type": "Other",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "source_key"
+            ],
+            "additionalProperties": false
+          },
+          "target_data_schema": {
+            "title": "HrFlowProfileParsing",
+            "type": "object",
+            "properties": {
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
+                "type": "string"
+              },
+              "resume": {
+                "$ref": "#/definitions/ResumeToParse"
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "List of tags of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              }
+            },
+            "required": [
+              "reference",
+              "created_at",
+              "resume",
+              "tags",
+              "metadatas"
+            ],
+            "definitions": {
+              "ResumeToParse": {
+                "title": "ResumeToParse",
+                "type": "object",
+                "properties": {
+                  "raw": {
+                    "title": "Raw",
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "content_type": {
+                    "title": "Content Type",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "raw",
+                  "content_type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "workflow_code": "\nimport typing as t\n\nfrom hrflow_connectors import Taleez\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Taleez.pull_profile_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['x_taleez_api_secret', 'mail']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'only_insert']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Taleez.pull_profile_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
         }
       ],
       "type": "ATS"

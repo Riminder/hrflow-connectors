@@ -6,6 +6,7 @@ from datetime import datetime
 
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
+    HrFlowProfileParsingWarehouse,
     HrFlowProfileWarehouse,
 )
 from hrflow_connectors.connectors.taleez.warehouse import (
@@ -349,6 +350,23 @@ def format_job(taleez_job: t.Dict) -> t.Dict:
     return job
 
 
+def format_taleez_candidate(taleez_candidate):
+    tags = []
+    for property in taleez_candidate["properties"]:
+        if property["apiKey"] == "cv":
+            continue
+        tag_value = property.get("value")
+        if tag_value is None:
+            tag_value = property["values"][0]
+        tags.append(dict(name=property["apiKey"], value=tag_value))
+    return dict(
+        reference=taleez_candidate["id"],
+        resume=dict(raw=taleez_candidate["CV"], content_type="application/pdf"),
+        tags=tags,
+        metadatas=[],
+    )
+
+
 DESCRIPTION = (
     "Taleez est une solution globale de gestion des candidatures et de diffusion"
     " d'offres d'emploi.Pilotez intégralement vos processus de recrutement et intégrez"
@@ -389,6 +407,20 @@ Taleez = Connector(
             ),
             origin=TaleezJobWarehouse,
             target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
+        ),
+        ConnectorAction(
+            name=ActionName.pull_profile_list,
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves all profiles via the ***Taleez*** API and send them"
+                " to a ***Hrflow.ai Source***."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "PullProfilesActionParameters", format=format_taleez_candidate
+            ),
+            origin=TaleezProfilesWarehouse,
+            target=HrFlowProfileParsingWarehouse,
             action_type=ActionType.inbound,
         ),
     ],
