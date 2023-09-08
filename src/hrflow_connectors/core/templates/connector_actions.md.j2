@@ -1,0 +1,9 @@
+# 🔌 Connector Actions
+<p align="center">
+
+| Action | Description |
+| ------- | ----------- |
+{% for action in actions %}| [**{{ action.name | title | replace("_", " ")}}**](docs/{{ action.name.value }}.md) | {{ action.description }} |
+{% endfor %}
+
+</p>

@@ -152,25 +152,25 @@ def generate_doc_digest() -> t.Tuple[dict, dict]:
 
     doc_digest = defaultdict(lambda: defaultdict(dict))
     doc_content = defaultdict(lambda: defaultdict(dict))
-    with mock.patch.object(documentation.Path, "exists", return_value=False):
-        with mock.patch.object(
-            documentation.Path, "write_bytes", autospec=True
-        ) as mocked_writer:
-            generate_docs(connectors=__CONNECTORS__)
-            for call in mocked_writer.call_args_list:
-                args, _ = call
-                path, data = args
-                if path.name == "README.md":
-                    connector = path.parts[-2]
-                    doc_digest[connector]["readme"] = hashlib.md5(data).hexdigest()
-                    doc_content[connector]["readme"] = data.decode()
-                else:
-                    connector = path.parts[-3]
-                    action = path.parts[-1].strip(".md")
-                    doc_digest[connector]["actions"][action] = hashlib.md5(
-                        data
-                    ).hexdigest()
-                    doc_content[connector]["actions"][action] = data.decode()
+    with mock.patch.object(
+        documentation.Path, "write_bytes", autospec=True
+    ) as mocked_writer:
+        generate_docs(connectors=__CONNECTORS__)
+        for call in mocked_writer.call_args_list:
+            args, _ = call
+            path, data = args
+            if path.parts[-2:] == ("hrflow-connectors", "README.md"):
+                doc_digest["root"]["readme"] = hashlib.md5(data).hexdigest()
+                doc_content["root"]["readme"] = data.decode()
+            elif path.name == "README.md":
+                connector = path.parts[-2]
+                doc_digest[connector]["readme"] = hashlib.md5(data).hexdigest()
+                doc_content[connector]["readme"] = data.decode()
+            else:
+                connector = path.parts[-3]
+                action = path.parts[-1].strip(".md")
+                doc_digest[connector]["actions"][action] = hashlib.md5(data).hexdigest()
+                doc_content[connector]["actions"][action] = data.decode()
     return doc_digest, doc_content
 
 
@@ -206,6 +206,19 @@ def docs(session):
     if generated_digest != baseline_doc_digest:
         connectors_directory = Path("./src/hrflow_connectors/connectors")
         difference = []
+        root_readme_digest = baseline_doc_digest.pop("root")["readme"]
+        if root_readme_digest != generated_digest["root"]["readme"]:
+            file = str(connectors_directory / ".." / ".." / ".." / "README.md")
+            baseline = baseline_content["root"]["readme"]
+            generated = generated_content["root"]["readme"]
+            difference.append(
+                difflib.unified_diff(
+                    a=baseline.splitlines(keepends=True),
+                    b=generated.splitlines(keepends=True),
+                    fromfile=file,
+                    tofile=session.python,
+                )
+            )
         for connector, digests in baseline_doc_digest.items():
             if digests["readme"] != generated_digest.get(connector, {}).get("readme"):
                 file = str(connectors_directory / connector / "README.md")

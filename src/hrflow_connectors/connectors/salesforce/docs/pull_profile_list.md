@@ -1,4 +1,3 @@
-
 # Pull profile list
 `Salesforce Profiles` :arrow_right: `HrFlow.ai Profiles`
 
@@ -11,7 +10,7 @@ Retrieves profiles from Salesforce HrFlow Profile & Co Custom Objects and writes
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_into_hrflow_profile`](../connector.py#L27) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_into_hrflow_profile`](../connector.py#L28) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters

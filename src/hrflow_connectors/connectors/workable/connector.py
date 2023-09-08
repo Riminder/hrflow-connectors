@@ -15,6 +15,7 @@ from hrflow_connectors.core.connector import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -142,6 +143,7 @@ def format_profile(
 
 Workable = Connector(
     name="Workable",
+    type=ConnectorType.HCM,
     description=(
         "More than an applicant tracking system, "
         "Workable's talent acquisition software helps teams find candidates, "

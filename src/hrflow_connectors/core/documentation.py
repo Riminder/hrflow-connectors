@@ -2,25 +2,60 @@ import enum
 import logging
 import os
 import re
+import subprocess
 import typing as t
 from contextvars import ContextVar
+from datetime import datetime
 from pathlib import Path
 
 from pydantic import BaseModel
 from pydantic.fields import ModelField
 
+from hrflow_connectors.core import ActionName
 from hrflow_connectors.core.connector import Connector
-from hrflow_connectors.core.templates import (
-    ACTION_DOCUMENTATION_TEMAPLTE,
-    CONNECTOR_README_TEMPLATE,
-)
+from hrflow_connectors.core.templates import Templates
 
 logger = logging.getLogger(__name__)
 CONNECTORS_DIRECTORY = Path(__file__).parent.parent / "connectors"
 
+DONE_MARKUP = ":white_check_mark:"
+KO_MARKUP = ":x:"
+
+
+ROOT_README_TRACKED_ACTIONS = {
+    ActionName.pull_job_list,
+    ActionName.pull_profile_list,
+    ActionName.push_profile,
+    ActionName.push_job,
+}
+
+
+def CONNECTOR_LISTING_REGEXP_F(name: str) -> str:
+    return (
+        r"\|\s*\[?\*{0,2}(?i:(?P<name>"
+        + r" ?".join([c for c in name if c.strip()])
+        + r"))\*{0,2}(\]\([^)]+\))?\s*\|[^|]+\|[^|]+\|\s*\*(?P<release_date>[\d\/]+)\*?\s*\|.+"
+    )
+
+
+ACTIONS_SECTIONS_REGEXP = (
+    r"# 🔌 Connector Actions.+?\|\s*Action\s*\|\s*Description\s*\|.+?\|\s+?<\/p>"
+)
+
+
+GIT_UPDATE_TIMEOUT = 5
+GIT_UPDATE_DATE = """
+git ls-tree -r --name-only HEAD src/hrflow_connectors/connectors/{connector} | while read filename; do
+  echo "$(git log -1 --format="%aI" -- $filename)"
+done
+"""
 
 HRFLOW_CONNECTORS_REMOTE_URL = "https://github.com/Riminder/hrflow-connectors"
 USE_REMOTE_REV: ContextVar[t.Optional[str]] = ContextVar("USE_REMOTE_REV", default=None)
+
+
+class InvalidConnectorReadmeFormat(Exception):
+    pass
 
 
 class TemplateField(BaseModel):
@@ -124,9 +159,81 @@ def py_37_38_compat_patch(content: str) -> str:
     )
 
 
+def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
+    readme = root / "README.md"
+    if readme.exists() is False:
+        raise Exception("Failed to find root README.md at {}".format(readme))
+    readme_content = readme.read_text()
+
+    for connector in connectors:
+        model = connector.model
+        result = subprocess.run(
+            GIT_UPDATE_DATE.format(connector=model.name.lower()),
+            shell=True,
+            text=True,
+            capture_output=True,
+            timeout=GIT_UPDATE_TIMEOUT,
+        )
+        if result.stderr:
+            raise Exception(
+                "Subprocess run for Git update dates failed for connector {} with"
+                " errors {}".format(model.name.lower(), result.stderr)
+            )
+        updated_at = datetime.fromisoformat(
+            max(
+                result.stdout.strip().splitlines(),
+                key=lambda d: datetime.fromisoformat(d),
+            )
+        )
+        actions_status = dict(
+            zip(
+                ROOT_README_TRACKED_ACTIONS,
+                [KO_MARKUP] * len(ROOT_README_TRACKED_ACTIONS),
+            )
+        )
+        for action in model.actions:
+            if action.name in ROOT_README_TRACKED_ACTIONS:
+                actions_status[action.name] = DONE_MARKUP
+
+        pattern = CONNECTOR_LISTING_REGEXP_F(name=model.name)
+        match = re.search(pattern, readme_content)
+        if match is None:
+            raise Exception(
+                "Could not find listing for {} in root README with regexp={}".format(
+                    model.name, pattern
+                )
+            )
+        updated_listing = (
+            "| [**{name}**]({readme_link}) | {type} | :white_check_mark: |"
+            " *{release_date}* | *{updated_at}* | {pull_profile_list_status} |"
+            " {pull_job_list_status} | {push_profile_status} | {push_job_status} |"
+        ).format(
+            name=match.group("name"),
+            readme_link="./src/hrflow_connectors/connectors/{}/README.md".format(
+                model.name.lower()
+            ),
+            type=model.type.value,
+            release_date=match.group("release_date"),
+            updated_at=updated_at.strftime("%d/%m/%Y"),
+            pull_profile_list_status=actions_status[ActionName.pull_profile_list],
+            pull_job_list_status=actions_status[ActionName.pull_job_list],
+            push_profile_status=actions_status[ActionName.push_profile],
+            push_job_status=actions_status[ActionName.push_job],
+        )
+        readme_content = (
+            readme_content[: match.start()]
+            + updated_listing
+            + readme_content[match.end() :]
+        )
+    readme.write_bytes(readme_content.encode())
+
+
 def generate_docs(
     connectors: t.List[Connector], connectors_directory: Path = CONNECTORS_DIRECTORY
 ) -> None:
+    update_root_readme(
+        connectors=connectors, root=connectors_directory.parent.parent.parent
+    )
     for connector in connectors:
         model = connector.model
         connector_directory = connectors_directory / model.name.lower()
@@ -139,7 +246,7 @@ def generate_docs(
             continue
         readme = connector_directory / "README.md"
         if readme.exists() is False:
-            readme_content = CONNECTOR_README_TEMPLATE.render(
+            readme_content = Templates.get_template("connector_readme.md.j2").render(
                 connector_name=model.name.capitalize(),
                 description=model.description,
                 url=model.url,
@@ -147,6 +254,26 @@ def generate_docs(
             )
             readme_content = py_37_38_compat_patch(readme_content)
             readme.write_bytes(readme_content.encode())
+        else:
+            readme_content = readme.read_text()
+            match = re.search(ACTIONS_SECTIONS_REGEXP, readme_content, re.DOTALL)
+            if match is None:
+                raise InvalidConnectorReadmeFormat(
+                    "README.md for connector {} does not respect standard format. No"
+                    " actions section found".format(model.name)
+                )
+            updated_actions_content = Templates.get_template(
+                "connector_actions.md.j2"
+            ).render(
+                actions=model.actions,
+            )
+            updated_readme_content = "{before}{actions}{after}".format(
+                before=readme_content[: match.start()],
+                actions=updated_actions_content,
+                after=readme_content[match.end() :],
+            )
+            updated_readme_content = py_37_38_compat_patch(updated_readme_content)
+            readme.write_bytes(updated_readme_content.encode())
         if len(model.actions) > 0:
             action_docs_directory = connector_directory / "docs"
             if not action_docs_directory.is_dir():
@@ -165,7 +292,9 @@ def generate_docs(
                     fields=action.target.write.parameters.__fields__.values(),
                     documentation_path=action_docs_directory,
                 )
-                action_documentation_content = ACTION_DOCUMENTATION_TEMAPLTE.render(
+                action_documentation_content = Templates.get_template(
+                    "action_readme.md.j2"
+                ).render(
                     connector_name=model.name,
                     action_name=action_name,
                     description=action.description,

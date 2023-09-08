@@ -34,8 +34,8 @@ In this section, we outline the data flow between different components of the co
 <p align="center">
 
 | Action | Description |
-| ------- |  -------- |
-| [**Pull jobs**](docs/pull_jobs.md) | Retrieves jobs via the ***Adzuna*** API Search endpoint and send them to a [HrFlow.ai](http://HrFlow.ai) Board | 
+| ------- | ----------- |
+| [**Pull job list**](docs/pull_job_list.md) | Retrieves jobs via the ***Adzuna'*** API Search endpointand send them to a ***Hrflow.ai Board***. |
 
 
 </p>

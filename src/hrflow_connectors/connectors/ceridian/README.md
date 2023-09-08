@@ -28,8 +28,8 @@ In this section, we outline the data flow between different components of the co
 <p align="center">
 
 | Action | Description |
-| ------- |  -------- |
-| [**Pull jobs**](docs/pull_jobs.md) | Retrieves jobs from Ceridian API and sends them to a [HrFlow.ai](http://HrFlow.ai) Board | 
+| ------- | ----------- |
+| [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs via the ***Ceridian*** API and send them to an ***Hrflow.ai Board***. |
 
 
 </p>
