@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 import typing as t
 from typing import List, Dict
 
@@ -10,6 +10,7 @@ class LeverJobContent(BaseModel):
     closing: str
     closingHtml: str
 
+
 class LeverJobCategories(BaseModel):
     commitment: str
     department: str
@@ -17,16 +18,19 @@ class LeverJobCategories(BaseModel):
     location: str
     team: str
 
+
 class LeverJobUrls(BaseModel):
     list: str
     show: str
     apply: str
+
 
 class LeverJobSalaryRange(BaseModel):
     min: int
     max: int
     currency: str
     interval: str
+
 
 class LeverJob(BaseModel):
     id: str
@@ -51,9 +55,6 @@ class LeverJob(BaseModel):
     salaryRange: LeverJobSalaryRange
 
 
-
-
-
 class LeverProfile(BaseModel):
     id: str
     name: t.Dict[str, str]
@@ -61,5 +62,3 @@ class LeverProfile(BaseModel):
     phone: t.Optional[str]
     createdAt: str
     updatedAt: str
-
-    
