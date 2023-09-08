@@ -25,6 +25,7 @@ GET_JOB_ENDPOINT = "https://api.teamtailor.com/v1/jobs"
 POST_CANDIDATE_ENDPOINT = "https://api.teamtailor.com/v1/candidates"
 CANDIDATE_ENDPOINT = "https://api.teamtailor.com/v1/candidates"
 
+
 class RemoteStatus(str, enum.Enum):
     none = "NONE"
     hybrid = "HYBRID"
@@ -50,15 +51,14 @@ class ReadProfilesParameters(ParametersModel):
     )
 
     filter_updated_at_from: t.Optional[str] = Field(
-        description=(
-            "Filter candidates by created-at newer than this date."
-        ),
+        description="Filter candidates by created-at newer than this date.",
         field_type=FieldType.QueryParam,
     )
 
+    @property
     def get_authorization(self) -> str:
         return f"Token token={self.api_token}"
-    
+
 
 class WriteProfilesParameters(ParametersModel):
     Authorization: str = Field(
@@ -237,7 +237,8 @@ def download_file(url):
         return response.content
     else:
         return None
-    
+
+
 def read_profiles(
     adapter: LoggerAdapter,
     parameters: ReadProfilesParameters,
@@ -252,10 +253,9 @@ def read_profiles(
     else:
         if parameters.filter_updated_at_from:
             params["filter[updated_at][from]"] = parameters.filter_updated_at_from
-    
 
     headers = {
-        "Authorization": parameters.get_authorization(),
+        "Authorization": parameters.get_authorization,
         "X-Api-Version": parameters.x_api_version,
     }
 
@@ -268,11 +268,11 @@ def read_profiles(
             timeout=10,
         )
 
-
         if not response.ok:
             error_detail = response.json()["errors"][0]["detail"]
             raise Exception(
-                f"Error while fetching candidates with params: {params} and error {error_detail}"
+                f"Error while fetching candidates with params: {params} and error"
+                f" {error_detail}"
             )
 
         data = response.json()["data"]
@@ -283,7 +283,7 @@ def read_profiles(
         adapter.info(
             "Pulling {} candidates from page {} out of total {} candidates".format(
                 len(data), page, response.json()["meta"]["record-count"]
-        )
+            )
         )
 
         for candidate in data:
@@ -298,14 +298,19 @@ def read_profiles(
             if not candidate_response.ok:
                 error_detail = candidate_response.json()["errors"][0]["detail"]
                 raise Exception(
-                    f"Error while fetching candidate {candidate_id} with error {error_detail}"
+                    f"Error while fetching candidate {candidate_id} with error"
+                    f" {error_detail}"
                 )
-            
-            candidate_updated_at = candidate_response.json()["data"]["attributes"]["updated-at"]
-            candidate_resume_url = candidate_response.json()["data"]["attributes"]["original-resume"]
+
+            candidate_updated_at = candidate_response.json()["data"]["attributes"][
+                "updated-at"
+            ]
+            candidate_resume_url = candidate_response.json()["data"]["attributes"][
+                "original-resume"
+            ]
             if candidate_resume_url:
-                binary_resume_content =  download_file(candidate_resume_url)
-                
+                binary_resume_content = download_file(candidate_resume_url)
+
                 # TODO : this can be put outside in format function
                 resume = dict(
                     raw=binary_resume_content,
