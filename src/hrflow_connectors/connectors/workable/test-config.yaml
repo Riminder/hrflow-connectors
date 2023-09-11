@@ -146,3 +146,13 @@ actions:
         subdomain: $__SUBDOMAIN
         shortcode : "invalid"
       status: fatal
+  pull_profile_list:
+    - id: valid_parameters
+      origin_parameters:
+        auth: $__AUTH
+        subdomain: $__SUBDOMAIN
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+      status: success
