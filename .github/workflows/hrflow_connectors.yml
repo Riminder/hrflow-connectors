@@ -30,6 +30,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           lfs: true
+          fetch-depth: 0
 
       - uses: actions/setup-python@v2
         with:
