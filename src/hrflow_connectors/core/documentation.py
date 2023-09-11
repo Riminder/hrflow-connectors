@@ -44,9 +44,10 @@ ACTIONS_SECTIONS_REGEXP = (
 
 
 GIT_UPDATE_TIMEOUT = 5
+GIT_LOG_FORMAT_SEPARATOR = ">:__:<"
 GIT_UPDATE_DATE = """
 git ls-tree -r --name-only HEAD src/hrflow_connectors/connectors/{connector} | while read filename; do
-  echo "$(git log -1 --format="%aI" -- $filename)"
+  echo "$(git log -1 --format="%aI{separator}%h{separator}%s" -- $filename){separator}$filename"
 done
 """
 
@@ -168,7 +169,9 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
     for connector in connectors:
         model = connector.model
         result = subprocess.run(
-            GIT_UPDATE_DATE.format(connector=model.name.lower()),
+            GIT_UPDATE_DATE.format(
+                connector=model.name.lower(), separator=GIT_LOG_FORMAT_SEPARATOR
+            ),
             shell=True,
             text=True,
             capture_output=True,
@@ -179,9 +182,22 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
                 "Subprocess run for Git update dates failed for connector {} with"
                 " errors {}".format(model.name.lower(), result.stderr)
             )
+        git_logs = []
+        for line in result.stdout.strip().splitlines():
+            date, commit_sha, commit_message, filename = line.split(
+                GIT_LOG_FORMAT_SEPARATOR
+            )
+            git_logs.append(
+                dict(
+                    date=date,
+                    commit_sha=commit_sha,
+                    commit_message=commit_message,
+                    filename=filename,
+                )
+            )
         updated_at = datetime.fromisoformat(
             max(
-                result.stdout.strip().splitlines(),
+                [log["date"] for log in git_logs],
                 key=lambda d: datetime.fromisoformat(d),
             )
         )
