@@ -209,6 +209,10 @@ jobs:
         with:
           python-version: ${{ env.BASELINE_PYTHON_VERSION }}
 
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.BASELINE_PYTHON_VERSION }}
+
       - name: Load cached Poetry installation
         id: cached-poetry-install
         uses: actions/cache@v2
