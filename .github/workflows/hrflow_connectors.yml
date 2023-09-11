@@ -228,11 +228,13 @@ jobs:
           key: poetry-${{ env.POETRY_VERSION }}
 
       - name: Prepare new release
+        id: publish-pipy
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name hrflow-cicd
           git config user.email hrflow-cicd@hrflow.ai
+          echo "PKG_VERSION=$(poetry run semantic-release --noop version --print)" >> "$GITHUB_OUTPUT"
           poetry run semantic-release publish
 
       - name: Publish to TestPyPI
@@ -247,7 +249,7 @@ jobs:
           pip install \
           --index-url https://test.pypi.org/simple/ \
           --extra-index-url https://pypi.org/simple \
-          hrflow-hrflow-connectors==${{ }}
+          hrflow-connectors==${{ steps.publish-pipy.outputs.PKG_VERSION }}
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
