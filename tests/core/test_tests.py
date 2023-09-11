@@ -140,8 +140,7 @@ def test_no_test_config(smartleads_test_config, connectors_directory):
 
 def test_bad_yaml_test_config(smartleads_test_config, connectors_directory):
     assert smartleads_test_config.exists() is False
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 actions:
   XXXXX
   pull_profile_list:
@@ -151,8 +150,7 @@ actions:
         campain_id: my_camp
       status: success
 
-        """.encode()
-    )
+        """.encode())
     with pytest.raises(InvalidYAMLException):
         collect_connector_tests(
             connector=SmartLeads,
@@ -162,8 +160,7 @@ actions:
 
 def test_invalid_action_test_config(smartleads_test_config, connectors_directory):
     assert smartleads_test_config.exists() is False
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 # Missing mandatory origin_parameters
 actions:
   pull_profile_list:
@@ -171,8 +168,7 @@ actions:
       target_parameters: {}
       status: success
 
-        """.encode()
-    )
+        """.encode())
     with pytest.raises(InvalidTestConfigException) as excinfo:
         collect_connector_tests(
             connector=SmartLeads,
@@ -183,8 +179,7 @@ actions:
     assert errors[0]["loc"] == ("actions", "pull_profile_list", 0, "origin_parameters")
     assert errors[0]["type"] == "value_error.missing"
 
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 # Missing target_parameters
 actions:
   pull_profile_list:
@@ -192,8 +187,7 @@ actions:
       origin_parameters: {}
       status: success
 
-        """.encode()
-    )
+        """.encode())
     with pytest.raises(InvalidTestConfigException) as excinfo:
         collect_connector_tests(
             connector=SmartLeads,
@@ -204,8 +198,7 @@ actions:
     assert errors[0]["loc"] == ("actions", "pull_profile_list", 0, "target_parameters")
     assert errors[0]["type"] == "value_error.missing"
 
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 # Invalid status
 actions:
   pull_profile_list:
@@ -214,8 +207,7 @@ actions:
       target_parameters: {}
       status: not_a_valid_action_status
 
-        """.encode()
-    )
+        """.encode())
     with pytest.raises(InvalidTestConfigException) as excinfo:
         collect_connector_tests(
             connector=SmartLeads,
@@ -226,8 +218,7 @@ actions:
     assert errors[0]["loc"] == ("actions", "pull_profile_list", 0, "status")
     assert errors[0]["type"] == "type_error.enum"
 
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 # Invalid reason
 actions:
   pull_profile_list:
@@ -236,8 +227,7 @@ actions:
       target_parameters: {}
       reason: not_a_valid_reason
 
-        """.encode()
-    )
+        """.encode())
     with pytest.raises(InvalidTestConfigException) as excinfo:
         collect_connector_tests(
             connector=SmartLeads,
@@ -248,8 +238,7 @@ actions:
     assert errors[0]["loc"] == ("actions", "pull_profile_list", 0, "reason")
     assert errors[0]["type"] == "type_error.enum"
 
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 # Invalid events
 actions:
   pull_profile_list:
@@ -259,8 +248,7 @@ actions:
       events:
         not_a_valid_action_event: 12
 
-        """.encode()
-    )
+        """.encode())
     with pytest.raises(InvalidTestConfigException) as excinfo:
         collect_connector_tests(
             connector=SmartLeads,
@@ -271,8 +259,7 @@ actions:
     assert errors[0]["loc"] == ("actions", "pull_profile_list", 0, "events", "__key__")
     assert errors[0]["type"] == "type_error.enum"
 
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 # Action name is not valid
 actions:
   invalid_action_name:
@@ -281,8 +268,7 @@ actions:
       target_parameters: {}
       status: success
 
-        """.encode()
-    )
+        """.encode())
     with pytest.raises(InvalidTestConfigException) as excinfo:
         collect_connector_tests(
             connector=SmartLeads,
@@ -295,8 +281,7 @@ actions:
         "'invalid_action_name' is not a valid action name"
     )
 
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 # Action is not defined for connector
 actions:
   push_job:
@@ -305,8 +290,7 @@ actions:
       target_parameters: {}
       status: success
 
-        """.encode()
-    )
+        """.encode())
     with pytest.raises(InvalidTestConfigException) as excinfo:
         collect_connector_tests(
             connector=SmartLeads,
@@ -322,15 +306,13 @@ actions:
 
 def test_invalid_warehouse_test_config(localusers_test_config, connectors_directory):
     assert localusers_test_config.exists() is False
-    localusers_test_config.write_bytes(
-        """
+    localusers_test_config.write_bytes("""
 # Missing mandatory parameters
 warehouse:
   UsersWarehouse:
     read:
       - id: valid_parameters
-        """.encode()
-    )
+        """.encode())
     with pytest.raises(InvalidTestConfigException) as excinfo:
         collect_connector_tests(
             connector=LocalUsers,
@@ -341,15 +323,13 @@ warehouse:
     assert errors[0]["loc"] == ("warehouse", "UsersWarehouse", "read", 0, "parameters")
     assert errors[0]["type"] == "value_error.missing"
 
-    localusers_test_config.write_bytes(
-        """
+    localusers_test_config.write_bytes("""
 # Warehouse doesnt not exist
 warehouse:
   WarehouseDoesNotExist:
     read:
       - parameters: {}
-        """.encode()
-    )
+        """.encode())
     with pytest.raises(InvalidTestConfigException) as excinfo:
         collect_connector_tests(
             connector=LocalUsers,
@@ -367,8 +347,7 @@ warehouse:
 
 def test_valid_action_config_no_secrets(smartleads_test_config, connectors_directory):
     assert smartleads_test_config.exists() is False
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 actions:
   pull_profile_list:
     - id: first_test
@@ -398,8 +377,7 @@ actions:
         read_success: 10
         read_failure: 0
         write_failure: 0
-        """.encode()
-    )
+        """.encode())
     test_suite = collect_connector_tests(
         connector=SmartLeads,
         connectors_directory=connectors_directory,
@@ -451,8 +429,7 @@ def test_valid_warehouse_config_no_secrets(
     localusers_test_config, connectors_directory
 ):
     assert localusers_test_config.exists() is False
-    localusers_test_config.write_bytes(
-        """
+    localusers_test_config.write_bytes("""
 warehouse:
   UsersWarehouse:
     read:
@@ -467,8 +444,7 @@ warehouse:
     read:
       - id: empty_parameters
         parameters: {}
-        """.encode()
-    )
+        """.encode())
     test_suite = collect_connector_tests(
         connector=LocalUsers,
         connectors_directory=connectors_directory,
@@ -508,8 +484,7 @@ def test_failure_secret_not_found(
     assert global_secrets_file.exists() is False
     assert smartleads_test_config.exists() is False
     assert smartleads_secrets_file.exists() is False
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 warehouse:
   LeadsWarehouse:
     read:
@@ -521,8 +496,7 @@ actions:
       origin_parameters:
         my_secret: $__SECRET_TOKEN
       target_parameters: {}
-        """.encode()
-    )
+        """.encode())
     with pytest.raises(InvalidTestConfigException) as excinfo:
         collect_connector_tests(
             connector=SmartLeads,
@@ -565,23 +539,19 @@ def test_failure_invalid_json_secrets(
 ):
     assert global_secrets_file.exists() is False
     assert smartleads_test_config.exists() is False
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 actions:
   pull_profile_list:
     - id: first_test
       origin_parameters:
         my_secret: $__SECRET_TOKEN
       target_parameters: {}
-        """.encode()
-    )
+        """.encode())
 
     # Global Secrets File
-    global_secrets_file.write_bytes(
-        """
+    global_secrets_file.write_bytes("""
 not_at_valid_json_file
-        """.encode()
-    )
+        """.encode())
     assert smartleads_secrets_file.exists() is False
     with pytest.raises(InvalidJSONException):
         collect_connector_tests(
@@ -591,11 +561,9 @@ not_at_valid_json_file
 
     global_secrets_file.unlink()
 
-    smartleads_secrets_file.write_bytes(
-        """
+    smartleads_secrets_file.write_bytes("""
 not_at_valid_json_file
-        """.encode()
-    )
+        """.encode())
     assert global_secrets_file.exists() is False
     with pytest.raises(InvalidJSONException):
         collect_connector_tests(
@@ -613,8 +581,7 @@ def test_secret_from_global_secrets_file(
     assert smartleads_test_config.exists() is False
     assert global_secrets_file.exists() is False
     assert smartleads_secrets_file.exists() is False
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 warehouse:
   LeadsWarehouse:
     read:
@@ -626,18 +593,13 @@ actions:
       origin_parameters:
         my_secret: $__SECRET_TOKEN
       target_parameters: {}
-        """.encode()
-    )
+        """.encode())
     secrets_prefix = ENVIRON_SECRETS_PREFIX.format(
         connector_name=SmartLeads.model.name.upper()
     )
-    global_secrets_file.write_bytes(
-        """
+    global_secrets_file.write_bytes("""
 {{"{prefix}SECRET_TOKEN": "xxxToken", "{prefix}SECRET_KEY": "xxxKey"}}
-        """.format(
-            prefix=secrets_prefix
-        ).encode()
-    )
+        """.format(prefix=secrets_prefix).encode())
     assert smartleads_secrets_file.exists() is False
     test_suite = collect_connector_tests(
         connector=SmartLeads,
@@ -662,8 +624,7 @@ def test_secret_from_connector_secrets_file(
     assert smartleads_test_config.exists() is False
     assert global_secrets_file.exists() is False
     assert smartleads_secrets_file.exists() is False
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 warehouse:
   LeadsWarehouse:
     read:
@@ -675,13 +636,10 @@ actions:
       origin_parameters:
         my_secret: $__SECRET_TOKEN
       target_parameters: {}
-        """.encode()
-    )
-    smartleads_secrets_file.write_bytes(
-        """
+        """.encode())
+    smartleads_secrets_file.write_bytes("""
 {"SECRET_TOKEN": "xxxToken", "SECRET_KEY": "xxxKey"}
-        """.encode()
-    )
+        """.encode())
     assert global_secrets_file.exists() is False
     test_suite = collect_connector_tests(
         connector=SmartLeads,
@@ -704,8 +662,7 @@ def test_secret_from_environment(
     connectors_directory,
 ):
     assert smartleads_test_config.exists() is False
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 warehouse:
   LeadsWarehouse:
     read:
@@ -717,8 +674,7 @@ actions:
       origin_parameters:
         my_secret: $__SECRET_TOKEN
       target_parameters: {}
-        """.encode()
-    )
+        """.encode())
     assert smartleads_secrets_file.exists() is False
     assert global_secrets_file.exists() is False
 
@@ -755,27 +711,21 @@ def test_precedence_of_secrets(
     assert smartleads_secrets_file.exists() is False
     assert global_secrets_file.exists() is False
 
-    smartleads_test_config.write_bytes(
-        """
+    smartleads_test_config.write_bytes("""
 warehouse:
   LeadsWarehouse:
     read:
       - parameters:
           my_secret: $__SECRET_KEY
-        """.encode()
-    )
+        """.encode())
     secrets_prefix = ENVIRON_SECRETS_PREFIX.format(
         connector_name=SmartLeads.model.name.upper()
     )
 
     # Only global
-    global_secrets_file.write_bytes(
-        """
+    global_secrets_file.write_bytes("""
 {{"{prefix}SECRET_KEY": "fromGlobal"}}
-        """.format(
-            prefix=secrets_prefix
-        ).encode()
-    )
+        """.format(prefix=secrets_prefix).encode())
     test_suite = collect_connector_tests(
         connector=SmartLeads,
         connectors_directory=connectors_directory,
@@ -786,11 +736,9 @@ warehouse:
     )
 
     # Global and connector
-    smartleads_secrets_file.write_bytes(
-        """
+    smartleads_secrets_file.write_bytes("""
 {"SECRET_KEY": "fromConnector"}
-        """.encode()
-    )
+        """.encode())
     test_suite = collect_connector_tests(
         connector=SmartLeads,
         connectors_directory=connectors_directory,
