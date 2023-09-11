@@ -106,7 +106,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Twilio**                                                                                                                            | Marketing Tools     | 🎯                  |                |               |
 | **Ultimate Software (UKG)**                                                                                                           |  ATS                   | 🎯                  |                |               |
 | [**Waalaxy**](./src/hrflow_connectors/connectors/waalaxy/README.md) | Automation Tools | :white_check_mark: | *18/11/2022* | *04/09/2023* | :x: | :x: | :x: | :x: |
-| [**Workable**](./src/hrflow_connectors/connectors/workable/README.md) | HCM | :white_check_mark: | *27/09/2022* | *04/09/2023* | :x: | :white_check_mark: | :white_check_mark: | :x: |
+| [**Workable**](./src/hrflow_connectors/connectors/workable/README.md) | HCM | :white_check_mark: | *27/09/2022* | *11/09/2023* | :x: | :white_check_mark: | :white_check_mark: | :x: |
 | **Workday**                                                                                                                           | HCM           | :white_check_mark: |                |               |
 
 
