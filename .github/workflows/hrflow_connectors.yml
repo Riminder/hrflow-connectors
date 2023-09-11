@@ -203,6 +203,9 @@ jobs:
           path: ~/.local
           key: poetry-${{ env.POETRY_VERSION }}
 
+      - name: Add poetry to PATH
+        run: export PATH="$HOME/.local/bin:$PATH"
+
       - name: Prepare new release
         id: publish-pipy
         env:
