@@ -73,9 +73,7 @@ INVALID_FIELD_ERROR_MSG = """Field '{{}}' in {{}} should have proper annotation 
 )
 NO_FIELD_TYPE_ERROR_MSG = """Field '{{}}' in {{}} is missing 'field_type' declaration.
     {}
-""".format(
-    FIELD_TYPE_EXAMPLE
-)
+""".format(FIELD_TYPE_EXAMPLE)
 BAD_FIELD_TYPE_ERROR_MSG = """'field_type' for field '{{}}' in {{}} should be defined using
     `hrflow_connectors.core.FieldType`.
     {}
@@ -203,13 +201,13 @@ class Warehouse(BaseModel):
                     value,
                     const=True,
                     description=original.field_info.description,
-                    **original.field_info.extra
+                    **original.field_info.extra,
                 ),
             )
         with_fixed_parameters = create_model(
             "Fixed{}Parameters".format(action_type.name.capitalize()),
             __base__=action_to_fix.parameters,
-            **fixed
+            **fixed,
         )
         if action_type is ActionType.read:
             return Warehouse(
