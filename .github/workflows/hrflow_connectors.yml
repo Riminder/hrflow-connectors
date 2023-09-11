@@ -87,7 +87,7 @@ jobs:
         run: poetry run pre-commit run --show-diff-on-failure --hook-stage push --all-files
 
       - name: Run push hooks
-        run: poetry run pre-commit run --hook-stage push --all-files
+        run: poetry run pre-commit run --show-diff-on-failure --hook-stage push --all-files
 
       # This action sets up a Python environment with Nox by:
       # - Activating every version of Python that GitHub Actions supports.
