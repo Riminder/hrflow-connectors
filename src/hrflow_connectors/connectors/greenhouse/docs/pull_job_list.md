@@ -5,36 +5,36 @@ Retrieves all jobs of a board via the ***Greenhouse*** API and send them to a **
 
 
 **Greenhouse Jobs endpoints used :**
-| Endpoints | Description |
-| --------- | ----------- |
+| Endpoints                                                                           | Description                                                                       |
+| ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | [**Get job**](https://developers.greenhouse.io/harvest.html?shell#get-retrieve-job) | Endpoint to get the content of a job with a given id. The request method is `GET` |
 
 
 
 ## Action Parameters
 
-| Field | Type | Default | Description |
-| ----- | ---- | ------- | ----------- |
-| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L25) | Formatting function |
-| `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
+| Field       | Type                                                                        | Default                             | Description                                                                                                                                                                                                                                     |
+| ----------- | --------------------------------------------------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `logics`    | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | []                                  | List of logic functions                                                                                                                                                                                                                         |
+| `format`    | `typing.Callable[[typing.Dict], typing.Dict]`                               | [`format_job`](../connector.py#L26) | Formatting function                                                                                                                                                                                                                             |
+| `read_mode` | `str`                                                                       | ReadMode.sync                       | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
 
-| Field | Type | Default | Description |
-| ----- | ---- | ------- | ----------- |
-| `board_token` :red_circle: | `str` | None | Board_token |
+| Field                      | Type  | Default | Description |
+| -------------------------- | ----- | ------- | ----------- |
+| `board_token` :red_circle: | `str` | None    | Board_token |
 
 ## Destination Parameters
 
-| Field | Type | Default | Description |
-| ----- | ---- | ------- | ----------- |
-| `api_secret` :red_circle: | `str` | None | X-API-KEY used to access HrFlow.ai API |
-| `api_user` :red_circle: | `str` | None | X-USER-EMAIL used to access HrFlow.ai API |
-| `board_key` :red_circle: | `str` | None | HrFlow.ai board key |
-| `sync`  | `bool` | True | When enabled only pushed jobs will remain in the board |
-| `update_content`  | `bool` | False | When enabled jobs already present in the board are updated |
-| `enrich_with_parsing`  | `bool` | False | When enabled jobs are enriched with HrFlow.ai parsing |
+| Field                     | Type   | Default | Description                                                |
+| ------------------------- | ------ | ------- | ---------------------------------------------------------- |
+| `api_secret` :red_circle: | `str`  | None    | X-API-KEY used to access HrFlow.ai API                     |
+| `api_user` :red_circle:   | `str`  | None    | X-USER-EMAIL used to access HrFlow.ai API                  |
+| `board_key` :red_circle:  | `str`  | None    | HrFlow.ai board key                                        |
+| `sync`                    | `bool` | True    | When enabled only pushed jobs will remain in the board     |
+| `update_content`          | `bool` | False   | When enabled jobs already present in the board are updated |
+| `enrich_with_parsing`     | `bool` | False   | When enabled jobs are enriched with HrFlow.ai parsing      |
 
 :red_circle: : *required*
 

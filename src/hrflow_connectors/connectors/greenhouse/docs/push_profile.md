@@ -6,34 +6,34 @@ Writes a profile from Hrflow.ai Source to Greenhouse  via the API for the given 
 
 
 **Greenhouse Profiles endpoints used :**
-| Endpoints | Description |
-| --------- | ----------- |
+| Endpoints                                                                  | Description                                                                                  |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | [**Post Candidate**](https://developers.greenhouse.io/job-board.html#jobs) | Endpoint to create a new candidate and assign to a talent pool, the request method is `POST` |
 
 
 ## Action Parameters
 
-| Field | Type | Default | Description |
-| ----- | ---- | ------- | ----------- |
-| `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_profile`](../connector.py#L92) | Formatting function |
-| `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
+| Field       | Type                                                                        | Default                                 | Description                                                                                                                                                                                                                                     |
+| ----------- | --------------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `logics`    | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | []                                      | List of logic functions                                                                                                                                                                                                                         |
+| `format`    | `typing.Callable[[typing.Dict], typing.Dict]`                               | [`format_profile`](../connector.py#L93) | Formatting function                                                                                                                                                                                                                             |
+| `read_mode` | `str`                                                                       | ReadMode.sync                           | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
 
-| Field | Type | Default | Description |
-| ----- | ---- | ------- | ----------- |
-| `api_secret` :red_circle: | `str` | None | X-API-KEY used to access HrFlow.ai API |
-| `api_user` :red_circle: | `str` | None | X-USER-EMAIL used to access HrFlow.ai API |
-| `source_key` :red_circle: | `str` | None | HrFlow.ai source key |
-| `profile_key` :red_circle: | `str` | None | HrFlow.ai profile key |
+| Field                      | Type  | Default | Description                               |
+| -------------------------- | ----- | ------- | ----------------------------------------- |
+| `api_secret` :red_circle:  | `str` | None    | X-API-KEY used to access HrFlow.ai API    |
+| `api_user` :red_circle:    | `str` | None    | X-USER-EMAIL used to access HrFlow.ai API |
+| `source_key` :red_circle:  | `str` | None    | HrFlow.ai source key                      |
+| `profile_key` :red_circle: | `str` | None    | HrFlow.ai profile key                     |
 
 ## Destination Parameters
 
-| Field | Type | Default | Description |
-| ----- | ---- | ------- | ----------- |
-| `auth` :red_circle: | `str` | None | XAPIKeyAuth |
-| `on_behalf_of` :red_circle: | `str` | None | The ID of the user sending the profile, or the person he is sending the profile on behalf of |
+| Field                       | Type  | Default | Description                                                                                  |
+| --------------------------- | ----- | ------- | -------------------------------------------------------------------------------------------- |
+| `auth` :red_circle:         | `str` | None    | XAPIKeyAuth                                                                                  |
+| `on_behalf_of` :red_circle: | `str` | None    | The ID of the user sending the profile, or the person he is sending the profile on behalf of |
 
 :red_circle: : *required*
 

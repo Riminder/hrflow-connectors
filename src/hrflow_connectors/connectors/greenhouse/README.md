@@ -27,10 +27,11 @@ In this section, we outline the data flow between different components of the co
 # 🔌 Connector Actions
 <p align="center">
 
-| Action | Description |
-| ------- | ----------- |
-| [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs of a board via the ***Greenhouse*** API and send them to a ***Hrflow.ai Board***. |
-| [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source to Greenhouse  via the API for the given job_id(s) provided in tags. |
+| Action                                         | Description                                                                                                 |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| [**Pull jobs**](docs/pull_job_list.md)         | Retrieves jobs from Greenhouse API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board                 |
+| [**Pull profiles**](docs/pull_profile_list.md) | Retrieves profiles from Greenhouse API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Source            |
+| [**Push profile**](docs/push_profile.md)       | Writes a profile from Hrflow.ai Source to Greenhouse  via the API for the given job_id(s) provided in tags. |
 
 
 </p>
