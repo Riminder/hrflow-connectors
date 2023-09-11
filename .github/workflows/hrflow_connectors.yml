@@ -186,7 +186,7 @@ jobs:
   cd:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    needs: [core-tests, connectors-integration-tests]
+    needs: [core-tests]
     permissions:
       id-token: write
       contents: write
