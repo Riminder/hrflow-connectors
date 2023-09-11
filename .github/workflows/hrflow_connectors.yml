@@ -29,7 +29,7 @@ jobs:
 
       - name: Install commitlint
         run: |
-          npm install conventional-changelog-conventionalcommits
+          npm install @commitlint/config-angular
           npm install commitlint@v17.7.1
 
       - name: Validate current commit (last commit) with commitlint
