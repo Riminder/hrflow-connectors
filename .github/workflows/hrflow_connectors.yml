@@ -206,6 +206,13 @@ jobs:
       - name: Add poetry to PATH
         run: export PATH="$HOME/.local/bin:$PATH"
 
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ env.BASELINE_PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+
       - name: Prepare new release
         id: publish-pipy
         env:
