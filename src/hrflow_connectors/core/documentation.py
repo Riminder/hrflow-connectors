@@ -177,6 +177,9 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
             capture_output=True,
             timeout=GIT_UPDATE_TIMEOUT,
         )
+        if connector.model.name == "Bullhorn":
+            print(connector.model.name)
+            print(result.stdout)
         if result.stderr:
             raise Exception(
                 "Subprocess run for Git update dates failed for connector {} with"
