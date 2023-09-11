@@ -225,6 +225,7 @@ jobs:
           git config user.name hrflow-cicd
           git config user.email hrflow-cicd@hrflow.ai
           echo "PKG_VERSION=$(poetry run semantic-release --noop version --print)" >> "$GITHUB_OUTPUT"
+          poetry run semantic-release version
           poetry run semantic-release publish
 
       - name: Publish to TestPyPI
