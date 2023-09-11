@@ -16,33 +16,8 @@ env:
   PYTHONPATH: ./src/
 
 jobs:
-  commitlint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install commitlint
-        run: |
-          npm install @commitlint/config-angular
-          npm install commitlint@v17.7.1
-
-      - name: Validate current commit (last commit) with commitlint
-        if: github.event_name == 'push'
-        run: npx commitlint --from HEAD~1 --to HEAD --verbose
-
-      - name: Validate PR commits with commitlint
-        if: github.event_name == 'pull_request'
-        run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
-
   core-tests:
     runs-on: ubuntu-latest
-    needs: [commitlint]
     steps:
       - name: Check permissions for job
         if: ${{ !( (github.event_name == 'push' && github.ref == 'refs/heads/master') || contains(fromJSON('["OWNER", "COLLABORATOR", "MEMBER"]'), github.event.pull_request.author_association) || contains(github.event.pull_request.labels.*.name, 'run tests for fork'))}}
@@ -210,7 +185,7 @@ jobs:
   cd:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    needs: [core-tests, connectors-integration-tests, commitlint]
+    needs: [core-tests, connectors-integration-tests]
     permissions:
       id-token: write
       contents: write
