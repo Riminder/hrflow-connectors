@@ -6,6 +6,7 @@ from typing import Any, Dict
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
+    HrFlowProfileParsingWarehouse,
     HrFlowProfileWarehouse,
 )
 from hrflow_connectors.connectors.sapsuccessfactors.warehouse import (
@@ -262,6 +263,37 @@ def format_profile(profile: HrFlowProfile) -> t.Dict:
     return sap_profile
 
 
+def format_datetime(date_string):
+    # Extract the timestamp part (milliseconds since epoch) using regular expressions
+    match = re.search(r"\d+", date_string)
+    timestamp = int(match.group())
+
+    # Convert timestamp to datetime
+    dt = datetime.datetime.utcfromtimestamp(timestamp / 1000.0)
+
+    # Convert datetime to ISO 8601 format
+    iso_date = dt.isoformat()
+    return iso_date
+
+
+def format_sap_candidate(candidate_data: t.Dict) -> t.Dict:
+    metadatas = [
+        {
+            "name": "profile url",
+            "value": candidate_data["metadata"]["uri"],
+        }
+    ]
+
+    return dict(
+        reference=candidate_data["candidateId"],
+        created_at=format_datetime(candidate_data["creationDateTime"]),
+        updated_at=format_datetime(candidate_data["lastModifiedDateTime"]),
+        resume=candidate_data["resume"],
+        tags=candidate_data["tags"],
+        metadatas=metadatas,
+    )
+
+
 DESCRIPTION = (
     "By understanding what employees need, how they work, and what motivates them, you"
     " can put people at the heart of your HR strategy."
@@ -300,6 +332,20 @@ SAPSuccessFactors = Connector(
             origin=HrFlowProfileWarehouse,
             target=SAPProfileWarehouse,
             action_type=ActionType.outbound,
+        ),
+        ConnectorAction(
+            name=ActionName.pull_profile_list,
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves all profiles via the ***SAPSuccessFactors*** API and sends"
+                " them to a ***Hrflow.ai Board***."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadProfilesActionParameters", format=format_sap_candidate
+            ),
+            origin=SAPProfileWarehouse,
+            target=HrFlowProfileParsingWarehouse,
+            action_type=ActionType.inbound,
         ),
     ],
 )
