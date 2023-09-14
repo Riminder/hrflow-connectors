@@ -18,7 +18,7 @@ env:
 jobs:
   core-tests:
     runs-on: ubuntu-latest
-    if: github.event.commits[0].author.name != 'hrflow-semantic-release'
+    if: ${{ !always() && github.event.commits[0].author.name != 'hrflow-semantic-release' }}
     steps:
       - name: Dump GitHub context
         env:
@@ -115,7 +115,7 @@ jobs:
 
   connectors-integration-tests:
     runs-on: ubuntu-latest
-    if: github.event.commits[0].author.name != 'hrflow-semantic-release'
+    if: ${{ !always() && github.event.commits[0].author.name != 'hrflow-semantic-release' }}
     needs: [core-tests]
     steps:
       - name: Check permissions for job
