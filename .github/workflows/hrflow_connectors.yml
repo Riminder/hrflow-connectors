@@ -14,8 +14,6 @@ env:
   BASELINE_PYTHON_VERSION: 3.10.10
   NOX_ENV_DIR: ./.nox
   PYTHONPATH: ./src/
-  SEMANTIC_VERSION_GIT_NAME: python-semantic-release
-  SEMANTIC_VERSION_GIT_EMAIL: python-semantic-release@hrflow.ai
 
 jobs:
   commitlint:
