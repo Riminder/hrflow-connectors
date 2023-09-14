@@ -14,13 +14,11 @@ env:
   BASELINE_PYTHON_VERSION: 3.10.10
   NOX_ENV_DIR: ./.nox
   PYTHONPATH: ./src/
-  SEMANTIC_VERSION_GIT_NAME: python-semantic-release
-  SEMANTIC_VERSION_GIT_EMAIL: python-semantic-release@hrflow.ai
 
 jobs:
   core-tests:
     runs-on: ubuntu-latest
-    if: github.event.commits[0].author.name != env.SEMANTIC_VERSION_GIT_NAME
+    if: github.event.commits[0].author.name != 'python-semantic-release'
     steps:
       - name: Check permissions for job
         if: ${{ !( (github.event_name == 'push' && github.ref == 'refs/heads/master') || contains(fromJSON('["OWNER", "COLLABORATOR", "MEMBER"]'), github.event.pull_request.author_association) || contains(github.event.pull_request.labels.*.name, 'run tests for fork'))}}
@@ -111,7 +109,7 @@ jobs:
 
   connectors-integration-tests:
     runs-on: ubuntu-latest
-    if: github.event.commits[0].author.name != env.SEMANTIC_VERSION_GIT_NAME
+    if: github.event.commits[0].author.name != 'python-semantic-release'
     needs: [core-tests]
     steps:
       - name: Check permissions for job
@@ -173,7 +171,7 @@ jobs:
 
   reset-labels:
     runs-on: ubuntu-latest
-    if: github.event.commits[0].author.name != env.SEMANTIC_VERSION_GIT_NAME
+    if: github.event.commits[0].author.name != 'python-semantic-release'
     needs: [core-tests, connectors-integration-tests]
     permissions:
       issues: write
@@ -189,7 +187,7 @@ jobs:
 
   cd:
     runs-on: ubuntu-latest
-    if: github.event.commits[0].author.name != env.SEMANTIC_VERSION_GIT_NAME && github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event.commits[0].author.name != 'python-semantic-release' && github.event_name == 'push' && github.ref == 'refs/heads/master'
     needs: [core-tests]
     environment: release
     steps:
@@ -225,8 +223,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PUBLISH_GITHUB_TOKEN }}
         run: |
-          git config user.name $SEMANTIC_VERSION_GIT_NAME
-          git config user.email $SEMANTIC_VERSION_GIT_EMAIL
+          git config user.name python-semantic-release
+          git config user.email python-semantic-release@hrflow.ai
           echo "PKG_VERSION=$(poetry run semantic-release --noop version --print)" >> "$GITHUB_OUTPUT"
           poetry run semantic-release version
           poetry run semantic-release publish
