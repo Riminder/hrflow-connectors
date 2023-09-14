@@ -533,7 +533,6 @@ which causes make docs to fail. This fixes the issue by updating the finder rege
 * feat: allow connectors path to be supplied for git update process
 This allow other repositories to use the main Readme listing function
 while properly linking to their connectors ([`165f1ac`](https://github.com/Riminder/hrflow-connectors/commit/165f1ac8b8e47c3cc58bc0f55297e1b5cbcacb1f))
-=======
 ## v3.0.1 (2023-09-14)
 
 ### Build
