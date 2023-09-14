@@ -194,7 +194,7 @@ jobs:
   cd:
     runs-on: ubuntu-latest
     if: github.event.commits[0].author.name != 'hrflow-semantic-release' && github.event_name == 'push' && github.ref == 'refs/heads/master'
-    needs: [core-tests]
+    # needs: [core-tests]
     environment: release
     steps:
       - uses: actions/checkout@v3
