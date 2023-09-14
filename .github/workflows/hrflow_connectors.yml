@@ -20,6 +20,12 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.commits[0].author.name != 'python-semantic-release'
     steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github.event) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+
       - name: Check permissions for job
         if: ${{ !( (github.event_name == 'push' && github.ref == 'refs/heads/master') || contains(fromJSON('["OWNER", "COLLABORATOR", "MEMBER"]'), github.event.pull_request.author_association) || contains(github.event.pull_request.labels.*.name, 'run tests for fork'))}}
         uses: actions/github-script@v3
