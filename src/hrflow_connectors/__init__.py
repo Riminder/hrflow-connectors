@@ -2,6 +2,7 @@ from hrflow_connectors.connectors.adzuna.connector import Adzuna
 from hrflow_connectors.connectors.breezyhr import BreezyHR
 from hrflow_connectors.connectors.bullhorn import Bullhorn
 from hrflow_connectors.connectors.ceridian import Ceridian
+from hrflow_connectors.connectors.digitalrecruiters import DigitalRecruiters
 from hrflow_connectors.connectors.greenhouse.connector import Greenhouse
 from hrflow_connectors.connectors.hubspot import Hubspot
 from hrflow_connectors.connectors.lever import Lever
@@ -36,6 +37,7 @@ __CONNECTORS__ = [
     Waalaxy,
     Hubspot,
     Taleez,
+    DigitalRecruiters,
     Lever,
     Salesforce,
 ]

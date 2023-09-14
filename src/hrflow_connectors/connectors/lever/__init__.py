@@ -1,3 +1,1 @@
-from hrflow_connectors.connectors.lever.connector import (  # noqa
-    Lever,
-)
+from hrflow_connectors.connectors.lever.connector import Lever  # noqa

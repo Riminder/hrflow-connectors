@@ -4,8 +4,8 @@ import typing as t
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
-    HrFlowProfileWarehouse,
     HrFlowProfileParsingWarehouse,
+    HrFlowProfileWarehouse,
 )
 from hrflow_connectors.connectors.teamtailor.schema import TeamtailorJob
 from hrflow_connectors.connectors.teamtailor.warehouse import (
@@ -165,15 +165,15 @@ Teamtailor = Connector(
             description=(
                 "Retrieves candidates from Teamtailor API and sends them to an"
                 " ***Hrflow.ai Source***. "
-        ),
-        parameters=BaseActionParameters.with_defaults(
-            "PullTeamTailorProfileActionParameters"
-        ),
-        origin=TeamtailorProfileWarehouse,
-        target=HrFlowProfileParsingWarehouse.with_fixed_write_parameters(
-            only_insert=True
             ),
-        action_type=ActionType.inbound,
-    ),  
-    ]
+            parameters=BaseActionParameters.with_defaults(
+                "PullTeamTailorProfileActionParameters"
+            ),
+            origin=TeamtailorProfileWarehouse,
+            target=HrFlowProfileParsingWarehouse.with_fixed_write_parameters(
+                only_insert=True
+            ),
+            action_type=ActionType.inbound,
+        ),
+    ],
 )

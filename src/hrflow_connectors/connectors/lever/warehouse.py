@@ -1,5 +1,5 @@
-import typing as t
 import time
+import typing as t
 from logging import LoggerAdapter
 
 import requests
