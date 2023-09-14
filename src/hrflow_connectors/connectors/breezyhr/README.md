@@ -4,8 +4,6 @@
 - [📊 Data Flow](#-data-flow)
 - [🔌 Connector Actions](#-connector-actions)
 - [🐍 Quick Start Examples](#-quick-start-examples)
-  - [**Push Profiles Action**](#push-profiles-action)
-  - [**Pull Jobs Action**](#pull-jobs-action)
 - [🔗 Useful Links](#-useful-links)
 - [🙏 Special Thanks](#-special-thanks)
 
@@ -30,12 +28,11 @@ In this section, we outline the data flow between different components of the co
 # 🔌 Connector Actions
 <p align="center">
 
-| Action | Description |
-| ------- | ----------- |
-| [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs via the ***BreezyHR*** API and send them to a ***Hrflow.ai Board***. |
-| [**Push profile list**](docs/push_profile_list.md) | Push all profiles from ***Hrflow.ai Source*** via ***BreezyHR*** API and send them to a ***BreezyHR***. |
-
-
+| Action                                         | Description                                                                                            |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| [**Pull jobs**](docs/pull_job_list.md)         | Retrieves jobs from BreezyHr API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board              |
+| [**Pull profiles**](docs/pull_profile_list.md) | Retrieves profiles from BreezyHr API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Source         |
+| [**Push profile**](docs/push_profile.md)       | Push all profiles from ***Hrflow.ai Source*** via ***BreezyHR*** API and send them to a ***BreezyHR*** |
 </p>
 
 
