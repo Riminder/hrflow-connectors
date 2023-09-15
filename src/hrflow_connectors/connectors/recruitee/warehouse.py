@@ -262,9 +262,26 @@ def read_candidates(
                 params, response.status_code, response.text
             )
         )
-    candidates = response.json()["candidates"]
-    for candidate in candidates:
-        yield candidate
+    all_candidates = response.json()["candidates"]
+    for candidate in all_candidates:
+        full_candidate_response = requests.get(
+            "{}/{}/candidates/{}".format(
+                RECRUITEE_ENDPOINT, parameters.company_id, candidate["id"]
+            ),
+            headers={
+                "Authorization": "Bearer {}".format(parameters.api_token),
+            },
+        )
+        if full_candidate_response.status_code // 100 != 2:
+            adapter.error(
+                "Failed to pull candidate details from Recruitee candidate_id={}"
+                " status_code={} response={}".format(
+                    candidate["id"],
+                    full_candidate_response.status_code,
+                    full_candidate_response.text,
+                )
+            )
+        yield full_candidate_response.json()["candidate"]
 
 
 def write_candidates(

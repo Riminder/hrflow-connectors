@@ -1,6 +1,6 @@
 
-- [💼  About Recruitee](#--about-Recruitee)
-- [😍 **What makes this major news for Recruitee customers \& partners?**](#-what-makes-this-major-news-for-Recruitee-customers--partners)
+- [💼  About Recruitee](#--about-recruitee)
+- [😍 **What makes this major news for Recruitee customers \& partners?**](#-what-makes-this-major-news-for-recruitee-customers--partners)
 - [🔧 How does it work?](#-how-does-it-work)
   - [📊 Data integration capabilities:](#-data-integration-capabilities)
   - [🧠 Artificial Intelligence capabilities:](#-artificial-intelligence-capabilities)
@@ -40,11 +40,11 @@ This new connector will enable Recruitee customers & partners to:
 # 🔌 Connector Actions
 <p align="center">
 
-| Action | Description |
-| ------- | ----------- |
-| [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source as a candidate on Recruitee via the API |
-| [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs via the ***Recruitee*** API and send them to a ***Hrflow.ai Board***. |
-
+| Action                                         | Description                                                                                     |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| [**Pull jobs**](docs/pull_job_list.md)         | Retrieves jobs from Recruitee API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Board      |
+| [**Pull profiles**](docs/pull_profile_list.md) | Retrieves profiles from Recruitee API  and sends them to a [HrFlow.ai](http://HrFlow.ai) Source |
+| [**Push profile**](docs/push_profile.md)       | Writes a profile from Hrflow.ai Source as a candidate on Recruitee via the API                  |
 
 </p>
 
