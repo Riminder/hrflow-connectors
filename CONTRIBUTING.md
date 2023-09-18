@@ -27,6 +27,113 @@ Depending on the version you would like to use you can `git checkout origin (mas
 
 **_Mind that your PR should ultimately target `master` and be based on `master`_**
 
+## Versionning and Git Commit guidelines
+
+Automatic versionning is enabled for the `master` branch. For each `push` [Python Semantic Release (PSR)](https://python-semantic-release.readthedocs.io/en/latest/index.html) is used in order to release a new version to Github.
+[PSR](https://python-semantic-release.readthedocs.io/en/latest/index.html) uses commit based rules to determine if a new version should be published and how the version number should be bumped.
+
+[PSR](https://python-semantic-release.readthedocs.io/en/latest/changelog_templates.html#) does also update the [CHANGELOG.md](./CHANGELOG.md) file following the custom template defined in [templates/CHANGELOG.md.j2](./templates/CHANGELOG.md.j2)
+
+The current parsing rules are based on [Angular Commit Guidelines](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commits). This is configured by `commit_parser` in `[tool.semantic_release]` section of [pyproject.toml](./pyproject.toml). See [here](https://python-semantic-release.readthedocs.io/en/latest/commit-parsing.html) for details about commit parsing for PSR.
+
+The behavior can be further customized by changing any of `allowed_tags`, `minor_tags` or `patch_tags` in the `[tool.semantic_release.commit_parser_options]` section of [pyproject.toml](./pyproject.toml).
+
+Below we give some example of what is expected to happen given different situations.
+
+Assume that the last release is `v4.5.22` having:
+- _MAJOR_: 4
+- _MINOR_: 5
+- _PATCH_: 22
+
+Then branch `feature/some-new-feature` is merged onto `master`.
+
+We examine the following three scenarios with regards to the new commits brought to `master` after the merge.
+### First case
+- Commit 1
+```
+docs: update the documentation generation process
+
+some changes were made to the generate_documentation helper
+in core
+```
+- Commit 2
+```
+refactor: create a helper enum to hold possible value for trigger_type
+```
+
+The parsed tags for this commit history are `docs` and `refactor`.
+
+None of them are part of `minor_tags` nor `patch_tags` and there is no mention of any **BREAKING CHANGE** in any of the commit bodies.
+
+**Result:** _After merge PSR does not trigger any release. The last release remains `v4.5.22`_
+
+### Second case
+- Commit 1
+```
+docs: update the documentation generation process
+some changes were made to the generate_documentation helper
+in core
+```
+- Commit 2
+```
+fix: correct a bug in MyConnector profile Warehouse
+```
+- Commit 3
+```
+refactor: create a helper enum to hold possible value for trigger_type
+```
+
+The parsed tags for this commit history are `docs`, `fix` and  `refactor`.
+
+There is no mention of any **BREAKING CHANGE** in any of the commit bodies but `fix` is within the currently configured `patch_tags` in `[tool.semantic_release.commit_parser_options]` section of [pyproject.toml](./pyproject.toml).
+
+**Result:** _After merge PSR does increment the _**PATCH**_ tag making a **new release** `v4.5.`**`23`**_
+
+### Third case
+- Commit 1
+```
+docs: update the documentation generation process
+some changes were made to the generate_documentation helper
+in core
+```
+- Commit 2
+```
+feat: add a new MyNewConnector to connectors' list
+```
+- Commit 3
+```
+refactor: create a helper enum to hold possible value for trigger_type
+```
+
+The parsed tags for this commit history are `docs`, `feat`  `refactor`.
+
+There is no mention of any **BREAKING CHANGE** in any of the commit bodies but `feat` is within the currently configured `minor_tags` in `[tool.semantic_release.commit_parser_options]` section of [pyproject.toml](./pyproject.toml).
+
+**Result** => _After merge PSR does increment the _**MINOR**_ tag making a **new release** `v4.`**`6`**`.0`_
+
+### Third case
+- Commit 1
+```
+docs: update the documentation generation process
+some changes were made to the generate_documentation helper
+in core
+```
+- Commit 2
+```
+feat: remove previously deprecated helper
+BREAKING CHANGE: Warehouse.my_removed_helper  is not longer available
+```
+- Commit 3
+```
+refactor: create a helper enum to hold possible value for trigger_type
+```
+
+The parsed tags for this commit history are `docs`, `feat`  `refactor`.
+
+There is a mention of a **BREAKING CHANGE** in the second commit.
+
+**Result:** _After merge PSR does increment the _**MAJOR**_ tag making a **new release** `v`**`5`**`.0.0`_
+
 ## Basic Environment setup
 
 1. Fork the repository
