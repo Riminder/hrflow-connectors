@@ -42,6 +42,7 @@ Below we give some example of what is expected to happen given different situati
 
 > You can also check the [Automatic Version bumping section](https://py-pkgs.org/07-releasing-versioning#automatic-version-bumping) of [Python Packages e-book](https://py-pkgs.org/welcome) for other examples.
 
+
 Assume that the last release is `v4.5.22` having:
 - _MAJOR_: 4
 - _MINOR_: 5
