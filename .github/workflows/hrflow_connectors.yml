@@ -119,7 +119,7 @@ jobs:
     needs: [core-tests]
     steps:
       - name: Check permissions for job
-        if: ${{ !(contains(fromJSON('["OWNER", "COLLABORATOR", "MEMBER"]'), github.event.pull_request.author_association) || contains(github.event.pull_request.labels.*.name, 'run tests for fork'))}}
+        if: ${{ !( (github.event_name == 'push' && github.ref == 'refs/heads/master') || contains(fromJSON('["OWNER", "COLLABORATOR", "MEMBER"]'), github.event.pull_request.author_association) || contains(github.event.pull_request.labels.*.name, 'run tests for fork')) }}
         uses: actions/github-script@v3
         with:
           script: |
