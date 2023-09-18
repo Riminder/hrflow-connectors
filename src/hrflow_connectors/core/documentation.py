@@ -45,13 +45,16 @@ ACTIONS_SECTIONS_REGEXP = (
 
 GIT_UPDATE_TIMEOUT = 5
 GIT_UPDATE_DATE = """
-git ls-tree -r --name-only HEAD src/hrflow_connectors/connectors/{connector} | while read filename; do
+git ls-tree -r --name-only HEAD {base_connector_path}/{connector} | while read filename; do
   echo "$(git log -1 --format="%aI" -- $filename)"
 done
 """
 
 HRFLOW_CONNECTORS_REMOTE_URL = "https://github.com/Riminder/hrflow-connectors"
 USE_REMOTE_REV: ContextVar[t.Optional[str]] = ContextVar("USE_REMOTE_REV", default=None)
+BASE_CONNECTOR_PATH: ContextVar[t.Optional[str]] = ContextVar(
+    "BASE_CONNECTOR_PATH", default="src/hrflow_connectors/connectors/"
+)
 
 
 class InvalidConnectorReadmeFormat(Exception):
@@ -168,7 +171,10 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
     for connector in connectors:
         model = connector.model
         result = subprocess.run(
-            GIT_UPDATE_DATE.format(connector=model.name.lower()),
+            GIT_UPDATE_DATE.format(
+                connector=model.name.lower(),
+                base_connector_path=BASE_CONNECTOR_PATH.get().rstrip("/"),
+            ),
             shell=True,
             text=True,
             capture_output=True,
