@@ -130,10 +130,6 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           lfs: true
 
-      # This action sets up a Python environment with Nox by:
-      # - Activating every version of Python that GitHub Actions supports.
-      # - Installing Nox.
-      # ==> https://github.com/marketplace/actions/setup-nox
       - uses: excitedleigh/setup-nox@v2.0.0
 
       - name: Load cached Poetry installation
