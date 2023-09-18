@@ -215,8 +215,9 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
             " {pull_job_list_status} | {push_profile_status} | {push_job_status} |"
         ).format(
             name=match.group("name"),
-            readme_link="./src/hrflow_connectors/connectors/{}/README.md".format(
-                model.name.lower()
+            readme_link="./{base_connector_path}/{connector}/README.md".format(
+                base_connector_path=BASE_CONNECTOR_PATH.get().strip("/"),
+                connector=model.name.lower(),
             ),
             type=model.type.value,
             release_date=match.group("release_date"),
