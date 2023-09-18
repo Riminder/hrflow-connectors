@@ -2,6 +2,13 @@
 
 
 
+## v3.1.1 (2023-09-18)
+
+### Fix
+
+* fix: use BASE_CONNECTOR_PATH context var for readme_link ([`a131982`](https://github.com/Riminder/hrflow-connectors/commit/a131982da86b9617beeea784b9b6a9bb5641ccef))
+
+
 ## v3.1.0 (2023-09-18)
 
 ### Ci
