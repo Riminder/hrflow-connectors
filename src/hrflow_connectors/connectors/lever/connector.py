@@ -1,6 +1,5 @@
 import typing as t
 from datetime import datetime
-
 from bs4 import BeautifulSoup
 
 from hrflow_connectors.connectors.hrflow.warehouse import (
@@ -375,22 +374,27 @@ def consruct_headline(hrflow_profile: dict) -> str:
         for education in educations:
             list_of_entity_title.append(education["school"])
     if not list_of_entity_title:
-        return None
-    return " , ".join(list_of_entity_title)
+        return list_of_entity_title
+    return ", ".join(list_of_entity_title)
 
 
 def format_opportunity(hrflow_profile: dict) -> dict:
     lever_opportunity = dict()
+    formatted_phone_number = None
+    if hrflow_profile["info"]["phone"]:
+        phone = hrflow_profile["info"]["phone"]
+        formatted_phone_number = f"({phone[1:4]}) {phone[4:]}"
+
     lever_opportunity["name"] = hrflow_profile["info"]["full_name"]
     lever_opportunity["headline"] = consruct_headline(hrflow_profile)
     lever_opportunity["location"] = hrflow_profile["info"]["location"]["text"]
-    lever_opportunity["phones"] = [
-        {"type": "mobile", "value": hrflow_profile["info"]["phone"]}
-    ]
+    lever_opportunity["phones"] = [{"value": formatted_phone_number}]
     lever_opportunity["emails"] = [hrflow_profile["info"]["email"]]
     lever_opportunity["links"] = get_profile_urls(hrflow_profile["info"]["urls"])
     lever_opportunity["tags"] = get_profile_skills(hrflow_profile["skills"])
     lever_opportunity["createdAt"] = from_iso_to_timestamp(hrflow_profile["created_at"])
+    if hrflow_profile["attachments"]:
+        lever_opportunity["file"] = hrflow_profile["attachments"][0]
     return lever_opportunity
 
 

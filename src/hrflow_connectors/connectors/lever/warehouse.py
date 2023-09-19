@@ -17,6 +17,7 @@ from hrflow_connectors.core import (
     WarehouseWriteAction,
 )
 
+LEVER_BASE_URL = "https://api.sandbox.lever.co"
 LEVER_JOBS_ENDPOINT = "https://api.sandbox.lever.co/v1/postings"
 LEVER_OPPORTUNITIES_ENDPOINT = "https://api.sandbox.lever.co/v1/opportunities"
 
@@ -318,10 +319,13 @@ def write(
     )
     adapter.info(f"Pushing {len(profiles)} profiles to Lever")
     failed_profiles = []
-    # post the profile to the opportunity endpoint
     for profile in profiles:
         if token:
             while True:
+                # attachment_url = None
+                # if profile.get("file"):
+                #     attachment_url = profile["file"].get("public_url")
+                profile.pop("file", None)
                 headers = {"Authorization": "Bearer " + token}
                 params = {
                     "perform_as": parameters.perform_as,
@@ -335,6 +339,29 @@ def write(
                     json=profile,
                 )
                 if response.status_code // 100 == 2:
+                    adapter.info("Successfully posted profile")
+                    # opportunity_id = response.json()["data"]["id"]
+                    # if attachment_url:
+                    #     cv_binary = download_cv_as_binary(attachment_url)
+                    #     if cv_binary:
+                    #         files = {
+                    #             "resumeFile": (
+                    #                 "resume.pdf",
+                    #                 cv_binary,
+                    #                 "application/ocet-stream",
+                    #             )
+                    #         }
+                    #         headers = {
+                    #             "Authorization": "Bearer " + token,
+                    #             "Content-Type": "multipart/form-data",
+                    #         }
+                    #         response = requests.post(
+                    #             LEVER_OPPORTUNITIES_ENDPOINT + "/" + opportunity_id,
+                    #             headers=headers,
+                    #             files=files,
+                    #         )
+                    #         if response.status_code // 100 == 2:
+                    #             adapter.info("Successfully posted resume")
                     break
                 elif response.status_code == 429:
                     adapter.error("Rate limit exceeded. Retrying after 1 minute.")
@@ -364,6 +391,18 @@ def write(
                     break
 
     return failed_profiles
+
+
+def download_cv_as_binary(attachment_url: str) -> bytes:
+    # Download the CV from the attachment URL and return it as binary data
+    try:
+        response = requests.get(attachment_url)
+        if response.status_code == 200:
+            return response.content
+        else:
+            return None
+    except Exception:
+        return None
 
 
 LeverJobWarehouse = Warehouse(
