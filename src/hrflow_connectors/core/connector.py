@@ -300,6 +300,7 @@ class WorkflowType(str, enum.Enum):
 
 
 class ActionName(str, enum.Enum):
+    pull_application_list = "pull_application_list"
     pull_job_list = "pull_job_list"
     pull_profile_list = "pull_profile_list"
     pull_resume_attachment_list = "pull_resume_attachment_list"
@@ -307,6 +308,7 @@ class ActionName(str, enum.Enum):
     push_job = "push_job"
     push_profile_list = "push_profile_list"
     push_job_list = "push_job_list"
+    push_score_list = "push_score_list"
     catch_profile = "catch_profile"
     catch_job = "catch_job"
     # TalentSoft actions
@@ -387,11 +389,16 @@ class ConnectorAction(BaseModel):
     @validator("name", pre=False)
     def name_is_coherent_with_trigger_type(cls, v, values, **kwargs):
         if (
-            v in [ActionName.pull_job_list, ActionName.pull_profile_list]
+            v in [
+                ActionName.pull_application_list,
+                ActionName.pull_job_list,
+                ActionName.pull_profile_list
+            ]
             and values["trigger_type"] != WorkflowType.pull
         ):
             raise ValueError(
-                "`pull_job_list` and `pull_profile_list` are only available for"
+                "`pull_application_list`, `pull_job_list` and `pull_profile_list`"
+                " are only available for"
                 " trigger_type={}".format(WorkflowType.pull)
             )
         return v
