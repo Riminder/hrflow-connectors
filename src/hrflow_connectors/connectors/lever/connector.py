@@ -388,6 +388,8 @@ def format_opportunity(hrflow_profile: dict) -> dict:
     lever_opportunity["links"] = get_profile_urls(hrflow_profile["info"]["urls"])
     lever_opportunity["tags"] = get_profile_skills(hrflow_profile["skills"])
     lever_opportunity["createdAt"] = from_iso_to_timestamp(hrflow_profile["created_at"])
+    if hrflow_profile["attachments"]:
+        lever_opportunity["file"] = hrflow_profile["attachments"][0]
     return lever_opportunity
 
 
