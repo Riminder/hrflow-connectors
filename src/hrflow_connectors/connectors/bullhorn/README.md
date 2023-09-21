@@ -36,7 +36,7 @@ This new connector will enable:
 - ➡️ Send Jobs data from a Source of your choice to Bullhorn.
 
 <p align="center">
-<image src=https://user-images.githubusercontent.com/57711045/216107885-9d5f2d20-eb07-437f-9e08-5fc9a55021b1.png width=90% height=100% >
+<image src=https://github.com/Riminder/hrflow-connectors/assets/57711045/9dc5543c-5507-4317-ad23-c1702153a972 width=90% height=100% >
 </p>
 
 ## 🧠 Artificial Intelligence capabilities:
