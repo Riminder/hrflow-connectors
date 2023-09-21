@@ -19,20 +19,8 @@ jobs:
   core-tests:
     runs-on: ubuntu-latest
     if: github.event.commits[0].author.name != 'hrflow-semantic-release'
+    environment: ci
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github.event) }}
-        run: |
-          echo "$GITHUB_CONTEXT"
-
-      - name: Check permissions for job
-        if: ${{ !( (github.event_name == 'push' && github.ref == 'refs/heads/master') || contains(fromJSON('["OWNER", "COLLABORATOR", "MEMBER"]'), github.event.pull_request.author_association) || contains(github.event.pull_request.labels.*.name, 'run tests for fork'))}}
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed("Not enough permissions to run Core Tests")
-
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
@@ -116,15 +104,9 @@ jobs:
   connectors-integration-tests:
     runs-on: ubuntu-latest
     if: github.event.commits[0].author.name != 'hrflow-semantic-release'
+    environment: ci
     needs: [core-tests]
     steps:
-      - name: Check permissions for job
-        if: ${{ !( (github.event_name == 'push' && github.ref == 'refs/heads/master') || contains(fromJSON('["OWNER", "COLLABORATOR", "MEMBER"]'), github.event.pull_request.author_association) || contains(github.event.pull_request.labels.*.name, 'run tests for fork')) }}
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed("Not enough permissions to run Integration Tests")
-
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
@@ -177,22 +159,6 @@ jobs:
         env:
           HRFLOW_CONNECTORS_STORE_ENABLED: "1"
           HRFLOW_CONNECTORS_LOCALJSON_DIR: "/tmp/"
-
-  reset-labels:
-    runs-on: ubuntu-latest
-    if: github.event.commits[0].author.name != 'hrflow-semantic-release'
-    needs: [core-tests, connectors-integration-tests]
-    permissions:
-      issues: write
-      pull-requests: write
-    steps:
-      - name: Remove run tests for fork label
-        run: |
-          curl \
-            -X DELETE \
-            -H 'Accept: application/vnd.github.v3+json' \
-            -H 'Authorization: token ${{ github.token }}' \
-            'https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.number }}/labels/run%20tests%20for%20fork'
 
   cd:
     runs-on: ubuntu-latest
