@@ -32,6 +32,11 @@ This new connector will enable:
 
 In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process:
 
+<p align="center">
+<image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/44081c4d-627e-4b24-b2fd-f0d395e14907
+ width=90% height=100% >
+</p>
+
 # 🔌 Connector Actions
 
 | Actions                                            | Description                                                                     |
