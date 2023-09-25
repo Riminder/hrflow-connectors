@@ -30,7 +30,7 @@ This new connector will enable:
 
 ## 📊 Data Flow
 
-In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
+In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process:
 
 # 🔌 Connector Actions
 
