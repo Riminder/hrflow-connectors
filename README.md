@@ -9,10 +9,10 @@
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/Riminder/hrflow-connectors?style=social) ![](https://img.shields.io/github/v/release/Riminder/hrflow-connectors) ![](https://img.shields.io/github/license/Riminder/hrflow-connectors)
 
-
 # 💼 About HrFlow.ai
 
 **[HrFlow.ai](https://hrflow.ai/) is on a mission to make AI and data integration pipelines a commodity in the HR Industry:**
+
   1. **Unify**: Link your Talent Data channels with a few clicks, so they can share data.
   2. **Understand**: Leverage our AI solutions to process your Talent Data.
   3. **Automate**: Sync data between your tools and build workflows that meet your business logic.
@@ -25,10 +25,11 @@
 
 <br/>
 
-# 💻 About **HrFlow-Connectors** 
+# 💻 About **HrFlow-Connectors**
+
 **HrFlow-Connectors** is an open-source project created by HrFlow.ai to democratize Talent Data integration within the HR Tech landscape.
 
-We invite developers to join us in our mission to bring AI and data integration to the HR industr, as a developper you can: 
+We invite developers to join us in our mission to bring AI and data integration to the HR industr, as a developper you can:
 
 - Create new connectors quickly and easily with our low-code connector approach and abstracted concepts
 - Contribute to the Connectors' framework with your own code
@@ -40,9 +41,10 @@ We invite developers to join us in our mission to bring AI and data integration 
 <image src=https://user-images.githubusercontent.com/57711045/215884679-33f754e2-2a21-4aad-97c8-181f6d75235e.png width=90% height=100% >
 </p>
 
-📃 **More instructions are available in the Documentation section below** 
+📃 **More instructions are available in the Documentation section below**
 
 # 🤝 List of Connectors (ATS/CRM/HCM)
+
 | Name                                                                                                                                  | Type             | Available          | Release date | Last update  | Pull profile list action                                                                                                                            | Pull job list action | Push profile action | Push job action    |
 | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ------------------ | ------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ------------------- | ------------------ |
 | **ADP**                                                                                                                               | HCM              | 🎯                  |              |              |                                                                                                                                                     |                      |                     |                    |
@@ -60,7 +62,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Comeet**                                                                                                                            | ATS              | 🎯                  |              |              |                                                                                                                                                     |                      |                     |                    |
 | **Cornerstone OnDemand**                                                                                                              | ATS              | 🎯                  |              |              |                                                                                                                                                     |                      |                     |                    |
 | **Crosstalent**                                                                                                                       | ATS              | :hourglass:        | *19/01/2022* |              |                                                                                                                                                     |                      |                     |                    |
-| **Digitalrecruiters**                                                                                                                 | ATS              | 🎯                  |              |              |                                                                                                                                                     |                      |                     |                    |
+| [**Digitalrecruiters**](./src/hrflow_connectors/connectors/digitalrecruiters/README.md)                                                                                                                 | ATS              | 🎯                  | *17/08/2023*            | *25/09/2023*            |white_check_mark:                                                                                                                                                      |  white_check_mark:                     |        white_check_mark:              |                    |
 | **EngageATS**                                                                                                                         | ATS              | 🎯                  |              |              |                                                                                                                                                     |                      |                     |                    |
 | **EOLIA Software**                                                                                                                    | ATS              | 🎯                  |              |              |                                                                                                                                                     |                      |                     |                    |
 | **Eploy**                                                                                                                             | ATS              | 🎯                  |              |              |                                                                                                                                                     |                      |                     |                    |
@@ -110,12 +112,12 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Workable**](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/workable)                   | HCM              | :white_check_mark: | *27/09/2022* | *04/09/2023* | :white_check_mark:                                                                                                                                  | :white_check_mark:   | :white_check_mark:  | :x:                |
 | **Workday**                                                                                                                           | HCM              | :white_check_mark: |              |              |
 
-
 - :white_check_mark: : Done
 - :hourglass: : Work in progress
 - 🎯 : Backlog
 
 # 🤝 List of Connectors (Job Boards)
+
 | Name                                                                       | Type           | Available          | Release date | Last update  | Pull profile list action | Pull job list action | Push profile action | Push job action |
 | -------------------------------------------------------------------------- | -------------- | ------------------ | ------------ | ------------ | ------------------------ | -------------------- | ------------------- | --------------- |
 | **ADENCLASSIFIEDS**                                                        | Job Board      | 🎯                  |              |              |                          |                      |                     |                 |
@@ -157,30 +159,37 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Welcome To The Jungle**                                                  | Job Board      | 🎯                  |              |              |
 | **Wizbii**                                                                 | Job Board      | 🎯                  |              |              |
 | **XML**                                                                    | Job Board      | :hourglass:        |              |              |
+
 - :white_check_mark: : Done
 - :hourglass: : Work in progress
 - 🎯 : Backlog
 
 # 🪄 Quickstart
+
 ## What I can do?
+
 With Hrflow Connector, you can **synchronize** and **process** multiple **HR data streams** in just a few lines of code.
 
 You can do any kind of data transfer between HrFlow.ai and external destinations :
-* Pull jobs : `External Job flow` :arrow_right: ***`Hrflow.ai Board`***
-* Pull profiles : `External Profile flow` :arrow_right: ***`Hrflow.ai Source`***
-* Push job : ***`Hrflow.ai Board`*** :arrow_right: `External destination`
-* Push profile : ***`Hrflow.ai Source`*** :arrow_right: `External destination`
+
+- Pull jobs : `External Job flow` :arrow_right: ***`Hrflow.ai Board`***
+- Pull profiles : `External Profile flow` :arrow_right: ***`Hrflow.ai Source`***
+- Push job : ***`Hrflow.ai Board`*** :arrow_right: `External destination`
+- Push profile : ***`Hrflow.ai Source`*** :arrow_right: `External destination`
 
 The features offered by this package:
-* **Synchronize an entire data** stream with a ready-to-use solution
-*  **Synchronize only certain data** in a stream meeting a condition defined by you : [`logics`](DOCUMENTATION.md#logics)
-* **Format the data as you wish** or use the default formatting that we propose adapted to each connector : [`format`](DOCUMENTATION.md#format)
-* **Leverage the provider *Hrflow.ai's ** Job and Profile Warehouse * with a many available options like [`hydrate_with_parsing`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L42) or [`update_content`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L39)
+
+- **Synchronize an entire data** stream with a ready-to-use solution
+- **Synchronize only certain data** in a stream meeting a condition defined by you : [`logics`](DOCUMENTATION.md#logics)
+- **Format the data as you wish** or use the default formatting that we propose adapted to each connector : [`format`](DOCUMENTATION.md#format)
+- **Leverage the provider *Hrflow.ai's ** Job and Profile Warehouse* with a many available options like [`hydrate_with_parsing`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L42) or [`update_content`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L39)
 
 ## ❓ How to use a connector ?
+
 **Prerequisites**
-* [✨ Create a Workspace](https://hrflow.ai/signup/)
-* [🔑 Get your API Key](https://developers.hrflow.ai/docs/api-authentification)
+
+- [✨ Create a Workspace](https://hrflow.ai/signup/)
+- [🔑 Get your API Key](https://developers.hrflow.ai/docs/api-authentification)
 
 1. Spin of a terminal shell
 2. **`pip install hrflow-connectors`**
@@ -188,8 +197,8 @@ The features offered by this package:
 
 🏁 **TADA! You have just used your first connector.**
 
-
 ## 📖 Documentation
+
 To find out **more about the HrFlow.ai Connectors framework** take a look at the [📖 documentation](DOCUMENTATION.md).
 
 ## 💡 Contributions
@@ -203,17 +212,22 @@ appreciated.
 👉 **To find out more about how to proceed, the rules and conventions to follow, read carefully [`CONTRIBUTING.md`](CONTRIBUTING.md).**
 
 # 🔗 Resources
-* Our Developers documentation : https://developers.hrflow.ai/
-* Our API list (Parsing, Revealing, Embedding, Searching, Scoring, Reasoning) : https://www.hrflow.ai/api
-* Our cool demos labs : https://labs.hrflow.ai
+
+- Our Developers documentation : <https://developers.hrflow.ai/>
+
+- Our API list (Parsing, Revealing, Embedding, Searching, Scoring, Reasoning) : <https://www.hrflow.ai/api>
+- Our cool demos labs : <https://labs.hrflow.ai>
 
 # 🚀 Upcoming Steps and Future Improvements
-The project is now in a stable state, however there are still some features and modifications that can be added to further improve the project. 
 
-**Next features** : 
+The project is now in a stable state, however there are still some features and modifications that can be added to further improve the project.
+
+**Next features** :
+
 - Add base classes for connectors actions to inherit from when developping new connectors  🚧
 
 The development team is always open to feedback and new ideas from users, so if you have any suggestions or ideas on how to improve the project, feel free to contact us!
+
 # 📃 License
 
 See the [`LICENSE`](LICENSE) file for licensing information.
