@@ -30,12 +30,7 @@ This new connector will enable:
 
 ## 📊 Data Flow
 
-In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process:
-
-<p align="center">
-<image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/44081c4d-627e-4b24-b2fd-f0d395e14907
- width=90% height=100% >
-</p>
+In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
 # 🔌 Connector Actions
 
@@ -50,6 +45,12 @@ In this section, we outline the data flow between different components of the co
 To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**.
 
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
+
+<p align="center">
+<image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/44081c4d-627e-4b24-b2fd-f0d395e14907
+ width=90% height=100% >
+</p>
+
 
 Once the connector module is imported, you can leverage all the different actions that it offers.
 
