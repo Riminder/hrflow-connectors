@@ -1,7 +1,9 @@
-import requests
 import typing as t
 from logging import LoggerAdapter
+
+import requests
 from pydantic import Field, HttpUrl
+
 from hrflow_connectors.connectors.digitalrecruiters.schema import (
     DigitalRecruitersJob,
     DigitalRecruitersReadProfile,
