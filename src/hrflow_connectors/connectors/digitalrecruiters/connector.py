@@ -4,12 +4,12 @@ from datetime import datetime
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
     HrFlowProfileWarehouse,
-    HrFlowProfileParsingWarehouse
+    HrFlowProfileParsingWarehouse,
 )
 from hrflow_connectors.connectors.digitalrecruiters.warehouse import (
     DigitalRecruitersJobWarehouse,
     DigitalRecruitersWriteProfileWarehouse,
-    DigitalRecruitersReadProfilesWarehouse
+    DigitalRecruitersReadProfilesWarehouse,
 )
 from hrflow_connectors.core import (
     ActionName,
@@ -31,7 +31,7 @@ def html_to_plain_text(html_text):
     # Replace special characters with their plain text equivalents
     plain_text = plain_text.replace("&nbsp;", " ")
     plain_text = plain_text.replace("&amp;", "&")
-    plain_text = plain_text.replace("&quot;", "\"")
+    plain_text = plain_text.replace("&quot;", '"')
     plain_text = plain_text.replace("&apos;", "'")
     plain_text = plain_text.replace("&lt;", "<")
     plain_text = plain_text.replace("&gt;", ">")
@@ -41,14 +41,15 @@ def html_to_plain_text(html_text):
 
     return plain_text
 
+
 def get_job_location(digital_recruiters_adress: t.Union[t.Dict, None]) -> t.Dict:
     if not digital_recruiters_adress:
         return dict(lat=None, lng=None, text="")
 
-    lat = digital_recruiters_adress.get("position",{}).get("lat", None)
+    lat = digital_recruiters_adress.get("position", {}).get("lat", None)
     lat = float(lat) if lat is not None else lat
 
-    lng = digital_recruiters_adress.get("position",{}).get("lon", None)
+    lng = digital_recruiters_adress.get("position", {}).get("lon", None)
     lng = float(lng) if lng is not None else lng
     text = digital_recruiters_adress.get("formatted", None)
 
@@ -78,21 +79,26 @@ def get_sections(digital_recruiters_job: t.Dict) -> t.List[t.Dict]:
             )
     return sections
 
+
 def get_tags(digital_recruiters_job: t.Dict) -> t.List[t.Dict]:
     job = digital_recruiters_job
     custom_field_mapping = {
-        'Possibilité de télétravail': 'digitalrecruiters_possibilite_de_teletravail',
-        'Automatisation (HRFlow.ai)': 'digitalrecruiters_automatisation_hrflow',
-        'Heures hebdomadaires': 'digitalrecruiters_heures_hebdomadaires',
-        'Date envisagée de recrutement': 'digitalrecruiters_date_enviseagee_de_recrutement',
-        'Date de fin': 'digitalrecruiters_date_de_fin',
-        'Motif de recrutement': 'digitalrecruiters_motif_de_recrutement',
-        'Nom de la personne remplacée': 'digitalrecruiters_nom_de_la_personne_remplacee',
-        'Echelon': 'digitalrecruiters_echelon',
-        'Filière': 'digitalrecruiters_filiere',
-        'Horaires': 'digitalrecruiters_horaires',
-        'Un candidat est déjà identifié': 'digitalrecruiters_candidat_deja_identifie',
-        'Nom de ce candidat': 'digitalrecruiters_nom_du_candidat'
+        "Possibilité de télétravail": "digitalrecruiters_possibilite_de_teletravail",
+        "Automatisation (HRFlow.ai)": "digitalrecruiters_automatisation_hrflow",
+        "Heures hebdomadaires": "digitalrecruiters_heures_hebdomadaires",
+        "Date envisagée de recrutement": (
+            "digitalrecruiters_date_enviseagee_de_recrutement"
+        ),
+        "Date de fin": "digitalrecruiters_date_de_fin",
+        "Motif de recrutement": "digitalrecruiters_motif_de_recrutement",
+        "Nom de la personne remplacée": (
+            "digitalrecruiters_nom_de_la_personne_remplacee"
+        ),
+        "Echelon": "digitalrecruiters_echelon",
+        "Filière": "digitalrecruiters_filiere",
+        "Horaires": "digitalrecruiters_horaires",
+        "Un candidat est déjà identifié": "digitalrecruiters_candidat_deja_identifie",
+        "Nom de ce candidat": "digitalrecruiters_nom_du_candidat",
     }
 
     tags = []
@@ -101,12 +107,14 @@ def get_tags(digital_recruiters_job: t.Dict) -> t.List[t.Dict]:
         if value is not None and value != "":
             tags.append({"name": name, "value": value})
 
-
     compensation = job.get("salary", {})
     if compensation:
         add_tag("digitalrecruiters_compensation_min", compensation.get("min", None))
         add_tag("digitalrecruiters_compensation_max", compensation.get("max", None))
-        add_tag("digitalrecruiters_compensation_currency", compensation.get("currency", None))
+        add_tag(
+            "digitalrecruiters_compensation_currency",
+            compensation.get("currency", None),
+        )
 
     manager = job.get("entity", {}).get("manager", {})
     if manager:
@@ -118,8 +126,13 @@ def get_tags(digital_recruiters_job: t.Dict) -> t.List[t.Dict]:
     recruiter = job.get("referent_recruiter", {})
     if recruiter:
         add_tag("digitalrecruiters_recruiter_email", recruiter.get("email", None))
-        add_tag("digitalrecruiters_recruiter_phoneNumber", recruiter.get("phoneNumber", None))
-        add_tag("digitalrecruiters_recruiter_picture", recruiter.get("picture_url", None))
+        add_tag(
+            "digitalrecruiters_recruiter_phoneNumber",
+            recruiter.get("phoneNumber", None),
+        )
+        add_tag(
+            "digitalrecruiters_recruiter_picture", recruiter.get("picture_url", None)
+        )
 
     hierarchy_list = digital_recruiters_job.get("hierarchy", [])
     for item in hierarchy_list:
@@ -141,40 +154,45 @@ def get_tags(digital_recruiters_job: t.Dict) -> t.List[t.Dict]:
 
 
 def format_skills(skills_list):
-    formatted_skills = [{"name": skill, "type": None, "value": None} for skill in skills_list]
+    formatted_skills = [
+        {"name": skill, "type": None, "value": None} for skill in skills_list
+    ]
     return formatted_skills
+
 
 # format profile location retrieved from DigitlRecruiters
 def get_profile_location(Dr_location: t.Dict) -> t.Dict:
     if not Dr_location:
-        return dict(text="",lat=None, lng=None)
+        return dict(text="", lat=None, lng=None)
     street = Dr_location.get("street", "")
     zip_code = Dr_location.get("zip", "")
     city = Dr_location.get("city", "")
     country = Dr_location.get("country", "")
-    
+
     parts = []
-    
+
     if street:
         parts.append(street)
-    
+
     if city:
         parts.append(city)
-    
+
     if zip_code:
         parts.append(f"({zip_code})")
-    
+
     if country:
         parts.append(country)
-    
+
     location_text = ", ".join(parts)
     location_lat = Dr_location.get("latitude", None)
     location_lng = Dr_location.get("longitude", None)
     return dict(text=location_text, lat=location_lat, lng=location_lng)
 
+
 def normalize_link(link):
-    normalized_link = link.replace('\\', '')
+    normalized_link = link.replace("\\", "")
     return normalized_link
+
 
 def format_job(digital_recruiters_job: t.Dict) -> t.Dict:
     picture = None
@@ -184,18 +202,21 @@ def format_job(digital_recruiters_job: t.Dict) -> t.Dict:
     job = dict(
         name=digital_recruiters_job.get("title", None),
         picture=picture,
-        reference=digital_recruiters_job.get("reference",None),
-        created_at=digital_recruiters_job.get("published_at",None),	
+        reference=digital_recruiters_job.get("reference", None),
+        created_at=digital_recruiters_job.get("published_at", None),
         location=get_job_location(digital_recruiters_job.get("address", {})),
-        sections = get_sections(digital_recruiters_job),
-        requirements = html_to_plain_text(digital_recruiters_job.get("profile", None)),		
-        skills = format_skills(digital_recruiters_job.get("skills", [])),
+        sections=get_sections(digital_recruiters_job),
+        requirements=html_to_plain_text(digital_recruiters_job.get("profile", None)),
+        skills=format_skills(digital_recruiters_job.get("skills", [])),
         tags=get_tags(digital_recruiters_job),
     )
     return job
 
+
 def format_dr_profile(dr_candidate: t.Dict) -> t.Dict:
-    full_name = f"{dr_candidate.get('firstName', None)} {dr_candidate.get('lastName', None)}"
+    full_name = (
+        f"{dr_candidate.get('firstName', None)} {dr_candidate.get('lastName', None)}"
+    )
     resume = dr_candidate.get("cv", {}).get("url", None)
     resume = normalize_link(resume)
     avatar = dr_candidate.get("avatar", {}).get("url", None)
@@ -205,31 +226,49 @@ def format_dr_profile(dr_candidate: t.Dict) -> t.Dict:
     location = get_profile_location(dr_candidate.get("location", {}))
     # add tags
     tags = []
-    
+
     def add_tag(name, value):
         if value is not None:
             tags.append({"name": name, "value": value})
-    
+
     add_tag("digitalrecruiters_profile-email", dr_candidate.get("email", None))
-    add_tag("digitalrecruiters_profile-phoneNumber", dr_candidate.get("phoneNumber", None))
+    add_tag(
+        "digitalrecruiters_profile-phoneNumber", dr_candidate.get("phoneNumber", None)
+    )
     add_tag("digitalrecruiters_profile-fullName", full_name)
     add_tag("digitalrecruiters_avatar", avatar)
     add_tag("digitalrecruiters_profile-resume", resume)
     add_tag("digitalrecruiters_profile-location", location.get("text", None))
-    add_tag("digitalrecruiters_education-level", dr_candidate.get("educationLevel", None))
-    add_tag("digitalrecruiters_job-experience-level", dr_candidate.get("experienceLevel", None))
+    add_tag(
+        "digitalrecruiters_education-level", dr_candidate.get("educationLevel", None)
+    )
+    add_tag(
+        "digitalrecruiters_job-experience-level",
+        dr_candidate.get("experienceLevel", None),
+    )
     add_tag("digitalrecruiters_job-title", dr_candidate.get("jobTitle", None))
     add_tag("digitalrecruiters_job-id", dr_candidate.get("jobAd", {}).get("id", None))
-    add_tag("digitalrecruiters_job-published-at", dr_candidate.get("jobAd", {}).get("publishedAt", None))
+    add_tag(
+        "digitalrecruiters_job-published-at",
+        dr_candidate.get("jobAd", {}).get("publishedAt", None),
+    )
     add_tag("digitalrecruiters_locale", dr_candidate.get("locale", None))
     add_tag("digitalrecruiters_origin", dr_candidate.get("origin", None))
     add_tag("digitalrecruiters_is-spontaneous", dr_candidate.get("isSpontaneous", None))
     add_tag("digitalrecruiters_is-imported", dr_candidate.get("isImported", None))
-    add_tag("digitalrecruiters_is-from-external-api", dr_candidate.get("isFromExternalApi", None))
-    add_tag("digitalrecruiters_rejected-reason", dr_candidate.get("rejectedReason", None))
-    add_tag("digitalrecruiters_application-status", dr_candidate.get("applicationStatus", None))
-    
-    metadatas=[]
+    add_tag(
+        "digitalrecruiters_is-from-external-api",
+        dr_candidate.get("isFromExternalApi", None),
+    )
+    add_tag(
+        "digitalrecruiters_rejected-reason", dr_candidate.get("rejectedReason", None)
+    )
+    add_tag(
+        "digitalrecruiters_application-status",
+        dr_candidate.get("applicationStatus", None),
+    )
+
+    metadatas = []
     profile_hrflow = dict(
         reference=reference,
         created_at=created_at,
@@ -238,13 +277,16 @@ def format_dr_profile(dr_candidate: t.Dict) -> t.Dict:
         tags=tags,
         metadatas=metadatas,
     )
-    return profile_hrflow	
-    
+    return profile_hrflow
+
+
 def format_profile(profile_hrflow: t.Dict) -> t.Dict:
     dr_profile_dict = dict()
 
     # Gender mapping: 1 for Male, 2 for Female
-    dr_profile_dict["gender"] = 1 if profile_hrflow["info"]["gender"].lower() == "male" else 2
+    dr_profile_dict["gender"] = (
+        1 if profile_hrflow["info"]["gender"].lower() == "male" else 2
+    )
     dr_profile_dict["firstName"] = profile_hrflow["info"]["first_name"]
     dr_profile_dict["lastName"] = profile_hrflow["info"]["last_name"]
     dr_profile_dict["email"] = profile_hrflow["info"]["email"]
@@ -254,7 +296,7 @@ def format_profile(profile_hrflow: t.Dict) -> t.Dict:
 
     fields = location.get("fields", {})
     if isinstance(fields, list):
-		# If fields is a list, take the first element as it's a dictionary
+        # If fields is a list, take the first element as it's a dictionary
         fields = fields[0]
     dr_profile_dict["addressZip"] = fields.get("postcode")
     dr_profile_dict["addressCity"] = fields.get("state_district")
@@ -267,10 +309,11 @@ def format_profile(profile_hrflow: t.Dict) -> t.Dict:
 
     return profile
 
+
 DESCRIPTION = (
     "Digital Recruiters: Tech-driven hiring platform with job posting,"
-    " automation, and analytics. Simplify recruitment, reduce time-to-hire," 
-    " and elevate candidate experience. Streamline the hiring process for" 
+    " automation, and analytics. Simplify recruitment, reduce time-to-hire,"
+    " and elevate candidate experience. Streamline the hiring process for"
     " businesses with advanced features and integration capabilities."
 )
 
@@ -284,46 +327,40 @@ DigitalRecruiters = Connector(
             name=ActionName.pull_job_list,
             trigger_type=WorkflowType.pull,
             description=(
-                "Retrieves all jobs from Digital Recruiters and sends them to an Hrflow.ai Board."
+                "Retrieves all jobs from Digital Recruiters and sends them to an"
+                " Hrflow.ai Board."
             ),
             parameters=BaseActionParameters.with_defaults(
                 "ReadJobsActionParameters", format=format_job
             ),
             origin=DigitalRecruitersJobWarehouse,
-            target=HrFlowJobWarehouse,  
+            target=HrFlowJobWarehouse,
             action_type=ActionType.inbound,
         ),
         ConnectorAction(
             name=ActionName.pull_profile_list,
             trigger_type=WorkflowType.pull,
             description=(
-                "Retrieves all profiles from Digital Recruiters and sends them to an Hrflow.ai Source."
+                "Retrieves all profiles from Digital Recruiters and sends them to an"
+                " Hrflow.ai Source."
             ),
             parameters=BaseActionParameters.with_defaults(
                 "ReadProfilesActionParameters", format=format_dr_profile
             ),
             origin=DigitalRecruitersReadProfilesWarehouse,
-            target=HrFlowProfileParsingWarehouse,  
+            target=HrFlowProfileParsingWarehouse,
             action_type=ActionType.inbound,
         ),
         ConnectorAction(
             name=ActionName.push_profile,
             trigger_type=WorkflowType.catch,
-            description=(
-                "Pushes a profile from Hrflow.ai to Digital Recruiters."
-			),
+            description="Pushes a profile from Hrflow.ai to Digital Recruiters.",
             parameters=BaseActionParameters.with_defaults(
                 "WriteProfilesActionParameters", format=format_profile
-			),
+            ),
             origin=HrFlowProfileWarehouse,
             target=DigitalRecruitersWriteProfileWarehouse,
-			action_type=ActionType.outbound,
-		),
-        
+            action_type=ActionType.outbound,
+        ),
     ],
 )
-
-
-
-
-
