@@ -46,6 +46,11 @@ To make sure you can successfully run the latest versions of the example scripts
 
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
 
+<p align="center">
+<image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/564ad1d6-4d23-415e-a934-2a61144cf816
+ width=90% height=100% >
+</p>
+
 Once the connector module is imported, you can leverage all the different actions that it offers.
 
 For more code details checkout connector code.
