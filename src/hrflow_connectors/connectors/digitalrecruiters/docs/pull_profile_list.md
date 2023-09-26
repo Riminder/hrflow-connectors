@@ -1,16 +1,14 @@
 
 # Pull profile list
+
 `DigitalRecruiters Read Profils` :arrow_right: `HrFlow.ai Profile Parsing`
 
 Retrieves all profiles from Digital Recruiters and sends them to an Hrflow.ai Source.
-
 
 **DigitalRecruiters Read Profils endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
 | [**Read Profiles**]({url_environnement}/public/v1/{endpoint}) | Read profiles from Digital Recruiters |
-
-
 
 ## Action Parameters
 
@@ -55,7 +53,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-DigitalRecruiters.ActionName.pull_profile_list(
+DigitalRecruiters.pull_profile_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],

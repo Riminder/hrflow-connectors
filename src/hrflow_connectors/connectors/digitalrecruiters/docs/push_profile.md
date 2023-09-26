@@ -1,16 +1,14 @@
 
 # Push profile
+
 `HrFlow.ai Profiles` :arrow_right: `DigitalRecruiters Write Profile`
 
 Pushes a profile from Hrflow.ai to Digital Recruiters.
-
-
 
 **DigitalRecruiters Write Profile endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
 | [**Write Profile**]({url_environnement}/api/candidate/apply/{token}) | Write profile to Digital Recruiters |
-
 
 ## Action Parameters
 
@@ -51,7 +49,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-DigitalRecruiters.ActionName.push_profile(
+DigitalRecruiters.push_profile(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
