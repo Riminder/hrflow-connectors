@@ -5,7 +5,8 @@ from pydantic import BaseModel, HttpUrl
 
 class ContractDuration(BaseModel):
     min: Optional[int]
-    max: Optional[int]		
+    max: Optional[int]
+
 
 class Salary(BaseModel):
     min: Optional[int]
@@ -15,6 +16,7 @@ class Salary(BaseModel):
     variable: Optional[str]
     currency: Optional[str]
 
+
 class AddressParts(BaseModel):
     street: str
     zip: str
@@ -23,10 +25,12 @@ class AddressParts(BaseModel):
     state: str
     country: str
 
+
 class Address(BaseModel):
     parts: AddressParts
     formatted: str
     position: Dict[str, str]
+
 
 class Manager(BaseModel):
     section_title: str
@@ -36,10 +40,12 @@ class Manager(BaseModel):
     lastname: str
     position: str
 
+
 class Hierarchy(BaseModel):
     depth: int
     column_name: str
     public_name: str
+
 
 class Entity(BaseModel):
     public_name: str
@@ -49,10 +55,12 @@ class Entity(BaseModel):
     manager: Manager
     hierarchy: List[Hierarchy]
 
+
 class ReferentRecruiter(BaseModel):
     firstname: str
     lastname: str
     picture_url: Optional[str]
+
 
 class Brand(BaseModel):
     name: str
@@ -60,10 +68,12 @@ class Brand(BaseModel):
     logo: str
     favicon: str
 
+
 class CustomField(BaseModel):
     hash: str
     name: str
     value: str
+
 
 class DigitalRecruitersJob(BaseModel):
     locale: str
@@ -104,12 +114,15 @@ class DigitalRecruitersCandidateProfile(BaseModel):
     addressZip: Optional[str] = None
     addressCity: Optional[str] = None
 
+
 class DigitalRecruitersImportCandidateMessage(BaseModel):
     message: str
+
 
 class DigitalRecruitersImportCandidateFile(BaseModel):
     content: str
     name: str
+
 
 class DigitalRecruitersWriteProfile(BaseModel):
     reference: str
@@ -130,29 +143,36 @@ class Location(BaseModel):
     latitude: Optional[float]
     longitude: Optional[float]
 
+
 class ContractItem(BaseModel):
     id: int
     name: str
     countryNodeIds: Optional[List[int]]
 
+
 class JobReference(BaseModel):
     label: str
     hashId: str
+
 
 class Privacy(BaseModel):
     status: str
     updatedAt: Optional[datetime]
 
+
 class Avatar(BaseModel):
     url: HttpUrl
+
 
 class CV(BaseModel):
     url: HttpUrl
 
+
 class Resume(BaseModel):
     raw: bytes
     content_type: str
-    
+
+
 class DigitalRecruitersReadProfile(BaseModel):
     id: int
     firstName: str
