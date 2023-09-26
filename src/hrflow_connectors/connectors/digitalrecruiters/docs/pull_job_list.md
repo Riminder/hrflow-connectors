@@ -1,16 +1,14 @@
 
 # Pull job list
+
 `DigitalRecruiters Jobs` :arrow_right: `HrFlow.ai Jobs`
 
 Retrieves all jobs from Digital Recruiters and sends them to an Hrflow.ai Board.
-
 
 **DigitalRecruiters Jobs endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
 | [**Read Jobs**]({url_environnement}/export/job-ads/{token}) | Read jobs from Digital Recruiters |
-
-
 
 ## Action Parameters
 
@@ -51,7 +49,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-DigitalRecruiters.ActionName.pull_job_list(
+DigitalRecruiters.pull_job_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
