@@ -112,7 +112,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           lfs: true
 
-      - uses: excitedleigh/setup-nox@v2.0.0
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.BASELINE_PYTHON_VERSION }}
 
       - name: Load cached Poetry installation
         id: cached-poetry-install
@@ -120,13 +122,6 @@ jobs:
         with:
           path: ~/.local
           key: poetry-${{ env.POETRY_VERSION }}
-
-      - name: Load cached nox venvs
-        id: cached-nox-venvs
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.NOX_ENV_DIR }}
-          key: nox-venvs-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Add poetry to PATH
         run: export PATH="$HOME/.local/bin:$PATH"
@@ -137,6 +132,15 @@ jobs:
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ env.BASELINE_PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+
+      - uses: excitedleigh/setup-nox@v2.0.0
+
+      - name: Load cached nox venvs
+        id: cached-nox-venvs
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.NOX_ENV_DIR }}
+          key: nox-venvs-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
