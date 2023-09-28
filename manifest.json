@@ -30320,6 +30320,647 @@
         }
       ],
       "type": "CRM"
+    },
+    {
+      "name": "Leboncoin",
+      "actions": [
+        {
+          "name": "push_job_list",
+          "action_type": "outbound",
+          "action_parameters": {
+            "title": "WriteAdsParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "additionalProperties": false,
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "job",
+          "trigger_type": "schedule",
+          "origin": "HrFlow.ai Jobs",
+          "origin_parameters": {
+            "title": "ReadJobParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "board_key": {
+                "title": "Board Key",
+                "description": "HrFlow.ai board keys to extract the job from",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "job_key": {
+                "title": "Job Key",
+                "field_type": "Query Param",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "board_key",
+              "job_key"
+            ],
+            "additionalProperties": false
+          },
+          "origin_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Job.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Job.",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "title": "Location",
+                "description": "Job location object.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Location"
+                  }
+                ]
+              },
+              "sections": {
+                "title": "Sections",
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Section"
+                }
+              },
+              "url": {
+                "title": "Url",
+                "description": "Job post original URL.",
+                "type": "string"
+              },
+              "summary": {
+                "title": "Summary",
+                "description": "Brief summary of the Job.",
+                "type": "string"
+              },
+              "archieved_at": {
+                "title": "Archieved At",
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "type": "string"
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "t.List of skills of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "t.List of spoken languages of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "t.List of certifications of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "t.List of courses of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "t.List of tasks of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "t.List of tags of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "t.List of metadatas of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "ranges_float": {
+                "title": "Ranges Float",
+                "description": "t.List of ranges of floats",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesFloat"
+                }
+              },
+              "ranges_date": {
+                "title": "Ranges Date",
+                "description": "t.List of ranges of dates",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesDate"
+                }
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value. Example: 500.",
+                    "type": "number"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value. Example: 100.",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "description": "Unit of the value. Example: euros.",
+                    "type": "string"
+                  }
+                }
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "type": "string"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "supports_incremental": false,
+          "target": "LeboncoinWarehouse",
+          "target_parameters": {
+            "title": "WriteAdsParameters",
+            "type": "object",
+            "properties": {
+              "secret_key": {
+                "title": "Secret Key",
+                "description": "Leboncoin API secret key",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "http_auth_identity": {
+                "title": "Http Auth Identity",
+                "description": "Client's name",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "morpheus_client_id": {
+                "title": "Morpheus Client Id",
+                "description": "Client's unique ID",
+                "field_type": "Auth",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "secret_key",
+              "http_auth_identity",
+              "morpheus_client_id"
+            ],
+            "additionalProperties": false
+          },
+          "target_data_schema": {
+            "title": "Ad",
+            "type": "object",
+            "properties": {
+              "morpheus_client_id": {
+                "title": "Morpheus Client Id",
+                "type": "integer"
+              },
+              "partner_unique_reference": {
+                "title": "Partner Unique Reference",
+                "type": "string"
+              },
+              "job": {
+                "$ref": "#/definitions/Job"
+              },
+              "application": {
+                "$ref": "#/definitions/Application"
+              },
+              "company": {
+                "$ref": "#/definitions/Company"
+              },
+              "applicant": {
+                "$ref": "#/definitions/Applicant"
+              },
+              "pictures": {
+                "title": "Pictures",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "morpheus_client_id",
+              "partner_unique_reference",
+              "job",
+              "application"
+            ],
+            "definitions": {
+              "ContractDuration": {
+                "title": "ContractDuration",
+                "description": "Schema model of ContractDuration Object",
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "title": "Min",
+                    "type": "integer"
+                  },
+                  "max": {
+                    "title": "Max",
+                    "type": "integer"
+                  },
+                  "duration_type": {
+                    "title": "Duration Type",
+                    "type": "string"
+                  }
+                }
+              },
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "street": {
+                    "title": "Street",
+                    "type": "string"
+                  },
+                  "zip_code": {
+                    "title": "Zip Code",
+                    "type": "string"
+                  },
+                  "city": {
+                    "title": "City",
+                    "type": "string"
+                  },
+                  "country": {
+                    "title": "Country",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "zip_code",
+                  "city"
+                ]
+              },
+              "Salary": {
+                "title": "Salary",
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "title": "Min",
+                    "type": "number"
+                  },
+                  "max": {
+                    "title": "Max",
+                    "type": "number"
+                  },
+                  "per": {
+                    "title": "Per",
+                    "type": "string"
+                  },
+                  "benefits": {
+                    "title": "Benefits",
+                    "type": "string"
+                  }
+                }
+              },
+              "Job": {
+                "title": "Job",
+                "type": "object",
+                "properties": {
+                  "client_reference": {
+                    "title": "Client Reference",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "type": "string"
+                  },
+                  "start_date": {
+                    "title": "Start Date",
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "time_type": {
+                    "title": "Time Type",
+                    "type": "string"
+                  },
+                  "contract_type": {
+                    "title": "Contract Type",
+                    "type": "string"
+                  },
+                  "business_sector": {
+                    "title": "Business Sector",
+                    "type": "string"
+                  },
+                  "occupation": {
+                    "title": "Occupation",
+                    "type": "string"
+                  },
+                  "contract_duration": {
+                    "$ref": "#/definitions/ContractDuration"
+                  },
+                  "location": {
+                    "$ref": "#/definitions/Location"
+                  },
+                  "salary": {
+                    "$ref": "#/definitions/Salary"
+                  }
+                },
+                "required": [
+                  "title",
+                  "description",
+                  "contract_type",
+                  "location"
+                ]
+              },
+              "Application": {
+                "title": "Application",
+                "type": "object",
+                "properties": {
+                  "mode": {
+                    "title": "Mode",
+                    "type": "string"
+                  },
+                  "contact": {
+                    "title": "Contact",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "mode",
+                  "contact"
+                ]
+              },
+              "Contact": {
+                "title": "Contact",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "type": "string"
+                  },
+                  "phone_number": {
+                    "title": "Phone Number",
+                    "type": "string"
+                  },
+                  "email": {
+                    "title": "Email",
+                    "type": "string"
+                  }
+                }
+              },
+              "Company": {
+                "title": "Company",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "type": "string"
+                  },
+                  "url": {
+                    "title": "Url",
+                    "type": "string"
+                  },
+                  "location": {
+                    "$ref": "#/definitions/Location"
+                  },
+                  "contact": {
+                    "$ref": "#/definitions/Contact"
+                  }
+                }
+              },
+              "Applicant": {
+                "title": "Applicant",
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "title": "Profile",
+                    "type": "string"
+                  },
+                  "skills": {
+                    "title": "Skills",
+                    "type": "string"
+                  },
+                  "degree": {
+                    "title": "Degree",
+                    "type": "string"
+                  },
+                  "experience": {
+                    "title": "Experience",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Leboncoin\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Leboncoin.push_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'job_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['secret_key', 'http_auth_identity', 'morpheus_client_id']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Leboncoin.push_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        }
+      ],
+      "type": "Classified Ads"
     }
   ]
 }
