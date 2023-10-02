@@ -45,6 +45,10 @@ This new connector will enable:
 
 </p>
 
+<p align="center">
+<image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/2c4a0f4e-d55d-408d-8f0e-b3b5c4ac15e7 width=90% height=100% >
+</p>
+
 
 # 💍 Quick Start Examples
 
@@ -54,7 +58,7 @@ To make sure you can successfully run the latest versions of the example scripts
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
 
 <p align="center">
-<image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/2c4a0f4e-d55d-408d-8f0e-b3b5c4ac15e7 width=90% height=100% >
+<image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/c09d00f8-8332-4315-aeab-dd1beed301cc width=90% height=100% >
 </p>
   
 Once the connector module is imported, you can leverage all the different actions that it offers.
@@ -69,5 +73,5 @@ For more code details checkout connector code.
 
 
 # 👏 Special Thanks
-- 💻 HrFlow.ai : XXXXX YYYYY - Software Engineer
+- 💻 HrFlow.ai : Abdellahi Mezid - Software Engineer
 - 🤝 Digitalrecruiters : XXXXX YYYYY - Partner Manager
