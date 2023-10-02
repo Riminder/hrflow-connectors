@@ -30,7 +30,6 @@ This new connector will enable:
 - ⬅️ Send Jobs data from Digitalrecruiters to a Destination of your choice.
 
 # 🔌 Connector Actions
-
 <p align="center">
 
 | Action | Description |
@@ -38,6 +37,7 @@ This new connector will enable:
 | [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs from Digital Recruiters and sends them to an Hrflow.ai Board. |
 | [**Pull profile list**](docs/pull_profile_list.md) | Retrieves all profiles from Digital Recruiters and sends them to an Hrflow.ai Source. |
 | [**Push profile**](docs/push_profile.md) | Pushes a profile from Hrflow.ai to Digital Recruiters. |
+
 
 </p>
 
