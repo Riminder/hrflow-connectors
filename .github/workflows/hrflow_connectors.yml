@@ -228,3 +228,15 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
+
+  post-release:
+    runs-on: ubuntu-latest
+    needs: [cd]
+    environment: release
+    steps:
+      - name: Dispatch Update Workflows2.0 Environment
+        uses: peter-evans/repository-dispatch@v2.1.2
+        with:
+          token: ${{ secrets.DISPATCH_WORKFLOWS_20_GITHUB_TOKEN }}
+          repository: ${{ secrets.WORKFLOWS_20_REPO }}
+          event-type: update-hrflow-connectors
