@@ -1,6 +1,11 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 import typing as t
+
+
+from hrflow_connectors.connectors.workday.utils.errors import (
+    WorkdayFileNameTooLongError,
+)
 
 
 class WorkdayDescriptorId(BaseModel):
@@ -14,6 +19,10 @@ class WorkdayId(BaseModel):
         regex="^(?:(?:[0-9a-f]{32})|(?:[0-9]+\$[0-9]+)|(\S+=\S+))$",
         description="wid / id / reference id",
     )
+
+
+class WorkdayOptionalId(BaseModel):
+    id: t.Optional[str] = Field(None, description="Id of the instance")
 
 
 class WorkdayPhone(WorkdayDescriptorId):
@@ -113,7 +122,7 @@ class WorkdayCandidate(WorkdayDescriptorId):
     )
 
 
-class WorkdayEducation(BaseModel):
+class WorkdayEducation(WorkdayOptionalId):
     schoolName: str = Field(
         ...,
         description="The name of the school the candidate attended or is attending.",
@@ -148,10 +157,9 @@ class WorkdayEducation(BaseModel):
         None,
         description="The candidate's grade average at this educational institution.",
     )
-    id: t.Optional[str] = Field(None, description="Id of the instance")
 
 
-class WorkdayExperience(BaseModel):
+class WorkdayExperience(WorkdayOptionalId):
     companyName: str = Field(
         ..., description="The company name the candidate entered in their job history."
     )
@@ -181,4 +189,47 @@ class WorkdayExperience(BaseModel):
     endMonth: int = Field(
         ..., description="The month the candidate ended employment at this company."
     )
-    id: t.Optional[str] = Field(None, description="Id of the instance")
+
+
+class WorkdaySkill(WorkdayOptionalId):
+    name: str = Field(..., description="The name of the candidate skill.")
+
+
+class WorkdayAbility(WorkdayOptionalId):
+    proficiency: t.Optional[WorkdayId] = Field(
+        None,
+        description="Returns the proficiency for a specific ability of a language.",
+    )
+    abilityType: t.Optional[WorkdayId] = Field(
+        None, description="Returns the language ability type."
+    )
+
+
+class WorkdayLanguage(WorkdayOptionalId):
+    language: WorkdayId = Field(
+        ..., description="Returns the language for this Language Skill."
+    )
+    abilities: t.Optional[t.List[WorkdayAbility]] = Field(
+        ..., description="The abilities associated with this language skill."
+    )
+    native: t.Optional[bool] = Field(
+        None, description="If true, this language skill is the native language."
+    )
+
+
+class WorkdayResumeAttachments(WorkdayDescriptorId):
+    fileLength: t.Optional[int] = Field(
+        None, description="The file length of the attachment."
+    )
+    contentType: WorkdayId = Field(..., description="Content type of the attachment.")
+    fileName: str = Field(
+        ..., description="The file name of the attachment. At most 255 characters."
+    )
+
+    @validator("fileName")
+    @classmethod
+    def _valid_file_name(cls, value: str) -> str:
+        length = len(value)
+        if length > 255:
+            raise WorkdayFileNameTooLongError(value, 255, length)
+        return value
