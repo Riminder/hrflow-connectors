@@ -2,15 +2,18 @@ from pydantic import Field, validator
 import typing as t
 
 from hrflow_connectors.core import ParametersModel, FieldType
+from hrflow_connectors.connectors.workday.utils.errors import (
+    WorkdayNumberOutOfBoundsError,
+)
 from hrflow_connectors.connectors.workday.schemas import (
     WorkdayCandidate,
     WorkdayDescriptorId,
     WorkdayEducation,
     WorkdayExperience,
     WorkdayId,
-)
-from hrflow_connectors.connectors.workday.utils.errors import (
-    WorkdayNumberOutOfBoundsError,
+    WorkdayLanguage,
+    WorkdayResumeAttachments,
+    WorkdaySkill,
 )
 
 
@@ -98,4 +101,13 @@ class WorkdayWriteProfileParameters(ParametersModel):
     )
     experiences: t.Optional[t.List[WorkdayExperience]] = Field(
         None, description="The experiences associated with the candidate."
+    )
+    skills: t.Optional[t.List[WorkdaySkill]] = Field(
+        None, description="The skills associated with the candidate."
+    )
+    languages: t.Optional[t.List[WorkdayLanguage]] = Field(
+        None, description="The languages associated with the candidate."
+    )
+    resume: t.Optional[WorkdayResumeAttachments] = Field(
+        None, description="The resume file associated with the candidate."
     )
