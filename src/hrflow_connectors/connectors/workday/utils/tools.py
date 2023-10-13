@@ -1,4 +1,18 @@
+from datetime import datetime
+import requests
 import typing as t
+
+from hrflow_connectors.connectors.workday.schemas import (
+    WorkdayCandidate,
+    WorkdayDescriptorId,
+    WorkdayEducation,
+    WorkdayExperience,
+    WorkdayLanguage,
+    WorkdayName,
+    WorkdayPhone,
+    WorkdayResumeAttachments,
+    WorkdaySkill,
+)
 
 
 def _workday_job_location_get(workday_location: t.Dict) -> t.Dict:
@@ -58,3 +72,116 @@ def _workday_ranges_date_get(workday_job: t.Dict) -> t.List[t.Dict]:
             )
         )
     return R
+
+
+def _hrflow_profile_candidate_get(hrflow_profile: t.Dict) -> t.Dict:
+    info = hrflow_profile["info"]
+    candidate_model = WorkdayCandidate(
+        email=info["email"],
+        phone=WorkdayPhone(phoneNumber=info["WorkdayPhone"]),
+        name=WorkdayName(
+            fullName=info["full_name"],
+            firstName=info["first_name"],
+            lastName=info["last_name"],
+        ),
+    )
+    candidate = candidate_model.model_dump(exclude_node=True)
+    return candidate
+
+
+def _hrflow_profile_tags_get(hrflow_profile: t.Dict) -> t.Dict:
+    T = []
+    for tag in hrflow_profile["tags"]:
+        workday_tag = WorkdayDescriptorId(id=tag["name"], descriptor=tag["value"])
+        T.append(workday_tag.model_dump())
+    return T
+
+
+def _workday_skill_get(hrflow_skill: t.Dict) -> t.Dict:
+    id_ = hrflow_skill["type"]
+    val = hrflow_skill["value"]
+    if val:
+        id_ += f" - {val}"
+    model = WorkdaySkill(name=hrflow_skill["name"], id=id_)
+    skill = model.model_dump()
+    return skill
+
+
+def _hrflow_profile_skills_get(hrflow_profile: t.Dict) -> t.Dict:
+    S = []
+    for skill in hrflow_profile["skills"]:
+        S.append(_workday_skill_get(skill))
+    return S
+
+
+def _hrflow_profile_languages_get(hrflow_profile: t.Dict) -> t.Dict:
+    L = []
+    for language in hrflow_profile["languages"]:
+        workday_language = WorkdayLanguage(  # TODO give workday language id
+            id=language["name"], native=language["value"] == "native"
+        )
+        L.append(workday_language.model_dump())
+    return L
+
+
+def _hrflow_profile_educations_get(hrflow_profile: t.Dict) -> t.Dict:
+    E = []
+    for education in hrflow_profile["educations"]:
+        workday_education = WorkdayEducation(
+            schoolName=education["school"],
+            firstYearAttended=datetime.fromisoformat(education["date_start"]),
+            lastYearAttended=datetime.fromisoformat(education["date_end"]),
+        )
+        E.append(workday_education.model_dump())
+    return E
+
+
+def _hrflow_profile_experiences_get(hrflow_profile: t.Dict) -> t.Dict:
+    E = []
+    for experience in hrflow_profile["experiences"]:
+        date_start = datetime.fromisoformat(experience["date_start"][:16])
+        date_end = datetime.fromisoformat(experience["date_end"][:16])
+        workday_experience = WorkdayExperience(
+            companyName=experience["company"],
+            title=experience["title"],
+            location=experience["location"]["text"],
+            startYear=date_start,
+            startMonth=date_start.month,
+            endMonth=date_end.month,
+            endYear=date_end,
+        )
+        E.append(workday_experience.model_dump())
+    return E
+
+
+def _hrflow_profile_resume_get(hrflow_profile: t.Dict) -> t.Dict:
+    for attachment in hrflow_profile["attachments"]:
+        if attachment["type"] != "resume":
+            continue
+        url = attachment["public_url"]
+        if not url:
+            continue
+        response = requests.get(url)
+        if response.status_code != requests.codes.ok:
+            continue
+        # TODO eventually add contentType application/pdf's workday id
+        workday_resume = WorkdayResumeAttachments(
+            fileLength=len(response.content),
+            fileName=url.split("/")[-1],
+            descriptor=response.content,
+            id=url,
+        )
+        resume = workday_resume.model_dump()
+        return resume
+
+
+def _hrflow_profile_extracted_skills_get(hrflow_profile: t.Dict) -> t.List[t.Dict]:
+    S = []
+    for experience in hrflow_profile["experiences"]:
+        skill = experience["skill"]
+        if skill:
+            S.append(_workday_skill_get(skill))
+    for education in hrflow_profile["educations"]:
+        for skill in education["skills"]:
+            S.append(_workday_skill_get(skill))
+    return S

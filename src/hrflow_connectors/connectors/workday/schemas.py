@@ -9,8 +9,8 @@ from hrflow_connectors.connectors.workday.utils.errors import (
 
 
 class WorkdayDescriptorId(BaseModel):
-    descriptor: str = Field(..., description="A preview of the instance")
-    id: str = Field(..., description="Id of the instance")
+    descriptor: t.Optional[str] = Field(None, description="A preview of the instance")
+    id: t.Optional[str] = Field(None, description="Id of the instance")
 
 
 class WorkdayId(BaseModel):
@@ -32,7 +32,7 @@ class WorkdayPhone(WorkdayDescriptorId):
     )
     extension: t.Optional[str] = Field(None, description="The phone number extension.")
     phoneNumber: t.Optional[str] = Field(
-        ..., description="The full primary phone number of the person."
+        None, description="The full primary phone number of the person."
     )
 
 
@@ -206,11 +206,11 @@ class WorkdayAbility(WorkdayOptionalId):
 
 
 class WorkdayLanguage(WorkdayOptionalId):
-    language: WorkdayId = Field(
-        ..., description="Returns the language for this Language Skill."
+    language: t.Optional[WorkdayId] = Field(
+        None, description="Returns the language for this Language Skill."
     )
     abilities: t.Optional[t.List[WorkdayAbility]] = Field(
-        ..., description="The abilities associated with this language skill."
+        None, description="The abilities associated with this language skill."
     )
     native: t.Optional[bool] = Field(
         None, description="If true, this language skill is the native language."
@@ -221,7 +221,9 @@ class WorkdayResumeAttachments(WorkdayDescriptorId):
     fileLength: t.Optional[int] = Field(
         None, description="The file length of the attachment."
     )
-    contentType: WorkdayId = Field(..., description="Content type of the attachment.")
+    contentType: t.Optional[WorkdayId] = Field(
+        None, description="Content type of the attachment."
+    )
     fileName: str = Field(
         ..., description="The file name of the attachment. At most 255 characters."
     )
@@ -233,3 +235,35 @@ class WorkdayResumeAttachments(WorkdayDescriptorId):
         if length > 255:
             raise WorkdayFileNameTooLongError(value, 255, length)
         return value
+
+
+class WorkdayProspect(BaseModel):
+    candidate: WorkdayCandidate = Field(
+        ...,
+        description="The candidate profile associated with this ~Prospect~.",
+    )
+    href: t.Optional[str] = Field(None, description="A link to the instance")
+    candidateTags: t.Optional[t.List[WorkdayDescriptorId]] = Field(
+        None,
+        description="The candidate tags associated with the candidate.",
+    )
+    skills: t.Optional[t.List[WorkdaySkill]] = Field(
+        None,
+        description="The skills associated with the candidate.",
+    )
+    educations: t.Optional[t.List[WorkdayEducation]] = Field(
+        None,
+        description="The educations associated with the candidate.",
+    )
+    experiences: t.Optional[t.List[WorkdayExperience]] = Field(
+        None,
+        description="The experiences associated with the candidate.",
+    )
+    languages: t.Optional[t.List[WorkdayLanguage]] = Field(
+        None,
+        description="The languages associated with the candidate.",
+    )
+    resume: t.Optional[WorkdayResumeAttachments] = Field(
+        None,
+        description="The resume file associated with the candidate.",
+    )

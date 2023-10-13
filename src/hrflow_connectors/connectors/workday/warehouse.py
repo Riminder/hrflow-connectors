@@ -17,15 +17,18 @@ from hrflow_connectors.connectors.workday.utils.errors import (
     WorkdayNumberOutOfBoundsError,
 )
 from hrflow_connectors.connectors.workday.schemas import (
-    WorkdayCandidate,
     WorkdayDescriptorId,
-    WorkdayEducation,
-    WorkdayExperience,
     WorkdayId,
-    WorkdayLanguage,
-    WorkdayResumeAttachments,
-    WorkdaySkill,
 )
+
+
+_WORKDAY_KEYS_TO_HANDLE_SEPARATELY = [
+    "experiences",
+    "educations",
+    "languages",
+    "resume",
+    "skills",
+]
 
 
 class WorkdayReadJobsParameters(ParametersModel):
@@ -80,19 +83,9 @@ class WorkdayReadJobsParameters(ParametersModel):
 
 
 class WorkdayWriteProfileParameters(ParametersModel):
-    candidateTags: t.Optional[t.List[WorkdayDescriptorId]] = Field(
-        None,
-        description="The candidate tags associated with the candidate.",
-        field_type=FieldType.Other,
-    )
     candidatePools: t.Optional[t.List[WorkdayDescriptorId]] = Field(
         None,
         description="The active, static pools for the candidate.",
-        field_type=FieldType.Other,
-    )
-    candidate: WorkdayCandidate = Field(
-        ...,
-        description="The candidate profile associated with this ~Prospect~.",
         field_type=FieldType.Other,
     )
     contactConsent: t.Optional[bool] = Field(
@@ -100,55 +93,27 @@ class WorkdayWriteProfileParameters(ParametersModel):
         description="If true, the candidate agrees to be contacted.",
         field_type=FieldType.Other,
     )
-    status: WorkdayId = Field(
-        ...,
+    status: t.Optional[WorkdayId] = Field(
+        None,
         description="Returns the ~Prospect~ Status for this ~Prospect~.",
         field_type=FieldType.Other,
     )
-    type: WorkdayId = Field(
-        ..., description="The type for the ~Prospect~.", field_type=FieldType.Other
+    type: t.Optional[WorkdayId] = Field(
+        None, description="The type for the ~Prospect~.", field_type=FieldType.Other
     )
-    source: WorkdayId = Field(
-        ...,
+    source: t.Optional[WorkdayId] = Field(
+        None,
         description="The source for the ~Prospect~ (linkedin, facebook, etc).",
         field_type=FieldType.Other,
     )
-    level: WorkdayId = Field(
-        ...,
+    level: t.Optional[WorkdayId] = Field(
+        None,
         description="The targeted management level for the ~Prospect~.",
         field_type=FieldType.Other,
     )
-    referredBy: WorkdayId = Field(
-        ...,
+    referredBy: t.Optional[WorkdayId] = Field(
+        None,
         description="The ~worker~ who referred the job application.",
-        field_type=FieldType.Other,
-    )
-    href: t.Optional[str] = Field(
-        None, description="A link to the instance", field_type=FieldType.Other
-    )
-    educations: t.Optional[t.List[WorkdayEducation]] = Field(
-        None,
-        description="The educations associated with the candidate.",
-        field_type=FieldType.Other,
-    )
-    experiences: t.Optional[t.List[WorkdayExperience]] = Field(
-        None,
-        description="The experiences associated with the candidate.",
-        field_type=FieldType.Other,
-    )
-    skills: t.Optional[t.List[WorkdaySkill]] = Field(
-        None,
-        description="The skills associated with the candidate.",
-        field_type=FieldType.Other,
-    )
-    languages: t.Optional[t.List[WorkdayLanguage]] = Field(
-        None,
-        description="The languages associated with the candidate.",
-        field_type=FieldType.Other,
-    )
-    resume: t.Optional[WorkdayResumeAttachments] = Field(
-        None,
-        description="The resume file associated with the candidate.",
         field_type=FieldType.Other,
     )
 
@@ -160,7 +125,7 @@ def _workday_read_jobs(
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
     token = None  # TODO
-    headers = {"accept": "application/json", "authorization": f"Bearer {token}"}
+    headers = dict(accept="application/json", authorization=f"Bearer {token}")
     params = parameters.model_dump(exclude_none=True)
     url = ""  # TODO
 
@@ -186,12 +151,56 @@ def _workday_read_jobs(
         params["offset"] += params["limit"]
 
 
+def _workday_write_profile_enrich(
+    id_: str,
+    enrichment_data: t.List[t.Dict],
+    headers: t.Dict,
+) -> None:
+    params = dict(bulk=True)
+    for key in _WORKDAY_KEYS_TO_HANDLE_SEPARATELY:
+        value = enrichment_data.get(key)
+        if key == "resume":
+            name = value["fileName"]
+            content = value["descriptor"]
+            value["descriptor"] = "The prospect's resume"
+            requests.post(
+                f"{id_}",  # path parameter
+                headers=headers,
+                files={name: content},
+                json=value,
+            )
+        else:
+            requests.post(
+                f"{id_}",
+                headers=headers,
+                params=params,
+                json=value,
+            )
+
+
 def _workday_write_profile(
     adapter: LoggerAdapter,
     parameters: WorkdayWriteProfileParameters,
     items: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
-    pass
+    failed_items = []
+    token = None  # TODO
+    headers = dict(accept="application/json", authorization=f"Bearer {token}")
+    payload = parameters.model_dump(exclude_none=True)
+
+    for profile in list(items):
+        enrichment_data = dict()
+        for key in _WORKDAY_KEYS_TO_HANDLE_SEPARATELY:
+            enrichment_data[key] = profile[key]
+            del profile[key]
+        profile.update(payload)
+        response = requests.post("", headers=headers, json=profile)
+        if response.status_code != requests.codes.created:
+            failed_items.append(profile)
+        else:  # enrich profile
+            _workday_write_profile_enrich()
+
+    return failed_items
 
 
 WorkdayProfilesWarehouse = Warehouse(
