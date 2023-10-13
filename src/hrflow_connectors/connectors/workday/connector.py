@@ -9,6 +9,12 @@ from hrflow_connectors.core import (
     ConnectorType,
     WorkflowType,
 )
+from hrflow_connectors.connectors.workday.utils.tools import (
+    _workday_job_location_get,
+    _workday_job_metadatas_get,
+    _workday_job_tags_get,
+    _workday_ranges_date_get,
+)
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
     HrFlowProfileWarehouse,
@@ -31,7 +37,21 @@ _WORKDAY_DESCRIPTION = (
 
 
 def _format_workday_job(workday_job: t.Dict) -> t.Dict:
-    pass
+    hrflow_job = dict(
+        name=workday_job["title"],
+        url=workday_job["url"],
+        summary=workday_job["jobDescription"],
+        location=_workday_job_location_get(workday_job["primaryLocation"]),
+        sections=dict(
+            name="Description",
+            title="Description",
+            description=workday_job["jobDescription"],
+        ),
+        metadatas=_workday_job_metadatas_get(workday_job),
+        ranges_date=_workday_ranges_date_get(workday_job),
+        tags=_workday_job_tags_get(workday_job),
+    )
+    return hrflow_job
 
 
 def _format_hrflow_profile(workday_profile: t.Dict) -> t.Dict:
