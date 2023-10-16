@@ -34,7 +34,7 @@ def CONNECTOR_LISTING_REGEXP_F(name: str) -> str:
     return (
         r"\|\s*\[?\*{0,2}(?i:(?P<name>"
         + r" ?".join([c for c in name if c.strip()])
-        + r"))\*{0,2}(\]\([^)]+\))?\s*\|[^|]+\|[^|]+\|\s*\*(?P<release_date>[\d\/]+)\*?\s*\|.+"
+        + r"))\*{0,2}(\]\([^)]+\))?\s*\|[^|]+\|[^|]+\|\s*(\*|_)(?P<release_date>[\d\/]+)(\*|_)\s*\|.+"
     )
 
 
