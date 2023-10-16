@@ -15,6 +15,7 @@ from hrflow_connectors.connectors.smartrecruiters import SmartRecruiters
 from hrflow_connectors.connectors.taleez.connector import Taleez
 from hrflow_connectors.connectors.talentsoft import TalentSoft
 from hrflow_connectors.connectors.teamtailor import Teamtailor
+from hrflow_connectors.connectors.ukgpro import UKGPro
 from hrflow_connectors.connectors.waalaxy import Waalaxy
 from hrflow_connectors.connectors.workable import Workable
 from hrflow_connectors.core import backend
@@ -35,6 +36,7 @@ __CONNECTORS__ = [
     Ceridian,
     Greenhouse,
     Teamtailor,
+    UKGPro,
     Waalaxy,
     Hubspot,
     Taleez,
