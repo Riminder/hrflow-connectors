@@ -1,11 +1,6 @@
 from datetime import datetime
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field
 import typing as t
-
-
-from hrflow_connectors.connectors.workday.utils.errors import (
-    WorkdayFileNameTooLongError,
-)
 
 
 class WorkdayDescriptorId(BaseModel):
@@ -219,7 +214,7 @@ class WorkdayLanguage(WorkdayOptionalId):
 
 class WorkdayResumeAttachments(WorkdayDescriptorId):
     fileLength: t.Optional[int] = Field(
-        None, description="The file length of the attachment."
+        None, description="The file length of the attachment.", max_length=255
     )
     contentType: t.Optional[WorkdayId] = Field(
         None, description="Content type of the attachment."
@@ -227,15 +222,6 @@ class WorkdayResumeAttachments(WorkdayDescriptorId):
     fileName: str = Field(
         ..., description="The file name of the attachment. At most 255 characters."
     )
-
-    @validator("fileName")
-    @classmethod
-    def _valid_file_name(cls, value: str) -> str:
-        length = len(value)
-        if length > 255:
-            raise WorkdayFileNameTooLongError(value, 255, length)
-        return value
-
 
 class WorkdayProspect(BaseModel):
     candidate: WorkdayCandidate = Field(

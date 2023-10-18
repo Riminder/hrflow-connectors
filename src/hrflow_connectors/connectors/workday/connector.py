@@ -93,7 +93,8 @@ Workday = Connector(
             target=HrFlowJobWarehouse,
             description="Retrive Jobs from Workday and index them to a HrFlow board.",
             parameters=BaseActionParameters.with_defaults(
-                "WorkdayReadJobsParameters", format=_format_workday_job
+                "WorkdayReadJobsParameters",
+                format=_format_workday_job,
             ),
         ),
         ConnectorAction(
@@ -104,7 +105,8 @@ Workday = Connector(
             target=WorkdayProfilesWarehouse,
             description="Retrive profile from HrFlow source and post them to Workday.",
             parameters=BaseActionParameters.with_defaults(
-                "WorkdayWriteProfileParameters", format=_format_hrflow_profile
+                "WorkdayWriteProfileParameters",
+                format=_format_hrflow_profile,
             ),
         ),
     ],

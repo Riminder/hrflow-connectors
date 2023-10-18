@@ -13,9 +13,6 @@ from hrflow_connectors.core import (
     WarehouseReadAction,
     WarehouseWriteAction,
 )
-from hrflow_connectors.connectors.workday.utils.errors import (
-    WorkdayNumberOutOfBoundsError,
-)
 from hrflow_connectors.connectors.workday.schemas import (
     WorkdayDescriptorId,
     WorkdayId,
@@ -52,6 +49,8 @@ class WorkdayReadJobsParameters(ParametersModel):
             " maximum is 100."
         ),
         field_type=FieldType.QueryParam,
+        ge=1,
+        le=100,
     )
     offset: int = Field(
         0,
@@ -62,21 +61,8 @@ class WorkdayReadJobsParameters(ParametersModel):
             " returns a collection of 5 objects starting with the 10th object."
         ),
         field_type=FieldType.QueryParam,
+        ge=0,
     )
-
-    @validator("limit")
-    @classmethod
-    def _valid_limit(self, value: int) -> None:
-        if value < 1 or value > 100:
-            raise WorkdayNumberOutOfBoundsError("limit", value, 1, 100)
-        return value
-
-    @validator("offset")
-    @classmethod
-    def _valid_offset(self, value: int) -> None:
-        if value < 0:
-            raise WorkdayNumberOutOfBoundsError("offset", value, 0)
-        return value
 
     class Config:
         validate_assignment = True
