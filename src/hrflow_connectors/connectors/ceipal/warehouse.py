@@ -6,7 +6,6 @@ import requests
 from pydantic import Field
 
 from hrflow_connectors.connectors.ceipal.schemas import (
-    ApplicantDetails,
     Applicants,
     JobPostingsDetails,
 )
@@ -17,7 +16,6 @@ from hrflow_connectors.core import (
     ReadMode,
     Warehouse,
     WarehouseReadAction,
-    WarehouseWriteAction,
 )
 
 MAX_ITERATIONS = 10
@@ -268,7 +266,6 @@ def read_applicants(
             headers["Authorization"] = f"Bearer {token}"  # Update the token in headers
         else:
             raise Exception("Error in fetching applicants")
-
 
 
 def get_access_token(parameters: BaseParameters):

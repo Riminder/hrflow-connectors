@@ -2,7 +2,6 @@ from hrflow_connectors.connectors.ceipal.warehouse import (
     CeipalJobWarehouse,
     CeipalProfileWarehouse,
 )
-from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
     HrFlowProfileWarehouse,
@@ -152,7 +151,6 @@ def profile_tags(ceipal_profile: dict) -> dict:
         if ceipal_profile[tag]
     ]
     return hrflow_tags
-
 
 
 DESCRIPTION = (
