@@ -154,9 +154,6 @@ def profile_tags(ceipal_profile: dict) -> dict:
     return hrflow_tags
 
 
-def format_applicant(hrflow_profile: HrFlowProfile) -> dict:
-    pass
-
 
 DESCRIPTION = (
     "Ceipal ATS Software is the best recruiting and talent acquisition software"
@@ -181,17 +178,6 @@ Ceipal = Connector(
             origin=CeipalProfileWarehouse,
             target=HrFlowProfileWarehouse,
             action_type=ActionType.inbound,
-        ),
-        ConnectorAction(
-            name=ActionName.push_profile,
-            trigger_type=WorkflowType.catch,
-            description="Pushs specific Profile from HrFlow and writes it to Ceipal",
-            parameters=BaseActionParameters.with_defaults(
-                "PushProfileActionParameters", format=format_applicant
-            ),
-            origin=HrFlowProfileWarehouse,
-            target=CeipalProfileWarehouse,
-            action_type=ActionType.outbound,
         ),
         ConnectorAction(
             name=ActionName.pull_job_list,

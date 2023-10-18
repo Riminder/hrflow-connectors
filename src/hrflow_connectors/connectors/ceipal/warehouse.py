@@ -270,13 +270,6 @@ def read_applicants(
             raise Exception("Error in fetching applicants")
 
 
-def write_aplicants(
-    adapter: LoggerAdapter,
-    parameters: BaseParameters,
-    profiles: t.Iterable[ApplicantDetails],
-) -> t.Iterable[t.Dict]:
-    pass
-
 
 def get_access_token(parameters: BaseParameters):
     url = "https://api.ceipal.com/v1/createAuthtoken"
@@ -314,9 +307,5 @@ CeipalProfileWarehouse = Warehouse(
     read=WarehouseReadAction(
         parameters=ReadApplicantsParameters,
         function=read_applicants,
-    ),
-    write=WarehouseWriteAction(
-        parameters=BaseParameters,
-        function=write_aplicants,
     ),
 )

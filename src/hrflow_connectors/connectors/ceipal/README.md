@@ -37,14 +37,13 @@ This new connector will enable:
 - Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Ceipal**)
 
 # 🔌 Connector Actions
-
 <p align="center">
 
 | Action | Description |
 | ------- | ----------- |
 | [**Pull profile list**](docs/pull_profile_list.md) | Retrieves profiles from Ceipal and writes them to an Hrflow.ai source |
-| [**Push profile**](docs/push_profile.md) | Pushs specific Profile from HrFlow and writes it to Ceipal |
 | [**Pull job list**](docs/pull_job_list.md) | Retrieves jobs from Ceipal and writes them to an Hrflow.ai board |
+
 
 </p>
 
