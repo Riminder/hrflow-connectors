@@ -5,10 +5,7 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field
 
-from hrflow_connectors.connectors.ceipal.schemas import (
-    Applicants,
-    JobPostingsDetails,
-)
+from hrflow_connectors.connectors.ceipal.schemas import Applicants, JobPostingsDetails
 from hrflow_connectors.core import (
     DataType,
     FieldType,
