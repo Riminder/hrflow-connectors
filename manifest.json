@@ -21695,7 +21695,7 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "CRM"
+      "type": "ATS"
     }
   ]
 }

@@ -86,7 +86,7 @@ DESCRIPTION = (
 
 FreshTeam = Connector(
     name="Freshteam",
-    type=ConnectorType.CRM,
+    type=ConnectorType.ATS,
     description=DESCRIPTION,
     url="https://www.freshworks.com/",
     actions=[
