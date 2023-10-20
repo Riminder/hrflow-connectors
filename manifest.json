@@ -21040,6 +21040,662 @@
         }
       ],
       "type": "CRM"
+    },
+    {
+      "name": "Freshteam",
+      "actions": [
+        {
+          "name": "pull_job_list",
+          "action_type": "inbound",
+          "action_parameters": {
+            "title": "ReadJobActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "additionalProperties": false,
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "job",
+          "trigger_type": "schedule",
+          "origin": "FreshTeam Jobs",
+          "origin_parameters": {
+            "title": "BaseParameters",
+            "type": "object",
+            "properties": {
+              "api_key": {
+                "title": "Api Key",
+                "description": "api key",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "account_name": {
+                "title": "Account Name",
+                "description": "account name",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "job_id": {
+                "title": "Job Id",
+                "description": "job id",
+                "field_type": "Auth",
+                "type": "integer"
+              },
+              "limit": {
+                "title": "Limit",
+                "description": "limit",
+                "default": 50,
+                "field_type": "Auth",
+                "type": "integer"
+              },
+              "sort_type": {
+                "title": "Sort Type",
+                "description": "sort type",
+                "default": "asc",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "sort": {
+                "title": "Sort",
+                "description": "sort",
+                "default": "created_at",
+                "field_type": "Auth",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_key",
+              "account_name",
+              "job_id"
+            ],
+            "additionalProperties": false
+          },
+          "origin_data_schema": {
+            "title": "JobPostings",
+            "type": "object",
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "integer"
+              },
+              "created_at": {
+                "title": "Created At",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "type": "string"
+              },
+              "deleted": {
+                "title": "Deleted",
+                "type": "boolean"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "salary": {
+                "$ref": "#/definitions/Salary"
+              },
+              "applicant_access_type": {
+                "title": "Applicant Access Type",
+                "type": "string"
+              },
+              "remote": {
+                "title": "Remote",
+                "type": "boolean"
+              },
+              "show_pursue_as_career": {
+                "title": "Show Pursue As Career",
+                "type": "boolean"
+              },
+              "closing_date": {
+                "title": "Closing Date",
+                "type": "string"
+              },
+              "experience": {
+                "title": "Experience",
+                "type": "string"
+              },
+              "type": {
+                "title": "Type",
+                "type": "string"
+              },
+              "branch": {
+                "$ref": "#/definitions/Branch"
+              },
+              "department": {
+                "$ref": "#/definitions/Department"
+              }
+            },
+            "required": [
+              "id",
+              "created_at",
+              "updated_at",
+              "deleted",
+              "title",
+              "description",
+              "status",
+              "salary",
+              "applicant_access_type",
+              "remote",
+              "show_pursue_as_career",
+              "experience",
+              "type",
+              "branch",
+              "department"
+            ],
+            "definitions": {
+              "Salary": {
+                "title": "Salary",
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "title": "Min",
+                    "type": "number"
+                  },
+                  "max": {
+                    "title": "Max",
+                    "type": "number"
+                  },
+                  "currency": {
+                    "title": "Currency",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "currency"
+                ]
+              },
+              "Branch": {
+                "title": "Branch",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "title": "Id",
+                    "type": "integer"
+                  },
+                  "created_at": {
+                    "title": "Created At",
+                    "type": "string"
+                  },
+                  "updated_at": {
+                    "title": "Updated At",
+                    "type": "string"
+                  },
+                  "deleted": {
+                    "title": "Deleted",
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "title": "Name",
+                    "type": "string"
+                  },
+                  "state": {
+                    "title": "State",
+                    "type": "string"
+                  },
+                  "city": {
+                    "title": "City",
+                    "type": "string"
+                  },
+                  "country_code": {
+                    "title": "Country Code",
+                    "type": "string"
+                  },
+                  "zip": {
+                    "title": "Zip",
+                    "type": "string"
+                  },
+                  "time_zone": {
+                    "title": "Time Zone",
+                    "type": "string"
+                  },
+                  "currency": {
+                    "title": "Currency",
+                    "type": "string"
+                  },
+                  "language": {
+                    "title": "Language",
+                    "type": "string"
+                  },
+                  "main_office": {
+                    "title": "Main Office",
+                    "type": "boolean"
+                  },
+                  "date_format": {
+                    "title": "Date Format",
+                    "type": "string"
+                  },
+                  "street": {
+                    "title": "Street",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "created_at",
+                  "updated_at",
+                  "deleted",
+                  "name",
+                  "state",
+                  "city",
+                  "country_code",
+                  "zip",
+                  "time_zone",
+                  "currency",
+                  "language",
+                  "main_office",
+                  "date_format",
+                  "street"
+                ]
+              },
+              "Department": {
+                "title": "Department",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "title": "Id",
+                    "type": "integer"
+                  },
+                  "created_at": {
+                    "title": "Created At",
+                    "type": "string"
+                  },
+                  "updated_at": {
+                    "title": "Updated At",
+                    "type": "string"
+                  },
+                  "deleted": {
+                    "title": "Deleted",
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "title": "Name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "created_at",
+                  "updated_at",
+                  "deleted",
+                  "name"
+                ]
+              }
+            }
+          },
+          "supports_incremental": false,
+          "target": "HrFlow.ai Jobs",
+          "target_parameters": {
+            "title": "WriteJobParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "board_key": {
+                "title": "Board Key",
+                "description": "HrFlow.ai board key",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "sync": {
+                "title": "Sync",
+                "description": "When enabled only pushed jobs will remain in the board",
+                "default": true,
+                "field_type": "Other",
+                "type": "boolean"
+              },
+              "update_content": {
+                "title": "Update Content",
+                "description": "When enabled jobs already present in the board are updated",
+                "default": false,
+                "field_type": "Other",
+                "type": "boolean"
+              },
+              "enrich_with_parsing": {
+                "title": "Enrich With Parsing",
+                "description": "When enabled jobs are enriched with HrFlow.ai parsing",
+                "default": false,
+                "field_type": "Other",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "board_key"
+            ],
+            "additionalProperties": false
+          },
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Job.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Job.",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "title": "Location",
+                "description": "Job location object.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Location"
+                  }
+                ]
+              },
+              "sections": {
+                "title": "Sections",
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Section"
+                }
+              },
+              "url": {
+                "title": "Url",
+                "description": "Job post original URL.",
+                "type": "string"
+              },
+              "summary": {
+                "title": "Summary",
+                "description": "Brief summary of the Job.",
+                "type": "string"
+              },
+              "archieved_at": {
+                "title": "Archieved At",
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "type": "string"
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "t.List of skills of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "t.List of spoken languages of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "t.List of certifications of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "t.List of courses of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "t.List of tasks of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "t.List of tags of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "t.List of metadatas of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "ranges_float": {
+                "title": "Ranges Float",
+                "description": "t.List of ranges of floats",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesFloat"
+                }
+              },
+              "ranges_date": {
+                "title": "Ranges Date",
+                "description": "t.List of ranges of dates",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesDate"
+                }
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value. Example: 500.",
+                    "type": "number"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value. Example: 100.",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "description": "Unit of the value. Example: euros.",
+                    "type": "string"
+                  }
+                }
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "type": "string"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Freshteam\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Freshteam.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_key', 'account_name', 'job_id', 'limit', 'sort_type', 'sort']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Freshteam.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        }
+      ],
+      "type": "CRM"
     }
   ]
 }
