@@ -16,7 +16,10 @@ from hrflow_connectors.connectors.workday.schemas import (
 
 
 def _workday_job_location_get(workday_location: t.Dict) -> t.Dict:
+    """Extracts location text from Workday Location."""
+
     text = workday_location["descriptor"]
+
     for key in ["region", "country"]:
         val = workday_location[key]
         if not val:
@@ -24,59 +27,76 @@ def _workday_job_location_get(workday_location: t.Dict) -> t.Dict:
         des = workday_location[key][val]["descriptor"]
         if des:
             text += f", {des}"
-    hrflow_location = dict(text=text)
-    return hrflow_location
+
+    return dict(text=text)
 
 
 def _workday_job_tags_get(workday_job: t.Dict) -> t.List[t.Dict]:
-    T = []
+    """Extracts tags from a Workday Job."""
+
+    tags = []
+
     if workday_job["remoteType"]:
-        value = workday_job["remoteType"]["name"]
-        if value:
-            T.append(dict(name="remoteType", value=value))
+        tags.append(
+            dict(name="workday_remoteType", value=workday_job["remoteType"]["name"])
+        )
+
     if workday_job["categories"]:
         for ii, category in enumerate(workday_job["categories"]):
-            T.append(dict(name=f"category{ii}", value=category["descriptor"]))
-    if workday_job["spotlightJob"] is not None:
-        T.append(dict(name="spotlightJob", value=workday_job["spotlightJob"]))
+            tags.append(
+                dict(name=f"workday_category_{ii}", value=category["descriptor"])
+            )
+
+    if workday_job["spotlightJob"]:
+        tags.append(
+            dict(name="workday_spotlightJob", value=workday_job["spotlightJob"])
+        )
+
     for key in ["timeType", "jobType"]:
         if workday_job[key]:
-            des = workday_job[key]["descriptor"]
-            if des:
-                T.append(dict(name=key, value=des))
-    return T
+            tags.append(dict(name=key, value=workday_job[key]["descriptor"]))
+
+    return tags
 
 
 def _workday_job_metadatas_get(workday_job: t.Dict) -> t.List[t.Dict]:
-    M = []
+    """Extracts metadatas from Workday Job."""
+
+    metadatas = []
+
     if workday_job["additionalLocations"]:
         for ii, location in enumerate(workday_job["additionalLocations"]):
-            value = _workday_job_location_get(location).get("text")
-            M.append(dict(name=f"additionalLocation{ii}", value=value))
+            metadatas.append(
+                dict(
+                    name=f"additionalLocation_{ii}",
+                    value=_workday_job_location_get(location)["text"],
+                )
+            )
+
     for key in ["company", "jobSite"]:
         if workday_job[key]:
-            des = workday_job[key]["descriptor"]
-            if des:
-                M.append(dict(name=key, value=des))
-    return M
+            metadatas.append(dict(name=key, value=workday_job[key]["descriptor"]))
+
+    return metadatas
 
 
-def _workday_ranges_date_get(workday_job: t.Dict) -> t.List[t.Dict]:
-    R = []
-    if workday_job["endDate"] and workday_job["startDate"]:
-        R.append(
-            dict(
-                name="jobPostingDates",
-                value_min=workday_job["startDate"],
-                value_max=workday_job["endDate"],
-            )
-        )
-    return R
+def _workday_ranges_date_get(workday_job: t.Dict) -> t.Optional[t.List[t.Dict]]:
+    """Extracts date ranges from Workday Job."""
+
+    start = workday_job.get("startDate")
+    end = workday_job.get("endDate")
+
+    if start and end:
+        return [dict(name="jobPostingDates", value_min=start, value_max=end)]
+    else:
+        return None
 
 
 def _hrflow_profile_candidate_get(hrflow_profile: t.Dict) -> t.Dict:
+    """Extracts Workday Candidate from HrFlow Profile."""
+
     info = hrflow_profile["info"]
-    candidate_model = WorkdayCandidate(
+    candidate = WorkdayCandidate(
         email=info["email"],
         phone=WorkdayPhone(phoneNumber=info["WorkdayPhone"]),
         name=WorkdayName(
@@ -85,76 +105,97 @@ def _hrflow_profile_candidate_get(hrflow_profile: t.Dict) -> t.Dict:
             lastName=info["last_name"],
         ),
     )
-    candidate = candidate_model.model_dump(exclude_node=True)
-    return candidate
+
+    return candidate.dict(exclude_none=True)
 
 
-def _hrflow_profile_tags_get(hrflow_profile: t.Dict) -> t.Dict:
-    T = []
-    for tag in hrflow_profile["tags"]:
-        workday_tag = WorkdayDescriptorId(id=tag["name"], descriptor=tag["value"])
-        T.append(workday_tag.model_dump())
-    return T
+def _hrflow_profile_tags_get(hrflow_profile: t.Dict) -> t.Optional[t.List[t.Dict]]:
+    """Extracts tags from HrFlow Profile."""
+
+    if hrflow_profile.get("tags"):
+        return [
+            WorkdayDescriptorId(id=tag["name"], descriptor=tag["value"]).dict()
+            for tag in hrflow_profile["tags"]
+        ]
+    else:
+        return None
 
 
-def _workday_skill_get(hrflow_skill: t.Dict) -> t.Dict:
-    id_ = hrflow_skill["type"]
-    val = hrflow_skill["value"]
-    if val:
-        id_ += f" - {val}"
-    model = WorkdaySkill(name=hrflow_skill["name"], id=id_)
-    skill = model.model_dump()
-    return skill
+def _hrflow_skill_get(hrflow_skill: t.Dict) -> t.Dict:
+    """Extracts skill from HrFlow Skill."""
+
+    return WorkdaySkill(
+        name=hrflow_skill["name"],
+        id=hrflow_skill["type"]
+        + ("" if not hrflow_skill["value"] else f" - {hrflow_skill['value']}"),
+    ).dict()
 
 
-def _hrflow_profile_skills_get(hrflow_profile: t.Dict) -> t.Dict:
-    S = []
-    for skill in hrflow_profile["skills"]:
-        S.append(_workday_skill_get(skill))
-    return S
+def _hrflow_profile_skills_get(hrflow_profile: t.Dict) -> t.Optional[t.List[t.Dict]]:
+    """Extracts skills from a HrFlow Profile."""
+
+    if hrflow_profile["skills"]:
+        return [_hrflow_skill_get(skill) for skill in hrflow_profile["skills"]]
+    else:
+        return None
 
 
-def _hrflow_profile_languages_get(hrflow_profile: t.Dict) -> t.Dict:
-    L = []
-    for language in hrflow_profile["languages"]:
-        workday_language = WorkdayLanguage(  # TODO give workday language id
-            id=language["name"], native=language["value"] == "native"
-        )
-        L.append(workday_language.model_dump())
-    return L
+def _hrflow_profile_languages_get(hrflow_profile: t.Dict) -> t.Optional[t.List[t.Dict]]:
+    """Extract languages from a HrFlow Profile."""
+
+    if hrflow_profile["languages"]:  # TODO give workday language id
+        return [
+            WorkdayLanguage(
+                id=language["name"], native=language["value"] == "native"
+            ).dict()
+            for language in hrflow_profile["languages"]
+        ]
+    else:
+        return None
 
 
-def _hrflow_profile_educations_get(hrflow_profile: t.Dict) -> t.Dict:
-    E = []
-    for education in hrflow_profile["educations"]:
-        workday_education = WorkdayEducation(
-            schoolName=education["school"],
-            firstYearAttended=datetime.fromisoformat(education["date_start"]),
-            lastYearAttended=datetime.fromisoformat(education["date_end"]),
-        )
-        E.append(workday_education.model_dump())
-    return E
+def _hrflow_profile_educations_get(hrflow_profile: t.Dict) -> t.List[t.Dict]:
+    """Extracts educations from a HrFlow Profile."""
+
+    if hrflow_profile["educations"]:
+        return [
+            WorkdayEducation(
+                schoolName=education["school"],
+                firstYearAttended=datetime.fromisoformat(education["date_start"]),
+                lastYearAttended=datetime.fromisoformat(education["date_end"]),
+            ).dict()
+            for education in hrflow_profile["educations"]
+        ]
+    else:
+        return []
 
 
-def _hrflow_profile_experiences_get(hrflow_profile: t.Dict) -> t.Dict:
-    E = []
+def _hrflow_profile_experiences_get(hrflow_profile: t.Dict) -> t.List[t.Dict]:
+    """Extracts experiences from a HrFlow Profile."""
+
+    experiences = []
+
     for experience in hrflow_profile["experiences"]:
         date_start = datetime.fromisoformat(experience["date_start"][:16])
         date_end = datetime.fromisoformat(experience["date_end"][:16])
-        workday_experience = WorkdayExperience(
-            companyName=experience["company"],
-            title=experience["title"],
-            location=experience["location"]["text"],
-            startYear=date_start,
-            startMonth=date_start.month,
-            endMonth=date_end.month,
-            endYear=date_end,
+        experiences.append(
+            WorkdayExperience(
+                companyName=experience["company"],
+                title=experience["title"],
+                location=experience["location"]["text"],
+                startYear=date_start,
+                startMonth=date_start.month,
+                endMonth=date_end.month,
+                endYear=date_end,
+            ).dict()
         )
-        E.append(workday_experience.model_dump())
-    return E
+
+    return experiences
 
 
-def _hrflow_profile_resume_get(hrflow_profile: t.Dict) -> t.Dict:
+def _hrflow_profile_resume_get(hrflow_profile: t.Dict) -> t.Optional[t.Dict]:
+    """Extracts the resume from a HrFlow Profile."""
+
     for attachment in hrflow_profile["attachments"]:
         if attachment["type"] != "resume":
             continue
@@ -164,24 +205,27 @@ def _hrflow_profile_resume_get(hrflow_profile: t.Dict) -> t.Dict:
         response = requests.get(url)
         if response.status_code != requests.codes.ok:
             continue
+
         # TODO eventually add contentType application/pdf's workday id
-        workday_resume = WorkdayResumeAttachments(
+        resume = WorkdayResumeAttachments(
             fileLength=len(response.content),
             fileName=url.split("/")[-1],
             descriptor=response.content,
             id=url,
         )
-        resume = workday_resume.model_dump()
-        return resume
+
+        return resume.dict()
+
+    return None
 
 
 def _hrflow_profile_extracted_skills_get(hrflow_profile: t.Dict) -> t.List[t.Dict]:
-    S = []
-    for experience in hrflow_profile["experiences"]:
-        skill = experience["skill"]
-        if skill:
-            S.append(_workday_skill_get(skill))
-    for education in hrflow_profile["educations"]:
-        for skill in education["skills"]:
-            S.append(_workday_skill_get(skill))
-    return S
+    """Extracts skills from the experiences and education of a HrFlow Profile."""
+
+    skills = []
+
+    for key in ["experiences", "educations"]:
+        if hrflow_profile[key] and isinstance(hrflow_profile[key]["skills"], list):
+            skills.extend(hrflow_profile[key]["skills"])
+
+    return [_hrflow_skill_get(skill) for skill in skills]

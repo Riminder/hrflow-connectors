@@ -35,7 +35,7 @@ from hrflow_connectors.connectors.workday.warehouse import (
 _WORKDAY_HCM_URL = (
     "https://www.workday.com/en-us/products/human-capital-management/overview.html"
 )
-_WORKDAY_DESCRIPTION = (
+_WORKDAY_HCM_DESCRIPTION = (
     "Manage the full talent acquisition lifecycle. With recruiting, engagement, and"
     " Workday Skills Cloud unified with Workday Human Capital Management (HCM), we've"
     " got you covered every step of the way. Our skills intelligence foundation helps"
@@ -44,7 +44,7 @@ _WORKDAY_DESCRIPTION = (
 )
 
 
-def _format_workday_job(workday_job: t.Dict) -> t.Dict:
+def format_workday_job(workday_job: t.Dict) -> t.Dict:
     hrflow_job = dict(
         name=workday_job["title"],
         url=workday_job["url"],
@@ -62,7 +62,7 @@ def _format_workday_job(workday_job: t.Dict) -> t.Dict:
     return hrflow_job
 
 
-def _format_hrflow_profile(hrflow_profile: t.Dict) -> t.Dict:
+def format_hrflow_profile(hrflow_profile: t.Dict) -> t.Dict:
     workday_profile = dict(
         candidateTags=_hrflow_profile_tags_get(hrflow_profile),
         educations=_hrflow_profile_educations_get(hrflow_profile),
@@ -82,7 +82,7 @@ def _format_hrflow_profile(hrflow_profile: t.Dict) -> t.Dict:
 Workday = Connector(
     name="Workday",
     type=ConnectorType.HCM,
-    description=_WORKDAY_DESCRIPTION,
+    description=_WORKDAY_HCM_DESCRIPTION,
     url=_WORKDAY_HCM_URL,
     actions=[
         ConnectorAction(
@@ -94,7 +94,7 @@ Workday = Connector(
             description="Retrive Jobs from Workday and index them to a HrFlow board.",
             parameters=BaseActionParameters.with_defaults(
                 "WorkdayReadJobsParameters",
-                format=_format_workday_job,
+                format=format_workday_job,
             ),
         ),
         ConnectorAction(
@@ -106,7 +106,7 @@ Workday = Connector(
             description="Retrive profile from HrFlow source and post them to Workday.",
             parameters=BaseActionParameters.with_defaults(
                 "WorkdayWriteProfileParameters",
-                format=_format_hrflow_profile,
+                format=format_hrflow_profile,
             ),
         ),
     ],

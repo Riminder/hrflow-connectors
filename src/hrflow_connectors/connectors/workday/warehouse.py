@@ -1,5 +1,5 @@
 from logging import LoggerAdapter
-from pydantic import Field, validator
+from pydantic import Field
 import requests
 import typing as t
 
@@ -112,7 +112,7 @@ def _workday_read_jobs(
 ) -> t.Iterable[t.Dict]:
     token = None  # TODO
     headers = dict(accept="application/json", authorization=f"Bearer {token}")
-    params = parameters.model_dump(exclude_none=True)
+    params = parameters.dict(exclude_none=True)
     url = ""  # TODO
 
     while True:
@@ -172,7 +172,7 @@ def _workday_write_profile(
     failed_items = []
     token = None  # TODO
     headers = dict(accept="application/json", authorization=f"Bearer {token}")
-    payload = parameters.model_dump(exclude_none=True)
+    payload = parameters.dict(exclude_none=True)
 
     for profile in list(items):
         enrichment_data = dict()
