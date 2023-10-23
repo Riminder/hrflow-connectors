@@ -7,6 +7,7 @@ from hrflow_connectors.connectors.greenhouse.connector import Greenhouse
 from hrflow_connectors.connectors.hubspot import Hubspot
 from hrflow_connectors.connectors.leboncoin import Leboncoin
 from hrflow_connectors.connectors.lever import Lever
+from hrflow_connectors.connectors.oracleorc import OracleORC
 from hrflow_connectors.connectors.poleemploi import PoleEmploi
 from hrflow_connectors.connectors.recruitee import Recruitee
 from hrflow_connectors.connectors.salesforce import Salesforce
@@ -40,6 +41,7 @@ __CONNECTORS__ = [
     Taleez,
     DigitalRecruiters,
     Lever,
+    OracleORC,
     Salesforce,
     Leboncoin,
 ]

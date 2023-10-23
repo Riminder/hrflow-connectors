@@ -27075,6 +27075,1857 @@
       "type": "ATS"
     },
     {
+      "name": "OracleORC",
+      "actions": [
+        {
+          "name": "push_profile",
+          "action_type": "outbound",
+          "action_parameters": {
+            "title": "WriteProfileActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              },
+              "event_parser": {
+                "title": "event_parser",
+                "description": "Event parsing function for **CATCH** integrations. You should expose a function named 'event_parser' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef event_parser(event: t.Dict) -> t.Dict:\n    parsed = dict()\n    parsed[\"user_id\"] = event[\"email\"]\n    parsed[\"thread_id\"] = event[\"subscription_id\"]\n    return parsed\n",
+                "type": "code_editor"
+              }
+            },
+            "additionalProperties": false,
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "profile",
+          "trigger_type": "hook",
+          "origin": "HrFlow.ai Profiles",
+          "origin_parameters": {
+            "title": "ReadProfileParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "source_key": {
+                "title": "Source Key",
+                "description": "HrFlow.ai source key",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "profile_key": {
+                "title": "Profile Key",
+                "description": "HrFlow.ai profile key",
+                "field_type": "Query Param",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "source_key",
+              "profile_key"
+            ],
+            "additionalProperties": false
+          },
+          "origin_data_schema": {
+            "title": "HrFlowProfile",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Profile.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
+                "type": "string"
+              },
+              "info": {
+                "title": "Info",
+                "description": "Object containing the Profile's info.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ProfileInfo"
+                  }
+                ]
+              },
+              "text_language": {
+                "title": "Text Language",
+                "description": "Code language of the Profile. type: string code ISO 639-1",
+                "type": "string"
+              },
+              "text": {
+                "title": "Text",
+                "description": "Full text of the Profile..",
+                "type": "string"
+              },
+              "experiences_duration": {
+                "title": "Experiences Duration",
+                "description": "Total number of years of experience.",
+                "type": "number"
+              },
+              "educations_duration": {
+                "title": "Educations Duration",
+                "description": "Total number of years of education.",
+                "type": "number"
+              },
+              "experiences": {
+                "title": "Experiences",
+                "description": "List of experiences of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Experience"
+                }
+              },
+              "educations": {
+                "title": "Educations",
+                "description": "List of educations of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Education"
+                }
+              },
+              "attachments": {
+                "title": "Attachments",
+                "description": "List of documents attached to the Profile.",
+                "type": "array",
+                "items": {}
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "List of skills of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "List of spoken languages of the profile",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "List of certifications of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "List of courses of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "List of tasks of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "interests": {
+                "title": "Interests",
+                "description": "List of interests of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "List of tags of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              }
+            },
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "InfoUrls": {
+                "title": "InfoUrls",
+                "type": "object",
+                "properties": {
+                  "from_resume": {
+                    "title": "From Resume",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "linkedin": {
+                    "title": "Linkedin",
+                    "type": "string"
+                  },
+                  "twitter": {
+                    "title": "Twitter",
+                    "type": "string"
+                  },
+                  "facebook": {
+                    "title": "Facebook",
+                    "type": "string"
+                  },
+                  "github": {
+                    "title": "Github",
+                    "type": "string"
+                  }
+                }
+              },
+              "ProfileInfo": {
+                "title": "ProfileInfo",
+                "type": "object",
+                "properties": {
+                  "full_name": {
+                    "title": "Full Name",
+                    "type": "string"
+                  },
+                  "first_name": {
+                    "title": "First Name",
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "title": "Last Name",
+                    "type": "string"
+                  },
+                  "email": {
+                    "title": "Email",
+                    "type": "string"
+                  },
+                  "phone": {
+                    "title": "Phone",
+                    "type": "string"
+                  },
+                  "date_birth": {
+                    "title": "Date Birth",
+                    "description": "Profile date of birth",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Profile location object",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "urls": {
+                    "title": "Urls",
+                    "description": "Profile social networks and URLs",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/InfoUrls"
+                      }
+                    ]
+                  },
+                  "picture": {
+                    "title": "Picture",
+                    "description": "Profile picture url",
+                    "type": "string"
+                  },
+                  "gender": {
+                    "title": "Gender",
+                    "description": "Profile gender",
+                    "type": "string"
+                  },
+                  "summary": {
+                    "title": "Summary",
+                    "description": "Profile summary text",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "Experience": {
+                "title": "Experience",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "title": "Key",
+                    "description": "Identification key of the Experience.",
+                    "type": "string"
+                  },
+                  "company": {
+                    "title": "Company",
+                    "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Title of the Experience.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Description of the Experience.",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Location object of the Experience.",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "date_start": {
+                    "title": "Date Start",
+                    "description": "Start date of the experience. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "date_end": {
+                    "title": "Date End",
+                    "description": "End date of the experience. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "skills": {
+                    "title": "Skills",
+                    "description": "List of skills of the Experience.",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/Skill"
+                    }
+                  },
+                  "certifications": {
+                    "title": "Certifications",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "courses": {
+                    "title": "Courses",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "tasks": {
+                    "title": "Tasks",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  }
+                }
+              },
+              "Education": {
+                "title": "Education",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "title": "Key",
+                    "description": "Identification key of the Education.",
+                    "type": "string"
+                  },
+                  "school": {
+                    "title": "School",
+                    "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Title of the Education.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Description of the Education.",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Location object of the Education.",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "date_start": {
+                    "title": "Date Start",
+                    "description": "Start date of the Education. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "date_end": {
+                    "title": "Date End",
+                    "description": "End date of the Education. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "skills": {
+                    "title": "Skills",
+                    "description": "List of skills of the Education.",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/Skill"
+                    }
+                  },
+                  "certifications": {
+                    "title": "Certifications",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "courses": {
+                    "title": "Courses",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "tasks": {
+                    "title": "Tasks",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "supports_incremental": false,
+          "target": "OracleORC Profiles",
+          "target_parameters": {
+            "title": "OracleORCWriteProfileParameters",
+            "type": "object",
+            "properties": {
+              "authData": {
+                "title": "Authdata",
+                "field_type": "Auth",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OracleORCAuth"
+                  }
+                ]
+              },
+              "hostAndPort": {
+                "title": "Hostandport",
+                "field_type": "Other",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OracleORCHostAndPort"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "authData",
+              "hostAndPort"
+            ],
+            "additionalProperties": false,
+            "definitions": {
+              "OracleORCAuth": {
+                "title": "OracleORCAuth",
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "title": "Username",
+                    "field_type": "Auth",
+                    "type": "string"
+                  },
+                  "password": {
+                    "title": "Password",
+                    "field_type": "Auth",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              },
+              "OracleORCHostAndPort": {
+                "title": "OracleORCHostAndPort",
+                "type": "object",
+                "properties": {
+                  "host": {
+                    "title": "Host",
+                    "field_type": "Other",
+                    "type": "string"
+                  },
+                  "port": {
+                    "title": "Port",
+                    "field_type": "Other",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "host",
+                  "port"
+                ]
+              }
+            }
+          },
+          "target_data_schema": {
+            "title": "BaseModel",
+            "type": "object",
+            "properties": {}
+          },
+          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import OracleORC\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return OracleORC.push_profile(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = OracleORC.model.action_by_name(\"push_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return OracleORC.push_profile(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'profile_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['authData', 'hostAndPort']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return OracleORC.push_profile(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "pull_profile_list",
+          "action_type": "inbound",
+          "action_parameters": {
+            "title": "ReadProfilesActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "additionalProperties": false,
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "profile",
+          "trigger_type": "schedule",
+          "origin": "OracleORC Profiles",
+          "origin_parameters": {
+            "title": "OracleORCReadProfilesParameters",
+            "type": "object",
+            "properties": {
+              "authData": {
+                "title": "Authdata",
+                "field_type": "Auth",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OracleORCAuth"
+                  }
+                ]
+              },
+              "hostAndPort": {
+                "title": "Hostandport",
+                "field_type": "Other",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OracleORCHostAndPort"
+                  }
+                ]
+              },
+              "expand": {
+                "title": "Expand",
+                "description": "When this parameter is provided, the specified children are included in the resource payload (instead of just a link). The value of this query parameter is \"all\" or \"\". More than one child can be specified using comma as a separator. Example: ?expand=Employees,Localizations. Nested children can also be provided following the format \"Child.NestedChild\" (Example: ?expand=Employees.Managers). If a nested child is provided (Example: Employees.Managers), the missing children will be processed implicitly. For example, \"?expand=Employees.Managers\" is the same as \"?expand=Employees,Employees.Managers\" (which will expand Employees and Managers).",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "fields": {
+                "title": "Fields",
+                "description": "This parameter filters the resource fields. Only the specified fields are returned, which means that if no fields are specified, no fields are returned (useful to get only the links). If an indirect child resource is provided (Example: Employees.Managers), the missing children will be processed implicitly. For example, \"?fields=Employees.Managers:Empname\" is the same as \"?fields=;Employees:;Employees.Managers:Empname\" (which will only return the \"Empname\" field for Managers). the value of this query parameter is a list of resource fields. The attribute can be a direct (Example: Employees) or indirect (Example: Employees.Managers) child. It cannot be combined with expand query parameter. If both are provided, only fields will be considered. Format: ?fields=Attribute1,Attribute2. Format for fields in child resource: ?fields=Accessor1:Attribute1,Attribute2",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "finder": {
+                "title": "Finder",
+                "description": "Used as a predefined finder to search the collection.<br><br>Format ?finder=\\<finderName>;\\<variableName>=\\<variableValue>,\\<variableName2>=\\<variableValue2><br><br>The following are the available finder names and corresponding finder variables<br><br>  - PrimaryKey Finds all candidates using a unique ID.<br>    Finder Variables<br>      - CandidateNumber; string; Unique ID and candidate number used to find candidates.<br>  - findByPersonId Finds all candidates using a person ID.<br>    Finder Variables<br>      - personId; string; Person ID used to find candidates.<br>  - search Finds all candidates using search.<br>    Finder Variables<br>      - keywords; string; Search and keywords; string; used to find candidates.",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "limit": {
+                "title": "Limit",
+                "description": "This parameter restricts the number of resources returned inside the resource collection. If the limit exceeds the resource count then the framework will only return the available resources.",
+                "minimum": 1,
+                "field_type": "Query Param",
+                "type": "integer"
+              },
+              "links": {
+                "title": "Links",
+                "description": "This parameter can be used to show only certain links while accessing a singular resource or a resource collection. The parameter value format is a comma-separated list of : \\<link_relation>. Example: self,canonical",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "offset": {
+                "title": "Offset",
+                "description": "Used to define the starting position of the resource collection. If offset exceeds the resource count then no resources are returned. Default value is 0.",
+                "default": 0,
+                "minimum": 0,
+                "field_type": "Query Param",
+                "type": "integer"
+              },
+              "onlyData": {
+                "title": "Onlydata",
+                "description": "The resource item payload will be filtered in order to contain only data (no links section, for example).",
+                "field_type": "Query Param",
+                "type": "boolean"
+              },
+              "q": {
+                "title": "Q",
+                "description": "This query parameter defines the where clause. The resource collection will be queried using the provided expressions. The value of this query parameter is one or more expressions. Example: ?q=Deptno>=10 and <= 30;Loc!=NY<br><br>Format: ?q=expression1;expression2<br><br>You can use these queryable attributes to filter this collection resource using the q query parameter:<br><br>  - CandLastModifiedDate; string; Candidate Last Modified Date<br>  - CandidateType; string; Candidate type in recruiting candidates.<br>  - FullName; string; Full name in recruiting candidates.<br>  - LastName; string; Last name in recruiting candidates.<br>  - PreferredTimezone; string; Preferred time zone of the candidate.",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "totalResults": {
+                "title": "Totalresults",
+                "description": "The resource collection representation will include the \"estimated row count\" when \"?totalResults=true\", otherwise the count is not included. The default value is \"false\".",
+                "default": false,
+                "field_type": "Query Param",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "authData",
+              "hostAndPort"
+            ],
+            "additionalProperties": false,
+            "definitions": {
+              "OracleORCAuth": {
+                "title": "OracleORCAuth",
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "title": "Username",
+                    "field_type": "Auth",
+                    "type": "string"
+                  },
+                  "password": {
+                    "title": "Password",
+                    "field_type": "Auth",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              },
+              "OracleORCHostAndPort": {
+                "title": "OracleORCHostAndPort",
+                "type": "object",
+                "properties": {
+                  "host": {
+                    "title": "Host",
+                    "field_type": "Other",
+                    "type": "string"
+                  },
+                  "port": {
+                    "title": "Port",
+                    "field_type": "Other",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "host",
+                  "port"
+                ]
+              }
+            }
+          },
+          "origin_data_schema": {
+            "title": "BaseModel",
+            "type": "object",
+            "properties": {}
+          },
+          "supports_incremental": false,
+          "target": "HrFlow.ai Profiles",
+          "target_parameters": {
+            "title": "WriteProfileParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "source_key": {
+                "title": "Source Key",
+                "description": "HrFlow.ai source key",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "edit": {
+                "title": "Edit",
+                "description": "When enabled the profile must exist in the source",
+                "default": false,
+                "field_type": "Other",
+                "type": "boolean"
+              },
+              "only_edit_fields": {
+                "title": "Only Edit Fields",
+                "description": "List of attributes to use for the edit operation e.g. ['tags', 'metadatas']",
+                "field_type": "Other",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "source_key",
+              "only_edit_fields"
+            ],
+            "additionalProperties": false
+          },
+          "target_data_schema": {
+            "title": "HrFlowProfile",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Profile.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
+                "type": "string"
+              },
+              "info": {
+                "title": "Info",
+                "description": "Object containing the Profile's info.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ProfileInfo"
+                  }
+                ]
+              },
+              "text_language": {
+                "title": "Text Language",
+                "description": "Code language of the Profile. type: string code ISO 639-1",
+                "type": "string"
+              },
+              "text": {
+                "title": "Text",
+                "description": "Full text of the Profile..",
+                "type": "string"
+              },
+              "experiences_duration": {
+                "title": "Experiences Duration",
+                "description": "Total number of years of experience.",
+                "type": "number"
+              },
+              "educations_duration": {
+                "title": "Educations Duration",
+                "description": "Total number of years of education.",
+                "type": "number"
+              },
+              "experiences": {
+                "title": "Experiences",
+                "description": "List of experiences of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Experience"
+                }
+              },
+              "educations": {
+                "title": "Educations",
+                "description": "List of educations of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Education"
+                }
+              },
+              "attachments": {
+                "title": "Attachments",
+                "description": "List of documents attached to the Profile.",
+                "type": "array",
+                "items": {}
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "List of skills of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "List of spoken languages of the profile",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "List of certifications of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "List of courses of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "List of tasks of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "interests": {
+                "title": "Interests",
+                "description": "List of interests of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "List of tags of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              }
+            },
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "InfoUrls": {
+                "title": "InfoUrls",
+                "type": "object",
+                "properties": {
+                  "from_resume": {
+                    "title": "From Resume",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "linkedin": {
+                    "title": "Linkedin",
+                    "type": "string"
+                  },
+                  "twitter": {
+                    "title": "Twitter",
+                    "type": "string"
+                  },
+                  "facebook": {
+                    "title": "Facebook",
+                    "type": "string"
+                  },
+                  "github": {
+                    "title": "Github",
+                    "type": "string"
+                  }
+                }
+              },
+              "ProfileInfo": {
+                "title": "ProfileInfo",
+                "type": "object",
+                "properties": {
+                  "full_name": {
+                    "title": "Full Name",
+                    "type": "string"
+                  },
+                  "first_name": {
+                    "title": "First Name",
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "title": "Last Name",
+                    "type": "string"
+                  },
+                  "email": {
+                    "title": "Email",
+                    "type": "string"
+                  },
+                  "phone": {
+                    "title": "Phone",
+                    "type": "string"
+                  },
+                  "date_birth": {
+                    "title": "Date Birth",
+                    "description": "Profile date of birth",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Profile location object",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "urls": {
+                    "title": "Urls",
+                    "description": "Profile social networks and URLs",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/InfoUrls"
+                      }
+                    ]
+                  },
+                  "picture": {
+                    "title": "Picture",
+                    "description": "Profile picture url",
+                    "type": "string"
+                  },
+                  "gender": {
+                    "title": "Gender",
+                    "description": "Profile gender",
+                    "type": "string"
+                  },
+                  "summary": {
+                    "title": "Summary",
+                    "description": "Profile summary text",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "Experience": {
+                "title": "Experience",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "title": "Key",
+                    "description": "Identification key of the Experience.",
+                    "type": "string"
+                  },
+                  "company": {
+                    "title": "Company",
+                    "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Title of the Experience.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Description of the Experience.",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Location object of the Experience.",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "date_start": {
+                    "title": "Date Start",
+                    "description": "Start date of the experience. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "date_end": {
+                    "title": "Date End",
+                    "description": "End date of the experience. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "skills": {
+                    "title": "Skills",
+                    "description": "List of skills of the Experience.",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/Skill"
+                    }
+                  },
+                  "certifications": {
+                    "title": "Certifications",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "courses": {
+                    "title": "Courses",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "tasks": {
+                    "title": "Tasks",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  }
+                }
+              },
+              "Education": {
+                "title": "Education",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "title": "Key",
+                    "description": "Identification key of the Education.",
+                    "type": "string"
+                  },
+                  "school": {
+                    "title": "School",
+                    "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Title of the Education.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Description of the Education.",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Location object of the Education.",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "date_start": {
+                    "title": "Date Start",
+                    "description": "Start date of the Education. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "date_end": {
+                    "title": "Date End",
+                    "description": "End date of the Education. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "skills": {
+                    "title": "Skills",
+                    "description": "List of skills of the Education.",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/Skill"
+                    }
+                  },
+                  "certifications": {
+                    "title": "Certifications",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "courses": {
+                    "title": "Courses",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "tasks": {
+                    "title": "Tasks",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import OracleORC\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return OracleORC.pull_profile_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['authData', 'hostAndPort', 'expand', 'fields', 'finder', 'limit', 'links', 'offset', 'onlyData', 'q', 'totalResults']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'edit', 'only_edit_fields']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return OracleORC.pull_profile_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "pull_job_list",
+          "action_type": "inbound",
+          "action_parameters": {
+            "title": "ReadJobsActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "additionalProperties": false,
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "job",
+          "trigger_type": "schedule",
+          "origin": "OracleORC Jobs",
+          "origin_parameters": {
+            "title": "OracleORCReadJobsParameters",
+            "type": "object",
+            "properties": {
+              "authData": {
+                "title": "Authdata",
+                "field_type": "Auth",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OracleORCAuth"
+                  }
+                ]
+              },
+              "hostAndPort": {
+                "title": "Hostandport",
+                "field_type": "Other",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OracleORCHostAndPort"
+                  }
+                ]
+              },
+              "expand": {
+                "title": "Expand",
+                "description": "When this parameter is provided, the specified children are included in the resource payload (instead of just a link). The value of this query parameter is \"all\" or \"\". More than one child can be specified using comma as a separator. Example: ?expand=Employees,Localizations. Nested children can also be provided following the format \"Child.NestedChild\" (Example: ?expand=Employees.Managers). If a nested child is provided (Example: Employees.Managers), the missing children will be processed implicitly. For example, \"?expand=Employees.Managers\" is the same as \"?expand=Employees,Employees.Managers\" (which will expand Employees and Managers).",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "fields": {
+                "title": "Fields",
+                "description": "This parameter filters the resource fields. Only the specified fields are returned, which means that if no fields are specified, no fields are returned (useful to get only the links). If an indirect child resource is provided (Example: Employees.Managers), the missing children will be processed implicitly. For example, \"?fields=Employees.Managers:Empname\" is the same as \"?fields=;Employees:;Employees.Managers:Empname\" (which will only return the \"Empname\" field for Managers). the value of this query parameter is a list of resource fields. The attribute can be a direct (Example: Employees) or indirect (Example: Employees.Managers) child. It cannot be combined with expand query parameter. If both are provided, only fields will be considered. Format: ?fields=Attribute1,Attribute2. Format for fields in child resource: ?fields=Accessor1:Attribute1,Attribute2",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "finder": {
+                "title": "Finder",
+                "description": "Used as a predefined finder to search the collection.<br><br>Format ?finder=\\<finderName>;\\<variableName>=\\<variableValue>,\\<variableName2>=\\<variableValue2><br><br>The following are the available finder names and corresponding finder variables<br><br>  - PrimaryKey Finds job requisitions using a unique ID<br>    Finder Variables<br>      - SearchId; integer; Finds job requisitions using a search ID and a primary key<br>  - findReqs Finds job requisitions using find requests<br>    Finder Variables<br>      - correctedKeyword; string; Corrected keyword; string; used for searching, based on the spell check result.<br>      - executeSpellCheckFlag; string; Indicates whether the keyword; string; must be spell checked. The default value is true.<br>      - facetsList; string; Finds job requisitions using find requests and facets list<br>      - hotJobFlag; string; Indicates whether the job requisition is considered a hot job.<br>      - jobFamilyId; string; Finds job requisitions using find requests and job family ID<br>      - keyword; string; Finds job requisitions using find requests and keyword; string;<br>      - lastSelectedFacet; string; Finds job requisitions using find requests and the last selected facet<br>      - latitude; number; Finds recruiting job requisitions using find requests and latitude; number;<br>      - limit; integer; Finds job requisitions using find requests and limit; integer;<br>      - location; string; Finds job requisitions using find requests and location; string;<br>      - locationId; string; Finds job requisitions using find requests and location; string; ID<br>      - longitude; number; Finds recruiting job requisitions using find requests and longitude; number;<br>      - offset; integer; Finds job requisitions using find requests and offset; integer;<br>      - organizationId; string; Organization ID to find job requisitions.<br>      - postingEndDate; string; Finds job requisitions using find requests and the end date of the job posting<br>      - postingStartDate; string; Finds job requisitions using find requests and the start date of the job posting<br>      - radius; integer; Finds job requisitions using find requests and radius; integer;<br>      - radiusUnit; string; Finds job requisitions using find requests and the unit of the radius; integer;<br>      - selectedCategoriesFacet; string; Finds job requisitions using find requests and the selected category facet<br>      - selectedFlexFieldsFacets; string; Finds job requisitions using selected flexfields facets<br>      - selectedLocationsFacet; string; Finds job requisitions using find requests and location; string; facet<br>      - selectedOrganizationsFacet; string; Selected organization facets to find job requisitions.<br>      - selectedPostingDatesFacet; string; Finds job requisitions using find requests and the selected facet of the date of job posting<br>      - selectedTitlesFacet; string; Finds job requisitions using find requests and title facet<br>      - selectedWorkLocationsFacet; string; Requisition location; string; ID and unique ID used to find work locations in a job requisition details preview.<br>      - selectedWorkplaceTypesFacet; string; Facet of the selected workplace type.<br>      - siteNumber; string; Finds recruiting job requisitions using find requests and the site number<br>      - sortBy; string; Finds job requisitions using find requests and sort by<br>      - useExactKeywordFlag; string; Indicates whether the exact keyword; string; is used for searching or if the keyword; string; is automatically spell checked and corrected. The default value is false.<br>      - userTargetFacetInputTerm; string; Term used to find facet values for the selected facet.<br>      - userTargetFacetName; string; Name of the facet to find facet values.<br>      - workLocationCountryCode; string; Finds job requisitions using country code of the work location; string;<br>      - workLocationZipCode; string; Finds job requisitions using the ZIP code of the work location; string;<br>  - findReqsByQRShortCode Finds job requisitions by QR short code.<br>      Finder Variables<br>      - limit; integer; The maximum number of job requisitions displayed per page.<br>      - offset; integer; The offset; integer; value to get job requisitions from the result set.<br>      - qrShortCode; string; The short code associated with the QR code.<br>      - siteNumber; string; The site number associated with the short code URL.<br>  - findSimilarRequisitions Finds similar jobs<br>    Finder Variables<br>      - candidateNumber; string; Finds similar jobs using candidate ID<br>      - limit; integer; Finds job requisitions using find requests and limit; integer;<br>      - offset; integer; Finds job requisitions using find requests and offset; integer;<br>      - requisitionId; integer; Finds similar jobs using job ID<br>      - siteNumber; string; Finds similar jobs using site number<br>  - findSimilarRequisitionsByCandidate Finds jobs by candidate.<br>    Finder Variables<br>      - candidateNumber; string; Finds similar jobs using candidate ID<br>      - limit; integer; Finds job requisitions using find requests and limit; integer;<br>      - offset; integer; Finds job requisitions using find requests and offset; integer;<br>      - requisitionId; integer; Finds similar jobs using job ID<br>      - siteNumber; string; Finds similar jobs using site number",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "limit": {
+                "title": "Limit",
+                "description": "This parameter restricts the number of resources returned inside the resource collection. If the limit exceeds the resource count then the framework will only return the available resources.",
+                "minimum": 1,
+                "field_type": "Query Param",
+                "type": "integer"
+              },
+              "links": {
+                "title": "Links",
+                "description": "This parameter can be used to show only certain links while accessing a singular resource or a resource collection. The parameter value format is a comma-separated list of : \\<link_relation>. Example: self,canonical",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "offset": {
+                "title": "Offset",
+                "description": "Used to define the starting position of the resource collection. If offset exceeds the resource count then no resources are returned. Default value is 0.",
+                "default": 0,
+                "minimum": 0,
+                "field_type": "Query Param",
+                "type": "integer"
+              },
+              "onlyData": {
+                "title": "Onlydata",
+                "description": "The resource item payload will be filtered in order to contain only data (no links section, for example).",
+                "field_type": "Query Param",
+                "type": "boolean"
+              },
+              "orderBy": {
+                "title": "Orderby",
+                "description": "This parameter orders a resource collection based on the specified fields. The parameter value is a comma-separated string of attribute names, each optionally followed by a colon and \"asc\" or \"desc\". Specify \"asc\" for ascending and \"desc\" for descending. The default value is \"asc\". For example, ?orderBy=field1:asc,field2:desc",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "q": {
+                "title": "Q",
+                "description": "This query parameter defines the where clause. The resource collection will be queried using the provided expressions. The value of this query parameter is one or more expressions. Example: ?q=Deptno>=10 and <= 30;Loc!=NY<br><br>Format: ?q=expression1;expression2<br><br>You can use these queryable attributes to filter this collection resource using the q query parameter:<br>  - BotQRShortCode; string; The QR short code for the filtered job requisitions that are displayed.<br>  - CandidateNumber; string; ID assigned to each candidate<br>  - CorrectedKeyword; string; Corrected keyword used for searching, based on the spell check result.<br>  - ExecuteSpellCheckFlag; boolean; Indicates whether a spell check was requested for the keyword.<br>  - Facets; string; Facets of the job requisitions.<br>  - HotJobFlag; boolean; Indicates whether the job requisition is considered a hot job in a job requisition details preview.<br>  - JobFamilyId; string; ID assigned to the job family.<br>  - Keyword; string; Keyword used to search for job requisitions.<br>  - LastSelectedFacet; string; Last selected facet for retrieving job requisitions.<br>  - Latitude; number; Latitude of the location of job requisition.<br>  - Limit; integer; Limit of the job requisition.<br>  - Location; string; Location of the job requisition<br>  - LocationId; string; ID assigned to the location of the job requisition.<br>  - Longitude; number; Longitude of the location of the job requisition<br>  - Offset; integer; Offset of the job requisition<br>  - OrganizationId; string; Organization ID for a job requisition.<br>  - PostingEndDate; string; End date of the job posting.<br>  - PostingStartDate; string; Start date of the job posting.<br>  - Radius; integer; Radius of the job requisition.<br>  - RadiusUnit; string; Unit of the radius of the job requisition.<br>  - RequisitionId; integer; ID assigned to the similar job<br>  - SearchId; integer; Location ID of the secondary locations in a job requisition details preview.<br>  - SelectedCategoriesFacet; string; Facet of the selected categories of the job requisitions.<br>  - SelectedFlexFieldsFacets; string; Facets of the selected job requisitions flexfields.<br>  - SelectedLocationsFacet; string; Facet of the selected locations of the job requisitions.<br>  - SelectedOrganizationsFacet; string; Facet of the selected organizations of the job requisitions.<br>  - SelectedPostingDatesFacet; string; Facet of the selected dates of job posting.<br>  - SelectedTitlesFacet; string; Facet of the selected title of job requisitions.<br>  - SelectedWorkLocationsFacet; string; Facet of the selected work locations.<br>  - SelectedWorkplaceTypesFacet; string; Facet of the selected workplace type.<br>  - SiteNumber; string; Site number of the job requisition.<br>  - SortBy; string; Sort by attribute for the job requisition.<br>  - SuggestedKeyword; string; Suggested keyword based on spell check result.<br>  - TotalJobsCount; integer; Total job count for the job requisition.<br>  - UseExactKeywordFlag; boolean; Indicates whether the exact keyword is used for searching or if the keyword is automatically spell checked and corrected.<br>  - UserTargetFacetInputTerm; string; Term used to filter facet values.<br>  - UserTargetFacetName; string; Name of the facet for which the value list must be filtered by the input term.<br>  - WorkLocationCountryCode; string; Country code of the work location.<br>  - WorkLocationZipCode; string; ZIP code of the work location.",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "totalResults": {
+                "title": "Totalresults",
+                "description": "The resource collection representation will include the \"estimated row count\" when \"?totalResults=true\", otherwise the count is not included. The default value is \"false\".",
+                "default": false,
+                "field_type": "Query Param",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "authData",
+              "hostAndPort"
+            ],
+            "additionalProperties": false,
+            "definitions": {
+              "OracleORCAuth": {
+                "title": "OracleORCAuth",
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "title": "Username",
+                    "field_type": "Auth",
+                    "type": "string"
+                  },
+                  "password": {
+                    "title": "Password",
+                    "field_type": "Auth",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              },
+              "OracleORCHostAndPort": {
+                "title": "OracleORCHostAndPort",
+                "type": "object",
+                "properties": {
+                  "host": {
+                    "title": "Host",
+                    "field_type": "Other",
+                    "type": "string"
+                  },
+                  "port": {
+                    "title": "Port",
+                    "field_type": "Other",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "host",
+                  "port"
+                ]
+              }
+            }
+          },
+          "origin_data_schema": {
+            "title": "BaseModel",
+            "type": "object",
+            "properties": {}
+          },
+          "supports_incremental": false,
+          "target": "HrFlow.ai Jobs",
+          "target_parameters": {
+            "title": "WriteJobParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "board_key": {
+                "title": "Board Key",
+                "description": "HrFlow.ai board key",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "sync": {
+                "title": "Sync",
+                "description": "When enabled only pushed jobs will remain in the board",
+                "default": true,
+                "field_type": "Other",
+                "type": "boolean"
+              },
+              "update_content": {
+                "title": "Update Content",
+                "description": "When enabled jobs already present in the board are updated",
+                "default": false,
+                "field_type": "Other",
+                "type": "boolean"
+              },
+              "enrich_with_parsing": {
+                "title": "Enrich With Parsing",
+                "description": "When enabled jobs are enriched with HrFlow.ai parsing",
+                "default": false,
+                "field_type": "Other",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "board_key"
+            ],
+            "additionalProperties": false
+          },
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Job.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Job.",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "title": "Location",
+                "description": "Job location object.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Location"
+                  }
+                ]
+              },
+              "sections": {
+                "title": "Sections",
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Section"
+                }
+              },
+              "url": {
+                "title": "Url",
+                "description": "Job post original URL.",
+                "type": "string"
+              },
+              "summary": {
+                "title": "Summary",
+                "description": "Brief summary of the Job.",
+                "type": "string"
+              },
+              "archieved_at": {
+                "title": "Archieved At",
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "type": "string"
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "t.List of skills of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "t.List of spoken languages of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "t.List of certifications of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "t.List of courses of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "t.List of tasks of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "t.List of tags of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "t.List of metadatas of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "ranges_float": {
+                "title": "Ranges Float",
+                "description": "t.List of ranges of floats",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesFloat"
+                }
+              },
+              "ranges_date": {
+                "title": "Ranges Date",
+                "description": "t.List of ranges of dates",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesDate"
+                }
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value. Example: 500.",
+                    "type": "number"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value. Example: 100.",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "description": "Unit of the value. Example: euros.",
+                    "type": "string"
+                  }
+                }
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "type": "string"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import OracleORC\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return OracleORC.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['authData', 'hostAndPort', 'expand', 'fields', 'finder', 'limit', 'links', 'offset', 'onlyData', 'orderBy', 'q', 'totalResults']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return OracleORC.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        }
+      ],
+      "type": "HCM"
+    },
+    {
       "name": "Salesforce",
       "actions": [
         {
