@@ -273,13 +273,12 @@ class JobadderCandidate(BaseModel):
     statistics: dict
     links: dict
 
+
 class PartnerActionParams(BaseModel):
     actionId: list[str] = Field(
         [], description="Unique identifier for partner actions (optional)"
     )
-    reference: list[str] = Field(
-        [], description="Partner supplied unique reference"
-    )
+    reference: list[str] = Field([], description="Partner supplied unique reference")
     stage: list[str] = Field(
         [],
         description="Include partner actions at a specific stage (optional)",
