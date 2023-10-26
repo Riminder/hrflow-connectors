@@ -273,41 +273,34 @@ class JobadderCandidate(BaseModel):
     statistics: dict
     links: dict
 
-
-# class PartnerActionParams(BaseModel):
-#     actionId: list[str] = Field(
-#         None, description="Unique identifier for partner actions (optional)"
-#     )
-#     reference: list[str] = Field(
-#         None, description="Partner supplied unique reference
-# for the action (optional)"
-#     )
-#     stage: list[str] = Field(
-#         None,
-#         description="Include partner actions at a specific stage (optional)",
-#         enum=["Submitted", "InProgress", "Completed", "Rejected", "Cancelled"],
-#     )
-#     submittedAt: list[str] = Field(
-#         None,
-#         description=(
-#             "Search for entities submitted to an action at a specific date and time"
-#             " (UTC assumed, ISO date-time). Prefix with < or >
-# to search dates before"
-#             " or after (inclusive) the specified date and time.
-# Specify multiple times"
-#             " to search for a range (optional)"
-#         ),
-#     )
+class PartnerActionParams(BaseModel):
+    actionId: list[str] = Field(
+        [], description="Unique identifier for partner actions (optional)"
+    )
+    reference: list[str] = Field(
+        [], description="Partner supplied unique reference"
+    )
+    stage: list[str] = Field(
+        [],
+        description="Include partner actions at a specific stage (optional)",
+        enum=["Submitted", "InProgress", "Completed", "Rejected", "Cancelled"],
+    )
+    submittedAt: list[str] = Field(
+        [],
+        description=(
+            "Search for entities submitted to an action at a specific date and time"
+        ),
+    )
 
 
 class CompanyParams(BaseModel):
-    companyId: list[int] = Field(None, description="Companies by Id (optional)")
+    companyId: list[int] = Field([], description="Companies by Id (optional)")
     name: str = Field(None, description="Company name (optional)")
 
 
 class JobsAdditionalParams(ParametersModel):
     jobId: list[int] = Field(
-        None,
+        [],
         description="Array of integers for Job Id (optional)",
         field_type=FieldType.QueryParam,
     )
@@ -320,20 +313,20 @@ class JobsAdditionalParams(ParametersModel):
         field_type=FieldType.QueryParam,
     )
     companyId: list[int] = Field(
-        None,
+        [],
         description="Alias for company.companyId (optional)",
         field_type=FieldType.QueryParam,
     )
     contactId: list[int] = Field(
-        None, description="Contact Id (optional)", field_type=FieldType.QueryParam
+        [], description="Contact Id (optional)", field_type=FieldType.QueryParam
     )
-    # partnerAction: PartnerActionParams = Field(
-    #     None,
-    #     description="Partner action parameters (optional)",
-    #     field_type=FieldType.QueryParam,
-    # )
+    partnerAction: PartnerActionParams = Field(
+        None,
+        description="Partner action parameters (optional)",
+        field_type=FieldType.QueryParam,
+    )
     statusId: list[int] = Field(
-        None, description="Job status ID (optional)", field_type=FieldType.QueryParam
+        [], description="Job status ID (optional)", field_type=FieldType.QueryParam
     )
     active: bool = Field(
         None,
@@ -346,36 +339,36 @@ class JobsAdditionalParams(ParametersModel):
         field_type=FieldType.QueryParam,
     )
     folderId: list[int] = Field(
-        None,
+        [],
         description="Search in specific folders (optional)",
         field_type=FieldType.QueryParam,
     )
     userId: list[int] = Field(
-        None,
+        [],
         description=(
             "User ID - search for jobs by owner or associated recruiter (optional)"
         ),
         field_type=FieldType.QueryParam,
     )
     ownerUserId: list[int] = Field(
-        None,
+        [],
         description="User ID - search for jobs by owner (optional)",
         field_type=FieldType.QueryParam,
     )
     recruiterUserId: list[int] = Field(
-        None,
+        [],
         description="User ID - search jobs by associated recruiters (optional)",
         field_type=FieldType.QueryParam,
     )
     createdBy: list[int] = Field(
-        None,
+        [],
         description=(
             "User ID - search for jobs created by the specified user(s) (optional)"
         ),
         field_type=FieldType.QueryParam,
     )
     createdAt: list[str] = Field(
-        None,
+        [],
         description=(
             "Search for jobs created at a specific date and time (UTC assumed, ISO"
             " date-time) (optional)"
@@ -383,14 +376,14 @@ class JobsAdditionalParams(ParametersModel):
         field_type=FieldType.QueryParam,
     )
     updatedBy: list[int] = Field(
-        None,
+        [],
         description=(
             "User ID - search for jobs last updated by the specified user(s) (optional)"
         ),
         field_type=FieldType.QueryParam,
     )
     updatedAt: list[str] = Field(
-        None,
+        [],
         description=(
             "Search for jobs updated at a specific date and time (UTC assumed, ISO"
             " date-time) (optional)"
@@ -398,14 +391,14 @@ class JobsAdditionalParams(ParametersModel):
         field_type=FieldType.QueryParam,
     )
     closedBy: list[int] = Field(
-        None,
+        [],
         description=(
             "User ID - search for jobs last closed by the specified user(s) (optional)"
         ),
         field_type=FieldType.QueryParam,
     )
     closedAt: list[str] = Field(
-        None,
+        [],
         description=(
             "Search for jobs closed at a specific date and time (UTC assumed, ISO"
             " date-time) (optional)"
@@ -413,7 +406,7 @@ class JobsAdditionalParams(ParametersModel):
         field_type=FieldType.QueryParam,
     )
     sort: list[str] = Field(
-        None,
+        [],
         description=(
             "Sort the results by one or multiple fields. Prefix with '-' to sort"
             " descending (optional)"
@@ -421,12 +414,12 @@ class JobsAdditionalParams(ParametersModel):
         field_type=FieldType.QueryParam,
     )
     fields: list[str] = Field(
-        None,
+        [],
         description="Additional fields to include with the results (optional)",
         field_type=FieldType.QueryParam,
     )
     embed: list[str] = Field(
-        None,
+        [],
         description="Embed related resources (optional)",
         field_type=FieldType.QueryParam,
     )
@@ -434,7 +427,7 @@ class JobsAdditionalParams(ParametersModel):
 
 class CandidatesAdditionalParams(ParametersModel):
     candidateId: List[int] = Field(
-        None, description="Candidate Id", field_type=FieldType.QueryParam
+        [], description="Candidate Id", field_type=FieldType.QueryParam
     )
     name: str = Field(
         None, description="Candidate name", field_type=FieldType.QueryParam
@@ -471,18 +464,18 @@ class CandidatesAdditionalParams(ParametersModel):
         None, description="Partner Action parameters", field_type=FieldType.QueryParam
     )
     statusId: List[int] = Field(
-        None, description="Candidate status", field_type=FieldType.QueryParam
+        [], description="Candidate status", field_type=FieldType.QueryParam
     )
     recruiterUserId: List[int] = Field(
-        None,
+        [],
         description="User Id - search candidates by associated recruiters",
         field_type=FieldType.QueryParam,
     )
     folderId: List[int] = Field(
-        None, description="Search in specific folders", field_type=FieldType.QueryParam
+        [], description="Search in specific folders", field_type=FieldType.QueryParam
     )
     createdAt: List[str] = Field(
-        None,
+        [],
         description=(
             "Search for candidates created at a specific date and time (UTC assumed,"
             " ISO date-time)"
@@ -490,7 +483,7 @@ class CandidatesAdditionalParams(ParametersModel):
         field_type=FieldType.QueryParam,
     )
     updatedAt: List[str] = Field(
-        None,
+        [],
         description=(
             "Search for candidates updated at a specific date and time (UTC assumed,"
             " ISO date-time)"
@@ -498,7 +491,7 @@ class CandidatesAdditionalParams(ParametersModel):
         field_type=FieldType.QueryParam,
     )
     sort: List[str] = Field(
-        None,
+        [],
         description=(
             "Sort the results by one or multiple fields, prefix with '-' to sort"
             " descending"
@@ -506,10 +499,10 @@ class CandidatesAdditionalParams(ParametersModel):
         field_type=FieldType.QueryParam,
     )
     fields: List[str] = Field(
-        None,
+        [],
         description="Additional fields to include with the results",
         field_type=FieldType.QueryParam,
     )
     embed: List[str] = Field(
-        None, description="Embed related resources", field_type=FieldType.QueryParam
+        [], description="Embed related resources", field_type=FieldType.QueryParam
     )

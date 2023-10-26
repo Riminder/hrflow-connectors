@@ -21125,6 +21125,7 @@
               "candidateId": {
                 "title": "Candidateid",
                 "description": "Candidate Id",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21194,6 +21195,7 @@
               "statusId": {
                 "title": "Statusid",
                 "description": "Candidate status",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21203,6 +21205,7 @@
               "recruiterUserId": {
                 "title": "Recruiteruserid",
                 "description": "User Id - search candidates by associated recruiters",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21212,6 +21215,7 @@
               "folderId": {
                 "title": "Folderid",
                 "description": "Search in specific folders",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21221,6 +21225,7 @@
               "createdAt": {
                 "title": "Createdat",
                 "description": "Search for candidates created at a specific date and time (UTC assumed, ISO date-time)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21230,6 +21235,7 @@
               "updatedAt": {
                 "title": "Updatedat",
                 "description": "Search for candidates updated at a specific date and time (UTC assumed, ISO date-time)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21239,6 +21245,7 @@
               "sort": {
                 "title": "Sort",
                 "description": "Sort the results by one or multiple fields, prefix with '-' to sort descending",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21248,6 +21255,7 @@
               "fields": {
                 "title": "Fields",
                 "description": "Additional fields to include with the results",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21257,6 +21265,7 @@
               "embed": {
                 "title": "Embed",
                 "description": "Embed related resources",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23306,6 +23315,7 @@
               "jobId": {
                 "title": "Jobid",
                 "description": "Array of integers for Job Id (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23331,6 +23341,7 @@
               "companyId": {
                 "title": "Companyid",
                 "description": "Alias for company.companyId (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23340,15 +23351,27 @@
               "contactId": {
                 "title": "Contactid",
                 "description": "Contact Id (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
                   "type": "integer"
                 }
               },
+              "partnerAction": {
+                "title": "Partneraction",
+                "description": "Partner action parameters (optional)",
+                "field_type": "Query Param",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/PartnerActionParams"
+                  }
+                ]
+              },
               "statusId": {
                 "title": "Statusid",
                 "description": "Job status ID (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23370,6 +23393,7 @@
               "folderId": {
                 "title": "Folderid",
                 "description": "Search in specific folders (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23379,6 +23403,7 @@
               "userId": {
                 "title": "Userid",
                 "description": "User ID - search for jobs by owner or associated recruiter (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23388,6 +23413,7 @@
               "ownerUserId": {
                 "title": "Owneruserid",
                 "description": "User ID - search for jobs by owner (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23397,6 +23423,7 @@
               "recruiterUserId": {
                 "title": "Recruiteruserid",
                 "description": "User ID - search jobs by associated recruiters (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23406,6 +23433,7 @@
               "createdBy": {
                 "title": "Createdby",
                 "description": "User ID - search for jobs created by the specified user(s) (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23415,6 +23443,7 @@
               "createdAt": {
                 "title": "Createdat",
                 "description": "Search for jobs created at a specific date and time (UTC assumed, ISO date-time) (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23424,6 +23453,7 @@
               "updatedBy": {
                 "title": "Updatedby",
                 "description": "User ID - search for jobs last updated by the specified user(s) (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23433,6 +23463,7 @@
               "updatedAt": {
                 "title": "Updatedat",
                 "description": "Search for jobs updated at a specific date and time (UTC assumed, ISO date-time) (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23442,6 +23473,7 @@
               "closedBy": {
                 "title": "Closedby",
                 "description": "User ID - search for jobs last closed by the specified user(s) (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23451,6 +23483,7 @@
               "closedAt": {
                 "title": "Closedat",
                 "description": "Search for jobs closed at a specific date and time (UTC assumed, ISO date-time) (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23460,6 +23493,7 @@
               "sort": {
                 "title": "Sort",
                 "description": "Sort the results by one or multiple fields. Prefix with '-' to sort descending (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23469,6 +23503,7 @@
               "fields": {
                 "title": "Fields",
                 "description": "Additional fields to include with the results (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23478,6 +23513,7 @@
               "embed": {
                 "title": "Embed",
                 "description": "Embed related resources (optional)",
+                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23515,6 +23551,7 @@
                   "companyId": {
                     "title": "Companyid",
                     "description": "Companies by Id (optional)",
+                    "default": [],
                     "type": "array",
                     "items": {
                       "type": "integer"
@@ -23524,6 +23561,55 @@
                     "title": "Name",
                     "description": "Company name (optional)",
                     "type": "string"
+                  }
+                }
+              },
+              "PartnerActionParams": {
+                "title": "PartnerActionParams",
+                "type": "object",
+                "properties": {
+                  "actionId": {
+                    "title": "Actionid",
+                    "description": "Unique identifier for partner actions (optional)",
+                    "default": [],
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "reference": {
+                    "title": "Reference",
+                    "description": "Partner supplied unique reference",
+                    "default": [],
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "stage": {
+                    "title": "Stage",
+                    "description": "Include partner actions at a specific stage (optional)",
+                    "default": [],
+                    "enum": [
+                      "Submitted",
+                      "InProgress",
+                      "Completed",
+                      "Rejected",
+                      "Cancelled"
+                    ],
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "submittedAt": {
+                    "title": "Submittedat",
+                    "description": "Search for entities submitted to an action at a specific date and time",
+                    "default": [],
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
                   }
                 }
               }
@@ -24549,7 +24635,7 @@
               }
             }
           },
-          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Jobadder\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Jobadder.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['authorization_url', 'client_id', 'client_secret', 'authorization_code', 'redirect_uri', 'jobId', 'jobTitle', 'company', 'companyId', 'contactId', 'statusId', 'active', 'userFavourite', 'folderId', 'userId', 'ownerUserId', 'recruiterUserId', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt', 'closedBy', 'closedAt', 'sort', 'fields', 'embed', 'limit', 'offset']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Jobadder.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Jobadder\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Jobadder.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['authorization_url', 'client_id', 'client_secret', 'authorization_code', 'redirect_uri', 'jobId', 'jobTitle', 'company', 'companyId', 'contactId', 'partnerAction', 'statusId', 'active', 'userFavourite', 'folderId', 'userId', 'ownerUserId', 'recruiterUserId', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt', 'closedBy', 'closedAt', 'sort', 'fields', 'embed', 'limit', 'offset']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Jobadder.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
           "workflow_code_workflow_id_settings_key": "__workflow_id",
