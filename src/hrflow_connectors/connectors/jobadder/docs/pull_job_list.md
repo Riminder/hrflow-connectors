@@ -22,27 +22,28 @@ Retrieves jobs from Jobadder and writes them to an Hrflow.ai board
 | `client_secret` :red_circle: | `str` | None | Client secret for authenticating with Jobadder API |
 | `authorization_code` :red_circle: | `str` | None | Authorization code for obtaining access token |
 | `redirect_uri` :red_circle: | `str` | None | Redirect URI for obtaining access token |
-| `jobId`  | `list[int]` | None | Array of integers for Job Id (optional) |
+| `jobId`  | `list[int]` | [] | Array of integers for Job Id (optional) |
 | `jobTitle`  | `str` | None | Job title (optional) |
 | `company`  | `<class 'hrflow_connectors.connectors.jobadder.schemas.CompanyParams'>` | None | Company parameters (optional) |
-| `companyId`  | `list[int]` | None | Alias for company.companyId (optional) |
-| `contactId`  | `list[int]` | None | Contact Id (optional) |
-| `statusId`  | `list[int]` | None | Job status ID (optional) |
+| `companyId`  | `list[int]` | [] | Alias for company.companyId (optional) |
+| `contactId`  | `list[int]` | [] | Contact Id (optional) |
+| `partnerAction`  | `<class 'hrflow_connectors.connectors.jobadder.schemas.PartnerActionParams'>` | None | Partner action parameters (optional) |
+| `statusId`  | `list[int]` | [] | Job status ID (optional) |
 | `active`  | `bool` | None | Search for active/open jobs (optional) |
 | `userFavourite`  | `bool` | None | Search for the user's favorite jobs (optional) |
-| `folderId`  | `list[int]` | None | Search in specific folders (optional) |
-| `userId`  | `list[int]` | None | User ID - search for jobs by owner or associated recruiter (optional) |
-| `ownerUserId`  | `list[int]` | None | User ID - search for jobs by owner (optional) |
-| `recruiterUserId`  | `list[int]` | None | User ID - search jobs by associated recruiters (optional) |
-| `createdBy`  | `list[int]` | None | User ID - search for jobs created by the specified user(s) (optional) |
-| `createdAt`  | `list[str]` | None | Search for jobs created at a specific date and time (UTC assumed, ISO date-time) (optional) |
-| `updatedBy`  | `list[int]` | None | User ID - search for jobs last updated by the specified user(s) (optional) |
-| `updatedAt`  | `list[str]` | None | Search for jobs updated at a specific date and time (UTC assumed, ISO date-time) (optional) |
-| `closedBy`  | `list[int]` | None | User ID - search for jobs last closed by the specified user(s) (optional) |
-| `closedAt`  | `list[str]` | None | Search for jobs closed at a specific date and time (UTC assumed, ISO date-time) (optional) |
-| `sort`  | `list[str]` | None | Sort the results by one or multiple fields. Prefix with '-' to sort descending (optional) |
-| `fields`  | `list[str]` | None | Additional fields to include with the results (optional) |
-| `embed`  | `list[str]` | None | Embed related resources (optional) |
+| `folderId`  | `list[int]` | [] | Search in specific folders (optional) |
+| `userId`  | `list[int]` | [] | User ID - search for jobs by owner or associated recruiter (optional) |
+| `ownerUserId`  | `list[int]` | [] | User ID - search for jobs by owner (optional) |
+| `recruiterUserId`  | `list[int]` | [] | User ID - search jobs by associated recruiters (optional) |
+| `createdBy`  | `list[int]` | [] | User ID - search for jobs created by the specified user(s) (optional) |
+| `createdAt`  | `list[str]` | [] | Search for jobs created at a specific date and time (UTC assumed, ISO date-time) (optional) |
+| `updatedBy`  | `list[int]` | [] | User ID - search for jobs last updated by the specified user(s) (optional) |
+| `updatedAt`  | `list[str]` | [] | Search for jobs updated at a specific date and time (UTC assumed, ISO date-time) (optional) |
+| `closedBy`  | `list[int]` | [] | User ID - search for jobs last closed by the specified user(s) (optional) |
+| `closedAt`  | `list[str]` | [] | Search for jobs closed at a specific date and time (UTC assumed, ISO date-time) (optional) |
+| `sort`  | `list[str]` | [] | Sort the results by one or multiple fields. Prefix with '-' to sort descending (optional) |
+| `fields`  | `list[str]` | [] | Additional fields to include with the results (optional) |
+| `embed`  | `list[str]` | [] | Embed related resources (optional) |
 | `limit`  | `int` | 100 | Number of items to fetch per request (max: 100) |
 | `offset`  | `int` | 0 | Number of items to skip |
 
@@ -83,27 +84,28 @@ Jobadder.pull_job_list(
         client_secret="your_client_secret",
         authorization_code="your_authorization_code",
         redirect_uri="your_redirect_uri",
-        jobId=***,
+        jobId=[],
         jobTitle="your_jobTitle",
         company=***,
-        companyId=***,
-        contactId=***,
-        statusId=***,
+        companyId=[],
+        contactId=[],
+        partnerAction=***,
+        statusId=[],
         active=False,
         userFavourite=False,
-        folderId=***,
-        userId=***,
-        ownerUserId=***,
-        recruiterUserId=***,
-        createdBy=***,
-        createdAt=***,
-        updatedBy=***,
-        updatedAt=***,
-        closedBy=***,
-        closedAt=***,
-        sort=***,
-        fields=***,
-        embed=***,
+        folderId=[],
+        userId=[],
+        ownerUserId=[],
+        recruiterUserId=[],
+        createdBy=[],
+        createdAt=[],
+        updatedBy=[],
+        updatedAt=[],
+        closedBy=[],
+        closedAt=[],
+        sort=[],
+        fields=[],
+        embed=[],
         limit=100,
         offset=0,
     ),
