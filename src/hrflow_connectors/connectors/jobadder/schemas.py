@@ -62,7 +62,7 @@ class SkillTags(BaseModel):
     tags: List[str]
 
 
-class CustomField(BaseModel):
+class CustomFieldJob(BaseModel):
     fieldId: int
     name: str
     type: str
@@ -158,7 +158,7 @@ class JobadderJob(BaseModel):
     fee: Fee
     otherContacts: List[Contact]
     skillTags: SkillTags
-    custom: List[CustomField]
+    custom: List[CustomFieldJob]
     owner: Owner
     recruiters: List[Owner]
     partnerActions: List[PartnerAction]
@@ -274,27 +274,27 @@ class JobadderCandidate(BaseModel):
     links: dict
 
 
-class PartnerActionParams(BaseModel):
-    actionId: list[str] = Field(
-        None, description="Unique identifier for partner actions (optional)"
-    )
-    reference: list[str] = Field(
-        None, description="Partner supplied unique reference for the action (optional)"
-    )
-    stage: list[str] = Field(
-        None,
-        description="Include partner actions at a specific stage (optional)",
-        enum=["Submitted", "InProgress", "Completed", "Rejected", "Cancelled"],
-    )
-    submittedAt: list[str] = Field(
-        None,
-        description=(
-            "Search for entities submitted to an action at a specific date and time"
-            " (UTC assumed, ISO date-time). Prefix with < or > to search dates before"
-            " or after (inclusive) the specified date and time. Specify multiple times"
-            " to search for a range (optional)"
-        ),
-    )
+# class PartnerActionParams(BaseModel):
+#     actionId: list[str] = Field(
+#         None, description="Unique identifier for partner actions (optional)"
+#     )
+#     reference: list[str] = Field(
+#         None, description="Partner supplied unique reference for the action (optional)"
+#     )
+#     stage: list[str] = Field(
+#         None,
+#         description="Include partner actions at a specific stage (optional)",
+#         enum=["Submitted", "InProgress", "Completed", "Rejected", "Cancelled"],
+#     )
+#     submittedAt: list[str] = Field(
+#         None,
+#         description=(
+#             "Search for entities submitted to an action at a specific date and time"
+#             " (UTC assumed, ISO date-time). Prefix with < or > to search dates before"
+#             " or after (inclusive) the specified date and time. Specify multiple times"
+#             " to search for a range (optional)"
+#         ),
+#     )
 
 
 class CompanyParams(BaseModel):
@@ -324,11 +324,11 @@ class JobsAdditionalParams(ParametersModel):
     contactId: list[int] = Field(
         None, description="Contact Id (optional)", field_type=FieldType.QueryParam
     )
-    partnerAction: PartnerActionParams = Field(
-        None,
-        description="Partner action parameters (optional)",
-        field_type=FieldType.QueryParam,
-    )
+    # partnerAction: PartnerActionParams = Field(
+    #     None,
+    #     description="Partner action parameters (optional)",
+    #     field_type=FieldType.QueryParam,
+    # )
     statusId: list[int] = Field(
         None, description="Job status ID (optional)", field_type=FieldType.QueryParam
     )

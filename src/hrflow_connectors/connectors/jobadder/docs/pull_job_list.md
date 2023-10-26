@@ -27,7 +27,6 @@ Retrieves jobs from Jobadder and writes them to an Hrflow.ai board
 | `company`  | `<class 'hrflow_connectors.connectors.jobadder.schemas.CompanyParams'>` | None | Company parameters (optional) |
 | `companyId`  | `list[int]` | None | Alias for company.companyId (optional) |
 | `contactId`  | `list[int]` | None | Contact Id (optional) |
-| `partnerAction`  | `<class 'hrflow_connectors.connectors.jobadder.schemas.PartnerActionParams'>` | None | Partner action parameters (optional) |
 | `statusId`  | `list[int]` | None | Job status ID (optional) |
 | `active`  | `bool` | None | Search for active/open jobs (optional) |
 | `userFavourite`  | `bool` | None | Search for the user's favorite jobs (optional) |
@@ -89,7 +88,6 @@ Jobadder.pull_job_list(
         company=***,
         companyId=***,
         contactId=***,
-        partnerAction=***,
         statusId=***,
         active=False,
         userFavourite=False,
