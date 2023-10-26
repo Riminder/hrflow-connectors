@@ -1618,7 +1618,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "ATS"
+      "type": "ATS",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/smartrecruiters/logo.png"
     },
     {
       "name": "TalentSoft",
@@ -3377,7 +3378,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "HCM"
+      "type": "HCM",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/talentsoft/logo.webp"
     },
     {
       "name": "PoleEmploi",
@@ -4690,7 +4692,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "Job Board"
+      "type": "Job Board",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/poleemploi/logo.jpg"
     },
     {
       "name": "Adzuna",
@@ -5514,7 +5517,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "Job Board"
+      "type": "Job Board",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/adzuna/logo.png"
     },
     {
       "name": "Recruitee",
@@ -6704,7 +6708,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "ATS"
+      "type": "ATS",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/recruitee/logo.png"
     },
     {
       "name": "Workable",
@@ -7707,7 +7712,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "HCM"
+      "type": "HCM",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/workable/logo.png"
     },
     {
       "name": "BreezyHR",
@@ -8741,7 +8747,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "ATS"
+      "type": "ATS",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/breezyhr/logo.jpg"
     },
     {
       "name": "SAPSuccessFactors",
@@ -10008,7 +10015,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "ATS"
+      "type": "ATS",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/sapsuccessfactors/logo.jpg"
     },
     {
       "name": "Bullhorn",
@@ -12116,7 +12124,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "ATS"
+      "type": "ATS",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/bullhorn/logo.jpg"
     },
     {
       "name": "Ceridian",
@@ -12628,7 +12637,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "HCM"
+      "type": "HCM",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/ceridian/logo.webp"
     },
     {
       "name": "Greenhouse",
@@ -14048,7 +14058,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "ATS"
+      "type": "ATS",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/greenhouse/logo.png"
     },
     {
       "name": "Teamtailor",
@@ -15229,7 +15240,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "ATS"
+      "type": "ATS",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/teamtailor/logo.png"
     },
     {
       "name": "Waalaxy",
@@ -15821,7 +15833,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "Automation"
+      "type": "Automation",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/waalaxy/logo.webp"
     },
     {
       "name": "Hubspot",
@@ -16563,7 +16576,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "CRM"
+      "type": "CRM",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/hubspot/logo.png"
     },
     {
       "name": "Taleez",
@@ -17792,7 +17806,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "ATS"
+      "type": "ATS",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/taleez/logo.png"
     },
     {
       "name": "Salesforce",
@@ -21039,7 +21054,8 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "CRM"
+      "type": "CRM",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/salesforce/logo.png"
     }
   ]
 }
