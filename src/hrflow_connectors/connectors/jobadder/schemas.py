@@ -279,7 +279,8 @@ class JobadderCandidate(BaseModel):
 #         None, description="Unique identifier for partner actions (optional)"
 #     )
 #     reference: list[str] = Field(
-#         None, description="Partner supplied unique reference for the action (optional)"
+#         None, description="Partner supplied unique reference
+# for the action (optional)"
 #     )
 #     stage: list[str] = Field(
 #         None,
@@ -290,8 +291,10 @@ class JobadderCandidate(BaseModel):
 #         None,
 #         description=(
 #             "Search for entities submitted to an action at a specific date and time"
-#             " (UTC assumed, ISO date-time). Prefix with < or > to search dates before"
-#             " or after (inclusive) the specified date and time. Specify multiple times"
+#             " (UTC assumed, ISO date-time). Prefix with < or >
+# to search dates before"
+#             " or after (inclusive) the specified date and time.
+# Specify multiple times"
 #             " to search for a range (optional)"
 #         ),
 #     )
