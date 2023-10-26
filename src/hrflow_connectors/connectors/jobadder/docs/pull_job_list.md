@@ -24,10 +24,10 @@ Retrieves jobs from Jobadder and writes them to an Hrflow.ai board
 | `redirect_uri` :red_circle: | `str` | None | Redirect URI for obtaining access token |
 | `jobId`  | `list[int]` | [] | Array of integers for Job Id (optional) |
 | `jobTitle`  | `str` | None | Job title (optional) |
-| `company`  | `<class 'hrflow_connectors.connectors.jobadder.schemas.CompanyParams'>` | None | Company parameters (optional) |
+| `company`  | `<class 'hrflow_connectors.connectors.jobadder.schemas.CompanyParams'>` | companyId=[] name=None | Company parameters (optional) |
 | `companyId`  | `list[int]` | [] | Alias for company.companyId (optional) |
 | `contactId`  | `list[int]` | [] | Contact Id (optional) |
-| `partnerAction`  | `<class 'hrflow_connectors.connectors.jobadder.schemas.PartnerActionParams'>` | None | Partner action parameters (optional) |
+| `partnerAction`  | `<class 'hrflow_connectors.connectors.jobadder.schemas.PartnerActionParams'>` | actionId=[] reference=[] stage=[] submittedAt=[] | Partner action parameters (optional) |
 | `statusId`  | `list[int]` | [] | Job status ID (optional) |
 | `active`  | `bool` | None | Search for active/open jobs (optional) |
 | `userFavourite`  | `bool` | None | Search for the user's favorite jobs (optional) |
@@ -86,10 +86,10 @@ Jobadder.pull_job_list(
         redirect_uri="your_redirect_uri",
         jobId=[],
         jobTitle="your_jobTitle",
-        company=***,
+        company=companyId=[] name=None,
         companyId=[],
         contactId=[],
-        partnerAction=***,
+        partnerAction=actionId=[] reference=[] stage=[] submittedAt=[],
         statusId=[],
         active=False,
         userFavourite=False,

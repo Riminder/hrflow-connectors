@@ -23331,6 +23331,10 @@
               "company": {
                 "title": "Company",
                 "description": "Company parameters (optional)",
+                "default": {
+                  "companyId": [],
+                  "name": null
+                },
                 "field_type": "Query Param",
                 "allOf": [
                   {
@@ -23361,6 +23365,12 @@
               "partnerAction": {
                 "title": "Partneraction",
                 "description": "Partner action parameters (optional)",
+                "default": {
+                  "actionId": [],
+                  "reference": [],
+                  "stage": [],
+                  "submittedAt": []
+                },
                 "field_type": "Query Param",
                 "allOf": [
                   {

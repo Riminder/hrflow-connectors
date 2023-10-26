@@ -307,7 +307,7 @@ class JobsAdditionalParams(ParametersModel):
         None, description="Job title (optional)", field_type=FieldType.QueryParam
     )
     company: CompanyParams = Field(
-        None,
+        CompanyParams(companyId=[], name=None),
         description="Company parameters (optional)",
         field_type=FieldType.QueryParam,
     )
@@ -320,7 +320,7 @@ class JobsAdditionalParams(ParametersModel):
         [], description="Contact Id (optional)", field_type=FieldType.QueryParam
     )
     partnerAction: PartnerActionParams = Field(
-        None,
+        PartnerActionParams(actionId=[], reference=[], stage=[], submittedAt=[]),
         description="Partner action parameters (optional)",
         field_type=FieldType.QueryParam,
     )
