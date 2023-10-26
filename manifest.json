@@ -23328,20 +23328,6 @@
                 "field_type": "Query Param",
                 "type": "string"
               },
-              "company": {
-                "title": "Company",
-                "description": "Company parameters (optional)",
-                "default": {
-                  "companyId": [],
-                  "name": null
-                },
-                "field_type": "Query Param",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/CompanyParams"
-                  }
-                ]
-              },
               "companyId": {
                 "title": "Companyid",
                 "description": "Alias for company.companyId (optional)",
@@ -23361,22 +23347,6 @@
                 "items": {
                   "type": "integer"
                 }
-              },
-              "partnerAction": {
-                "title": "Partneraction",
-                "description": "Partner action parameters (optional)",
-                "default": {
-                  "actionId": [],
-                  "reference": [],
-                  "stage": [],
-                  "submittedAt": []
-                },
-                "field_type": "Query Param",
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/PartnerActionParams"
-                  }
-                ]
               },
               "statusId": {
                 "title": "Statusid",
@@ -23552,78 +23522,7 @@
               "authorization_code",
               "redirect_uri"
             ],
-            "additionalProperties": false,
-            "definitions": {
-              "CompanyParams": {
-                "title": "CompanyParams",
-                "type": "object",
-                "properties": {
-                  "companyId": {
-                    "title": "Companyid",
-                    "description": "Companies by Id (optional)",
-                    "default": [],
-                    "type": "array",
-                    "items": {
-                      "type": "integer"
-                    }
-                  },
-                  "name": {
-                    "title": "Name",
-                    "description": "Company name (optional)",
-                    "type": "string"
-                  }
-                }
-              },
-              "PartnerActionParams": {
-                "title": "PartnerActionParams",
-                "type": "object",
-                "properties": {
-                  "actionId": {
-                    "title": "Actionid",
-                    "description": "Unique identifier for partner actions (optional)",
-                    "default": [],
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "reference": {
-                    "title": "Reference",
-                    "description": "Partner supplied unique reference",
-                    "default": [],
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "stage": {
-                    "title": "Stage",
-                    "description": "Include partner actions at a specific stage (optional)",
-                    "default": [],
-                    "enum": [
-                      "Submitted",
-                      "InProgress",
-                      "Completed",
-                      "Rejected",
-                      "Cancelled"
-                    ],
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "submittedAt": {
-                    "title": "Submittedat",
-                    "description": "Search for entities submitted to an action at a specific date and time",
-                    "default": [],
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
+            "additionalProperties": false
           },
           "origin_data_schema": {
             "title": "JobadderJob",
@@ -24645,7 +24544,7 @@
               }
             }
           },
-          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Jobadder\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Jobadder.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['authorization_url', 'client_id', 'client_secret', 'authorization_code', 'redirect_uri', 'jobId', 'jobTitle', 'company', 'companyId', 'contactId', 'partnerAction', 'statusId', 'active', 'userFavourite', 'folderId', 'userId', 'ownerUserId', 'recruiterUserId', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt', 'closedBy', 'closedAt', 'sort', 'fields', 'embed', 'limit', 'offset']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Jobadder.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Jobadder\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Jobadder.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['authorization_url', 'client_id', 'client_secret', 'authorization_code', 'redirect_uri', 'jobId', 'jobTitle', 'companyId', 'contactId', 'statusId', 'active', 'userFavourite', 'folderId', 'userId', 'ownerUserId', 'recruiterUserId', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt', 'closedBy', 'closedAt', 'sort', 'fields', 'embed', 'limit', 'offset']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Jobadder.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
           "workflow_code_workflow_id_settings_key": "__workflow_id",

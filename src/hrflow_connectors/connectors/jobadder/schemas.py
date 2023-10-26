@@ -274,27 +274,27 @@ class JobadderCandidate(BaseModel):
     links: dict
 
 
-class PartnerActionParams(BaseModel):
-    actionId: list[str] = Field(
-        [], description="Unique identifier for partner actions (optional)"
-    )
-    reference: list[str] = Field([], description="Partner supplied unique reference")
-    stage: list[str] = Field(
-        [],
-        description="Include partner actions at a specific stage (optional)",
-        enum=["Submitted", "InProgress", "Completed", "Rejected", "Cancelled"],
-    )
-    submittedAt: list[str] = Field(
-        [],
-        description=(
-            "Search for entities submitted to an action at a specific date and time"
-        ),
-    )
+# class PartnerActionParams(BaseModel):
+#     actionId: list[str] = Field(
+#         [], description="Unique identifier for partner actions (optional)"
+#     )
+#     reference: list[str] = Field([], description="Partner supplied unique reference")
+#     stage: list[str] = Field(
+#         [],
+#         description="Include partner actions at a specific stage (optional)",
+#         enum=["Submitted", "InProgress", "Completed", "Rejected", "Cancelled"],
+#     )
+#     submittedAt: list[str] = Field(
+#         [],
+#         description=(
+#             "Search for entities submitted to an action at a specific date and time"
+#         ),
+#     )
 
 
-class CompanyParams(BaseModel):
-    companyId: list[int] = Field([], description="Companies by Id (optional)")
-    name: str = Field(None, description="Company name (optional)")
+# class CompanyParams(BaseModel):
+#     companyId: list[int] = Field([], description="Companies by Id (optional)")
+#     name: str = Field(None, description="Company name (optional)")
 
 
 class JobsAdditionalParams(ParametersModel):
@@ -306,11 +306,11 @@ class JobsAdditionalParams(ParametersModel):
     jobTitle: str = Field(
         None, description="Job title (optional)", field_type=FieldType.QueryParam
     )
-    company: CompanyParams = Field(
-        CompanyParams(companyId=[], name=None),
-        description="Company parameters (optional)",
-        field_type=FieldType.QueryParam,
-    )
+    # company: CompanyParams = Field(
+    #     CompanyParams(companyId=[], name=None),
+    #     description="Company parameters (optional)",
+    #     field_type=FieldType.QueryParam,
+    # )
     companyId: list[int] = Field(
         [],
         description="Alias for company.companyId (optional)",
@@ -319,11 +319,11 @@ class JobsAdditionalParams(ParametersModel):
     contactId: list[int] = Field(
         [], description="Contact Id (optional)", field_type=FieldType.QueryParam
     )
-    partnerAction: PartnerActionParams = Field(
-        PartnerActionParams(actionId=[], reference=[], stage=[], submittedAt=[]),
-        description="Partner action parameters (optional)",
-        field_type=FieldType.QueryParam,
-    )
+    # partnerAction: PartnerActionParams = Field(
+    #     PartnerActionParams(actionId=[], reference=[], stage=[], submittedAt=[]),
+    #     description="Partner action parameters (optional)",
+    #     field_type=FieldType.QueryParam,
+    # )
     statusId: list[int] = Field(
         [], description="Job status ID (optional)", field_type=FieldType.QueryParam
     )
