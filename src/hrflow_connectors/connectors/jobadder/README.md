@@ -37,7 +37,6 @@ This new connector will enable:
 - Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Jobadder**)
 
 # 🔌 Connector Actions
-
 <p align="center">
 
 | Action | Description |
@@ -45,6 +44,7 @@ This new connector will enable:
 | [**Pull profile list**](docs/pull_profile_list.md) | Retrieves profiles from Jobadder  and writes them to an Hrflow.ai source |
 | [**Push profile**](docs/push_profile.md) | Retrieves profiles from an Hrflow.ai source and writes them to Jobadder |
 | [**Pull job list**](docs/pull_job_list.md) | Retrieves jobs from Jobadder and writes them to an Hrflow.ai board  |
+
 
 </p>
 
