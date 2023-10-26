@@ -10008,7 +10008,7 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "HCM"
+      "type": "ATS"
     },
     {
       "name": "Bullhorn",
@@ -15821,7 +15821,7 @@
           "workflow_code_target_settings_prefix": "target_"
         }
       ],
-      "type": "Automation Tools"
+      "type": "Automation"
     },
     {
       "name": "Hubspot",
