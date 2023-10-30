@@ -2,6 +2,42 @@
 
 
 
+## v4.0.0 (2023-10-30)
+
+### Breaking
+
+* feat: connector must know contribute a logo
+
+BREAKING CHANGE: Each connector is now expected to have
+a logo in it&#39;s root directory ([`c67aef4`](https://github.com/Riminder/hrflow-connectors/commit/c67aef410a9e56b0672f08c0beedd17e7ba81f04))
+
+### Documentation
+
+* docs: update main readme ([`a355f68`](https://github.com/Riminder/hrflow-connectors/commit/a355f68dc6e799f5ac4bdb35062307d3cfab4710))
+
+### Feature
+
+* feat: enforce square logo and update non conforming logos ([`8919753`](https://github.com/Riminder/hrflow-connectors/commit/8919753eeeb67fd745f76bf886fb6f9304bb88c9))
+
+### Fix
+
+* fix: use square logo for tests and add test for square logo check ([`331fa37`](https://github.com/Riminder/hrflow-connectors/commit/331fa37c1d41815ba155516db8d08318b09ef41c))
+
+* fix: use lstat rather than state(follow_symlinks=False)
+follow_symlinks is only available from py3.10 ([`3f05814`](https://github.com/Riminder/hrflow-connectors/commit/3f05814dc8fca9f3267b718530b39d767a954e56))
+
+### Unknown
+
+* doc: update manifest with logo links ([`0fdd3a7`](https://github.com/Riminder/hrflow-connectors/commit/0fdd3a76a9165ba749a1c50e84a25ac64b7f36c7))
+
+* Adding logos to Connectors ([`79f1378`](https://github.com/Riminder/hrflow-connectors/commit/79f137841413c6a877651272fa7d74162bd8c633))
+
+* doc: update ConnectorType
+&#39;Automation Tools&#39; -&gt; &#39;Automation&#39;
+&#39;HCM Cloud&#39; -&gt; &#39;HCM&#39;
+Correct SAPSuccessFactors, Leboncoin, Twilio ... ([`bec76b4`](https://github.com/Riminder/hrflow-connectors/commit/bec76b4e8dd364549bdda6c2f69488bd00d62d84))
+
+
 ## v3.2.0 (2023-10-05)
 
 ### Ci
