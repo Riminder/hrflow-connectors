@@ -791,15 +791,10 @@ class ConnectorModel(BaseModel):
                 .format(self.name, logo)
             )
 
-        if (
-            width > MAX_LOGO_PIXEL
-            or width < MIN_LOGO_PIXEL
-            or height > MAX_LOGO_PIXEL
-            or height < MIN_LOGO_PIXEL
-        ):
+        if width != height or width > MAX_LOGO_PIXEL or width < MIN_LOGO_PIXEL:
             raise ValueError(
                 "Bad logo dimensions of ({}, {}) for connector {}. Logo should have"
-                " dimensions within range {min}x{min} {max}x{max}".format(
+                " square dimensions within range {min}x{min} {max}x{max}".format(
                     width,
                     height,
                     self.name,
