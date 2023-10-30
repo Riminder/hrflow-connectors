@@ -16,7 +16,7 @@ Salesforce, Inc. is an American cloud-based software company headquartered in Sa
 
 
 <p align="center">
-<image src=https://github.com/Riminder/hrflow-connectors/assets/65894619/0cfb32b6-876a-4f65-8d9d-2edb71efdcaf width=90% height=100% >
+<image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/a331919a-004b-4093-aadb-48ab688b177b width=90% height=100% >
 </p>
 
 # Prerequesit

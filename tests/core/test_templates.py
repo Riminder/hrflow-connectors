@@ -71,8 +71,8 @@ def with_smartleads():
     delattr(hrflow_connectors, "SmartLeads")
 
 
-def test_pull_workflow_code(with_smartleads):
-    action_manifest = SmartLeads.manifest()["actions"][0]
+def test_pull_workflow_code(with_smartleads, test_connectors_directory):
+    action_manifest = SmartLeads.manifest(test_connectors_directory)["actions"][0]
     assert action_manifest["name"] == "push_profile_list"
     assert action_manifest["trigger_type"] == "schedule"
     assert "workflow_code_event_parser_placeholder" not in action_manifest
@@ -111,8 +111,8 @@ def test_pull_workflow_code(with_smartleads):
     assert len(LEADS_DB[campaign_id]) == n_males
 
 
-def test_pull_workflow_code_with_format(with_smartleads):
-    action_manifest = SmartLeads.manifest()["actions"][0]
+def test_pull_workflow_code_with_format(with_smartleads, test_connectors_directory):
+    action_manifest = SmartLeads.manifest(test_connectors_directory)["actions"][0]
     assert action_manifest["name"] == "push_profile_list"
     assert action_manifest["trigger_type"] == "schedule"
     assert "workflow_code_event_parser_placeholder" not in action_manifest
@@ -174,8 +174,8 @@ def format(item):
     assert len(LEADS_DB[campaign_id]) == len(USERS_DB)
 
 
-def test_pull_workflow_code_with_logics(with_smartleads):
-    action_manifest = SmartLeads.manifest()["actions"][0]
+def test_pull_workflow_code_with_logics(with_smartleads, test_connectors_directory):
+    action_manifest = SmartLeads.manifest(test_connectors_directory)["actions"][0]
     assert action_manifest["name"] == "push_profile_list"
     assert action_manifest["trigger_type"] == "schedule"
     assert "workflow_code_event_parser_placeholder" not in action_manifest
@@ -241,8 +241,8 @@ logics = [logic]
     assert len(LEADS_DB[campaign_id]) == len(USERS_DB)
 
 
-def test_catch_workflow_code(with_smartleads):
-    action_manifest = SmartLeads.manifest()["actions"][1]
+def test_catch_workflow_code(with_smartleads, test_connectors_directory):
+    action_manifest = SmartLeads.manifest(test_connectors_directory)["actions"][1]
     assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
@@ -280,8 +280,8 @@ def test_catch_workflow_code(with_smartleads):
     assert len(LEADS_DB[campaign_id]) == n_males
 
 
-def test_catch_workflow_code_with_format(with_smartleads):
-    action_manifest = SmartLeads.manifest()["actions"][1]
+def test_catch_workflow_code_with_format(with_smartleads, test_connectors_directory):
+    action_manifest = SmartLeads.manifest(test_connectors_directory)["actions"][1]
     assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
@@ -343,8 +343,8 @@ def format(item):
     assert len(LEADS_DB[campaign_id]) == len(USERS_DB)
 
 
-def test_catch_workflow_code_with_logics(with_smartleads):
-    action_manifest = SmartLeads.manifest()["actions"][1]
+def test_catch_workflow_code_with_logics(with_smartleads, test_connectors_directory):
+    action_manifest = SmartLeads.manifest(test_connectors_directory)["actions"][1]
     assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
@@ -407,8 +407,10 @@ logics = [logic]
     assert len(LEADS_DB[campaign_id]) == len(USERS_DB)
 
 
-def test_catch_workflow_code_with_event_parser(with_smartleads):
-    action_manifest = SmartLeads.manifest()["actions"][1]
+def test_catch_workflow_code_with_event_parser(
+    with_smartleads, test_connectors_directory
+):
+    action_manifest = SmartLeads.manifest(test_connectors_directory)["actions"][1]
     assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
@@ -471,8 +473,10 @@ def event_parser(event):
     assert len(LEADS_DB[campaign_id]) == n_males
 
 
-def test_catch_workflow_code_with_default_event_parser(with_smartleads):
-    action_manifest = SmartLeads.manifest()["actions"][1]
+def test_catch_workflow_code_with_default_event_parser(
+    with_smartleads, test_connectors_directory
+):
+    action_manifest = SmartLeads.manifest(test_connectors_directory)["actions"][1]
     assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
@@ -505,7 +509,7 @@ def test_catch_workflow_code_with_default_event_parser(with_smartleads):
     assert result.events[Event.read_success] == len(USERS_DB)
     assert len(LEADS_DB[campaign_id]) == len(USERS_DB)
 
-    action_manifest = SmartLeads.manifest()["actions"][2]
+    action_manifest = SmartLeads.manifest(test_connectors_directory)["actions"][2]
     assert action_manifest["name"] == "push_job_list"
 
     campaign_id = "xxxx_withDefaultEventParser"
@@ -533,8 +537,10 @@ def test_catch_workflow_code_with_default_event_parser(with_smartleads):
     assert len(LEADS_DB[campaign_id]) == n_males
 
 
-def test_catch_workflow_code_with_event_parser_failure(with_smartleads):
-    action_manifest = SmartLeads.manifest()["actions"][1]
+def test_catch_workflow_code_with_event_parser_failure(
+    with_smartleads, test_connectors_directory
+):
+    action_manifest = SmartLeads.manifest(test_connectors_directory)["actions"][1]
     assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
@@ -574,8 +580,10 @@ def event_parser(event):
     assert len(LEADS_DB[campaign_id]) == 0
 
 
-def test_catch_workflow_code_with_no_workflow_id(with_smartleads):
-    action_manifest = SmartLeads.manifest()["actions"][1]
+def test_catch_workflow_code_with_no_workflow_id(
+    with_smartleads, test_connectors_directory
+):
+    action_manifest = SmartLeads.manifest(test_connectors_directory)["actions"][1]
     assert action_manifest["name"] == "push_profile"
     assert action_manifest["trigger_type"] == "hook"
     assert "workflow_code_event_parser_placeholder" in action_manifest
