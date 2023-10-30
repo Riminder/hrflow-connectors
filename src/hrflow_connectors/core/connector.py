@@ -777,7 +777,7 @@ class ConnectorModel(BaseModel):
                 " be present".format(self.name, logo_paths)
             )
         logo = logo_paths[0]
-        size = logo.stat(follow_symlinks=False).st_size
+        size = logo.lstat().st_size
         if size > MAX_LOGO_SIZE_BYTES:
             raise ValueError(
                 "Logo size {} KB for connector {} is above maximum limit of {} KB"
