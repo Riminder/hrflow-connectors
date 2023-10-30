@@ -2,6 +2,42 @@
 
 
 
+## v4.1.0 (2023-10-30)
+
+### Documentation
+
+* docs: correct picture of data exchange for salesforce connector (#189)
+
+Co-authored-by: the-forest-tree &lt;the-forest-tree@hrflow.ai&gt; ([`43734a9`](https://github.com/Riminder/hrflow-connectors/commit/43734a9aa36fd9e8a2052e8864fe614fae657109))
+
+### Feature
+
+* feat: new action types
+This is an empty commit to trigger new release of hrflow-connectors
+Original PR was merged using a Squash which bypassed the semantic-version
+rule of releasing depending on commit messages ([`16844d9`](https://github.com/Riminder/hrflow-connectors/commit/16844d97b8e34db04d88b662083af8b30f2c3ea7))
+
+### Unknown
+
+* Adding new actions &#39;pull_application_list&#39; and &#39;push_score_list&#39;.  (#184)
+
+* Adding new actions &#39;pull_application_list&#39; and &#39;push_score_list&#39;. They will be used to sync applications (profiles, jobs, statuses) and synchronize scores from HrFlow.ai to a target warehouse
+
+* style: apply black formatting
+
+* test: add new pull_application_list to coherence tests
+
+* fix: use random key for backend test to avoid failure in ci
+It seems that when running multiple ci run in the same time
+race condition can occur and one test can find the result of another
+running in the same time
+
+---------
+
+Co-authored-by: thomas &lt;thomas.zhu@hrflow.ai&gt;
+Co-authored-by: the-forest-tree &lt;the-forest-tree@hrflow.ai&gt; ([`df7d387`](https://github.com/Riminder/hrflow-connectors/commit/df7d3874bee3bf9d991f2d45b991330684ff6c0f))
+
+
 ## v4.0.0 (2023-10-30)
 
 ### Breaking
