@@ -15,6 +15,7 @@ import pytest
 from pydantic import BaseModel
 
 from hrflow_connectors.core import backend
+from tests.conftest import random_workflow_id
 
 
 @pytest.fixture
@@ -114,7 +115,7 @@ def test_localjson_store_bad_configuration(backend_restore):
 
 
 def test_localjson_store(backend_restore, tmp_path):
-    key = "xxx_TestLocalJson"
+    key = random_workflow_id()
     data = TestModel(key1="xxx", key2=3, key3=dict(test=True))
 
     with mock.patch.dict(
@@ -242,7 +243,7 @@ def test_s3_store_no_read_permission(backend_restore, s3_restore):
 
 @pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
 def test_s3_store(backend_restore, s3_restore):
-    key = "xxx_TestS3Store"
+    key = random_workflow_id()
     data = TestModel(key1="xxx", key2=3, key3=dict(test=True))
 
     with mock.patch.dict(
@@ -302,7 +303,7 @@ def test_s3_store_implicit_credentials(backend_restore, s3_restore):
 
 @pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
 def test_s3_store_prefix_working(backend_restore, s3_restore, s3_resource):
-    key = "xxx_TestS3StoreWithPrefix"
+    key = random_workflow_id()
     data = TestModel(key1="xxx", key2=3, key3=dict(test=True))
     prefix = "pytest"
 
