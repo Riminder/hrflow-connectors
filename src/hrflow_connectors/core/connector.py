@@ -389,10 +389,11 @@ class ConnectorAction(BaseModel):
     @validator("name", pre=False)
     def name_is_coherent_with_trigger_type(cls, v, values, **kwargs):
         if (
-            v in [
+            v
+            in [
                 ActionName.pull_application_list,
                 ActionName.pull_job_list,
-                ActionName.pull_profile_list
+                ActionName.pull_profile_list,
             ]
             and values["trigger_type"] != WorkflowType.pull
         ):
