@@ -19,6 +19,7 @@ from hrflow_connectors.connectors.talentsoft import TalentSoft
 from hrflow_connectors.connectors.teamtailor import Teamtailor
 from hrflow_connectors.connectors.waalaxy import Waalaxy
 from hrflow_connectors.connectors.workable import Workable
+from hrflow_connectors.connectors.zoho import Zoho
 from hrflow_connectors.core import backend
 from hrflow_connectors.core.connector import hrflow_connectors_manifest  # noqa
 from hrflow_connectors.core.documentation import generate_docs  # noqa
