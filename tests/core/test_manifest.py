@@ -126,10 +126,11 @@ MIDDLE_SIZE = (MIN_LOGO_PIXEL + MAX_LOGO_PIXEL) // 2
         (MIN_LOGO_PIXEL - 1, MAX_LOGO_PIXEL + 1),
         (MAX_LOGO_PIXEL + 1, MAX_LOGO_PIXEL + 1),
         (MIN_LOGO_PIXEL - 1, MIN_LOGO_PIXEL - 1),
+        (MAX_LOGO_PIXEL - 1, MAX_LOGO_PIXEL - 2),
     ],
 )
 def test_manifest_logo_bad_dimension(test_connectors_directory, shape):
-    original = Image.open(test_connectors_directory / "smartleads" / "logo.png")
+    original = Image.open(test_connectors_directory / "smartleads" / "logo.jpeg")
     with tempfile.NamedTemporaryFile(
         "wb",
         buffering=0,
