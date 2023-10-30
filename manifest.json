@@ -4252,7 +4252,7 @@
         }
       ],
       "type": "HCM",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/talentsoft/logo.webp"
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/talentsoft/logo.jpeg"
     },
     {
       "name": "PoleEmploi",
@@ -8586,7 +8586,7 @@
         }
       ],
       "type": "HCM",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/workable/logo.png"
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/workable/logo.jpeg"
     },
     {
       "name": "BreezyHR",
@@ -10889,7 +10889,7 @@
         }
       ],
       "type": "ATS",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/sapsuccessfactors/logo.jpg"
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/sapsuccessfactors/logo.jpeg"
     },
     {
       "name": "Bullhorn",
@@ -12998,7 +12998,7 @@
         }
       ],
       "type": "ATS",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/bullhorn/logo.jpg"
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/bullhorn/logo.jpeg"
     },
     {
       "name": "Ceridian",
@@ -14932,7 +14932,7 @@
         }
       ],
       "type": "ATS",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/greenhouse/logo.png"
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/greenhouse/logo.jpeg"
     },
     {
       "name": "Teamtailor",
@@ -17450,7 +17450,7 @@
         }
       ],
       "type": "CRM",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/hubspot/logo.png"
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/hubspot/logo.jpeg"
     },
     {
       "name": "Taleez",
@@ -21928,7 +21928,7 @@
         }
       ],
       "type": "CRM",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/salesforce/logo.png"
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/salesforce/logo.jpeg"
     }
   ]
 }
