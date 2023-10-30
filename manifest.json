@@ -23271,7 +23271,7 @@
 				}
 			],
 			"type": "CRM",
-           "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/zoho/logo.jpeg"
+                        "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/zoho/logo.jpeg"
 		}
 	]
 }
