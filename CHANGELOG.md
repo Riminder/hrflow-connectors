@@ -2,6 +2,78 @@
 
 
 
+## v4.1.0 (2023-10-30)
+
+### Documentation
+
+* docs: correct picture of data exchange for salesforce connector (#189)
+
+Co-authored-by: the-forest-tree &lt;the-forest-tree@hrflow.ai&gt; ([`43734a9`](https://github.com/Riminder/hrflow-connectors/commit/43734a9aa36fd9e8a2052e8864fe614fae657109))
+
+### Feature
+
+* feat: new action types
+This is an empty commit to trigger new release of hrflow-connectors
+Original PR was merged using a Squash which bypassed the semantic-version
+rule of releasing depending on commit messages ([`16844d9`](https://github.com/Riminder/hrflow-connectors/commit/16844d97b8e34db04d88b662083af8b30f2c3ea7))
+
+### Unknown
+
+* Adding new actions &#39;pull_application_list&#39; and &#39;push_score_list&#39;.  (#184)
+
+* Adding new actions &#39;pull_application_list&#39; and &#39;push_score_list&#39;. They will be used to sync applications (profiles, jobs, statuses) and synchronize scores from HrFlow.ai to a target warehouse
+
+* style: apply black formatting
+
+* test: add new pull_application_list to coherence tests
+
+* fix: use random key for backend test to avoid failure in ci
+It seems that when running multiple ci run in the same time
+race condition can occur and one test can find the result of another
+running in the same time
+
+---------
+
+Co-authored-by: thomas &lt;thomas.zhu@hrflow.ai&gt;
+Co-authored-by: the-forest-tree &lt;the-forest-tree@hrflow.ai&gt; ([`df7d387`](https://github.com/Riminder/hrflow-connectors/commit/df7d3874bee3bf9d991f2d45b991330684ff6c0f))
+
+
+## v4.0.0 (2023-10-30)
+
+### Breaking
+
+* feat: connector must know contribute a logo
+
+BREAKING CHANGE: Each connector is now expected to have
+a logo in it&#39;s root directory ([`c67aef4`](https://github.com/Riminder/hrflow-connectors/commit/c67aef410a9e56b0672f08c0beedd17e7ba81f04))
+
+### Documentation
+
+* docs: update main readme ([`a355f68`](https://github.com/Riminder/hrflow-connectors/commit/a355f68dc6e799f5ac4bdb35062307d3cfab4710))
+
+### Feature
+
+* feat: enforce square logo and update non conforming logos ([`8919753`](https://github.com/Riminder/hrflow-connectors/commit/8919753eeeb67fd745f76bf886fb6f9304bb88c9))
+
+### Fix
+
+* fix: use square logo for tests and add test for square logo check ([`331fa37`](https://github.com/Riminder/hrflow-connectors/commit/331fa37c1d41815ba155516db8d08318b09ef41c))
+
+* fix: use lstat rather than state(follow_symlinks=False)
+follow_symlinks is only available from py3.10 ([`3f05814`](https://github.com/Riminder/hrflow-connectors/commit/3f05814dc8fca9f3267b718530b39d767a954e56))
+
+### Unknown
+
+* doc: update manifest with logo links ([`0fdd3a7`](https://github.com/Riminder/hrflow-connectors/commit/0fdd3a76a9165ba749a1c50e84a25ac64b7f36c7))
+
+* Adding logos to Connectors ([`79f1378`](https://github.com/Riminder/hrflow-connectors/commit/79f137841413c6a877651272fa7d74162bd8c633))
+
+* doc: update ConnectorType
+&#39;Automation Tools&#39; -&gt; &#39;Automation&#39;
+&#39;HCM Cloud&#39; -&gt; &#39;HCM&#39;
+Correct SAPSuccessFactors, Leboncoin, Twilio ... ([`bec76b4`](https://github.com/Riminder/hrflow-connectors/commit/bec76b4e8dd364549bdda6c2f69488bd00d62d84))
+
+
 ## v3.2.0 (2023-10-05)
 
 ### Ci
