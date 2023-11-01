@@ -87,7 +87,8 @@ def read_jobs(
                 yield job
             jobs_list_url = result["link"]
         else:
-            raise Exception("Error in fetching jobs")
+            adapter.error("Error in fetching jobs")
+            break
 
 
 FreshTeamJobWarehouse = Warehouse(
