@@ -274,7 +274,7 @@ class JobadderCandidate(BaseModel):
     links: dict
 
 
-# class PartnerActionParams(BaseModel):
+# class PartnerActionParams(ParametersModel):
 #     actionId: list[str] = Field(
 #         [], description="Unique identifier for partner actions (optional)"
 #     )
@@ -292,7 +292,7 @@ class JobadderCandidate(BaseModel):
 #     )
 
 
-# class CompanyParams(BaseModel):
+# class CompanyParams(ParametersModel):
 #     companyId: list[int] = Field([], description="Companies by Id (optional)")
 #     name: str = Field(None, description="Company name (optional)")
 

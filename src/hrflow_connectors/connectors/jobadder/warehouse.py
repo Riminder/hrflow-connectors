@@ -187,7 +187,6 @@ def read_jobs(
             adapter.error(
                 f"Failed to fetch job {job_id} from Jobadder: {response.text}"
             )
-            break
 
 
 def read_candidates(
@@ -254,7 +253,6 @@ def read_candidates(
                 f"Failed to fetch candidate {candidate_id} from Jobadder:"
                 f" {response.text}"
             )
-            break
 
 
 def write_profiles(
@@ -282,6 +280,34 @@ def write_profiles(
                 f"Pushed profile(reference={profile['reference']}, id={profile['id']})"
                 " to Jobadder"
             )
+        elif response.status_code == 401 or response.status_code == 403:
+            token, refresh_token = get_or_refresh_tokens(
+				parameters.authorization_url,
+				parameters.redirect_uri,
+				parameters.client_id,
+				parameters.client_secret,
+				"refresh_token",
+				refresh_token=refresh_token,
+			)
+            if token:
+                headers = {"Authorization": f"Bearer {token}"}
+                response = requests.post(
+					CANDIDATE_ENDPOINT, json=profile, headers=headers
+				)
+                if response.status_code == 200:
+                    adapter.info(
+						f"Pushed profile(reference={profile['reference']},"
+						f" id={profile['id']}) to Jobadder"
+					)
+                else:
+                    adapter.error(
+						f"Failed to push profile(reference={profile['reference']},"
+						f" id={profile['id']}) to Jobadder with error={response.text}"
+					)
+                    failed.append(profile)
+            else:
+                adapter.error("Token refresh failed.")
+                failed.append(profile)
         else:
             adapter.error(
                 f"Failed to push profile(reference={profile['reference']},"
