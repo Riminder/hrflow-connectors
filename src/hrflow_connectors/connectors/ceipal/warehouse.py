@@ -15,8 +15,6 @@ from hrflow_connectors.core import (
     WarehouseReadAction,
 )
 
-MAX_ITERATIONS = 10
-
 
 class BaseParameters(ParametersModel):
     email: str = Field(
@@ -200,8 +198,7 @@ def read_jobs(
         "sortby": parameters.sortby,
         "assigned_recruiter": parameters.assigned_recruiter,
     }
-    iterations = 0
-    while iterations < MAX_ITERATIONS:
+    while True:
         response = requests.get(jobs_list_url, headers=headers, params=params)
         if response.status_code == 200:
             result = response.json()
@@ -210,12 +207,12 @@ def read_jobs(
             for job in result:
                 yield job
             params["offset"] += parameters.limit
-            iterations += 1  # Increment the iteration count
         elif response.status_code == 403:
             token = refresh_token(refresh_token)
             headers["Authorization"] = f"Bearer {token}"  # Update the token in headers
         else:
-            raise Exception("Error in fetching jobs")
+            adapter.error("Error in fetching jobs")
+            break
 
 
 def refresh_token(refresh_token: str):
@@ -247,8 +244,7 @@ def read_applicants(
         "sortorder": parameters.sortorder,
         "sortby": parameters.sortby,
     }
-    iterations = 0
-    while iterations < MAX_ITERATIONS:
+    while True:
         response = requests.get(applicants_list_url, headers=headers, params=params)
         if response.status_code == 200:
             result = response.json()
@@ -257,12 +253,12 @@ def read_applicants(
             for applicant in result:
                 yield applicant
             params["offset"] += parameters.limit
-            iterations += 1  # Increment the iteration count
         elif response.status_code == 403:
             token = refresh_token(refresh_token)
             headers["Authorization"] = f"Bearer {token}"  # Update the token in headers
         else:
-            raise Exception("Error in fetching applicants")
+            adapter.error("Error in fetching applicants")
+            break
 
 
 def get_access_token(parameters: BaseParameters):
