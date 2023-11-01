@@ -282,28 +282,28 @@ def write_profiles(
             )
         elif response.status_code == 401 or response.status_code == 403:
             token, refresh_token = get_or_refresh_tokens(
-				parameters.authorization_url,
-				parameters.redirect_uri,
-				parameters.client_id,
-				parameters.client_secret,
-				"refresh_token",
-				refresh_token=refresh_token,
-			)
+                parameters.authorization_url,
+                parameters.redirect_uri,
+                parameters.client_id,
+                parameters.client_secret,
+                "refresh_token",
+                refresh_token=refresh_token,
+            )
             if token:
                 headers = {"Authorization": f"Bearer {token}"}
                 response = requests.post(
-					CANDIDATE_ENDPOINT, json=profile, headers=headers
-				)
+                    CANDIDATE_ENDPOINT, json=profile, headers=headers
+                )
                 if response.status_code == 200:
                     adapter.info(
-						f"Pushed profile(reference={profile['reference']},"
-						f" id={profile['id']}) to Jobadder"
-					)
+                        f"Pushed profile(reference={profile['reference']},"
+                        f" id={profile['id']}) to Jobadder"
+                    )
                 else:
                     adapter.error(
-						f"Failed to push profile(reference={profile['reference']},"
-						f" id={profile['id']}) to Jobadder with error={response.text}"
-					)
+                        f"Failed to push profile(reference={profile['reference']},"
+                        f" id={profile['id']}) to Jobadder with error={response.text}"
+                    )
                     failed.append(profile)
             else:
                 adapter.error("Token refresh failed.")
