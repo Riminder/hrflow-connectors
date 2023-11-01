@@ -11,7 +11,9 @@ import warnings
 from collections import Counter
 from datetime import datetime
 from functools import partial
+from pathlib import Path
 
+from PIL import Image, UnidentifiedImageError
 from pydantic import (
     BaseModel,
     Field,
@@ -25,6 +27,14 @@ from hrflow_connectors.core import backend
 from hrflow_connectors.core.templates import Templates
 from hrflow_connectors.core.warehouse import ReadMode, Warehouse
 
+HRFLOW_CONNECTORS_RAW_GITHUB_CONTENT_BASE = (
+    "https://raw.githubusercontent.com/Riminder/hrflow-connectors"
+)
+CONNECTORS_DIRECTORY = Path(__file__).parent.parent / "connectors"
+KB = 1024
+MAX_LOGO_SIZE_BYTES = 100 * KB
+MAX_LOGO_PIXEL = 150
+MIN_LOGO_PIXEL = 34
 logger = logging.getLogger(__name__)
 
 
@@ -290,6 +300,7 @@ class WorkflowType(str, enum.Enum):
 
 
 class ActionName(str, enum.Enum):
+    pull_application_list = "pull_application_list"
     pull_job_list = "pull_job_list"
     pull_profile_list = "pull_profile_list"
     pull_resume_attachment_list = "pull_resume_attachment_list"
@@ -297,6 +308,7 @@ class ActionName(str, enum.Enum):
     push_job = "push_job"
     push_profile_list = "push_profile_list"
     push_job_list = "push_job_list"
+    push_score_list = "push_score_list"
     catch_profile = "catch_profile"
     catch_job = "catch_job"
     # TalentSoft actions
@@ -377,11 +389,17 @@ class ConnectorAction(BaseModel):
     @validator("name", pre=False)
     def name_is_coherent_with_trigger_type(cls, v, values, **kwargs):
         if (
-            v in [ActionName.pull_job_list, ActionName.pull_profile_list]
+            v
+            in [
+                ActionName.pull_application_list,
+                ActionName.pull_job_list,
+                ActionName.pull_profile_list,
+            ]
             and values["trigger_type"] != WorkflowType.pull
         ):
             raise ValueError(
-                "`pull_job_list` and `pull_profile_list` are only available for"
+                "`pull_application_list`, `pull_job_list` and `pull_profile_list`"
+                " are only available for"
                 " trigger_type={}".format(WorkflowType.pull)
             )
         return v
@@ -747,6 +765,56 @@ class ConnectorModel(BaseModel):
     type: ConnectorType
     actions: t.List[ConnectorAction]
 
+    def logo(self, connectors_directory: Path) -> str:
+        connector_directory = connectors_directory / self.name.lower()
+        if not connector_directory.is_dir():
+            raise ValueError(
+                "No directory found for connector {} in {}".format(
+                    self.name, connector_directory
+                )
+            )
+        logo_paths = list(connector_directory.glob("logo.*"))
+        if len(logo_paths) == 0:
+            raise ValueError(
+                "Missing logo for connector {}. Add a logo file at {} named"
+                " 'logo.(png|jpeg|...)'".format(self.name, connector_directory)
+            )
+        elif len(logo_paths) > 1:
+            raise ValueError(
+                "Found multiple logos for connector {} => {}. Only a single one should"
+                " be present".format(self.name, logo_paths)
+            )
+        logo = logo_paths[0]
+        size = logo.lstat().st_size
+        if size > MAX_LOGO_SIZE_BYTES:
+            raise ValueError(
+                "Logo size {} KB for connector {} is above maximum limit of {} KB"
+                .format(size // KB, self.name, MAX_LOGO_SIZE_BYTES // KB)
+            )
+        try:
+            width, height = Image.open(logo).size
+        except UnidentifiedImageError:
+            raise ValueError(
+                "Logo file for connector {} at {} doesn't seem to be a valid image"
+                .format(self.name, logo)
+            )
+
+        if width != height or width > MAX_LOGO_PIXEL or width < MIN_LOGO_PIXEL:
+            raise ValueError(
+                "Bad logo dimensions of ({}, {}) for connector {}. Logo should have"
+                " square dimensions within range {min}x{min} {max}x{max}".format(
+                    width,
+                    height,
+                    self.name,
+                    min=MIN_LOGO_PIXEL,
+                    max=MAX_LOGO_PIXEL,
+                )
+            )
+        return "{}/master/src/{}".format(
+            HRFLOW_CONNECTORS_RAW_GITHUB_CONTENT_BASE,
+            str(logo).split("src/")[1],
+        )
+
     def action_by_name(self, action_name: str) -> t.Optional[ConnectorAction]:
         if "__actions_by_name" not in self.__dict__:
             self.__dict__["__actions_by_name"] = {
@@ -825,9 +893,14 @@ class Connector:
         )
         return connector
 
-    def manifest(self) -> t.Dict:
+    def manifest(self, connectors_directory: Path) -> t.Dict:
         model = self.model
-        manifest = dict(name=model.name, actions=[], type=model.type.value)
+        manifest = dict(
+            name=model.name,
+            actions=[],
+            type=model.type.value,
+            logo=model.logo(connectors_directory=connectors_directory),
+        )
         for action in model.actions:
             format_placeholder = action.WORKFLOW_FORMAT_PLACEHOLDER
             logics_placeholder = action.WORKFLOW_LOGICS_PLACEHOLDER
@@ -864,7 +937,9 @@ class Connector:
 
 
 def hrflow_connectors_manifest(
-    connectors: t.List[Connector], directory_path: str = "."
+    connectors: t.List[Connector],
+    directory_path: str = ".",
+    connectors_directory: Path = CONNECTORS_DIRECTORY,
 ) -> None:
     with warnings.catch_warnings():
         warnings.filterwarnings(
@@ -874,7 +949,10 @@ def hrflow_connectors_manifest(
         )
         manifest = dict(
             name="HrFlow.ai Connectors",
-            connectors=[connector.manifest() for connector in connectors],
+            connectors=[
+                connector.manifest(connectors_directory=connectors_directory)
+                for connector in connectors
+            ],
         )
     with open("{}/manifest.json".format(directory_path), "w") as f:
         f.write(json.dumps(manifest, indent=2))

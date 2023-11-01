@@ -21039,7 +21039,8 @@
 					"workflow_code_target_settings_prefix": "target_"
 				}
 			],
-			"type": "CRM"
+			"type": "CRM",       
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/salesforce/logo.jpeg
 		},
 		{
 			"name": "Jobadder",
@@ -24556,4 +24557,6 @@
 			"logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobadder/logo.png"
 		}
 	]
+    }
+  ]
 }
