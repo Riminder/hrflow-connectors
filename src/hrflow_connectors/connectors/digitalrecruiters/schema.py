@@ -148,7 +148,7 @@ class Location(BaseModel):
 class ContractItem(BaseModel):
     id: int
     name: str
-    countryNodeIds: t.Optional[List[int]]
+    countryNodeIds: t.Optional[t.List[int]]
 
 
 class JobReference(BaseModel):
