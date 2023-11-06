@@ -1,5 +1,6 @@
 import typing as t
 from logging import LoggerAdapter
+from requests import exceptions
 
 import requests
 from pydantic import Field, HttpUrl
@@ -28,13 +29,13 @@ DIGITAL_RECRUITERS_READ_PROFILES_ENDPOINT = "{url_environnement}/public/v1/{endp
 
 
 class ReadJobsParameters(ParametersModel):
-    digital_recruiters_token: str = Field(
+    token: str = Field(
         ...,
         description="Digital Recruiters API token.",
         repr=False,
         field_type=FieldType.Auth,
     )
-    digital_recruiters_environment_url: str = Field(
+    environment_url: str = Field(
         ...,
         description="Digital Recruiters API url environnement.",
         repr=False,
@@ -61,7 +62,7 @@ class ReadProfileParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-    url_environment: HttpUrl = Field(
+    environment_url: HttpUrl = Field(
         ...,
         description="URL environment for the API",
         repr=False,
@@ -96,13 +97,13 @@ class ReadProfileParameters(ParametersModel):
 
 
 class WriteProfilesParameters(ParametersModel):
-    digital_recruiters_token: str = Field(
+    token: str = Field(
         ...,
         description="Digital Recruiters API token.",
         repr=False,
         field_type=FieldType.Auth,
     )
-    digital_recruiters_environment_url: str = Field(
+    environment_url: str = Field(
         ...,
         description="Digital Recruiters API url environnement.",
         repr=False,
@@ -123,7 +124,7 @@ class WriteProfilesParameters(ParametersModel):
 
 
 def get_initial_token(params: ReadProfileParameters):
-    url = f"{params.url_environment}/public/v1/users/login"
+    url = f"{params.environment_url}/public/v1/users/login"
     headers = {"Content-Type": "application/json", "X-DR-API-KEY": params.api_key}
     payload = {"username": params.username, "password": params.password}
 
@@ -131,12 +132,12 @@ def get_initial_token(params: ReadProfileParameters):
 
     if response.status_code == 200:
         return response.json()["token"], response.json()["refresh_token"]
-    else:
-        return None, None
+    raise Exception(f"Failed to get token from Digitial Recruiters API with status_code={response.status_code} and message={response.text}")
+
 
 
 def refresh_token(params: ReadProfileParameters, refresh_token: str):
-    url = f"{params.url_environment}/public/v1/users/refresh"
+    url = f"{params.environment_url}/public/v1/users/refresh"
 
     headers = {"Content-Type": "application/json", "X-DR-API-KEY": params.api_key}
 
@@ -146,12 +147,11 @@ def refresh_token(params: ReadProfileParameters, refresh_token: str):
 
     if response.status_code == 200:
         return response.json()["token"], response.json()["refresh_token"]
-    else:
-        return None
+    raise Exception(f"Failed to refresh token from Digitial Recruiters API with status_code={response.status_code} and message={response.text}")
 
 
 def get_candidates(params: ReadProfileParameters, token):
-    url = f"{params.url_environment}/job-applications/detailed"
+    url = f"{params.environment_url}/job-applications/detailed"
 
     headers = {
         "Content-Type": "application/json",
@@ -164,8 +164,9 @@ def get_candidates(params: ReadProfileParameters, token):
     if response.status_code == 200:
         data = response.json()["data"]
         return data.get("items", []), data.get("links", {}).get("next")
-    else:
-        return [], None
+    elif response.status_code == 401:
+        raise TokenExpiredError(response.text)
+    raise Exception(f"Failed to get candidates from Digitial Recruiters API with status_code={response.status_code} and message={response.text}")
 
 
 def fetch_and_add_resume(candidate, token):
@@ -180,25 +181,12 @@ def fetch_and_add_resume(candidate, token):
                 "content_type": response.headers.get("Content-Type"),
             }
             candidate["resume"] = resume_info
+        elif response.status_code == 401:
+            raise TokenExpiredError(response.text)
+        else:
+            candidate["resume"] = {"raw": None, "content_type": None}
     return candidate
 
-
-def remove_trailing_slash(url: str) -> str:
-    """
-    Check if the given URL ends with a slash. If yes,
-    remove the slash and return the modified URL.
-    If not, return the original URL.
-
-    Args:
-        url (str): The URL to check.
-
-    Returns:
-        str: The modified URL without the trailing slash
-        if it had one, otherwise the original URL.
-    """
-    if url.endswith("/"):
-        return url[:-1]
-    return url
 
 
 def read_jobs(
@@ -207,18 +195,15 @@ def read_jobs(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-    DR_JOB_URL = remove_trailing_slash(parameters.digital_recruiters_environment_url)
+    DR_JOB_URL = parameters.environment_url.rstrip("/")
     url = DIGITAL_RECRUITERS_JOBS_ENDPOINT.format(
-        url_environnement=DR_JOB_URL, token=parameters.digital_recruiters_token
+        url_environnement=DR_JOB_URL, token=parameters.token
     )
-    adapter.info("Pulling jobs from Digital Recruiters")
     response = requests.get(url)
     if response.status_code != 200:
-        adapter.error(
-            "Failed to pull jobs from Digital Recruiters. Status code:"
-            f" {response.status_code}."
-        )
-        return
+        raise Exception(
+			f"Failed to get jobs from Digital Recruiters API with status_code={response.status_code} and message={response.text}"
+		)
     jobs = response.json().get("ads", [])
     adapter.info(f"Found {len(jobs)} jobs in Digital Recruiters.")
     if not jobs:
@@ -248,8 +233,8 @@ def read_profiles(
                 for candidate in candidates:
                     candidate = fetch_and_add_resume(candidate, token)
                     yield candidate
-            except Exception as e:
-                adapter.info("Token expired. error: %s", e)
+            except exceptions.TokenExpiredException as e:
+                adapter.info("Token expired. Error: %s", e)
                 refreshed_token, refresh_token = refresh_token(params, refresh_token)
                 if refreshed_token:
                     token = refreshed_token
@@ -263,11 +248,9 @@ def write(
     parameters: WriteProfilesParameters,
     profiles: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
-    DR_PROFILES_URL = remove_trailing_slash(
-        parameters.digital_recruiters_environment_url
-    )
+    DR_PROFILES_URL = parameters.environment_url.rstrip("/")
     url = DIGITAL_RECRUITERS_WRITE_PROFILES_ENDPOINT.format(
-        url_environnement=DR_PROFILES_URL, token=parameters.digital_recruiters_token
+        url_environnement=DR_PROFILES_URL, token=parameters.token
     )
 
     failed_profiles = []

@@ -1,21 +1,21 @@
+import typing as t
 from datetime import datetime
-from typing import Dict, List, Optional
 
 from pydantic import BaseModel, HttpUrl
 
 
 class ContractDuration(BaseModel):
-    min: Optional[int]
-    max: Optional[int]
+    min: t.Optional[int]
+    max: t.Optional[int]
 
 
 class Salary(BaseModel):
-    min: Optional[int]
-    max: Optional[int]
-    kind: Optional[str]
-    rate_type: Optional[str]
-    variable: Optional[str]
-    currency: Optional[str]
+    min: t.Optional[int]
+    max: t.Optional[int]
+    kind: t.Optional[str]
+    rate_type: t.Optional[str]
+    variable: t.Optional[str]
+    currency: t.Optional[str]
 
 
 class AddressParts(BaseModel):
@@ -30,13 +30,13 @@ class AddressParts(BaseModel):
 class Address(BaseModel):
     parts: AddressParts
     formatted: str
-    position: Dict[str, str]
+    position: t.Dict[str, str]
 
 
 class Manager(BaseModel):
     section_title: str
     section_body: str
-    picture_url: Optional[str]
+    picture_url: t.Optional[str]
     firstname: str
     lastname: str
     position: str
@@ -54,13 +54,13 @@ class Entity(BaseModel):
     around: str
     address: Address
     manager: Manager
-    hierarchy: List[Hierarchy]
+    hierarchy: t.List[Hierarchy]
 
 
 class ReferentRecruiter(BaseModel):
     firstname: str
     lastname: str
-    picture_url: Optional[str]
+    picture_url: t.Optional[str]
 
 
 class Brand(BaseModel):
@@ -90,18 +90,18 @@ class DigitalRecruitersJob(BaseModel):
     title: str
     description: str
     profile: str
-    skills: List[str]
+    skills: t.List[str]
     salary: Salary
-    pictures: List[str]
-    videos: List[str]
-    internal_apply_url: Optional[str]
-    apply_url: Optional[str]
+    pictures: t.List[str]
+    videos: t.List[str]
+    internal_apply_url: t.Optional[str]
+    apply_url: t.Optional[str]
     address: Address
     entity: Entity
     referent_recruiter: ReferentRecruiter
     brand: Brand
-    custom_fields: List[CustomField]
-    count_recruited: Optional[str]
+    custom_fields: t.List[CustomField]
+    count_recruited: t.Optional[str]
 
 
 class DigitalRecruitersCandidateProfile(BaseModel):
@@ -109,11 +109,11 @@ class DigitalRecruitersCandidateProfile(BaseModel):
     firstName: str
     lastName: str
     email: str
-    phoneNumber: Optional[str] = None
-    job: Optional[str] = None
-    addressStreet: Optional[str] = None
-    addressZip: Optional[str] = None
-    addressCity: Optional[str] = None
+    phoneNumber: t.Optional[str] = None
+    job: t.Optional[str] = None
+    addressStreet: t.Optional[str] = None
+    addressZip: t.Optional[str] = None
+    addressCity: t.Optional[str] = None
 
 
 class DigitalRecruitersImportCandidateMessage(BaseModel):
@@ -132,23 +132,23 @@ class DigitalRecruitersWriteProfile(BaseModel):
     locale: str
     ApplicationMessage: DigitalRecruitersImportCandidateMessage
     ApplicationProfile: DigitalRecruitersCandidateProfile
-    file: Optional[DigitalRecruitersImportCandidateFile] = None
+    file: t.Optional[DigitalRecruitersImportCandidateFile] = None
 
 
 class Location(BaseModel):
     zip: str
     city: str
-    county: Optional[str]
-    state: Optional[str]
+    county: t.Optional[str]
+    state: t.Optional[str]
     country: str
-    latitude: Optional[float]
-    longitude: Optional[float]
+    latitude: t.Optional[float]
+    longitude: t.Optional[float]
 
 
 class ContractItem(BaseModel):
     id: int
     name: str
-    countryNodeIds: Optional[List[int]]
+    countryNodeIds: t.Optional[List[int]]
 
 
 class JobReference(BaseModel):
@@ -158,7 +158,7 @@ class JobReference(BaseModel):
 
 class Privacy(BaseModel):
     status: str
-    updatedAt: Optional[datetime]
+    updatedAt: t.Optional[datetime]
 
 
 class Avatar(BaseModel):
@@ -189,4 +189,4 @@ class DigitalRecruitersReadProfile(BaseModel):
     jobReference: JobReference
     privacy: Privacy
     cv: CV
-    resume: Optional[Resume]
+    resume: t.Optional[Resume]
