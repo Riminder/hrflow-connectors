@@ -1,6 +1,5 @@
 import typing as t
 from logging import LoggerAdapter
-from requests import exceptions
 
 import requests
 from pydantic import Field, HttpUrl
@@ -150,22 +149,22 @@ def refresh_token(params: ReadProfileParameters, refresh_token: str):
     raise Exception(f"Failed to refresh token from Digitial Recruiters API with status_code={response.status_code} and message={response.text}")
 
 
-def get_candidates(params: ReadProfileParameters, token):
-    url = f"{params.environment_url}/job-applications/detailed"
+def get_candidates(url,params: ReadProfileParameters, token):
 
     headers = {
         "Content-Type": "application/json",
         "X-DR-API-KEY": params.api_key,
         "Authorization": f"Bearer {token}",
     }
-
-    response = requests.get(url, headers=headers, params=params.dict())
+    
+    params_dict = dict(jobAd=params.jobAd,sort=params.sort,limit=params.limit,page=params.page)
+    response = requests.get(url, headers=headers, params=params_dict)
 
     if response.status_code == 200:
         data = response.json()["data"]
         return data.get("items", []), data.get("links", {}).get("next")
     elif response.status_code == 401:
-        raise TokenExpiredError(response.text)
+        raise requests.exceptions.TokenExpiredException(response.text)
     raise Exception(f"Failed to get candidates from Digitial Recruiters API with status_code={response.status_code} and message={response.text}")
 
 
@@ -182,7 +181,7 @@ def fetch_and_add_resume(candidate, token):
             }
             candidate["resume"] = resume_info
         elif response.status_code == 401:
-            raise TokenExpiredError(response.text)
+            raise requests.exceptions.TokenExpiredException(response.text)
         else:
             candidate["resume"] = {"raw": None, "content_type": None}
     return candidate
@@ -222,18 +221,20 @@ def read_profiles(
     token, refresh_token = get_initial_token(params)
 
     if token:
-        next_page_link = True  # Assume there's at least one page to fetch
-        while next_page_link:
+        next_page_link = f"{params.environment_url}/job-applications/detailed"
+        while True:
             try:
-                candidates, next_page_link = get_candidates(params, token)
+                url = next_page_link
+                candidates, next_page_link = get_candidates(url,params, token)
 
                 if not candidates:
                     break
-
+                if next_page_link is None:
+                    break
                 for candidate in candidates:
                     candidate = fetch_and_add_resume(candidate, token)
                     yield candidate
-            except exceptions.TokenExpiredException as e:
+            except  requests.exceptions.TokenExpiredException as e:
                 adapter.info("Token expired. Error: %s", e)
                 refreshed_token, refresh_token = refresh_token(params, refresh_token)
                 if refreshed_token:
@@ -256,13 +257,12 @@ def write(
     failed_profiles = []
 
     for profile in profiles:
-        json_data = profile
-        json_data["reference"] = parameters.job_reference
-        json_data["ApplicationMessage"] = dict(
+        profile["reference"] = parameters.job_reference
+        profile["ApplicationMessage"] = dict(
             message=parameters.message  # Candidate Message
         )
         try:
-            response = requests.post(url, json=json_data)
+            response = requests.post(url, json=profile)
             response.raise_for_status()
 
             if response.status_code == 201:
