@@ -131,8 +131,10 @@ def get_initial_token(params: ReadProfileParameters):
 
     if response.status_code == 200:
         return response.json()["token"], response.json()["refresh_token"]
-    raise Exception(f"Failed to get token from Digitial Recruiters API with status_code={response.status_code} and message={response.text}")
-
+    raise Exception(
+        "Failed to get token from Digitial Recruiters API with"
+        f" status_code={response.status_code} and message={response.text}"
+    )
 
 
 def refresh_token(params: ReadProfileParameters, refresh_token: str):
@@ -146,18 +148,22 @@ def refresh_token(params: ReadProfileParameters, refresh_token: str):
 
     if response.status_code == 200:
         return response.json()["token"], response.json()["refresh_token"]
-    raise Exception(f"Failed to refresh token from Digitial Recruiters API with status_code={response.status_code} and message={response.text}")
+    raise Exception(
+        "Failed to refresh token from Digitial Recruiters API with"
+        f" status_code={response.status_code} and message={response.text}"
+    )
 
 
-def get_candidates(url,params: ReadProfileParameters, token):
-
+def get_candidates(url, params: ReadProfileParameters, token):
     headers = {
         "Content-Type": "application/json",
         "X-DR-API-KEY": params.api_key,
         "Authorization": f"Bearer {token}",
     }
-    
-    params_dict = dict(jobAd=params.jobAd,sort=params.sort,limit=params.limit,page=params.page)
+
+    params_dict = dict(
+        jobAd=params.jobAd, sort=params.sort, limit=params.limit, page=params.page
+    )
     response = requests.get(url, headers=headers, params=params_dict)
 
     if response.status_code == 200:
@@ -165,7 +171,10 @@ def get_candidates(url,params: ReadProfileParameters, token):
         return data.get("items", []), data.get("links", {}).get("next")
     elif response.status_code == 401:
         raise requests.exceptions.TokenExpiredException(response.text)
-    raise Exception(f"Failed to get candidates from Digitial Recruiters API with status_code={response.status_code} and message={response.text}")
+    raise Exception(
+        "Failed to get candidates from Digitial Recruiters API with"
+        f" status_code={response.status_code} and message={response.text}"
+    )
 
 
 def fetch_and_add_resume(candidate, token):
@@ -187,7 +196,6 @@ def fetch_and_add_resume(candidate, token):
     return candidate
 
 
-
 def read_jobs(
     adapter: LoggerAdapter,
     parameters: ReadJobsParameters,
@@ -201,8 +209,9 @@ def read_jobs(
     response = requests.get(url)
     if response.status_code != 200:
         raise Exception(
-			f"Failed to get jobs from Digital Recruiters API with status_code={response.status_code} and message={response.text}"
-		)
+            "Failed to get jobs from Digital Recruiters API with"
+            f" status_code={response.status_code} and message={response.text}"
+        )
     jobs = response.json().get("ads", [])
     adapter.info(f"Found {len(jobs)} jobs in Digital Recruiters.")
     if not jobs:
@@ -225,7 +234,7 @@ def read_profiles(
         while True:
             try:
                 url = next_page_link
-                candidates, next_page_link = get_candidates(url,params, token)
+                candidates, next_page_link = get_candidates(url, params, token)
 
                 if not candidates:
                     break
@@ -234,7 +243,7 @@ def read_profiles(
                 for candidate in candidates:
                     candidate = fetch_and_add_resume(candidate, token)
                     yield candidate
-            except  requests.exceptions.TokenExpiredException as e:
+            except requests.exceptions.TokenExpiredException as e:
                 adapter.info("Token expired. Error: %s", e)
                 refreshed_token, refresh_token = refresh_token(params, refresh_token)
                 if refreshed_token:
