@@ -1,4 +1,4 @@
-from typing import List
+import typing as t
 
 from pydantic import BaseModel
 
@@ -17,7 +17,7 @@ class JobOpenings(BaseModel):
     Stage: str
     Probability: int
     ExpectedRevenue: float
-    Others: List[str]
+    Others: t.List[str]
     JobOpeningStatus: str
     DateOpened: str
     Industry: str
@@ -29,7 +29,7 @@ class JobOpenings(BaseModel):
     ModifiedBy: str
     Salary: str
     JobDescription: str
-    JobSummary: List[str]
+    JobSummary: t.List[str]
 
 
 class Candidate(BaseModel):
