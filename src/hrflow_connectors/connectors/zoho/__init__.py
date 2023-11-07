@@ -1,1 +1,1 @@
-from hrflow_connectors.connectors.zoho.connector import Zoho # noqa
+from hrflow_connectors.connectors.zoho.connector import Zoho  # noqa

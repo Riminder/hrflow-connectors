@@ -133,7 +133,7 @@ def get_or_refresh_tokens(
             "refresh_token": refresh_token,
         }
     else:
-        return None, None
+        raise Exception("Grant type not supported")
 
     response = requests.post(url, data=request_data)
     if response.status_code == 200:
@@ -142,7 +142,10 @@ def get_or_refresh_tokens(
         new_refresh_token = response_data.get("refresh_token")
         return access_token, new_refresh_token
     else:
-        return None, None
+        raise Exception(
+            f"Failed to get access token: {response.text}, response status code"
+            f" {response.status_code}"
+        )
 
 
 def read_jobs(
@@ -160,7 +163,6 @@ def read_jobs(
         parameters.authorization_code,
     )
     if not access_token:
-        adapter.error("Failed to get access token")
         raise Exception("Failed to get access token")
     headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
     params = {
@@ -184,7 +186,7 @@ def read_jobs(
                 break
             params["fromIndex"] = params["toIndex"] + 1
             params["toIndex"] = params["fromIndex"] + len(jobs)
-        if response.status_code == 4834:
+        elif response.status_code == 4834:
             access_token, refresh_token = get_or_refresh_tokens(
                 parameters.accounts_url,
                 parameters.client_id,
@@ -193,12 +195,13 @@ def read_jobs(
                 refresh_token=refresh_token,
             )
             if not access_token:
-                adapter.error("Failed to get access token")
-                break
+                raise Exception("Failed to refresh access token")
             headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
         else:
-            adapter.error("Failed to fetch jobs")
-            break
+            adapter.error(
+                f"Failed to fetch jobs: {response.text}, response status code"
+                f" {response.status_code}"
+            )
 
 
 def read_candidates(
@@ -215,9 +218,7 @@ def read_candidates(
         "authorization_code",
         parameters.authorization_code,
     )
-    if not access_token:
-        adapter.error("Failed to get access token")
-        raise Exception("Failed to get access token")
+
     headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
     params = {
         "newFormat": parameters.newFormat,
@@ -249,11 +250,13 @@ def read_candidates(
                 refresh_token=refresh_token,
             )
             if not access_token:
-                adapter.error("Failed to get access token")
-                break
+                raise Exception("Failed to refresh access token")
             headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
         else:
-            adapter.error("Failed to fetch candidates")
+            adapter.error(
+                f"Failed to fetch candidates: {response.text}, response status code"
+                f" {response.status_code}"
+            )
             break
 
 
@@ -272,7 +275,6 @@ def write_candidates(
         parameters.authorization_code,
     )
     if not access_token:
-        adapter.error("Failed to get access token")
         raise Exception("Failed to get access token")
     headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
 
@@ -290,17 +292,22 @@ def write_candidates(
                 refresh_token=refresh_token,
             )
             if not access_token:
-                adapter.error("Failed to get access token")
-                failed_profiles.append(profile)
+                raise Exception("Failed to refresh access token")
             headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
             response = requests.post(candidates_url, headers=headers, json=profile)
             if response.status_code == 200:
                 adapter.info("Candidate {} created".format(profile["candidateID"]))
             else:
-                adapter.error("Failed to create candidate")
+                adapter.error(
+                    f"Failed to create candidate: {response.text}, response status code"
+                    f" {response.status_code}"
+                )
                 failed_profiles.append(profile)
         else:
-            adapter.error("Failed to create candidate")
+            adapter.error(
+                f"Failed to create candidate: {response.text}, response status code"
+                f" {response.status_code}"
+            )
             failed_profiles.append(profile)
     return failed_profiles
 
