@@ -1,5 +1,5 @@
-import typing as t
 import time
+import typing as t
 from logging import LoggerAdapter
 
 import requests
@@ -24,17 +24,17 @@ LEVER_OPPORTUNITIES_ENDPOINT = "https://api.sandbox.lever.co/v1/opportunities"
 GET_ALL_JOBS_ENDPOINT = ActionEndpoints(
     name="Get all jobs",
     description="Endpoint to get the list of all jobs",
-    url="https://api.sandbox.lever.co/v1/postings",
+    url=LEVER_JOBS_ENDPOINT,
 )
 GET_ALL_PROFILES_ENDPOINT = ActionEndpoints(
     name="Get all profiles",
     description="Endpoint to get the list of all profiles",
-    url="https://api.sandbox.lever.co/v1/opportunities",
+    url=LEVER_OPPORTUNITIES_ENDPOINT,
 )
 POST_PROFILE_ENDPOINT = ActionEndpoints(
     name="Post Profile",
     description="Endpoint to create a new profile",
-    url="https://api.sandbox.lever.co/v1/opportunities",
+    url=LEVER_OPPORTUNITIES_ENDPOINT,
 )
 
 
@@ -143,7 +143,7 @@ def get_or_refresh_tokens(
             "refresh_token": refresh_token,
         }
     else:
-        return None, None
+        raise Exception("Invalid grant type")
 
     response = requests.post(url, data=request_data)
     if response.status_code == 200:
@@ -152,7 +152,10 @@ def get_or_refresh_tokens(
         new_refresh_token = response_data.get("refresh_token")
         return access_token, new_refresh_token
     else:
-        return None, None
+        raise Exception(
+            f"Failed to obtain token. Status code: {response.status_code},"
+            f" Response: {response.text}"
+        )
 
 
 def read_jobs(
@@ -167,7 +170,6 @@ def read_jobs(
         "authorization_code",
         parameters.authorization_code,
     )
-    adapter.info("Fetching jobs from Lever")
     offset = None
     while True:
         if token:
@@ -204,7 +206,7 @@ def read_jobs(
             except requests.exceptions.RequestException as e:
                 if "401" in str(e):
                     adapter.error(
-                        "Access token has expired. Refreshing token and retrying."
+                        "Error: an exception occurred while fetching jobs {e}"
                     )
                     token, refresh_token = get_or_refresh_tokens(
                         parameters.client_id,
@@ -213,14 +215,11 @@ def read_jobs(
                         refresh_token=refresh_token,
                     )
                     if not token:
-                        adapter.error("Failed to refresh token.")
-                        break
+                        raise Exception("Failed to refresh token.")
                 else:
-                    adapter.error(f"Request failed with error: {e}")
-                    break
+                    raise Exception(f"Request failed with error: {e}")
         else:
-            adapter.error("Failed to obtain initial access token.")
-            break
+            raise Exception("Failed to obtain initial access token.")
 
 
 def read_profiles(
@@ -235,7 +234,6 @@ def read_profiles(
         "authorization_code",
         parameters.authorization_code,
     )
-    adapter.info("Fetching opportunities from Lever")
     offset = None
     while True:
         if token:
@@ -287,7 +285,7 @@ def read_profiles(
             except requests.exceptions.RequestException as e:
                 if "401" in str(e):
                     adapter.error(
-                        "Access token has expired. Refreshing token and retrying."
+                        "Error: an exception occurred while fetching opportunities {e}"
                     )
                     token, refresh_token = get_or_refresh_tokens(
                         parameters.client_id,
@@ -296,14 +294,11 @@ def read_profiles(
                         refresh_token=refresh_token,
                     )
                     if not token:
-                        adapter.error("Failed to refresh token.")
-                        break
+                        raise Exception("Failed to refresh token.")
                 else:
-                    adapter.error(f"Request failed with error: {e}")
-                    break
+                    raise Exception(f"Request failed with error: {e}")
         else:
-            adapter.error("Failed to obtain initial access token.")
-            break
+            raise Exception("Failed to obtain initial access token.")
 
 
 def write(
@@ -317,83 +312,62 @@ def write(
         "authorization_code",
         parameters.authorization_code,
     )
-    adapter.info(f"Pushing {len(profiles)} profiles to Lever")
     failed_profiles = []
-    # post the profile to the opportunity endpoint
     for profile in profiles:
-        # attachment_url = None
-        # if profile.get("file"):
-        #     attachment_url = profile["file"].get("public_url")       
         profile.pop("file", None)
         if token:
-            while True:
-                headers = {"Authorization": "Bearer " + token}
-                params = {
-                    "perform_as": parameters.perform_as,
-                    "parse": parameters.parse,
-                    "perform_as_posting_owner": parameters.perform_as_posting_owner,
-                }
-                response = requests.post(
-                    LEVER_OPPORTUNITIES_ENDPOINT,
-                    headers=headers,
-                    params=params,
-                    json=profile,
+            headers = {"Authorization": "Bearer " + token}
+            params = {
+                "perform_as": parameters.perform_as,
+                "parse": parameters.parse,
+                "perform_as_posting_owner": parameters.perform_as_posting_owner,
+            }
+            response = requests.post(
+                LEVER_OPPORTUNITIES_ENDPOINT,
+                headers=headers,
+                params=params,
+                json=profile,
+            )
+            if response.status_code // 100 == 2:
+                adapter.info("Successfully posted profile")
+            elif response.status_code == 429:
+                adapter.error("Rate limit exceeded. Retrying after 1 minute.")
+                time.sleep(60)
+            elif response.status_code == 401:
+                adapter.error(
+                    "Access token has expired. Refreshing token and retrying."
                 )
-                if response.status_code // 100 == 2:
-                    adapter.info("Successfully posted profile")
-                    # opportunity_id = response.json()["id"]
-                    # if attachment_url:
-                    #     cv_binary = download_cv_as_binary(attachment_url)
-                    #     if cv_binary:
-                    #         files = {"resumeFile": ("resume.pdf", cv_binary,"application/ocet-stream")}
-                    #         headers = {
-                   	# 				 "Authorization": "Bearer " + token,
-					# 				 "Content-Type": "multipart/form-data"
-                   	# 				 }
-                    #         response = requests.post(LEVER_OPPORTUNITIES_ENDPOINT + "/" + opportunity_id, headers=headers, files=files)
-                    #         if response.status_code // 100 == 2:
-                    #             adapter.info("Successfully posted resume")
-                    break
-                elif response.status_code == 429:
-                    adapter.error("Rate limit exceeded. Retrying after 1 minute.")
-                    time.sleep(60)
-                elif response.status_code == 401:
-                    adapter.error(
-                        "Access token has expired. Refreshing token and retrying."
+                token, refresh_token = get_or_refresh_tokens(
+                    parameters.client_id,
+                    parameters.client_secret,
+                    "refresh_token",
+                    refresh_token=refresh_token,
+                )
+                if token:
+                    headers = {"Authorization": "Bearer " + token}
+                    response = requests.post(
+                        LEVER_OPPORTUNITIES_ENDPOINT,
+                        headers=headers,
+                        params=params,
+                        json=profile,
                     )
-                    token, refresh_token = get_or_refresh_tokens(
-                        parameters.client_id,
-                        parameters.client_secret,
-                        "refresh_token",
-                        refresh_token=refresh_token,
-                    )
-                    if not token:
-                        adapter.error("Failed to refresh token.")
+                    if response.status_code // 100 == 2:
+                        adapter.info("Successfully posted profile")
+                    else:
+                        adapter.error(
+                            "Error posting opportunity. Status code:",
+                            response.status_code,
+                            "Response:",
+                            response.text,
+                        )
                         failed_profiles.append(profile)
-                        return failed_profiles
                 else:
-                    adapter.error(
-                        "Error posting opportunity. Status code:",
-                        response.status_code,
-                        "Response:",
-                        response.text,
-                    )
                     failed_profiles.append(profile)
-                    break
+                    raise Exception("Failed to refresh token.")
 
     return failed_profiles
 
-# def download_cv_as_binary(attachment_url: str) -> bytes:
-#     # Download the CV from the attachment URL and return it as binary data
-#     try:
-#         response = requests.get(attachment_url)
-#         if response.status_code == 200:
-#             return response.content
-#         else:
-#             return None
-#     except Exception:
-#         return None
-    
+
 LeverJobWarehouse = Warehouse(
     name="Lever Jobs",
     data_schema=LeverJob,

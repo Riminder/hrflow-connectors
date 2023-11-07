@@ -1,6 +1,8 @@
 import typing as t
 from datetime import datetime
+
 from bs4 import BeautifulSoup
+
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
     HrFlowProfileWarehouse,
@@ -15,6 +17,7 @@ from hrflow_connectors.core import (
     BaseActionParameters,
     Connector,
     ConnectorAction,
+    ConnectorType,
     WorkflowType,
 )
 
@@ -399,6 +402,7 @@ DESCRIPTION = (
 )
 Lever = Connector(
     name="Lever",
+    type=ConnectorType.ATS,
     description=DESCRIPTION,
     url="https://www.lever.co/",
     actions=[

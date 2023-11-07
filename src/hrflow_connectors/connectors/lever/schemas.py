@@ -1,12 +1,12 @@
-from pydantic import BaseModel
 import typing as t
-from typing import List, Dict
+
+from pydantic import BaseModel
 
 
 class LeverJobContent(BaseModel):
     description: str
     descriptionHtml: str
-    lists: List[Dict[str, str]]
+    lists: t.List[t.Dict[str, str]]
     closing: str
     closingHtml: str
 
@@ -36,17 +36,17 @@ class LeverJob(BaseModel):
     id: str
     text: str
     state: str
-    distributionChannels: List[str]
+    distributionChannels: t.List[str]
     user: str
     owner: str
     hiringManager: str
     categories: LeverJobCategories
-    tags: List[str]
+    tags: t.List[str]
     content: LeverJobContent
     country: str
-    followers: List[str]
+    followers: t.List[str]
     reqCode: str
-    requisitionCodes: List[str]
+    requisitionCodes: t.List[str]
     urls: LeverJobUrls
     confidentiality: str
     createdAt: int
