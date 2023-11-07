@@ -1,12 +1,9 @@
-import json
 from collections import Counter
-from pathlib import Path
 from unittest import mock
 
 import pytest
 from pydantic import ValidationError
 
-from hrflow_connectors import hrflow_connectors_manifest
 from hrflow_connectors.core import (
     ActionName,
     ActionType,
@@ -81,32 +78,6 @@ def reset_leads():
     LEADS_DB.clear()
 
 
-@pytest.fixture
-def manifest_directory():
-    path = Path(__file__).parent
-    yield path
-    manifest = path / "manifest.json"
-    try:
-        manifest.unlink()
-    except FileNotFoundError:
-        pass
-
-
-def test_connector_manifest():
-    SmartLeadsF().manifest()
-
-
-def test_hrflow_connectors_manifest(manifest_directory):
-    manifest = Path(__file__).parent / "manifest.json"
-    assert manifest.exists() is False
-
-    connectors = [SmartLeadsF(), SmartLeadsF()]
-    hrflow_connectors_manifest(connectors=connectors, directory_path=manifest_directory)
-
-    assert manifest.exists() is True
-    assert len(json.loads(manifest.read_text())["connectors"]) == len(connectors)
-
-
 def test_action_by_name():
     SmartLeads = SmartLeadsF()
     assert (
@@ -167,7 +138,7 @@ def test_action_pull_profile_list_only_with_trigger_type_pull():
     assert errors[0]["loc"] == ("name",)
     assert errors[0][
         "msg"
-    ] == "`pull_job_list` and `pull_profile_list` are only available for trigger_type={}".format(  # noqa: E501
+    ] == "`pull_application_list`, `pull_job_list` and `pull_profile_list` are only available for trigger_type={}".format(  # noqa: E501
         WorkflowType.pull
     )
 
@@ -196,7 +167,36 @@ def test_action_pull_job_list_only_with_trigger_type_pull():
     assert errors[0]["loc"] == ("name",)
     assert errors[0][
         "msg"
-    ] == "`pull_job_list` and `pull_profile_list` are only available for trigger_type={}".format(  # noqa: E501
+    ] == "`pull_application_list`, `pull_job_list` and `pull_profile_list` are only available for trigger_type={}".format(  # noqa: E501
+        WorkflowType.pull
+    )
+
+
+def test_action_pull_application_list_only_with_trigger_type_pull():
+    with pytest.raises(ValidationError) as excinfo:
+        Connector(
+            name="SmartLeads",
+            type=ConnectorType.Other,
+            description=DESCRIPTION,
+            url="https://www.smartleads.test/",
+            actions=[
+                ConnectorAction(
+                    name="pull_application_list",
+                    action_type=ActionType.inbound,
+                    trigger_type=WorkflowType.catch,
+                    description="Test action",
+                    parameters=BaseActionParameters,
+                    origin=UsersWarehouse,
+                    target=LeadsWarehouse,
+                ),
+            ],
+        )
+
+    errors = excinfo.value.errors()
+    assert errors[0]["loc"] == ("name",)
+    assert errors[0][
+        "msg"
+    ] == "`pull_application_list`, `pull_job_list` and `pull_profile_list` are only available for trigger_type={}".format(  # noqa: E501
         WorkflowType.pull
     )
 

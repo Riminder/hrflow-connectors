@@ -34,7 +34,7 @@ def CONNECTOR_LISTING_REGEXP_F(name: str) -> str:
     return (
         r"\|\s*\[?\*{0,2}(?i:(?P<name>"
         + r" ?".join([c for c in name if c.strip()])
-        + r"))\*{0,2}(\]\([^)]+\))?\s*\|[^|]+\|[^|]+\|\s*\*(?P<release_date>[\d\/]+)\*?\s*\|.+"
+        + r"))\*{0,2}(\]\([^)]+\))?\s*\|[^|]+\|[^|]+\|\s*(\*|_)(?P<release_date>[\d\/]+)(\*|_)\s*\|.+"
     )
 
 
@@ -45,13 +45,16 @@ ACTIONS_SECTIONS_REGEXP = (
 
 GIT_UPDATE_TIMEOUT = 5
 GIT_UPDATE_DATE = """
-git ls-tree -r --name-only HEAD src/hrflow_connectors/connectors/{connector} | while read filename; do
+git ls-tree -r --name-only HEAD {base_connector_path}/{connector} | while read filename; do
   echo "$(git log -1 --format="%aI" -- $filename)"
 done
 """
 
 HRFLOW_CONNECTORS_REMOTE_URL = "https://github.com/Riminder/hrflow-connectors"
 USE_REMOTE_REV: ContextVar[t.Optional[str]] = ContextVar("USE_REMOTE_REV", default=None)
+BASE_CONNECTOR_PATH: ContextVar[t.Optional[str]] = ContextVar(
+    "BASE_CONNECTOR_PATH", default="src/hrflow_connectors/connectors/"
+)
 
 
 class InvalidConnectorReadmeFormat(Exception):
@@ -168,7 +171,10 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
     for connector in connectors:
         model = connector.model
         result = subprocess.run(
-            GIT_UPDATE_DATE.format(connector=model.name.lower()),
+            GIT_UPDATE_DATE.format(
+                connector=model.name.lower(),
+                base_connector_path=BASE_CONNECTOR_PATH.get().rstrip("/"),
+            ),
             shell=True,
             text=True,
             capture_output=True,
@@ -209,8 +215,9 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
             " {pull_job_list_status} | {push_profile_status} | {push_job_status} |"
         ).format(
             name=match.group("name"),
-            readme_link="./src/hrflow_connectors/connectors/{}/README.md".format(
-                model.name.lower()
+            readme_link="./{base_connector_path}/{connector}/README.md".format(
+                base_connector_path=BASE_CONNECTOR_PATH.get().strip("/"),
+                connector=model.name.lower(),
             ),
             type=model.type.value,
             release_date=match.group("release_date"),
