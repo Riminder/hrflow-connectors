@@ -1,4 +1,4 @@
-from typing import List, Optional
+import typing as t
 
 from pydantic import BaseModel, Field
 
@@ -59,21 +59,21 @@ class Contact(BaseModel):
 
 class SkillTags(BaseModel):
     matchAll: bool
-    tags: List[str]
+    tags: t.List[str]
 
 
 class CustomFieldJob(BaseModel):
     fieldId: int
     name: str
     type: str
-    value: Optional[str]
-    valueList: Optional[List[str]]
+    value: t.Optional[str]
+    valueList: t.Optional[t.List[str]]
 
 
 class WorkplaceAddress(BaseModel):
     addressId: str
     name: str
-    street: List[str]
+    street: t.List[str]
     city: str
     state: str
     postalCode: str
@@ -93,7 +93,7 @@ class Start(BaseModel):
 class WorkShift(BaseModel):
     startTime: str
     endTime: str
-    workDays: List[str]
+    workDays: t.List[str]
 
 
 class Duration(BaseModel):
@@ -156,12 +156,12 @@ class JobadderJob(BaseModel):
     jobType: str
     salary: Salary
     fee: Fee
-    otherContacts: List[Contact]
+    otherContacts: t.List[Contact]
     skillTags: SkillTags
-    custom: List[CustomFieldJob]
+    custom: t.List[CustomFieldJob]
     owner: Owner
-    recruiters: List[Owner]
-    partnerActions: List[PartnerAction]
+    recruiters: t.List[Owner]
+    partnerActions: t.List[PartnerAction]
     createdBy: Owner
     createdAt: str
     updatedBy: Owner
@@ -173,7 +173,7 @@ class JobadderJob(BaseModel):
 
 
 class Address(BaseModel):
-    street: List[str]
+    street: t.List[str]
     city: str
     state: str
     postalCode: str
@@ -223,7 +223,7 @@ class CustomField(BaseModel):
     fieldId: int
     name: str
     type: str
-    value: List[str]
+    value: t.List[str]
 
 
 class Availability(BaseModel):
@@ -256,15 +256,15 @@ class JobadderCandidate(BaseModel):
     dateOfBirth: str
     emergencyContact: str
     emergencyPhone: str
-    otherEmail: List[str]
+    otherEmail: t.List[str]
     social: Social
     summary: str
     employment: dict
     availability: Availability
-    education: List[Education]
-    skillTags: List[str]
-    custom: List[CustomField]
-    recruiters: List[User]
+    education: t.List[Education]
+    skillTags: t.List[str]
+    custom: t.List[CustomField]
+    recruiters: t.List[User]
     createdBy: User
     createdAt: str
     updatedBy: User
@@ -272,29 +272,6 @@ class JobadderCandidate(BaseModel):
     partnerActions: dict
     statistics: dict
     links: dict
-
-
-# class PartnerActionParams(ParametersModel):
-#     actionId: list[str] = Field(
-#         [], description="Unique identifier for partner actions (optional)"
-#     )
-#     reference: list[str] = Field([], description="Partner supplied unique reference")
-#     stage: list[str] = Field(
-#         [],
-#         description="Include partner actions at a specific stage (optional)",
-#         enum=["Submitted", "InProgress", "Completed", "Rejected", "Cancelled"],
-#     )
-#     submittedAt: list[str] = Field(
-#         [],
-#         description=(
-#             "Search for entities submitted to an action at a specific date and time"
-#         ),
-#     )
-
-
-# class CompanyParams(ParametersModel):
-#     companyId: list[int] = Field([], description="Companies by Id (optional)")
-#     name: str = Field(None, description="Company name (optional)")
 
 
 class JobsAdditionalParams(ParametersModel):
@@ -306,11 +283,6 @@ class JobsAdditionalParams(ParametersModel):
     jobTitle: str = Field(
         None, description="Job title (optional)", field_type=FieldType.QueryParam
     )
-    # company: CompanyParams = Field(
-    #     CompanyParams(companyId=[], name=None),
-    #     description="Company parameters (optional)",
-    #     field_type=FieldType.QueryParam,
-    # )
     companyId: list[int] = Field(
         [],
         description="Alias for company.companyId (optional)",
@@ -319,11 +291,6 @@ class JobsAdditionalParams(ParametersModel):
     contactId: list[int] = Field(
         [], description="Contact Id (optional)", field_type=FieldType.QueryParam
     )
-    # partnerAction: PartnerActionParams = Field(
-    #     PartnerActionParams(actionId=[], reference=[], stage=[], submittedAt=[]),
-    #     description="Partner action parameters (optional)",
-    #     field_type=FieldType.QueryParam,
-    # )
     statusId: list[int] = Field(
         [], description="Job status ID (optional)", field_type=FieldType.QueryParam
     )
@@ -425,7 +392,7 @@ class JobsAdditionalParams(ParametersModel):
 
 
 class CandidatesAdditionalParams(ParametersModel):
-    candidateId: List[int] = Field(
+    candidateId: t.List[int] = Field(
         [], description="Candidate Id", field_type=FieldType.QueryParam
     )
     name: str = Field(
@@ -462,18 +429,18 @@ class CandidatesAdditionalParams(ParametersModel):
     partnerAction: dict = Field(
         None, description="Partner Action parameters", field_type=FieldType.QueryParam
     )
-    statusId: List[int] = Field(
+    statusId: t.List[int] = Field(
         [], description="Candidate status", field_type=FieldType.QueryParam
     )
-    recruiterUserId: List[int] = Field(
+    recruiterUserId: t.List[int] = Field(
         [],
         description="User Id - search candidates by associated recruiters",
         field_type=FieldType.QueryParam,
     )
-    folderId: List[int] = Field(
+    folderId: t.List[int] = Field(
         [], description="Search in specific folders", field_type=FieldType.QueryParam
     )
-    createdAt: List[str] = Field(
+    createdAt: t.List[str] = Field(
         [],
         description=(
             "Search for candidates created at a specific date and time (UTC assumed,"
@@ -481,7 +448,7 @@ class CandidatesAdditionalParams(ParametersModel):
         ),
         field_type=FieldType.QueryParam,
     )
-    updatedAt: List[str] = Field(
+    updatedAt: t.List[str] = Field(
         [],
         description=(
             "Search for candidates updated at a specific date and time (UTC assumed,"
@@ -489,7 +456,7 @@ class CandidatesAdditionalParams(ParametersModel):
         ),
         field_type=FieldType.QueryParam,
     )
-    sort: List[str] = Field(
+    sort: t.List[str] = Field(
         [],
         description=(
             "Sort the results by one or multiple fields, prefix with '-' to sort"
@@ -497,11 +464,11 @@ class CandidatesAdditionalParams(ParametersModel):
         ),
         field_type=FieldType.QueryParam,
     )
-    fields: List[str] = Field(
+    fields: t.List[str] = Field(
         [],
         description="Additional fields to include with the results",
         field_type=FieldType.QueryParam,
     )
-    embed: List[str] = Field(
+    embed: t.List[str] = Field(
         [], description="Embed related resources", field_type=FieldType.QueryParam
     )

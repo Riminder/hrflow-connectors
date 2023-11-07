@@ -111,7 +111,7 @@ def get_or_refresh_tokens(
             "refresh_token": refresh_token,
         }
     else:
-        return None, None
+        raise Exception("Grant type not supported")
 
     response = requests.post(authorization_url, data=request_data)
     if response.status_code == 200:
@@ -120,7 +120,10 @@ def get_or_refresh_tokens(
         new_refresh_token = response_data.get("refresh_token")
         return access_token, new_refresh_token
     else:
-        return None, None
+        raise Exception(
+            f"Failed to get access token: {response.text}, status code"
+            f" {response.status_code}"
+        )
 
 
 def read_jobs(
@@ -137,7 +140,6 @@ def read_jobs(
         "authorization_code",
         authorization_code=parameters.authorization_code,
     )
-    adapter.info("Fetching jobs from Jobadder")
     jobs_id = []
     offset = 0
     params = parameters
@@ -174,8 +176,10 @@ def read_jobs(
             if token:
                 headers = {"Authorization": f"Bearer {token}"}
             else:
-                adapter.error("Token refresh failed.")
-                break
+                raise Exception(
+                    f"Token refresh failed: {response.text}, status code"
+                    f" {response.status_code}"
+                )
         else:
             adapter.error(f"Failed to fetch jobs from Jobadder: {response.text}")
             break
@@ -185,7 +189,8 @@ def read_jobs(
             yield response.json()
         else:
             adapter.error(
-                f"Failed to fetch job {job_id} from Jobadder: {response.text}"
+                f"Failed to fetch job {job_id} from Jobadder: {response.text}, status"
+                f" code {response.status_code}"
             )
 
 
@@ -203,7 +208,6 @@ def read_candidates(
         "authorization_code",
         authorization_code=parameters.authorization_code,
     )
-    adapter.info("Fetching candidates from Jobadder")
     candidates_id = []
     offset = 0
     params = parameters
@@ -239,10 +243,15 @@ def read_candidates(
             if token:
                 headers = {"Authorization": f"Bearer {token}"}
             else:
-                adapter.error("Token refresh failed.")
-                break
+                raise Exception(
+                    f"Token refresh failed: {response.text}, status code"
+                    f" {response.status_code}"
+                )
         else:
-            adapter.error(f"Failed to fetch candidates from Jobadder: {response.text}")
+            adapter.error(
+                f"Failed to fetch candidates from Jobadder: {response.text}, status"
+                f" code {response.status_code}"
+            )
             break
     for candidate_id in candidates_id:
         response = requests.get(f"{CANDIDATE_ENDPOINT}/{candidate_id}", headers=headers)
@@ -251,7 +260,7 @@ def read_candidates(
         else:
             adapter.error(
                 f"Failed to fetch candidate {candidate_id} from Jobadder:"
-                f" {response.text}"
+                f" {response.text}, status code {response.status_code}"
             )
 
 
@@ -302,16 +311,20 @@ def write_profiles(
                 else:
                     adapter.error(
                         f"Failed to push profile(reference={profile['reference']},"
-                        f" id={profile['id']}) to Jobadder with error={response.text}"
+                        f" id={profile['id']}) to Jobadder with error={response.text},"
+                        f" status code {response.status_code}"
                     )
                     failed.append(profile)
             else:
-                adapter.error("Token refresh failed.")
-                failed.append(profile)
+                raise Exception(
+                    f"Token refresh failed: {response.text}, status code"
+                    f" {response.status_code}"
+                )
         else:
             adapter.error(
                 f"Failed to push profile(reference={profile['reference']},"
-                f" id={profile['id']}) to Jobadder with error={response.text}"
+                f" id={profile['id']}) to Jobadder with error={response.text}, status"
+                f" code {response.status_code}"
             )
             failed.append(profile)
     return failed
