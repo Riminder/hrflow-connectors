@@ -176,11 +176,8 @@ def read_jobs(
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
     jobs_list_url = "https://api.ceipal.com/v1/getJobPostingsList"
-    adapter.info("Fetching jobs from Ceipal")
-    adapter.info("getting access token")
     token, refresh_token = get_access_token(parameters)
-    if token is None:
-        raise Exception("Authentication failed")
+
     headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
     params = {
         "limit": parameters.limit,
@@ -208,17 +205,24 @@ def read_jobs(
                 yield job
             params["offset"] += parameters.limit
         elif response.status_code == 403:
-            token = refresh_token(refresh_token)
+            token = get_refresh_token(refresh_token)
             headers["Authorization"] = f"Bearer {token}"  # Update the token in headers
         else:
-            adapter.error("Error in fetching jobs")
-            break
+            raise Exception(
+                f"Error in fetching jobs: {response.text} with status code:"
+                f" {response.status_code}"
+            )
 
 
-def refresh_token(refresh_token: str):
+def get_refresh_token(refresh_token: str):
     url = "https://api.ceipal.com/v1/refreshToken?Token=string"
     headers = {"Content-Type": "application/json", "Token": "Bearer {access_token}"}
     response = requests.request("POST", url, headers=headers)
+    if response.status_code != 200:
+        raise Exception(
+            f"Error in refreshing token: {response.text}, response status"
+            f" code{response.status_code}"
+        )
     return response.text
 
 
@@ -229,11 +233,8 @@ def read_applicants(
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
     applicants_list_url = "https://api.ceipal.com/v1/getApplicantsList"
-    adapter.info("Fetching applicants from Ceipal")
-    adapter.info("getting access token")
     token, refresh_token = get_access_token(parameters)
-    if token is None:
-        raise Exception("Authentication failed")
+
     headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
     params = {
         "limit": parameters.limit,
@@ -254,11 +255,13 @@ def read_applicants(
                 yield applicant
             params["offset"] += parameters.limit
         elif response.status_code == 403:
-            token = refresh_token(refresh_token)
+            token = get_refresh_token(refresh_token)
             headers["Authorization"] = f"Bearer {token}"  # Update the token in headers
         else:
-            adapter.error("Error in fetching applicants")
-            break
+            raise Exception(
+                f"Error in fetching applicants: {response.text} with status code:"
+                f" {response.status_code}"
+            )
 
 
 def get_access_token(parameters: BaseParameters):
@@ -273,7 +276,10 @@ def get_access_token(parameters: BaseParameters):
     headers = {"Content-Type": "application/json"}
     response = requests.request("POST", url, headers=headers, data=payload)
     if response.status_code != 200:
-        raise Exception("Authentication failed")
+        raise Exception(
+            f"Error in fetching token: {response.text}, response status"
+            f" code{response.status_code}"
+        )
     token = response.json().get("access_token")
     refresh_token = response.json().get("refresh_token")
 

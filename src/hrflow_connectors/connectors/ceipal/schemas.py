@@ -1,4 +1,4 @@
-from typing import List
+import typing as t
 
 from pydantic import BaseModel
 
@@ -35,7 +35,7 @@ class JobPostingsDetails(BaseModel):
     public_job_desc: str
     public_job_title: str
     employment_type: str
-    pay_rates: List[PayRates]
+    pay_rates: t.List[PayRates]
     primary_recruiter: str
     department: str
     currency: str
@@ -102,7 +102,7 @@ class ApplicantDetails(BaseModel):
     mobile_number: str
     created_at: str
     created_by: str
-    documents: List[Document]
+    documents: t.List[Document]
     resume_path: str
     source: str
     home_phone_number: str
