@@ -23331,7 +23331,6 @@
               "jobId": {
                 "title": "Jobid",
                 "description": "Array of integers for Job Id (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23347,7 +23346,6 @@
               "companyId": {
                 "title": "Companyid",
                 "description": "Alias for company.companyId (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23357,7 +23355,6 @@
               "contactId": {
                 "title": "Contactid",
                 "description": "Contact Id (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23367,7 +23364,6 @@
               "statusId": {
                 "title": "Statusid",
                 "description": "Job status ID (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23389,7 +23385,6 @@
               "folderId": {
                 "title": "Folderid",
                 "description": "Search in specific folders (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23399,7 +23394,6 @@
               "userId": {
                 "title": "Userid",
                 "description": "User ID - search for jobs by owner or associated recruiter (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23409,7 +23403,6 @@
               "ownerUserId": {
                 "title": "Owneruserid",
                 "description": "User ID - search for jobs by owner (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23419,7 +23412,6 @@
               "recruiterUserId": {
                 "title": "Recruiteruserid",
                 "description": "User ID - search jobs by associated recruiters (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23429,7 +23421,6 @@
               "createdBy": {
                 "title": "Createdby",
                 "description": "User ID - search for jobs created by the specified user(s) (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23439,7 +23430,6 @@
               "createdAt": {
                 "title": "Createdat",
                 "description": "Search for jobs created at a specific date and time (UTC assumed, ISO date-time) (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23449,7 +23439,6 @@
               "updatedBy": {
                 "title": "Updatedby",
                 "description": "User ID - search for jobs last updated by the specified user(s) (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23459,7 +23448,6 @@
               "updatedAt": {
                 "title": "Updatedat",
                 "description": "Search for jobs updated at a specific date and time (UTC assumed, ISO date-time) (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23469,7 +23457,6 @@
               "closedBy": {
                 "title": "Closedby",
                 "description": "User ID - search for jobs last closed by the specified user(s) (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23479,7 +23466,6 @@
               "closedAt": {
                 "title": "Closedat",
                 "description": "Search for jobs closed at a specific date and time (UTC assumed, ISO date-time) (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23489,7 +23475,6 @@
               "sort": {
                 "title": "Sort",
                 "description": "Sort the results by one or multiple fields. Prefix with '-' to sort descending (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23499,7 +23484,6 @@
               "fields": {
                 "title": "Fields",
                 "description": "Additional fields to include with the results (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23509,7 +23493,6 @@
               "embed": {
                 "title": "Embed",
                 "description": "Embed related resources (optional)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -23536,7 +23519,24 @@
               "client_id",
               "client_secret",
               "authorization_code",
-              "redirect_uri"
+              "redirect_uri",
+              "jobId",
+              "companyId",
+              "contactId",
+              "statusId",
+              "folderId",
+              "userId",
+              "ownerUserId",
+              "recruiterUserId",
+              "createdBy",
+              "createdAt",
+              "updatedBy",
+              "updatedAt",
+              "closedBy",
+              "closedAt",
+              "sort",
+              "fields",
+              "embed"
             ],
             "additionalProperties": false
           },

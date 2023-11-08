@@ -275,24 +275,24 @@ class JobadderCandidate(BaseModel):
 
 
 class JobsAdditionalParams(ParametersModel):
-    jobId: list[int] = Field(
-        [],
+    jobId: t.Optional[t.List[int]] = Field(
+        ...,
         description="Array of integers for Job Id (optional)",
         field_type=FieldType.QueryParam,
     )
     jobTitle: str = Field(
         None, description="Job title (optional)", field_type=FieldType.QueryParam
     )
-    companyId: list[int] = Field(
-        [],
+    companyId: t.Optional[t.List[int]] = Field(
+        ...,
         description="Alias for company.companyId (optional)",
         field_type=FieldType.QueryParam,
     )
-    contactId: list[int] = Field(
-        [], description="Contact Id (optional)", field_type=FieldType.QueryParam
+    contactId: t.Optional[t.List[int]] = Field(
+        ..., description="Contact Id (optional)", field_type=FieldType.QueryParam
     )
-    statusId: list[int] = Field(
-        [], description="Job status ID (optional)", field_type=FieldType.QueryParam
+    statusId: t.Optional[t.List[int]] = Field(
+        ..., description="Job status ID (optional)", field_type=FieldType.QueryParam
     )
     active: bool = Field(
         None,
@@ -304,88 +304,88 @@ class JobsAdditionalParams(ParametersModel):
         description="Search for the user's favorite jobs (optional)",
         field_type=FieldType.QueryParam,
     )
-    folderId: list[int] = Field(
-        [],
+    folderId: t.Optional[t.List[int]] = Field(
+        ...,
         description="Search in specific folders (optional)",
         field_type=FieldType.QueryParam,
     )
-    userId: list[int] = Field(
-        [],
+    userId: t.Optional[t.List[int]] = Field(
+        ...,
         description=(
             "User ID - search for jobs by owner or associated recruiter (optional)"
         ),
         field_type=FieldType.QueryParam,
     )
-    ownerUserId: list[int] = Field(
-        [],
+    ownerUserId: t.Optional[t.List[int]] = Field(
+        ...,
         description="User ID - search for jobs by owner (optional)",
         field_type=FieldType.QueryParam,
     )
-    recruiterUserId: list[int] = Field(
-        [],
+    recruiterUserId: t.Optional[t.List[int]] = Field(
+        ...,
         description="User ID - search jobs by associated recruiters (optional)",
         field_type=FieldType.QueryParam,
     )
-    createdBy: list[int] = Field(
-        [],
+    createdBy: t.Optional[t.List[int]] = Field(
+        ...,
         description=(
             "User ID - search for jobs created by the specified user(s) (optional)"
         ),
         field_type=FieldType.QueryParam,
     )
-    createdAt: list[str] = Field(
-        [],
+    createdAt: t.Optional[t.List[str]] = Field(
+        ...,
         description=(
             "Search for jobs created at a specific date and time (UTC assumed, ISO"
             " date-time) (optional)"
         ),
         field_type=FieldType.QueryParam,
     )
-    updatedBy: list[int] = Field(
-        [],
+    updatedBy: t.Optional[t.List[int]] = Field(
+        ...,
         description=(
             "User ID - search for jobs last updated by the specified user(s) (optional)"
         ),
         field_type=FieldType.QueryParam,
     )
-    updatedAt: list[str] = Field(
-        [],
+    updatedAt: t.Optional[t.List[str]] = Field(
+        ...,
         description=(
             "Search for jobs updated at a specific date and time (UTC assumed, ISO"
             " date-time) (optional)"
         ),
         field_type=FieldType.QueryParam,
     )
-    closedBy: list[int] = Field(
-        [],
+    closedBy: t.Optional[t.List[int]] = Field(
+        ...,
         description=(
             "User ID - search for jobs last closed by the specified user(s) (optional)"
         ),
         field_type=FieldType.QueryParam,
     )
-    closedAt: list[str] = Field(
-        [],
+    closedAt: t.Optional[t.List[str]] = Field(
+        ...,
         description=(
             "Search for jobs closed at a specific date and time (UTC assumed, ISO"
             " date-time) (optional)"
         ),
         field_type=FieldType.QueryParam,
     )
-    sort: list[str] = Field(
-        [],
+    sort: t.Optional[t.List[str]] = Field(
+        ...,
         description=(
             "Sort the results by one or multiple fields. Prefix with '-' to sort"
             " descending (optional)"
         ),
         field_type=FieldType.QueryParam,
     )
-    fields: list[str] = Field(
-        [],
+    fields: t.Optional[t.List[str]] = Field(
+        ...,
         description="Additional fields to include with the results (optional)",
         field_type=FieldType.QueryParam,
     )
-    embed: list[str] = Field(
-        [],
+    embed: t.Optional[t.List[str]] = Field(
+        ...,
         description="Embed related resources (optional)",
         field_type=FieldType.QueryParam,
     )
