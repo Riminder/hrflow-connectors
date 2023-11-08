@@ -392,8 +392,8 @@ class JobsAdditionalParams(ParametersModel):
 
 
 class CandidatesAdditionalParams(ParametersModel):
-    candidateId: t.List[int] = Field(
-        [], description="Candidate Id", field_type=FieldType.QueryParam
+    candidateId: t.Optional[t.List[int]] = Field(
+        ..., description="Candidate Id", field_type=FieldType.QueryParam
     )
     name: str = Field(
         None, description="Candidate name", field_type=FieldType.QueryParam
@@ -429,46 +429,46 @@ class CandidatesAdditionalParams(ParametersModel):
     partnerAction: dict = Field(
         None, description="Partner Action parameters", field_type=FieldType.QueryParam
     )
-    statusId: t.List[int] = Field(
-        [], description="Candidate status", field_type=FieldType.QueryParam
+    statusId:  t.Optional[t.List[int]]= Field(
+        ..., description="Candidate status", field_type=FieldType.QueryParam
     )
-    recruiterUserId: t.List[int] = Field(
-        [],
+    recruiterUserId: t.Optional[t.List[int]]= Field(
+        ...,
         description="User Id - search candidates by associated recruiters",
         field_type=FieldType.QueryParam,
     )
-    folderId: t.List[int] = Field(
-        [], description="Search in specific folders", field_type=FieldType.QueryParam
+    folderId: t.Optional[t.List[int]]= Field(
+        ..., description="Search in specific folders", field_type=FieldType.QueryParam
     )
-    createdAt: t.List[str] = Field(
-        [],
+    createdAt: t.Optional[t.List[str]] = Field(
+        ...,
         description=(
             "Search for candidates created at a specific date and time (UTC assumed,"
             " ISO date-time)"
         ),
         field_type=FieldType.QueryParam,
     )
-    updatedAt: t.List[str] = Field(
-        [],
+    updatedAt: t.Optional[t.List[str]] = Field(
+        ...,
         description=(
             "Search for candidates updated at a specific date and time (UTC assumed,"
             " ISO date-time)"
         ),
         field_type=FieldType.QueryParam,
     )
-    sort: t.List[str] = Field(
-        [],
+    sort: t.Optional[t.List[str]] = Field(
+        ...,
         description=(
             "Sort the results by one or multiple fields, prefix with '-' to sort"
             " descending"
         ),
         field_type=FieldType.QueryParam,
     )
-    fields: t.List[str] = Field(
-        [],
+    fields: t.Optional[t.List[str]] = Field(
+        ...,
         description="Additional fields to include with the results",
         field_type=FieldType.QueryParam,
     )
-    embed: t.List[str] = Field(
-        [], description="Embed related resources", field_type=FieldType.QueryParam
+    embed: t.Optional[t.List[str]]  = Field(
+        ..., description="Embed related resources", field_type=FieldType.QueryParam
     )

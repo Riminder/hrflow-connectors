@@ -21141,7 +21141,6 @@
               "candidateId": {
                 "title": "Candidateid",
                 "description": "Candidate Id",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21211,7 +21210,6 @@
               "statusId": {
                 "title": "Statusid",
                 "description": "Candidate status",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21221,7 +21219,6 @@
               "recruiterUserId": {
                 "title": "Recruiteruserid",
                 "description": "User Id - search candidates by associated recruiters",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21231,7 +21228,6 @@
               "folderId": {
                 "title": "Folderid",
                 "description": "Search in specific folders",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21241,7 +21237,6 @@
               "createdAt": {
                 "title": "Createdat",
                 "description": "Search for candidates created at a specific date and time (UTC assumed, ISO date-time)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21251,7 +21246,6 @@
               "updatedAt": {
                 "title": "Updatedat",
                 "description": "Search for candidates updated at a specific date and time (UTC assumed, ISO date-time)",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21261,7 +21255,6 @@
               "sort": {
                 "title": "Sort",
                 "description": "Sort the results by one or multiple fields, prefix with '-' to sort descending",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21271,7 +21264,6 @@
               "fields": {
                 "title": "Fields",
                 "description": "Additional fields to include with the results",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21281,7 +21273,6 @@
               "embed": {
                 "title": "Embed",
                 "description": "Embed related resources",
-                "default": [],
                 "field_type": "Query Param",
                 "type": "array",
                 "items": {
@@ -21308,7 +21299,16 @@
               "client_id",
               "client_secret",
               "authorization_code",
-              "redirect_uri"
+              "redirect_uri",
+              "candidateId",
+              "statusId",
+              "recruiterUserId",
+              "folderId",
+              "createdAt",
+              "updatedAt",
+              "sort",
+              "fields",
+              "embed"
             ],
             "additionalProperties": false
           },
