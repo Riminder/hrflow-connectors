@@ -41,7 +41,7 @@ This new connector will enable:
 
 | Action | Description |
 | ------- | ----------- |
-| [**Pull application list**](docs/pull_application_list.md) | Retrieves Applicants from Jazzhr  and writes them to an Hrflow.ai source |
+| [**Pull profile list**](docs/pull_profile_list.md) | Retrieves Applicants from Jazzhr  and writes them to an Hrflow.ai source |
 | [**Pull job list**](docs/pull_job_list.md) | Retrieves jobs from Jazzhr and writes them to an Hrflow.ai board |
 
 
@@ -64,5 +64,5 @@ For more code details checkout connector code.
 
 # 👏 Special Thanks
 
-- 💻 HrFlow.ai : XXXXX YYYYY - Software Engineer
+- 💻 HrFlow.ai : Abdellahi Mezid- Software Engineer
 - 🤝 Jazzhr : XXXXX YYYYY - Partner Manager

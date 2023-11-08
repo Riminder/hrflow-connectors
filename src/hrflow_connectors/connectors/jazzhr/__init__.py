@@ -1,1 +1,1 @@
-from hrflow_connectors.connectors.jazzhr.connector import Jazzhr # noqa
+from hrflow_connectors.connectors.jazzhr.connector import Jazzhr  # noqa

@@ -1,11 +1,12 @@
 import typing as t
-from hrflow_connectors.connectors.jazzhr.warehouse import (
-    JazzhrJobWarehouse,
-    JazzhrApplicantWarehouse,
-)
+
 from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
     HrFlowProfileWarehouse,
+)
+from hrflow_connectors.connectors.jazzhr.warehouse import (
+    JazzhrApplicantWarehouse,
+    JazzhrJobWarehouse,
 )
 from hrflow_connectors.core import (
     ActionName,
@@ -147,7 +148,7 @@ Jazzhr = Connector(
     url="https://www.jazzhr.com",
     actions=[
         ConnectorAction(
-            name=ActionName.pull_application_list,
+            name=ActionName.pull_profile_list,
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves Applicants from Jazzhr "
