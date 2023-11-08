@@ -1,14 +1,14 @@
 # 📖 Summary
-- [📖 Summary](#📖-summary)
-- [💼 About Freshteam](#💼-about-freshteam)
-  - [😍 Why is it a big deal for Freshteam customers & partners?](#😍-why-is-it-a-big-deal-for-freshteam-customers--partners)
-- [🔧 How does it work?](#🔧-how-does-it-work)
-  - [📊 Data integration capabilities:](#📊-data-integration-capabilities)
-  - [🧠 Artificial Intelligence capabilities:](#🧠-artificial-intelligence-capabilities)
-- [🔌 Connector Actions](#🔌-connector-actions)
-- [💍 Quick Start Examples](#💍-quick-start-examples)
-- [🔗 Useful Links](#🔗-useful-links)
-- [👏 Special Thanks](#👏-special-thanks)
+- [📖 Summary](#-summary)
+- [💼 About Freshteam](#-about-freshteam)
+  - [😍 Why is it a big deal for Freshteam customers & partners?](#-why-is-it-a-big-deal-for-freshteam-customers--partners)
+- [🔧 How does it work?](#-how-does-it-work)
+  - [📊 Data integration capabilities:](#-data-integration-capabilities)
+  - [🧠 Artificial Intelligence capabilities:](#-artificial-intelligence-capabilities)
+- [🔌 Connector Actions](#-connector-actions)
+- [💍 Quick Start Examples](#-quick-start-examples)
+- [🔗 Useful Links](#-useful-links)
+- [👏 Special Thanks](#-special-thanks)
 
 
 # 💼 About Freshteam
@@ -66,5 +66,5 @@ For more code details checkout connector code.
 
 
 # 👏 Special Thanks
-- 💻 HrFlow.ai : XXXXX YYYYY - Software Engineer
+- 💻 HrFlow.ai : Abdellahi Mezid - Software Engineer
 - 🤝 Freshteam : XXXXX YYYYY - Partner Manager

@@ -1,11 +1,11 @@
-from typing import Optional
+import typing as t
 
 from pydantic import BaseModel
 
 
 class Salary(BaseModel):
-    min: Optional[float] = None
-    max: Optional[float] = None
+    min: t.Optional[float] = None
+    max: t.Optional[float] = None
     currency: str
 
 
@@ -47,7 +47,7 @@ class JobPostings(BaseModel):
     applicant_access_type: str
     remote: bool
     show_pursue_as_career: bool
-    closing_date: Optional[str]
+    closing_date: t.Optional[str]
     experience: str
     type: str
     branch: Branch

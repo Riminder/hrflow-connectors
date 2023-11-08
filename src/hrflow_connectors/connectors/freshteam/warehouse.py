@@ -62,11 +62,7 @@ def read_jobs(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-    adapter.info("Fetching jobs from freshteam")
     jobs_list_url = jobs_url.format(account_name=parameters.account_name)
-
-    if parameters.api_key is None:
-        raise Exception("Authentication failed")
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {parameters.api_key}",
@@ -81,13 +77,16 @@ def read_jobs(
         response = requests.get(jobs_list_url, headers=headers, params=params)
         if response.status_code == 200:
             result = response.json()
-            if not result["link"]:
-                break
             for job in result:
                 yield job
+            if not result["link"]:
+                break
             jobs_list_url = result["link"]
         else:
-            adapter.error("Error in fetching jobs")
+            adapter.error(
+                f"Error while fetching jobs: {response.text}, status:"
+                f" {response.status_code}"
+            )
             break
 
 
