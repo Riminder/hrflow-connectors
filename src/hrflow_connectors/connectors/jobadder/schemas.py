@@ -429,15 +429,15 @@ class CandidatesAdditionalParams(ParametersModel):
     partnerAction: dict = Field(
         None, description="Partner Action parameters", field_type=FieldType.QueryParam
     )
-    statusId:  t.Optional[t.List[int]]= Field(
+    statusId: t.Optional[t.List[int]] = Field(
         ..., description="Candidate status", field_type=FieldType.QueryParam
     )
-    recruiterUserId: t.Optional[t.List[int]]= Field(
+    recruiterUserId: t.Optional[t.List[int]] = Field(
         ...,
         description="User Id - search candidates by associated recruiters",
         field_type=FieldType.QueryParam,
     )
-    folderId: t.Optional[t.List[int]]= Field(
+    folderId: t.Optional[t.List[int]] = Field(
         ..., description="Search in specific folders", field_type=FieldType.QueryParam
     )
     createdAt: t.Optional[t.List[str]] = Field(
@@ -469,6 +469,6 @@ class CandidatesAdditionalParams(ParametersModel):
         description="Additional fields to include with the results",
         field_type=FieldType.QueryParam,
     )
-    embed: t.Optional[t.List[str]]  = Field(
+    embed: t.Optional[t.List[str]] = Field(
         ..., description="Embed related resources", field_type=FieldType.QueryParam
     )
