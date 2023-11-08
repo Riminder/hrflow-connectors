@@ -23,8 +23,8 @@ Retrieves all jobs from Digital Recruiters and sends them to an Hrflow.ai Board.
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `digital_recruiters_token` :red_circle: | `str` | None | Digital Recruiters API token. |
-| `digital_recruiters_environment_url` :red_circle: | `str` | None | Digital Recruiters API url environnement. |
+| `token` :red_circle: | `str` | None | Digital Recruiters API token. |
+| `environment_url` :red_circle: | `str` | None | Digital Recruiters API url environnement. |
 
 ## Destination Parameters
 
@@ -58,8 +58,8 @@ DigitalRecruiters.pull_job_list(
         read_mode=ReadMode.sync,
     ),
     origin_parameters=dict(
-        digital_recruiters_token="your_digital_recruiters_token",
-        digital_recruiters_environment_url="your_digital_recruiters_environment_url",
+        token="your_token",
+        environment_url="your_environment_url",
     ),
     target_parameters=dict(
         api_secret="your_api_secret",

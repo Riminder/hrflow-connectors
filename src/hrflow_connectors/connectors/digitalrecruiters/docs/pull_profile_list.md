@@ -26,7 +26,7 @@ Retrieves all profiles from Digital Recruiters and sends them to an Hrflow.ai So
 | `api_key` :red_circle: | `str` | None | DigitalRecruiters API key |
 | `username` :red_circle: | `str` | None | Username for authentication |
 | `password` :red_circle: | `str` | None | Password for authentication |
-| `url_environment` :red_circle: | `<class 'pydantic.networks.HttpUrl'>` | None | URL environment for the API |
+| `environment_url` :red_circle: | `<class 'pydantic.networks.HttpUrl'>` | None | URL environment for the API |
 | `jobAd`  | `int` | None | Optional: Id of a job advertisement |
 | `sort`  | `str` | None | Optional: Field to sort by (id, firstName, lastName, createdAt, updatedAt) |
 | `limit`  | `int` | 50 | Optional: Limit the number of results returned |
@@ -65,7 +65,7 @@ DigitalRecruiters.pull_profile_list(
         api_key="your_api_key",
         username="your_username",
         password="your_password",
-        url_environment=***,
+        environment_url=***,
         jobAd=0,
         sort="your_sort",
         limit=50,
