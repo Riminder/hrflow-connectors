@@ -2,6 +2,13 @@
 
 
 
+## v4.1.1 (2023-11-09)
+
+### Fix
+
+* fix: delay import of PIL to avoid ModuleNotFoundError when using the package in no-dev mode ([`594e9dc`](https://github.com/Riminder/hrflow-connectors/commit/594e9dc441442c7ba9ef73adea7f9b134758c97d))
+
+
 ## v4.1.0 (2023-10-30)
 
 ### Documentation
