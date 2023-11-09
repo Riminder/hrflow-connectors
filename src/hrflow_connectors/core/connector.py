@@ -13,7 +13,6 @@ from datetime import datetime
 from functools import partial
 from pathlib import Path
 
-from PIL import Image, UnidentifiedImageError
 from pydantic import (
     BaseModel,
     Field,
@@ -766,6 +765,13 @@ class ConnectorModel(BaseModel):
     actions: t.List[ConnectorAction]
 
     def logo(self, connectors_directory: Path) -> str:
+        try:
+            from PIL import Image, UnidentifiedImageError
+        except ModuleNotFoundError:  # pragma: no cover
+            raise Exception(
+                "PIL is not found in current environment. Mind that you need to install"
+                " the package with dev dependencies to use manifest utility"
+            )
         connector_directory = connectors_directory / self.name.lower()
         if not connector_directory.is_dir():
             raise ValueError(
