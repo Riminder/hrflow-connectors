@@ -122,6 +122,10 @@ class WriteProfilesParameters(ParametersModel):
     )
 
 
+class TokenExpired(Exception):
+    pass
+
+
 def get_initial_token(params: ReadProfileParameters):
     url = f"{params.environment_url}/public/v1/users/login"
     headers = {"Content-Type": "application/json", "X-DR-API-KEY": params.api_key}
@@ -137,7 +141,7 @@ def get_initial_token(params: ReadProfileParameters):
     )
 
 
-def refresh_token(params: ReadProfileParameters, refresh_token: str):
+def get_refresh_token(params: ReadProfileParameters, refresh_token: str):
     url = f"{params.environment_url}/public/v1/users/refresh"
 
     headers = {"Content-Type": "application/json", "X-DR-API-KEY": params.api_key}
@@ -170,7 +174,7 @@ def get_candidates(url, params: ReadProfileParameters, token):
         data = response.json()["data"]
         return data.get("items", []), data.get("links", {}).get("next")
     elif response.status_code == 401:
-        raise requests.exceptions.TokenExpiredException(response.text)
+        raise TokenExpired(f"Token expired. Error: {response.text}")
     raise Exception(
         "Failed to get candidates from Digitial Recruiters API with"
         f" status_code={response.status_code} and message={response.text}"
@@ -190,9 +194,12 @@ def fetch_and_add_resume(candidate, token):
             }
             candidate["resume"] = resume_info
         elif response.status_code == 401:
-            raise requests.exceptions.TokenExpiredException(response.text)
+            raise TokenExpired(f"Token expired. Error: {response.text}")
         else:
-            candidate["resume"] = {"raw": None, "content_type": None}
+            raise Exception(
+                "Failed to get resume from Digitial Recruiters API with"
+                f" status_code={response.status_code} and message={response.text}"
+            )
     return candidate
 
 
@@ -228,29 +235,26 @@ def read_profiles(
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
     token, refresh_token = get_initial_token(params)
+    next_page_link = f"{params.environment_url}/job-applications/detailed"
+    while True:
+        url = next_page_link
+        try:
+            candidates, next_page_link = get_candidates(url, params, token)
+        except TokenExpired:
+            token, refresh_token = get_refresh_token(params, refresh_token)
+            candidates, next_page_link = get_candidates(url, params, token)
 
-    if token:
-        next_page_link = f"{params.environment_url}/job-applications/detailed"
-        while True:
+        if not candidates:
+            break
+        if next_page_link is None:
+            break
+        for candidate in candidates:
             try:
-                url = next_page_link
-                candidates, next_page_link = get_candidates(url, params, token)
-
-                if not candidates:
-                    break
-                if next_page_link is None:
-                    break
-                for candidate in candidates:
-                    candidate = fetch_and_add_resume(candidate, token)
-                    yield candidate
-            except requests.exceptions.TokenExpiredException as e:
-                adapter.info("Token expired. Error: %s", e)
-                refreshed_token, refresh_token = refresh_token(params, refresh_token)
-                if refreshed_token:
-                    token = refreshed_token
-                else:
-                    adapter.error("Failed to refresh token. Stopping.")
-                    break
+                candidate = fetch_and_add_resume(candidate, token)
+            except TokenExpired:
+                token, refresh_token = get_refresh_token(params, refresh_token)
+                candidate = fetch_and_add_resume(candidate, token)
+            yield candidate
 
 
 def write(
@@ -270,26 +274,20 @@ def write(
         profile["ApplicationMessage"] = dict(
             message=parameters.message  # Candidate Message
         )
-        try:
-            response = requests.post(url, json=profile)
-            response.raise_for_status()
+        response = requests.post(url, json=profile)
 
-            if response.status_code == 201:
-                adapter.info("Candidate profile pushed successfully.")
-            elif response.status_code == 202:
-                adapter.warning(
-                    "Candidate profile pushed, but some information is missing."
-                )
-            else:
-                adapter.error(
-                    "Failed to push candidate profile. Status code: %s, Response: %s",
-                    response.status_code,
-                    response.text,
-                )
-                failed_profiles.append(profile)
-
-        except requests.exceptions.RequestException as e:
-            adapter.exception("Error occurred while pushing candidate profile. %s", e)
+        if response.status_code == 201:
+            adapter.info("Candidate profile pushed successfully.")
+        elif response.status_code == 202:
+            adapter.warning(
+                "Candidate profile pushed, but some information is missing."
+            )
+        else:
+            adapter.error(
+                "Failed to push candidate profile. Status code: %s, Response: %s",
+                response.status_code,
+                response.text,
+            )
             failed_profiles.append(profile)
 
     return failed_profiles
