@@ -236,17 +236,14 @@ def read_profiles(
 ) -> t.Iterable[t.Dict]:
     token, refresh_token = get_initial_token(params)
     next_page_link = f"{params.environment_url}/job-applications/detailed"
-    while True:
-        url = next_page_link
+    while next_page_link:
         try:
-            candidates, next_page_link = get_candidates(url, params, token)
+            candidates, next_page_link = get_candidates(next_page_link, params, token)
         except TokenExpired:
             token, refresh_token = get_refresh_token(params, refresh_token)
-            candidates, next_page_link = get_candidates(url, params, token)
+            candidates, next_page_link = get_candidates(next_page_link, params, token)
 
         if not candidates:
-            break
-        if next_page_link is None:
             break
         for candidate in candidates:
             try:
