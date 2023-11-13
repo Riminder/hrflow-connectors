@@ -8,7 +8,7 @@ Writes a profile from the Hrflow.ai Source to Lever via the API.
 **Lever Profiles endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
-| [**Post Profile**](https://api.sandbox.lever.co/v1/opportunities) | Endpoint to create a new profile |
+| [**Post Profile**](https://{client_domain}.lever.co/v1/opportunities) | Endpoint to create a new profile |
 
 
 ## Action Parameters
@@ -32,10 +32,11 @@ Writes a profile from the Hrflow.ai Source to Lever via the API.
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
+| `auth_domain` :red_circle: | `str` | None | Auth domain for authenticating with Lever API, exemple: sandbox-lever |
+| `client_domain` :red_circle: | `str` | None | Client domain for authenticating with Lever API, exemple: api.sandbox |
 | `client_id` :red_circle: | `str` | None | Client ID for authenticating with Lever API |
 | `client_secret` :red_circle: | `str` | None | Client secret for authenticating with Lever API |
 | `authorization_code` :red_circle: | `str` | None | Authorization code for obtaining access token |
-| `limit`  | `int` | 100 | Number of jobs to fetch per request (max: 100) |
 | `perform_as` :red_circle: | `str` | None | User ID on behalf of whom the create action should be performed |
 | `parse`  | `bool` | False | If true, parse resume for autofilling |
 | `perform_as_posting_owner`  | `bool` | False | If true, set Opportunity owner to posting owner |
@@ -67,10 +68,11 @@ Lever.push_profile(
         profile_key="your_profile_key",
     ),
     target_parameters=dict(
+        auth_domain="your_auth_domain",
+        client_domain="your_client_domain",
         client_id="your_client_id",
         client_secret="your_client_secret",
         authorization_code="your_authorization_code",
-        limit=100,
         perform_as="your_perform_as",
         parse=False,
         perform_as_posting_owner=False,

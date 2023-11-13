@@ -7,7 +7,7 @@ Retrieves all jobs via the Lever API and sends them to the Hrflow.ai Board.
 **Lever Jobs endpoints used :**
 | Endpoints | Description |
 | --------- | ----------- |
-| [**Get all jobs**](https://api.sandbox.lever.co/v1/postings) | Endpoint to get the list of all jobs |
+| [**Get all jobs**](https://{client_domain}.lever.co/v1/postings) | Endpoint to get the list of all jobs |
 
 
 
@@ -23,6 +23,8 @@ Retrieves all jobs via the Lever API and sends them to the Hrflow.ai Board.
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
+| `auth_domain` :red_circle: | `str` | None | Auth domain for authenticating with Lever API, exemple: sandbox-lever |
+| `client_domain` :red_circle: | `str` | None | Client domain for authenticating with Lever API, exemple: api.sandbox |
 | `client_id` :red_circle: | `str` | None | Client ID for authenticating with Lever API |
 | `client_secret` :red_circle: | `str` | None | Client secret for authenticating with Lever API |
 | `authorization_code` :red_circle: | `str` | None | Authorization code for obtaining access token |
@@ -60,6 +62,8 @@ Lever.pull_job_list(
         read_mode=ReadMode.sync,
     ),
     origin_parameters=dict(
+        auth_domain="your_auth_domain",
+        client_domain="your_client_domain",
         client_id="your_client_id",
         client_secret="your_client_secret",
         authorization_code="your_authorization_code",

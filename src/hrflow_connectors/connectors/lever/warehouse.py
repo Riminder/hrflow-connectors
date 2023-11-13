@@ -17,9 +17,11 @@ from hrflow_connectors.core import (
     WarehouseWriteAction,
 )
 
-LEVER_BASE_URL = "https://api.sandbox.lever.co"
-LEVER_JOBS_ENDPOINT = "https://api.sandbox.lever.co/v1/postings"
-LEVER_OPPORTUNITIES_ENDPOINT = "https://api.sandbox.lever.co/v1/opportunities"
+LEVER_AUTH_ENDPOINT = "https://{auth_domain}.auth0.com"
+LEVER_REDIRECT_URI = "https://marketplace-partners.hrflow.ai/partner/lever/login"
+LEVER_BASE_URL = "https://{client_domain}.lever.co"
+LEVER_JOBS_ENDPOINT = "https://{client_domain}.lever.co/v1/postings"
+LEVER_OPPORTUNITIES_ENDPOINT = "https://{client_domain}.lever.co/v1/opportunities"
 
 GET_ALL_JOBS_ENDPOINT = ActionEndpoints(
     name="Get all jobs",
@@ -38,7 +40,21 @@ POST_PROFILE_ENDPOINT = ActionEndpoints(
 )
 
 
-class ReadJobsParameters(ParametersModel):
+class LeverParameters(ParametersModel):
+    auth_domain: str = Field(
+        ...,
+        description=(
+            "Auth domain for authenticating with Lever API, exemple: sandbox-lever"
+        ),
+        field_type=FieldType.Auth,
+    )
+    client_domain: str = Field(
+        ...,
+        description=(
+            "Client domain for authenticating with Lever API, exemple: api.sandbox"
+        ),
+        field_type=FieldType.Auth,
+    )
     client_id: str = Field(
         ...,
         description="Client ID for authenticating with Lever API",
@@ -54,6 +70,9 @@ class ReadJobsParameters(ParametersModel):
         description="Authorization code for obtaining access token",
         field_type=FieldType.Auth,
     )
+
+
+class ReadParameters(LeverParameters):
     limit: int = Field(
         100,
         description="Number of jobs to fetch per request (max: 100)",
@@ -61,27 +80,11 @@ class ReadJobsParameters(ParametersModel):
     )
 
 
-class WriteProfileParameters(ParametersModel):
-    client_id: str = Field(
-        ...,
-        description="Client ID for authenticating with Lever API",
-        field_type=FieldType.Auth,
-    )
-    client_secret: str = Field(
-        ...,
-        description="Client secret for authenticating with Lever API",
-        field_type=FieldType.Auth,
-    )
-    authorization_code: str = Field(
-        ...,
-        description="Authorization code for obtaining access token",
-        field_type=FieldType.Auth,
-    )
-    limit: int = Field(
-        100,
-        description="Number of jobs to fetch per request (max: 100)",
-        field_type=FieldType.QueryParam,
-    )
+class ReadJobsParameters(ReadParameters):
+    pass
+
+
+class WriteProfileParameters(LeverParameters):
     perform_as: str = Field(
         ...,
         description="User ID on behalf of whom the create action should be performed",
@@ -99,34 +102,21 @@ class WriteProfileParameters(ParametersModel):
     )
 
 
-class ReadProfilesParameters(ParametersModel):
-    client_id: str = Field(
-        ...,
-        description="Client ID for authenticating with Lever API",
-        field_type=FieldType.Auth,
-    )
-    client_secret: str = Field(
-        ...,
-        description="Client secret for authenticating with Lever API",
-        field_type=FieldType.Auth,
-    )
-    authorization_code: str = Field(
-        ...,
-        description="Authorization code for obtaining access token",
-        field_type=FieldType.Auth,
-    )
-    limit: int = Field(
-        100,
-        description="Number of jobs to fetch per request (max: 100)",
-        field_type=FieldType.QueryParam,
-    )
+class ReadProfilesParameters(ReadParameters):
+    pass
 
 
 def get_or_refresh_tokens(
-    client_id, client_secret, grant_type, authorization_code=None, refresh_token=None
+    auth_domain,
+    client_id,
+    client_secret,
+    grant_type,
+    authorization_code=None,
+    refresh_token=None,
 ):
-    url = "https://sandbox-lever.auth0.com/oauth/token"
-    redirect_uri = "https://marketplace-partners.hrflow.ai/partner/lever/login"
+    lever_auth_endpoint = LEVER_AUTH_ENDPOINT.format(auth_domain=auth_domain)
+    url = "{}/oauth/token".format(lever_auth_endpoint)
+    redirect_uri = LEVER_REDIRECT_URI
     if authorization_code:
         request_data = {
             "client_id": client_id,
@@ -142,8 +132,6 @@ def get_or_refresh_tokens(
             "grant_type": grant_type,
             "refresh_token": refresh_token,
         }
-    else:
-        raise Exception("Invalid grant type")
 
     response = requests.post(url, data=request_data)
     if response.status_code == 200:
@@ -151,11 +139,11 @@ def get_or_refresh_tokens(
         access_token = response_data.get("access_token")
         new_refresh_token = response_data.get("refresh_token")
         return access_token, new_refresh_token
-    else:
-        raise Exception(
-            f"Failed to obtain token. Status code: {response.status_code},"
-            f" Response: {response.text}"
-        )
+
+    raise Exception(
+        f"Failed to obtain token. Status code: {response.status_code},"
+        f" Response: {response.text}"
+    )
 
 
 def read_jobs(
@@ -165,61 +153,48 @@ def read_jobs(
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
     token, refresh_token = get_or_refresh_tokens(
+        parameters.auth_domain,
         parameters.client_id,
         parameters.client_secret,
         "authorization_code",
         parameters.authorization_code,
     )
+    jobs_url = LEVER_JOBS_ENDPOINT.format(client_domain=parameters.client_domain)
     offset = None
     while True:
-        if token:
-            headers = {"Authorization": "Bearer " + token}
-            try:
-                params = {
-                    "limit": parameters.limit,
-                }
-                if offset is not None:
-                    params["offset"] = offset
-                response = requests.get(
-                    LEVER_JOBS_ENDPOINT, headers=headers, params=params
-                )
-                if response.status_code == 200:
-                    jobs = response.json()["data"]
-                    for job in jobs:
-                        yield job
-                    # After fetching a page of results
-                    if response.json().get("hasNext", False):
-                        offset = response.json().get("next", None)
-                    else:
-                        break  # No more pages, exit the loop
-                # manage rate limit
-                elif response.status_code == 429:
-                    adapter.error("Rate limit exceeded. Retrying after 1 minute.")
-                    time.sleep(60)
+        headers = {"Authorization": "Bearer " + token}
+        params = {
+            "limit": parameters.limit,
+        }
+        if offset is not None:
+            params["offset"] = offset
+        response = requests.get(jobs_url, headers=headers, params=params)
+        if response.status_code == 200:
+            jobs = response.json()["data"]
+            for job in jobs:
+                yield job
+            if response.json().get("hasNext", False):
+                offset = response.json().get("next", None)
+            else:
+                break
+        elif response.status_code == 429:
+            adapter.warning("Rate limit exceeded. Retrying after 5 second.")
+            time.sleep(5)
 
-                else:
-                    adapter.error(
-                        "Failed to retrieve jobs from Lever. Status code:"
-                        f" {response.status_code}, Response: {response.text}"
-                    )
-                    break
-            except requests.exceptions.RequestException as e:
-                if "401" in str(e):
-                    adapter.error(
-                        "Error: an exception occurred while fetching jobs {e}"
-                    )
-                    token, refresh_token = get_or_refresh_tokens(
-                        parameters.client_id,
-                        parameters.client_secret,
-                        "refresh_token",
-                        refresh_token=refresh_token,
-                    )
-                    if not token:
-                        raise Exception("Failed to refresh token.")
-                else:
-                    raise Exception(f"Request failed with error: {e}")
+        elif response.status_code == 401:
+            adapter.warning("Access token has expired. Refreshing token and retrying.")
+            token, refresh_token = get_or_refresh_tokens(
+                parameters.auth_domain,
+                parameters.client_id,
+                parameters.client_secret,
+                "refresh_token",
+                refresh_token=refresh_token,
+            )
         else:
-            raise Exception("Failed to obtain initial access token.")
+            raise Exception(
+                "Failed to retrieve jobs from Lever. Status code:"
+                f" {response.status_code}, Response: {response.text}"
+            )
 
 
 def read_profiles(
@@ -229,76 +204,66 @@ def read_profiles(
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
     token, refresh_token = get_or_refresh_tokens(
+        parameters.auth_domain,
         parameters.client_id,
         parameters.client_secret,
         "authorization_code",
         parameters.authorization_code,
     )
     offset = None
+    profiles_url = LEVER_OPPORTUNITIES_ENDPOINT.format(
+        client_domain=parameters.client_domain
+    )
     while True:
-        if token:
-            headers = {"Authorization": "Bearer " + token}
-            try:
-                params = {
-                    "limit": parameters.limit,
-                }
-                if offset is not None:
-                    params["offset"] = offset
-                response = requests.get(
-                    LEVER_OPPORTUNITIES_ENDPOINT, headers=headers, params=params
+        headers = {"Authorization": "Bearer " + token}
+        params = {
+            "limit": parameters.limit,
+        }
+        if offset is not None:
+            params["offset"] = offset
+        response = requests.get(profiles_url, headers=headers, params=params)
+        if response.status_code == 200:
+            opportunities = response.json()["data"]
+            for opportunity in opportunities:
+                opportunity_id = opportunity["id"]
+                profile_response = requests.get(
+                    f"{profiles_url}/{opportunity_id}/resumes",
+                    headers=headers,
                 )
-                if response.status_code == 200:
-                    opportunities = response.json()["data"]
-                    for opportunity in opportunities:
-                        opportunity_id = opportunity["id"]
-                        profile_response = requests.get(
-                            f"{LEVER_OPPORTUNITIES_ENDPOINT}/{opportunity_id}/resumes",
-                            headers=headers,
-                        )
-                        if profile_response.status_code == 200:
-                            profile_data = profile_response.json()
-                            opportunity["profile"] = profile_data["data"]
-                            yield opportunity
-                        else:
-                            adapter.error(
-                                "Failed to retrieve profiles for opportunity"
-                                f" {opportunity_id}. Status code:"
-                                f" {profile_response.status_code}, Response:"
-                                f" {profile_response.text}"
-                            )
+                if profile_response.status_code == 200:
+                    profile_data = profile_response.json()
+                    opportunity["profile"] = profile_data["data"]
+                    yield opportunity
+                else:
+                    raise Exception(
+                        "Failed to retrieve profiles for opportunity"
+                        f" {opportunity_id}. Status code:"
+                        f" {profile_response.status_code}, Response:"
+                        f" {profile_response.text}"
+                    )
 
-                    # After fetching a page of results
-                    if response.json().get("hasNext", False):
-                        offset = response.json().get("next", None)
-                    else:
-                        break  # No more pages, exit the loop
-                # manage rate limit
-                elif response.status_code == 429:
-                    adapter.error("Rate limit exceeded. Retrying after 1 minute.")
-                    time.sleep(60)
-                else:
-                    adapter.error(
-                        "Failed to retrieve opportunities from Lever. Status code:"
-                        f" {response.status_code}, Response: {response.text}"
-                    )
-                    break
-            except requests.exceptions.RequestException as e:
-                if "401" in str(e):
-                    adapter.error(
-                        "Error: an exception occurred while fetching opportunities {e}"
-                    )
-                    token, refresh_token = get_or_refresh_tokens(
-                        parameters.client_id,
-                        parameters.client_secret,
-                        "refresh_token",
-                        refresh_token=refresh_token,
-                    )
-                    if not token:
-                        raise Exception("Failed to refresh token.")
-                else:
-                    raise Exception(f"Request failed with error: {e}")
+            if response.json().get("hasNext", False):
+                offset = response.json().get("next", None)
+            else:
+                break
+
+        elif response.status_code == 429:
+            adapter.warning("Rate limit exceeded. Retrying after 1 minute.")
+            time.sleep(5)
+        elif response.status_code == 401:
+            adapter.warning("Access token has expired. Refreshing token and retrying.")
+            token, refresh_token = get_or_refresh_tokens(
+                parameters.auth_domain,
+                parameters.client_id,
+                parameters.client_secret,
+                "refresh_token",
+                refresh_token=refresh_token,
+            )
         else:
-            raise Exception("Failed to obtain initial access token.")
+            raise Exception(
+                "Failed to retrieve profiles from Lever. Status code:"
+                f" {response.status_code}, Response: {response.text}"
+            )
 
 
 def write(
@@ -307,63 +272,53 @@ def write(
     profiles: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
     token, refresh_token = get_or_refresh_tokens(
+        parameters.auth_domain,
         parameters.client_id,
         parameters.client_secret,
         "authorization_code",
         parameters.authorization_code,
     )
+    url_post_opportunity = LEVER_OPPORTUNITIES_ENDPOINT.format(
+        client_domain=parameters.client_domain
+    )
     failed_profiles = []
-    for profile in profiles:
+    params = {
+        "perform_as": parameters.perform_as,
+        "parse": parameters.parse,
+        "perform_as_posting_owner": parameters.perform_as_posting_owner,
+    }
+    i = 0
+    while i < len(profiles):
+        profile = profiles[i]
         profile.pop("file", None)
-        if token:
-            headers = {"Authorization": "Bearer " + token}
-            params = {
-                "perform_as": parameters.perform_as,
-                "parse": parameters.parse,
-                "perform_as_posting_owner": parameters.perform_as_posting_owner,
-            }
-            response = requests.post(
-                LEVER_OPPORTUNITIES_ENDPOINT,
-                headers=headers,
-                params=params,
-                json=profile,
+        headers = {"Authorization": "Bearer " + token}
+        response = requests.post(
+            url_post_opportunity,
+            headers=headers,
+            params=params,
+            json=profile,
+        )
+        if response.status_code // 100 == 2:
+            adapter.info("Successfully posted profile")
+            i += 1
+        elif response.status_code == 429:
+            adapter.warning("Rate limit exceeded. Retrying after 1 minute.")
+            time.sleep(5)
+        elif response.status_code == 401:
+            adapter.warning("Access token has expired. Refreshing token and retrying.")
+            token, refresh_token = get_or_refresh_tokens(
+                parameters.auth_domain,
+                parameters.client_id,
+                parameters.client_secret,
+                "refresh_token",
+                refresh_token=refresh_token,
             )
-            if response.status_code // 100 == 2:
-                adapter.info("Successfully posted profile")
-            elif response.status_code == 429:
-                adapter.error("Rate limit exceeded. Retrying after 1 minute.")
-                time.sleep(60)
-            elif response.status_code == 401:
-                adapter.error(
-                    "Access token has expired. Refreshing token and retrying."
-                )
-                token, refresh_token = get_or_refresh_tokens(
-                    parameters.client_id,
-                    parameters.client_secret,
-                    "refresh_token",
-                    refresh_token=refresh_token,
-                )
-                if token:
-                    headers = {"Authorization": "Bearer " + token}
-                    response = requests.post(
-                        LEVER_OPPORTUNITIES_ENDPOINT,
-                        headers=headers,
-                        params=params,
-                        json=profile,
-                    )
-                    if response.status_code // 100 == 2:
-                        adapter.info("Successfully posted profile")
-                    else:
-                        adapter.error(
-                            "Error posting opportunity. Status code:",
-                            response.status_code,
-                            "Response:",
-                            response.text,
-                        )
-                        failed_profiles.append(profile)
-                else:
-                    failed_profiles.append(profile)
-                    raise Exception("Failed to refresh token.")
+        else:
+            failed_profiles.append(profile)
+            raise Exception(
+                "Failed to post profile. Status code:"
+                f" {response.status_code}, Response: {response.text}"
+            )
 
     return failed_profiles
 
