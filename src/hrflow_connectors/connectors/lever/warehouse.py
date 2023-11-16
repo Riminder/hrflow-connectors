@@ -110,27 +110,26 @@ def get_or_refresh_tokens(
     auth_domain,
     client_id,
     client_secret,
-    grant_type,
-    authorization_code=None,
-    refresh_token=None,
+    flow: t.Literal["authorization_code", "refresh_token"],
+    code: str,
 ):
     lever_auth_endpoint = LEVER_AUTH_ENDPOINT.format(auth_domain=auth_domain)
     url = "{}/oauth/token".format(lever_auth_endpoint)
     redirect_uri = LEVER_REDIRECT_URI
-    if authorization_code:
+    if flow == "authorization_code":
         request_data = {
             "client_id": client_id,
             "client_secret": client_secret,
-            "grant_type": grant_type,
-            "code": authorization_code,
+            "grant_type": flow,
+            "code": code,
             "redirect_uri": redirect_uri,
         }
-    elif refresh_token:
+    else:
         request_data = {
             "client_id": client_id,
             "client_secret": client_secret,
-            "grant_type": grant_type,
-            "refresh_token": refresh_token,
+            "grant_type": flow,
+            "refresh_token": code,
         }
 
     response = requests.post(url, data=request_data)
@@ -188,7 +187,7 @@ def read_jobs(
                 parameters.client_id,
                 parameters.client_secret,
                 "refresh_token",
-                refresh_token=refresh_token,
+                refresh_token,
             )
         else:
             raise Exception(
@@ -257,7 +256,7 @@ def read_profiles(
                 parameters.client_id,
                 parameters.client_secret,
                 "refresh_token",
-                refresh_token=refresh_token,
+                refresh_token,
             )
         else:
             raise Exception(
@@ -311,13 +310,14 @@ def write(
                 parameters.client_id,
                 parameters.client_secret,
                 "refresh_token",
-                refresh_token=refresh_token,
+                refresh_token,
             )
         else:
             failed_profiles.append(profile)
-            raise Exception(
-                "Failed to post profile. Status code:"
-                f" {response.status_code}, Response: {response.text}"
+            adapter.error(
+                "Failed to post profile. Status code: %s, Response: %s",
+                response.status_code,
+                response.text,
             )
 
     return failed_profiles
