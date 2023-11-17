@@ -4,6 +4,7 @@ from logging import LoggerAdapter
 
 import requests
 from pydantic import Field
+from typing_extensions import Literal
 
 from hrflow_connectors.connectors.lever.schemas import LeverJob, LeverProfile
 from hrflow_connectors.core import (
@@ -110,7 +111,7 @@ def get_or_refresh_tokens(
     auth_domain,
     client_id,
     client_secret,
-    flow: t.Literal["authorization_code", "refresh_token"],
+    flow: Literal["authorization_code", "refresh_token"],
     code: str,
 ):
     lever_auth_endpoint = LEVER_AUTH_ENDPOINT.format(auth_domain=auth_domain)
