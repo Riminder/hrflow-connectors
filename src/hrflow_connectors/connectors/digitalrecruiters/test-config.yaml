@@ -1,70 +1,68 @@
+warehouse:
+  DigitalRecruitersJobWarehouse:
+    read:
+      - parameters:
+          token: $__TOKEN_SUCCESS
+          environment_url:  $__ENVIRONMENT_URL_SUCCESS
 actions:
   pull_job_list:
     - id: valid_parameters
       origin_parameters:
-        digital_recruiters_token: $__DIGITAL_RECRUITERS_TOKEN
-        digital_recruiters_environment_url:  $__DIGITAL_RECRUITERS_ENVIRONMENT_URL
+        token: $__TOKEN_SUCCESS
+        environment_url:  $__ENVIRONMENT_URL_SUCCESS
       target_parameters:
-        api_secret: $__API_SECRET
-        api_user: $__API_USER
-        board_key: $__BOARD_KEY
-    - id: bad target param
-      origin_parameters:
-        digital_recruiters_token: $__DIGITAL_RECRUITERS_TOKEN
-        digital_recruiters_environment_url:  $__DIGITAL_RECRUITERS_ENVIRONMENT_URL
-      target_parameters:
-        api_secret: $__API_SECRET
-        api_user: $__API_USER
-        board_key: "123"
-      status: fatal
-    - id: bad origin param
-      origin_parameters:
-        digital_recruiters_token: "123"
-        digital_recruiters_environment_url: "url"
-      target_parameters:
-        api_secret: $__API_SECRET
-        api_user: $__API_USER
-        board_key: $__BOARD_KEY
-      status: fatal
-
-  push_profile:
-    - id: valid_parameters
-      origin_parameters:
-        api_secret: $__API_SECRET
-        api_user: $__API_USER
-        source_key: $__SOURCE_KEY
-        profile_key: $__PROFILE_KEY       
-      
-      target_parameters: 
-        digital_recruiters_token: $__DIGITAL_RECRUITERS_TOKEN 
-        digital_recruiters_environment_url: $__DIGITAL_RECRUITERS_ENVIRONMENT_URL
-        job_reference: $__JOB_REFERENCE
-        message: $__MESSAGE
+        api_secret: $__API_SECRET_SUCCESS
+        api_user: $__API_USER_SUCCESS
+        board_key: $__BOARD_KEY_SUCCESS
       status: success
-    - id: invalid_origin_parameters
+    - id: invalid_parameters
       origin_parameters:
-        api_secret: "123"
-        api_user: "123"
-        source_key: "123"
-        profile_key: "123"       
-      
+        token: $__TOKEN_SUCCESS
+        environment_url:  $__ENVIRONMENT_URL_FAILURE
       target_parameters:
-        digital_recruiters_token: $__DIGITAL_RECRUITERS_TOKEN 
-        digital_recruiters_environment_url: $__DIGITAL_RECRUITERS_ENVIRONMENT_URL
-        job_reference: $__JOB_REFERENCE
-        message: $__MESSAGE
+        api_secret: $__API_SECRET_SUCCESS
+        api_user: $__API_USER_SUCCESS
+        board_key: $__BOARD_KEY_SUCCESS
       status: fatal
+      reason: read_failure
+    - id: invalid_token
+      origin_parameters:
+        token: $__TOKEN_FAILURE
+        environment_url:  $__ENVIRONMENT_URL_SUCCESS
+      target_parameters:
+        api_secret: $__API_SECRET_SUCCESS
+        api_user: $__API_USER_SUCCESS
+        board_key: $__BOARD_KEY_SUCCESS
+      status: fatal
+      reason: read_failure
+    - id: invalid_api_secret
+      origin_parameters:
+        token: $__TOKEN_SUCCESS
+        environment_url:  $__ENVIRONMENT_URL_SUCCESS
+      target_parameters:
+        api_secret: $__API_SECRET_FAILURE
+        api_user: $__API_USER_SUCCESS
+        board_key: $__BOARD_KEY_SUCCESS
+      status: fatal
+      reason: write_failure
+    - id: invalid_api_user
+      origin_parameters:
+        token: $__TOKEN_SUCCESS
+        environment_url:  $__ENVIRONMENT_URL_SUCCESS
+      target_parameters:
+        api_secret: $__API_SECRET_SUCCESS
+        api_user: $__API_USER_FAILURE
+        board_key: $__BOARD_KEY_SUCCESS
+      status: fatal
+      reason: write_failure
+    - id: invalid_board_key
+      origin_parameters:
+        token: $__TOKEN_SUCCESS
+        environment_url:  $__ENVIRONMENT_URL_SUCCESS
+      target_parameters:
+        api_secret: $__API_SECRET_SUCCESS
+        api_user: $__API_USER_SUCCESS
+        board_key: $__BOARD_KEY_FAILURE
+      status: fatal
+      reason: write_failure
 
-    - id: invalid_target_parameters
-      origin_parameters:
-        api_secret: $__API_SECRET
-        api_user: $__API_USER
-        source_key: $__SOURCE_KEY
-        profile_key: $__PROFILE_KEY       
-      
-      target_parameters:
-        digital_recruiters_token: true 
-        digital_recruiters_environment_url: $__DIGITAL_RECRUITERS_ENVIRONMENT_URL
-        job_reference: $__JOB_REFERENCE
-        message: $__MESSAGE
-      status: fatal
