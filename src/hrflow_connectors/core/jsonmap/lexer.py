@@ -2,7 +2,7 @@ import re
 import typing as t
 from enum import Enum, unique
 
-from utils import Error, ErrorType
+from hrflow_connectors.core.jsonmap.utils import Error, ErrorType
 
 
 @unique
@@ -29,6 +29,8 @@ class TokenType(Enum):
 
 class Token(t.NamedTuple):
     kind: str
+    start: int
+    end: int
     value: t.Any = None
 
 
@@ -36,19 +38,22 @@ class Token(t.NamedTuple):
 class SpecialTokens(Enum):
     SKIP = r"[ \t]+"
     MISMATCH = r"."
+    EOF = "$"
 
 
 LiteralT = t.Union[bool, int, float, None]
 
 
 def from_literal(literal: LiteralT) -> Token:
+    start = 0
+    end = len(str(literal))
     if isinstance(literal, bool):
         if literal is True:
-            return Token(TokenType.TRUE.name)
-        return Token(TokenType.FALSE.name)
+            return Token(TokenType.TRUE.name, start=start, end=end)
+        return Token(TokenType.FALSE.name, start=start, end=end)
     if isinstance(literal, int) or isinstance(literal, float):
-        return Token(TokenType.NUMBER.name, literal)
-    return Token(TokenType.NULL.name)
+        return Token(TokenType.NUMBER.name, value=literal, start=start, end=end)
+    return Token(TokenType.NULL.name, start=start, end=end)
 
 
 def from_jsonmap(expression: str) -> t.Tuple[t.List[Token], t.Optional[Error]]:
@@ -60,11 +65,7 @@ def from_jsonmap(expression: str) -> t.Tuple[t.List[Token], t.Optional[Error]]:
     for match in re.finditer(pattern, expression):
         kind = match.lastgroup
         value = match.group()
-        if kind == TokenType.TRUE.name:
-            value = True
-        elif kind == TokenType.FALSE.name:
-            value = False
-        elif kind == TokenType.NULL.name:
+        if kind in [TokenType.TRUE.name, TokenType.FALSE.name, TokenType.NULL.name]:
             value = None
         elif kind == TokenType.NUMBER.name:
             value = float(value) if "." in value else int(value)
@@ -77,15 +78,17 @@ def from_jsonmap(expression: str) -> t.Tuple[t.List[Token], t.Optional[Error]]:
         ]:
             call_group_name = kind.strip("_FN").lower() + "_args"
             value = match.group(call_group_name)
-        elif kind == "SKIP":
+        elif kind == SpecialTokens.SKIP.name:
             continue
-        elif kind == "MISMATCH":
+        elif kind == SpecialTokens.EOF.name:
+            value = None
+        elif kind == SpecialTokens.MISMATCH.name:
             return [], Error(
                 start=match.start(),
                 end=match.end(),
                 type=ErrorType.IllegalCharacter,
             )
-        tokens.append(Token(kind, value))
+        tokens.append(Token(kind, value=value, start=match.start(), end=match.end()))
     return tokens, None
 
 
@@ -94,4 +97,7 @@ def make_tokens(
 ) -> t.Tuple[t.List[Token], t.Optional[Error]]:
     if isinstance(value, str):
         return from_jsonmap(value)
-    return [from_literal(value)], None
+    return [
+        from_literal(value),
+        Token(SpecialTokens.EOF.name, start=len(str(value)), end=len(str(value))),
+    ], None

@@ -1,0 +1,5 @@
+expr        : TRUE|FALSE|NULL|NUMBER|RAW_STRING|QUOTED_RAW_STRING
+            : dot_access
+
+dot_access  : DOT_ACCESS 
+            : DOT_ACCESS (ACCESS_CATCH|FALSY) expr

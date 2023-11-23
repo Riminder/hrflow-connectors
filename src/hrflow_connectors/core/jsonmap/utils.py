@@ -13,6 +13,7 @@ class Error(t.NamedTuple):
     start: int
     end: int
     type: ErrorType
+    details: str = ""
 
 
 @dataclass
@@ -20,13 +21,12 @@ class JSONMapError(Exception):
     key: t.Optional[str]
     expression: str
     error: Error
-    details: str = ""
 
     def as_string(self):
         result = (
             f"{self.error.type.value} for key {self.key} at col {self.error.start}:"
-            f" {self.details}\n\n"
+            f" {self.error.details}\n\n"
         )
-        result += self.expression + "\n"
+        result += "{}\n".format(self.expression)
         result += " " * self.error.start + "^" * (self.error.end - self.error.start)
         return result
