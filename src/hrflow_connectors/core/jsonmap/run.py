@@ -38,9 +38,14 @@ def ast(
     tokens, error = lexer.make_tokens(source)
     if error:
         raise JSONMapError(key=None, expression=source, error=error)
+
     parse_result = parser.Parser(tokens).parse()
     if parse_result.error:
         raise JSONMapError(key=None, expression=source, error=parse_result.error)
+    if isinstance(parse_result.node, parser.ListNode):
+        return [repr(node) for node in parse_result.node.nodes]
+    if isinstance(parse_result.node, parser.MapNode):
+        return {key.token.value: repr(value) for key, value in parse_result.node.items}
     return repr(parse_result.node)
 
 

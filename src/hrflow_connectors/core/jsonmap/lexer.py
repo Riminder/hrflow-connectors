@@ -11,20 +11,25 @@ class TokenType(Enum):
     FALSE = r"false"
     NULL = r"null"
     NUMBER = r"\d+(\.\d*)?"
-    RAW_STRING = r"[^\.\?>\|$\s:{\['][^\s]*$"
+    RAW_STRING = r"[^\.\?>\|$\s:\[\]\(\)\{\}',][^\s,:]*"
     QUOTED_RAW_STRING = r"'[^']*'"
     DOT_ACCESS = r"(\??\.[a-zA-Z_\-09]*)+"
     ACCESS_CATCH = r"\|\|"
     FALSY = r">>"
     PASS_CONTEXT = r"\|"
     IF = r"\?\?"
-    THEN = r":"
     FLOAT_FN = r"\$float"
-    CONCAT_FN = r"\$concat\((?P<concat_args>[^)]*)\)"
-    SPLIT_FN = r"\$split\((?P<split_args>[^)]*)\)"
-    MAP_FN = r"\$map\((?P<map_args>[^)]*)\)"
-    MAP = r"{[^}]*}"
-    LIST = r"\[[^\]]*\]"
+    CONCAT_FN = r"\$concat"
+    SPLIT_FN = r"\$split"
+    MAP_FN = r"\$map"
+    L_PAREN = r"\("
+    R_PAREN = r"\)"
+    L_BRAKET = r"\["
+    R_BRAKET = r"\]"
+    L_CURLY = r"\{"
+    R_CURLY = r"\}"
+    COMMA = r","
+    COLLON = r":"
 
 
 class Token(t.NamedTuple):
@@ -71,13 +76,6 @@ def from_jsonmap(expression: str) -> t.Tuple[t.List[Token], t.Optional[Error]]:
             value = float(value) if "." in value else int(value)
         elif kind == TokenType.QUOTED_RAW_STRING.name:
             value = value[1:-1]
-        elif kind in [
-            TokenType.SPLIT_FN.name,
-            TokenType.CONCAT_FN.name,
-            TokenType.MAP_FN.name,
-        ]:
-            call_group_name = kind.strip("_FN").lower() + "_args"
-            value = match.group(call_group_name)
         elif kind == SpecialTokens.SKIP.name:
             continue
         elif kind == SpecialTokens.EOF.name:

@@ -12,11 +12,6 @@ LITERAL_TOKENS = {
     TokenType.RAW_STRING.name,
     TokenType.QUOTED_RAW_STRING.name,
 }
-POST_DOT_ACCESS_TOKENS = {
-    TokenType.ACCESS_CATCH.name,
-    TokenType.FALSY.name,
-    SpecialTokens.EOF.name,
-}
 
 
 @dataclass
@@ -52,6 +47,22 @@ class EnhancedDotAccess(ASTNode):
         return "DotAccess[{} == IF {} => {}]".format(
             self.node.path, enhancement, self.eventually
         )
+
+
+@dataclass
+class ListNode(list):
+    nodes: t.List[ASTNode]
+
+    def __repr__(self):
+        return repr(list(self.nodes))
+
+
+@dataclass
+class MapNode(ASTNode):
+    items: t.List[t.Tuple[str, ASTNode]]
+
+    def __repr__(self):
+        return repr(dict(self.items))
 
 
 @dataclass
@@ -96,65 +107,184 @@ class Parser:
         res = ParseResult()
         token = self.current_token
 
-        if token.kind in LITERAL_TOKENS:
+        if token.kind == TokenType.L_BRAKET.name:
             res.register(self.advance())
-            if self.current_token.kind == SpecialTokens.EOF.name:
-                return res.success(LiteralNode(token))
-            return res.failure(
-                Error(
-                    start=self.current_token.start,
-                    end=self.current_token.end,
-                    type=ErrorType.InvalidSyntax,
-                    details="Expecting EOF after Literal Token {} but found {}".format(
-                        token, self.current_token
-                    ),
+            nodes = []
+            if self.current_token.kind != TokenType.R_BRAKET.name:
+                nodes.append(res.register(self.atom()))
+                if res.error:
+                    return res
+                while self.current_token.kind == TokenType.COMMA.name:
+                    res.register(self.advance())
+                    nodes.append(res.register(self.atom()))
+                    if res.error:
+                        return res
+            if self.current_token.kind != TokenType.R_BRAKET.name:
+                return res.failure(
+                    Error(
+                        start=self.current_token.start,
+                        end=self.current_token.end,
+                        type=ErrorType.InvalidSyntax,
+                        details="Expected ',' or ')' but found {}".format(
+                            self.current_token
+                        ),
+                    )
                 )
+            res.register(self.advance())
+            if self.current_token.kind != SpecialTokens.EOF.name:
+                return res.failure(
+                    Error(
+                        start=self.current_token.start,
+                        end=self.current_token.end,
+                        type=ErrorType.InvalidSyntax,
+                        details="Unexpected token after expression end {}".format(
+                            self.current_token
+                        ),
+                    )
+                )
+            return res.success(ListNode(nodes))
+
+        if token.kind == TokenType.L_CURLY.name:
+            res.register(self.advance())
+            items = []
+            if self.current_token.kind != TokenType.R_CURLY.name:
+                identifier = res.register(
+                    self.literal(only={TokenType.RAW_STRING.name})
+                )
+                if res.error:
+                    return res
+                if self.current_token.kind == TokenType.COLLON.name:
+                    res.register(self.advance())
+                    value = res.register(self.atom())
+                    if res.error:
+                        return res
+                    items.append((identifier, value))
+                else:
+                    return res.failure(
+                        Error(
+                            start=self.current_token.start,
+                            end=self.current_token.end,
+                            type=ErrorType.InvalidSyntax,
+                            details="Expected ':' but found {}".format(
+                                self.current_token
+                            ),
+                        )
+                    )
+
+                while self.current_token.kind == TokenType.COMMA.name:
+                    res.register(self.advance())
+                    identifier = res.register(
+                        self.literal(only={TokenType.RAW_STRING.name})
+                    )
+                    if res.error:
+                        return res
+                    if self.current_token.kind == TokenType.COLLON.name:
+                        res.register(self.advance())
+                        value = res.register(self.atom())
+                        if res.error:
+                            return res
+                        items.append((identifier, value))
+                    else:
+                        return res.failure(
+                            Error(
+                                start=self.current_token.start,
+                                end=self.current_token.end,
+                                type=ErrorType.InvalidSyntax,
+                                details="Expected ':' but found {}".format(
+                                    self.current_token
+                                ),
+                            )
+                        )
+            if self.current_token.kind != TokenType.R_CURLY.name:
+                return res.failure(
+                    Error(
+                        start=self.current_token.start,
+                        end=self.current_token.end,
+                        type=ErrorType.InvalidSyntax,
+                        details="Expected ',' or '}}' but found {}".format(
+                            self.current_token
+                        ),
+                    )
+                )
+            res.register(self.advance())
+            if self.current_token.kind != SpecialTokens.EOF.name:
+                return res.failure(
+                    Error(
+                        start=self.current_token.start,
+                        end=self.current_token.end,
+                        type=ErrorType.InvalidSyntax,
+                        details="Unexpected token after expression end {}".format(
+                            self.current_token
+                        ),
+                    )
+                )
+            return res.success(MapNode(items))
+
+        atom = res.register(self.atom())
+        if res.error:
+            return res
+        if self.current_token.kind == SpecialTokens.EOF.name:
+            return res.success(atom)
+
+        return res.failure(
+            Error(
+                start=self.current_token.start,
+                end=self.current_token.end,
+                type=ErrorType.InvalidSyntax,
+                details="Token not part of grammar yet {}".format(self.current_token),
             )
+        )
+
+    def literal(self, only: t.Set[str] = None):
+        only = only or LITERAL_TOKENS
+
+        res = ParseResult()
+        token = self.current_token
+        if token.kind in only:
+            res.register(self.advance())
+            return res.success(LiteralNode(token))
+        return res.failure(
+            Error(
+                start=self.current_token.start,
+                end=self.current_token.end,
+                type=ErrorType.InvalidSyntax,
+                details="Expecting literal value of type {} but found {}".format(
+                    only, self.current_token
+                ),
+            )
+        )
+
+    def atom(self):
+        res = ParseResult()
+        token = self.current_token
+
+        if token.kind in LITERAL_TOKENS:
+            return self.literal()
+
         if token.kind == TokenType.DOT_ACCESS.name:
             dot_access = res.register(self.dot_access())
             if res.error:
                 return res
             return res.success(dot_access)
 
-        return res.failure(
-            Error(
-                start=token.start,
-                end=token.end,
-                type=ErrorType.InvalidSyntax,
-                details="Token not part of grammar yet {}".format(token),
-            )
-        )
-
     def dot_access(self):
         res = ParseResult()
         token = self.current_token
 
         res.register(self.advance())
-        if self.current_token.kind not in POST_DOT_ACCESS_TOKENS:
-            return res.failure(
-                Error(
-                    start=token.start,
-                    end=token.end,
-                    type=ErrorType.InvalidSyntax,
-                    details="Expecting one of {} after {} but found {}".format(
-                        POST_DOT_ACCESS_TOKENS, token, self.current_token
-                    ),
-                )
-            )
-
-        next_token = self.current_token
-        if next_token.kind == SpecialTokens.EOF.name:
-            return res.success(DotAccessNode(token.value))
-
-        if next_token.kind in [TokenType.ACCESS_CATCH.name, TokenType.FALSY.name]:
+        next = self.current_token
+        if next.kind in [
+            TokenType.ACCESS_CATCH.name,
+            TokenType.FALSY.name,
+        ]:
             res.register(self.advance())
-            expr = res.register(self.expr())
+            expr = res.register(self.atom())
             if res.error:
                 return res
             return res.success(
                 EnhancedDotAccess(
                     node=DotAccessNode(token.value),
-                    enhancement=TokenType[next_token.kind],
+                    enhancement=TokenType[next.kind],
                     eventually=expr,
                 )
             )
