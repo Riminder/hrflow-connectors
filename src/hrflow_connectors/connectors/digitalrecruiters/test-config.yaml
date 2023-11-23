@@ -1,0 +1,68 @@
+warehouse:
+  DigitalRecruitersJobWarehouse:
+    read:
+      - parameters:
+          token: $__TOKEN_SUCCESS
+          environment_url:  $__ENVIRONMENT_URL_SUCCESS
+actions:
+  pull_job_list:
+    - id: valid_parameters
+      origin_parameters:
+        token: $__TOKEN_SUCCESS
+        environment_url:  $__ENVIRONMENT_URL_SUCCESS
+      target_parameters:
+        api_secret: $__API_SECRET_SUCCESS
+        api_user: $__API_USER_SUCCESS
+        board_key: $__BOARD_KEY_SUCCESS
+      status: success
+    - id: invalid_parameters
+      origin_parameters:
+        token: $__TOKEN_SUCCESS
+        environment_url:  $__ENVIRONMENT_URL_FAILURE
+      target_parameters:
+        api_secret: $__API_SECRET_SUCCESS
+        api_user: $__API_USER_SUCCESS
+        board_key: $__BOARD_KEY_SUCCESS
+      status: fatal
+      reason: read_failure
+    - id: invalid_token
+      origin_parameters:
+        token: $__TOKEN_FAILURE
+        environment_url:  $__ENVIRONMENT_URL_SUCCESS
+      target_parameters:
+        api_secret: $__API_SECRET_SUCCESS
+        api_user: $__API_USER_SUCCESS
+        board_key: $__BOARD_KEY_SUCCESS
+      status: fatal
+      reason: read_failure
+    - id: invalid_api_secret
+      origin_parameters:
+        token: $__TOKEN_SUCCESS
+        environment_url:  $__ENVIRONMENT_URL_SUCCESS
+      target_parameters:
+        api_secret: $__API_SECRET_FAILURE
+        api_user: $__API_USER_SUCCESS
+        board_key: $__BOARD_KEY_SUCCESS
+      status: fatal
+      reason: write_failure
+    - id: invalid_api_user
+      origin_parameters:
+        token: $__TOKEN_SUCCESS
+        environment_url:  $__ENVIRONMENT_URL_SUCCESS
+      target_parameters:
+        api_secret: $__API_SECRET_SUCCESS
+        api_user: $__API_USER_FAILURE
+        board_key: $__BOARD_KEY_SUCCESS
+      status: fatal
+      reason: write_failure
+    - id: invalid_board_key
+      origin_parameters:
+        token: $__TOKEN_SUCCESS
+        environment_url:  $__ENVIRONMENT_URL_SUCCESS
+      target_parameters:
+        api_secret: $__API_SECRET_SUCCESS
+        api_user: $__API_USER_SUCCESS
+        board_key: $__BOARD_KEY_FAILURE
+      status: fatal
+      reason: write_failure
+
