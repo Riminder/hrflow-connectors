@@ -2,6 +2,13 @@
 
 
 
+## v4.3.0 (2023-11-23)
+
+### Feature
+
+* feat: Connector/digitalrecruiters (#187) ([`0151640`](https://github.com/Riminder/hrflow-connectors/commit/015164054d1d60d7380e951ad5dadb9d640a52d1))
+
+
 ## v4.2.0 (2023-11-23)
 
 ### Feature
