@@ -1,10 +1,12 @@
 import re
 import typing as t
-from enum import Enum, StrEnum, auto, unique
+from enum import Enum, unique
+
+from utils import Error, ErrorType
 
 
 @unique
-class TokenType(StrEnum):
+class TokenType(Enum):
     TRUE = r"true"
     FALSE = r"false"
     NULL = r"null"
@@ -36,22 +38,10 @@ class SpecialTokens(Enum):
     MISMATCH = r"."
 
 
-@unique
-class ErrorType(StrEnum):
-    IllegalCharacter = auto()
+LiteralT = t.Union[bool, int, float, None]
 
 
-class Error(t.NamedTuple):
-    type: ErrorType
-    start: int
-    end: int
-    error: str
-
-
-LiteralT = bool | int | float | None
-
-
-def from_literal(literal: bool | int | float | None) -> list[Token]:
+def from_literal(literal: LiteralT) -> Token:
     if isinstance(literal, bool):
         if literal is True:
             return Token(TokenType.TRUE.name)
@@ -61,7 +51,7 @@ def from_literal(literal: bool | int | float | None) -> list[Token]:
     return Token(TokenType.NULL.name)
 
 
-def from_jsonmap(expression: str) -> tuple[list[Token], Error | None]:
+def from_jsonmap(expression: str) -> t.Tuple[t.List[Token], t.Optional[Error]]:
     pattern = "|".join(
         f"(?P<{kind.name}>{kind.value})"
         for kind in list(TokenType) + list(SpecialTokens)
@@ -91,16 +81,17 @@ def from_jsonmap(expression: str) -> tuple[list[Token], Error | None]:
             continue
         elif kind == "MISMATCH":
             return [], Error(
-                type=ErrorType.IllegalCharacter,
                 start=match.start(),
                 end=match.end(),
-                error=value,
+                type=ErrorType.IllegalCharacter,
             )
         tokens.append(Token(kind, value))
     return tokens, None
 
 
-def make_tokens(value: LiteralT | str) -> tuple[list[Token], Error | None]:
+def make_tokens(
+    value: t.Union[LiteralT, str]
+) -> t.Tuple[t.List[Token], t.Optional[Error]]:
     if isinstance(value, str):
         return from_jsonmap(value)
     return [from_literal(value)], None
