@@ -24,6 +24,7 @@ requests = "^2.27.1"
 boto3 = {version = "^1.24.66", optional = true}
 simple-salesforce = "^1.12.4"
 typing-extensions = "^4.7.1"
+beautifulsoup4 = "4.10.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
