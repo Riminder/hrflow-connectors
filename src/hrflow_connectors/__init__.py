@@ -47,9 +47,12 @@ __CONNECTORS__ = [
     Lever,
     Salesforce,
     DigitalRecruiters,
+<<<<<<< HEAD
     Jobology,
     Meteojob,
     Carrevolutis,
+=======
+>>>>>>> b85caa1 (feat: Connector/digitalrecruiters (#187))
 ]
 
 # This makes sure that connector are in module namespace
