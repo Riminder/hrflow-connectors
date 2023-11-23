@@ -2,6 +2,17 @@
 
 
 
+## v4.2.0 (2023-11-23)
+
+### Feature
+
+* feat: new connector Lever ([`13c60cf`](https://github.com/Riminder/hrflow-connectors/commit/13c60cf1348315b9a38d7979cbce1269719f5f56))
+
+### Fix
+
+* fix: Lever connector updated at ([`8a1b937`](https://github.com/Riminder/hrflow-connectors/commit/8a1b93740ae6b5faf2340c9008796bbdd16a568d))
+
+
 ## v4.1.1 (2023-11-09)
 
 ### Fix
