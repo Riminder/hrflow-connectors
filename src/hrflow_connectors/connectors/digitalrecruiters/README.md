@@ -67,4 +67,3 @@ For more code details checkout connector code.
 # 👏 Special Thanks
 
 - 💻 HrFlow.ai : Abdellahi Mezid - Software Engineer
-- 🤝 Digitalrecruiters : XXXXX YYYYY - Partner Manager
