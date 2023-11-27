@@ -1,0 +1,12 @@
+{
+  "json_number": 1.12,
+  "jsonmap_number": "1.12",
+  "json_true": true,
+  "jsonmap_true": "true",
+  "json_false": false,
+  "jsonmap_false": "false",
+  "json_null": null,
+  "jsonmap_null": "null",
+  "simple_string": "JSONMap",
+  "quoted_string": "'This a JSONMap mapping example'"
+}

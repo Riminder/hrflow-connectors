@@ -1,0 +1,18 @@
+{
+  "json_list": [
+    1.23,
+    "null",
+    "JSONMap",
+    "'This a JSONMap mapping example'",
+    ".title || null"
+  ],
+  "jsonmap_list": "[1.23, null, JSONMap, 'This a JSONMap mapping example', .title || null]",
+  "json_map": {
+    "key_1": 1.12,
+    "key_2": "null",
+    "key_3": "JSONMap",
+    "key_4": "'This a JSONMap mapping example'",
+    "key_5": ".title || null"
+  },
+  "jsonmap_map": "{ key_1: 1.12, key_2: null, key_3: JSONMap, key_4: 'This a JSONMap mapping example', key_5: .title || null}"
+}

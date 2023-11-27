@@ -1,0 +1,7 @@
+{
+  "simple_dot_access": ".title",
+  "dot_access_optional_chaining_style": "?.title",
+  "dot_access_key_error_catch": ".title || 'JSONMap Mapping Example'",
+  "dot_access_falsy": ".created_at >> '2022-04-23'",
+  "deep_dot_access": ".title || .subtitle || ?.description >> 'Really Nothing to Report'"
+}
