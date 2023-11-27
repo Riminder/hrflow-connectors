@@ -1,0 +1,13 @@
+{
+  "dot_after_context_pass": ".location | .text",
+  "map_after_context_pass": ".location | {text: .text, lat: .latitutde, lng: .longitude}",
+  "list_after_context_pass": ".location | [1, 2, 3, .text]",
+  "float": ".duration | $float",
+  "split_1": ".date | $split(T)",
+  "split_2": ".date | $split(GMT)",
+  "split_3": ".date | $split(' : ')",
+  "map_static_1": ".ids | $map(0)",
+  "map_static_2": ".credit_cards | $map('**** **** **** ****')",
+  "map_to_json": ".experiences | $map({title: .title, duration: .duration | $float })",
+  "concat": ". | $concat(.first_name, ' ', .last_name)"
+}

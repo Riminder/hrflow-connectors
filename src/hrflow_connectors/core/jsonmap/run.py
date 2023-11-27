@@ -7,6 +7,35 @@ from hrflow_connectors.core.jsonmap import lexer, parser
 from hrflow_connectors.core.jsonmap.utils import JSONMapError
 
 
+def json_encodable_ast(node: parser.ASTNode) -> t.Any:
+    if isinstance(node, parser.ListNode):
+        return [json_encodable_ast(node) for node in node.nodes]
+    if isinstance(node, parser.MapNode):
+        return {key.token.value: json_encodable_ast(value) for key, value in node.items}
+    if isinstance(node, parser.PipedContextNode):
+        context = json_encodable_ast(node.parent_node)
+        if (
+            isinstance(node.consumer, parser.FunctionNode)
+            and node.consumer.fn is lexer.TokenType.MAP_FN
+        ):
+            return [
+                "For each item in {}[]".format(context),
+                json_encodable_ast(node.consumer.args[0]),
+            ]
+        consumer = json_encodable_ast(node.consumer)
+        if isinstance(consumer, list):
+            return [
+                "{} | {}".format(context, json_encodable_ast(item)) for item in consumer
+            ]
+        if isinstance(consumer, dict):
+            return {
+                key: "{} | {}".format(context, json_encodable_ast(value))
+                for key, value in consumer.items()
+            }
+        return "{} | {}".format(context, consumer)
+    return repr(node)
+
+
 def ast(
     source: t.Union[t.Dict[str, t.Any], t.List[t.Any]]
 ) -> t.Union[t.Dict[str, t.Any], t.List[t.Any]]:
@@ -42,11 +71,7 @@ def ast(
     parse_result = parser.Parser(tokens).parse()
     if parse_result.error:
         raise JSONMapError(key=None, expression=source, error=parse_result.error)
-    if isinstance(parse_result.node, parser.ListNode):
-        return [repr(node) for node in parse_result.node.nodes]
-    if isinstance(parse_result.node, parser.MapNode):
-        return {key.token.value: repr(value) for key, value in parse_result.node.items}
-    return repr(parse_result.node)
+    return json_encodable_ast(parse_result.node)
 
 
 if __name__ == "__main__":

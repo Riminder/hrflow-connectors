@@ -1,11 +1,27 @@
+jsonmap             : expr
+
 expr                : atom
                     : L_BRAKET (atom (COMMA atom)*)? R_BRAKET
                     : L_CURLY (RAW_STRING COLLON atom)* R_CURLY
 
 atom                : literal
                     : dot_access
+                    : dot_access PASS_CONTEXT consumer
 
 literal             : TRUE|FALSE|NULL|NUMBER|RAW_STRING|QUOTED_RAW_STRING
 
 dot_access          : DOT_ACCESS
                     : DOT_ACCESS (ACCESS_CATCH|FALSY) atom
+
+consumer            : expr
+                    : function_call
+
+function_call       : float_call
+                    : split_call
+                    : concat_call
+                    : map_call
+
+float_call          : FLOAT_FN
+split_call          : SPLIT_FN L_PAREN RAW_STRING|QUOTED_RAW_STRING R_PAREN
+map_call            : MAP_FN L_PAREN expr R_PAREN
+concat_call         : CONCAT_FN L_PAREN dot_access|RAW_STRING|QUOTED_RAW_STRING (COMMA dot_access|RAW_STRING|QUOTED_RAW_STRING)* R_PAREN

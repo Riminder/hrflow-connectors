@@ -11,7 +11,7 @@ class TokenType(Enum):
     FALSE = r"false"
     NULL = r"null"
     NUMBER = r"\d+(\.\d*)?"
-    RAW_STRING = r"[^\.\?>\|$\s:\[\]\(\)\{\}',][^\s,:]*"
+    RAW_STRING = r"[^\.\?>\|$\s:\[\]\(\)\{\}',][^\s,:\)\(\[\]]*"
     QUOTED_RAW_STRING = r"'[^']*'"
     DOT_ACCESS = r"(\??\.[a-zA-Z_\-09]*)+"
     ACCESS_CATCH = r"\|\|"
