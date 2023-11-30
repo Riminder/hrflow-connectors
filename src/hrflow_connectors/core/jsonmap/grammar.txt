@@ -2,8 +2,8 @@ jsonmap             : expr
                     : IF DOT_ACCESS COLON expr
 
 expr                : atom
-                    : L_BRAKET (atom (COMMA atom)*)? R_BRAKET
-                    : L_CURLY (RAW_STRING COLON atom)* R_CURLY
+                    : L_BRAKET (expr (COMMA expr)*)? R_BRAKET
+                    : L_CURLY (RAW_STRING COLON expr)* R_CURLY
 
 atom                : literal
                     : dot_access
@@ -12,8 +12,7 @@ atom                : literal
 
 literal             : TRUE|FALSE|NULL|NUMBER|RAW_STRING|QUOTED_RAW_STRING
 
-dot_access          : DOT_ACCESS
-                    : DOT_ACCESS (ACCESS_CATCH|FALSY) atom
+dot_access          : DOT_ACCESS (INDEX_ACCESS DOT_ACCESS?)* ((ACCESS_CATCH|FALSY) expr)?
 
 consumer            : expr
                     : function_call

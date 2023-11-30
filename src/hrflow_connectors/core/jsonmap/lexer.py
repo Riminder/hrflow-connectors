@@ -14,6 +14,7 @@ class TokenType(Enum):
     RAW_STRING = r"[^\.\?>\|$\s:\[\]\(\)\{\}',][^\s,:\)\(\[\]]*"
     QUOTED_RAW_STRING = r"'[^']*'"
     DOT_ACCESS = r"(\??\.[a-zA-Z_\-09]*)+"
+    INDEX_ACCESS = r"\[(\d+|\-1)\]"
     ACCESS_CATCH = r"\|\|"
     FALSY = r">>"
     PASS_CONTEXT = r"\|"
@@ -76,6 +77,8 @@ def from_jsonmap(expression: str) -> t.Tuple[t.List[Token], t.Optional[Error]]:
             value = float(value) if "." in value else int(value)
         elif kind == TokenType.QUOTED_RAW_STRING.name:
             value = value[1:-1]
+        elif kind == TokenType.INDEX_ACCESS.name:
+            value = int(value[1:-1])
         elif kind == SpecialTokens.SKIP.name:
             continue
         elif kind == SpecialTokens.EOF.name:

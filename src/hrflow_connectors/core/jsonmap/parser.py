@@ -52,15 +52,28 @@ class IFNode:
 
 
 @dataclass
-class EnhancedDotAccess(ASTNode):
-    node: DotAccessNode
+class ListAccessNode:
+    node: ASTNode
+    index: int
+
+    def __repr__(self):
+        return "ListAccess[{}, {}]".format(self.node, self.index)
+
+
+@dataclass
+class EnhancedAccess(ASTNode):
+    node: DotAccessNode | ListAccessNode
     eventually: ASTNode
     enhancement: t.Literal[TokenType.ACCESS_CATCH, TokenType.FALSY]
 
     def __repr__(self):
         enhancement = "falsy" if self.enhancement is TokenType.FALSY else "KeyError"
-        return "DotAccess[{} == IF {} => {}]".format(
-            self.node.path, enhancement, self.eventually
+        if isinstance(self.node, DotAccessNode):
+            return "EnhancedAccess[{} == IF {} => {}]".format(
+                self.node.path, enhancement, self.eventually
+            )
+        return "EnhancedAccess[{} == IF {} => {}]".format(
+            self.node, enhancement, self.eventually
         )
 
 
@@ -77,7 +90,7 @@ class MapNode(ASTNode):
     items: t.List[t.Tuple[str, ASTNode]]
 
     def __repr__(self):
-        return repr(dict(self.items))
+        return repr({repr(key): repr(value) for key, value in self.items})
 
 
 @dataclass
@@ -97,7 +110,7 @@ class FunctionNode(ASTNode):
 
 @dataclass
 class PipedContextNode(ASTNode):
-    parent_node: t.Union[EnhancedDotAccess, DotAccessNode]
+    parent_node: t.Union[EnhancedAccess, DotAccessNode]
     consumer: ASTNode
 
 
@@ -208,12 +221,12 @@ class Parser:
             res.register(self.advance())
             nodes = []
             if self.current_token.kind != TokenType.R_BRAKET.name:
-                nodes.append(res.register(self.atom()))
+                nodes.append(res.register(self.expr()))
                 if res.error:
                     return res
                 while self.current_token.kind == TokenType.COMMA.name:
                     res.register(self.advance())
-                    nodes.append(res.register(self.atom()))
+                    nodes.append(res.register(self.expr()))
                     if res.error:
                         return res
             if self.current_token.kind != TokenType.R_BRAKET.name:
@@ -241,7 +254,7 @@ class Parser:
                     return res
                 if self.current_token.kind == TokenType.COLON.name:
                     res.register(self.advance())
-                    value = res.register(self.atom())
+                    value = res.register(self.expr())
                     if res.error:
                         return res
                     items.append((identifier, value))
@@ -266,7 +279,7 @@ class Parser:
                         return res
                     if self.current_token.kind == TokenType.COLON.name:
                         res.register(self.advance())
-                        value = res.register(self.atom())
+                        value = res.register(self.expr())
                         if res.error:
                             return res
                         items.append((identifier, value))
@@ -360,33 +373,43 @@ class Parser:
                 )
             )
 
+        node = DotAccessNode(token.value)
+
         res.register(self.advance())
-        next = self.current_token
-        if next.kind in [
+        while self.current_token.kind in [
+            TokenType.INDEX_ACCESS.name,
+            TokenType.DOT_ACCESS.name,
+        ]:
+            if self.current_token.kind == TokenType.INDEX_ACCESS.name:
+                node = ListAccessNode(node=node, index=self.current_token.value)
+            else:
+                node = DotAccessNode("{}{}".format(node, self.current_token.value))
+            res.register(self.advance())
+
+        if self.current_token.kind in [
             TokenType.ACCESS_CATCH.name,
             TokenType.FALSY.name,
         ]:
+            enhancement = TokenType[self.current_token.kind]
             if simple is True:
                 return res.failure(
                     Error(
-                        start=next.start,
-                        end=next.end,
+                        start=self.current_token.start,
+                        end=self.current_token.end,
                         type=ErrorType.InvalidSyntax,
                         details="Simple Dot Access expected but enhancement operator",
                     )
                 )
             res.register(self.advance())
-            expr = res.register(self.atom())
+            expr = res.register(self.expr())
             if res.error:
                 return res
-            return res.success(
-                EnhancedDotAccess(
-                    node=DotAccessNode(token.value),
-                    enhancement=TokenType[next.kind],
-                    eventually=expr,
-                )
+            node = EnhancedAccess(
+                node=node,
+                enhancement=enhancement,
+                eventually=expr,
             )
-        return res.success(DotAccessNode(token.value))
+        return res.success(node)
 
     def consumer(self):
         res = ParseResult()

@@ -1,0 +1,11 @@
+{
+  "simple_root": ".[0]",
+  "simple": ".names[0]",
+  "dot_after_index": ".names[0].full",
+  "simple_with_catch": ".names[1] || 'John Doe'",
+  "simple_with_falsy": ".names[2] >> 'John Doe'",
+  "nested": ".experiences[3].sections[-1].titles[0]",
+  "direct_nesting": ".container[3][0][2].name",
+  "nested_with_catch_and_context_pass": ".experiences[3].sections[-1] || {titles: ['Default Title']} | .[0]",
+  "nested_with_falsy_and_context_pass": ".experiences[3].sections[-1] >> {titles: ['Default Title']} | .[0]"
+}
