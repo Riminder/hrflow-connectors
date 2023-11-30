@@ -87,7 +87,7 @@ def enrich_job_with_parsing(hrflow_client: Hrflow, job: t.Dict) -> None:
     if response["code"] >= 400:
         raise JobParsingException("Failed to parse job", client_response=response)
 
-    entities, parsed_text = response["data"]["ents"], response["data"]["text"]
+    entities, parsed_text = response["data"]["entities"], response["data"]["text"]
     for field in ["skills", "languages", "certifications", "courses", "tasks"]:
         if job.get(field) is None:
             job[field] = []
