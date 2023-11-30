@@ -18,9 +18,9 @@ consumer            : expr
                     : function_call
 
 function_call       : float_call
-                    : split_call
                     : concat_call
-                    : map_call
+                    : split_call (PASS_CONTEXT consumer)?
+                    : map_call (PASS_CONTEXT consumer)?
 
 float_call          : FLOAT_FN
 split_call          : SPLIT_FN L_PAREN RAW_STRING|QUOTED_RAW_STRING R_PAREN

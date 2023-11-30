@@ -348,6 +348,27 @@ class Parser:
                 consumer = res.register(self.consumer())
                 if res.error:
                     return res
+                if self.current_token.kind == TokenType.PASS_CONTEXT.name:
+                    if hasattr(consumer, "fn") and consumer.fn in [TokenType.SPLIT_FN]:
+                        res.register(self.advance())
+                        inner_consumer = res.register(self.consumer())
+                        if res.error:
+                            return res
+                        consumer = PipedContextNode(
+                            parent_node=consumer, consumer=inner_consumer
+                        )
+                    else:
+                        return res.failure(
+                            Error(
+                                start=self.current_token.start,
+                                end=self.current_token.end,
+                                type=ErrorType.InvalidSyntax,
+                                details="PASS_CONTEXT not allowed after {}".format(
+                                    consumer
+                                ),
+                            )
+                        )
+
                 return res.success(
                     PipedContextNode(parent_node=dot_access, consumer=consumer)
                 )
@@ -411,42 +432,225 @@ class Parser:
             )
         return res.success(node)
 
-    def consumer(self):
+    def float_fn(self):
         res = ParseResult()
         token = self.current_token
-        if token.kind in FUNCTION_TOKENS:
-            if token.kind == TokenType.FLOAT_FN.name:
-                res.register(self.advance())
-                if self.current_token.kind == TokenType.L_PAREN.name:
-                    return res.failure(
-                        Error(
-                            start=self.current_token.start,
-                            end=self.current_token.end,
-                            type=ErrorType.InvalidSyntax,
-                            details=(
-                                "Incorrect call of function $float. No arguments are"
-                                " expected"
-                            ),
-                        )
-                    )
-                return res.success(FunctionNode(fn=TokenType.FLOAT_FN, args=[]))
 
-            if token.kind == TokenType.SPLIT_FN.name:
-                res.register(self.advance())
-                if self.current_token.kind != TokenType.L_PAREN.name:
-                    return res.failure(
-                        Error(
-                            start=self.current_token.start,
-                            end=self.current_token.end,
-                            type=ErrorType.InvalidSyntax,
-                            details=(
-                                "Incorrect function call. Expecting '(' but"
-                                " found {}".format(self.current_token)
-                            ),
+        if token.kind != TokenType.FLOAT_FN.name:
+            return res.failure(
+                Error(
+                    start=token.start,
+                    end=token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Expecting $float function but found {}".format(token),
+                )
+            )
+        res.register(self.advance())
+        if self.current_token.kind == TokenType.L_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect call of function $float. No arguments are expected"
+                    ),
+                )
+            )
+        return res.success(FunctionNode(fn=TokenType.FLOAT_FN, args=[]))
+
+    def split_fn(self):
+        res = ParseResult()
+        token = self.current_token
+
+        if token.kind != TokenType.SPLIT_FN.name:
+            return res.failure(
+                Error(
+                    start=token.start,
+                    end=token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Expecting $split function but found {}".format(token),
+                )
+            )
+        res.register(self.advance())
+
+        if self.current_token.kind != TokenType.L_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect function call. Expecting '(' but found {}".format(
+                            self.current_token
                         )
+                    ),
+                )
+            )
+        res.register(self.advance())
+        split_by = res.register(
+            self.literal(
+                only={
+                    TokenType.RAW_STRING.name,
+                    TokenType.QUOTED_RAW_STRING.name,
+                }
+            )
+        )
+        if res.error:
+            return res
+        if self.current_token.kind != TokenType.R_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect function call. Expecting ')' but found {}".format(
+                            self.current_token
+                        )
+                    ),
+                )
+            )
+        res.register(self.advance())
+        return res.success(FunctionNode(fn=TokenType.SPLIT_FN, args=[split_by]))
+
+    def map_fn(self):
+        res = ParseResult()
+        token = self.current_token
+
+        if token.kind != TokenType.MAP_FN.name:
+            return res.failure(
+                Error(
+                    start=token.start,
+                    end=token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Expecting $map function but found {}".format(token),
+                )
+            )
+        res.register(self.advance())
+        if self.current_token.kind != TokenType.L_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect function call. Expecting '(' but found {}".format(
+                            self.current_token
+                        )
+                    ),
+                )
+            )
+        res.register(self.advance())
+        expr = res.register(self.expr())
+        if res.error:
+            return res
+        if self.current_token.kind != TokenType.R_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect function call. Expecting ')' but found {}".format(
+                            self.current_token
+                        )
+                    ),
+                )
+            )
+        res.register(self.advance())
+        return res.success(FunctionNode(fn=TokenType.MAP_FN, args=[expr]))
+
+    def concat_fn(self):
+        res = ParseResult()
+        token = self.current_token
+
+        if token.kind != TokenType.CONCAT_FN.name:
+            return res.failure(
+                Error(
+                    start=token.start,
+                    end=token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Expecting $concat function but found {}".format(token),
+                )
+            )
+        res.register(self.advance())
+        if self.current_token.kind != TokenType.L_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect function call. Expecting '(' but found {}".format(
+                            self.current_token
+                        )
+                    ),
+                )
+            )
+        res.register(self.advance())
+        args = []
+        if self.current_token.kind not in {
+            TokenType.DOT_ACCESS.name,
+            TokenType.RAW_STRING.name,
+            TokenType.QUOTED_RAW_STRING.name,
+        }:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect $concat call. Expecting literal"
+                        " string or dot access but found {}".format(self.current_token)
+                    ),
+                )
+            )
+        if self.current_token.kind == TokenType.DOT_ACCESS.name:
+            dot_access = res.register(self.dot_access())
+            if res.error:
+                return res
+            args.append(dot_access)
+        else:
+            literal = res.register(
+                self.literal(
+                    only={
+                        TokenType.RAW_STRING.name,
+                        TokenType.QUOTED_RAW_STRING.name,
+                    }
+                )
+            )
+            if res.error:
+                return res
+            args.append(literal)
+
+        while self.current_token.kind == TokenType.COMMA.name:
+            res.register(self.advance())
+            if self.current_token.kind not in {
+                TokenType.DOT_ACCESS.name,
+                TokenType.RAW_STRING.name,
+                TokenType.QUOTED_RAW_STRING.name,
+            }:
+                return res.failure(
+                    Error(
+                        start=self.current_token.start,
+                        end=self.current_token.end,
+                        type=ErrorType.InvalidSyntax,
+                        details=(
+                            "Incorrect $concat call. Expecting literal"
+                            " string or dot access but found {}".format(
+                                self.current_token
+                            )
+                        ),
                     )
-                res.register(self.advance())
-                split_by = res.register(
+                )
+            if self.current_token.kind == TokenType.DOT_ACCESS.name:
+                dot_access = res.register(self.dot_access())
+                if res.error:
+                    return res
+                args.append(dot_access)
+            else:
+                literal = res.register(
                     self.literal(
                         only={
                             TokenType.RAW_STRING.name,
@@ -456,158 +660,51 @@ class Parser:
                 )
                 if res.error:
                     return res
-                if self.current_token.kind != TokenType.R_PAREN.name:
-                    return res.failure(
-                        Error(
-                            start=self.current_token.start,
-                            end=self.current_token.end,
-                            type=ErrorType.InvalidSyntax,
-                            details=(
-                                "Incorrect function call. Expecting ')' but"
-                                " found {}".format(self.current_token)
-                            ),
-                        )
-                    )
-                res.register(self.advance())
-                return res.success(FunctionNode(fn=TokenType.SPLIT_FN, args=[split_by]))
+                args.append(literal)
 
-            if token.kind == TokenType.MAP_FN.name:
-                res.register(self.advance())
-                if self.current_token.kind != TokenType.L_PAREN.name:
-                    return res.failure(
-                        Error(
-                            start=self.current_token.start,
-                            end=self.current_token.end,
-                            type=ErrorType.InvalidSyntax,
-                            details=(
-                                "Incorrect function call. Expecting '(' but"
-                                " found {}".format(self.current_token)
-                            ),
+        if self.current_token.kind != TokenType.R_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect function call. Expecting ')' but found {}".format(
+                            self.current_token
                         )
-                    )
-                res.register(self.advance())
-                expr = res.register(self.expr())
+                    ),
+                )
+            )
+        res.register(self.advance())
+        return res.success(FunctionNode(fn=TokenType.CONCAT_FN, args=args))
+
+    def consumer(self):
+        res = ParseResult()
+        token = self.current_token
+        if token.kind in FUNCTION_TOKENS:
+            if token.kind == TokenType.FLOAT_FN.name:
+                float_fn = res.register(self.float_fn())
                 if res.error:
                     return res
-                if self.current_token.kind != TokenType.R_PAREN.name:
-                    return res.failure(
-                        Error(
-                            start=self.current_token.start,
-                            end=self.current_token.end,
-                            type=ErrorType.InvalidSyntax,
-                            details=(
-                                "Incorrect function call. Expecting ')' but"
-                                " found {}".format(self.current_token)
-                            ),
-                        )
-                    )
-                res.register(self.advance())
-                return res.success(FunctionNode(fn=TokenType.MAP_FN, args=[expr]))
+                return res.success(float_fn)
+
+            if token.kind == TokenType.SPLIT_FN.name:
+                split_fn = res.register(self.split_fn())
+                if res.error:
+                    return res
+                return res.success(split_fn)
+
+            if token.kind == TokenType.MAP_FN.name:
+                map_fn = res.register(self.map_fn())
+                if res.error:
+                    return res
+                return res.success(map_fn)
 
             if token.kind == TokenType.CONCAT_FN.name:
-                res.register(self.advance())
-                if self.current_token.kind != TokenType.L_PAREN.name:
-                    return res.failure(
-                        Error(
-                            start=self.current_token.start,
-                            end=self.current_token.end,
-                            type=ErrorType.InvalidSyntax,
-                            details=(
-                                "Incorrect function call. Expecting '(' but"
-                                " found {}".format(self.current_token)
-                            ),
-                        )
-                    )
-                res.register(self.advance())
-                args = []
-                if self.current_token.kind not in {
-                    TokenType.DOT_ACCESS.name,
-                    TokenType.RAW_STRING.name,
-                    TokenType.QUOTED_RAW_STRING.name,
-                }:
-                    return res.failure(
-                        Error(
-                            start=self.current_token.start,
-                            end=self.current_token.end,
-                            type=ErrorType.InvalidSyntax,
-                            details=(
-                                "Incorrect $concat call. Expecting literal"
-                                " string or dot access but found {}".format(
-                                    self.current_token
-                                )
-                            ),
-                        )
-                    )
-                if self.current_token.kind == TokenType.DOT_ACCESS.name:
-                    dot_access = res.register(self.dot_access())
-                    if res.error:
-                        return res
-                    args.append(dot_access)
-                else:
-                    literal = res.register(
-                        self.literal(
-                            only={
-                                TokenType.RAW_STRING.name,
-                                TokenType.QUOTED_RAW_STRING.name,
-                            }
-                        )
-                    )
-                    if res.error:
-                        return res
-                    args.append(literal)
-
-                while self.current_token.kind == TokenType.COMMA.name:
-                    res.register(self.advance())
-                    if self.current_token.kind not in {
-                        TokenType.DOT_ACCESS.name,
-                        TokenType.RAW_STRING.name,
-                        TokenType.QUOTED_RAW_STRING.name,
-                    }:
-                        return res.failure(
-                            Error(
-                                start=self.current_token.start,
-                                end=self.current_token.end,
-                                type=ErrorType.InvalidSyntax,
-                                details=(
-                                    "Incorrect $concat call. Expecting literal"
-                                    " string or dot access but found {}".format(
-                                        self.current_token
-                                    )
-                                ),
-                            )
-                        )
-                    if self.current_token.kind == TokenType.DOT_ACCESS.name:
-                        dot_access = res.register(self.dot_access())
-                        if res.error:
-                            return res
-                        args.append(dot_access)
-                    else:
-                        literal = res.register(
-                            self.literal(
-                                only={
-                                    TokenType.RAW_STRING.name,
-                                    TokenType.QUOTED_RAW_STRING.name,
-                                }
-                            )
-                        )
-                        if res.error:
-                            return res
-                        args.append(literal)
-
-                if self.current_token.kind != TokenType.R_PAREN.name:
-                    return res.failure(
-                        Error(
-                            start=self.current_token.start,
-                            end=self.current_token.end,
-                            type=ErrorType.InvalidSyntax,
-                            details=(
-                                "Incorrect function call. Expecting ')' but"
-                                " found {}".format(self.current_token)
-                            ),
-                        )
-                    )
-                res.register(self.advance())
-                return res.success(FunctionNode(fn=TokenType.CONCAT_FN, args=args))
+                concat_fn = res.register(self.concat_fn())
+                if res.error:
+                    return res
+                return res.success(concat_fn)
 
         expr = res.register(self.expr())
         if res.error:
