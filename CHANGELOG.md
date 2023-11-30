@@ -2,6 +2,15 @@
 
 
 
+## v4.3.1 (2023-11-30)
+
+### Fix
+
+* fix: change ents to entities after Document Parsing API change ([`906dfdb`](https://github.com/Riminder/hrflow-connectors/commit/906dfdb7f798a9e408b613590aa8d928910ed15d))
+
+* fix: only enrich with parsing new jobs ([`5b9e6fd`](https://github.com/Riminder/hrflow-connectors/commit/5b9e6fd678bea9f82a0550b6f2a26902553a5bdd))
+
+
 ## v4.3.0 (2023-11-23)
 
 ### Feature
