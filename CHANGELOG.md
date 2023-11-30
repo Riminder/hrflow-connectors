@@ -2,6 +2,13 @@
 
 
 
+## v4.3.2 (2023-11-30)
+
+### Fix
+
+* fix: allow hrflow version upgrades ([`98592b8`](https://github.com/Riminder/hrflow-connectors/commit/98592b838e6f73644388f9e7fcb913e4569f59ac))
+
+
 ## v4.3.1 (2023-11-30)
 
 ### Fix
