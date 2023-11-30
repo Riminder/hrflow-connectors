@@ -43,6 +43,15 @@ class DotAccessNode(ASTNode):
 
 
 @dataclass
+class IFNode:
+    dot_access: DotAccessNode
+    node: ASTNode
+
+    def __repr__(self):
+        return "IF {} THEN {}".format(self.dot_access, self.node)
+
+
+@dataclass
 class EnhancedDotAccess(ASTNode):
     node: DotAccessNode
     eventually: ASTNode
@@ -132,11 +141,18 @@ class Parser:
 
     def jsonmap(self):
         res = ParseResult()
-        expr = res.register(self.expr())
+        token = self.current_token
+
+        if token.kind == TokenType.IF.name:
+            jsonmap = res.register(self.if_(self.expr))
+        else:
+            jsonmap = res.register(self.expr())
+
         if res.error:
             return res
+
         if self.current_token.kind == SpecialTokens.EOF.name:
-            return res.success(expr)
+            return res.success(jsonmap)
         return res.failure(
             Error(
                 start=self.current_token.start,
@@ -145,6 +161,44 @@ class Parser:
                 details="Token not part of grammar yet {}".format(self.current_token),
             )
         )
+
+    def if_(self, after_colon):
+        res = ParseResult()
+        token = self.current_token
+        if token.kind != TokenType.IF.name:
+            return res.failure(
+                Error(
+                    start=token.start,
+                    end=token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Expecting IF operator '{}' but found {}".format(
+                        TokenType.IF.name, token
+                    ),
+                )
+            )
+
+        res.register(self.advance())
+        dot_access = res.register(self.dot_access(simple=True))
+        if res.error:
+            return res
+
+        if self.current_token.kind != TokenType.COLON.name:
+            return res.failure(
+                Error(
+                    start=token.start,
+                    end=token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Invalid IF block expecting '{}' but found {}".format(
+                        TokenType.COLON.name, token
+                    ),
+                )
+            )
+        res.register(self.advance())
+
+        expr = res.register(after_colon())
+        if res.error:
+            return res
+        return res.success(IFNode(dot_access=dot_access, node=expr))
 
     def expr(self):
         res = ParseResult()
@@ -185,7 +239,7 @@ class Parser:
                 )
                 if res.error:
                     return res
-                if self.current_token.kind == TokenType.COLLON.name:
+                if self.current_token.kind == TokenType.COLON.name:
                     res.register(self.advance())
                     value = res.register(self.atom())
                     if res.error:
@@ -210,7 +264,7 @@ class Parser:
                     )
                     if res.error:
                         return res
-                    if self.current_token.kind == TokenType.COLLON.name:
+                    if self.current_token.kind == TokenType.COLON.name:
                         res.register(self.advance())
                         value = res.register(self.atom())
                         if res.error:
@@ -286,9 +340,25 @@ class Parser:
                 )
             return res.success(dot_access)
 
-    def dot_access(self):
+        if token.kind == TokenType.IF.name:
+            if_atom = res.register(self.if_(self.atom))
+            if res.error:
+                return res
+            return res.success(if_atom)
+
+    def dot_access(self, simple: bool = False):
         res = ParseResult()
         token = self.current_token
+
+        if token.kind != TokenType.DOT_ACCESS.name:
+            return res.failure(
+                Error(
+                    start=token.start,
+                    end=token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Expecting Dot Access but found {}".format(token),
+                )
+            )
 
         res.register(self.advance())
         next = self.current_token
@@ -296,6 +366,15 @@ class Parser:
             TokenType.ACCESS_CATCH.name,
             TokenType.FALSY.name,
         ]:
+            if simple is True:
+                return res.failure(
+                    Error(
+                        start=next.start,
+                        end=next.end,
+                        type=ErrorType.InvalidSyntax,
+                        details="Simple Dot Access expected but enhancement operator",
+                    )
+                )
             res.register(self.advance())
             expr = res.register(self.atom())
             if res.error:

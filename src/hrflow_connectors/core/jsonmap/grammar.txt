@@ -1,12 +1,14 @@
 jsonmap             : expr
+                    : IF DOT_ACCESS COLON expr
 
 expr                : atom
                     : L_BRAKET (atom (COMMA atom)*)? R_BRAKET
-                    : L_CURLY (RAW_STRING COLLON atom)* R_CURLY
+                    : L_CURLY (RAW_STRING COLON atom)* R_CURLY
 
 atom                : literal
                     : dot_access
                     : dot_access PASS_CONTEXT consumer
+                    : IF DOT_ACCESS COLON atom
 
 literal             : TRUE|FALSE|NULL|NUMBER|RAW_STRING|QUOTED_RAW_STRING
 

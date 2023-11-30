@@ -33,6 +33,17 @@ def json_encodable_ast(node: parser.ASTNode) -> t.Any:
                 for key, value in consumer.items()
             }
         return "{} | {}".format(context, consumer)
+    if isinstance(node, parser.IFNode):
+        condition = json_encodable_ast(node.dot_access)
+        node = json_encodable_ast(node.node)
+        if isinstance(node, list):
+            return ["IF {} THEN".format(condition)] + node
+        if isinstance(node, dict):
+            return {
+                "IF {} THEN AT {}".format(condition, key): value
+                for key, value in node.items()
+            }
+        return "IF {} THEN {}".format(condition, node)
     return repr(node)
 
 

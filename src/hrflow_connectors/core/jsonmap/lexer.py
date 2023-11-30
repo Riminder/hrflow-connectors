@@ -29,7 +29,7 @@ class TokenType(Enum):
     L_CURLY = r"\{"
     R_CURLY = r"\}"
     COMMA = r","
-    COLLON = r":"
+    COLON = r":"
 
 
 class Token(t.NamedTuple):

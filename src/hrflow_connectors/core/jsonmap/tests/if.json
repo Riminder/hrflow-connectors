@@ -1,0 +1,12 @@
+{
+  "simple_if": "?? .title : .title",
+  "json_list_with_if": [
+    "?? .experience : .experience?.title",
+    "?? .experience : .experience?.description"
+  ],
+  "jsonmap_list_with_if": "?? .experience: [.experience?.title, .experience?.description]",
+  "json_map": {
+    "title": "?? .title : .title"
+  },
+  "jsonmap_map": "{ title: ?? .title : .title}"
+}
