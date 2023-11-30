@@ -183,25 +183,20 @@ def write(
                 raise Exception("Failed to archive job")
         adapter.info("Archiving finished")
 
-    jobs_to_write = []
-    if parameters.enrich_with_parsing:
-        adapter.info("Enrich with parsing enabled. Starting parsing")
-        for job in jobs:
-            try:
-                enrich_job_with_parsing(hrflow_client, job)
-                jobs_to_write.append(job)
-            except JobParsingException as e:
-                adapter.error(
-                    "Failed to parse job response={}".format(e.client_response)
-                )
-                failed_jobs.append(job)
-        adapter.info("Parsing finished")
-    else:
-        jobs_to_write = jobs
-
-    for job in jobs_to_write:
+    for job in jobs:
         reference = job.get("reference")
         if reference is None:
+            if parameters.enrich_with_parsing:
+                adapter.info("Starting parsing for job without reference")
+                try:
+                    enrich_job_with_parsing(hrflow_client, job)
+                    adapter.info("Parsing finished")
+                except JobParsingException as e:
+                    adapter.error(
+                        "Failed to parse job response={}".format(e.client_response)
+                    )
+                    failed_jobs.append(job)
+                    continue
             response = hrflow_client.job.indexing.add_json(
                 board_key=parameters.board_key, job_json=job
             )
@@ -217,6 +212,19 @@ def write(
             board_key=parameters.board_key, reference=reference
         )
         if "Unable to find object: job" in response["message"]:
+            if parameters.enrich_with_parsing:
+                adapter.info(
+                    "Starting parsing for job with reference={}".format(reference)
+                )
+                try:
+                    enrich_job_with_parsing(hrflow_client, job)
+                    adapter.info("Parsing finished")
+                except JobParsingException as e:
+                    adapter.error(
+                        "Failed to parse job response={}".format(e.client_response)
+                    )
+                    failed_jobs.append(job)
+                    continue
             response = hrflow_client.job.indexing.add_json(
                 board_key=parameters.board_key, job_json=job
             )
