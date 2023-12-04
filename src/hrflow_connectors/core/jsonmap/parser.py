@@ -349,7 +349,10 @@ class Parser:
                 if res.error:
                     return res
                 if self.current_token.kind == TokenType.PASS_CONTEXT.name:
-                    if hasattr(consumer, "fn") and consumer.fn in [TokenType.SPLIT_FN]:
+                    if hasattr(consumer, "fn") and consumer.fn in [
+                        TokenType.SPLIT_FN,
+                        TokenType.MAP_FN,
+                    ]:
                         res.register(self.advance())
                         inner_consumer = res.register(self.consumer())
                         if res.error:
