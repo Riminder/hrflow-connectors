@@ -21,6 +21,7 @@ from hrflow_connectors.core import (
     WarehouseWriteAction,
 )
 
+DEFAULT_LIMIT = 500
 SOQL_MAX_RETURNED_ROWS = 2000
 
 SELECT_PROFILES_SOQL = """
@@ -171,9 +172,12 @@ class ReadFromSalesforceParameters(SalesforceBaseParameters):
         description="Last modified date",
         field_type=FieldType.QueryParam,
     )
-    limit: t.Optional[int] = Field(
-        None,
-        description="Total number of items to pull from Salesforce",
+    limit: int = Field(
+        DEFAULT_LIMIT,
+        description=(
+            "Total number of items to pull from Salesforce."
+            "By default limiting to {}".format(DEFAULT_LIMIT)
+        ),
         field_type=FieldType.QueryParam,
     )
 
@@ -228,7 +232,7 @@ def generic_read_factory(
                 )
                 last_id = 0
 
-        remaining = parameters.limit or float("inf")
+        remaining = parameters.limit
         query = soql_query.format(
             last_modified_date=last_modified_date,
             limit_placeholder=(
