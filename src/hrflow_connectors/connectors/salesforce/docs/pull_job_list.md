@@ -22,7 +22,7 @@ Retrieves jobs from Salesforce HrFlow Job Custom Object and writes them to an Hr
 | `sf_security_token` :red_circle: | `str` | None | Security Token to access Salesforce API.See below for instructions: How Can I Find My Security Token and Use It in Data Loader | Salesforce Platform  https://www.youtube.com/watch?v=nYbfxeSGKFM&ab_channel=SalesforceSupport |
 | `sf_organization_id` :red_circle: | `str` | None | See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1 |
 | `last_modified_date`  | `str` | None | Last modified date |
-| `limit`  | `int` | 500 | Total number of items to pull from Salesforce.By default limiting to 500 |
+| `limit`  | `int` | 1000 | Total number of items to pull from Salesforce.By default limiting to 1000 |
 
 ## Destination Parameters
 
@@ -61,7 +61,7 @@ Salesforce.pull_job_list(
         sf_security_token="your_sf_security_token",
         sf_organization_id="your_sf_organization_id",
         last_modified_date="your_last_modified_date",
-        limit=500,
+        limit=1000,
     ),
     target_parameters=dict(
         api_secret="your_api_secret",

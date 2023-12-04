@@ -21,7 +21,8 @@ from hrflow_connectors.core import (
     WarehouseWriteAction,
 )
 
-DEFAULT_LIMIT = 500
+DEFAULT_LIMIT_PROFILES = 100
+DEFAULT_LIMIT_JOBS = 1000
 SOQL_MAX_RETURNED_ROWS = 2000
 
 SELECT_PROFILES_SOQL = """
@@ -166,17 +167,33 @@ class SalesforceBaseParameters(ParametersModel):
     )
 
 
-class ReadFromSalesforceParameters(SalesforceBaseParameters):
+class ReadProfilesParameters(SalesforceBaseParameters):
     last_modified_date: t.Optional[str] = Field(
         None,
         description="Last modified date",
         field_type=FieldType.QueryParam,
     )
     limit: int = Field(
-        DEFAULT_LIMIT,
+        DEFAULT_LIMIT_PROFILES,
         description=(
             "Total number of items to pull from Salesforce."
-            "By default limiting to {}".format(DEFAULT_LIMIT)
+            "By default limiting to {}".format(DEFAULT_LIMIT_PROFILES)
+        ),
+        field_type=FieldType.QueryParam,
+    )
+
+
+class ReadJobsParameters(SalesforceBaseParameters):
+    last_modified_date: t.Optional[str] = Field(
+        None,
+        description="Last modified date",
+        field_type=FieldType.QueryParam,
+    )
+    limit: int = Field(
+        DEFAULT_LIMIT_JOBS,
+        description=(
+            "Total number of items to pull from Salesforce."
+            "By default limiting to {}".format(DEFAULT_LIMIT_JOBS)
         ),
         field_type=FieldType.QueryParam,
     )
@@ -190,7 +207,7 @@ def generic_read_factory(
 ]:
     def _read_items(
         adapter: LoggerAdapter,
-        parameters: ReadFromSalesforceParameters,
+        parameters: t.Union[ReadProfilesParameters, ReadJobsParameters],
         read_mode: t.Optional[ReadMode] = None,
         read_from: t.Optional[str] = None,
     ) -> t.Iterable[t.Dict]:
@@ -265,7 +282,7 @@ def delete_from_salesforce(data: t.List[t.Tuple[SFBulkType, t.List[str]]]) -> No
 
 def write_profiles(
     adapter: LoggerAdapter,
-    parameters: ReadFromSalesforceParameters,
+    parameters: SalesforceBaseParameters,
     profiles: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
     failed = []
@@ -351,7 +368,7 @@ SalesforceProfileWarehouse = Warehouse(
     data_schema=SalesforceHrFlowProfile,
     data_type=DataType.profile,
     read=WarehouseReadAction(
-        parameters=ReadFromSalesforceParameters,
+        parameters=ReadProfilesParameters,
         function=generic_read_factory(soql_query=SELECT_PROFILES_SOQL),
         supports_incremental=True,
         item_to_read_from=item_to_read_from,
@@ -367,7 +384,7 @@ SalesforceJobWarehouse = Warehouse(
     data_schema=SalesforceHrFlowJob,
     data_type=DataType.job,
     read=WarehouseReadAction(
-        parameters=ReadFromSalesforceParameters,
+        parameters=ReadJobsParameters,
         function=generic_read_factory(soql_query=SELECT_JOBS_SOQL),
         supports_incremental=True,
         item_to_read_from=item_to_read_from,
