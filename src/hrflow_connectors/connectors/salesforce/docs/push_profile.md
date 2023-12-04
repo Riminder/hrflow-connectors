@@ -29,7 +29,7 @@ Pushs specific Profile from HrFlow and writes it to HrFlow_Profile__c & Co Custo
 | `sf_username` :red_circle: | `str` | None | username used to access Salesforce API |
 | `sf_password` :red_circle: | `str` | None | password used to access Salesforce API |
 | `sf_security_token` :red_circle: | `str` | None | Security Token to access Salesforce API.See below for instructions: How Can I Find My Security Token and Use It in Data Loader | Salesforce Platform  https://www.youtube.com/watch?v=nYbfxeSGKFM&ab_channel=SalesforceSupport |
-| `sf_organization_id` :red_circle: | `str` | None | Security Token to access Salesforce API.See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1 |
+| `sf_organization_id` :red_circle: | `str` | None | See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1 |
 
 :red_circle: : *required*
 
