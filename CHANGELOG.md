@@ -2,6 +2,24 @@
 
 
 
+## v4.4.0 (2023-12-04)
+
+### Feature
+
+* feat: set different foolproof default for jobs and profiles for reading
+from salesforce ([`68edf70`](https://github.com/Riminder/hrflow-connectors/commit/68edf708c84f6d1012f6ad059102a5ee9210c274))
+
+* feat: foolproof limit by setting a default to 500 ([`b5bdb1a`](https://github.com/Riminder/hrflow-connectors/commit/b5bdb1a26358307c32bd7b00000288bd1761b903))
+
+* feat: do not use FIELDS(CUSTOM) for salesforce and use query_all_iter for large result set ([`22b0b05`](https://github.com/Riminder/hrflow-connectors/commit/22b0b0542b843218ddc111bc23b532ecfc3d50d1))
+
+* feat: update soql query to leverage auto query more feature of simple_salesforce query_all helper ([`0d4b5f2`](https://github.com/Riminder/hrflow-connectors/commit/0d4b5f20428cbc89f591c0c317f18b7847518fb1))
+
+### Unknown
+
+* doc: update salesforce docs and update date ([`773c8f2`](https://github.com/Riminder/hrflow-connectors/commit/773c8f2fe2bb4531653ad0b4d1e9113e0f38d534))
+
+
 ## v4.3.2 (2023-11-30)
 
 ### Fix
