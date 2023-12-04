@@ -21352,8 +21352,13 @@
               },
               "limit": {
                 "title": "Limit",
+<<<<<<< HEAD
                 "description": "Total number of items to pull from Salesforce.By default limiting to 100",
                 "default": 100,
+=======
+                "description": "Total number of items to pull from Salesforce.By default limiting to 500",
+                "default": 500,
+>>>>>>> 2446bbb (feat: foolproof limit by setting a default to 500)
                 "field_type": "Query Param",
                 "type": "integer"
               }
@@ -23844,8 +23849,13 @@
               },
               "limit": {
                 "title": "Limit",
+<<<<<<< HEAD
                 "description": "Total number of items to pull from Salesforce.By default limiting to 1000",
                 "default": 1000,
+=======
+                "description": "Total number of items to pull from Salesforce.By default limiting to 500",
+                "default": 500,
+>>>>>>> 2446bbb (feat: foolproof limit by setting a default to 500)
                 "field_type": "Query Param",
                 "type": "integer"
               }
