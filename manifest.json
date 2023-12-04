@@ -20718,7 +20718,7 @@
           "trigger_type": "schedule",
           "origin": "Salesforce Profiles",
           "origin_parameters": {
-            "title": "ReadFromSalesforceParameters",
+            "title": "ReadProfilesParameters",
             "type": "object",
             "properties": {
               "sf_username": {
@@ -20753,8 +20753,8 @@
               },
               "limit": {
                 "title": "Limit",
-                "description": "Total number of items to pull from Salesforce.By default limiting to 500",
-                "default": 500,
+                "description": "Total number of items to pull from Salesforce.By default limiting to 100",
+                "default": 100,
                 "field_type": "Query Param",
                 "type": "integer"
               }
@@ -23210,7 +23210,7 @@
           "trigger_type": "schedule",
           "origin": "Salesforce Jobs",
           "origin_parameters": {
-            "title": "ReadFromSalesforceParameters",
+            "title": "ReadJobsParameters",
             "type": "object",
             "properties": {
               "sf_username": {
@@ -23245,8 +23245,8 @@
               },
               "limit": {
                 "title": "Limit",
-                "description": "Total number of items to pull from Salesforce.By default limiting to 500",
-                "default": 500,
+                "description": "Total number of items to pull from Salesforce.By default limiting to 1000",
+                "default": 1000,
                 "field_type": "Query Param",
                 "type": "integer"
               }
