@@ -20741,7 +20741,7 @@
               },
               "sf_organization_id": {
                 "title": "Sf Organization Id",
-                "description": "Security Token to access Salesforce API.See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1",
+                "description": "See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1",
                 "field_type": "Auth",
                 "type": "string"
               },
@@ -20753,7 +20753,7 @@
               },
               "limit": {
                 "title": "Limit",
-                "description": "Number of items to pull from Salesforce. Maximum value is 500",
+                "description": "Total number of items to pull from Salesforce.By default limiting to 500",
                 "default": 500,
                 "field_type": "Query Param",
                 "type": "integer"
@@ -22501,7 +22501,7 @@
               },
               "sf_organization_id": {
                 "title": "Sf Organization Id",
-                "description": "Security Token to access Salesforce API.See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1",
+                "description": "See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1",
                 "field_type": "Auth",
                 "type": "string"
               }
@@ -23233,7 +23233,7 @@
               },
               "sf_organization_id": {
                 "title": "Sf Organization Id",
-                "description": "Security Token to access Salesforce API.See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1",
+                "description": "See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1",
                 "field_type": "Auth",
                 "type": "string"
               },
@@ -23245,7 +23245,7 @@
               },
               "limit": {
                 "title": "Limit",
-                "description": "Number of items to pull from Salesforce. Maximum value is 500",
+                "description": "Total number of items to pull from Salesforce.By default limiting to 500",
                 "default": 500,
                 "field_type": "Query Param",
                 "type": "integer"
