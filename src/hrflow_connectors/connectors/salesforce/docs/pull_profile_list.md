@@ -20,9 +20,9 @@ Retrieves profiles from Salesforce HrFlow Profile & Co Custom Objects and writes
 | `sf_username` :red_circle: | `str` | None | username used to access Salesforce API |
 | `sf_password` :red_circle: | `str` | None | password used to access Salesforce API |
 | `sf_security_token` :red_circle: | `str` | None | Security Token to access Salesforce API.See below for instructions: How Can I Find My Security Token and Use It in Data Loader | Salesforce Platform  https://www.youtube.com/watch?v=nYbfxeSGKFM&ab_channel=SalesforceSupport |
-| `sf_organization_id` :red_circle: | `str` | None | Security Token to access Salesforce API.See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1 |
+| `sf_organization_id` :red_circle: | `str` | None | See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1 |
 | `last_modified_date`  | `str` | None | Last modified date |
-| `limit`  | `int` | 500 | Number of items to pull from Salesforce. Maximum value is 500 |
+| `limit`  | `int` | None | Total number of items to pull from Salesforce |
 
 ## Destination Parameters
 
@@ -60,7 +60,7 @@ Salesforce.pull_profile_list(
         sf_security_token="your_sf_security_token",
         sf_organization_id="your_sf_organization_id",
         last_modified_date="your_last_modified_date",
-        limit=500,
+        limit=0,
     ),
     target_parameters=dict(
         api_secret="your_api_secret",
