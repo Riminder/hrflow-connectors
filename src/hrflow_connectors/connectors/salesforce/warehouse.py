@@ -46,8 +46,6 @@ SELECT
 FROM HrFlow_Profile__c
 WHERE LastModifiedDate >= {last_modified_date}
 ORDER BY LastModifiedDate, Id__c
-LIMIT {limit}
-OFFSET {offset}
 """
 
 SELECT_JOBS_SOQL = """
@@ -57,11 +55,7 @@ SELECT
 FROM HrFlow_Job__c
 WHERE LastModifiedDate >= {last_modified_date}
 ORDER BY LastModifiedDate, Id__c
-LIMIT {limit}
-OFFSET {offset}
 """
-MAX_SOQL_LIMIT = 200
-MAX_ITEMS = 500
 
 
 class SalesforceBaseParameters(ParametersModel):
@@ -108,12 +102,8 @@ class ReadFromSalesforceParameters(SalesforceBaseParameters):
         field_type=FieldType.QueryParam,
     )
     limit: t.Optional[int] = Field(
-        MAX_ITEMS,
-        description=(
-            "Number of items to pull from Salesforce. Maximum value is {}".format(
-                MAX_ITEMS
-            )
-        ),
+        None,
+        description="Total number of items to pull from Salesforce",
         field_type=FieldType.QueryParam,
     )
 
@@ -168,32 +158,21 @@ def generic_read_factory(
                 )
                 last_id = 0
 
-        offset = 0
-        items_to_pull = min(MAX_ITEMS, parameters.limit)
-        limit = min(MAX_SOQL_LIMIT, items_to_pull)
+        query = soql_query.format(
+            last_modified_date=last_modified_date,
+        )
 
-        while items_to_pull > 0:
-            query = soql_query.format(
-                last_modified_date=last_modified_date,
-                limit=limit,
-                offset=offset,
-            )
-            items = sf.query_all(query)["records"]
-            if len(items) == 0:
+        pulled_items = 0
+        for item in sf.query_all_iter(query):
+            if parameters.limit is not None and pulled_items >= parameters.limit:
                 break
-            new_items = 0
-            for item in items:
-                if (
-                    item["LastModifiedDate"] == last_modified_date
-                    and item["Id__c"] <= last_id
-                ):
-                    continue
-                new_items += 1
-                yield item
-
-            offset += len(items)
-            items_to_pull -= new_items
-            limit = min(MAX_SOQL_LIMIT, items_to_pull)
+            if (
+                item["LastModifiedDate"] == last_modified_date
+                and item["Id__c"] <= last_id
+            ):
+                continue
+            pulled_items += 1
+            yield item
 
     return _read_items
 
