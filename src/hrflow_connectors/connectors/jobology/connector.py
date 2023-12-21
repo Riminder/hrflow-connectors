@@ -41,16 +41,15 @@ def add_tags(profile_tags: t.Dict) -> t.Dict:
 
 
 def format_jobology_profile(jobology_profile: t.List) -> t.Dict:
-    profile = jobology_profile[0]
-    profile_tags = rename_profile_fields(profile)
+    profile_tags = rename_profile_fields(jobology_profile)
     tags = add_tags(profile_tags)
     resume_dict = dict(
-        raw=profile["cv"],
-        content_type=profile["content_type"],
+        raw=jobology_profile["cv"],
+        content_type=jobology_profile["content_type"],
     )
     return dict(
         resume=resume_dict,
-        reference=profile["email"],
+        reference=jobology_profile["email"],
         tags=tags,
         metadatas=[],
         created_at=None,
