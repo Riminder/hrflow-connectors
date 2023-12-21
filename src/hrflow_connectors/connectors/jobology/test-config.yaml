@@ -1,0 +1,96 @@
+warehouse:
+  JobologyProfilesWarehouse:
+    read:
+      - parameters:
+          profile: {
+            "type":"jobology_direct_apply",
+            "jobkey":" JO-0145781_1701343287",
+            "firstName":"Abdellahi",
+            "lastName":"Mezid",
+            "phone":"0611423374",
+            "email":"pierre.dupont@mailprovider.com",
+            "cvUrl":"https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/e6159e65395995ae9f69a90ce916f7b6f90823dd/profiles/ab1c521d49b73d321bd54f6f6d3a4d81a31835eb/parsing/original.pdf",
+            "coverText":"Ceci est le texte de motivation.\nCe champ peut contenir des retours à la ligne.",
+            "profilecountry": "France",
+            "profileregions": "Ile-de-france",
+            "profiledomains": "Chauffeur SPL, Chauffeur routier, Chauffeur",
+            "joblien_annonce_site_carriere": "https://www.jobtransport.com/offre-emploi/approvisionneur-h-f-ecquevilly-2476964.aspx",
+            "statisticsource": "Groupe Fed",
+            "statisticjbsource": "jobology",
+            }
+actions:
+  catch_profile:
+    - id: no_hrflow_source_key
+      origin_parameters:
+        profile: {
+            "type":"jobology_direct_apply",
+            "jobkey":" JO-0145781_1701343287",
+            "firstName":"Abdellahi",
+            "lastName":"Mezid",
+            "phone":"0611423374",
+            "email":"pierre.dupont@mailprovider.com",
+            "cvUrl":"https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/e6159e65395995ae9f69a90ce916f7b6f90823dd/profiles/ab1c521d49b73d321bd54f6f6d3a4d81a31835eb/parsing/original.pdf",
+            "coverText":"Ceci est le texte de motivation.\nCe champ peut contenir des retours à la ligne.",
+            "profilecountry": "France",
+            "profileregions": "Ile-de-france",
+            "profiledomains": "Chauffeur SPL, Chauffeur routier, Chauffeur",
+            "joblien_annonce_site_carriere": "https://www.jobtransport.com/offre-emploi/approvisionneur-h-f-ecquevilly-2476964.aspx",
+            "statisticsource": "Groupe Fed",
+            "statisticjbsource": "jobology",
+            }
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        only_insert: false
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_hrflow_api_secret
+      origin_parameters:
+        profile: {
+            "type":"jobology_direct_apply",
+            "jobkey":" JO-0145781_1701343287",
+            "firstName":"Abdellahi",
+            "lastName":"Mezid",
+            "phone":"0611423374",
+            "email":"pierre.dupont@mailprovider.com",
+            "cvUrl":"https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/e6159e65395995ae9f69a90ce916f7b6f90823dd/profiles/ab1c521d49b73d321bd54f6f6d3a4d81a31835eb/parsing/original.pdf",
+            "coverText":"Ceci est le texte de motivation.\nCe champ peut contenir des retours à la ligne.",
+            "profilecountry": "France",
+            "profileregions": "Ile-de-france",
+            "profiledomains": "Chauffeur SPL, Chauffeur routier, Chauffeur",
+            "joblien_annonce_site_carriere": "https://www.jobtransport.com/offre-emploi/approvisionneur-h-f-ecquevilly-2476964.aspx",
+            "statisticsource": "Groupe Fed",
+            "statisticjbsource": "jobology",
+            }
+      target_parameters:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        only_insert: false
+      status: fatal
+      reason: write_failure
+    - id: write_success
+      origin_parameters:
+        profile: {
+            "type":"jobology_direct_apply",
+            "jobkey":" JO-0145781_1701343287",
+            "firstName":"Abdellahi",
+            "lastName":"Mezid",
+            "phone":"0611423374",
+            "email":"pierre.dupont@mailprovider.com",
+            "cvUrl":"https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/e6159e65395995ae9f69a90ce916f7b6f90823dd/profiles/ab1c521d49b73d321bd54f6f6d3a4d81a31835eb/parsing/original.pdf",
+            "coverText":"Ceci est le texte de motivation.\nCe champ peut contenir des retours à la ligne.",
+            "profilecountry": "France",
+            "profileregions": "Ile-de-france",
+            "profiledomains": "Chauffeur SPL, Chauffeur routier, Chauffeur",
+            "joblien_annonce_site_carriere": "https://www.jobtransport.com/offre-emploi/approvisionneur-h-f-ecquevilly-2476964.aspx",
+            "statisticsource": "Groupe Fed",
+            "statisticjbsource": "jobology",
+            }
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        only_insert: false
+      status: success
+    
