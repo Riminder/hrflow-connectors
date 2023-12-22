@@ -49,7 +49,6 @@ def format_jobology_profile(jobology_profile: t.List) -> t.Dict:
     )
     return dict(
         resume=resume_dict,
-        reference=jobology_profile["email"],
         tags=tags,
         metadatas=[],
         created_at=None,
