@@ -13,7 +13,7 @@ class TokenType(Enum):
     NUMBER = r"\d+(\.\d*)?"
     RAW_STRING = r"[^\.\?>\|$\s:\[\]\(\)\{\}',][^\s,:\)\(\[\]]*"
     QUOTED_RAW_STRING = r"'[^']*'"
-    DOT_ACCESS = r"(\??\.[a-zA-Z_\-09]*)+"
+    DOT_ACCESS = r"(\??\.[a-zA-Z_\-0-9]*)+"
     INDEX_ACCESS = r"\[(\d+|\-1)\]"
     ACCESS_CATCH = r"\|\|"
     FALSY = r">>"
