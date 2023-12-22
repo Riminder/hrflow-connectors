@@ -1,0 +1,26 @@
+{
+  "archived_at": ".Archive__c",
+  "archive": ".Archive__c",
+  "name": ".Name__c",
+  "reference": ".Reference__c",
+  "url": ".URL__c",
+  "picture": ".Picture__c",
+  "summary": ".Summary__c",
+  "location": {
+    "text": ".Location_Text__c",
+    "lat": ".Location_Lat__c",
+    "lng": ".Location_Lng__c"
+  },
+  "culture": ".Culture__c",
+  "responsibilities": ".Responsibilities__c",
+  "requirements": ".Requirements__c",
+  "benefits": ".Benefits__c",
+  "interviews": ".Interviews__c",
+  "sections": null,
+  "skills": null,
+  "languages": null,
+  "tags": null,
+  "ranges_date": null,
+  "ranges_float": null,
+  "metadatas": null
+}
