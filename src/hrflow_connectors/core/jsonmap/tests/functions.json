@@ -12,5 +12,7 @@
   "map_with_context_pass": ".credit_cards | $map('**** **** **** ****') | .[3]",
   "map_to_json": ".experiences | $map({title: .title, duration: .duration | $float })",
   "map_to_json_with_context_pass": ".experiences | $map({title: .title, duration: .duration | $float }) | .[0].title",
-  "concat": ". | $concat(.first_name, ' ', .last_name)"
+  "concat": ". | $concat(.first_name, ' ', .last_name)",
+  "string": ".id >> 42 | $string",
+  "map_string": ".predictions | $map({ one_minus_score: .[0] | $string, score: .[1] | $string })"
 }
