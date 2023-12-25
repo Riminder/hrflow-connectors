@@ -12,5 +12,7 @@
   "map_with_context_pass": ".credit_cards | $map('**** **** **** ****') | .[3]",
   "map_to_json": ".experiences | $map({title: .title, duration: .duration | $float })",
   "map_to_json_with_context_pass": ".experiences | $map({title: .title, duration: .duration | $float }) | .[0].title",
-  "concat": ". | $concat(.first_name, ' ', .last_name)"
+  "concat": ". | $concat(.first_name, ' ', .last_name)",
+  "concat_split_utcnow": ".updated_at || utcnow | $split('T') | $concat(.[0], 'T', .[1])",
+  "map_utcnow": ".dates || [] | $map({ iso8601: utcnow })"
 }

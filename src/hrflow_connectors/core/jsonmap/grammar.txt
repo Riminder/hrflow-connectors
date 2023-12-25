@@ -10,7 +10,7 @@ atom                : literal
                     : dot_access PASS_CONTEXT consumer
                     : IF DOT_ACCESS COLON atom
 
-literal             : TRUE|FALSE|NULL|NUMBER|RAW_STRING|QUOTED_RAW_STRING
+literal             : TRUE|FALSE|NULL|NUMBER|RAW_STRING|QUOTED_RAW_STRING|UTCNOW
 
 dot_access          : DOT_ACCESS (INDEX_ACCESS DOT_ACCESS?)* ((ACCESS_CATCH|FALSY) expr)?
 

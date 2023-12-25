@@ -10,6 +10,7 @@ class TokenType(Enum):
     TRUE = r"true"
     FALSE = r"false"
     NULL = r"null"
+    UTCNOW = r"utcnow"
     NUMBER = r"\d+(\.\d*)?"
     RAW_STRING = r"[^\.\?>\|$\s:\[\]\(\)\{\}',][^\s,:\)\(\[\]]*"
     QUOTED_RAW_STRING = r"'[^']*'"
@@ -71,7 +72,12 @@ def from_jsonmap(expression: str) -> t.Tuple[t.List[Token], t.Optional[Error]]:
     for match in re.finditer(pattern, expression):
         kind = match.lastgroup
         value = match.group()
-        if kind in [TokenType.TRUE.name, TokenType.FALSE.name, TokenType.NULL.name]:
+        if kind in [
+            TokenType.TRUE.name,
+            TokenType.FALSE.name,
+            TokenType.NULL.name,
+            TokenType.UTCNOW.name,
+        ]:
             value = None
         elif kind == TokenType.NUMBER.name:
             value = float(value) if "." in value else int(value)
