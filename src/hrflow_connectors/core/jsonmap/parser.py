@@ -17,6 +17,7 @@ FUNCTION_TOKENS = {
     TokenType.SPLIT_FN.name,
     TokenType.CONCAT_FN.name,
     TokenType.MAP_FN.name,
+    TokenType.SUB_FN.name,
 }
 
 
@@ -345,21 +346,20 @@ class Parser:
                 return res
             if self.current_token.kind == TokenType.PASS_CONTEXT.name:
                 res.register(self.advance())
-                consumer = res.register(self.consumer())
+                consumers = [res.register(self.consumer())]
                 if res.error:
                     return res
-                if self.current_token.kind == TokenType.PASS_CONTEXT.name:
-                    if hasattr(consumer, "fn") and consumer.fn in [
+                while self.current_token.kind == TokenType.PASS_CONTEXT.name:
+                    if hasattr(consumers[-1], "fn") and consumers[-1].fn in [
                         TokenType.SPLIT_FN,
                         TokenType.MAP_FN,
+                        TokenType.SUB_FN,
                     ]:
                         res.register(self.advance())
                         inner_consumer = res.register(self.consumer())
                         if res.error:
                             return res
-                        consumer = PipedContextNode(
-                            parent_node=consumer, consumer=inner_consumer
-                        )
+                        consumers.append(inner_consumer)
                     else:
                         return res.failure(
                             Error(
@@ -367,10 +367,17 @@ class Parser:
                                 end=self.current_token.end,
                                 type=ErrorType.InvalidSyntax,
                                 details="PASS_CONTEXT not allowed after {}".format(
-                                    consumer
+                                    consumers[-1]
                                 ),
                             )
                         )
+
+                consumer = consumers[0]
+                consumers_amount = len(consumers)
+                if consumers_amount > 1:
+                    consumer = PipedContextNode(consumers[-2], consumers[-1])
+                    for ii in range(consumers_amount - 3, -1, -1):
+                        consumer = PipedContextNode(consumers[ii], consumer)
 
                 return res.success(
                     PipedContextNode(parent_node=dot_access, consumer=consumer)
@@ -516,6 +523,86 @@ class Parser:
             )
         res.register(self.advance())
         return res.success(FunctionNode(fn=TokenType.SPLIT_FN, args=[split_by]))
+
+    def sub_fn(self):
+        res = ParseResult()
+        token = self.current_token
+
+        if token.kind != TokenType.SUB_FN.name:
+            return res.failure(
+                Error(
+                    start=token.start,
+                    end=token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Expecting $sub function but found {}".format(token),
+                )
+            )
+        res.register(self.advance())
+
+        if self.current_token.kind != TokenType.L_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect function call. Expecting '(' but found {}".format(
+                            self.current_token
+                        )
+                    ),
+                )
+            )
+        res.register(self.advance())
+        pattern = res.register(
+            self.literal(
+                only={
+                    TokenType.RAW_STRING.name,
+                    TokenType.QUOTED_RAW_STRING.name,
+                }
+            )
+        )
+
+        if res.error:
+            return res
+        if self.current_token.kind != TokenType.COMMA.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Incorrect $sub call. Expecting ',' but found {}".format(
+                        self.current_token
+                    ),
+                )
+            )
+        res.register(self.advance())
+        replace_with = res.register(
+            self.literal(
+                only={
+                    TokenType.RAW_STRING.name,
+                    TokenType.QUOTED_RAW_STRING.name,
+                }
+            )
+        )
+
+        if res.error:
+            return res
+        if self.current_token.kind != TokenType.R_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Incorrect $sub call. Expecting ')' but found {}".format(
+                        self.current_token
+                    ),
+                )
+            )
+
+        res.register(self.advance())
+        return res.success(
+            FunctionNode(fn=TokenType.SUB_FN, args=[pattern, replace_with])
+        )
 
     def map_fn(self):
         res = ParseResult()
@@ -708,6 +795,12 @@ class Parser:
                 if res.error:
                     return res
                 return res.success(concat_fn)
+
+            if token.kind == TokenType.SUB_FN.name:
+                sub_fn = res.register(self.sub_fn())
+                if res.error:
+                    return res
+                return res.success(sub_fn)
 
         expr = res.register(self.expr())
         if res.error:
