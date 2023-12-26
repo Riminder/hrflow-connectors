@@ -21,8 +21,10 @@ function_call       : float_call
                     : concat_call
                     : split_call (PASS_CONTEXT consumer)?
                     : map_call (PASS_CONTEXT consumer)?
+                    : join_call
 
 float_call          : FLOAT_FN
 split_call          : SPLIT_FN L_PAREN RAW_STRING|QUOTED_RAW_STRING R_PAREN
 map_call            : MAP_FN L_PAREN expr R_PAREN
 concat_call         : CONCAT_FN L_PAREN dot_access|RAW_STRING|QUOTED_RAW_STRING (COMMA dot_access|RAW_STRING|QUOTED_RAW_STRING)* R_PAREN
+join_call           : JOIN_FN L_PAREN RAW_STRING|QUOTED_RAW_STRING R_PAREN
