@@ -1,7 +1,7 @@
 {
   "reference": "?.id",
   "created_at": "?.createdAt",
-  "updated_at": null,
+  "updated_at": "utcnow",
   "resume": "?.resume",
   "tags": [
     "?? .email : .email | { name: 'digitalrecruiters_profile-email', value: . }",

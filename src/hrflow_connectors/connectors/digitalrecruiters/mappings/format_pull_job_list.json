@@ -1,21 +1,19 @@
 {
   "name": "?.title",
-  "picture": "?.pictures.[0]?.default || null",
+  "picture": "?.pictures >> [] | .[0]?.default || null",
   "reference": "?.reference",
   "created_at": "?.published_at",
   "location": {
-    "lat": "?.address?.position?.lat | $float",
-    "lng": "?.address?.position?.lon | $float",
-    "text": "?.address?.formatted || ''"
+    "lat": "?.address >> null | ?.position?.lat | $float",
+    "lng": "?.address >> null | ?.position?.lon | $float",
+    "text": "?.address >> '' | ?.formatted"
   },
   "sections": [
-    "?? .description : .description | { name: 'description', title: 'description', description: null }",
-    "?? .profile : .profile | { name: 'profile', title: 'profile', description: null }"
+    "?? .description : .description | { name: 'description', title: 'description', description: . | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp;', '&') | $sub('&quot;', '\"') | $sub('&apos;', ''') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ') }",
+    "?? .profile : .profile | { name: 'profile', title: 'profile', description: . | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp;', '&') | $sub('&quot;', '\"') | $sub('&apos;', ''') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ') }"
   ],
-  "requirements": null,
-  "skills": [
-    "?? .skills : .skills | $map({ name: ., type: null, value: null })"
-  ],
+  "requirements": "?.profile | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp;', '&') | $sub('&quot;', '\"') | $sub('&apos;', ''') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ')",
+  "skills": [".skills >> [] | $map({ name: ., type: null, value: null })"],
   "tags": [
     "?? .salary.min : .salary.min | { name: 'digitalrecruiters_compensation_min', value: . }",
     "?? .salary.max : .salary.max | { name: 'digitalrecruiters_compensation_max', value: . }",
