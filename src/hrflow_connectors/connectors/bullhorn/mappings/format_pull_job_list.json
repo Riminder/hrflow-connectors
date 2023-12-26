@@ -1,6 +1,6 @@
 {
   "name": "?.title",
-  "reference": "?.id",
+  "reference": "?.id | $string",
   "location": {
     "text": "?.address.address1",
     "fields": "?.address | { city: .city, country: .countryCode, postal_code: .zip }"
@@ -22,7 +22,7 @@
     },
     {
       "name": "degreeList",
-      "value": null
+      "value": "?? .degreeList : .degreeList | $join(', ')"
     },
     {
       "name": "employmentType",
