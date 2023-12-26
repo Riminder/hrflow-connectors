@@ -22,21 +22,21 @@
   "text": ".Text__c",
   "educations_duration": ".Experiences_Duration__c",
   "experiences": [
-    "?? .HrFlow_Profile_Experiences__r : .HrFlow_Profile_Experiences__r.records | $map({ title: .Title__c, location: { text: .Location_Text__c, lat: .Location_Lat__c, lng: .Location_Lng__c }, company: .Company__c, date_start: { iso8601: .Date_Begin__c }, date_end: { iso8601: .Date_End__c }, description: .Description__c, skills: null, tasks: null, certifications: null })"
+    "?? .HrFlow_Profile_Experiences__r : .HrFlow_Profile_Experiences__r.records | $map({ title: .Title__c, location: { text: .Location_Text__c, lat: .Location_Lat__c, lng: .Location_Lng__c }, company: .Company__c, date_start: { iso8601: .Date_Begin__c }, date_end: { iso8601: .Date_End__c }, description: .Description__c, skills: .Skills__c | $jsonload, tasks: .Tasks__c | $jsonload, certifications: .Certifications__c | $jsonload })"
   ],
   "educations": [
-    "?? .HrFlow_Profile_Educations__r : .HrFlow_Profile_Educations__r.records | $map({ title: .Title__c, location: { text: .Location_Text__c, lat: .Location_Lat__c, lng: .Location_Lng__c }, school: .School__c, date_start: { iso8601: .Date_Begin__c }, date_end: { iso8601: .Date_End__c }, description: .Description__c, skills: null, tasks: null, certifications: null, courses: null })"
+    "?? .HrFlow_Profile_Educations__r : .HrFlow_Profile_Educations__r.records | $map({ title: .Title__c, location: { text: .Location_Text__c, lat: .Location_Lat__c, lng: .Location_Lng__c }, school: .School__c, date_start: { iso8601: .Date_Begin__c }, date_end: { iso8601: .Date_End__c }, description: .Description__c, skills: .Skills__c | $jsonload, tasks: .Tasks__c | $jsonload, certifications: .Certifications__c | $jsonload, courses: .Courses__c | $jsonload })"
   ],
   "attachments": [
     "?? .HrFlow_Profile_Attachments__r : .HrFlow_Profile_Attachments__r.records | $map({ text: .Text__c, type: .Type__c, alt: .Alt__c, file_size: .File_Size__c, file_name: .File_Name__c, original_file_name: .Original_File_Name__c, extension: .Extension__c, url: .URL__c })"
   ],
-  "skills": null,
-  "languages": null,
-  "certifications": null,
-  "courses": null,
-  "tasks": null,
-  "interests": null,
-  "labels": null,
-  "tags": null,
-  "metadatas": null
+  "skills": ".Skills__c | $jsonload",
+  "languages": ".Languages__c | $jsonload",
+  "certifications": ".Certifications__c | $jsonload",
+  "courses": ".Courses__c | $jsonload",
+  "tasks": ".Tasks__c | $jsonload",
+  "interests": ".Interests__c | $jsonload",
+  "labels": ".Labels__c | $jsonload",
+  "tags": ".Tags__c | $jsonload",
+  "metadatas": ".Metadatas__c | $jsonload"
 }
