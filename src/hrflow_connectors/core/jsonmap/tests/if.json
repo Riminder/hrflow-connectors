@@ -8,5 +8,6 @@
   "json_map": {
     "title": "?? .title : .title"
   },
-  "jsonmap_map": "{ title: ?? .title : .title}"
+  "jsonmap_map": "{ title: ?? .title : .title }",
+  "jsonmap_jsonload": "?? .Skills__c : .Skills__c | $jsonload"
 }

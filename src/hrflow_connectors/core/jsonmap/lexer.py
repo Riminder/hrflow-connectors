@@ -23,6 +23,7 @@ class TokenType(Enum):
     CONCAT_FN = r"\$concat"
     SPLIT_FN = r"\$split"
     MAP_FN = r"\$map"
+    JSONLOAD_FN = r"\$jsonload"
     L_PAREN = r"\("
     R_PAREN = r"\)"
     L_BRAKET = r"\["
