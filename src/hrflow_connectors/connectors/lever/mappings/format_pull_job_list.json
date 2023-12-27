@@ -1,0 +1,26 @@
+{
+  "reference": ".id",
+  "name": ".text",
+  "location": {
+    "text": "?.categories?.location >> null",
+    "lat": null,
+    "lng": null
+  },
+  "url": ".urls.show",
+  "summary": ".content.description",
+  "sections": null,
+  "tags": [
+    {
+      "name": "lever_confidential",
+      "value": null
+    },
+    "?? .country : .country | { name: lever_country, value: . }",
+    "?? .state : .state | { name: lever_state, value: . }",
+    "?? .workplaceType : .workplaceType | { name: lever_workplaceType, value: . }"
+  ],
+  "ranges_float": [
+    "?? .salaryRange : .salaryRange | { name: salary, value_min: ?.min, value_max: ?.max, unit: ?.currency }"
+  ],
+  "created_at": null,
+  "updated_at": null
+}
