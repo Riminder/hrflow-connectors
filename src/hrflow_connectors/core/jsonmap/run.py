@@ -5,6 +5,7 @@ from pathlib import Path
 
 from hrflow_connectors.core.jsonmap import lexer, parser
 from hrflow_connectors.core.jsonmap.utils import JSONMapError
+from hrflow_connectors.core.jsonmap.translator import translate
 
 
 def json_encodable_ast(node: parser.ASTNode) -> t.Any:
@@ -48,13 +49,14 @@ def json_encodable_ast(node: parser.ASTNode) -> t.Any:
 
 
 def ast(
-    source: t.Union[t.Dict[str, t.Any], t.List[t.Any]]
+    source: t.Union[t.Dict[str, t.Any], t.List[t.Any]],
+    encode: bool = False,
 ) -> t.Union[t.Dict[str, t.Any], t.List[t.Any]]:
     if isinstance(source, dict):
         parsed = dict()
         for key, value in source.items():
             try:
-                parsed[key] = ast(value)
+                parsed[key] = ast(value, encode)
             except JSONMapError as e:
                 if e.key is None:
                     e.key = "." + key
@@ -66,7 +68,7 @@ def ast(
         parsed = []
         for i, item in enumerate(source):
             try:
-                parsed.append(ast(item))
+                parsed.append(ast(item, encode))
             except JSONMapError as e:
                 if e.key is None:
                     e.key = "[{}]".format(i)
@@ -82,18 +84,26 @@ def ast(
     parse_result = parser.Parser(tokens).parse()
     if parse_result.error:
         raise JSONMapError(key=None, expression=source, error=parse_result.error)
-    return json_encodable_ast(parse_result.node)
+
+    if encode:
+        return json_encodable_ast(parse_result.node)
+    else:
+        return parse_result.node
 
 
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("--mapping", type=Path)
+    arg_parser.add_argument("--translate", action="store_true")
 
     p = arg_parser.parse_args()
     if p.mapping.exists():
         mapping = json.loads(p.mapping.read_text())
         try:
-            mapping_ast = ast(mapping)
-            print(json.dumps(mapping_ast, indent=2))
+            mapping_ast = ast(mapping, encode=not p.translate)
+            if not p.translate:
+                print(json.dumps(mapping_ast, indent=2))
+            else:
+                print(translate(mapping_ast))
         except JSONMapError as e:
             print(e.as_string())

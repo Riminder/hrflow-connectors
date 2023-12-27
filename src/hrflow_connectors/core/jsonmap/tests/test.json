@@ -1,0 +1,28 @@
+{
+  "test1": null,
+  "test2": true,
+  "test3": false,
+  "test4": 42,
+  "test5": "null",
+  "test6": "true",
+  "test7": "false",
+  "test8": "42",
+  "test9": ".abc",
+  "test10": "?.abc",
+  "test11": ".abc.def.ghi",
+  "test12": "?.abc?.def?.ghi",
+  "test13": ".abc?.def.ghi?.jkl?.mno",
+  "test14": ".[0]",
+  "test15": ".abc[0][1][2]",
+  "test16": {
+    "test16_1": {
+      "test16_1_1": {
+        "reward": 42
+      }
+    }
+  },
+  "test17": ".abc >> Undefined",
+  "test18": ".abc.def.ghi >> Undefined",
+  "test19": ".abc >> .def >> .ghi >> KO",
+  "test20": ".abc[0] >> .[1] >> ?.def[4][2] >> Unknown"
+}

@@ -25,6 +25,9 @@ class ASTNode:
     def __repr__(self):
         return "ASTNode"
 
+    def accept(self, visitor):
+        pass
+
 
 @dataclass
 class LiteralNode(ASTNode):
@@ -33,6 +36,9 @@ class LiteralNode(ASTNode):
     def __repr__(self):
         return "{}:{}".format(self.token.kind, self.token.value)
 
+    def accept(self, visitor):
+        return visitor.literal(self)
+
 
 @dataclass
 class DotAccessNode(ASTNode):
@@ -40,6 +46,9 @@ class DotAccessNode(ASTNode):
 
     def __repr__(self):
         return "DotAccess[{}]".format(self.path)
+
+    def accept(self, visitor):
+        return visitor.dot_access(self)
 
 
 @dataclass
@@ -59,6 +68,9 @@ class ListAccessNode:
     def __repr__(self):
         return "ListAccess[{}, {}]".format(self.node, self.index)
 
+    def accept(self, visitor):
+        return visitor.list_access(self)
+
 
 @dataclass
 class EnhancedAccess(ASTNode):
@@ -75,6 +87,9 @@ class EnhancedAccess(ASTNode):
         return "EnhancedAccess[{} == IF {} => {}]".format(
             self.node, enhancement, self.eventually
         )
+
+    def accept(self, visitor):
+        return visitor.enhanced_access(self)
 
 
 @dataclass
