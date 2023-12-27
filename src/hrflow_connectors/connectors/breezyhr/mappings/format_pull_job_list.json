@@ -1,0 +1,29 @@
+{
+  "name": "?.name",
+  "reference": "?.friendly_id",
+  "summary": null,
+  "location": {
+    "text": "?.name",
+    "geojson": {
+      "country": "?.country",
+      "city": "?.city"
+    },
+    "lat": null,
+    "lng": null
+  },
+  "sections": [
+    {
+      "name": "breezy_hr_description",
+      "title": "Breezy_hr_description",
+      "description": "?.description | $sub('<[^<]+?>', '') | $sub('&nbsp;', ' ')"
+    }
+  ],
+  "tags": [
+    {
+      "name": "breezy_hr_remote",
+      "value": "?.is_remote"
+    }
+  ],
+  "created_at": "?.creation_date",
+  "updated_at": "?.updated_date"
+}
