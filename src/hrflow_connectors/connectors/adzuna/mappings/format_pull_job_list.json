@@ -1,0 +1,35 @@
+{
+  "name": "?.title",
+  "reference": "?.id | $string",
+  "created_at": "?.created",
+  "location": {
+    "lat": "?.latitude | $float",
+    "lng": "?.longitude | $float",
+    "text": "?.location.display_name"
+  },
+  "url": "?.redirect_url",
+  "summary": "?.description",
+  "sections": [],
+  "tags": [
+    {
+      "name": "salary_min",
+      "value": "?.salary_min"
+    },
+    {
+      "name": "salary_max",
+      "value": "?.salary_max"
+    },
+    {
+      "name": "salaries_are_predicted",
+      "value": "?.salary_is_predicted | $string"
+    },
+    {
+      "name": "category",
+      "value": "?.category?.label"
+    },
+    {
+      "name": "company",
+      "value": "?.company?.display_name"
+    }
+  ]
+}
