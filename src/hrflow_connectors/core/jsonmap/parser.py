@@ -21,6 +21,7 @@ FUNCTION_TOKENS = {
     TokenType.MAP_FN.name,
     TokenType.JSONLOAD_FN.name,
     TokenType.JOIN_FN.name,
+    TokenType.ISOFORMAT_FN.name,
 }
 
 
@@ -479,7 +480,7 @@ class Parser:
                     details="Expecting $jsonload function but found {}".format(token),
                 )
             )
-                  
+
         res.register(self.advance())
         if self.current_token.kind == TokenType.L_PAREN.name:
             return res.failure(
@@ -508,7 +509,7 @@ class Parser:
                     details="Expecting $string function but found {}".format(token),
                 )
             )
-                  
+
         res.register(self.advance())
         if self.current_token.kind == TokenType.L_PAREN.name:
             return res.failure(
@@ -577,7 +578,7 @@ class Parser:
             )
         res.register(self.advance())
         return res.success(FunctionNode(fn=TokenType.SPLIT_FN, args=[split_by]))
-    
+
     def join_fn(self):
         res = ParseResult()
         token = self.current_token
@@ -797,6 +798,38 @@ class Parser:
         res.register(self.advance())
         return res.success(FunctionNode(fn=TokenType.CONCAT_FN, args=args))
 
+    def isoformat_fn(self):
+        res = ParseResult()
+
+        if self.current_token.kind != TokenType.ISOFORMAT_FN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Expecting $isoformat function but found {}".format(
+                        self.current_token
+                    ),
+                )
+            )
+
+        res.register(self.advance())
+
+        if self.current_token.kind == TokenType.L_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect call of function $isoformat. No arguments are"
+                        " expected"
+                    ),
+                )
+            )
+
+        return res.success(FunctionNode(fn=TokenType.ISOFORMAT_FN, args=[]))
+
     def consumer(self):
         res = ParseResult()
         token = self.current_token
@@ -824,7 +857,7 @@ class Parser:
                 if res.error:
                     return res
                 return res.success(concat_fn)
-            
+
             if token.kind == TokenType.JOIN_FN.name:
                 join_fn = res.register(self.join_fn())
                 if res.error:
@@ -842,6 +875,12 @@ class Parser:
                 if res.error:
                     return res
                 return res.success(jsonload_fn)
+
+            if token.kind == TokenType.ISOFORMAT_FN.name:
+                isoformat_fn = res.register(self.isoformat_fn())
+                if res.error:
+                    return res
+                return res.success(isoformat_fn)
 
         expr = res.register(self.expr())
         if res.error:
