@@ -7,7 +7,6 @@ from logging import LoggerAdapter
 from zipfile import ZipFile
 
 import requests
-import typing_extensions as te
 from pydantic import Field, PositiveInt
 
 from hrflow_connectors.core import (
@@ -131,13 +130,13 @@ class WriteProfileParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-    client_secret: str = Field(
+    client_secret_front: str = Field(
         ...,
         description="client secret used to access TalentSoft front office API",
         repr=False,
         field_type=FieldType.Auth,
     )
-    client_url: str = Field(
+    client_url_front: str = Field(
         ...,
         description="url used to access TalentSoft front office API",
         repr=False,
