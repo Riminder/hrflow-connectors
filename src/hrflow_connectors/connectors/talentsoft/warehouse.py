@@ -225,6 +225,7 @@ def get_talentsoft_auth_token(
             "Failed to get token from response with error={}".format(repr(e))
         )
 
+
 def post_applicant_front(client_url, token, applicant, files, job_reference=None):
     if job_reference:
         headers = {
@@ -438,6 +439,7 @@ def write_profiles(
             profile["application"]["offerReference"] = parameters.job_reference
         profile = decode_json(profile)
         profile_ts = dict(applicantApplication=json.dumps(profile))
+        profile_ts = decode_json(profile_ts)
         try:
             post_applicant_front(
                 parameters.client_url,
