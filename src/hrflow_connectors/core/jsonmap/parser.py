@@ -21,6 +21,7 @@ FUNCTION_TOKENS = {
     TokenType.MAP_FN.name,
     TokenType.JSONLOAD_FN.name,
     TokenType.JOIN_FN.name,
+    TokenType.STRIP_FN.name,
 }
 
 
@@ -479,7 +480,7 @@ class Parser:
                     details="Expecting $jsonload function but found {}".format(token),
                 )
             )
-                  
+
         res.register(self.advance())
         if self.current_token.kind == TokenType.L_PAREN.name:
             return res.failure(
@@ -508,7 +509,7 @@ class Parser:
                     details="Expecting $string function but found {}".format(token),
                 )
             )
-                  
+
         res.register(self.advance())
         if self.current_token.kind == TokenType.L_PAREN.name:
             return res.failure(
@@ -522,6 +523,53 @@ class Parser:
                 )
             )
         return res.success(FunctionNode(fn=TokenType.STRING_FN, args=[]))
+
+    def strip_fn(self):
+        res = ParseResult()
+
+        if self.current_token.kind != TokenType.STRIP_FN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Expecting $strip function but found {}".format(
+                        self.current_token
+                    ),
+                )
+            )
+
+        res.register(self.advance())
+        if res.error:
+            return res
+
+        if self.current_token.kind != TokenType.L_PAREN.name:
+            return res.success(FunctionNode(fn=TokenType.STRIP_FN, args=[]))
+
+        res.register(self.advance())
+        strip_by = res.register(
+            self.literal(
+                only={TokenType.RAW_STRING.name, TokenType.QUOTED_RAW_STRING.name}
+            )
+        )
+        if res.error:
+            return res
+
+        if self.current_token.kind != TokenType.R_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect function call. At most one argument is expected."
+                        " Expecting ')' but found {}".format(self.current_token)
+                    ),
+                )
+            )
+
+        res.register(self.advance())
+        return res.success(FunctionNode(fn=TokenType.STRIP_FN, args=[strip_by]))
 
     def split_fn(self):
         res = ParseResult()
@@ -577,7 +625,7 @@ class Parser:
             )
         res.register(self.advance())
         return res.success(FunctionNode(fn=TokenType.SPLIT_FN, args=[split_by]))
-    
+
     def join_fn(self):
         res = ParseResult()
         token = self.current_token
@@ -824,7 +872,7 @@ class Parser:
                 if res.error:
                     return res
                 return res.success(concat_fn)
-            
+
             if token.kind == TokenType.JOIN_FN.name:
                 join_fn = res.register(self.join_fn())
                 if res.error:
@@ -842,6 +890,12 @@ class Parser:
                 if res.error:
                     return res
                 return res.success(jsonload_fn)
+
+            if token.kind == TokenType.STRIP_FN.name:
+                strip_fn = res.register(self.strip_fn())
+                if res.error:
+                    return res
+                return res.success(strip_fn)
 
         expr = res.register(self.expr())
         if res.error:
