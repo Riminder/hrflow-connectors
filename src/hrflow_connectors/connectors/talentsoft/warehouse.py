@@ -389,9 +389,9 @@ def write_profiles(
     """Write profiles into TalentSoft"""
     failed_profiles = []
     token = get_talentsoft_auth_token(
-        client_url=parameters.client_url,
-        client_id=parameters.client_id,
-        client_secret=parameters.client_secret,
+        client_url=parameters.client_url_front,
+        client_id=parameters.client_id_front,
+        client_secret=parameters.client_secret_front,
         front_or_back="front",
     )
     for profile in profiles:
@@ -409,7 +409,7 @@ def write_profiles(
         profile_ts = decode_json(profile_ts)
         try:
             response = post_applicant_front(
-                parameters.client_url,
+                parameters.client_url_front,
                 token,
                 profile_ts,
                 files,
