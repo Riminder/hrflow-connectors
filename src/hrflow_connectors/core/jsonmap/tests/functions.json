@@ -19,5 +19,6 @@
   "concat_split_utcnow": ".updated_at || utcnow | $split('T') | $concat(.[0], 'T', .[1])",
   "map_utcnow": ".dates || [] | $map({ iso8601: utcnow })",
   "string": ".id >> 42 | $string",
-  "map_string": ".predictions | $map({ one_minus_score: .[0] | $string, score: .[1] | $string })"
+  "map_string": ".predictions | $map({ one_minus_score: .[0] | $string, score: .[1] | $string })",
+  "items": ".leverTags | $items | $map({ name: .key | $concat(lever_, .key), value: .value.XXXyyyZZZ })"
 }

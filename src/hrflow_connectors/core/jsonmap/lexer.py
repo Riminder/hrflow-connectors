@@ -27,6 +27,7 @@ class TokenType(Enum):
     MAP_FN = r"\$map"
     JSONLOAD_FN = r"\$jsonload"
     JOIN_FN = r"\$join"
+    ITEMS_FN = r"\$items"
     L_PAREN = r"\("
     R_PAREN = r"\)"
     L_BRAKET = r"\["
