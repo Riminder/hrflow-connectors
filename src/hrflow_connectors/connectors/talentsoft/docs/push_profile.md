@@ -26,11 +26,13 @@ Pushs specific Profile from HrFlow and writes it to Applicant object in Talentso
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `client_id` :red_circle: | `str` | None | client id used to access TalentSoft front office API |
-| `client_secret` :red_circle: | `str` | None | client secret used to access TalentSoft API |
-| `client_url` :red_circle: | `str` | None | url used to access TalentSoft API |
+| `client_id_front` :red_circle: | `str` | None | client id used to access TalentSoft front office API |
+| `client_secret_front` :red_circle: | `str` | None | client secret used to access TalentSoft front office API |
+| `client_url_front` :red_circle: | `str` | None | url used to access TalentSoft front office API |
+| `client_id_back` :red_circle: | `str` | None | client id used to access TalentSoft back office API |
+| `client_secret_back` :red_circle: | `str` | None | client secret used to access TalentSoft back office API |
+| `client_url_back` :red_circle: | `str` | None | url used to access TalentSoft back office API |
 | `job_reference`  | `str` | None | reference of the job offer to which the candidate is applying |
-| `front_or_back`  | `typing_extensions.Literal['front', 'back']` | None | front or back office |
 
 :red_circle: : *required*
 
@@ -59,11 +61,13 @@ TalentSoft.push_profile(
         profile_key="your_profile_key",
     ),
     target_parameters=dict(
-        client_id="your_client_id",
-        client_secret="your_client_secret",
-        client_url="your_client_url",
+        client_id_front="your_client_id_front",
+        client_secret_front="your_client_secret_front",
+        client_url_front="your_client_url_front",
+        client_id_back="your_client_id_back",
+        client_secret_back="your_client_secret_back",
+        client_url_back="your_client_url_back",
         job_reference="your_job_reference",
-        front_or_back=***,
     )
 )
 ```
