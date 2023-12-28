@@ -62,10 +62,6 @@ TalentSoft.push_profile(
         client_secret="your_client_secret",
         client_url="your_client_url",
         job_reference="your_job_reference",
-<<<<<<< HEAD
-=======
-        front_or_back=***,
->>>>>>> 13098fa (feat:add push profile action to talentsoft)
     )
 )
 ```
