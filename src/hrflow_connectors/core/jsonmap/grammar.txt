@@ -10,7 +10,7 @@ atom                : literal
                     : dot_access PASS_CONTEXT consumer
                     : IF DOT_ACCESS COLON atom
 
-literal             : TRUE|FALSE|NULL|NUMBER|RAW_STRING|QUOTED_RAW_STRING
+literal             : TRUE|FALSE|NULL|NUMBER|RAW_STRING|QUOTED_RAW_STRING|UTCNOW
 
 dot_access          : DOT_ACCESS (INDEX_ACCESS DOT_ACCESS?)* ((ACCESS_CATCH|FALSY) expr)?
 
@@ -22,9 +22,11 @@ function_call       : float_call
                     : split_call (PASS_CONTEXT consumer)?
                     : map_call (PASS_CONTEXT consumer)?
                     : join_call
+                    : string_call
 
 float_call          : FLOAT_FN
 split_call          : SPLIT_FN L_PAREN RAW_STRING|QUOTED_RAW_STRING R_PAREN
 map_call            : MAP_FN L_PAREN expr R_PAREN
 concat_call         : CONCAT_FN L_PAREN dot_access|RAW_STRING|QUOTED_RAW_STRING (COMMA dot_access|RAW_STRING|QUOTED_RAW_STRING)* R_PAREN
 join_call           : JOIN_FN L_PAREN RAW_STRING|QUOTED_RAW_STRING R_PAREN
+string_call         : STRING_FN

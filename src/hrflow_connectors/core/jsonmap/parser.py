@@ -11,9 +11,11 @@ LITERAL_TOKENS = {
     TokenType.NUMBER.name,
     TokenType.RAW_STRING.name,
     TokenType.QUOTED_RAW_STRING.name,
+    TokenType.UTCNOW.name,
 }
 FUNCTION_TOKENS = {
     TokenType.FLOAT_FN.name,
+    TokenType.STRING_FN.name,
     TokenType.SPLIT_FN.name,
     TokenType.CONCAT_FN.name,
     TokenType.MAP_FN.name,
@@ -463,6 +465,33 @@ class Parser:
             )
         return res.success(FunctionNode(fn=TokenType.FLOAT_FN, args=[]))
 
+    def string_fn(self):
+        res = ParseResult()
+        token = self.current_token
+
+        if token.kind != TokenType.STRING_FN.name:
+            return res.failure(
+                Error(
+                    start=token.start,
+                    end=token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Expecting $string function but found {}".format(token),
+                )
+            )
+        res.register(self.advance())
+        if self.current_token.kind == TokenType.L_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect call of function $string. No arguments are expected"
+                    ),
+                )
+            )
+        return res.success(FunctionNode(fn=TokenType.STRING_FN, args=[]))
+
     def split_fn(self):
         res = ParseResult()
         token = self.current_token
@@ -770,6 +799,12 @@ class Parser:
                 if res.error:
                     return res
                 return res.success(join_fn)
+
+            if token.kind == TokenType.STRING_FN.name:
+                string_fn = res.register(self.string_fn())
+                if res.error:
+                    return res
+                return res.success(string_fn)
 
         expr = res.register(self.expr())
         if res.error:
