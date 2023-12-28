@@ -1,0 +1,37 @@
+{
+  "name": "?.label >> Undefined",
+  "reference": "?.id | $string",
+  "created_at": null,
+  "updated_at": null,
+  "location": {
+    "lat": "?.lat | $float",
+    "lng": "?.lng | $float",
+    "text": ". | $concat(?.postalCode, ' ', ?.city, ' ', ?.country)"
+  },
+  "url": "?.url",
+  "summary": null,
+  "sections": [
+    "?? .jobDescription : .jobDescription | { name: taleez-sections-jobDescription, title: jobDescription, description: . }",
+    "?? .profileDescription : .profileDescription | { name: taleez-sections-profileDescription, title: profileDescription, description: . }",
+    "?? .companyDescription : .companyDescription | { name: taleez-sections-companyDescription, title: companyDescription, description: . }"
+  ],
+  "tags": [
+    {
+      "name": "taleez_contract",
+      "value": "?.contract"
+    },
+    {
+      "name": "taleez_profile",
+      "value": "?.profile"
+    },
+    {
+      "name": "taleez_urlApplying",
+      "value": "?.urlApplying"
+    },
+    {
+      "name": "taleez_currentStatus",
+      "value": "?.currentStatus"
+    },
+    "?.tags || [] | $map({ name: taleez_tag, value: . })"
+  ]
+}
