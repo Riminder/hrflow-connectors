@@ -6,7 +6,6 @@ from logging import LoggerAdapter
 from zipfile import ZipFile
 
 import requests
-import typing_extensions as te
 from pydantic import Field, PositiveInt
 
 from hrflow_connectors.core import (
@@ -126,33 +125,45 @@ class ReadJobsParameters(ParametersModel):
 class WriteProfileParameters(ParametersModel):
     """Parameters for write action"""
 
-    client_id: str = Field(
+    client_id_front: str = Field(
         ...,
         description="client id used to access TalentSoft front office API",
         repr=False,
         field_type=FieldType.Auth,
     )
-    client_secret: str = Field(
+    client_secret_front: str = Field(
         ...,
-        description="client secret used to access TalentSoft API",
+        description="client secret used to access TalentSoft front office API",
         repr=False,
         field_type=FieldType.Auth,
     )
-    client_url: str = Field(
+    client_url_front: str = Field(
         ...,
-        description="url used to access TalentSoft API",
+        description="url used to access TalentSoft front office API",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+    client_id_back: str = Field(
+        ...,
+        description="client id used to access TalentSoft back office API",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+    client_secret_back: str = Field(
+        ...,
+        description="client secret used to access TalentSoft back office API",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+    client_url_back: str = Field(
+        ...,
+        description="url used to access TalentSoft back office API",
         repr=False,
         field_type=FieldType.Auth,
     )
     job_reference: str = Field(
         None,
         description="reference of the job offer to which the candidate is applying",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    front_or_back: te.Literal["front", "back"] = Field(
-        None,
-        description="front or back office",
         repr=False,
         field_type=FieldType.Auth,
     )
@@ -381,7 +392,7 @@ def write_profiles(
         client_url=parameters.client_url,
         client_id=parameters.client_id,
         client_secret=parameters.client_secret,
-        front_or_back=parameters.front_or_back,
+        front_or_back="front",
     )
     for profile in profiles:
         attachment = profile.pop("attachment", None)
