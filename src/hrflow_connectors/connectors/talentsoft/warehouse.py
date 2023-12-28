@@ -1,5 +1,4 @@
 import json
-import pdb
 import typing as t
 from datetime import date
 from io import BytesIO
@@ -219,7 +218,6 @@ def get_talentsoft_auth_token(
 
 
 def post_applicant_front(client_url, token, applicant, files, job_reference=None):
-    pdb.set_trace()
     if job_reference:
         headers = {
             "Authorization": "Bearer " + token,
