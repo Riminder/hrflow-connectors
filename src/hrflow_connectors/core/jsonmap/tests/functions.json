@@ -14,5 +14,7 @@
   "map_to_json_with_context_pass": ".experiences | $map({title: .title, duration: .duration | $float }) | .[0].title",
   "concat": ". | $concat(.first_name, ' ', .last_name)",
   "concat_split_utcnow": ".updated_at || utcnow | $split('T') | $concat(.[0], 'T', .[1])",
-  "map_utcnow": ".dates || [] | $map({ iso8601: utcnow })"
+  "map_utcnow": ".dates || [] | $map({ iso8601: utcnow })",
+  "string": ".id >> 42 | $string",
+  "map_string": ".predictions | $map({ one_minus_score: .[0] | $string, score: .[1] | $string })"
 }

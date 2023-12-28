@@ -21,6 +21,7 @@ class TokenType(Enum):
     PASS_CONTEXT = r"\|"
     IF = r"\?\?"
     FLOAT_FN = r"\$float"
+    STRING_FN = r"\$string"
     CONCAT_FN = r"\$concat"
     SPLIT_FN = r"\$split"
     MAP_FN = r"\$map"
