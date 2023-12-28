@@ -1,0 +1,79 @@
+{
+  "name": "?.job?.jobTitle >> Undefined",
+  "reference": "?.job?.jobReqId",
+  "location": {
+    "text": "?.requisition?.location",
+    "city": "?.requisition?.city",
+    "geojson": {
+      "city": "?.requisition?.city",
+      "country": "?.requisition?.country",
+      "facility": "?.requisition?.facility",
+      "province": "?.requisition?.stateProvince"
+    },
+    "lat": null,
+    "lng": null
+  },
+  "sections": [
+    "?? .job.jobDescription : .job.jobDescription | $sub('<[^<]+?>', '') | $sub('#13;', ' ') | $sub('&', '') | $sub('&nbsp;', '') | $sub('quo;s', '') | { name: sap_description, title: sap_description, description: . }"
+  ],
+  "tags": [
+    {
+      "name": "sapsuccessfactors_annual_SA",
+      "value": "?.annual_SA"
+    },
+    {
+      "name": "sapsuccessfactors_department",
+      "value": "?.department"
+    },
+    {
+      "name": "sapsuccessfactors_function",
+      "value": "?.function"
+    },
+    {
+      "name": "sapsuccessfactors_division",
+      "value": "?.division"
+    },
+    {
+      "name": "sapsuccessfactors_industry",
+      "value": "?.industry"
+    },
+    {
+      "name": "sapsuccessfactors_monthly_salary",
+      "value": "?.monthly_salary"
+    },
+    {
+      "name": "sapsuccessfactors_otherBonus",
+      "value": "?.otherBonus"
+    },
+    {
+      "name": "sapsuccessfactors_salaryBase",
+      "value": "?.salaryBase"
+    },
+    {
+      "name": "sapsuccessfactors_salaryMax",
+      "value": "?.salaryMax"
+    },
+    {
+      "name": "sapsuccessfactors_salaryMin",
+      "value": "?.salaryMin"
+    },
+    {
+      "name": "sapsuccessfactors_jobStartDate",
+      "value": "?.jobStartDate"
+    }
+  ],
+  "metadatas": [
+    {
+      "name": "sapsuccessfactors_recruiterTeam",
+      "value": "?.recruiterTeam"
+    },
+    {
+      "name": "sapsuccessfactors_sourcerTeam",
+      "value": "?.sourcerTeam"
+    },
+    {
+      "name": "sapsuccessfactors_hiringManagerTeam",
+      "value": "?.hiringManagerTeam"
+    }
+  ]
+}
