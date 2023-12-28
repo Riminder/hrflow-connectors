@@ -407,9 +407,9 @@ def write_profiles(
     failed_profiles = []
     adapter.info("Requesting Authentication Token from TS")
     token = get_talentsoft_auth_token(
-        client_url=parameters.client_url,
-        client_id=parameters.client_id,
-        client_secret=parameters.client_secret,
+        client_url=parameters.client_url_front,
+        client_id=parameters.client_id_front,
+        client_secret=parameters.client_secret_front,
         front_or_back="front",
     )
     adapter.info("Authentication with TS API Endpoint finished")
