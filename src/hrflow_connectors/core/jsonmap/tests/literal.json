@@ -8,5 +8,6 @@
   "json_null": null,
   "jsonmap_null": "null",
   "simple_string": "JSONMap",
-  "quoted_string": "'This a JSONMap mapping example'"
+  "quoted_string": "'This a JSONMap mapping example'",
+  "jsonmap_utcnow": "utcnow"
 }

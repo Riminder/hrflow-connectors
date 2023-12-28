@@ -4,5 +4,6 @@
   "dot_access_key_error_catch": ".title || 'JSONMap Mapping Example'",
   "dot_access_falsy": ".created_at >> '2022-04-23'",
   "deep_dot_access": ".title || .subtitle || ?.description >> 'Really Nothing to Report'",
-  "dot_access_numerical_name": ".0123456789"
+  "dot_access_numerical_name": ".0123456789",
+  "updated_at": ".updated_at >> utcnow"
 }

@@ -11,6 +11,7 @@ LITERAL_TOKENS = {
     TokenType.NUMBER.name,
     TokenType.RAW_STRING.name,
     TokenType.QUOTED_RAW_STRING.name,
+    TokenType.UTCNOW.name,
 }
 FUNCTION_TOKENS = {
     TokenType.FLOAT_FN.name,
