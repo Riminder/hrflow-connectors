@@ -24,6 +24,7 @@ function_call       : float_call
                     : jsonload_call
                     : join_call
                     : string_call
+                    : slice_call (PASS_CONTEXT consumer)?
 
 float_call          : FLOAT_FN
 split_call          : SPLIT_FN L_PAREN RAW_STRING|QUOTED_RAW_STRING R_PAREN
@@ -32,3 +33,4 @@ concat_call         : CONCAT_FN L_PAREN dot_access|RAW_STRING|QUOTED_RAW_STRING 
 jsonload_call       : JSONLOAD_FN
 join_call           : JOIN_FN L_PAREN RAW_STRING|QUOTED_RAW_STRING R_PAREN
 string_call         : STRING_FN
+slice_call          : SLICE_FN

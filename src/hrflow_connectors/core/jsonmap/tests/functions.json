@@ -19,5 +19,8 @@
   "concat_split_utcnow": ".updated_at || utcnow | $split('T') | $concat(.[0], 'T', .[1])",
   "map_utcnow": ".dates || [] | $map({ iso8601: utcnow })",
   "string": ".id >> 42 | $string",
-  "map_string": ".predictions | $map({ one_minus_score: .[0] | $string, score: .[1] | $string })"
+  "map_string": ".predictions | $map({ one_minus_score: .[0] | $string, score: .[1] | $string })",
+  "slice_1": ".names | $slice(1)",
+  "slice_2": ".names | $slice(1, -1)",
+  "slice_with_context_pass": ".names | $slice(1, 3) | $join(' ')"
 }

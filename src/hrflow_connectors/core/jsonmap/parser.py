@@ -21,6 +21,7 @@ FUNCTION_TOKENS = {
     TokenType.MAP_FN.name,
     TokenType.JSONLOAD_FN.name,
     TokenType.JOIN_FN.name,
+    TokenType.SLICE_FN.name,
 }
 
 
@@ -356,6 +357,7 @@ class Parser:
                     if hasattr(consumer, "fn") and consumer.fn in [
                         TokenType.SPLIT_FN,
                         TokenType.MAP_FN,
+                        TokenType.SLICE_FN,
                     ]:
                         res.register(self.advance())
                         inner_consumer = res.register(self.consumer())
@@ -479,7 +481,7 @@ class Parser:
                     details="Expecting $jsonload function but found {}".format(token),
                 )
             )
-                  
+
         res.register(self.advance())
         if self.current_token.kind == TokenType.L_PAREN.name:
             return res.failure(
@@ -508,7 +510,7 @@ class Parser:
                     details="Expecting $string function but found {}".format(token),
                 )
             )
-                  
+
         res.register(self.advance())
         if self.current_token.kind == TokenType.L_PAREN.name:
             return res.failure(
@@ -577,7 +579,7 @@ class Parser:
             )
         res.register(self.advance())
         return res.success(FunctionNode(fn=TokenType.SPLIT_FN, args=[split_by]))
-    
+
     def join_fn(self):
         res = ParseResult()
         token = self.current_token
@@ -797,6 +799,79 @@ class Parser:
         res.register(self.advance())
         return res.success(FunctionNode(fn=TokenType.CONCAT_FN, args=args))
 
+    def slice_fn(self):
+        res = ParseResult()
+
+        if self.current_token.kind != TokenType.SLICE_FN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Expecting $slice function but found {}".format(
+                        self.current_token
+                    ),
+                )
+            )
+
+        res.register(self.advance())
+
+        if self.current_token.kind != TokenType.L_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect function call. Expecting '(' but found {}".format(
+                            self.current_token
+                        )
+                    ),
+                )
+            )
+
+        res.register(self.advance())
+
+        args = [res.register(self.literal(only={TokenType.NUMBER.name}))]
+
+        if self.current_token.kind != TokenType.COMMA.name:
+            if self.current_token.kind == TokenType.R_PAREN.name:
+                res.register(self.advance())
+                return res.success(FunctionNode(fn=TokenType.SLICE_FN, args=args))
+            else:
+                return res.failure(
+                    Error(
+                        start=self.current_token.start,
+                        end=self.current_token.end,
+                        type=ErrorType.InvalidSyntax,
+                        details=(
+                            "Incorrect function call. Expecting ',' but found {}"
+                            .format(self.current_token)
+                        ),
+                    )
+                )
+
+        res.register(self.advance())
+
+        args.append(res.register(self.literal(only={TokenType.NUMBER.name})))
+
+        if self.current_token.kind != TokenType.R_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect function call. Expecting ')' but found {}".format(
+                            self.current_token
+                        )
+                    ),
+                )
+            )
+
+        res.register(self.advance())
+        return res.success(FunctionNode(fn=TokenType.SLICE_FN, args=args))
+
     def consumer(self):
         res = ParseResult()
         token = self.current_token
@@ -824,7 +899,7 @@ class Parser:
                 if res.error:
                     return res
                 return res.success(concat_fn)
-            
+
             if token.kind == TokenType.JOIN_FN.name:
                 join_fn = res.register(self.join_fn())
                 if res.error:
@@ -842,6 +917,12 @@ class Parser:
                 if res.error:
                     return res
                 return res.success(jsonload_fn)
+
+            if token.kind == TokenType.SLICE_FN.name:
+                slice_fn = res.register(self.slice_fn())
+                if res.error:
+                    return res
+                return res.success(slice_fn)
 
         expr = res.register(self.expr())
         if res.error:
