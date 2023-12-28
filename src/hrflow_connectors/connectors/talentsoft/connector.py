@@ -1,3 +1,4 @@
+import pdb
 import typing as t
 from datetime import datetime
 
@@ -24,6 +25,115 @@ from hrflow_connectors.core import (
     Event,
     WorkflowType,
 )
+
+EDUCATIONS_REFERENTIEL = {
+    "Aucun diplôme": "_TS_etude_min_Aucun_diplome",
+    "BAC": "_TS_etude_min_BAC",
+    "BAC+2": "_TS_etude_min_BAC2",
+    "BAC+3": "_TS_etude_min_Licence",
+    "BAC+4": "_TS_etude_min_BAC4",
+    "BAC+5": "_TS_etude_min_BAC5",
+    "CAP, BEP": "_TS_etude_min_CAP_BEP",
+    "DOCTORAT": "_TS_etude_min_DOCTORAT",
+    "Mastère": "_TS_etude_min_Mastere",
+}
+EXPERIENCES_REFERENTIEL = {
+    "Etudiant-e": "",
+    "Débutant-e/première expérience": "_TS_niveau_exp_premiere_exp",
+    "Supérieure à 3 ans": "_TS_niveau_exp_superieur_3ans",
+    "Supérieure à 5 ans": "_TS_niveau_exp_superieur_5ans",
+    "Supérieure à 8 ans": "_TS_niveau_exp_superieur_8ans",
+}
+
+DIPLOMA_OTHER = "_TS_fe06f67e-211d-4b6e-98e5-60d8bf50e3e3"
+
+
+def format_ts_applicant_title(gender: str):
+    title_dr = ""
+    if gender is None:
+        return None
+    if gender == "male":
+        title_dr = "Mr."
+    elif gender == "female":
+        title_dr = "Mme."
+    return title_dr
+
+
+def extraire_annee(date_str):
+    if not date_str:
+        return None
+    # Convertir la chaîne de date en objet datetime
+    date_obj = datetime.fromisoformat(date_str)
+
+    # Extraire l'année de l'objet datetime
+    annee = date_obj.year
+
+    return annee
+
+
+def calcul_ts_experience_duration(date_start, date_end):
+    if not date_start or not date_end:
+        return None
+    date_start_obj = datetime.fromisoformat(date_start)
+    date_end_obj = datetime.fromisoformat(date_end)
+    experience_duration = date_end_obj - date_start_obj
+    experience_duration_years = experience_duration.days / 365
+    return experience_duration_years
+
+
+def format_ts_educations(educations, tags):
+    education_level = None
+    for tag in tags:
+        if tag["name"] == "talentsoft_education_level":
+            education_level = tag["value"]
+            break
+
+    diplomas_list = [{"educationLevel": education_level}] if education_level else []
+
+    diplomas_list += [
+        {
+            # "diplomaCode": 0,
+            # "specialisation": education["title"],
+            "yearObtained": (
+                extraire_annee(education["date_end"]) if education["date_end"] else ""
+            ),
+            "college": education["school"],
+        }
+        for education in educations
+    ]
+
+    return {"diplomas": diplomas_list}
+
+
+def format_ts_experiences(experiences, tags):
+    experience_level = None
+    for tag in tags:
+        if tag["name"] == "talentsoft_experience_level":
+            experience_level = tag["value"]
+            break
+
+    experiences_ts_level = experience_level if experience_level else None
+    experiences_ts_list = [
+        {
+            "company": experience["company"],
+            "function": experience["title"],
+            "length": (
+                calcul_ts_experience_duration(
+                    experience["date_start"], experience["date_end"]
+                )
+                if experience["date_start"] and experience["date_end"]
+                else ""
+            ),
+        }
+        for experience in experiences
+    ]
+
+    experiences_ts = {
+        "experienceLevel": experiences_ts_level,
+        "experienceList": experiences_ts_list,
+    }
+
+    return experiences_ts
 
 
 def format_ts_vacancy(ts_vacancy: t.Dict) -> t.Dict:
@@ -276,6 +386,49 @@ def applicant_update_parser(event: t.Dict) -> t.Dict:
     return dict(filter="id::{}".format(event["applicantId"]))
 
 
+def format_into_ts_applicant(profile_hrflow: t.Dict) -> t.Dict:
+    info_profile_hrflow = profile_hrflow["info"]
+    attachment = profile_hrflow["attachments"][0]
+    personal_information = dict(
+        firstName=info_profile_hrflow["first_name"],
+        lastName=info_profile_hrflow["last_name"],
+        birthDate=info_profile_hrflow["date_birth"],
+        phoneNumber=info_profile_hrflow["phone"],
+        email=info_profile_hrflow["email"],
+        # title=format_ts_applicant_title(info_profile_hrflow["gender"]),
+    )
+    education = format_ts_educations(
+        profile_hrflow["educations"], profile_hrflow["tags"]
+    )
+    experiences = format_ts_experiences(
+        profile_hrflow["experiences"], profile_hrflow["tags"]
+    )
+    application = dict(
+        type="offer",
+        offerReference="",  # TODO
+    )
+    uploadedFiles = [
+        dict(
+            description=attachment["original_file_name"],
+            fileTypeId=36,
+            key="cv_file_id",
+        )
+    ]
+
+    applicant = dict(
+        personalInformation=personal_information,
+        education=education,
+        experiences=experiences,
+    )
+
+    return dict(
+        applicant=applicant,
+        application=application,
+        uploadedFiles=uploadedFiles,
+        attachment=attachment,
+    )
+
+
 DESCRIPTION = "TalentSoft"
 TalentSoft = Connector(
     name="TalentSoft",
@@ -374,6 +527,20 @@ TalentSoft = Connector(
             origin=TalentSoftJobsWarehouse,
             target=HrFlowJobWarehouse,
             action_type=ActionType.inbound,
+        ),
+        ConnectorAction(
+            name=ActionName.push_profile,
+            trigger_type=WorkflowType.catch,
+            description=(
+                "Pushs specific Profile from HrFlow and writes"
+                " it to Applicant object in Talentsoft"
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "PushProfileActionParameters", format=format_into_ts_applicant
+            ),
+            origin=HrFlowProfileWarehouse,
+            target=TalentSoftProfilesWarehouse,
+            action_type=ActionType.outbound,
         ),
     ],
 )

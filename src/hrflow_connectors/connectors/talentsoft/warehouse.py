@@ -1,4 +1,5 @@
 import json
+import pdb
 import typing as t
 from datetime import date
 from io import BytesIO
@@ -7,6 +8,7 @@ from zipfile import ZipFile
 
 import requests
 from pydantic import Field, PositiveInt
+from typing_extensions import Literal
 
 from hrflow_connectors.core import (
     DataType,
@@ -15,10 +17,12 @@ from hrflow_connectors.core import (
     ReadMode,
     Warehouse,
     WarehouseReadAction,
+    WarehouseWriteAction,
 )
 
 GRANT_TYPE = "client_credentials"
 TOKEN_SCOPE = "MatchingIndexation"
+TOKEN_SCOPE_FULL_RIGHT = "Customer"
 LIMIT = 100
 TIMEOUT = 10
 JOBS_DEFAULT_MAX_READ = 100
@@ -120,21 +124,80 @@ class ReadJobsParameters(ParametersModel):
     )
 
 
+class WriteProfileParameters(ParametersModel):
+    """Parameters for write action"""
+
+    client_id: str = Field(
+        ...,
+        description="client id used to access TalentSoft front office API",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+    client_secret: str = Field(
+        ...,
+        description="client secret used to access TalentSoft API",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+    client_url: str = Field(
+        ...,
+        description="url used to access TalentSoft API",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+    job_reference: str = Field(
+        None,
+        description="reference of the job offer to which the candidate is applying",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+    front_or_back: Literal["front", "back"] = Field(
+        None,
+        description="front or back office",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+
+def decode_unicode(input_str):
+    try:
+        return bytes(input_str, "utf-8").decode("unicode_escape")
+    except UnicodeDecodeError as e:
+        print(f"Error decoding Unicode: {e}")
+        return input_str
+
+def decode_json(obj):
+    if isinstance(obj, str):
+        return decode_unicode(obj)
+    elif isinstance(obj, list):
+        return [decode_json(item) for item in obj]
+    elif isinstance(obj, dict):
+        return {key: decode_json(value) for key, value in obj.items()}
+    else:
+        return obj
+    
 def get_talentsoft_auth_token(
-    client_url: str, client_id: str, client_secret: str
+    client_url: str, client_id: str, client_secret: str, scope: str = TOKEN_SCOPE,front_or_back="back"
 ) -> str:
+    if front_or_back == "front":
+        data = dict(
+            grant_type=GRANT_TYPE,
+            client_id=client_id,
+            client_secret=client_secret,
+        )
+    else:
+        data = dict(
+            grant_type=GRANT_TYPE,
+            client_id=client_id,
+            client_secret=client_secret,
+            scope=scope,
+        )
     response = requests.post(
         "{}/api/token".format(client_url),
         headers={
             "Content-Type": "application/x-www-form-urlencoded",
         },
         timeout=TIMEOUT,
-        data=dict(
-            grant_type=GRANT_TYPE,
-            scope=TOKEN_SCOPE,
-            client_id=client_id,
-            client_secret=client_secret,
-        ),
+        data=data,
     )
     if not response.ok:
         raise Exception(
@@ -146,6 +209,30 @@ def get_talentsoft_auth_token(
         raise Exception(
             "Failed to get token from response with error={}".format(repr(e))
         )
+
+def post_applicant_front(client_url, token, applicant, files, job_reference=None):
+    pdb.set_trace()
+    if job_reference:
+        headers = {
+            "Authorization": "Bearer " + token,
+            "Accept-Language": "fr-FR",
+            "jobAdReference": job_reference,
+        }
+    else:
+        headers = {
+            "Authorization": "Bearer " + token,
+        }
+
+    response = requests.post(
+        "{}/api/v2/applicants/applicationswithoutaccount".format(client_url),
+        headers=headers,
+        data=applicant,
+        files=files,
+    )
+    if response.status_code == 200:
+        return response.json()
+
+    response.raise_for_status()
 
 
 def read_jobs(
@@ -277,12 +364,63 @@ def read_profiles(
         params["offset"] += LIMIT
 
 
+def write_profiles(
+    adapter: LoggerAdapter,
+    parameters: WriteProfileParameters,
+    profiles: t.Iterable[t.Dict],
+) -> t.List[t.Dict]:
+    """Write profiles into TalentSoft"""
+    failed_profiles = []
+    token = get_talentsoft_auth_token(
+        client_url=parameters.client_url,
+        client_id=parameters.client_id,
+        client_secret=parameters.client_secret,
+        front_or_back=parameters.front_or_back,
+    )
+    for profile in profiles:
+        attachment = profile.pop("attachment", None)
+        cv_content = get_cv_content(attachment)
+        files = [
+            (
+                "cv_file_id",
+                (attachment["original_file_name"], cv_content, "application/"),
+            )
+        ]
+        if parameters.job_reference:
+            profile["application"]["offerReference"] = parameters.job_reference
+        profile_ts = dict(applicantApplication=json.dumps(profile))
+        try:
+            response = post_applicant_front(
+                parameters.client_url,
+                token,
+                profile_ts,
+                files,
+                parameters.job_reference,
+            )
+        except Exception as e:
+            adapter.error("Failed to write profile with error={}, and response={}".format(e, response))
+            failed_profiles.append(profile)
+
+    return failed_profiles
+
+
+def get_cv_content(attachment):
+    response = requests.get(attachment["public_url"])
+    if response.status_code == 200:
+        return response.content
+    response.raise_for_status()
+
+
 TalentSoftProfilesWarehouse = Warehouse(
     name="TalentSoft Profiles",
     data_type=DataType.profile,
     read=WarehouseReadAction(
         parameters=ReadProfilesParameters,
         function=read_profiles,
+    ),
+    write=WarehouseWriteAction(
+        parameters=WriteProfileParameters,
+        function=write_profiles,
     ),
 )
 
