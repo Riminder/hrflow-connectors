@@ -11,13 +11,16 @@ LITERAL_TOKENS = {
     TokenType.NUMBER.name,
     TokenType.RAW_STRING.name,
     TokenType.QUOTED_RAW_STRING.name,
+    TokenType.UTCNOW.name,
 }
 FUNCTION_TOKENS = {
     TokenType.FLOAT_FN.name,
+    TokenType.STRING_FN.name,
     TokenType.SPLIT_FN.name,
     TokenType.CONCAT_FN.name,
     TokenType.MAP_FN.name,
     TokenType.JSONLOAD_FN.name,
+    TokenType.JOIN_FN.name,
 }
 
 
@@ -476,6 +479,7 @@ class Parser:
                     details="Expecting $jsonload function but found {}".format(token),
                 )
             )
+                  
         res.register(self.advance())
         if self.current_token.kind == TokenType.L_PAREN.name:
             return res.failure(
@@ -490,6 +494,34 @@ class Parser:
                 )
             )
         return res.success(FunctionNode(fn=TokenType.JSONLOAD_FN, args=[]))
+
+    def string_fn(self):
+        res = ParseResult()
+        token = self.current_token
+
+        if token.kind != TokenType.STRING_FN.name:
+            return res.failure(
+                Error(
+                    start=token.start,
+                    end=token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Expecting $string function but found {}".format(token),
+                )
+            )
+                  
+        res.register(self.advance())
+        if self.current_token.kind == TokenType.L_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect call of function $string. No arguments are expected"
+                    ),
+                )
+            )
+        return res.success(FunctionNode(fn=TokenType.STRING_FN, args=[]))
 
     def split_fn(self):
         res = ParseResult()
@@ -545,6 +577,61 @@ class Parser:
             )
         res.register(self.advance())
         return res.success(FunctionNode(fn=TokenType.SPLIT_FN, args=[split_by]))
+    
+    def join_fn(self):
+        res = ParseResult()
+        token = self.current_token
+
+        if token.kind != TokenType.JOIN_FN.name:
+            return res.failure(
+                Error(
+                    start=token.start,
+                    end=token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="Expecting $join function but found {}".format(token),
+                )
+            )
+        res.register(self.advance())
+
+        if self.current_token.kind != TokenType.L_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect function call. Expecting '(' but found {}".format(
+                            self.current_token
+                        )
+                    ),
+                )
+            )
+        res.register(self.advance())
+        join_by = res.register(
+            self.literal(
+                only={
+                    TokenType.RAW_STRING.name,
+                    TokenType.QUOTED_RAW_STRING.name,
+                }
+            )
+        )
+        if res.error:
+            return res
+        if self.current_token.kind != TokenType.R_PAREN.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Incorrect function call. Expecting ')' but found {}".format(
+                            self.current_token
+                        )
+                    ),
+                )
+            )
+        res.register(self.advance())
+        return res.success(FunctionNode(fn=TokenType.JOIN_FN, args=[join_by]))
 
     def map_fn(self):
         res = ParseResult()
@@ -737,6 +824,18 @@ class Parser:
                 if res.error:
                     return res
                 return res.success(concat_fn)
+            
+            if token.kind == TokenType.JOIN_FN.name:
+                join_fn = res.register(self.join_fn())
+                if res.error:
+                    return res
+                return res.success(join_fn)
+
+            if token.kind == TokenType.STRING_FN.name:
+                string_fn = res.register(self.string_fn())
+                if res.error:
+                    return res
+                return res.success(string_fn)
 
             if token.kind == TokenType.JSONLOAD_FN.name:
                 jsonload_fn = res.register(self.jsonload_fn())
