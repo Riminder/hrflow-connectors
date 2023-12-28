@@ -6,8 +6,8 @@ from logging import LoggerAdapter
 from zipfile import ZipFile
 
 import requests
+import typing_extensions as te
 from pydantic import Field, PositiveInt
-from typing_extensions import Literal
 
 from hrflow_connectors.core import (
     DataType,
@@ -150,7 +150,7 @@ class WriteProfileParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-    front_or_back: Literal["front", "back"] = Field(
+    front_or_back: te.Literal["front", "back"] = Field(
         None,
         description="front or back office",
         repr=False,
