@@ -1,0 +1,34 @@
+{
+  "name": "?.title",
+  "reference": "?.shortcode",
+  "url": "?.url",
+  "location": {
+    "text": "?.location?.location_str | $string",
+    "geojson": {
+      "country": "?? .location.country : .location.country",
+      "country_code": "?? .location.country_code : .location.country_code",
+      "region_code": "?? .location.region_code : .location.region_code",
+      "region": "?? .location.region : .location.region",
+      "city": "?? .location.city : .location.city",
+      "zip_code": "?? .location.zip_code : .location.zip_code",
+      "telecommuting": "?? .location.telecommuting : .location.telecommuting"
+    }
+  },
+  "sections": [
+    "?? .description : .description | { name: workable_description, title: workable_description, description: . | $sub('<[^<]+?>', '') }",
+    "?? .requirements : .requirements | { name: workable_requirements, title: workable_requirements, description: . | $sub('<[^<]+?>', '') }",
+    "?? .benefits : .benefits | { name: workable_benefits, title: workable_benefits, description: . | $sub('<[^<]+?>', '') }"
+  ],
+  "created_at": ".created_at",
+  "tags": [
+    "?? .employment_type : .employment_type | { name: workable_employment_type, value: . }",
+    "?? .full_title : .full_title | { name: workable_full_title, value: . }",
+    "?? .id : .id | { name: workable_id, value: . }",
+    "?? .code : .code | { name: workable_code, value: . }",
+    "?? .state : .state | { name: workable_state, value: . }",
+    "?? .department : .department | { name: workable_department, value: . }",
+    "?? .application_url : .application_url | { name: workable_application_url, value: . }",
+    "?? .shortlink : .shortlink | { name: workable_shortlink, value: . }",
+    "?? .employment_type : .employment_type | { name: workable_employment_type, value: . }"
+  ]
+}
