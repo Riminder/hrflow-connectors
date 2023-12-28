@@ -158,12 +158,14 @@ class WriteProfileParameters(ParametersModel):
         field_type=FieldType.Auth,
     )
 
+
 def decode_unicode(input_str):
     try:
         return bytes(input_str, "utf-8").decode("unicode_escape")
     except UnicodeDecodeError as e:
         print(f"Error decoding Unicode: {e}")
         return input_str
+
 
 def decode_json(obj):
     if isinstance(obj, str):
@@ -174,9 +176,14 @@ def decode_json(obj):
         return {key: decode_json(value) for key, value in obj.items()}
     else:
         return obj
-    
+
+
 def get_talentsoft_auth_token(
-    client_url: str, client_id: str, client_secret: str, scope: str = TOKEN_SCOPE,front_or_back="back"
+    client_url: str,
+    client_id: str,
+    client_secret: str,
+    scope: str = TOKEN_SCOPE,
+    front_or_back="back",
 ) -> str:
     if front_or_back == "front":
         data = dict(
@@ -209,6 +216,7 @@ def get_talentsoft_auth_token(
         raise Exception(
             "Failed to get token from response with error={}".format(repr(e))
         )
+
 
 def post_applicant_front(client_url, token, applicant, files, job_reference=None):
     pdb.set_trace()
@@ -389,6 +397,7 @@ def write_profiles(
         if parameters.job_reference:
             profile["application"]["offerReference"] = parameters.job_reference
         profile_ts = dict(applicantApplication=json.dumps(profile))
+        profile_ts = decode_json(profile_ts)
         try:
             response = post_applicant_front(
                 parameters.client_url,
@@ -398,7 +407,11 @@ def write_profiles(
                 parameters.job_reference,
             )
         except Exception as e:
-            adapter.error("Failed to write profile with error={}, and response={}".format(e, response))
+            adapter.error(
+                "Failed to write profile with error={}, and response={}".format(
+                    e, response
+                )
+            )
             failed_profiles.append(profile)
 
     return failed_profiles
