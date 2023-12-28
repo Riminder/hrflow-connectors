@@ -9,6 +9,7 @@ from zipfile import ZipFile
 import requests
 import typing_extensions as te
 from pydantic import Field, PositiveInt
+from typing_extensions import Literal
 
 from hrflow_connectors.core import (
     DataType,
@@ -223,6 +224,29 @@ def get_talentsoft_auth_token(
         raise Exception(
             "Failed to get token from response with error={}".format(repr(e))
         )
+
+def post_applicant_front(client_url, token, applicant, files, job_reference=None):
+    if job_reference:
+        headers = {
+            "Authorization": "Bearer " + token,
+            "Accept-Language": "fr-FR",
+            "jobAdReference": job_reference,
+        }
+    else:
+        headers = {
+            "Authorization": "Bearer " + token,
+        }
+
+    response = requests.post(
+        "{}/api/v2/applicants/applicationswithoutaccount".format(client_url),
+        headers=headers,
+        data=applicant,
+        files=files,
+    )
+    if response.status_code == 200:
+        return response.json()
+
+    response.raise_for_status()
 
 
 def post_applicant_front(client_url, token, applicant, files, job_reference=None):
