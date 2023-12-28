@@ -9,7 +9,6 @@ from zipfile import ZipFile
 import requests
 import typing_extensions as te
 from pydantic import Field, PositiveInt
-from typing_extensions import Literal
 
 from hrflow_connectors.core import (
     DataType,
