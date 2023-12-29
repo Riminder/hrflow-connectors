@@ -346,39 +346,9 @@ class Parser:
                 return res
             if self.current_token.kind == TokenType.PASS_CONTEXT.name:
                 res.register(self.advance())
-                consumers = [res.register(self.consumer())]
+                consumer = res.register(self.consumer())
                 if res.error:
                     return res
-                while self.current_token.kind == TokenType.PASS_CONTEXT.name:
-                    if hasattr(consumers[-1], "fn") and consumers[-1].fn in [
-                        TokenType.SPLIT_FN,
-                        TokenType.MAP_FN,
-                        TokenType.SUB_FN,
-                    ]:
-                        res.register(self.advance())
-                        inner_consumer = res.register(self.consumer())
-                        if res.error:
-                            return res
-                        consumers.append(inner_consumer)
-                    else:
-                        return res.failure(
-                            Error(
-                                start=self.current_token.start,
-                                end=self.current_token.end,
-                                type=ErrorType.InvalidSyntax,
-                                details="PASS_CONTEXT not allowed after {}".format(
-                                    consumers[-1]
-                                ),
-                            )
-                        )
-
-                consumer = consumers[0]
-                consumers_amount = len(consumers)
-                if consumers_amount > 1:
-                    consumer = PipedContextNode(consumers[-2], consumers[-1])
-                    for ii in range(consumers_amount - 3, -1, -1):
-                        consumer = PipedContextNode(consumers[ii], consumer)
-
                 return res.success(
                     PipedContextNode(parent_node=dot_access, consumer=consumer)
                 )
@@ -771,38 +741,41 @@ class Parser:
     def consumer(self):
         res = ParseResult()
         token = self.current_token
-        if token.kind in FUNCTION_TOKENS:
-            if token.kind == TokenType.FLOAT_FN.name:
-                float_fn = res.register(self.float_fn())
-                if res.error:
-                    return res
-                return res.success(float_fn)
 
-            if token.kind == TokenType.SPLIT_FN.name:
-                split_fn = res.register(self.split_fn())
+        for fn_name in FUNCTION_TOKENS:
+            if token.kind == fn_name:
+                call = getattr(self, fn_name.lower())
+                fn = res.register(call())
                 if res.error:
                     return res
-                return res.success(split_fn)
-
-            if token.kind == TokenType.MAP_FN.name:
-                map_fn = res.register(self.map_fn())
-                if res.error:
-                    return res
-                return res.success(map_fn)
-
-            if token.kind == TokenType.CONCAT_FN.name:
-                concat_fn = res.register(self.concat_fn())
-                if res.error:
-                    return res
-                return res.success(concat_fn)
-
-            if token.kind == TokenType.SUB_FN.name:
-                sub_fn = res.register(self.sub_fn())
-                if res.error:
-                    return res
-                return res.success(sub_fn)
+                if self.current_token.kind == TokenType.PASS_CONTEXT.name:
+                    if fn_name == TokenType.FLOAT_FN.name:
+                        return res.failure(
+                            Error(
+                                start=self.current_token.start,
+                                end=self.current_token.end,
+                                type=ErrorType.InvalidSyntax,
+                                details="PASS_CONTEXT not allowed after {}".format(fn),
+                            )
+                        )
+                    else:
+                        res.register(self.advance())
+                        consumer = res.register(self.consumer())
+                        if res.error:
+                            return res
+                        fn = PipedContextNode(parent_node=fn, consumer=consumer)
+                return res.success(fn)
 
         expr = res.register(self.expr())
         if res.error:
             return res
+        if self.current_token.kind == TokenType.PASS_CONTEXT.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details="PASS_CONTEXT not allowed after {}".format(expr),
+                )
+            )
         return res.success(expr)

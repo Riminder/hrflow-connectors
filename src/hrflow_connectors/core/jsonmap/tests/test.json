@@ -1,0 +1,4 @@
+{
+  "test": ". | $sub('a', 'b') | $sub('b', 'c') | $sub('c', 'a')",
+  "test1": ". | .abc | .def | .cdf | .123 | $float"
+}
