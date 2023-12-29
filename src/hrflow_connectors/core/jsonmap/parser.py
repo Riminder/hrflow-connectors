@@ -496,17 +496,19 @@ class Parser:
 
     def sub_fn(self):
         res = ParseResult()
-        token = self.current_token
 
-        if token.kind != TokenType.SUB_FN.name:
+        if self.current_token.kind != TokenType.SUB_FN.name:
             return res.failure(
                 Error(
-                    start=token.start,
-                    end=token.end,
+                    start=self.current_token.start,
+                    end=self.current_token.end,
                     type=ErrorType.InvalidSyntax,
-                    details="Expecting $sub function but found {}".format(token),
+                    details="Expecting $sub function but found {}".format(
+                        self.current_token
+                    ),
                 )
             )
+
         res.register(self.advance())
 
         if self.current_token.kind != TokenType.L_PAREN.name:
@@ -522,7 +524,9 @@ class Parser:
                     ),
                 )
             )
+
         res.register(self.advance())
+
         pattern = res.register(
             self.literal(
                 only={
@@ -534,6 +538,7 @@ class Parser:
 
         if res.error:
             return res
+
         if self.current_token.kind != TokenType.COMMA.name:
             return res.failure(
                 Error(
@@ -545,7 +550,9 @@ class Parser:
                     ),
                 )
             )
+
         res.register(self.advance())
+
         replace_with = res.register(
             self.literal(
                 only={
@@ -557,6 +564,7 @@ class Parser:
 
         if res.error:
             return res
+
         if self.current_token.kind != TokenType.R_PAREN.name:
             return res.failure(
                 Error(
@@ -570,6 +578,7 @@ class Parser:
             )
 
         res.register(self.advance())
+
         return res.success(
             FunctionNode(fn=TokenType.SUB_FN, args=[pattern, replace_with])
         )
