@@ -22,6 +22,22 @@ FUNCTION_TOKENS = {
     TokenType.JSONLOAD_FN.name,
     TokenType.JOIN_FN.name,
 }
+BINARY_OPERATOR_TOKENS = {
+    TokenType.EQ.name,
+    TokenType.NE.name,
+    TokenType.LE.name,
+    TokenType.LT.name,
+    TokenType.GE.name,
+    TokenType.GT.name,
+}
+LOGIC_OPERATOR_TOKENS = {
+    TokenType.AND.name,
+    TokenType.OR.name,
+}
+OPERATOR_TOKENS = {
+    *BINARY_OPERATOR_TOKENS,
+    *LOGIC_OPERATOR_TOKENS,
+}
 
 
 @dataclass
@@ -47,12 +63,50 @@ class DotAccessNode(ASTNode):
 
 
 @dataclass
-class IFNode:
+class ExIfNode:
     dot_access: DotAccessNode
     node: ASTNode
 
     def __repr__(self):
-        return "IF {} THEN {}".format(self.dot_access, self.node)
+        return "ExIf {} THEN {}".format(self.dot_access, self.node)
+
+
+@dataclass
+class BinaryExpressionNode:
+    left: DotAccessNode
+    right: t.Optional[t.Union[DotAccessNode, LiteralNode]] = field(default=None)
+    op: t.Optional[str] = field(default=None)
+
+    def __repr__(self):
+        if self.op is not None:
+            return "BinaryExpr[{} {} {}]".format(self.left, self.op, self.right)
+        else:
+            return "BinaryExpr[{}]".format(self.left)
+
+
+@dataclass
+class LogicExpressionNode:
+    left: t.Union[BinaryExpressionNode, "LogicExpressionNode"]
+    right: t.Optional["LogicExpressionNode"] = field(default=None)
+    op: t.Optional[str] = field(default=None)
+
+    def __repr__(self):
+        if self.op is not None:
+            return "LogicExpr[{} {} {}]".format(self.left, self.op, self.right)
+        else:
+            return "LogicExpr[{}]".format(self.left)
+
+
+@dataclass
+class IfElseNode:
+    condition: LogicExpressionNode
+    if_clause: ASTNode
+    else_clause: ASTNode
+
+    def __repr__(self):
+        return "IF {} THEN {} ELSE {}".format(
+            self.condition, self.if_clause, self.else_clause
+        )
 
 
 @dataclass
@@ -160,8 +214,8 @@ class Parser:
         res = ParseResult()
         token = self.current_token
 
-        if token.kind == TokenType.IF.name:
-            jsonmap = res.register(self.if_(self.expr))
+        if token.kind == TokenType.EXIF.name:
+            jsonmap = res.register(self.exif(self.expr))
         else:
             jsonmap = res.register(self.expr())
 
@@ -179,17 +233,17 @@ class Parser:
             )
         )
 
-    def if_(self, after_colon):
+    def exif(self, after_colon):
         res = ParseResult()
         token = self.current_token
-        if token.kind != TokenType.IF.name:
+        if token.kind != TokenType.EXIF.name:
             return res.failure(
                 Error(
                     start=token.start,
                     end=token.end,
                     type=ErrorType.InvalidSyntax,
                     details="Expecting IF operator '{}' but found {}".format(
-                        TokenType.IF.name, token
+                        TokenType.EXIF.name, token
                     ),
                 )
             )
@@ -215,7 +269,122 @@ class Parser:
         expr = res.register(after_colon())
         if res.error:
             return res
-        return res.success(IFNode(dot_access=dot_access, node=expr))
+        return res.success(ExIfNode(dot_access=dot_access, node=expr))
+
+    def logic_expr(self, dot_access: DotAccessNode):
+        res = ParseResult()
+
+        left = res.register(self.binary_expr(dot_access))
+        if res.error:
+            return res
+
+        def _parse_and_chain(inner_left=None):
+            nonlocal res
+            if inner_left is None:
+                inner_left = res.register(self.binary_expr())
+                if res.error:
+                    return res
+            while self.current_token.kind == TokenType.AND.name:
+                res.register(self.advance())
+                right = res.register(self.binary_expr())
+                if res.error:
+                    return res
+                inner_left = LogicExpressionNode(
+                    left=inner_left, op=TokenType.AND.name, right=right
+                )
+            return res.success(inner_left)
+
+        while True:
+            if self.current_token.kind in LOGIC_OPERATOR_TOKENS:
+                if self.current_token.kind == TokenType.AND.name:
+                    left = res.register(_parse_and_chain(left))
+                elif self.current_token.kind == TokenType.OR.name:
+                    res.register(self.advance())
+                    left = LogicExpressionNode(
+                        left=left,
+                        op=TokenType.OR.name,
+                        right=res.register(_parse_and_chain()),
+                    )
+            elif self.current_token.kind in BINARY_OPERATOR_TOKENS:
+                left = res.register(self.binary_expr(left))
+            else:
+                break
+            if res.error:
+                return res
+
+        if not isinstance(left, LogicExpressionNode):
+            left = LogicExpressionNode(left=left)
+
+        return res.success(left)
+
+    def binary_expr(self, left: t.Optional[DotAccessNode] = None):
+        res = ParseResult()
+
+        if left is None:
+            left = res.register(self.dot_access(simple=True))
+            if res.error:
+                return res
+
+        op = self.current_token
+
+        if op.kind not in BINARY_OPERATOR_TOKENS:
+            return res.success(BinaryExpressionNode(left=left))
+
+        res.register(self.advance())
+
+        right = res.register(
+            self.literal(only={TokenType.NUMBER.name})
+            if self.current_token.kind == TokenType.NUMBER.name
+            else self.dot_access(simple=True)
+        )
+
+        if res.error:
+            return res
+
+        return res.success(BinaryExpressionNode(left=left, op=op.kind, right=right))
+
+    def if_else(self, condition: LogicExpressionNode):
+        res = ParseResult()
+
+        if self.current_token.kind != TokenType.QMARK.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Invalid if-else statement, expected '{}' but found {}".format(
+                            TokenType.QMARK.name, self.current_token
+                        )
+                    ),
+                )
+            )
+
+        res.register(self.advance())
+        if_clause = res.register(self.atom())
+        if res.error:
+            return res
+
+        if self.current_token.kind != TokenType.COLON.name:
+            return res.failure(
+                Error(
+                    start=self.current_token.start,
+                    end=self.current_token.end,
+                    type=ErrorType.InvalidSyntax,
+                    details=(
+                        "Invalid if-else statement, expected '{}' but found {}".format(
+                            TokenType.COLON.name, self.current_token
+                        )
+                    ),
+                )
+            )
+
+        res.register(self.advance())
+        else_clause = res.register(self.atom())
+        if res.error:
+            return res
+
+        return res.success(IfElseNode(condition, if_clause, else_clause))
 
     def expr(self):
         res = ParseResult()
@@ -347,6 +516,7 @@ class Parser:
             dot_access = res.register(self.dot_access())
             if res.error:
                 return res
+
             if self.current_token.kind == TokenType.PASS_CONTEXT.name:
                 res.register(self.advance())
                 consumer = res.register(self.consumer())
@@ -379,13 +549,31 @@ class Parser:
                 return res.success(
                     PipedContextNode(parent_node=dot_access, consumer=consumer)
                 )
+
+            if (
+                self.current_token.kind == TokenType.QMARK.name
+                or self.current_token.kind in OPERATOR_TOKENS
+            ):
+                condition = res.register(self.logic_expr(dot_access))
+                if res.error:
+                    return res
+
+                if self.current_token.kind != TokenType.QMARK.name:
+                    return res.success(condition)
+
+                if_else = res.register(self.if_else(condition))
+                if res.error:
+                    return res
+
+                return res.success(if_else)
+
             return res.success(dot_access)
 
-        if token.kind == TokenType.IF.name:
-            if_atom = res.register(self.if_(self.atom))
+        if token.kind == TokenType.EXIF.name:
+            exif_atom = res.register(self.exif(self.atom))
             if res.error:
                 return res
-            return res.success(if_atom)
+            return res.success(exif_atom)
 
     def dot_access(self, simple: bool = False):
         res = ParseResult()
@@ -479,7 +667,7 @@ class Parser:
                     details="Expecting $jsonload function but found {}".format(token),
                 )
             )
-                  
+
         res.register(self.advance())
         if self.current_token.kind == TokenType.L_PAREN.name:
             return res.failure(
@@ -508,7 +696,7 @@ class Parser:
                     details="Expecting $string function but found {}".format(token),
                 )
             )
-                  
+
         res.register(self.advance())
         if self.current_token.kind == TokenType.L_PAREN.name:
             return res.failure(
@@ -577,7 +765,7 @@ class Parser:
             )
         res.register(self.advance())
         return res.success(FunctionNode(fn=TokenType.SPLIT_FN, args=[split_by]))
-    
+
     def join_fn(self):
         res = ParseResult()
         token = self.current_token
@@ -824,7 +1012,7 @@ class Parser:
                 if res.error:
                     return res
                 return res.success(concat_fn)
-            
+
             if token.kind == TokenType.JOIN_FN.name:
                 join_fn = res.register(self.join_fn())
                 if res.error:

@@ -1,0 +1,23 @@
+{
+  "if_no_comp": ".a ? .b : .c",
+  "if_comp_eq_dot_accesses": ".a == .b ? .c : .d",
+  "if_comp_ne_dot_accesses": ".a != .b ? .c : .d",
+  "if_comp_le_dot_accesses": ".a <= .b ? .c : .d",
+  "if_comp_lt_dot_accesses": ".a < .b ? .c : .d",
+  "if_comp_ge_dot_accesses": ".a >= .b ? .c : .d",
+  "if_comp_gt_dot_accesses": ".a > .b ? .c : .d",
+  "if_comp_eq_dot_access_vs_number": ".a == 42 ? .c : .d",
+  "if_comp_ne_dot_access_vs_number": ".a != 42 ? .c : .d",
+  "if_comp_le_dot_access_vs_number": ".a <= 42 ? .c : .d",
+  "if_comp_lt_dot_access_vs_number": ".a < 42 ? .c : .d",
+  "if_comp_ge_dot_access_vs_number": ".a >= 42 ? .c : .d",
+  "if_comp_gt_dot_access_vs_number": ".a > 42 ? .c : .d",
+  "nested_if_in_then": ".a >= 42 ? .a <= 84 ? .a : .b : .b",
+  "nested_if_in_else": ".a >= 42 ? .a : .a >= 21 ? .a : .b",
+  "if_in_map_1": ".profiles | $map(.age <= 18 ? minor : major)",
+  "if_in_map_2": ".jobs | $map({ name: .title, is_salary_high: .ranges_float[0].value_min >= 3000 ? Yes : No })",
+  "if_else_and": ".a && .b ? 1 : 0",
+  "if_else_or": ".a + .b ? 1 : 0",
+  "if_else_multiple_and_or": ".a >= 1 && .b + .c <= 2 && .d && .e == .d + .x ? 42 : 21",
+  "condition_only": ".a == 42 && .b + .c == .d"
+}

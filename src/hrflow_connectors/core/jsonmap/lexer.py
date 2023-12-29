@@ -12,14 +12,22 @@ class TokenType(Enum):
     NULL = r"null"
     UTCNOW = r"utcnow"
     NUMBER = r"\d+(\.\d*)?"
+    FALSY = r">>"
+    EQ = r"=="
+    NE = r"!="
+    LE = r"<="
+    LT = r"<"
+    GE = r">="
+    GT = r">"
+    AND = r"&&"
+    OR = r"\+"
     RAW_STRING = r"[^\.\?>\|$\s:\[\]\(\)\{\}',][^\s,:\)\(\[\]]*"
     QUOTED_RAW_STRING = r"'[^']*'"
     DOT_ACCESS = r"(\??\.[a-zA-Z_\-0-9]*)+"
     INDEX_ACCESS = r"\[(\d+|\-1)\]"
     ACCESS_CATCH = r"\|\|"
-    FALSY = r">>"
     PASS_CONTEXT = r"\|"
-    IF = r"\?\?"
+    EXIF = r"\?\?"
     FLOAT_FN = r"\$float"
     STRING_FN = r"\$string"
     CONCAT_FN = r"\$concat"
@@ -35,6 +43,7 @@ class TokenType(Enum):
     R_CURLY = r"\}"
     COMMA = r","
     COLON = r":"
+    QMARK = r"\?"
 
 
 class Token(t.NamedTuple):
@@ -80,6 +89,14 @@ def from_jsonmap(expression: str) -> t.Tuple[t.List[Token], t.Optional[Error]]:
             TokenType.FALSE.name,
             TokenType.NULL.name,
             TokenType.UTCNOW.name,
+            TokenType.EQ.name,
+            TokenType.NE.name,
+            TokenType.LE.name,
+            TokenType.LT.name,
+            TokenType.GE.name,
+            TokenType.GT.name,
+            TokenType.AND.name,
+            TokenType.OR.name,
         ]:
             value = None
         elif kind == TokenType.NUMBER.name:

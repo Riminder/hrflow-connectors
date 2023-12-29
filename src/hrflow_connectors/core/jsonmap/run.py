@@ -33,7 +33,7 @@ def json_encodable_ast(node: parser.ASTNode) -> t.Any:
                 for key, value in consumer.items()
             }
         return "{} | {}".format(context, consumer)
-    if isinstance(node, parser.IFNode):
+    if isinstance(node, parser.ExIfNode):
         condition = json_encodable_ast(node.dot_access)
         node = json_encodable_ast(node.node)
         if isinstance(node, list):
@@ -44,6 +44,11 @@ def json_encodable_ast(node: parser.ASTNode) -> t.Any:
                 for key, value in node.items()
             }
         return "IF {} THEN {}".format(condition, node)
+    if isinstance(node, parser.IfElseNode):
+        condition = json_encodable_ast(node.condition)
+        if_clause = json_encodable_ast(node.if_clause)
+        else_clause = json_encodable_ast(node.else_clause)
+        return "IF {} THEN {} ELSE {}".format(condition, if_clause, else_clause)
     return repr(node)
 
 

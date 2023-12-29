@@ -1,5 +1,9 @@
 jsonmap             : expr
-                    : IF DOT_ACCESS COLON expr
+                    : EXIF DOT_ACCESS COLON expr
+
+logic_expr          : binary_expr (AND|OR logic_expr)?
+
+binary_expr         : dot_access (EQ|NE|LE|LT|GE|GT dot_access|NUMBER)?
 
 expr                : atom
                     : L_BRAKET (expr (COMMA expr)*)? R_BRAKET
@@ -8,7 +12,8 @@ expr                : atom
 atom                : literal
                     : dot_access
                     : dot_access PASS_CONTEXT consumer
-                    : IF DOT_ACCESS COLON atom
+                    : logic_expr (QMARK atom COLON atom)?
+                    : EXIF DOT_ACCESS COLON atom
 
 literal             : TRUE|FALSE|NULL|NUMBER|RAW_STRING|QUOTED_RAW_STRING|UTCNOW
 
