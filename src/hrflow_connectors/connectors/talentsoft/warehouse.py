@@ -1,4 +1,5 @@
 import json
+import mimetypes
 import typing as t
 from datetime import date
 from io import BytesIO
@@ -228,6 +229,13 @@ def get_talentsoft_auth_token(
         )
 
 
+def get_mime_type_with_mimetypes(filename):
+    if filename is None:
+        raise "application/octet-stream"
+    mime_type, encoding = mimetypes.guess_type(filename)
+    return mime_type or "application/octet-stream"
+
+
 def post_applicant_front(client_url, token, applicant, files, job_reference=None):
     if job_reference:
         headers = {
@@ -248,8 +256,14 @@ def post_applicant_front(client_url, token, applicant, files, job_reference=None
     )
     if response.status_code == 200:
         return response.json()
+    raise Exception(response.text)
 
-    response.raise_for_status()
+
+def get_cv_content(attachment):
+    response = requests.get(attachment["public_url"])
+    if response.status_code == 200:
+        return response.content
+    raise Exception(response.text)
 
 
 def read_jobs(
@@ -388,19 +402,32 @@ def write_profiles(
 ) -> t.List[t.Dict]:
     """Write profiles into TalentSoft"""
     failed_profiles = []
+    adapter.info("Requesting Authentication Token from TS")
     token = get_talentsoft_auth_token(
         client_url=parameters.client_url_front,
         client_id=parameters.client_id_front,
         client_secret=parameters.client_secret_front,
         front_or_back="front",
     )
+    adapter.info("Authentication with TS API Endpoint finished")
     for profile in profiles:
         attachment = profile.pop("attachment", None)
-        cv_content = get_cv_content(attachment)
+        if not attachment:
+            adapter.error("No attachment found for profile={}".format(profile))
+            failed_profiles.append(profile)
+            continue
+        try:
+            cv_content = get_cv_content(attachment)
+        except Exception as e:
+            adapter.error("Failed to get cv content with response={}".format(e))
+            failed_profiles.append(profile)
+            continue
+        filename = attachment["original_file_name"]
+        mime_type = get_mime_type_with_mimetypes(filename)
         files = [
             (
                 "cv_file_id",
-                (attachment["original_file_name"], cv_content, "application/"),
+                (filename, cv_content, mime_type),
             )
         ]
         if parameters.job_reference:
@@ -408,7 +435,7 @@ def write_profiles(
         profile_ts = dict(applicantApplication=json.dumps(profile))
         profile_ts = decode_json(profile_ts)
         try:
-            response = post_applicant_front(
+            post_applicant_front(
                 parameters.client_url_front,
                 token,
                 profile_ts,
@@ -416,21 +443,10 @@ def write_profiles(
                 parameters.job_reference,
             )
         except Exception as e:
-            adapter.error(
-                "Failed to write profile with error={}, and response={}".format(
-                    e, response
-                )
-            )
+            adapter.error("Failed to write profile with response={}".format(e))
             failed_profiles.append(profile)
 
     return failed_profiles
-
-
-def get_cv_content(attachment):
-    response = requests.get(attachment["public_url"])
-    if response.status_code == 200:
-        return response.content
-    response.raise_for_status()
 
 
 TalentSoftProfilesWarehouse = Warehouse(
