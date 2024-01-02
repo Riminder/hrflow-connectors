@@ -3,10 +3,10 @@
   "reference": "?.friendly_id",
   "summary": null,
   "location": {
-    "text": "?.name",
+    "text": "?.location?.name",
     "geojson": {
-      "country": "?.country",
-      "city": "?.city"
+      "country": "?.country?.name",
+      "city": "?.location?.city"
     },
     "lat": null,
     "lng": null
