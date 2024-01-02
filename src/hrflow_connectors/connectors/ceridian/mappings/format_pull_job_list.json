@@ -1,7 +1,7 @@
 {
   "name": "?.Title",
   "summary": null,
-  "reference": ". | $concat(?.ReferenceNumber, ?.ParentRequisitionCode)",
+  "reference": ". | $concat(?.ReferenceNumber | $string, ?.ParentRequisitionCode | $string)",
   "url": "?.JobDetailsUrl",
   "location": {
     "text": "?.City",
