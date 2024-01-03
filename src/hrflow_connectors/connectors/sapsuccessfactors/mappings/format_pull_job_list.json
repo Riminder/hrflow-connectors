@@ -14,66 +14,66 @@
     "lng": null
   },
   "sections": [
-    "?? .job.jobDescription : .job.jobDescription | $sub('<[^<]+?>', '') | $sub('#13;', ' ') | $sub('&', '') | $sub('&nbsp;', '') | $sub('quo;s', '') | { name: sap_description, title: sap_description, description: . }"
+    "?? .job.jobDescription.[0] : .job.jobDescription | $sub('<[^<]+?>', '') | $sub('#13;', ' ') | $sub('&', '') | $sub('&nbsp;', '') | $sub('quo;s', '') | { name: sap_description, title: sap_description, description: . }"
   ],
   "tags": [
     {
       "name": "sapsuccessfactors_annual_SA",
-      "value": "?.annual_SA"
+      "value": "?.requisition?.annual_SA"
     },
     {
       "name": "sapsuccessfactors_department",
-      "value": "?.department"
+      "value": "?.requisition?.department"
     },
     {
       "name": "sapsuccessfactors_function",
-      "value": "?.function"
+      "value": "?.requisition?.function"
     },
     {
       "name": "sapsuccessfactors_division",
-      "value": "?.division"
+      "value": "?.requisition?.division"
     },
     {
       "name": "sapsuccessfactors_industry",
-      "value": "?.industry"
+      "value": "?.requisition?.industry"
     },
     {
       "name": "sapsuccessfactors_monthly_salary",
-      "value": "?.monthly_salary"
+      "value": "?.requisition?.monthly_salary"
     },
     {
       "name": "sapsuccessfactors_otherBonus",
-      "value": "?.otherBonus"
+      "value": "?.requisition?.otherBonus"
     },
     {
       "name": "sapsuccessfactors_salaryBase",
-      "value": "?.salaryBase"
+      "value": "?.requisition?.salaryBase"
     },
     {
       "name": "sapsuccessfactors_salaryMax",
-      "value": "?.salaryMax"
+      "value": "?.requisition?.salaryMax"
     },
     {
       "name": "sapsuccessfactors_salaryMin",
-      "value": "?.salaryMin"
+      "value": "?.requisition?.salaryMin"
     },
     {
       "name": "sapsuccessfactors_jobStartDate",
-      "value": "?.jobStartDate"
+      "value": "?.requisition?.jobStartDate"
     }
   ],
   "metadatas": [
     {
       "name": "sapsuccessfactors_recruiterTeam",
-      "value": "?.recruiterTeam"
+      "value": "?.requisition?.recruiterTeam"
     },
     {
       "name": "sapsuccessfactors_sourcerTeam",
-      "value": "?.sourcerTeam"
+      "value": "?.requisition?.sourcerTeam"
     },
     {
       "name": "sapsuccessfactors_hiringManagerTeam",
-      "value": "?.hiringManagerTeam"
+      "value": "?.requisition?.hiringManagerTeam"
     }
   ]
 }
