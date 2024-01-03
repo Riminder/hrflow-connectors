@@ -40,7 +40,7 @@
     },
     {
       "name": "pole_emploi_salary",
-      "value": ".salaire || {} | ?.libelle"
+      "value": "?.salaire?.libelle"
     },
     {
       "name": "pole_emploi_working_hours",
@@ -56,15 +56,15 @@
     },
     {
       "name": "pole_emploi_contact-name",
-      "value": ".contact || {} | ?.nom"
+      "value": "?.contact?.nom"
     },
     {
       "name": "pole_emploi_contact-email",
-      "value": ".contact || {} | ?.courriel"
+      "value": "?.contact?.courriel"
     },
     {
       "name": "pole_emploi_contact-phone",
-      "value": ".contact || {} | ?.telephone"
+      "value": "?.contact?.telephone"
     }
   ]
 }
