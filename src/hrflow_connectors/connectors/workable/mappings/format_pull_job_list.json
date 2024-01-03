@@ -19,7 +19,7 @@
     "?? .requirements : .requirements | { name: workable_requirements, title: workable_requirements, description: . | $sub('<[^<]+?>', '') }",
     "?? .benefits : .benefits | { name: workable_benefits, title: workable_benefits, description: . | $sub('<[^<]+?>', '') }"
   ],
-  "created_at": ".created_at",
+  "created_at": "?.created_at",
   "tags": [
     "?? .employment_type : .employment_type | { name: workable_employment_type, value: . }",
     "?? .full_title : .full_title | { name: workable_full_title, value: . }",
