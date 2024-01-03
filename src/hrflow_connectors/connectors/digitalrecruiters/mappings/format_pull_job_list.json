@@ -6,7 +6,7 @@
   "location": {
     "lat": "?.address >> null | ?.position?.lat | $float",
     "lng": "?.address >> null | ?.position?.lon | $float",
-    "text": "?.address >> '' | ?.formatted"
+    "text": "?.address?.formatted || ''"
   },
   "sections": [
     "?? .description : .description | { name: 'description', title: 'description', description: . | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp;', '&') | $sub('&quot;', '\"') | $sub('&apos;', ''') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ') }",
