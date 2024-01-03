@@ -70,12 +70,12 @@
   "ranges_float": [
     {
       "name": "'working hours'",
-      "value_min": ".salary || {} | ?.min_hours",
-      "value_max": ".salary || {} | ?.max_hours",
+      "value_min": "?.min_hours",
+      "value_max": "?.max_hours",
       "unit": "'Hours per week'"
     },
     {
-      "name": "?.salary?.period | $concat('salary per ', .)",
+      "name": "?.salary?.period | $concat('salary per ', . | $string)",
       "value_min": "?.salary?.min",
       "value_max": "?.salary?.max",
       "unit": "?.salary?.currency"
