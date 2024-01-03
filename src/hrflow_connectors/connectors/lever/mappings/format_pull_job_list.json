@@ -8,12 +8,18 @@
   },
   "url": ".urls.show",
   "summary": ".content.description",
-  "sections": null,
+  "sections": [
+    "?? .content.lists.[0] | .content.lists | $map({ name: .text, title: .text, description: null })"
+  ],
   "tags": [
     {
       "name": "lever_confidential",
       "value": null
     },
+    ".categories || {} | $items | $map({ name: . | $concat(lever_, .key ), value: .value })",
+    ".tags || [] | $map({ name: . | $concat(lever_additional_tag_, .__idx | $string), value: . })",
+    ".distributionChannels || [] | $map({ name: . | $concat(lever_distributionChannel_, .__idx | $string), value: . })",
+    ".urls || {} | $items | $map({ name: . | $concat(lever_url_, .key), value: .value })",
     "?? .country : .country | { name: lever_country, value: . }",
     "?? .state : .state | { name: lever_state, value: . }",
     "?? .workplaceType : .workplaceType | { name: lever_workplaceType, value: . }"
