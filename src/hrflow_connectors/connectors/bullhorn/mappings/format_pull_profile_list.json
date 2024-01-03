@@ -12,7 +12,7 @@
     "gender": ".gender"
   },
   "skills": [
-    "?? .skillSet : .skillSet | $split(',') | ?? . : . | $map({ name: null, type: 'hard', value: null })"
+    "?? .skillSet.[0] : .skillSet | $split(',') | . >> [] | $map({ name: ., type: hard, value: null })"
   ],
   "experiences": [
     ".workHistories | $map({ title: .title, location: { text: '', lng: null, lat: null }, company: .companyName, date_start: .startDate, date_end: .endDate, title: .title, description: .comments })"
@@ -38,5 +38,5 @@
   "educations": [
     ".educations | $map({ location: { text: .city, lng: null, lat: null }, school: .school, date_start: .startDate, date_end: .endDate, title: .degree, certifications: [ .certification ], description: .comments })"
   ],
-  "reference": "?.id"
+  "reference": "?.id | $string"
 }

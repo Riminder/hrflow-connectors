@@ -13,7 +13,7 @@
     }
   ],
   "skills": [
-    "?? .skillList : .skillList | $split(',') | ?? . : . | $map({ name: null, type: 'undefined', value: null })"
+    "?? .skillList.[0] : .skillList | $split(',') | . >> [] | $map({ name: ., type: undefined, value: null })"
   ],
   "tags": [
     {
@@ -22,7 +22,7 @@
     },
     {
       "name": "degreeList",
-      "value": "?? .degreeList : .degreeList | $join(', ')"
+      "value": "?.degreeList >> [] | $join(', ')"
     },
     {
       "name": "employmentType",
