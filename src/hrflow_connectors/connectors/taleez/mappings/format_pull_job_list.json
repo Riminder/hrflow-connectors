@@ -1,12 +1,12 @@
 {
   "name": "?.label >> Undefined",
   "reference": "?.id | $string",
-  "created_at": null,
-  "updated_at": null,
+  "created_at": ".dateCreation | $fromtimestamp | $isoformat",
+  "updated_at": ".dateLastPublish | $fromtimestamp | $isoformat",
   "location": {
     "lat": "?.lat | $float",
     "lng": "?.lng | $float",
-    "text": ". | $concat(?.postalCode, ' ', ?.city, ' ', ?.country)"
+    "text": ". | $concat(?.postalCode >> '', ' ', ?.city >> '', ' ', ?.country >> '')"
   },
   "url": "?.url",
   "summary": null,
