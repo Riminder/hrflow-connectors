@@ -3,8 +3,8 @@
   "reference": "?.id | $string",
   "created_at": "?.created",
   "location": {
-    "lat": "?.latitude ? . | $float : null",
-    "lng": "?.longitude ? . | $float : null",
+    "lat": "?.latitude | $float",
+    "lng": "?.longitude | $float",
     "text": "?.location.display_name"
   },
   "url": "?.redirect_url",
@@ -21,7 +21,7 @@
     },
     {
       "name": "salaries_are_predicted",
-      "value": "?.salary_is_predicted == '1' | $string"
+      "value": null
     },
     {
       "name": "category",
