@@ -226,7 +226,7 @@ def get_talentsoft_auth_token(
 
 def get_mime_type_with_mimetypes(filename):
     if filename is None:
-        raise "application/octet-stream"
+        return "application/octet-stream"
     mime_type, encoding = mimetypes.guess_type(filename)
     return mime_type or "application/octet-stream"
 
