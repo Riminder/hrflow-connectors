@@ -174,7 +174,6 @@ def decode_unicode(input_str):
     try:
         return bytes(input_str, "utf-8").decode("unicode_escape")
     except UnicodeDecodeError as e:
-        print(f"Error decoding Unicode: {e}")
         return input_str
 
 
@@ -231,7 +230,7 @@ def get_talentsoft_auth_token(
 
 def get_mime_type_with_mimetypes(filename):
     if filename is None:
-        raise "application/octet-stream"
+        return "application/octet-stream"
     mime_type, encoding = mimetypes.guess_type(filename)
     return mime_type or "application/octet-stream"
 
