@@ -173,7 +173,7 @@ class WriteProfileParameters(ParametersModel):
 def decode_unicode(input_str):
     try:
         return bytes(input_str, "utf-8").decode("unicode_escape")
-    except UnicodeDecodeError as e:
+    except UnicodeDecodeError:
         return input_str
 
 
