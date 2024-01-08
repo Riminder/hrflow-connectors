@@ -21,8 +21,10 @@ class ReadProfilesParameters(ParametersModel):
         field_type=FieldType.Other,
     )
 
+
 class CustomError(Exception):
     pass
+
 
 def read(
     adapter: LoggerAdapter,
