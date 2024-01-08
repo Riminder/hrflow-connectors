@@ -23,6 +23,7 @@ class ReadProfilesParameters(ParametersModel):
 
 
 
+
 def read(
     adapter: LoggerAdapter,
     parameters: ReadProfilesParameters,
