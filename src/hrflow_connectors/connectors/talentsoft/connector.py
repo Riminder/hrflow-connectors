@@ -30,8 +30,6 @@ from hrflow_connectors.core import (
     Event,
     WorkflowType,
 )
-from hrflow_connectors.connectors.talentsoft.utils.const import CIVILITY
-
 
 
 def format_ts_applicant_civility(gender: str):
