@@ -22,9 +22,6 @@ class ReadProfilesParameters(ParametersModel):
     )
 
 
-class CustomError(Exception):
-    pass
-
 
 def read(
     adapter: LoggerAdapter,
