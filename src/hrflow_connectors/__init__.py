@@ -6,13 +6,9 @@ from hrflow_connectors.connectors.ceridian import Ceridian
 from hrflow_connectors.connectors.digitalrecruiters import DigitalRecruiters
 from hrflow_connectors.connectors.greenhouse.connector import Greenhouse
 from hrflow_connectors.connectors.hubspot import Hubspot
-<<<<<<< HEAD
 from hrflow_connectors.connectors.jobology import Jobology
 from hrflow_connectors.connectors.lever import Lever
 from hrflow_connectors.connectors.meteojob import Meteojob
-=======
-from hrflow_connectors.connectors.lever import Lever
->>>>>>> 130fe1f (feat: new connector Lever)
 from hrflow_connectors.connectors.poleemploi import PoleEmploi
 from hrflow_connectors.connectors.recruitee import Recruitee
 from hrflow_connectors.connectors.salesforce import Salesforce
@@ -47,12 +43,9 @@ __CONNECTORS__ = [
     Lever,
     Salesforce,
     DigitalRecruiters,
-<<<<<<< HEAD
     Jobology,
     Meteojob,
     Carrevolutis,
-=======
->>>>>>> b85caa1 (feat: Connector/digitalrecruiters (#187))
 ]
 
 # This makes sure that connector are in module namespace
