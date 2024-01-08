@@ -22,7 +22,7 @@ class ReadProfilesParameters(ParametersModel):
     )
 
 
-class CustomError(Exception):
+class ErrorHandler(Exception):
     pass
 
 
@@ -44,9 +44,9 @@ def read(
         parameters.profile["cv"] = response.content
         parameters.profile["content_type"] = response.headers["Content-Type"]
     elif response.status_code == 400:
-        raise CustomError(f"Error 400: Bad Request - {response.text}")
+        raise ErrorHandler(f"Error 400: Bad Request - {response.text}")
     else:
-        raise CustomError(f"Unexpected HTTP status code: {response.status_code}")
+        raise ErrorHandler(f"Unexpected HTTP status code: {response.status_code}")
 
     return [parameters.profile]
 
