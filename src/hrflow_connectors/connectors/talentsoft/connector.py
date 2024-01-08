@@ -24,38 +24,19 @@ from hrflow_connectors.core import (
     Event,
     WorkflowType,
 )
-
-EDUCATIONS_REFERENTIEL = {
-    "Aucun diplôme": "_TS_etude_min_Aucun_diplome",
-    "BAC": "_TS_etude_min_BAC",
-    "BAC+2": "_TS_etude_min_BAC2",
-    "BAC+3": "_TS_etude_min_Licence",
-    "BAC+4": "_TS_etude_min_BAC4",
-    "BAC+5": "_TS_etude_min_BAC5",
-    "CAP, BEP": "_TS_etude_min_CAP_BEP",
-    "DOCTORAT": "_TS_etude_min_DOCTORAT",
-    "Mastère": "_TS_etude_min_Mastere",
-}
-EXPERIENCES_REFERENTIEL = {
-    "Etudiant-e": "",
-    "Débutant-e/première expérience": "_TS_niveau_exp_premiere_exp",
-    "Supérieure à 3 ans": "_TS_niveau_exp_superieur_3ans",
-    "Supérieure à 5 ans": "_TS_niveau_exp_superieur_5ans",
-    "Supérieure à 8 ans": "_TS_niveau_exp_superieur_8ans",
-}
-
-DIPLOMA_OTHER = "_TS_fe06f67e-211d-4b6e-98e5-60d8bf50e3e3"
+from hrflow_connectors.connectors.talentsoft.utils.const import CIVILITY
 
 
-def format_ts_applicant_title(gender: str):
-    title_dr = ""
+
+def format_ts_applicant_civility(gender: str):
+    civility_ts = {}
     if gender is None:
         return None
     if gender == "male":
-        title_dr = "Mr."
+        return CIVILITY[2]
     elif gender == "female":
-        title_dr = "Mme."
-    return title_dr
+        return CIVILITY[4]
+    return civility_ts
 
 
 def extraire_annee(date_str):
@@ -394,7 +375,8 @@ def format_into_ts_applicant(profile_hrflow: t.Dict) -> t.Dict:
         birthDate=info_profile_hrflow["date_birth"],
         phoneNumber=info_profile_hrflow["phone"],
         email=info_profile_hrflow["email"],
-        # title=format_ts_applicant_title(info_profile_hrflow["gender"]),
+        civility=format_ts_applicant_civility(info_profile_hrflow["gender"])
+        #title=format_ts_applicant_title(info_profile_hrflow["gender"]),
     )
     education = format_ts_educations(
         profile_hrflow["educations"], profile_hrflow["tags"]
