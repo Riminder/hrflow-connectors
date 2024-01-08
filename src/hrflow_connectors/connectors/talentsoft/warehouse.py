@@ -1,4 +1,5 @@
 import json
+import pdb
 import mimetypes
 import typing as t
 from datetime import date
@@ -253,7 +254,8 @@ def post_applicant_front(client_url, token, applicant, files, job_reference=None
         data=applicant,
         files=files,
     )
-    if response.status_code == 200:
+    pdb.set_trace()
+    if response.status_code == 201:
         return response.json()
     raise Exception(response.text)
 
