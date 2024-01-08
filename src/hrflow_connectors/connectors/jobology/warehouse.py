@@ -22,33 +22,27 @@ class ReadProfilesParameters(ParametersModel):
     )
 
 
-class ErrorHandler(Exception):
-    pass
-
-
 def read(
     adapter: LoggerAdapter,
     parameters: ReadProfilesParameters,
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-    cv_url = parameters.profile["cvUrl"]
+    result = {**parameters.profile}
+    cv_url = result["cvUrl"]
     response = requests.get(cv_url)
-    response.raise_for_status()
-    parameters.profile["cv"] = response.content
-    parameters.profile["content_type"] = response.headers["Content-Type"]
-    cv_url = parameters.profile["cvUrl"]
-    response = requests.get(cv_url)
-    # Check for specific HTTP status codes and handle accordingly
     if response.status_code == 200:
-        parameters.profile["cv"] = response.content
-        parameters.profile["content_type"] = response.headers["Content-Type"]
+        result["cv"] = response.content
+        result["content_type"] = response.headers["Content-Type"]
     elif response.status_code == 400:
-        raise ErrorHandler(f"Error 400: Bad Request - {response.text}")
+        raise Exception(f"Bad Request {response.text}")
     else:
-        raise ErrorHandler(f"Unexpected HTTP status code: {response.status_code}")
+        raise Exception(
+            f"request failed with status code {response.status_code} and message"
+            f" {response.text}"
+        )
 
-    return [parameters.profile]
+    return [result]
 
 
 JobologyProfilesWarehouse = Warehouse(

@@ -16,28 +16,28 @@ from hrflow_connectors.core import (
 def rename_profile_fields(jobology_profile: t.Dict) -> t.Dict:
     return {
         "job-key": jobology_profile["jobkey"],
-        "first_name": jobology_profile.get("firstName", None),
-        "last_name": jobology_profile.get("lastName", None),
-        "phone": jobology_profile.get("phone", None),
-        "email": jobology_profile.get("email", None),
-        "coverText": jobology_profile.get("coverText", None),
-        "profile-country": jobology_profile.get("profilecountry", None),
-        "profile-regions": jobology_profile.get("profileregions", None),
-        "profile-domains": jobology_profile.get("profiledomains", None),
+        "first_name": jobology_profile.get("firstName"),
+        "last_name": jobology_profile.get("lastName"),
+        "phone": jobology_profile.get("phone"),
+        "email": jobology_profile.get("email"),
+        "coverText": jobology_profile.get("coverText"),
+        "profile-country": jobology_profile.get("profilecountry"),
+        "profile-regions": jobology_profile.get("profileregions"),
+        "profile-domains": jobology_profile.get("profiledomains"),
         "job-lien_annonce_site_carriere": jobology_profile.get(
-            "joblien_annonce_site_carriere", None
+            "joblien_annonce_site_carriere"
         ),
-        "statistic-source": jobology_profile.get("statisticsource", None),
-        "statistic-jbsource": jobology_profile.get("statisticjbsource", None),
+        "statistic-source": jobology_profile.get("statisticsource"),
+        "statistic-jbsource": jobology_profile.get("statisticjbsource"),
     }
 
 
 def add_tags(profile_tags: t.Dict) -> t.Dict:
-    tags = []
-    for key, value in profile_tags.items():
-        if value:
-            tags.append({"name": key, "value": value})
-    return tags
+    return (
+        [dict(name=key, value=value) for key, value in profile_tags.items() if value]
+        if profile_tags
+        else []
+    )
 
 
 def format_jobology_profile(jobology_profile: t.List) -> t.Dict:
@@ -48,6 +48,7 @@ def format_jobology_profile(jobology_profile: t.List) -> t.Dict:
         content_type=jobology_profile["content_type"],
     )
     return dict(
+        reference=jobology_profile["email"],
         resume=resume_dict,
         tags=tags,
         metadatas=[],
