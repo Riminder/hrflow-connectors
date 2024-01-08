@@ -33,9 +33,7 @@ def rename_profile_fields(jobology_profile: t.Dict) -> t.Dict:
 
 
 def add_tags(profile_tags: t.Dict) -> t.List[t.Dict]:
-    return (
-        [dict(name=key, value=value) for key, value in profile_tags.items() if value]
-    )
+    return [dict(name=key, value=value) for key, value in profile_tags.items() if value]
 
 
 def format_jobology_profile(jobology_profile: t.List) -> t.Dict:
