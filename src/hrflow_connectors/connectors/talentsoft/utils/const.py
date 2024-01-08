@@ -1,4 +1,5 @@
-CIVILITY = [
+CIVILITY = (
+    [
         {
             "code": 3445,
             "clientCode": "_TS_CO_Civility_Dr",
@@ -40,5 +41,6 @@ CIVILITY = [
             "label": "Other",
             "type": "civility",
             "parentType": "",
-        }
+        },
     ],
+)

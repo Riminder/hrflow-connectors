@@ -9,6 +9,7 @@ from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowProfileParsingWarehouse,
     HrFlowProfileWarehouse,
 )
+from hrflow_connectors.connectors.talentsoft.utils.const import CIVILITY
 from hrflow_connectors.connectors.talentsoft.warehouse import (
     TalentSoftJobsWarehouse,
     TalentSoftProfilesWarehouse,
@@ -24,8 +25,6 @@ from hrflow_connectors.core import (
     Event,
     WorkflowType,
 )
-from hrflow_connectors.connectors.talentsoft.utils.const import CIVILITY
-
 
 
 def format_ts_applicant_civility(gender: str):
@@ -375,8 +374,8 @@ def format_into_ts_applicant(profile_hrflow: t.Dict) -> t.Dict:
         birthDate=info_profile_hrflow["date_birth"],
         phoneNumber=info_profile_hrflow["phone"],
         email=info_profile_hrflow["email"],
-        civility=format_ts_applicant_civility(info_profile_hrflow["gender"])
-        #title=format_ts_applicant_title(info_profile_hrflow["gender"]),
+        civility=format_ts_applicant_civility(info_profile_hrflow["gender"]),
+        # title=format_ts_applicant_title(info_profile_hrflow["gender"]),
     )
     education = format_ts_educations(
         profile_hrflow["educations"], profile_hrflow["tags"]
