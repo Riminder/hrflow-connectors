@@ -21,6 +21,8 @@ class ReadProfilesParameters(ParametersModel):
         field_type=FieldType.Other,
     )
 
+class CustomError(Exception):
+    pass
 
 def read(
     adapter: LoggerAdapter,
@@ -33,6 +35,17 @@ def read(
     response.raise_for_status()
     parameters.profile["cv"] = response.content
     parameters.profile["content_type"] = response.headers["Content-Type"]
+    cv_url = parameters.profile["cvUrl"]
+    response = requests.get(cv_url)
+    # Check for specific HTTP status codes and handle accordingly
+    if response.status_code == 200:
+        parameters.profile["cv"] = response.content
+        parameters.profile["content_type"] = response.headers["Content-Type"]
+    elif response.status_code == 400:
+        raise CustomError(f"Error 400: Bad Request - {response.text}")
+    else:
+        raise CustomError(f"Unexpected HTTP status code: {response.status_code}")
+
     return [parameters.profile]
 
 
