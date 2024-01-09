@@ -170,14 +170,16 @@ class WriteProfileParameters(ParametersModel):
     )
 
 
-def decode_unicode(input_str):
+def decode_unicode(input_str: str) -> str:
     try:
         return bytes(input_str, "utf-8").decode("unicode_escape")
     except UnicodeDecodeError:
         return input_str
 
 
-def decode_json(obj):
+def decode_json(
+    obj: t.Union[str, list, dict, t.Any]
+) -> t.Union[str, list, dict, t.Any]:
     if isinstance(obj, str):
         return decode_unicode(obj)
     elif isinstance(obj, list):
@@ -186,6 +188,20 @@ def decode_json(obj):
         return {key: decode_json(value) for key, value in obj.items()}
     else:
         return obj
+
+
+def get_mime_type_with_mimetypes(filename: t.Optional[str]) -> str:
+    if filename is None:
+        return "application/octet-stream"
+    mime_type, encoding = mimetypes.guess_type(filename)
+    return mime_type or "application/octet-stream"
+
+
+def get_cv_content(attachment: dict) -> t.Optional[bytes]:
+    response = requests.get(attachment["public_url"])
+    if response.status_code == 200:
+        return response.content
+    raise Exception(response.text)
 
 
 def get_talentsoft_auth_token(
@@ -228,13 +244,6 @@ def get_talentsoft_auth_token(
         )
 
 
-def get_mime_type_with_mimetypes(filename):
-    if filename is None:
-        return "application/octet-stream"
-    mime_type, encoding = mimetypes.guess_type(filename)
-    return mime_type or "application/octet-stream"
-
-
 def post_applicant_front(client_url, token, applicant, files, job_reference=None):
     if job_reference:
         headers = {
@@ -255,13 +264,6 @@ def post_applicant_front(client_url, token, applicant, files, job_reference=None
     )
     if response.status_code == 201:
         return response.json()
-    raise Exception(response.text)
-
-
-def get_cv_content(attachment):
-    response = requests.get(attachment["public_url"])
-    if response.status_code == 200:
-        return response.content
     raise Exception(response.text)
 
 
