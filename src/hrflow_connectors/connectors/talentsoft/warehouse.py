@@ -224,13 +224,6 @@ def get_talentsoft_auth_token(
         )
 
 
-def get_mime_type_with_mimetypes(filename):
-    if filename is None:
-        return "application/octet-stream"
-    mime_type, encoding = mimetypes.guess_type(filename)
-    return mime_type or "application/octet-stream"
-
-
 def post_applicant_front(client_url, token, applicant, files, job_reference=None):
     if job_reference:
         headers = {
@@ -281,6 +274,7 @@ def post_applicant_front(client_url, token, applicant, files, job_reference=None
     if response.status_code == 201:
         return response.json()
     raise Exception(response.text)
+
 
 
 def read_jobs(
