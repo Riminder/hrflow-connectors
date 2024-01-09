@@ -43,7 +43,7 @@ Talentsoft (by Cegid) offers a full-suite HCM solution so you can keep all your 
 
 </p>
 <p align="center">
-<image src=https://user-images.githubusercontent.com/57711045/214648408-fa861623-e059-4e7b-bd56-e09f85e30062.png width=90% height=100% >
+<image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/bbc0cd05-d05f-4c2a-bdd0-93636c9486a8 width=90% height=100% >
 </p>
 
 # 🐍 Quick Start Examples
