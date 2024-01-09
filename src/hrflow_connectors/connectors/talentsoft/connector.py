@@ -32,7 +32,14 @@ from hrflow_connectors.core import (
 )
 
 
-def format_ts_applicant_civility(gender: str):
+def retrieve_tag_value(tags: t.List[dict], tag_name: str) -> t.Any:
+    for tag in tags:
+        if tag["name"] == tag_name:
+            return tag["value"]
+    return None
+
+
+def format_ts_applicant_civility(gender: t.Optional[str]) -> t.Optional[str]:
     civility_ts = {}
     if gender is None:
         return None
@@ -43,36 +50,49 @@ def format_ts_applicant_civility(gender: str):
     return civility_ts
 
 
-def extraire_annee(date_str):
+def extraire_annee(date_str: str) -> t.Optional[int]:
     if not date_str:
         return None
-    # Convertir la chaîne de date en objet datetime
-    date_obj = datetime.fromisoformat(date_str)
+    try:
+        # Convertir la chaîne de date en objet datetime
+        date_obj = datetime.fromisoformat(date_str)
 
-    # Extraire l'année de l'objet datetime
-    annee = date_obj.year
+        # Extraire l'année de l'objet datetime
+        annee = date_obj.year
 
-    return annee
-
-
-def calcul_ts_experience_duration(date_start, date_end):
-    if not date_start or not date_end:
+        return annee
+    except ValueError:
         return None
-    date_start_obj = datetime.fromisoformat(date_start)
-    date_end_obj = datetime.fromisoformat(date_end)
-    experience_duration = date_end_obj - date_start_obj
-    experience_duration_years = experience_duration.days / 365
-    return experience_duration_years
 
 
-def format_ts_educations(educations, tags):
-    education_level = None
-    for tag in tags:
-        if tag["name"] == "talentsoft_education_level":
-            education_level = tag["value"]
-            break
+def calcul_ts_experience_duration(date_start: str, date_end: str) -> t.Optional[float]:
+    try:
+        if not date_start or not date_end:
+            return None
+        date_start_obj = datetime.fromisoformat(date_start)
+        date_end_obj = datetime.fromisoformat(date_end)
+        experience_duration = date_end_obj - date_start_obj
+        experience_duration_years = experience_duration.days / 365
+        return experience_duration_years
+    except ValueError:
+        return None
 
-    diplomas_list = [{"educationLevel": education_level}] if education_level else []
+
+def format_contract_type(tags: t.List[dict]) -> t.Optional[str]:
+    contract_type = retrieve_tag_value(tags, "talentsoft_contract_type")
+    if contract_type:
+        return CONTRACT_TYPE_REFERENTIAL.get(contract_type)
+    return None
+
+
+def format_ts_educations(educations: t.List[dict], tags: t.List[dict]) -> dict:
+    education_level = retrieve_tag_value(tags, "talentsoft_education_level")
+
+    diplomas_list = (
+        [{"educationLevel": EDUCATIONS_REFERENTIEL.get(education_level)}]
+        if education_level
+        else []
+    )
 
     diplomas_list += [
         {
@@ -89,14 +109,10 @@ def format_ts_educations(educations, tags):
     return {"diplomas": diplomas_list}
 
 
-def format_ts_experiences(experiences, tags):
-    experience_level = None
-    for tag in tags:
-        if tag["name"] == "talentsoft_experience_level":
-            experience_level = tag["value"]
-            break
+def format_ts_experiences(experiences: t.List[dict], tags: t.List[dict]) -> dict:
+    experience_level = retrieve_tag_value(tags, "talentsoft_experience_level")
 
-    experiences_ts_level = experience_level if experience_level else None
+    experience_ts_level = experience_level if experience_level else None
     experiences_ts_list = [
         {
             "company": experience["company"],
@@ -113,7 +129,7 @@ def format_ts_experiences(experiences, tags):
     ]
 
     experiences_ts = {
-        "experienceLevel": experiences_ts_level,
+        "experienceLevel": EXPERIENCES_REFERENTIEL.get(experience_ts_level),
         "experienceList": experiences_ts_list,
     }
 
