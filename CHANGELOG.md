@@ -2,6 +2,13 @@
 
 
 
+## v4.5.0 (2024-01-15)
+
+### Feature
+
+* feat: connector jobology ([`28ea90d`](https://github.com/Riminder/hrflow-connectors/commit/28ea90d53765af12c167702e2ac960f5270595f3))
+
+
 ## v4.4.0 (2023-12-04)
 
 ### Feature
