@@ -144,24 +144,6 @@ class WriteProfileParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-    client_id_back: str = Field(
-        ...,
-        description="client id used to access TalentSoft back office API",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    client_secret_back: str = Field(
-        ...,
-        description="client secret used to access TalentSoft back office API",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    client_url_back: str = Field(
-        ...,
-        description="url used to access TalentSoft back office API",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
     job_reference: str = Field(
         None,
         description="reference of the job offer to which the candidate is applying",
