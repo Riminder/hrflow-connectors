@@ -61,9 +61,6 @@ TalentSoft.push_profile(
         client_id_front="your_client_id_front",
         client_secret_front="your_client_secret_front",
         client_url_front="your_client_url_front",
-        client_id_back="your_client_id_back",
-        client_secret_back="your_client_secret_back",
-        client_url_back="your_client_url_back",
         job_reference="your_job_reference",
     )
 )

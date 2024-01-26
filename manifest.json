@@ -4832,10 +4832,7 @@
             "required": [
               "client_id_front",
               "client_secret_front",
-              "client_url_front",
-              "client_id_back",
-              "client_secret_back",
-              "client_url_back"
+              "client_url_front"
             ],
             "additionalProperties": false
           },
