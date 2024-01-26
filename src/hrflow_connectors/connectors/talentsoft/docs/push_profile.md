@@ -29,9 +29,6 @@ Pushs specific Profile from HrFlow and writes it to Applicant object in Talentso
 | `client_id_front` :red_circle: | `str` | None | client id used to access TalentSoft front office API |
 | `client_secret_front` :red_circle: | `str` | None | client secret used to access TalentSoft front office API |
 | `client_url_front` :red_circle: | `str` | None | url used to access TalentSoft front office API |
-| `client_id_back` :red_circle: | `str` | None | client id used to access TalentSoft back office API |
-| `client_secret_back` :red_circle: | `str` | None | client secret used to access TalentSoft back office API |
-| `client_url_back` :red_circle: | `str` | None | url used to access TalentSoft back office API |
 | `job_reference`  | `str` | None | reference of the job offer to which the candidate is applying |
 
 :red_circle: : *required*
@@ -64,9 +61,6 @@ TalentSoft.push_profile(
         client_id_front="your_client_id_front",
         client_secret_front="your_client_secret_front",
         client_url_front="your_client_url_front",
-        client_id_back="your_client_id_back",
-        client_secret_back="your_client_secret_back",
-        client_url_back="your_client_url_back",
         job_reference="your_job_reference",
     )
 )
