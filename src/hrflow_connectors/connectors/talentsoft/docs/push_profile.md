@@ -10,7 +10,7 @@ Pushs specific Profile from HrFlow and writes it to Applicant object in Talentso
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_into_ts_applicant`](../connector.py#L389) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_info_ts_applicant`](../connector.py#L378) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
@@ -26,9 +26,9 @@ Pushs specific Profile from HrFlow and writes it to Applicant object in Talentso
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `client_id_front` :red_circle: | `str` | None | client id used to access TalentSoft front office API |
-| `client_secret_front` :red_circle: | `str` | None | client secret used to access TalentSoft front office API |
-| `client_url_front` :red_circle: | `str` | None | url used to access TalentSoft front office API |
+| `client_id` :red_circle: | `str` | None | client id used to access TalentSoft front office API |
+| `client_secret` :red_circle: | `str` | None | client secret used to access TalentSoft front office API |
+| `client_url` :red_circle: | `str` | None | url used to access TalentSoft front office API |
 | `job_reference`  | `str` | None | reference of the job offer to which the candidate is applying |
 
 :red_circle: : *required*
@@ -58,9 +58,9 @@ TalentSoft.push_profile(
         profile_key="your_profile_key",
     ),
     target_parameters=dict(
-        client_id_front="your_client_id_front",
-        client_secret_front="your_client_secret_front",
-        client_url_front="your_client_url_front",
+        client_id="your_client_id",
+        client_secret="your_client_secret",
+        client_url="your_client_url",
         job_reference="your_job_reference",
     )
 )

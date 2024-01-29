@@ -4,22 +4,22 @@ from pydantic import BaseModel
 
 
 class PersonalInformation(BaseModel):
-    civility: t.Union[None, str]
-    middleName: t.Union[None, str]
-    title: t.Union[None, str]
-    address: t.Union[None, str]
-    city: t.Union[None, str]
-    postalCode: t.Union[None, str]
-    birthDate: t.Union[None, str]
-    country: t.Union[None, str]
-    skypeAccount: t.Union[None, str]
-    receiveSMS: t.Union[None, str]
-    phoneNumber2: t.Union[None, str]
-    professionalEmail: t.Union[None, str]
-    sex: t.Union[None, str]
+    civility: t.Optional[str]
+    middleName: t.Optional[str]
+    title: t.Optional[str]
+    address: t.Optional[str]
+    city: t.Optional[str]
+    postalCode: t.Optional[str]
+    birthDate: t.Optional[str]
+    country: t.Optional[str]
+    skypeAccount: t.Optional[str]
+    receiveSMS: t.Optional[str]
+    phoneNumber2: t.Optional[str]
+    professionalEmail: t.Optional[str]
+    sex: t.Optional[str]
     nationalities: t.List[str]
-    frenchDisabledWorkerStatus: t.Union[None, str]
-    frenchPriorityNeighbourhood: t.Union[None, str]
+    frenchDisabledWorkerStatus: t.Optional[str]
+    frenchPriorityNeighbourhood: t.Optional[str]
     firstName: str
     lastName: str
     email: str
@@ -55,7 +55,7 @@ class Experience(BaseModel):
 
 
 class Experiences(BaseModel):
-    experienceLevel: t.Union[None, str]
+    experienceLevel: t.Optional[str]
     experienceList: t.List[Experience]
 
 
@@ -67,7 +67,7 @@ class Mobility(BaseModel):
 
 
 class Availability(BaseModel):
-    acceptsExtra: t.Union[None, str]
+    acceptsExtra: t.Optional[str]
     values: t.List[str]
 
 
@@ -77,25 +77,25 @@ class FurtherInformation(BaseModel):
 
 class eEOInformation(BaseModel):
     doesNotComplete: bool
-    sex: t.Union[None, str]
-    race: t.Union[None, str]
-    ethnicity: t.Union[None, str]
-    veteranStatus: t.Union[None, str]
-    incapacityStatus: t.Union[None, str]
+    sex: t.Optional[str]
+    race: t.Optional[str]
+    ethnicity: t.Optional[str]
+    veteranStatus: t.Optional[str]
+    incapacityStatus: t.Optional[str]
 
 
 class jobPreferences(BaseModel):
-    primaryProfile: t.Union[None, str]
-    contract: t.Union[None, str]
-    contractDuration: t.Union[None, str]
-    salaryPretensions: t.Union[None, str]
-    dateOfAvailability: t.Union[None, str]
+    primaryProfile: t.Optional[str]
+    contract: t.Optional[str]
+    contractDuration: t.Optional[str]
+    salaryPretensions: t.Optional[str]
+    dateOfAvailability: t.Optional[str]
     mobility: Mobility
-    noticeDuration: t.Union[None, str]
-    mobilityDelay: t.Union[None, str]
-    trainingDateStart: t.Union[None, str]
-    trainingDateEnd: t.Union[None, str]
-    jobTime: t.Union[None, str]
+    noticeDuration: t.Optional[str]
+    mobilityDelay: t.Optional[str]
+    trainingDateStart: t.Optional[str]
+    trainingDateEnd: t.Optional[str]
+    jobTime: t.Optional[str]
     secondaryProfiles: t.List[str]
     availability: Availability
 
@@ -126,15 +126,15 @@ class Application(BaseModel):
     isOfferPublished: bool
     organisation: standardItem
     origin: standardItem
-    motivation: t.Union[None, str]
-    referralCode: t.Union[None, str]
+    motivation: t.Optional[str]
+    referralCode: t.Optional[str]
     files: t.List[fileItem]
     applicationAnswers: t.List[dict]
     date: str
     status: standardItem
-    personalDataConsentReceived: t.Union[None, str]
-    retentionDelay: t.Union[None, str]
-    frenchDisabledWorkerStatus: t.Union[None, str]
+    personalDataConsentReceived: t.Optional[str]
+    retentionDelay: t.Optional[str]
+    frenchDisabledWorkerStatus: t.Optional[str]
 
 
 class UploadedFile(BaseModel):
