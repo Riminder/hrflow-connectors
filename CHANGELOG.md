@@ -2,6 +2,13 @@
 
 
 
+## v4.5.1 (2024-01-29)
+
+### Fix
+
+* fix: labels of job parsing (#219) ([`970fd25`](https://github.com/Riminder/hrflow-connectors/commit/970fd254476ef5e65a4f2a8c915b1e74518cbb77))
+
+
 ## v4.5.0 (2024-01-15)
 
 ### Feature
