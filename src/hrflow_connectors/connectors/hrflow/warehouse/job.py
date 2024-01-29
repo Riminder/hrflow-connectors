@@ -18,12 +18,12 @@ from hrflow_connectors.core import (
 LIST_JOBS_LIMIT = 30
 
 LABEL_TO_JOB_FIELD = dict(
-    Course="courses",
-    Task="tasks",
-    Certification="certifications",
-    Language="languages",
+    course="courses",
+    task="tasks",
+    certification="certifications",
+    language="languages",
 )
-SKILL_LABEL_TO_TYPE = dict(Skill=None, HardSkill="hard", SoftSkill="soft")
+SKILL_LABEL_TO_TYPE = dict(Skill=None, skill_hard="hard", skill_soft="soft")
 
 
 class JobParsingException(Exception):
