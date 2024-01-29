@@ -7,6 +7,7 @@ from logging import LoggerAdapter
 from zipfile import ZipFile
 
 import requests
+import typing_extensions as te
 from pydantic import Field, PositiveInt
 
 from hrflow_connectors.core import (
@@ -130,13 +131,13 @@ class WriteProfileParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-    client_secret_front: str = Field(
+    client_secret: str = Field(
         ...,
         description="client secret used to access TalentSoft front office API",
         repr=False,
         field_type=FieldType.Auth,
     )
-    client_url_front: str = Field(
+    client_url: str = Field(
         ...,
         description="url used to access TalentSoft front office API",
         repr=False,
@@ -225,17 +226,16 @@ def get_talentsoft_auth_token(
 
 
 def post_applicant_front(client_url, token, applicant, files, job_reference=None):
+    headers = {
+        "Authorization": "Bearer " + token,
+    }
     if job_reference:
-        headers = {
-            "Authorization": "Bearer " + token,
-            "Accept-Language": "fr-FR",
-            "jobAdReference": job_reference,
-        }
-    else:
-        headers = {
-            "Authorization": "Bearer " + token,
-        }
-
+        headers.update(
+            {
+                "Accept-Language": "fr-FR",
+                "jobAdReference": job_reference,
+            }
+        )
     response = requests.post(
         "{}/api/v2/applicants/applicationswithoutaccount".format(client_url),
         headers=headers,
@@ -414,9 +414,9 @@ def write_profiles(
     failed_profiles = []
     adapter.info("Requesting Authentication Token from TS")
     token = get_talentsoft_auth_token(
-        client_url=parameters.client_url_front,
-        client_id=parameters.client_id_front,
-        client_secret=parameters.client_secret_front,
+        client_url=parameters.client_url,
+        client_id=parameters.client_id,
+        client_secret=parameters.client_secret,
         front_or_back="front",
     )
     adapter.info("Authentication with TS API Endpoint finished")
@@ -444,7 +444,6 @@ def write_profiles(
             profile["application"]["offerReference"] = parameters.job_reference
         profile = decode_json(profile)
         profile_ts = dict(applicantApplication=json.dumps(profile))
-        profile_ts = decode_json(profile_ts)
         try:
             post_applicant_front(
                 parameters.client_url,

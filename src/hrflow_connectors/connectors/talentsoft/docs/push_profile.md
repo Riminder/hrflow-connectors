@@ -58,9 +58,9 @@ TalentSoft.push_profile(
         profile_key="your_profile_key",
     ),
     target_parameters=dict(
-        client_id_front="your_client_id_front",
-        client_secret_front="your_client_secret_front",
-        client_url_front="your_client_url_front",
+        client_id="your_client_id",
+        client_secret="your_client_secret",
+        client_url="your_client_url",
         job_reference="your_job_reference",
     )
 )

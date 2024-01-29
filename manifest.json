@@ -4804,8 +4804,8 @@
             "title": "WriteProfileParameters",
             "type": "object",
             "properties": {
-              "client_id_front": {
-                "title": "Client Id Front",
+              "client_id": {
+                "title": "Client Id",
                 "description": "client id used to access TalentSoft front office API",
                 "field_type": "Auth",
                 "type": "string"
@@ -4830,9 +4830,9 @@
               }
             },
             "required": [
-              "client_id_front",
-              "client_secret_front",
-              "client_url_front"
+              "client_id",
+              "client_secret",
+              "client_url"
             ],
             "additionalProperties": false
           },
