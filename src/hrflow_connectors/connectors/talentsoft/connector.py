@@ -39,7 +39,7 @@ def retrieve_tag_value(tags: t.List[dict], tag_name: str) -> t.Any:
     return None
 
 
-def format_ts_applicant_civility(gender: t.Optional[str]) -> t.Optional[str]:
+def format_ts_applicant_civility(gender: t.Optional[str]) -> t.Optional[t.Dict]:
     civility_ts = {}
     if gender is None:
         return None
@@ -50,35 +50,27 @@ def format_ts_applicant_civility(gender: t.Optional[str]) -> t.Optional[str]:
     return civility_ts
 
 
-def extraire_annee(date_str: str) -> t.Optional[int]:
+def extract_year(date_str: str) -> t.Optional[int]:
     if not date_str:
         return None
     try:
-        # Convertir la chaîne de date en objet datetime
-        date_obj = datetime.fromisoformat(date_str)
-
-        # Extraire l'année de l'objet datetime
-        annee = date_obj.year
-
-        return annee
+        return datetime.fromisoformat(date_str).year
     except ValueError:
         return None
 
 
 def calcul_ts_experience_duration(date_start: str, date_end: str) -> t.Optional[float]:
+    if not date_start or not date_end:
+        return None
     try:
-        if not date_start or not date_end:
-            return None
         date_start_obj = datetime.fromisoformat(date_start)
         date_end_obj = datetime.fromisoformat(date_end)
-        experience_duration = date_end_obj - date_start_obj
-        experience_duration_years = experience_duration.days / 365
-        return experience_duration_years
+        return (date_end_obj - date_start_obj).days / 365
     except ValueError:
         return None
 
 
-def format_contract_type(tags: t.List[dict]) -> t.Optional[str]:
+def format_contract_type(tags: t.List[dict]) -> t.Optional[t.Dict]:
     contract_type = retrieve_tag_value(tags, "talentsoft_contract_type")
     if contract_type:
         return CONTRACT_TYPE_REFERENTIAL.get(contract_type)
@@ -88,30 +80,27 @@ def format_contract_type(tags: t.List[dict]) -> t.Optional[str]:
 def format_ts_educations(educations: t.List[dict], tags: t.List[dict]) -> dict:
     education_level = retrieve_tag_value(tags, "talentsoft_education_level")
 
-    diplomas_list = (
+    diplomas = (
         [{"educationLevel": EDUCATIONS_REFERENTIEL.get(education_level)}]
         if education_level
         else []
     )
 
-    diplomas_list += [
+    diplomas += [
         {
-            # "diplomaCode": 0,
-            # "specialisation": education["title"],
             "yearObtained": (
-                extraire_annee(education["date_end"]) if education["date_end"] else ""
+                extract_year(education["date_end"]) if education["date_end"] else ""
             ),
             "college": education["school"],
         }
         for education in educations
     ]
 
-    return {"diplomas": diplomas_list}
+    return {"diplomas": diplomas}
 
 
 def format_ts_experiences(experiences: t.List[dict], tags: t.List[dict]) -> dict:
     experience_level = retrieve_tag_value(tags, "talentsoft_experience_level")
-
     experience_ts_level = experience_level if experience_level else None
     experiences_ts_list = [
         {
@@ -386,7 +375,7 @@ def applicant_update_parser(event: t.Dict) -> t.Dict:
     return dict(filter="id::{}".format(event["applicantId"]))
 
 
-def format_into_ts_applicant(profile_hrflow: t.Dict) -> t.Dict:
+def format_info_ts_applicant(profile_hrflow: t.Dict) -> t.Dict:
     info_profile_hrflow = profile_hrflow["info"]
     attachment = profile_hrflow["attachments"][0]
     personal_information = dict(
@@ -543,7 +532,7 @@ TalentSoft = Connector(
                 " it to Applicant object in Talentsoft"
             ),
             parameters=BaseActionParameters.with_defaults(
-                "PushProfileActionParameters", format=format_into_ts_applicant
+                "PushProfileActionParameters", format=format_info_ts_applicant
             ),
             origin=HrFlowProfileWarehouse,
             target=TalentSoftProfilesWarehouse,
