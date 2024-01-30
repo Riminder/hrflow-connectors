@@ -385,8 +385,16 @@ def format_info_ts_applicant(profile_hrflow: t.Dict) -> t.Dict:
         phoneNumber=info_profile_hrflow["phone"],
         email=info_profile_hrflow["email"],
         address=info_profile_hrflow["location"]["text"],
-        city=info_profile_hrflow["location"].get("fields", {}).get("city", "") if info_profile_hrflow["location"].get("fields") else "",
-        postalCode=info_profile_hrflow["location"].get("fields", {}).get("postalCode", "") if info_profile_hrflow["location"].get("fields") else "",
+        city=(
+            info_profile_hrflow["location"].get("fields", {}).get("city", "")
+            if info_profile_hrflow["location"].get("fields")
+            else ""
+        ),
+        postalCode=(
+            info_profile_hrflow["location"].get("fields", {}).get("postalCode", "")
+            if info_profile_hrflow["location"].get("fields")
+            else ""
+        ),
         civility=format_ts_applicant_civility(info_profile_hrflow["gender"]),
     )
     jobPreferences = dict(
