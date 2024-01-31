@@ -2,18 +2,105 @@
 
 
 
+## v4.6.0 (2024-01-31)
+
+### Documentation
+
+* docs: update ts docs ([`fa3b815`](https://github.com/Riminder/hrflow-connectors/commit/fa3b815e8215c75a9503ab231e067f3ee2a01407))
+
+* docs: update ts docs ([`d7dfb1e`](https://github.com/Riminder/hrflow-connectors/commit/d7dfb1eeb23e83003bc7ac5397289a0882ac186f))
+
+### Feature
+
+* feat: add address and city ([`94c9dfd`](https://github.com/Riminder/hrflow-connectors/commit/94c9dfd653a99c1594f758f8d7343b8c411cdf3f))
+
+### Fix
+
+* fix: ts push profile action after jamal review ([`e47fe74`](https://github.com/Riminder/hrflow-connectors/commit/e47fe7431f0b40dbf9a42bb96f55e14d34d3a74b))
+
+### Unknown
+
+* Merge pull request #213 from Riminder/feature/talentsoft-add-push-profile
+
+Feature:talentsoft add push profile ([`6d15679`](https://github.com/Riminder/hrflow-connectors/commit/6d15679df57d04de1d22d3b5b1f0494cd1dd1cf8))
+
+* Merge branch &#39;master&#39; into feature/talentsoft-add-push-profile ([`fe25753`](https://github.com/Riminder/hrflow-connectors/commit/fe25753de2de57b5525c2fa08af18358547ce027))
+
+
 ## v4.5.1 (2024-01-29)
+
+### Documentation
+
+* docs: update ts docs ([`e9319e0`](https://github.com/Riminder/hrflow-connectors/commit/e9319e04f5d25d94e571c412f57141b73c1afc50))
 
 ### Fix
 
 * fix: labels of job parsing (#219) ([`970fd25`](https://github.com/Riminder/hrflow-connectors/commit/970fd254476ef5e65a4f2a8c915b1e74518cbb77))
 
+* fix: keep only front params for talentsoft push profile action ([`d754328`](https://github.com/Riminder/hrflow-connectors/commit/d754328f02deb6d66303d28fc4378fcd7ec782eb))
+
+### Unknown
+
+* Merge branch &#39;master&#39; into feature/talentsoft-add-push-profile ([`d4a5ca2`](https://github.com/Riminder/hrflow-connectors/commit/d4a5ca274238d39b23e297f0047dca10a021702b))
+
 
 ## v4.5.0 (2024-01-15)
 
+### Documentation
+
+* docs: update talentsoft docs ([`ed606a7`](https://github.com/Riminder/hrflow-connectors/commit/ed606a7cc96bdfd30f291b5176eb0c513df6a072))
+
 ### Feature
 
+* feat: connector jobology ([`4f75f3e`](https://github.com/Riminder/hrflow-connectors/commit/4f75f3e47bbc2390b49fe8ead632453d7bca36a8))
+
 * feat: connector jobology ([`28ea90d`](https://github.com/Riminder/hrflow-connectors/commit/28ea90d53765af12c167702e2ac960f5270595f3))
+
+### Fix
+
+* fix: refine code ([`2815ffd`](https://github.com/Riminder/hrflow-connectors/commit/2815ffd316f5c2e3d9591247b2f0c51b50e6bf34))
+
+* fix: fix some bug ([`168c37d`](https://github.com/Riminder/hrflow-connectors/commit/168c37ddf14c58cf3b6fdafefb5db1456eacd5de))
+
+* fix: add some exceptions and reorder code ([`4a09ee7`](https://github.com/Riminder/hrflow-connectors/commit/4a09ee75e09a527314ab04d0a2e059d985d0c67f))
+
+* fix: modify write profiles parameters ([`41ada3e`](https://github.com/Riminder/hrflow-connectors/commit/41ada3eea720b1afe0928e47f4697dc9078383b2))
+
+* fix: update talentsoft docs ([`957806a`](https://github.com/Riminder/hrflow-connectors/commit/957806add905d346513cd649e3c09259f2840449))
+
+* fix: add decoding json to avoid sending special encoding ([`f630731`](https://github.com/Riminder/hrflow-connectors/commit/f630731c7b2fdfbf37bbbbed65f05493f0c5d1c0))
+
+### Unknown
+
+* docs:modify talentsoft schemas ([`e2e49af`](https://github.com/Riminder/hrflow-connectors/commit/e2e49af75c99911cb2a2d59d42cbd62073841573))
+
+* fix:add typing and reorder functions ([`9e851cf`](https://github.com/Riminder/hrflow-connectors/commit/9e851cf5804bcd2782387aec10da7ffe2a3c9740))
+
+* Merge branch &#39;master&#39; into feature/talentsoft-add-push-profile ([`ba68f4a`](https://github.com/Riminder/hrflow-connectors/commit/ba68f4acd86813741cf4e4a032de1f2c07415875))
+
+* docs:update ts docs ([`7b21c14`](https://github.com/Riminder/hrflow-connectors/commit/7b21c14c267dee390c9e0181dba620d9598b8c3d))
+
+* fix:fix error to 201 instead of 200 ([`4e7c6b1`](https://github.com/Riminder/hrflow-connectors/commit/4e7c6b198711475196220fa1871db3ee3efb86b6))
+
+* docs:update ts docs ([`c0db9bb`](https://github.com/Riminder/hrflow-connectors/commit/c0db9bb4c7fb7b6a538e0b7c425c4b94168d34d6))
+
+* fix:flake8 outputs ([`1464ce8`](https://github.com/Riminder/hrflow-connectors/commit/1464ce8d3b4989b2b74e1fed27314877cfd72f4e))
+
+* fix:add referential civlity ([`b70f898`](https://github.com/Riminder/hrflow-connectors/commit/b70f898a27d63457bfd859b69480589206708066))
+
+* docs:update talentsoft docs ([`da3b3d1`](https://github.com/Riminder/hrflow-connectors/commit/da3b3d113033b6bfad9fb6a9944a46f39a8eb28b))
+
+* fix:flake8 outputs for talentsoft ([`580b3a3`](https://github.com/Riminder/hrflow-connectors/commit/580b3a3f72e885ff830d02c22c6ec0ad6bbdf550))
+
+* fix:fix auth params after modifying write params class ([`17a2438`](https://github.com/Riminder/hrflow-connectors/commit/17a2438bac47c2ec51f99a5f3892910ffc0fba80))
+
+* fix:push hook outputs ([`805f2be`](https://github.com/Riminder/hrflow-connectors/commit/805f2bec873dfca20a278266be1ccf3dd0cb6605))
+
+* fix:flake8 output ([`a090970`](https://github.com/Riminder/hrflow-connectors/commit/a0909709f5fe323d1dd535dee22d1a063b9f9ca2))
+
+* docs:update docs of talentsoft connector ([`ba33dec`](https://github.com/Riminder/hrflow-connectors/commit/ba33decc500dc9675a76295a7410ceb4a8bb9e3f))
+
+* feat:add push profile action to talentsoft ([`dc30d8b`](https://github.com/Riminder/hrflow-connectors/commit/dc30d8b3bae39cb34643c645d442db53a3187960))
 
 
 ## v4.4.0 (2023-12-04)
