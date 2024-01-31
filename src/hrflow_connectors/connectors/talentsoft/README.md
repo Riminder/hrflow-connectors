@@ -38,11 +38,12 @@ Talentsoft (by Cegid) offers a full-suite HCM solution so you can keep all your 
 | [**Applicant update**](docs/applicant_update.md) | Handle TalentSoft 'applicant_update' event by only updating tags coming from TalentSoft in HrFlow.ai. |
 | [**Pull profile list**](docs/pull_profile_list.md) | Retrieves profiles from TalentSoft candidates export API and send them to a ***Hrflow.ai Source***. |
 | [**Pull job list**](docs/pull_job_list.md) | Retrieves jobs from TalentSoft vacancies export API and send them to a ***Hrflow.ai Board***. |
+| [**Push profile**](docs/push_profile.md) | Pushs specific Profile from HrFlow and writes it to Applicant object in Talentsoft |
 
 
 </p>
 <p align="center">
-<image src=https://user-images.githubusercontent.com/57711045/214648408-fa861623-e059-4e7b-bd56-e09f85e30062.png width=90% height=100% >
+<image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/bbc0cd05-d05f-4c2a-bdd0-93636c9486a8 width=90% height=100% >
 </p>
 
 # 🐍 Quick Start Examples

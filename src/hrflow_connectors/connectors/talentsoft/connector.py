@@ -9,6 +9,12 @@ from hrflow_connectors.connectors.hrflow.warehouse import (
     HrFlowProfileParsingWarehouse,
     HrFlowProfileWarehouse,
 )
+from hrflow_connectors.connectors.talentsoft.utils.const import (
+    CIVILITY,
+    CONTRACT_TYPE_REFERENTIAL,
+    EDUCATIONS_REFERENTIEL,
+    EXPERIENCES_REFERENTIEL,
+)
 from hrflow_connectors.connectors.talentsoft.warehouse import (
     TalentSoftJobsWarehouse,
     TalentSoftProfilesWarehouse,
@@ -24,6 +30,99 @@ from hrflow_connectors.core import (
     Event,
     WorkflowType,
 )
+
+
+def retrieve_tag_value(tags: t.List[dict], tag_name: str) -> t.Any:
+    for tag in tags:
+        if tag["name"] == tag_name:
+            return tag["value"]
+    return None
+
+
+def format_ts_applicant_civility(gender: t.Optional[str]) -> t.Optional[t.Dict]:
+    civility_ts = {}
+    if gender is None:
+        return None
+    if gender == "male":
+        return CIVILITY[2]
+    elif gender == "female":
+        return CIVILITY[4]
+    return civility_ts
+
+
+def extract_year(date_str: str) -> t.Optional[int]:
+    if not date_str:
+        return None
+    try:
+        return datetime.fromisoformat(date_str).year
+    except ValueError:
+        return None
+
+
+def calcul_ts_experience_duration(date_start: str, date_end: str) -> t.Optional[float]:
+    if not date_start or not date_end:
+        return None
+    try:
+        date_start_obj = datetime.fromisoformat(date_start)
+        date_end_obj = datetime.fromisoformat(date_end)
+        return (date_end_obj - date_start_obj).days / 365
+    except ValueError:
+        return None
+
+
+def format_contract_type(tags: t.List[dict]) -> t.Optional[t.Dict]:
+    contract_type = retrieve_tag_value(tags, "talentsoft_contract_type")
+    if contract_type:
+        return CONTRACT_TYPE_REFERENTIAL.get(contract_type)
+    return None
+
+
+def format_ts_educations(educations: t.List[dict], tags: t.List[dict]) -> dict:
+    education_level = retrieve_tag_value(tags, "talentsoft_education_level")
+
+    diplomas = (
+        [{"educationLevel": EDUCATIONS_REFERENTIEL.get(education_level)}]
+        if education_level
+        else []
+    )
+
+    diplomas += [
+        {
+            "yearObtained": (
+                extract_year(education["date_end"]) if education["date_end"] else ""
+            ),
+            "college": education["school"],
+        }
+        for education in educations
+    ]
+
+    return {"diplomas": diplomas}
+
+
+def format_ts_experiences(experiences: t.List[dict], tags: t.List[dict]) -> dict:
+    experience_level = retrieve_tag_value(tags, "talentsoft_experience_level")
+    experience_ts_level = experience_level if experience_level else None
+    experiences_ts_list = [
+        {
+            "company": experience["company"],
+            "function": experience["title"],
+            "length": (
+                calcul_ts_experience_duration(
+                    experience["date_start"], experience["date_end"]
+                )
+                if experience["date_start"] and experience["date_end"]
+                else ""
+            ),
+        }
+        for experience in experiences
+    ]
+
+    experiences_ts = {
+        "experienceLevel": EXPERIENCES_REFERENTIEL.get(experience_ts_level),
+        "experienceList": experiences_ts_list,
+    }
+
+    return experiences_ts
 
 
 def format_ts_vacancy(ts_vacancy: t.Dict) -> t.Dict:
@@ -276,6 +375,67 @@ def applicant_update_parser(event: t.Dict) -> t.Dict:
     return dict(filter="id::{}".format(event["applicantId"]))
 
 
+def format_info_ts_applicant(profile_hrflow: t.Dict) -> t.Dict:
+    info_profile_hrflow = profile_hrflow["info"]
+    attachment = profile_hrflow["attachments"][0]
+    personal_information = dict(
+        firstName=info_profile_hrflow["first_name"],
+        lastName=info_profile_hrflow["last_name"],
+        birthDate=info_profile_hrflow["date_birth"],
+        phoneNumber=info_profile_hrflow["phone"],
+        email=info_profile_hrflow["email"],
+        address=info_profile_hrflow["location"]["text"],
+        city=(
+            info_profile_hrflow["location"].get("fields", {}).get("city", "")
+            if info_profile_hrflow["location"].get("fields")
+            else ""
+        ),
+        postalCode=(
+            info_profile_hrflow["location"].get("fields", {}).get("postalCode", "")
+            if info_profile_hrflow["location"].get("fields")
+            else ""
+        ),
+        civility=format_ts_applicant_civility(info_profile_hrflow["gender"]),
+    )
+    jobPreferences = dict(
+        contractType=format_contract_type(profile_hrflow["tags"]),
+        salaryPretensions=retrieve_tag_value(
+            profile_hrflow["tags"], "talentsoft_salary"
+        ),
+    )
+    education = format_ts_educations(
+        profile_hrflow["educations"], profile_hrflow["tags"]
+    )
+    experiences = format_ts_experiences(
+        profile_hrflow["experiences"], profile_hrflow["tags"]
+    )
+    application = dict(
+        type="offer",
+        offerReference="",  # TODO
+    )
+    uploadedFiles = [
+        dict(
+            description=attachment["original_file_name"],
+            fileTypeId=36,
+            key="cv_file_id",
+        )
+    ]
+
+    applicant = dict(
+        personalInformation=personal_information,
+        jobPreferences=jobPreferences,
+        education=education,
+        experiences=experiences,
+    )
+
+    return dict(
+        applicant=applicant,
+        application=application,
+        uploadedFiles=uploadedFiles,
+        attachment=attachment,
+    )
+
+
 DESCRIPTION = "TalentSoft"
 TalentSoft = Connector(
     name="TalentSoft",
@@ -374,6 +534,20 @@ TalentSoft = Connector(
             origin=TalentSoftJobsWarehouse,
             target=HrFlowJobWarehouse,
             action_type=ActionType.inbound,
+        ),
+        ConnectorAction(
+            name=ActionName.push_profile,
+            trigger_type=WorkflowType.catch,
+            description=(
+                "Pushs specific Profile from HrFlow and writes"
+                " it to Applicant object in Talentsoft"
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "PushProfileActionParameters", format=format_info_ts_applicant
+            ),
+            origin=HrFlowProfileWarehouse,
+            target=TalentSoftProfilesWarehouse,
+            action_type=ActionType.outbound,
         ),
     ],
 )
