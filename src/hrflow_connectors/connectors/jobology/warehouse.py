@@ -3,7 +3,6 @@ import typing as t
 from logging import LoggerAdapter
 
 import magic
-import requests
 from pydantic import Field
 
 from hrflow_connectors.core import (
