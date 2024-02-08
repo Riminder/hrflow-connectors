@@ -225,8 +225,14 @@ def write_parsing(
             current_profile = parsing_response["data"]["profile"]
             if current_profile:
                 info_parsed = current_profile.get("info", {})
+                if "urls" in profile_info and isinstance(profile_info["urls"], list):
+                    for new_url in profile_info["urls"]:
+                        existing_urls = info_parsed.get("urls", [])
+                        if new_url not in existing_urls:
+                            existing_urls.append(new_url)
+                        info_parsed["urls"] = existing_urls
                 for key, value in profile_info.items():
-                    if value and key != "location":
+                    if value and key != "location" and key != "urls":
                         info_parsed[key] = value
                     elif key == "location" and isinstance(value, dict):
                         if any(value.values()):
