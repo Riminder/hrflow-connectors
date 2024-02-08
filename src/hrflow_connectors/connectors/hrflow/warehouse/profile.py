@@ -184,6 +184,7 @@ def write_parsing(
         api_secret=parameters.api_secret, api_user=parameters.api_user
     )
     for profile in profiles:
+        profile_info = profile.pop("info", {})
         if parameters.only_insert and hrflow_client.profile.indexing.get(
             source_key=parameters.source_key, reference=profile["reference"]
         ).get("data"):
@@ -193,7 +194,7 @@ def write_parsing(
             )
             continue
 
-        response = hrflow_client.profile.parsing.add_file(
+        parsing_response = hrflow_client.profile.parsing.add_file(
             source_key=parameters.source_key,
             profile_file=profile["resume"]["raw"],
             profile_content_type=profile["resume"]["content_type"],
@@ -202,13 +203,52 @@ def write_parsing(
             metadatas=profile["metadatas"],
             created_at=profile["created_at"],
         )
-        if response["code"] != 202:
+        if parsing_response["code"] not in [202, 201]:  # 202: Accepted, 201: Created
             adapter.error(
                 "Failed to parse profile with reference={} response={}".format(
-                    profile["reference"], response
+                    profile["reference"], parsing_response
                 )
             )
             failed.append(profile)
+        source_response = hrflow_client.source.get(
+            key=parameters.source_key
+        )  # Get source to check if sync_parsing is enabled
+        if source_response["code"] != 200:
+            adapter.warning(
+                "Failed to get source with key={} response={}, won't be able to update"
+                " profile parsed with profile json".format(
+                    parameters.source_key, source_response
+                )
+            )
+            continue
+        elif source_response["data"]["sync_parsing"] is True:
+            current_profile = parsing_response["data"]["profile"]
+            if current_profile:
+                info_parsed = current_profile.get("info", {})
+                for key, value in profile_info.items():
+                    if value and key != "location":
+                        info_parsed[key] = value
+                    elif key == "location" and isinstance(value, dict):
+                        if any(value.values()):
+                            info_parsed[key] = {**info_parsed.get(key, {}), **value}
+                current_profile["info"] = info_parsed
+                edit_response = hrflow_client.profile.indexing.edit(
+                    source_key=parameters.source_key,
+                    key=current_profile["key"],
+                    profile_json=current_profile,
+                )
+                if edit_response["code"] != 200:
+                    adapter.warning(
+                        "Failed to update profile after parsing, reference={}"
+                        " response={}".format(profile["reference"], edit_response)
+                    )
+                    continue
+            else:
+                adapter.warning(
+                    "Failed to get profile after parsing with reference={} response={}"
+                    .format(profile["reference"], parsing_response)
+                )
+                continue
     return failed
 
 
