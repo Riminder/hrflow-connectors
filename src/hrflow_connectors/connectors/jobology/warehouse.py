@@ -23,21 +23,12 @@ class ReadProfilesParameters(ParametersModel):
     )
 
 
-class Base64DecodeError(Exception):
-    pass
-
-
-class ContentTypeDetectionError(Exception):
-    pass
-
-
 def get_content_type(binary_data: bytes):
-    try:
-        mime = magic.Magic(mime=True)
-        content_type = mime.from_buffer(binary_data)
-        return content_type
-    except Exception as e:
-        raise ContentTypeDetectionError(f"Error detecting content type: {e}")
+    mime = magic.Magic(mime=True)
+    content_type = mime.from_buffer(binary_data)
+    if not content_type:
+        return "application/octet-stream"
+    return content_type
 
 
 def read(
@@ -52,17 +43,10 @@ def read(
     if cv_base64 is None:
         raise ValueError("No base64 string provided for CV.")
 
-    try:
-        binary_data = base64.b64decode(cv_base64)
-    except Exception as e:
-        raise Base64DecodeError(f"Error decoding base64 string: {e}")
-
-    try:
-        content_type = get_content_type(binary_data)
-    except ContentTypeDetectionError as e:
-        adapter.error(e)
-        content_type = "application/octet-stream"
-
+    binary_data = base64.b64decode(cv_base64)
+    if not binary_data:
+        raise Exception("Error decoding base64 string")
+    content_type = get_content_type(binary_data)
     result["cv"] = binary_data
     result["content_type"] = content_type
 
