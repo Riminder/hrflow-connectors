@@ -47,7 +47,7 @@ def read(
         binary_data = base64.b64decode(cv_base64)
     except base64.binascii.Error:
         padding_needed = 4 - (len(cv_base64) % 4)
-        if padding_needed < 4:
+        if padding_needed != 4:
             cv_base64 += "=" * padding_needed
             binary_data = base64.b64decode(cv_base64)
 
