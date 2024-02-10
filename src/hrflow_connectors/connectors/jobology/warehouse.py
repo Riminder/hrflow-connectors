@@ -42,7 +42,7 @@ def read(
 
     if cv_base64 is None:
         raise ValueError("No base64 string provided for CV.")
-    
+
     try:
         binary_data = base64.b64decode(cv_base64)
     except base64.binascii.Error:
