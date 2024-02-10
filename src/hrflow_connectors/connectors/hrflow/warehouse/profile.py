@@ -174,6 +174,30 @@ def write(
     return failed
 
 
+def merge_info(base: dict, info: dict) -> dict:
+    if not info:
+        return base
+
+    info_parsed = base.get("info", {})
+    existing_urls = info_parsed.get("urls", [])
+
+    if isinstance(info.get("urls"), list):
+        for new_url in info["urls"]:
+            if new_url not in existing_urls:
+                existing_urls.append(new_url)
+
+    info_parsed["urls"] = existing_urls
+
+    for key, value in info.items():
+        if value and key != "location" and key != "urls":
+            info_parsed[key] = value
+        elif key == "location" and isinstance(value, dict) and any(value.values()):
+            info_parsed[key] = {**info_parsed.get(key, {}), **value}
+
+    base["info"] = info_parsed
+    return base
+
+
 def write_parsing(
     adapter: LoggerAdapter,
     parameters: WriteProfileParsingParameters,
@@ -210,6 +234,7 @@ def write_parsing(
                 )
             )
             failed.append(profile)
+            continue
         source_response = hrflow_client.source.get(
             key=parameters.source_key
         )  # Get source to check if sync_parsing is enabled
@@ -220,41 +245,22 @@ def write_parsing(
                     parameters.source_key, source_response
                 )
             )
-            continue
         elif source_response["data"]["sync_parsing"] is True:
             current_profile = parsing_response["data"]["profile"]
-            if current_profile:
-                info_parsed = current_profile.get("info", {})
-                if "urls" in profile_info and isinstance(profile_info["urls"], list):
-                    for new_url in profile_info["urls"]:
-                        existing_urls = info_parsed.get("urls", [])
-                        if new_url not in existing_urls:
-                            existing_urls.append(new_url)
-                        info_parsed["urls"] = existing_urls
-                for key, value in profile_info.items():
-                    if value and key != "location" and key != "urls":
-                        info_parsed[key] = value
-                    elif key == "location" and isinstance(value, dict):
-                        if any(value.values()):
-                            info_parsed[key] = {**info_parsed.get(key, {}), **value}
-                current_profile["info"] = info_parsed
-                edit_response = hrflow_client.profile.indexing.edit(
-                    source_key=parameters.source_key,
-                    key=current_profile["key"],
-                    profile_json=current_profile,
-                )
-                if edit_response["code"] != 200:
-                    adapter.warning(
-                        "Failed to update profile after parsing, reference={}"
-                        " response={}".format(profile["reference"], edit_response)
-                    )
-                    continue
-            else:
+            profile_result = merge_info(current_profile, profile_info)
+            edit_response = hrflow_client.profile.indexing.edit(
+                source_key=parameters.source_key,
+                key=profile_result["key"],
+                profile_json=profile_result,
+            )
+            if edit_response["code"] != 200:
                 adapter.warning(
-                    "Failed to get profile after parsing with reference={} response={}"
-                    .format(profile["reference"], parsing_response)
+                    "Failed to update profile after parsing, reference={}"
+                    " response={}".format(profile["reference"], edit_response)
                 )
+                failed.append(profile)
                 continue
+
     return failed
 
 
