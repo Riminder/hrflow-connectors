@@ -42,8 +42,15 @@ def read(
 
     if cv_base64 is None:
         raise ValueError("No base64 string provided for CV.")
+    
+    try:
+        binary_data = base64.b64decode(cv_base64)
+    except base64.binascii.Error:
+        padding_needed = 4 - (len(cv_base64) % 4)
+        if padding_needed < 4:
+            cv_base64 += "=" * padding_needed
+            binary_data = base64.b64decode(cv_base64)
 
-    binary_data = base64.b64decode(cv_base64)
     if not binary_data:
         raise Exception("Error decoding base64 string")
     content_type = get_content_type(binary_data)
