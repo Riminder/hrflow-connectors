@@ -210,6 +210,7 @@ def write_parsing(
     for profile in profiles:
         profile_info = profile.get("info", {})
 
+
         if parameters.only_insert and hrflow_client.profile.indexing.get(
             source_key=parameters.source_key, reference=profile["reference"]
         ).get("data"):
@@ -264,6 +265,7 @@ def write_parsing(
                 if profile.get("educations_duration") is not None
                 else profile_result.get("educations_duration")
             )
+
 
             edit_response = hrflow_client.profile.indexing.edit(
                 source_key=parameters.source_key,
