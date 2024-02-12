@@ -303,6 +303,7 @@ def write_parsing(
             current_profile = parsing_response["data"]["profile"]
             profile_result = hydrate_profile(current_profile, profile)
 
+
             edit_response = hrflow_client.profile.indexing.edit(
                 source_key=parameters.source_key,
                 key=profile_result["key"],
