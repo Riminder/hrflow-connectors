@@ -2,6 +2,43 @@
 
 
 
+## v4.6.1 (2024-02-12)
+
+### Fix
+
+* fix: correct update date for Jobology connector (#222)
+
+Co-authored-by: the-forest-tree &lt;the-forest-tree@hrflow.ai&gt; ([`852c6aa`](https://github.com/Riminder/hrflow-connectors/commit/852c6aa443574b8667d2c27e612189dda20fd64b))
+
+* fix: remplace cv url by cv binary (#220)
+
+* fix:add some error handling for jobology connector
+
+* fix:jobology flake8 connector
+
+* fix:some type
+
+* fix:regarding jamal review
+
+* fix: remplace cv url by cv binary
+
+* docs: update docs
+
+* fix: flake8 outputs
+
+* fix: jobology catch profile
+
+* docs: update docs
+
+* fix: regarding jamal review
+
+* fix: handle possible error binasciii
+
+* fix: flake8 and docs
+
+* fix: some flake8 output ([`b41676e`](https://github.com/Riminder/hrflow-connectors/commit/b41676ebab149f4dd1170b34f7baf3641792981a))
+
+
 ## v4.6.0 (2024-01-31)
 
 ### Documentation
