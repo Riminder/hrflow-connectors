@@ -192,7 +192,7 @@ def merge_info(base: dict, info: dict) -> dict:
         if value and key != "location" and key != "urls":
             info_parsed[key] = value
         elif key == "location" and isinstance(value, dict) and any(value.values()):
-            info_parsed[key] = {**info_parsed.get(key, {}), **value}
+            info_parsed[key] = value
 
     base["info"] = info_parsed
     return base
