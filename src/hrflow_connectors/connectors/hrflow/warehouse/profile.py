@@ -209,7 +209,7 @@ def write_parsing(
     )
     for profile in profiles:
         profile_info = profile.pop("info", {})
-  
+
         profile_text = profile_info.get("text", "")
         profile_text_language = profile_info.get("text_language", "")
         profile_experiences_duration = profile_info.get("experiences_duration", 0)
