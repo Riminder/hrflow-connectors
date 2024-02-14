@@ -85,7 +85,6 @@ Co-authored-by: the-forest-tree &lt;the-forest-tree@hrflow.ai&gt;
 Co-authored-by: hrflow-semantic-release &lt;hrflow-semantic-release&gt; ([`5b7997b`](https://github.com/Riminder/hrflow-connectors/commit/5b7997b5080b31de96d074b001369150ac95f596))
 
 
-
 ## v4.6.1 (2024-02-12)
 
 ### Fix
