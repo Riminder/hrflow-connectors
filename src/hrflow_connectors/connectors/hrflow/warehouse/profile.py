@@ -209,6 +209,12 @@ def write_parsing(
     )
     for profile in profiles:
         profile_info = profile.pop("info", {})
+  
+        profile_text = profile_info.get("text", "")
+        profile_text_language = profile_info.get("text_language", "")
+        profile_experiences_duration = profile_info.get("experiences_duration", 0)
+        profile_educations_duration = profile_info.get("educations_duration", 0)
+
         if parameters.only_insert and hrflow_client.profile.indexing.get(
             source_key=parameters.source_key, reference=profile["reference"]
         ).get("data"):
@@ -248,6 +254,20 @@ def write_parsing(
         elif source_response["data"]["sync_parsing"] is True:
             current_profile = parsing_response["data"]["profile"]
             profile_result = merge_info(current_profile, profile_info)
+
+            profile_result["text"] = profile_text or profile_result.get("text", "")
+            profile_result["text_language"] = (
+                profile_text_language or profile_result.get("text_language", "")
+            )
+            profile_result["experiences_duration"] = (
+                profile_experiences_duration
+                or profile_result.get("experiences_duration", 0)
+            )
+            profile_result["educations_duration"] = (
+                profile_educations_duration
+                or profile_result.get("educations_duration", 0)
+            )
+
             edit_response = hrflow_client.profile.indexing.edit(
                 source_key=parameters.source_key,
                 key=profile_result["key"],
