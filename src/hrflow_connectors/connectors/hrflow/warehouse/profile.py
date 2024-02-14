@@ -263,6 +263,7 @@ def write_parsing(
                 profile.get("educations_duration")
                 if profile.get("educations_duration") is not None
                 else profile_result.get("educations_duration")
+
             )
 
             edit_response = hrflow_client.profile.indexing.edit(
