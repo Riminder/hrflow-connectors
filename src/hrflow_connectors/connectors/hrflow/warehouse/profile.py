@@ -210,10 +210,10 @@ def write_parsing(
     for profile in profiles:
         profile_info = profile.pop("info", {})
 
-        profile_text = profile_info.get("text", "")
-        profile_text_language = profile_info.get("text_language", "")
-        profile_experiences_duration = profile_info.get("experiences_duration", 0)
-        profile_educations_duration = profile_info.get("educations_duration", 0)
+        profile_text = profile.get("text", "")
+        profile_text_language = profile.get("text_language", "")
+        profile_experiences_duration = profile.get("experiences_duration", 0)
+        profile_educations_duration = profile.get("educations_duration", 0)
 
         if parameters.only_insert and hrflow_client.profile.indexing.get(
             source_key=parameters.source_key, reference=profile["reference"]
