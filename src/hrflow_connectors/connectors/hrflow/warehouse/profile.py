@@ -251,7 +251,8 @@ def write_parsing(
     source_response = hrflow_client.source.get(key=parameters.source_key)
 
     for profile in profiles:
-        profile_info = profile.pop("info", {})
+        profile_info = profile.get("info", {})
+
         if parameters.only_insert and hrflow_client.profile.indexing.get(
             source_key=parameters.source_key, reference=profile["reference"]
         ).get("data"):
