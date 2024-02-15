@@ -2,6 +2,13 @@
 
 
 
+## v4.8.0 (2024-02-15)
+
+### Feature
+
+* feat: add profile json to parsing warehouse (#223) ([`51f1920`](https://github.com/Riminder/hrflow-connectors/commit/51f19204af51af6d8d2ea83e1edd46005f1eb4a8))
+
+
 ## v4.7.0 (2024-02-12)
 
 ### Feature
