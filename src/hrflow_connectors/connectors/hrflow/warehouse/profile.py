@@ -250,9 +250,7 @@ def write_parsing(
             current_profile = parsing_response["data"]["profile"]
             profile_result = merge_info(current_profile, profile_info)
 
-            profile_result["text"] = profile.get("text") or profile_result.get(
-                "text"
-            )
+            profile_result["text"] = profile.get("text") or profile_result.get("text")
             profile_result["text_language"] = profile.get(
                 "text_language"
             ) or profile_result.get("text_language")
