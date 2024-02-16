@@ -1,0 +1,96 @@
+warehouse:
+  MeteojobProfilesWarehouse:
+    read:
+      - parameters:
+          profile: {
+            "type":"Meteojob_direct_apply",
+            "jobkey":" JO-0145781_1701343287",
+            "firstName":"Pierre",
+            "lastName":"Dupont",
+            "phone":"0611423374",
+            "email":"pierre.dupont@mailprovider.com",
+            "cvBase64": b"JVBERi0xLjcNCiW1tb...",
+            "coverText":"Ceci est le texte de motivation.\nCe champ peut contenir des retours à la ligne.",
+            "profilecountry": "France",
+            "profileregions": "Ile-de-france",
+            "profiledomains": "Chauffeur SPL, Chauffeur routier, Chauffeur",
+            "joblien_annonce_site_carriere": "https://www.jobtransport.com/offre-emploi/approvisionneur-h-f-ecquevilly-2476964.aspx",
+            "statisticsource": "Groupe Fed",
+            "statisticjbsource": "Meteojob",
+            }
+actions:
+  catch_profile:
+    - id: no_hrflow_source_key
+      origin_parameters:
+        profile: {
+            "type":"Meteojob_direct_apply",
+            "jobkey":" JO-0145781_1701343287",
+            "firstName":"Pierre",
+            "lastName":"Dupont",
+            "phone":"0611423374",
+            "email":"pierre.dupont@mailprovider.com",
+            "cvBase64": b"JVBERi0xLjcNCiW1tb...",
+            "coverText":"Ceci est le texte de motivation.\nCe champ peut contenir des retours à la ligne.",
+            "profilecountry": "France",
+            "profileregions": "Ile-de-france",
+            "profiledomains": "Chauffeur SPL, Chauffeur routier, Chauffeur",
+            "joblien_annonce_site_carriere": "https://www.jobtransport.com/offre-emploi/approvisionneur-h-f-ecquevilly-2476964.aspx",
+            "statisticsource": "Groupe Fed",
+            "statisticjbsource": "Meteojob",
+            }
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        only_insert: false
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_hrflow_api_secret
+      origin_parameters:
+        profile: {
+            "type":"Meteojob_direct_apply",
+            "jobkey":" JO-0145781_1701343287",
+            "firstName":"Pierre",
+            "lastName":"Dupont",
+            "phone":"0611423374",
+            "email":"pierre.dupont@mailprovider.com",
+            "cvBase64": b"JVBERi0xLjcNCiW1tb...",
+            "coverText":"Ceci est le texte de motivation.\nCe champ peut contenir des retours à la ligne.",
+            "profilecountry": "France",
+            "profileregions": "Ile-de-france",
+            "profiledomains": "Chauffeur SPL, Chauffeur routier, Chauffeur",
+            "joblien_annonce_site_carriere": "https://www.jobtransport.com/offre-emploi/approvisionneur-h-f-ecquevilly-2476964.aspx",
+            "statisticsource": "Groupe Fed",
+            "statisticjbsource": "Meteojob",
+            }
+      target_parameters:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        only_insert: false
+      status: fatal
+      reason: write_failure
+    - id: write_success
+      origin_parameters:
+        profile: {
+            "type":"Meteojob_direct_apply",
+            "jobkey":" JO-0145781_1701343287",
+            "firstName":"Abdellahi",
+            "lastName":"Mezid",
+            "phone":"0611423374",
+            "email":"pierre.dupont@mailprovider.com",
+            "cvBase64": b"JVBERi0xLjcNCiW1tb...",
+            "coverText":"Ceci est le texte de motivation.\nCe champ peut contenir des retours à la ligne.",
+            "profilecountry": "France",
+            "profileregions": "Ile-de-france",
+            "profiledomains": "Chauffeur SPL, Chauffeur routier, Chauffeur",
+            "joblien_annonce_site_carriere": "https://www.jobtransport.com/offre-emploi/approvisionneur-h-f-ecquevilly-2476964.aspx",
+            "statisticsource": "Groupe Fed",
+            "statisticjbsource": "Meteojob",
+            }
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        only_insert: false
+      status: success
+    
