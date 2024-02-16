@@ -74,8 +74,8 @@ actions:
         profile: {
             "type":"Meteojob_direct_apply",
             "jobkey":" JO-0145781_1701343287",
-            "firstName":"Abdellahi",
-            "lastName":"Mezid",
+            "firstName":"pierre",
+            "lastName":"dupond",
             "phone":"0611423374",
             "email":"pierre.dupont@mailprovider.com",
             "cvBase64": b"JVBERi0xLjcNCiW1tb...",
