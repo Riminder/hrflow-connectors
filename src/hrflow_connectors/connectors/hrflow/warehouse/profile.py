@@ -207,6 +207,9 @@ def write_parsing(
     hrflow_client = Hrflow(
         api_secret=parameters.api_secret, api_user=parameters.api_user
     )
+
+    source_response = hrflow_client.source.get(key=parameters.source_key)
+
     for profile in profiles:
         profile_info = profile.get("info", {})
 
@@ -236,9 +239,8 @@ def write_parsing(
             )
             failed.append(profile)
             continue
-        source_response = hrflow_client.source.get(
-            key=parameters.source_key
-        )  # Get source to check if sync_parsing is enabled
+
+        # check if sync_parsing is enabled
         if source_response["code"] != 200:
             adapter.warning(
                 "Failed to get source with key={} response={}, won't be able to update"
