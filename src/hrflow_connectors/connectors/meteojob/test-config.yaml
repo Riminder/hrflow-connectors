@@ -2,12 +2,42 @@ warehouse:
   MeteojobProfilesWarehouse:
     read:
       - parameters:
-          profile: $__PROFILE
+          profile: {
+            "type":"Meteojob_direct_apply",
+            "jobkey":" JO-0145781_1701343287",
+            "firstName":"nuco",
+            "lastName":"durand",
+            "phone":"0611423374",
+            "email":"nuco.durant@test.ai",
+            "cvBase64": "BERi0xLjQKMSAwIG9iago8PA",
+            "coverText":"Ceci est le texte de motivation.\nCe champ peut contenir des retours à la ligne.",
+            "profilecountry": "France",
+            "profileregions": "Ile-de-france",
+            "profiledomains": "Chauffeur SPL, Chauffeur routier, Chauffeur",
+            "joblien_annonce_site_carriere": "https://www.jobtransport.com/offre-emploi/approvisionneur-h-f-ecquevilly-2476964.aspx",
+            "statisticsource": "Groupe Fed",
+            "statisticjbsource": "Meteojob"
+          }
 actions:
   catch_profile:
     - id: no_hrflow_source_key
       origin_parameters:
-        profile: $__PROFILE
+        profile: {
+            "type":"Meteojob_direct_apply",
+            "jobkey":" JO-0145781_1701343287",
+            "firstName":"nuco",
+            "lastName":"durand",
+            "phone":"0611423374",
+            "email":"nuco.durant@test.ai",
+            "cvBase64": "BERi0xLjQKMSAwIG9iago8PA",
+            "coverText":"Ceci est le texte de motivation.\nCe champ peut contenir des retours à la ligne.",
+            "profilecountry": "France",
+            "profileregions": "Ile-de-france",
+            "profiledomains": "Chauffeur SPL, Chauffeur routier, Chauffeur",
+            "joblien_annonce_site_carriere": "https://www.jobtransport.com/offre-emploi/approvisionneur-h-f-ecquevilly-2476964.aspx",
+            "statisticsource": "Groupe Fed",
+            "statisticjbsource": "Meteojob"
+          }
       target_parameters:
         api_secret: $__API_SECRET
         api_user: $__API_USER
@@ -16,7 +46,22 @@ actions:
       reason: bad_target_parameters
     - id: invalid_hrflow_api_secret
       origin_parameters:
-        profile: $__PROFILE
+        profile: {
+            "type":"Meteojob_direct_apply",
+            "jobkey":" JO-0145781_1701343287",
+            "firstName":"nuco",
+            "lastName":"durand",
+            "phone":"0611423374",
+            "email":"nuco.durant@test.ai",
+            "cvBase64": "BERi0xLjQKMSAwIG9iago8PA",
+            "coverText":"Ceci est le texte de motivation.\nCe champ peut contenir des retours à la ligne.",
+            "profilecountry": "France",
+            "profileregions": "Ile-de-france",
+            "profiledomains": "Chauffeur SPL, Chauffeur routier, Chauffeur",
+            "joblien_annonce_site_carriere": "https://www.jobtransport.com/offre-emploi/approvisionneur-h-f-ecquevilly-2476964.aspx",
+            "statisticsource": "Groupe Fed",
+            "statisticjbsource": "Meteojob"
+          }
       target_parameters:
         api_secret: bad_api_secret
         api_user: $__API_USER
