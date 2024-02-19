@@ -86,9 +86,6 @@ jobs:
       - name: Run push hooks
         run: poetry run pre-commit run --show-diff-on-failure --hook-stage push --all-files
 
-      - name: Run push hooks
-        run: poetry run pre-commit run --show-diff-on-failure --hook-stage push --all-files
-
       # This action sets up a Python environment with Nox by:
       # - Activating every version of Python that GitHub Actions supports.
       # - Installing Nox.
@@ -186,11 +183,7 @@ jobs:
 
       - name: Run Connector tests
         run: |
-<<<<<<< HEAD
           poetry run nox -- -s tests -- --no-cov --ignore tests/core --connector=SmartRecruiters --connector=PoleEmploi --connector=Adzuna --connector=Waalaxy --connector=Meteojob --connector=Jobology --connector=Carrevolutis
-=======
-          poetry run nox -- -s tests -- --no-cov --ignore tests/core --connector=SmartRecruiters --connector=PoleEmploi --connector=Adzuna --connector=Waalaxy
->>>>>>> b85caa1 (feat: Connector/digitalrecruiters (#187))
         env:
           HRFLOW_CONNECTORS_STORE_ENABLED: "1"
           HRFLOW_CONNECTORS_LOCALJSON_DIR: "/tmp/"
@@ -208,10 +201,6 @@ jobs:
           fetch-depth: 0
           lfs: true
           persist-credentials: false
-
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ env.BASELINE_PYTHON_VERSION }}
 
       - uses: actions/setup-python@v2
         with:
