@@ -2,6 +2,13 @@
 
 
 
+## v4.9.0 (2024-02-19)
+
+### Feature
+
+* feat: new connector meteojob (#225) ([`a43071c`](https://github.com/Riminder/hrflow-connectors/commit/a43071c54411a7f5c8b6ba2efe1f4f84a1538cfd))
+
+
 ## v4.8.0 (2024-02-15)
 
 ### Feature
