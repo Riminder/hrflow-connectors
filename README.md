@@ -135,7 +135,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Indeed**                                                                                                                            | Job Board           | 🎯                  |                |               |
 | **Inzojob**                                                                                                                           | Job Board           | 🎯                  |                |               |
 | **Jobijoba**                                                                                                                          | Job Board           | 🎯                  |                |               |
-| [**Jobology**](./src/hrflow_connectors/connectors/jobology/README.md) | Job Board | :white_check_mark: | *21/12/2022* | *12/02/2024* | :x: | :x: | :x: | :x: |
+| [**Jobology**](./src/hrflow_connectors/connectors/jobology/README.md) | Job Board | :white_check_mark: | *21/12/2022* | *19/02/2024* | :x: | :x: | :x: | :x: |
 | **Jobrapido**                                                                                                                         | Job Board           | 🎯                  |                |               |
 | **JobTeaser**                                                                                                                         | Job Board           | 🎯                  |                |               |
 | **Jobtransport**                                                                                                                      | Job Board           | 🎯                  |                |               |
