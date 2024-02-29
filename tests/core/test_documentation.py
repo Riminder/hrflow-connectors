@@ -1,6 +1,8 @@
 import logging
+import random
 import re
 from contextlib import contextmanager
+from datetime import date, datetime, time
 from os.path import relpath
 from pathlib import Path
 from unittest import mock
@@ -74,9 +76,9 @@ def patched_subprocess(**kwargs):
                 "stderr": None,
                 "stdout": "\n".join(
                     [
-                        "2023-08-03T11:21:52+00:00",
-                        "2023-04-10T10:06:47+00:00",
-                        "2023-01-12T14:56:41+01:00",
+                        "2023-08-03T11:21:52+00:00 some/file.suff",
+                        "2023-04-10T10:06:47+00:00 some/other_file.suff",
+                        "2023-01-12T14:56:41+01:00 file.suff",
                     ]
                 ),
                 **kwargs,
@@ -90,8 +92,12 @@ NOTEBOOKS_FILE = "anyfile.txt"
 
 
 @pytest.fixture
-def connectors_directory():
-    root_readme = Path(__file__).parent / "README.md"
+def root_readme():
+    return Path(__file__).parent / "README.md"
+
+
+@pytest.fixture
+def connectors_directory(root_readme: Path):
     root_readme.write_bytes(DUMMY_ROOT_README.encode())
 
     path = Path(__file__).parent / "src" / "hrflow_connectors" / "connectors"
@@ -158,7 +164,7 @@ def test_documentation(connectors_directory):
     assert action_documentation.exists() is True
 
 
-def test_documentation_adds_keep_empty_notebooks_fils_if_folder_is_empty(
+def test_documentation_adds_keep_empty_notebooks_file_if_folder_is_empty(
     connectors_directory,
 ):
     notebooks_directory = (
@@ -194,7 +200,7 @@ def test_documentation_adds_keep_empty_notebooks_fils_if_folder_is_empty(
     assert action_documentation.exists() is True
 
 
-def test_documentation_does_not_add_keep_empty_notebooks_fils_if_folder_has_other_files(
+def test_documentation_does_not_add_keep_empty_notebooks_file_if_folder_has_other_files(
     connectors_directory,
 ):
     notebooks_directory = (
@@ -234,7 +240,7 @@ def test_documentation_does_not_add_keep_empty_notebooks_fils_if_folder_has_othe
     assert action_documentation.exists() is True
 
 
-def test_documentation_removes_keep_empty_notebooks_fils_if_folder_has_other_files(
+def test_documentation_removes_keep_empty_notebooks_file_if_folder_has_other_files(
     connectors_directory,
 ):
     notebooks_directory = (
@@ -289,22 +295,102 @@ def test_documentation_fails_if_actions_section_not_found(connectors_directory):
     readme.write_bytes(content.encode())
 
     with pytest.raises(InvalidConnectorReadmeFormat):
-        with mock.patch(
-            "hrflow_connectors.core.documentation.subprocess.run",
-            return_value=mock.MagicMock(
-                stderr=None,
-                stdout="\n".join(
-                    [
-                        "2023-08-03T11:21:52+00:00",
-                        "2023-04-10T10:06:47+00:00",
-                        "2023-01-12T14:56:41+01:00",
-                    ]
-                ),
-            ),
-        ):
+        with patched_subprocess():
             generate_docs(
                 connectors=[SmartLeads], connectors_directory=connectors_directory
             )
+
+
+def test_main_readme_update_at_expected_value(root_readme, connectors_directory):
+    connectors = [SmartLeads]
+
+    dates = [
+        date(year=2023, month=random.randint(1, 12), day=random.randint(1, 28))
+        for _ in range(5)
+    ]
+
+    expected = max(dates)
+    assert expected.strftime("%d/%m/%Y") not in root_readme.read_text()
+
+    stdout = "\n".join(
+        [
+            datetime.combine(
+                date,
+                time(
+                    random.randint(0, 23), random.randint(0, 59), random.randint(0, 59)
+                ),
+            ).isoformat()
+            + " some/file."
+            + "".join(random.choices("abcdefghk", k=3))
+            for date in dates
+        ]
+    )
+    with patched_subprocess(stdout=stdout):
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert expected.strftime("%d/%m/%Y") in root_readme.read_text()
+
+
+def test_main_keep_empty_notebooks_not_taken_into_account_for_main_readme_updated_at(
+    root_readme, connectors_directory
+):
+    connectors = [SmartLeads]
+
+    dates = [
+        date(year=2023, month=random.randint(1, 12), day=random.randint(1, 28))
+        for _ in range(5)
+    ]
+
+    max_of_dates = max(dates)
+    greater_than_max_of_dates = date(
+        year=2024, month=random.randint(1, 12), day=random.randint(1, 28)
+    )
+
+    assert greater_than_max_of_dates > max_of_dates
+
+    assert greater_than_max_of_dates.strftime("%d/%m/%Y") not in root_readme.read_text()
+    assert max_of_dates.strftime("%d/%m/%Y") not in root_readme.read_text()
+
+    base_stdout = "\n".join(
+        [
+            datetime.combine(
+                date,
+                time(
+                    random.randint(0, 23), random.randint(0, 59), random.randint(0, 59)
+                ),
+            ).isoformat()
+            + " some/file."
+            + "".join(random.choices("abcdefghk", k=3))
+            for date in dates
+        ]
+    )
+    keep_empty_notebooks_stdout_line = "\n{} {}".format(
+        datetime.combine(
+            greater_than_max_of_dates,
+            time.min,
+        ).isoformat(),
+        "notebooks/{}".format(KEEP_EMPTY_NOTEBOOKS),
+    )
+    with patched_subprocess(stdout=base_stdout + keep_empty_notebooks_stdout_line):
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert greater_than_max_of_dates.strftime("%d/%m/%Y") not in root_readme.read_text()
+    assert max_of_dates.strftime("%d/%m/%Y") in root_readme.read_text()
+
+    greater_than_max_of_dates_with_regular_file = "\n{} {}".format(
+        datetime.combine(
+            greater_than_max_of_dates,
+            time.min,
+        ).isoformat(),
+        "regular/file.txt",
+    )
+    with patched_subprocess(
+        stdout=base_stdout + greater_than_max_of_dates_with_regular_file
+    ):
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert greater_than_max_of_dates.strftime("%d/%m/%Y") in root_readme.read_text()
+    assert max_of_dates.strftime("%d/%m/%Y") not in root_readme.read_text()
 
 
 def test_documentation_with_remote_code_links(connectors_directory):
@@ -328,19 +414,7 @@ def test_documentation_with_remote_code_links(connectors_directory):
             "hrflow_connectors/", "site-packages/hrflow_connectors/"
         ),
     ):
-        with mock.patch(
-            "hrflow_connectors.core.documentation.subprocess.run",
-            return_value=mock.MagicMock(
-                stderr=None,
-                stdout="\n".join(
-                    [
-                        "2023-08-03T11:21:52+00:00",
-                        "2023-04-10T10:06:47+00:00",
-                        "2023-01-12T14:56:41+01:00",
-                    ]
-                ),
-            ),
-        ):
+        with patched_subprocess():
             generate_docs(
                 connectors=connectors, connectors_directory=connectors_directory
             )
@@ -360,19 +434,7 @@ def test_documentation_with_remote_code_links(connectors_directory):
             "hrflow_connectors/", "site-packages/hrflow_connectors/"
         ),
     ):
-        with mock.patch(
-            "hrflow_connectors.core.documentation.subprocess.run",
-            return_value=mock.MagicMock(
-                stderr=None,
-                stdout="\n".join(
-                    [
-                        "2023-08-03T11:21:52+00:00",
-                        "2023-04-10T10:06:47+00:00",
-                        "2023-01-12T14:56:41+01:00",
-                    ]
-                ),
-            ),
-        ):
+        with patched_subprocess():
             generate_docs(
                 connectors=connectors, connectors_directory=connectors_directory
             )
