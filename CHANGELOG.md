@@ -2,6 +2,18 @@
 
 
 
+## v4.10.0 (2024-02-29)
+
+### Feature
+
+* feat: make docs maintains notebooks folder for each connector
+BREAKING CHANGE: for users that rely on generate_docs helper ([`77b8da9`](https://github.com/Riminder/hrflow-connectors/commit/77b8da9db409c396fe7e5abe94894fe8665ac614))
+
+### Fix
+
+* fix: exclude .gitkeep in notebooks from calculation of connector update_at in main readme ([`4f465c8`](https://github.com/Riminder/hrflow-connectors/commit/4f465c8d0918958267166f8bbacbe31504f1dbd4))
+
+
 ## v4.9.0 (2024-02-19)
 
 ### Feature
