@@ -43,10 +43,11 @@ ACTIONS_SECTIONS_REGEXP = (
 )
 
 
+GIT_UPDATE_EXCLUDE_PATTERN = r"notebooks/.gitkeep"
 GIT_UPDATE_TIMEOUT = 5
 GIT_UPDATE_DATE = """
 git ls-tree -r --name-only HEAD {base_connector_path}/{connector} | while read filename; do
-  echo "$(git log -1 --format="%aI" -- $filename)"
+  echo "$(git log -1 --format="%aI" -- $filename) $filename"
 done
 """
 
@@ -185,9 +186,16 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
                 "Subprocess run for Git update dates failed for connector {} with"
                 " errors {}".format(model.name.lower(), result.stderr)
             )
+        filtered = [
+            line.split(" ")[0]
+            for line in filter(
+                lambda line: not re.search(GIT_UPDATE_EXCLUDE_PATTERN, line),
+                result.stdout.strip().splitlines(),
+            )
+        ]
         updated_at = datetime.fromisoformat(
             max(
-                result.stdout.strip().splitlines(),
+                filtered,
                 key=lambda d: datetime.fromisoformat(d),
             )
         )
