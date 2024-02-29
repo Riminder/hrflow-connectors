@@ -18,6 +18,7 @@ from hrflow_connectors.core import (
     WorkflowType,
 )
 from hrflow_connectors.core.documentation import (
+    KEEP_EMPTY_NOTEBOOKS,
     USE_REMOTE_REV,
     InvalidConnectorReadmeFormat,
 )
@@ -85,6 +86,9 @@ def patched_subprocess(**kwargs):
         yield
 
 
+NOTEBOOKS_FILE = "anyfile.txt"
+
+
 @pytest.fixture
 def connectors_directory():
     root_readme = Path(__file__).parent / "README.md"
@@ -100,24 +104,38 @@ def connectors_directory():
         pass
 
     readme = path / SmartLeads.model.name.lower() / "README.md"
+    notebooks_directory = path / SmartLeads.model.name.lower() / "notebooks"
+    keep_empty_notebooks_file = (
+        path / SmartLeads.model.name.lower() / "notebooks" / KEEP_EMPTY_NOTEBOOKS
+    )
+    notebook = notebooks_directory / NOTEBOOKS_FILE
     actions_documentation_directory = path / SmartLeads.model.name.lower() / "docs"
     action_documentation = actions_documentation_directory / "{}.md".format(
         SmartLeads.model.actions[0].name.value
     )
-    try:
-        readme.unlink()
-    except FileNotFoundError:
-        pass
-    try:
-        action_documentation.unlink()
-    except FileNotFoundError:
-        pass
-    if actions_documentation_directory.is_dir():
-        actions_documentation_directory.rmdir()
+
+    for file in [readme, action_documentation, keep_empty_notebooks_file, notebook]:
+        try:
+            file.unlink()
+        except FileNotFoundError:
+            pass
+
+    for directory in [actions_documentation_directory, notebooks_directory]:
+        if directory.is_dir():
+            directory.rmdir()
 
 
 def test_documentation(connectors_directory):
     readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
+    notebooks_directory = (
+        connectors_directory / SmartLeads.model.name.lower() / "notebooks"
+    )
+    keep_empty_notebooks_file = (
+        connectors_directory
+        / SmartLeads.model.name.lower()
+        / "notebooks"
+        / KEEP_EMPTY_NOTEBOOKS
+    )
     action_documentation = (
         connectors_directory
         / SmartLeads.model.name.lower()
@@ -126,12 +144,133 @@ def test_documentation(connectors_directory):
     )
 
     assert readme.exists() is False
+    assert notebooks_directory.exists() is False
+    assert keep_empty_notebooks_file.exists() is False
     assert action_documentation.exists() is False
 
     connectors = [SmartLeads]
     with patched_subprocess():
         generate_docs(connectors=connectors, connectors_directory=connectors_directory)
 
+    assert readme.exists() is True
+    assert notebooks_directory.exists() is True
+    assert keep_empty_notebooks_file.exists() is True
+    assert action_documentation.exists() is True
+
+
+def test_documentation_adds_keep_empty_notebooks_fils_if_folder_is_empty(
+    connectors_directory,
+):
+    notebooks_directory = (
+        connectors_directory / SmartLeads.model.name.lower() / "notebooks"
+    )
+    keep_empty_notebooks_file = (
+        connectors_directory
+        / SmartLeads.model.name.lower()
+        / "notebooks"
+        / KEEP_EMPTY_NOTEBOOKS
+    )
+
+    notebooks_directory.mkdir()
+
+    assert notebooks_directory.exists() is True
+    assert keep_empty_notebooks_file.exists() is False
+
+    connectors = [SmartLeads]
+    with patched_subprocess():
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert notebooks_directory.exists() is True
+    assert keep_empty_notebooks_file.exists() is True
+
+    readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
+    action_documentation = (
+        connectors_directory
+        / SmartLeads.model.name.lower()
+        / "docs"
+        / "{}.md".format(SmartLeads.model.actions[0].name.value)
+    )
+    assert readme.exists() is True
+    assert action_documentation.exists() is True
+
+
+def test_documentation_does_not_add_keep_empty_notebooks_fils_if_folder_has_other_files(
+    connectors_directory,
+):
+    notebooks_directory = (
+        connectors_directory / SmartLeads.model.name.lower() / "notebooks"
+    )
+    keep_empty_notebooks_file = (
+        connectors_directory
+        / SmartLeads.model.name.lower()
+        / "notebooks"
+        / KEEP_EMPTY_NOTEBOOKS
+    )
+
+    notebooks_directory.mkdir()
+    other = notebooks_directory / NOTEBOOKS_FILE
+    other.touch()
+
+    assert notebooks_directory.exists() is True
+    assert other.exists() is True
+    assert keep_empty_notebooks_file.exists() is False
+
+    connectors = [SmartLeads]
+    with patched_subprocess():
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert notebooks_directory.exists() is True
+    assert other.exists() is True
+    assert keep_empty_notebooks_file.exists() is False
+
+    readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
+    action_documentation = (
+        connectors_directory
+        / SmartLeads.model.name.lower()
+        / "docs"
+        / "{}.md".format(SmartLeads.model.actions[0].name.value)
+    )
+    assert readme.exists() is True
+    assert action_documentation.exists() is True
+
+
+def test_documentation_removes_keep_empty_notebooks_fils_if_folder_has_other_files(
+    connectors_directory,
+):
+    notebooks_directory = (
+        connectors_directory / SmartLeads.model.name.lower() / "notebooks"
+    )
+    keep_empty_notebooks_file = (
+        connectors_directory
+        / SmartLeads.model.name.lower()
+        / "notebooks"
+        / KEEP_EMPTY_NOTEBOOKS
+    )
+
+    notebooks_directory.mkdir()
+    keep_empty_notebooks_file.touch()
+    other = notebooks_directory / NOTEBOOKS_FILE
+    other.touch()
+
+    assert notebooks_directory.exists() is True
+    assert other.exists() is True
+    assert keep_empty_notebooks_file.exists() is True
+
+    connectors = [SmartLeads]
+    with patched_subprocess():
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert notebooks_directory.exists() is True
+    assert other.exists() is True
+    assert keep_empty_notebooks_file.exists() is False
+
+    readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
+    action_documentation = (
+        connectors_directory
+        / SmartLeads.model.name.lower()
+        / "docs"
+        / "{}.md".format(SmartLeads.model.actions[0].name.value)
+    )
     assert readme.exists() is True
     assert action_documentation.exists() is True
 
