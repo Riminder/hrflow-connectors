@@ -235,6 +235,9 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
     readme.write_bytes(readme_content.encode())
 
 
+KEEP_EMPTY_NOTEBOOKS = ".gitkeep"
+
+
 def generate_docs(
     connectors: t.List[Connector], connectors_directory: Path = CONNECTORS_DIRECTORY
 ) -> None:
@@ -281,6 +284,26 @@ def generate_docs(
             )
             updated_readme_content = py_37_38_compat_patch(updated_readme_content)
             readme.write_bytes(updated_readme_content.encode())
+
+        notebooks_directory = connector_directory / "notebooks"
+        empty_dir_file = notebooks_directory / KEEP_EMPTY_NOTEBOOKS
+        create_empty_file = True
+
+        if notebooks_directory.is_dir():
+            for child in notebooks_directory.iterdir():
+                if not child.name == empty_dir_file.name:
+                    create_empty_file = False
+                    try:
+                        empty_dir_file.unlink()
+                    except FileNotFoundError:
+                        pass
+                    break
+        else:
+            notebooks_directory.mkdir()
+
+        if create_empty_file:
+            empty_dir_file.touch()
+
         if len(model.actions) > 0:
             action_docs_directory = connector_directory / "docs"
             if not action_docs_directory.is_dir():
