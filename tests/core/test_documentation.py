@@ -104,10 +104,7 @@ def connectors_directory(root_readme: Path):
 
     yield path
 
-    try:
-        root_readme.unlink()
-    except FileNotFoundError:
-        pass
+    root_readme.unlink(missing_ok=True)
 
     readme = path / SmartLeads.model.name.lower() / "README.md"
     notebooks_directory = path / SmartLeads.model.name.lower() / "notebooks"
@@ -121,10 +118,7 @@ def connectors_directory(root_readme: Path):
     )
 
     for file in [readme, action_documentation, keep_empty_notebooks_file, notebook]:
-        try:
-            file.unlink()
-        except FileNotFoundError:
-            pass
+        file.unlink(missing_ok=True)
 
     for directory in [actions_documentation_directory, notebooks_directory]:
         if directory.is_dir():

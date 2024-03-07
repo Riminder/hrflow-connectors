@@ -301,10 +301,7 @@ def generate_docs(
             for child in notebooks_directory.iterdir():
                 if not child.name == empty_dir_file.name:
                     create_empty_file = False
-                    try:
-                        empty_dir_file.unlink()
-                    except FileNotFoundError:
-                        pass
+                    empty_dir_file.unlink(missing_ok=True)
                     break
         else:
             notebooks_directory.mkdir()
