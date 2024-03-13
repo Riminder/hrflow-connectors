@@ -87,6 +87,9 @@ Once logged to your Salesforce environment go to Setup then click Create > Custo
 <image width="1919" alt="HrFlow Experiences" src="https://github.com/Riminder/hrflow-connectors/assets/65894619/3006d23f-2944-4e8e-89b1-c6b58a49de21">
 <image width="1919" alt="HrFlow Attachments" src="https://github.com/Riminder/hrflow-connectors/assets/65894619/dfcdba59-658b-4a75-870b-99c991f53935">
 
+## Hrflow.ai Recruiter Copilot Widget installed in Salesforce
+<image width="1919" alt="Scoring" src="https://github.com/Riminder/hrflow-connectors/assets/135601200/2434d21a-1994-4e16-a6b0-65d7e2a6fa49">
+
 # 📊 Data Flow 
 In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
