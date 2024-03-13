@@ -4,10 +4,6 @@
   - [😍 Why is it a big deal for Lever customers & partners?](#-why-is-it-a-big-deal-for-lever-customers--partners)
 - [🔧 How does it work?](#-how-does-it-work)
   - [📊 Data integration capabilities:](#-data-integration-capabilities)
-<<<<<<< HEAD
-=======
-  - [🧠 Artificial Intelligence capabilities:](#-artificial-intelligence-capabilities)
->>>>>>> 130fe1f (feat: new connector Lever)
 - [🔌 Connector Actions](#-connector-actions)
 - [💍 Quick Start Examples](#-quick-start-examples)
 - [🔗 Useful Links](#-useful-links)
@@ -18,12 +14,9 @@
 
 > Lever is a modern recruitment platform that helps companies streamline their hiring process.
 
-<<<<<<< HEAD
 <p align="center">
 <image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/138a7d3b-d14d-4095-a50a-3a5395cb69e7 width=90% height=100% >
 </p>
-=======
->>>>>>> 130fe1f (feat: new connector Lever)
 
 ## 😍 Why is it a big deal for Lever customers & partners?
 
@@ -36,18 +29,8 @@ This new connector will enable:
 - ⬅️ Send Profiles data from Lever to a Destination of your choice.
 - ➡️ Send Profiles data from a Source of your choice to Lever.
 - ⬅️ Send Jobs data from Lever to a Destination of your choice.
-<<<<<<< HEAD
 
 
-=======
-- ➡️ Send Jobs data from a Source of your choice to Lever.
-
-
-## 🧠 Artificial Intelligence capabilities:
-- Extract, Structure, and Categorize Talent & Workforce data
-- Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Lever**)
-
->>>>>>> 130fe1f (feat: new connector Lever)
 
 # 🔌 Connector Actions
 <p align="center">
@@ -61,13 +44,10 @@ This new connector will enable:
 
 </p>
 
-<<<<<<< HEAD
 <p align="center">
 <image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/313c58d9-e5b4-48f6-98d0-1e5c37021daf width=90% height=100% >
 </p>
 
-=======
->>>>>>> 130fe1f (feat: new connector Lever)
 
 # 💍 Quick Start Examples
 
@@ -76,12 +56,9 @@ To make sure you can successfully run the latest versions of the example scripts
 
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
 
-<<<<<<< HEAD
 <p align="center">
 <image src=https://github.com/Riminder/hrflow-connectors/assets/135601200/534807aa-34a4-422f-8fbc-26b5e00c5c34 width=90% height=100% >
 </p>
-=======
->>>>>>> 130fe1f (feat: new connector Lever)
 
 Once the connector module is imported, you can leverage all the different actions that it offers.
 
