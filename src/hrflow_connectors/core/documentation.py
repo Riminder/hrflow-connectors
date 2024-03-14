@@ -27,6 +27,7 @@ ROOT_README_TRACKED_ACTIONS = {
     ActionName.pull_profile_list,
     ActionName.push_profile,
     ActionName.push_job,
+    ActionName.catch_profile,
 }
 
 
@@ -230,6 +231,7 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
             "| [**{name}**]({readme_link}) | {type} | :white_check_mark: |"
             " *{release_date}* | *{updated_at}* | {pull_profile_list_status} |"
             " {pull_job_list_status} | {push_profile_status} | {push_job_status} |"
+            " {catch_profile_status} |"
         ).format(
             name=match.group("name"),
             readme_link="./{base_connector_path}/{connector}/README.md".format(
@@ -243,6 +245,7 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
             pull_job_list_status=actions_status[ActionName.pull_job_list],
             push_profile_status=actions_status[ActionName.push_profile],
             push_job_status=actions_status[ActionName.push_job],
+            catch_profile_status=actions_status[ActionName.catch_profile],
         )
         readme_content = (
             readme_content[: match.start()]
