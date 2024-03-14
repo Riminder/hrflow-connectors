@@ -2,7 +2,7 @@ import logging
 import random
 import re
 from contextlib import contextmanager
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timezone
 from os.path import relpath
 from pathlib import Path
 from unittest import mock
@@ -37,7 +37,7 @@ DUMMY_ROOT_README = """
 # 🤝 List of Connectors (ATS/CRM/HCM)
 | Name    | Type       | Available   | Release date  | Last update  | Pull profile list action | Pull job list action | Push profile action | Push job action |
 |----------------|--------------|----------|----------|----------|------------|--------|-----------|--------------|
-| [**Smart Leads**](./src/hrflow_connectors/connectors/smartleads/README.md) | HCM | :white_check_mark: | *27/09/2022* | *04/09/2023* | :x: | :white_check_mark: | :white_check_mark: | :x: |
+| [**Smart Leads**](./src/hrflow_connectors/connectors/smartleads/README.md) | HCM | :white_check_mark: | *27/09/2021* | *04/09/2022* | :x: | :white_check_mark: | :white_check_mark: | :x: |
 | [**No Connector Dir**](./src/hrflow_connectors/connectors/noconnectordir/README.md) | HCM | :white_check_mark: | *20/01/2019* | *14/03/2022* | :x: | :white_check_mark: | :white_check_mark: | :x: |
 
 
@@ -319,6 +319,7 @@ def test_main_readme_update_at_expected_value(root_readme, connectors_directory)
                 time(
                     random.randint(0, 23), random.randint(0, 59), random.randint(0, 59)
                 ),
+                tzinfo=timezone.utc,
             ).isoformat()
             + " some/file."
             + "".join(random.choices("abcdefghk", k=3))
@@ -331,7 +332,16 @@ def test_main_readme_update_at_expected_value(root_readme, connectors_directory)
     assert expected.strftime("%d/%m/%Y") in root_readme.read_text()
 
 
-def test_main_keep_empty_notebooks_not_taken_into_account_for_main_readme_updated_at(
+IGNORED_PATHS = [
+    "notebooks/{}".format(KEEP_EMPTY_NOTEBOOKS),
+    "README.md",
+    "test-config.yaml",
+    "logo.png",
+    "docs/pull_action.md",
+]
+
+
+def test_ignored_path_are_not_taken_into_account_for_main_readme_updated_at(
     root_readme, connectors_directory
 ):
     connectors = [SmartLeads]
@@ -358,20 +368,24 @@ def test_main_keep_empty_notebooks_not_taken_into_account_for_main_readme_update
                 time(
                     random.randint(0, 23), random.randint(0, 59), random.randint(0, 59)
                 ),
+                tzinfo=timezone.utc,
             ).isoformat()
             + " some/file."
             + "".join(random.choices("abcdefghk", k=3))
             for date in dates
         ]
     )
-    keep_empty_notebooks_stdout_line = "\n{} {}".format(
-        datetime.combine(
-            greater_than_max_of_dates,
-            time.min,
-        ).isoformat(),
-        "notebooks/{}".format(KEEP_EMPTY_NOTEBOOKS),
+    should_be_ignored = "\n".join(
+        [
+            datetime.combine(
+                greater_than_max_of_dates, time.min, tzinfo=timezone.utc
+            ).isoformat()
+            + " "
+            + ignored
+            for ignored in IGNORED_PATHS
+        ]
     )
-    with patched_subprocess(stdout=base_stdout + keep_empty_notebooks_stdout_line):
+    with patched_subprocess(stdout=base_stdout + should_be_ignored):
         generate_docs(connectors=connectors, connectors_directory=connectors_directory)
 
     assert greater_than_max_of_dates.strftime("%d/%m/%Y") not in root_readme.read_text()
@@ -379,8 +393,7 @@ def test_main_keep_empty_notebooks_not_taken_into_account_for_main_readme_update
 
     greater_than_max_of_dates_with_regular_file = "\n{} {}".format(
         datetime.combine(
-            greater_than_max_of_dates,
-            time.min,
+            greater_than_max_of_dates, time.min, tzinfo=timezone.utc
         ).isoformat(),
         "regular/file.txt",
     )
@@ -391,6 +404,58 @@ def test_main_keep_empty_notebooks_not_taken_into_account_for_main_readme_update
 
     assert greater_than_max_of_dates.strftime("%d/%m/%Y") in root_readme.read_text()
     assert max_of_dates.strftime("%d/%m/%Y") not in root_readme.read_text()
+
+
+def test_main_readme_update_at_helper_doesnt_override_handwritten_updated_at(
+    root_readme, connectors_directory
+):
+    connectors = [SmartLeads]
+
+    set_at = date(year=2026, month=1, day=1)
+    assert set_at.strftime("%d/%m/%Y") not in root_readme.read_text()
+
+    stdout = "\n {} {}".format(
+        datetime.combine(
+            set_at,
+            time.min,
+            tzinfo=timezone.utc,
+        ).isoformat(),
+        "regular_file.txt",
+    )
+    with patched_subprocess(stdout=stdout):
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert set_at.strftime("%d/%m/%Y") in root_readme.read_text()
+
+    dates_before_set_at = [
+        date(year=2023, month=random.randint(1, 12), day=random.randint(1, 28))
+        for _ in range(5)
+    ]
+    for date_before in dates_before_set_at:
+        assert date_before < set_at
+
+    expected = max(dates_before_set_at)
+    assert expected.strftime("%d/%m/%Y") not in root_readme.read_text()
+
+    stdout = "\n".join(
+        [
+            datetime.combine(
+                date,
+                time(
+                    random.randint(0, 23), random.randint(0, 59), random.randint(0, 59)
+                ),
+                tzinfo=timezone.utc,
+            ).isoformat()
+            + " some/file."
+            + "".join(random.choices("abcdefghk", k=3))
+            for date in dates_before_set_at
+        ]
+    )
+    with patched_subprocess(stdout=stdout):
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert expected.strftime("%d/%m/%Y") not in root_readme.read_text()
+    assert set_at.strftime("%d/%m/%Y") in root_readme.read_text()
 
 
 def test_documentation_with_remote_code_links(connectors_directory):
