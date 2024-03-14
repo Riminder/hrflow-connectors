@@ -385,7 +385,7 @@ def test_ignored_path_are_not_taken_into_account_for_main_readme_updated_at(
             for ignored in IGNORED_PATHS
         ]
     )
-    with patched_subprocess(stdout=base_stdout + should_be_ignored):
+    with patched_subprocess(stdout=base_stdout + "\n" + should_be_ignored):
         generate_docs(connectors=connectors, connectors_directory=connectors_directory)
 
     assert greater_than_max_of_dates.strftime("%d/%m/%Y") not in root_readme.read_text()
