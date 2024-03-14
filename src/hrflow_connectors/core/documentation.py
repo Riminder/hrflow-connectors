@@ -5,7 +5,7 @@ import re
 import subprocess
 import typing as t
 from contextvars import ContextVar
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from pydantic import BaseModel
@@ -34,7 +34,7 @@ def CONNECTOR_LISTING_REGEXP_F(name: str) -> str:
     return (
         r"\|\s*\[?\*{0,2}(?i:(?P<name>"
         + r" ?".join([c for c in name if c.strip()])
-        + r"))\*{0,2}(\]\([^)]+\))?\s*\|[^|]+\|[^|]+\|\s*(\*|_)(?P<release_date>[\d\/]+)(\*|_)\s*\|.+"
+        + r"))\*{0,2}(\]\([^)]+\))?\s*\|[^|]+\|[^|]+\|\s*(\*|_)(?P<release_date>[\d\/]+)(\*|_)\s*\|\s*(\*|_)(?P<update_date>[\d\/]+)(\*|_)\s*\|.+"
     )
 
 
@@ -43,7 +43,9 @@ ACTIONS_SECTIONS_REGEXP = (
 )
 
 
-GIT_UPDATE_EXCLUDE_PATTERN = r"notebooks/.gitkeep"
+GIT_UPDATE_EXCLUDE_PATTERN = (
+    r"(notebooks/\.gitkeep|README\.md|test\-config\.yaml|logo\.png|docs/)"
+)
 GIT_UPDATE_TIMEOUT = 5
 GIT_UPDATE_DATE = """
 git ls-tree -r --name-only HEAD {base_connector_path}/{connector} | while read filename; do
@@ -217,6 +219,13 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
                     model.name, pattern
                 )
             )
+        current_updated_at = datetime.strptime(
+            match.group("update_date"), "%d/%m/%Y"
+        ).replace(tzinfo=timezone.utc)
+        updated_at = (
+            current_updated_at if current_updated_at >= updated_at else updated_at
+        )
+
         updated_listing = (
             "| [**{name}**]({readme_link}) | {type} | :white_check_mark: |"
             " *{release_date}* | *{updated_at}* | {pull_profile_list_status} |"
