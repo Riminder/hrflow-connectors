@@ -10,8 +10,8 @@ on:
       - "master"
 
 env:
-  POETRY_VERSION: 1.3.1
-  BASELINE_PYTHON_VERSION: 3.10.10
+  POETRY_VERSION: 1.8.2
+  BASELINE_PYTHON_VERSION: 3.11.8
   NOX_ENV_DIR: ./.nox
   PYTHONPATH: ./src/
 

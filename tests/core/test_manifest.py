@@ -19,10 +19,7 @@ def manifest_directory():
     path = Path(__file__).parent
     yield path
     manifest = path / "manifest.json"
-    try:
-        manifest.unlink()
-    except FileNotFoundError:
-        pass
+    manifest.unlink(missing_ok=True)
 
 
 def test_connector_manifest(test_connectors_directory):

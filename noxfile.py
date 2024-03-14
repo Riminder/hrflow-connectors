@@ -11,12 +11,14 @@ import nox
 
 nox.options.reuse_existing_virtualenvs = True
 
-PYTHON_VERSIONS = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11"]
 REQUIREMENTS_CONTENT = {}
 
 
 @contextmanager
-def requirements_file(session, s3_extra: bool = False) -> None:
+def requirements_file(
+    session, s3_extra: bool = False
+) -> t.Iterator[tempfile._TemporaryFileWrapper]:
     global REQUIREMENTS_CONTENT
     extra_args = tuple()
     if s3_extra is True:
