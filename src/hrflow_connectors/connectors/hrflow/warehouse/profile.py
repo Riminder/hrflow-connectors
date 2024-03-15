@@ -198,6 +198,46 @@ def merge_info(base: dict, info: dict) -> dict:
     return base
 
 
+def merge_item(base: dict, profile: dict, item: str) -> dict:
+    if not profile.get(item):
+        return base
+
+    base[item] = profile[item]
+    return base
+
+
+def hydrate_profile(profile_parsed: dict, profile_json: dict) -> dict:
+    profile_info = profile_json.get("info", {})
+    profile_enriched = merge_info(profile_parsed, profile_info)
+
+    items_to_merge = [
+        "experiences",
+        "educations",
+        "skills",
+        "languages",
+        "certifications",
+        "interests",
+    ]
+    for item in items_to_merge:
+        profile_enriched = merge_item(profile_enriched, profile_json, item)
+
+    profile_enriched["text"] = profile_json.get("text") or profile_enriched.get("text")
+    profile_enriched["text_language"] = profile_json.get(
+        "text_language"
+    ) or profile_enriched.get("text_language")
+    profile_enriched["experiences_duration"] = (
+        profile_json.get("experiences_duration")
+        if profile_json.get("experiences_duration") is not None
+        else profile_enriched.get("experiences_duration")
+    )
+    profile_enriched["educations_duration"] = (
+        profile_json.get("educations_duration")
+        if profile_json.get("educations_duration") is not None
+        else profile_enriched.get("educations_duration")
+    )
+    return profile_enriched
+
+
 def write_parsing(
     adapter: LoggerAdapter,
     parameters: WriteProfileParsingParameters,
@@ -207,9 +247,10 @@ def write_parsing(
     hrflow_client = Hrflow(
         api_secret=parameters.api_secret, api_user=parameters.api_user
     )
-    for profile in profiles:
-        profile_info = profile.get("info", {})
 
+    source_response = hrflow_client.source.get(key=parameters.source_key)
+
+    for profile in profiles:
         if parameters.only_insert and hrflow_client.profile.indexing.get(
             source_key=parameters.source_key, reference=profile["reference"]
         ).get("data"):
@@ -217,6 +258,19 @@ def write_parsing(
                 "Mode only_insert is activated. Profile with reference={} already"
                 " in source. Skipping...".format(profile["reference"])
             )
+            continue
+
+        if profile.get("resume") is None:
+            indexing_response = hrflow_client.profile.indexing.add_json(
+                source_key=parameters.source_key, profile_json=profile
+            )
+            if indexing_response["code"] != 201:
+                adapter.error(
+                    "Failed to index profile with reference={} response={}".format(
+                        profile["reference"], indexing_response
+                    )
+                )
+                failed.append(profile)
             continue
 
         parsing_response = hrflow_client.profile.parsing.add_file(
@@ -236,9 +290,8 @@ def write_parsing(
             )
             failed.append(profile)
             continue
-        source_response = hrflow_client.source.get(
-            key=parameters.source_key
-        )  # Get source to check if sync_parsing is enabled
+
+        # check if sync_parsing is enabled
         if source_response["code"] != 200:
             adapter.warning(
                 "Failed to get source with key={} response={}, won't be able to update"
@@ -248,22 +301,7 @@ def write_parsing(
             )
         elif source_response["data"]["sync_parsing"] is True:
             current_profile = parsing_response["data"]["profile"]
-            profile_result = merge_info(current_profile, profile_info)
-
-            profile_result["text"] = profile.get("text") or profile_result.get("text")
-            profile_result["text_language"] = profile.get(
-                "text_language"
-            ) or profile_result.get("text_language")
-            profile_result["experiences_duration"] = (
-                profile.get("experiences_duration")
-                if profile.get("experiences_duration") is not None
-                else profile_result.get("experiences_duration")
-            )
-            profile_result["educations_duration"] = (
-                profile.get("educations_duration")
-                if profile.get("educations_duration") is not None
-                else profile_result.get("educations_duration")
-            )
+            profile_result = hydrate_profile(current_profile, profile)
 
             edit_response = hrflow_client.profile.indexing.edit(
                 source_key=parameters.source_key,
