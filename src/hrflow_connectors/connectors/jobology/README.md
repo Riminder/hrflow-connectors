@@ -63,7 +63,7 @@ For more code details checkout connector code.
 
 # 🔗 Useful Links
 
-- 📄Visit [Jobology](https://www.jobology.com/) to learn more.
+- 📄Visit [Jobology](https://www.jobology.fr/) to learn more.
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/jobology) on our Github.
 
 

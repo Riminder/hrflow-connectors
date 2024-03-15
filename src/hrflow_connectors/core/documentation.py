@@ -5,7 +5,7 @@ import re
 import subprocess
 import typing as t
 from contextvars import ContextVar
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from pydantic import BaseModel
@@ -34,7 +34,7 @@ def CONNECTOR_LISTING_REGEXP_F(name: str) -> str:
     return (
         r"\|\s*\[?\*{0,2}(?i:(?P<name>"
         + r" ?".join([c for c in name if c.strip()])
-        + r"))\*{0,2}(\]\([^)]+\))?\s*\|[^|]+\|[^|]+\|\s*(\*|_)(?P<release_date>[\d\/]+)(\*|_)\s*\|.+"
+        + r"))\*{0,2}(\]\([^)]+\))?\s*\|[^|]+\|[^|]+\|\s*(\*|_)(?P<release_date>[\d\/]+)(\*|_)\s*\|\s*(\*|_)(?P<update_date>[\d\/]+)(\*|_)\s*\|.+"
     )
 
 
@@ -43,10 +43,13 @@ ACTIONS_SECTIONS_REGEXP = (
 )
 
 
+GIT_UPDATE_EXCLUDE_PATTERN = (
+    r"(notebooks/\.gitkeep|README\.md|test\-config\.yaml|logo\.png|docs/)"
+)
 GIT_UPDATE_TIMEOUT = 5
 GIT_UPDATE_DATE = """
 git ls-tree -r --name-only HEAD {base_connector_path}/{connector} | while read filename; do
-  echo "$(git log -1 --format="%aI" -- $filename)"
+  echo "$(git log -1 --format="%aI" -- $filename) $filename"
 done
 """
 
@@ -185,9 +188,16 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
                 "Subprocess run for Git update dates failed for connector {} with"
                 " errors {}".format(model.name.lower(), result.stderr)
             )
+        filtered = [
+            line.split(" ")[0]
+            for line in filter(
+                lambda line: not re.search(GIT_UPDATE_EXCLUDE_PATTERN, line),
+                result.stdout.strip().splitlines(),
+            )
+        ]
         updated_at = datetime.fromisoformat(
             max(
-                result.stdout.strip().splitlines(),
+                filtered,
                 key=lambda d: datetime.fromisoformat(d),
             )
         )
@@ -209,6 +219,13 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
                     model.name, pattern
                 )
             )
+        current_updated_at = datetime.strptime(
+            match.group("update_date"), "%d/%m/%Y"
+        ).replace(tzinfo=timezone.utc)
+        updated_at = (
+            current_updated_at if current_updated_at >= updated_at else updated_at
+        )
+
         updated_listing = (
             "| [**{name}**]({readme_link}) | {type} | :white_check_mark: |"
             " *{release_date}* | *{updated_at}* | {pull_profile_list_status} |"
@@ -233,6 +250,9 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
             + readme_content[match.end() :]
         )
     readme.write_bytes(readme_content.encode())
+
+
+KEEP_EMPTY_NOTEBOOKS = ".gitkeep"
 
 
 def generate_docs(
@@ -281,6 +301,26 @@ def generate_docs(
             )
             updated_readme_content = py_37_38_compat_patch(updated_readme_content)
             readme.write_bytes(updated_readme_content.encode())
+
+        notebooks_directory = connector_directory / "notebooks"
+        empty_dir_file = notebooks_directory / KEEP_EMPTY_NOTEBOOKS
+        create_empty_file = True
+
+        if notebooks_directory.is_dir():
+            for child in notebooks_directory.iterdir():
+                if not child.name == empty_dir_file.name:
+                    create_empty_file = False
+                    try:
+                        empty_dir_file.unlink()
+                    except FileNotFoundError:
+                        pass
+                    break
+        else:
+            notebooks_directory.mkdir()
+
+        if create_empty_file:
+            empty_dir_file.touch()
+
         if len(model.actions) > 0:
             action_docs_directory = connector_directory / "docs"
             if not action_docs_directory.is_dir():
