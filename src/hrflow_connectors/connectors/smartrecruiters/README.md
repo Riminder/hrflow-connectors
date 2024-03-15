@@ -51,6 +51,7 @@ This new connector will enable:
 | [**Pull profile list**](docs/pull_profile_list.md) | Retrieves profiles from ***SmartRecruiter*** and sends them to an ***Hrflow.ai Source*** |
 | [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source to SmartRecruiters via the API for the given `job_id`. |
 
+
 </p>
 
 <p align="center">
