@@ -2,6 +2,29 @@
 
 
 
+## v4.11.0 (2024-03-18)
+
+### Documentation
+
+* docs: correct auto update of main readme updated_at and revert on docs falsy updates ([`16f03f1`](https://github.com/Riminder/hrflow-connectors/commit/16f03f1d3b9a85182337e39859c9938a711ecea4))
+
+* docs: update docs ([`c4a842f`](https://github.com/Riminder/hrflow-connectors/commit/c4a842f435b8935e78b2b3404dcc6404027e6c98))
+
+* docs: designs or readme of salesforce, digitalrecruiters, lever, jobology ([`800657f`](https://github.com/Riminder/hrflow-connectors/commit/800657fd3ce8aeba0ecd35a85f0627fe17a8c3f3))
+
+### Feature
+
+* feat: new version of Hrflow parsing warehouse ([`f5ba3dc`](https://github.com/Riminder/hrflow-connectors/commit/f5ba3dc7a96dad6b70545b31c8e34ecfaaa2e8ed))
+
+### Unknown
+
+* Merge pull request #227 from Riminder/feat/add-profile-json-to-parsing-warehouse
+
+feat: parsing warehouse V2 ([`8e6c20e`](https://github.com/Riminder/hrflow-connectors/commit/8e6c20e1e5335faf2b2aa3ea6085b6313e66dc70))
+
+* Merge branch &#39;master&#39; into feat/add-profile-json-to-parsing-warehouse ([`cf222c1`](https://github.com/Riminder/hrflow-connectors/commit/cf222c1c3b34d29dbc177722cc7495d5129fbb54))
+
+
 ## v4.10.0 (2024-02-29)
 
 ### Feature
@@ -9,9 +32,19 @@
 * feat: make docs maintains notebooks folder for each connector
 BREAKING CHANGE: for users that rely on generate_docs helper ([`77b8da9`](https://github.com/Riminder/hrflow-connectors/commit/77b8da9db409c396fe7e5abe94894fe8665ac614))
 
+* feat: parsing warehouse V2 ([`34e3896`](https://github.com/Riminder/hrflow-connectors/commit/34e38961cec134d11c035bb814c90edae5f97cbd))
+
+* feat: add fields string ([`22ff24f`](https://github.com/Riminder/hrflow-connectors/commit/22ff24f4bf71c7d720a53706fad4c3e556b8abd5))
+
 ### Fix
 
 * fix: exclude .gitkeep in notebooks from calculation of connector update_at in main readme ([`4f465c8`](https://github.com/Riminder/hrflow-connectors/commit/4f465c8d0918958267166f8bbacbe31504f1dbd4))
+
+* fix: handle thomas input ([`3f05424`](https://github.com/Riminder/hrflow-connectors/commit/3f0542443169b2b9ba5f27c0c529c947376c3084))
+
+* fix: as for jamal review ([`3c37c24`](https://github.com/Riminder/hrflow-connectors/commit/3c37c243aab9ccfd1668611fb66f96c0e8e0492f))
+
+* fix: changelog ([`4cc32fd`](https://github.com/Riminder/hrflow-connectors/commit/4cc32fdb4d6b8a3d7e8b417d2568973299685471))
 
 
 ## v4.9.0 (2024-02-19)
