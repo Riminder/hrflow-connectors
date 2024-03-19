@@ -15,7 +15,11 @@ from hrflow_connectors.core import (
 
 def rename_profile_fields(meteojob_profile: t.Dict) -> t.Dict:
     return {
-        "job-key": meteojob_profile["jobkey"],
+        "job-number": (
+            meteojob_profile["jobkey"][:10]
+            if len(meteojob_profile.get("jobkey", "")) >= 10
+            else None
+        ),
         "first_name": meteojob_profile.get("firstName"),
         "last_name": meteojob_profile.get("lastName"),
         "phone": meteojob_profile.get("phone"),
