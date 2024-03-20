@@ -1,6 +1,7 @@
 from hrflow_connectors.connectors.adzuna.connector import Adzuna
 from hrflow_connectors.connectors.breezyhr import BreezyHR
 from hrflow_connectors.connectors.bullhorn import Bullhorn
+from hrflow_connectors.connectors.carrevolutis import Carrevolutis
 from hrflow_connectors.connectors.ceridian import Ceridian
 from hrflow_connectors.connectors.digitalrecruiters import DigitalRecruiters
 from hrflow_connectors.connectors.greenhouse.connector import Greenhouse
@@ -44,6 +45,7 @@ __CONNECTORS__ = [
     DigitalRecruiters,
     Jobology,
     Meteojob,
+    Carrevolutis,
 ]
 
 # This makes sure that connector are in module namespace

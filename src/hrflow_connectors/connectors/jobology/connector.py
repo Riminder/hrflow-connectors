@@ -15,11 +15,7 @@ from hrflow_connectors.core import (
 
 def rename_profile_fields(jobology_profile: t.Dict) -> t.Dict:
     return {
-        "job-number": (
-            jobology_profile["jobkey"][:10]
-            if len(jobology_profile.get("jobkey", "")) >= 10
-            else None
-        ),
+        "job-number": jobology_profile.get("jobkey", "")[:10] or None,
         "first_name": jobology_profile.get("firstName"),
         "last_name": jobology_profile.get("lastName"),
         "phone": jobology_profile.get("phone"),
@@ -48,7 +44,6 @@ def format_jobology_profile(jobology_profile: t.List) -> t.Dict:
         content_type=jobology_profile["content_type"],
     )
     return dict(
-        reference=jobology_profile["email"],
         resume=resume_dict,
         tags=tags,
         metadatas=[],

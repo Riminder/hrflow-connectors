@@ -15,11 +15,7 @@ from hrflow_connectors.core import (
 
 def rename_profile_fields(meteojob_profile: t.Dict) -> t.Dict:
     return {
-        "job-number": (
-            meteojob_profile["jobkey"][:10]
-            if len(meteojob_profile.get("jobkey", "")) >= 10
-            else None
-        ),
+        "job-number": meteojob_profile.get("jobkey", "")[:10] or None,
         "first_name": meteojob_profile.get("firstName"),
         "last_name": meteojob_profile.get("lastName"),
         "phone": meteojob_profile.get("phone"),
@@ -48,7 +44,6 @@ def format_meteojob_profile(meteojob_profile: t.List) -> t.Dict:
         content_type=meteojob_profile["content_type"],
     )
     return dict(
-        reference=meteojob_profile["email"],
         resume=resume_dict,
         tags=tags,
         metadatas=[],

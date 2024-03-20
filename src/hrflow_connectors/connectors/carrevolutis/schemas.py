@@ -3,7 +3,7 @@ import typing as t
 from pydantic import BaseModel
 
 
-class MeteojobEventObject(BaseModel):
+class CarrevolutisEventObject(BaseModel):
     type: str
     jobkey: t.Optional[str]
     firstName: t.Optional[str]
