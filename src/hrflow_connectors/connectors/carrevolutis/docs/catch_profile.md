@@ -1,7 +1,7 @@
 # Catch profile
-`Meteojob Candidate` :arrow_right: `HrFlow.ai Profile Parsing`
+`Carrevolutis Candidate` :arrow_right: `HrFlow.ai Profile Parsing`
 
-Imports candidates, in synchronization with Meteojob
+Imports candidates, in synchronization with Carrevolutis
 
 
 
@@ -10,7 +10,7 @@ Imports candidates, in synchronization with Meteojob
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_meteojob_profile`](../connector.py#L39) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_carrevolutis_profile`](../connector.py#L41) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
@@ -34,14 +34,14 @@ Imports candidates, in synchronization with Meteojob
 
 ```python
 import logging
-from hrflow_connectors import Meteojob
+from hrflow_connectors import Carrevolutis
 from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
-Meteojob.catch_profile(
+Carrevolutis.catch_profile(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
