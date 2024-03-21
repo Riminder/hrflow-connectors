@@ -46,6 +46,7 @@ def format_carrevolutis_profile(carrevolutis_profile: t.List) -> t.Dict:
         content_type=carrevolutis_profile["content_type"],
     )
     return dict(
+        reference=None,
         resume=resume_dict,
         tags=tags,
         metadatas=[],

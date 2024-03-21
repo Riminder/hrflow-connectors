@@ -44,6 +44,7 @@ def format_meteojob_profile(meteojob_profile: t.List) -> t.Dict:
         content_type=meteojob_profile["content_type"],
     )
     return dict(
+        reference=None,
         resume=resume_dict,
         tags=tags,
         metadatas=[],

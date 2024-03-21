@@ -44,6 +44,7 @@ def format_jobology_profile(jobology_profile: t.List) -> t.Dict:
         content_type=jobology_profile["content_type"],
     )
     return dict(
+        reference=None,
         resume=resume_dict,
         tags=tags,
         metadatas=[],
