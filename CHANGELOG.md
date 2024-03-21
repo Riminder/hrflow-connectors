@@ -2,6 +2,17 @@
 
 
 
+## v4.13.0 (2024-03-21)
+
+### Feature
+
+* feat: Carrevolutis connector ([`d9f9eaa`](https://github.com/Riminder/hrflow-connectors/commit/d9f9eaa0892dfd558243d95075a2dc75fed47143))
+
+### Fix
+
+* fix: initialize reference with None instead of deleting it ([`6cef846`](https://github.com/Riminder/hrflow-connectors/commit/6cef846d8d94da95aebf73d6ba210cb2147aac92))
+
+
 ## v4.12.0 (2024-03-19)
 
 ### Documentation
