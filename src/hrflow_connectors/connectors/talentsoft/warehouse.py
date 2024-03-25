@@ -276,7 +276,6 @@ def post_applicant_front(client_url, token, applicant, files, job_reference=None
     raise Exception(response.text)
 
 
-
 def read_jobs(
     adapter: LoggerAdapter,
     parameters: ReadProfilesParameters,
