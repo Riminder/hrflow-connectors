@@ -242,35 +242,6 @@ def post_applicant_front(client_url, token, applicant, files, job_reference=None
         data=applicant,
         files=files,
     )
-    if response.status_code == 200:
-        return response.json()
-    raise Exception(response.text)
-
-
-def get_cv_content(attachment):
-    response = requests.get(attachment["public_url"])
-    if response.status_code == 200:
-        return response.content
-    raise Exception(response.text)
-
-
-def post_applicant_front(client_url, token, applicant, files, job_reference=None):
-    headers = {
-        "Authorization": "Bearer " + token,
-    }
-    if job_reference:
-        headers.update(
-            {
-                "Accept-Language": "fr-FR",
-                "jobAdReference": job_reference,
-            }
-        )
-    response = requests.post(
-        "{}/api/v2/applicants/applicationswithoutaccount".format(client_url),
-        headers=headers,
-        data=applicant,
-        files=files,
-    )
     if response.status_code == 201:
         return response.json()
     raise Exception(response.text)
