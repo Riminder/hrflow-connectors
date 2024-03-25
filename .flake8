@@ -6,4 +6,3 @@ black-config = pyproject.toml
 per-file-ignores =
     src/hrflow_connectors/core/documentation.py: E501
     tests/core/test_documentation.py: E501
-    
