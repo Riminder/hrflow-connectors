@@ -125,6 +125,99 @@ def format_ts_experiences(experiences: t.List[dict], tags: t.List[dict]) -> dict
     return experiences_ts
 
 
+def retrieve_tag_value(tags: t.List[dict], tag_name: str) -> t.Any:
+    for tag in tags:
+        if tag["name"] == tag_name:
+            return tag["value"]
+    return None
+
+
+def format_ts_applicant_civility(gender: t.Optional[str]) -> t.Optional[t.Dict]:
+    civility_ts = {}
+    if gender is None:
+        return None
+    if gender == "male":
+        return CIVILITY[2]
+    elif gender == "female":
+        return CIVILITY[4]
+    return civility_ts
+
+
+def extract_year(date_str: str) -> t.Optional[int]:
+    if not date_str:
+        return None
+    try:
+        return datetime.fromisoformat(date_str).year
+    except ValueError:
+        return None
+
+
+def calcul_ts_experience_duration(date_start: str, date_end: str) -> t.Optional[float]:
+    if not date_start or not date_end:
+        return None
+    try:
+        date_start_obj = datetime.fromisoformat(date_start)
+        date_end_obj = datetime.fromisoformat(date_end)
+        return (date_end_obj - date_start_obj).days / 365
+    except ValueError:
+        return None
+
+
+def format_contract_type(tags: t.List[dict]) -> t.Optional[t.Dict]:
+    contract_type = retrieve_tag_value(tags, "talentsoft_contract_type")
+    if contract_type:
+        return CONTRACT_TYPE_REFERENTIAL.get(contract_type)
+    return None
+
+
+def format_ts_educations(educations: t.List[dict], tags: t.List[dict]) -> dict:
+    education_level = retrieve_tag_value(tags, "talentsoft_education_level")
+
+    diplomas = (
+        [{"educationLevel": EDUCATIONS_REFERENTIEL.get(education_level)}]
+        if education_level
+        else []
+    )
+
+    diplomas += [
+        {
+            "yearObtained": (
+                extract_year(education["date_end"]) if education["date_end"] else ""
+            ),
+            "college": education["school"],
+        }
+        for education in educations
+    ]
+
+    return {"diplomas": diplomas}
+
+
+def format_ts_experiences(experiences: t.List[dict], tags: t.List[dict]) -> dict:
+    experience_level = retrieve_tag_value(tags, "talentsoft_experience_level")
+    experience_ts_level = experience_level if experience_level else None
+    experiences_ts_list = [
+        {
+            "company": experience["company"],
+            "function": experience["title"],
+            "length": (
+                calcul_ts_experience_duration(
+                    experience["date_start"], experience["date_end"]
+                )
+                if experience["date_start"] and experience["date_end"]
+                else ""
+            ),
+        }
+        for experience in experiences
+    ]
+
+    experiences_ts = {
+        "experienceLevel": EXPERIENCES_REFERENTIEL.get(experience_ts_level),
+        "experienceList": experiences_ts_list,
+    }
+
+    return experiences_ts
+
+
 def format_ts_vacancy(ts_vacancy: t.Dict) -> t.Dict:
     # FIXME lat and lng makes requests to HERE Maps API in original workflow
     ts_location = ts_vacancy["location"]
