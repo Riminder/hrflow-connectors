@@ -234,13 +234,11 @@ def format_candidate_educations(smartrecruiters_education):
         )
     return educations
 
-
 def format_candidate_full_name(hrflow_profile):
     first_name = hrflow_profile["info"].get("first_name", "")
     last_name = hrflow_profile["info"].get("last_name", "")
-
+    
     return " ".join(filter(None, [first_name, last_name]))
-
 
 def format_candidate(smartrecruiters_candidate):
     first_name = smartrecruiters_candidate.get("firstName")
@@ -250,9 +248,7 @@ def format_candidate(smartrecruiters_candidate):
     hrflow_profile["info"] = dict()
     hrflow_profile["info"]["first_name"] = first_name
     hrflow_profile["info"]["last_name"] = last_name
-    hrflow_profile["info"]["full_name"] = " ".join(
-        filter(None, [first_name, last_name])
-    )
+    hrflow_profile["info"]["full_name"] = " ".join(filter(None, [first_name, last_name]))
     hrflow_profile["info"]["email"] = smartrecruiters_candidate.get("email")
     hrflow_profile["info"]["phone"] = smartrecruiters_candidate.get("phoneNumber")
     hrflow_profile["info"]["location"] = format_candidate_location(
