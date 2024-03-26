@@ -1616,6 +1616,879 @@
           "workflow_code_workflow_id_settings_key": "__workflow_id",
           "workflow_code_origin_settings_prefix": "origin_",
           "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "pull_profile_list",
+          "action_type": "inbound",
+          "action_parameters": {
+            "title": "ReadProfilesActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "additionalProperties": false,
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "data_type": "profile",
+          "trigger_type": "schedule",
+          "origin": "SmartRecruiters Profiles",
+          "origin_parameters": {
+            "title": "ReadProfilesParameters",
+            "type": "object",
+            "properties": {
+              "x_smart_token": {
+                "title": "X Smart Token",
+                "description": "X-SmartToken used to access SmartRecruiters API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "query": {
+                "title": "Query",
+                "description": "keyword search, for more infromation see SmartRecruiters HelpCenter",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "updated_after": {
+                "title": "Updated After",
+                "description": "ISO8601-formatted time boundaries for the candidate update time",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "job_ids": {
+                "title": "Job Ids",
+                "description": "List of job ids to filter candidates by",
+                "field_type": "Query Param",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "List of tags to filter candidates by",
+                "field_type": "Query Param",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "onboarding_status": {
+                "description": "Onboarding status of a candidate",
+                "field_type": "Query Param",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/OnboardingStatus"
+                  }
+                ]
+              },
+              "status": {
+                "title": "Status",
+                "description": "candidate\u2019s status filter in a context of a job",
+                "field_type": "Query Param",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "limit": {
+                "title": "Limit",
+                "description": "Number of items to pull from SmartRecruiters at a time. Not matter what value is supplied it is capped at 100",
+                "default": 100,
+                "field_type": "Query Param",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x_smart_token"
+            ],
+            "additionalProperties": false,
+            "definitions": {
+              "OnboardingStatus": {
+                "title": "OnboardingStatus",
+                "description": "An enumeration.",
+                "enum": [
+                  "READY_TO_ONBOARD",
+                  "ONBOARDING_SUCCESSFUL",
+                  "ONBOARDING_FAILED"
+                ],
+                "type": "string"
+              }
+            }
+          },
+          "origin_data_schema": {
+            "title": "SmartRecruitersProfile",
+            "type": "object",
+            "properties": {
+              "firstName": {
+                "title": "Firstname",
+                "type": "string"
+              },
+              "lastName": {
+                "title": "Lastname",
+                "type": "string"
+              },
+              "email": {
+                "title": "Email",
+                "type": "string"
+              },
+              "phoneNumber": {
+                "title": "Phonenumber",
+                "type": "string"
+              },
+              "location": {
+                "$ref": "#/definitions/ProfileLocation"
+              },
+              "web": {
+                "$ref": "#/definitions/Web"
+              },
+              "tags": {
+                "title": "Tags",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "education": {
+                "title": "Education",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/EducationItem"
+                }
+              },
+              "experience": {
+                "title": "Experience",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ExperienceItem"
+                }
+              }
+            },
+            "required": [
+              "firstName",
+              "lastName",
+              "email",
+              "phoneNumber",
+              "location",
+              "web",
+              "tags",
+              "education",
+              "experience"
+            ],
+            "definitions": {
+              "ProfileLocation": {
+                "title": "ProfileLocation",
+                "type": "object",
+                "properties": {
+                  "country": {
+                    "title": "Country",
+                    "type": "string"
+                  },
+                  "countryCode": {
+                    "title": "Countrycode",
+                    "type": "string"
+                  },
+                  "regionCode": {
+                    "title": "Regioncode",
+                    "type": "string"
+                  },
+                  "region": {
+                    "title": "Region",
+                    "type": "string"
+                  },
+                  "city": {
+                    "title": "City",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "type": "integer"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "country",
+                  "countryCode",
+                  "regionCode",
+                  "region",
+                  "city",
+                  "lat",
+                  "lng"
+                ]
+              },
+              "Web": {
+                "title": "Web",
+                "type": "object",
+                "properties": {
+                  "skype": {
+                    "title": "Skype",
+                    "type": "string"
+                  },
+                  "linkedin": {
+                    "title": "Linkedin",
+                    "type": "string"
+                  },
+                  "facebook": {
+                    "title": "Facebook",
+                    "type": "string"
+                  },
+                  "twitter": {
+                    "title": "Twitter",
+                    "type": "string"
+                  },
+                  "website": {
+                    "title": "Website",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "skype",
+                  "linkedin",
+                  "facebook",
+                  "twitter",
+                  "website"
+                ]
+              },
+              "EducationItem": {
+                "title": "EducationItem",
+                "type": "object",
+                "properties": {
+                  "institution": {
+                    "title": "Institution",
+                    "type": "string"
+                  },
+                  "degree": {
+                    "title": "Degree",
+                    "type": "string"
+                  },
+                  "major": {
+                    "title": "Major",
+                    "type": "string"
+                  },
+                  "current": {
+                    "title": "Current",
+                    "type": "boolean"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "type": "string"
+                  },
+                  "startDate": {
+                    "title": "Startdate",
+                    "type": "string"
+                  },
+                  "endDate": {
+                    "title": "Enddate",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "institution",
+                  "degree",
+                  "major",
+                  "current",
+                  "location",
+                  "startDate",
+                  "endDate",
+                  "description"
+                ]
+              },
+              "ExperienceItem": {
+                "title": "ExperienceItem",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "title": "Title",
+                    "type": "string"
+                  },
+                  "company": {
+                    "title": "Company",
+                    "type": "string"
+                  },
+                  "current": {
+                    "title": "Current",
+                    "type": "boolean"
+                  },
+                  "startDate": {
+                    "title": "Startdate",
+                    "type": "string"
+                  },
+                  "endDate": {
+                    "title": "Enddate",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "title",
+                  "company",
+                  "current",
+                  "startDate",
+                  "endDate",
+                  "location",
+                  "description"
+                ]
+              }
+            }
+          },
+          "supports_incremental": false,
+          "target": "HrFlow.ai Profiles",
+          "target_parameters": {
+            "title": "WriteProfileParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "source_key": {
+                "title": "Source Key",
+                "description": "HrFlow.ai source key",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "edit": {
+                "title": "Edit",
+                "description": "When enabled the profile must exist in the source",
+                "default": false,
+                "field_type": "Other",
+                "type": "boolean"
+              },
+              "only_edit_fields": {
+                "title": "Only Edit Fields",
+                "description": "List of attributes to use for the edit operation e.g. ['tags', 'metadatas']",
+                "field_type": "Other",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user",
+              "source_key",
+              "only_edit_fields"
+            ],
+            "additionalProperties": false
+          },
+          "target_data_schema": {
+            "title": "HrFlowProfile",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Profile.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
+                "type": "string"
+              },
+              "info": {
+                "title": "Info",
+                "description": "Object containing the Profile's info.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ProfileInfo"
+                  }
+                ]
+              },
+              "text_language": {
+                "title": "Text Language",
+                "description": "Code language of the Profile. type: string code ISO 639-1",
+                "type": "string"
+              },
+              "text": {
+                "title": "Text",
+                "description": "Full text of the Profile..",
+                "type": "string"
+              },
+              "experiences_duration": {
+                "title": "Experiences Duration",
+                "description": "Total number of years of experience.",
+                "type": "number"
+              },
+              "educations_duration": {
+                "title": "Educations Duration",
+                "description": "Total number of years of education.",
+                "type": "number"
+              },
+              "experiences": {
+                "title": "Experiences",
+                "description": "List of experiences of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Experience"
+                }
+              },
+              "educations": {
+                "title": "Educations",
+                "description": "List of educations of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Education"
+                }
+              },
+              "attachments": {
+                "title": "Attachments",
+                "description": "List of documents attached to the Profile.",
+                "type": "array",
+                "items": {}
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "List of skills of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "List of spoken languages of the profile",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "List of certifications of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "List of courses of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "List of tasks of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "interests": {
+                "title": "Interests",
+                "description": "List of interests of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "List of tags of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              }
+            },
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "InfoUrls": {
+                "title": "InfoUrls",
+                "type": "object",
+                "properties": {
+                  "from_resume": {
+                    "title": "From Resume",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "linkedin": {
+                    "title": "Linkedin",
+                    "type": "string"
+                  },
+                  "twitter": {
+                    "title": "Twitter",
+                    "type": "string"
+                  },
+                  "facebook": {
+                    "title": "Facebook",
+                    "type": "string"
+                  },
+                  "github": {
+                    "title": "Github",
+                    "type": "string"
+                  }
+                }
+              },
+              "ProfileInfo": {
+                "title": "ProfileInfo",
+                "type": "object",
+                "properties": {
+                  "full_name": {
+                    "title": "Full Name",
+                    "type": "string"
+                  },
+                  "first_name": {
+                    "title": "First Name",
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "title": "Last Name",
+                    "type": "string"
+                  },
+                  "email": {
+                    "title": "Email",
+                    "type": "string"
+                  },
+                  "phone": {
+                    "title": "Phone",
+                    "type": "string"
+                  },
+                  "date_birth": {
+                    "title": "Date Birth",
+                    "description": "Profile date of birth",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Profile location object",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "urls": {
+                    "title": "Urls",
+                    "description": "Profile social networks and URLs",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/InfoUrls"
+                      }
+                    ]
+                  },
+                  "picture": {
+                    "title": "Picture",
+                    "description": "Profile picture url",
+                    "type": "string"
+                  },
+                  "gender": {
+                    "title": "Gender",
+                    "description": "Profile gender",
+                    "type": "string"
+                  },
+                  "summary": {
+                    "title": "Summary",
+                    "description": "Profile summary text",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "Experience": {
+                "title": "Experience",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "title": "Key",
+                    "description": "Identification key of the Experience.",
+                    "type": "string"
+                  },
+                  "company": {
+                    "title": "Company",
+                    "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Title of the Experience.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Description of the Experience.",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Location object of the Experience.",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "date_start": {
+                    "title": "Date Start",
+                    "description": "Start date of the experience. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "date_end": {
+                    "title": "Date End",
+                    "description": "End date of the experience. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "skills": {
+                    "title": "Skills",
+                    "description": "List of skills of the Experience.",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/Skill"
+                    }
+                  },
+                  "certifications": {
+                    "title": "Certifications",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "courses": {
+                    "title": "Courses",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "tasks": {
+                    "title": "Tasks",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  }
+                }
+              },
+              "Education": {
+                "title": "Education",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "title": "Key",
+                    "description": "Identification key of the Education.",
+                    "type": "string"
+                  },
+                  "school": {
+                    "title": "School",
+                    "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Title of the Education.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Description of the Education.",
+                    "type": "string"
+                  },
+                  "location": {
+                    "title": "Location",
+                    "description": "Location object of the Education.",
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/Location"
+                      }
+                    ]
+                  },
+                  "date_start": {
+                    "title": "Date Start",
+                    "description": "Start date of the Education. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "date_end": {
+                    "title": "Date End",
+                    "description": "End date of the Education. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "skills": {
+                    "title": "Skills",
+                    "description": "List of skills of the Education.",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/Skill"
+                    }
+                  },
+                  "certifications": {
+                    "title": "Certifications",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "courses": {
+                    "title": "Courses",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  },
+                  "tasks": {
+                    "title": "Tasks",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/GeneralEntitySchema"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import SmartRecruiters\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return SmartRecruiters.pull_profile_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['x_smart_token', 'query', 'updated_after', 'job_ids', 'tags', 'onboarding_status', 'status', 'limit']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'edit', 'only_edit_fields']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return SmartRecruiters.pull_profile_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
         }
       ],
       "type": "ATS",
