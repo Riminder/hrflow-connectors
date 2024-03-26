@@ -175,6 +175,98 @@ def format_profile(hrflow_profile: t.Dict) -> t.Dict:
     return profile
 
 
+def format_candidate_location(
+    smartrecruiters_location: t.Union[t.Dict, None]
+) -> t.Dict:
+    if smartrecruiters_location is None:
+        return dict(lat=None, lng=None, text="")
+
+    lat = smartrecruiters_location.get("latitude")
+    lat = float(lat) if lat is not None else lat
+
+    lng = smartrecruiters_location.get("longitude")
+    lng = float(lng) if lng is not None else lng
+
+    concatenate = []
+    for field in ["country", "region", "city"]:
+        if smartrecruiters_location.get(field):
+            concatenate.append(smartrecruiters_location.get(field))
+
+    return dict(lat=lat, lng=lng, text=" ".join(concatenate))
+
+
+def format_candidate_urls(smartrecruiters_web_object):
+    urls = []
+    for key, value in smartrecruiters_web_object.items():
+        if value:
+            urls.append(dict(url=value, type=key))
+    return urls
+
+
+def format_candidate_experiences(smartrecruiters_experience):
+    experiences = []
+    for experience in smartrecruiters_experience:
+        experiences.append(
+            {
+                "company": experience.get("company"),
+                "description": experience.get("description"),
+                "date_end": experience.get("endDate"),
+                "date_start": experience.get("startDate"),
+                "title": experience.get("title"),
+                "location": dict(lat=None, lng=None, text=experience.get("location")),
+            }
+        )
+    return experiences
+
+
+def format_candidate_educations(smartrecruiters_education):
+    educations = []
+    for education in smartrecruiters_education:
+        educations.append(
+            {
+                "school": education["institution"],
+                "title": ",".join([education["major"], education["degree"]]),
+                "date_start": education["startDate"],
+                "date_end": education["endDate"],
+                "description": education["description"],
+                "location": dict(lat=None, lng=None, text=None),
+            }
+        )
+    return educations
+
+
+def format_candidate(smartrecruiters_candidate):
+    first_name = smartrecruiters_candidate.get("firstName")
+    last_name = smartrecruiters_candidate.get("lastName")
+    hrflow_profile = dict()
+    hrflow_profile["reference"] = smartrecruiters_candidate.get("id")
+    hrflow_profile["info"] = dict()
+    hrflow_profile["info"]["first_name"] = first_name
+    hrflow_profile["info"]["last_name"] = last_name
+    hrflow_profile["info"]["full_name"] = " ".join(
+        filter(None, [first_name, last_name])
+    )
+    hrflow_profile["info"]["email"] = smartrecruiters_candidate.get("email")
+    hrflow_profile["info"]["phone"] = smartrecruiters_candidate.get("phoneNumber")
+    hrflow_profile["info"]["location"] = format_candidate_location(
+        smartrecruiters_candidate.get("location")
+    )
+    hrflow_profile["info"]["urls"] = format_candidate_urls(
+        smartrecruiters_candidate.get("web")
+    )
+    hrflow_profile["created_at"] = smartrecruiters_candidate.get("createdOn")
+    hrflow_profile["updated_at"] = smartrecruiters_candidate.get("updatedOn")
+    hrflow_profile["experiences"] = format_candidate_experiences(
+        smartrecruiters_candidate.get("experience")
+    )
+    hrflow_profile["educations"] = format_candidate_educations(
+        smartrecruiters_candidate.get("education")
+    )
+    hrflow_profile["skills"] = []
+    hrflow_profile["tags"] = []
+    return hrflow_profile
+
+
 DESCRIPTION = (
     "Move beyond applicant tracking systems (ATS) with an enterprise-grade recruiting"
     " platform designed for the modern workforce. SmartRecruiters' Talent Acquisition"
@@ -213,6 +305,20 @@ SmartRecruiters = Connector(
             origin=HrFlowProfileWarehouse,
             target=SmartRecruitersProfileWarehouse,
             action_type=ActionType.outbound,
+        ),
+        ConnectorAction(
+            name=ActionName.pull_profile_list,
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves all profiles via the ***SmartRecruiter*** API and send them"
+                " to a ***Hrflow.ai Source***."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadProfilesActionParameters", format=format_candidate
+            ),
+            origin=SmartRecruitersProfileWarehouse,
+            target=HrFlowProfileWarehouse,
+            action_type=ActionType.inbound,
         ),
     ],
 )
