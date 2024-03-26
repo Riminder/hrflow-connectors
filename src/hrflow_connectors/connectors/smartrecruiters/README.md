@@ -46,8 +46,9 @@ This new connector will enable:
 <p align="center">
 
 | Action | Description |
-| ------- | ----------- |
-| [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs via the ***SmartRecruiter*** API and send them to a ***Hrflow.ai Board***. |
+| ------- |  -------- |
+| [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs from ***SmartRecruiter*** and sends them to an ***Hrflow.ai Board*** | 
+| [**Pull profile list**](docs/pull_profile_list.md) | Retrieves profiles from ***SmartRecruiter*** and sends them to an ***Hrflow.ai Source*** |
 | [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source to SmartRecruiters via the API for the given `job_id`. |
 | [**Pull profile list**](docs/pull_profile_list.md) | Retrieves all profiles via the ***SmartRecruiter*** API and send them to a ***Hrflow.ai Source***. |
 
