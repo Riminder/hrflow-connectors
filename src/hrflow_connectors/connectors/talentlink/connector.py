@@ -21,6 +21,8 @@ DESCRIPTION = (
     " Take full control of your recruitment processes and involve your teams in the decision-making process."
 )
 
+# pull tracking list (Need an HrFlow Tracking Warehouse)
+# Push score list (need to add in core the fuctionality of not needing an origin warehouse for the action or create some kind of dummy warehouse to bypass this)
 TalentLink = Connector(
     name="TalentLink",
     type=ConnectorType.ATS,
