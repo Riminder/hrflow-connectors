@@ -308,6 +308,7 @@ class ActionName(str, enum.Enum):
     push_profile_list = "push_profile_list"
     push_job_list = "push_job_list"
     push_score_list = "push_score_list"
+    pull_tracking_list = "pull_tracking_list"
     catch_profile = "catch_profile"
     catch_job = "catch_job"
     # TalentSoft actions
