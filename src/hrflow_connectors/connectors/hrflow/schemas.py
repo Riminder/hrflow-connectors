@@ -1,5 +1,12 @@
 import typing as t
 
+try:
+    t.Literal
+except AttributeError:
+    from typing_extensions import Literal
+
+    setattr(t, "Literal", Literal)
+
 from pydantic import BaseModel, Field
 
 
@@ -20,16 +27,44 @@ class Location(BaseModel):
 
 
 class GeneralEntitySchema(BaseModel):
-    name: str = Field(..., description="Identification name of the Object")
+    name: str = Field(description="Identification name of the Object")
     value: t.Optional[str] = Field(
         None, description="Value associated to the Object's name"
     )
 
 
 class Skill(BaseModel):
-    name: str = Field(..., description="Identification name of the skill")
-    type: t.Optional[str] = Field(None, description="Type of the skill. hard or soft")
+    name: str = Field(description="Identification name of the skill")
+    type: t.Literal["hard", "soft"] = Field(
+        description="Type of the skill. hard or soft"
+    )
     value: t.Optional[str] = Field(None, description="Value associated to the skill")
+
+
+class Label(BaseModel):
+    board_key: str = Field(
+        description="Identification key of the Board containing the target Job."
+    )
+    job_key: str = Field(description="Identification key of the Job.")
+    job_reference: str = Field(description="Custom identifier of the Job.")
+    stage: t.Literal["yes", "no", "later"] = Field(
+        description=(
+            "Stage associated to the Profile following the action of a recruiter (yes,"
+            " no, later)."
+        )
+    )
+    date_stage: str = Field(
+        None, description="Date of the stage edit action. type: ('datetime ISO 8601')"
+    )
+    rating: t.Optional[t.Literal[1, 2, 3, 4, 5]] = Field(
+        description=(
+            "Rating associated to the Profile following the action of a recruiter (from"
+            " 1 to 5)."
+        )
+    )
+    date_rating: str = Field(
+        None, description="Date of the rating action. type: ('datetime ISO 8601')"
+    )
 
 
 # Job
@@ -82,7 +117,7 @@ class HrFlowJob(BaseModel):
     reference: t.Optional[str] = Field(
         None, description="Custom identifier of the Job."
     )
-    name: str = Field(..., description="Job title.")
+    name: str = Field(description="Job title.")
     location: Location = Field(None, description="Job location object.")
     sections: t.List[Section] = Field(None, description="Job custom sections.")
     url: t.Optional[str] = Field(None, description="Job post original URL.")
@@ -130,12 +165,9 @@ class HrFlowJob(BaseModel):
 
 
 # Profile
-class InfoUrls(BaseModel):
-    from_resume: t.Optional[t.List[str]]
-    linkedin: t.Optional[str]
-    twitter: t.Optional[str]
-    facebook: t.Optional[str]
-    github: t.Optional[str]
+class InfoUrl(BaseModel):
+    type: t.Literal["from_resume", "linkedin", "twitter", "facebook", "github"]
+    url: t.Optional[str]
 
 
 class ProfileInfo(BaseModel):
@@ -146,7 +178,7 @@ class ProfileInfo(BaseModel):
     phone: t.Optional[str]
     date_birth: t.Optional[str] = Field(None, description="Profile date of birth")
     location: t.Optional[Location] = Field(None, description="Profile location object")
-    urls: t.Optional[InfoUrls] = Field(
+    urls: t.Optional[t.List[InfoUrl]] = Field(
         None, description="Profile social networks and URLs"
     )
     picture: t.Optional[str] = Field(None, description="Profile picture url")
@@ -161,6 +193,7 @@ class Experience(BaseModel):
     company: t.Optional[str] = Field(
         None, description="Company name of the Experience."
     )
+    logo: t.Optional[str] = Field(None, description="Logo of the Company")
     title: t.Optional[str] = Field(None, description="Title of the Experience.")
     description: t.Optional[str] = Field(
         None, description="Description of the Experience."
@@ -187,6 +220,7 @@ class Education(BaseModel):
         None, description="Identification key of the Education."
     )
     school: t.Optional[str] = Field(None, description="School name of the Education.")
+    logo: t.Optional[str] = Field(None, description="Logo of the School")
     title: t.Optional[str] = Field(None, description="Title of the Education.")
     description: t.Optional[str] = Field(
         None, description="Description of the Education."
@@ -213,6 +247,11 @@ class HrFlowProfile(BaseModel):
     reference: t.Optional[str] = Field(
         None, description="Custom identifier of the Profile."
     )
+    info: ProfileInfo = Field(None, description="Object containing the Profile's info.")
+    text_language: str = Field(
+        None, description="Code language of the Profile. type: string code ISO 639-1"
+    )
+    text: str = Field(None, description="Full text of the Profile.")
     archived_at: t.Optional[str] = Field(
         None,
         description=(
@@ -226,11 +265,6 @@ class HrFlowProfile(BaseModel):
     created_at: t.Optional[str] = Field(
         None, description="type: datetime ISO8601, Creation date of the Profile."
     )
-    info: ProfileInfo = Field(None, description="Object containing the Profile's info.")
-    text_language: str = Field(
-        None, description="Code language of the Profile. type: string code ISO 639-1"
-    )
-    text: str = Field(None, description="Full text of the Profile..")
     experiences_duration: float = Field(
         None, description="Total number of years of experience."
     )
@@ -264,14 +298,14 @@ class HrFlowProfile(BaseModel):
     interests: t.Optional[t.List[GeneralEntitySchema]] = Field(
         None, description="List of interests of the Profile."
     )
-    labels: t.Optional[t.List[GeneralEntitySchema]] = Field(
-        None, description="List of labels of the Profile."
-    )
     tags: t.Optional[t.List[GeneralEntitySchema]] = Field(
         None, description="List of tags of the Profile."
     )
     metadatas: t.Optional[t.List[GeneralEntitySchema]] = Field(
         None, description="List of metadatas of the Profile."
+    )
+    labels: t.Optional[t.List[GeneralEntitySchema]] = Field(
+        None, description="List of labels of the Profile."
     )
 
 
@@ -281,16 +315,14 @@ class ResumeToParse(BaseModel):
 
 
 class HrFlowProfileParsing(BaseModel):
-    reference: t.Optional[str] = Field(
-        ..., description="Custom identifier of the Profile."
-    )
+    reference: t.Optional[str] = Field(description="Custom identifier of the Profile.")
     created_at: str = Field(
-        ..., description="type: datetime ISO8601, Creation date of the Profile."
+        description="type: datetime ISO8601, Creation date of the Profile."
     )
     resume: ResumeToParse
     tags: t.List[GeneralEntitySchema] = Field(
-        ..., description="List of tags of the Profile."
+        description="List of tags of the Profile."
     )
     metadatas: t.List[GeneralEntitySchema] = Field(
-        ..., description="List of metadatas of the Profile."
+        description="List of metadatas of the Profile."
     )
