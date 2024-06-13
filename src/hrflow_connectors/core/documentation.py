@@ -199,8 +199,8 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
         updated_at = datetime.fromisoformat(
             max(
                 filtered,
-                key=lambda d: datetime.fromisoformat(d),
-            )
+                key=lambda d: datetime.fromisoformat(d.replace("Z", "+00:00")),
+            ).replace("Z", "+00:00")
         )
         actions_status = dict(
             zip(
