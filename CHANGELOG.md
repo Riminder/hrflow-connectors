@@ -2,6 +2,21 @@
 
 
 
+## v4.13.1 (2024-06-13)
+
+### Ci
+
+* ci: add carrevolutis integration test to pipeline ([`dc68f27`](https://github.com/Riminder/hrflow-connectors/commit/dc68f27f21822ae2775d82246fa9652e62920899))
+
+### Fix
+
+* fix: update labels attribute with Label schema ([`cdd3cc3`](https://github.com/Riminder/hrflow-connectors/commit/cdd3cc3e10d64fe73a3fb245c88492da5e78cc80))
+
+* fix: replace Z timezone suffix with supported form in older versions of python ([`c2f42e4`](https://github.com/Riminder/hrflow-connectors/commit/c2f42e49f2face03382db78814b1b8c4be2f4700))
+
+* fix: correct hrflow profile data schema ([`1d1ab6b`](https://github.com/Riminder/hrflow-connectors/commit/1d1ab6b3b873e337c2a49ecf3b9a7b824f3b3732))
+
+
 ## v4.13.0 (2024-03-21)
 
 ### Feature
