@@ -720,6 +720,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -729,7 +733,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -908,21 +913,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -939,7 +929,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -1022,14 +1027,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -1041,6 +1038,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -1069,34 +1074,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -1139,11 +1139,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -1174,6 +1173,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -1183,7 +1186,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -1217,6 +1221,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -1291,6 +1300,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -1804,7 +1818,6 @@
               }
             },
             "required": [
-              "reference",
               "created_at",
               "resume",
               "tags",
@@ -2039,7 +2052,6 @@
               }
             },
             "required": [
-              "reference",
               "created_at",
               "resume",
               "tags",
@@ -2264,21 +2276,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -2295,7 +2292,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -2378,14 +2390,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -2397,6 +2401,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -2425,34 +2437,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -2495,11 +2502,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -2530,6 +2536,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -2539,7 +2549,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -2573,6 +2584,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -2647,6 +2663,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -2892,7 +2913,6 @@
               }
             },
             "required": [
-              "reference",
               "created_at",
               "resume",
               "tags",
@@ -3290,6 +3310,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -3299,7 +3323,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -3478,21 +3503,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -3509,7 +3519,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -3592,14 +3617,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -3611,6 +3628,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -3639,34 +3664,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -3709,11 +3729,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -3744,6 +3763,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -3753,7 +3776,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -3787,6 +3811,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -3861,6 +3890,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -5203,6 +5237,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -5212,7 +5250,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -6028,6 +6067,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -6037,7 +6080,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -6223,21 +6267,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -6254,7 +6283,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -6337,14 +6381,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -6356,6 +6392,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -6384,34 +6428,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -6454,11 +6493,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -6489,6 +6527,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -6498,7 +6540,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -6532,6 +6575,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -6606,6 +6654,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -7219,6 +7272,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -7228,7 +7285,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -7630,6 +7688,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -7639,7 +7701,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -7818,21 +7881,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -7849,7 +7897,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -7932,14 +7995,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -7951,6 +8006,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -7979,34 +8042,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -8049,11 +8107,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -8084,6 +8141,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -8093,7 +8154,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -8127,6 +8189,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -8201,6 +8268,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -8646,6 +8718,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -8655,7 +8731,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -8834,21 +8911,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -8865,7 +8927,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -8948,14 +9025,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -8967,6 +9036,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -8995,34 +9072,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -9065,11 +9137,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -9100,6 +9171,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -9109,7 +9184,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -9143,6 +9219,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -9217,6 +9298,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -9797,6 +9883,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -9806,7 +9896,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -9985,21 +10076,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -10016,7 +10092,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -10099,14 +10190,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -10118,6 +10201,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -10146,34 +10237,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -10216,11 +10302,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -10251,6 +10336,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -10260,7 +10349,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -10294,6 +10384,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -10368,6 +10463,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -10721,21 +10821,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -10752,7 +10837,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -10835,14 +10935,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -10854,6 +10946,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -10882,34 +10982,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -10952,11 +11047,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -10987,6 +11081,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -10996,7 +11094,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -11030,6 +11129,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -11104,6 +11208,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -11644,6 +11753,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -11653,7 +11766,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -11978,7 +12092,6 @@
               }
             },
             "required": [
-              "reference",
               "created_at",
               "resume",
               "tags",
@@ -12268,21 +12381,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -12299,7 +12397,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -12382,14 +12495,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -12401,6 +12506,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -12429,34 +12542,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -12499,11 +12607,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -12534,6 +12641,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -12543,7 +12654,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -12577,6 +12689,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -12651,6 +12768,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -13148,6 +13270,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -13157,7 +13283,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -13693,6 +13820,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -13702,7 +13833,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -13881,21 +14013,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -13912,7 +14029,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -13995,14 +14127,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -14014,6 +14138,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -14042,34 +14174,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -14112,11 +14239,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -14147,6 +14273,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -14156,7 +14286,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -14190,6 +14321,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -14264,6 +14400,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -15124,6 +15265,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -15133,7 +15278,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -15312,21 +15458,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -15343,7 +15474,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -15426,14 +15572,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -15445,6 +15583,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -15473,34 +15619,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -15543,11 +15684,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -15578,6 +15718,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -15587,7 +15731,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -15621,6 +15766,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -15695,6 +15845,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -15976,21 +16131,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -16007,7 +16147,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -16090,14 +16245,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -16109,6 +16256,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -16137,34 +16292,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -16207,11 +16357,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -16242,6 +16391,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -16251,7 +16404,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -16285,6 +16439,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -16359,6 +16518,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -16539,21 +16703,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -16570,7 +16719,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -16653,14 +16817,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -16672,6 +16828,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -16700,34 +16864,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -16770,11 +16929,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -16805,6 +16963,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -16814,7 +16976,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -16848,6 +17011,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -16922,6 +17090,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -17282,21 +17455,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -17313,7 +17471,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -17396,14 +17569,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -17415,6 +17580,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -17443,34 +17616,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -17513,11 +17681,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -17548,6 +17715,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -17557,7 +17728,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -17591,6 +17763,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -17665,6 +17842,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -18317,6 +18499,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -18326,7 +18512,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -18992,6 +19179,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -19001,7 +19192,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -19180,21 +19372,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -19211,7 +19388,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -19294,14 +19486,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -19313,6 +19497,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -19341,34 +19533,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -19411,11 +19598,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -19446,6 +19632,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -19455,7 +19645,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -19489,6 +19680,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -19563,6 +19759,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -19938,21 +20139,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -19969,7 +20155,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -20052,14 +20253,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -20071,6 +20264,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -20099,34 +20300,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -20169,11 +20365,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -20204,6 +20399,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -20213,7 +20412,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -20247,6 +20447,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -20321,6 +20526,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -21199,21 +21409,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -21230,7 +21425,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -21313,14 +21523,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -21332,6 +21534,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -21360,34 +21570,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -21430,11 +21635,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -21465,6 +21669,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -21474,7 +21682,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -21508,6 +21717,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -21582,6 +21796,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -21754,21 +21973,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -21785,7 +21989,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -21868,14 +22087,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -21887,6 +22098,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -21915,34 +22134,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -21985,11 +22199,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -22020,6 +22233,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -22029,7 +22246,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -22063,6 +22281,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -22137,6 +22360,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -23553,6 +23781,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -23562,7 +23794,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -24376,6 +24609,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -24385,7 +24622,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -24876,7 +25114,6 @@
               }
             },
             "required": [
-              "reference",
               "created_at",
               "resume",
               "tags",
@@ -25031,21 +25268,6 @@
                 "description": "Custom identifier of the Profile.",
                 "type": "string"
               },
-              "archived_at": {
-                "title": "Archived At",
-                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
-                "type": "string"
-              },
-              "updated_at": {
-                "title": "Updated At",
-                "description": "type: datetime ISO8601, Last update date of the Profile.",
-                "type": "string"
-              },
-              "created_at": {
-                "title": "Created At",
-                "description": "type: datetime ISO8601, Creation date of the Profile.",
-                "type": "string"
-              },
               "info": {
                 "title": "Info",
                 "description": "Object containing the Profile's info.",
@@ -25062,7 +25284,22 @@
               },
               "text": {
                 "title": "Text",
-                "description": "Full text of the Profile..",
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "title": "Archived At",
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
                 "type": "string"
               },
               "experiences_duration": {
@@ -25145,14 +25382,6 @@
                   "$ref": "#/definitions/GeneralEntitySchema"
                 }
               },
-              "labels": {
-                "title": "Labels",
-                "description": "List of labels of the Profile.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/GeneralEntitySchema"
-                }
-              },
               "tags": {
                 "title": "Tags",
                 "description": "List of tags of the Profile.",
@@ -25164,6 +25393,14 @@
               "metadatas": {
                 "title": "Metadatas",
                 "description": "List of metadatas of the Profile.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "labels": {
+                "title": "Labels",
+                "description": "List of labels of the Profile.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/GeneralEntitySchema"
@@ -25192,34 +25429,29 @@
                   }
                 }
               },
-              "InfoUrls": {
-                "title": "InfoUrls",
+              "InfoUrl": {
+                "title": "InfoUrl",
                 "type": "object",
                 "properties": {
-                  "from_resume": {
-                    "title": "From Resume",
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "linkedin": {
-                    "title": "Linkedin",
+                  "type": {
+                    "title": "Type",
+                    "enum": [
+                      "from_resume",
+                      "linkedin",
+                      "twitter",
+                      "facebook",
+                      "github"
+                    ],
                     "type": "string"
                   },
-                  "twitter": {
-                    "title": "Twitter",
-                    "type": "string"
-                  },
-                  "facebook": {
-                    "title": "Facebook",
-                    "type": "string"
-                  },
-                  "github": {
-                    "title": "Github",
+                  "url": {
+                    "title": "Url",
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "type"
+                ]
               },
               "ProfileInfo": {
                 "title": "ProfileInfo",
@@ -25262,11 +25494,10 @@
                   "urls": {
                     "title": "Urls",
                     "description": "Profile social networks and URLs",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/InfoUrls"
-                      }
-                    ]
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/InfoUrl"
+                    }
                   },
                   "picture": {
                     "title": "Picture",
@@ -25297,6 +25528,10 @@
                   "type": {
                     "title": "Type",
                     "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
                     "type": "string"
                   },
                   "value": {
@@ -25306,7 +25541,8 @@
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "type"
                 ]
               },
               "GeneralEntitySchema": {
@@ -25340,6 +25576,11 @@
                   "company": {
                     "title": "Company",
                     "description": "Company name of the Experience.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the Company",
                     "type": "string"
                   },
                   "title": {
@@ -25414,6 +25655,11 @@
                   "school": {
                     "title": "School",
                     "description": "School name of the Education.",
+                    "type": "string"
+                  },
+                  "logo": {
+                    "title": "Logo",
+                    "description": "Logo of the School",
                     "type": "string"
                   },
                   "title": {
@@ -25794,7 +26040,6 @@
               }
             },
             "required": [
-              "reference",
               "created_at",
               "resume",
               "tags",
@@ -25998,7 +26243,6 @@
               }
             },
             "required": [
-              "reference",
               "created_at",
               "resume",
               "tags",
@@ -26202,7 +26446,6 @@
               }
             },
             "required": [
-              "reference",
               "created_at",
               "resume",
               "tags",
