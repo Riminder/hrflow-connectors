@@ -304,7 +304,7 @@ class HrFlowProfile(BaseModel):
     metadatas: t.Optional[t.List[GeneralEntitySchema]] = Field(
         None, description="List of metadatas of the Profile."
     )
-    labels: t.Optional[t.List[GeneralEntitySchema]] = Field(
+    labels: t.Optional[t.List[Label]] = Field(
         None, description="List of labels of the Profile."
     )
 
