@@ -1,4 +1,5 @@
 import typing as t
+from enum import Enum
 
 try:
     t.Literal
@@ -325,4 +326,77 @@ class HrFlowProfileParsing(BaseModel):
     )
     metadatas: t.List[GeneralEntitySchema] = Field(
         description="List of metadatas of the Profile."
+    )
+
+
+class Role(str, Enum):
+    recruiter = "recruiter"
+    candidate = "candidate"
+    employee = "employee"
+    manager = "manager"
+
+
+class HrflowTracking(BaseModel):
+    action: str = Field(
+        description=(
+            "The 'action' refers to a unique identifier for a"
+            "profile or job stage.\n"
+            "This can be a specific stage ID within a CRM,\n"
+            "ATS, or Job site.\n"
+            'Examples of such stages include "view," "apply,"\n'
+            '"hire," or any other stage relevant to your system.\n'
+        )
+    )
+    role: Role = Field(
+        description=(
+            "Role of the user rating the job (role: recruiter, candidate, employee,"
+            " manager)."
+        )
+    )
+    board_key: str = Field(description="The key of Board attached to the given Job.")
+    source_key: str = Field(
+        description="The key of Source attached to the given Profile."
+    )
+    job_key: t.Optional[str] = Field(None, description="The Job's unique identifier.")
+    job_reference: t.Optional[str] = Field(
+        None,
+        description=(
+            "The Job's reference chosen by the customer /"
+            " external system."
+            "If you use the job_key you do not need to specify"
+            " the job_reference and vice versa."
+        ),
+    )
+    profile_key: t.Optional[str] = Field(
+        None, description="The Profile's unique identifier."
+    )
+    profile_reference: t.Optional[str] = Field(
+        None,
+        description=(
+            "The Profile's reference chosen by the customer /"
+            "external system."
+            "If you use the profile_key you do not need to"
+            "specify the profile_reference and vice versa."
+        ),
+    )
+    author_email: t.Optional[str] = Field(
+        None,
+        description="Email of the HrFlow.ai user who rated the profile for the job.",
+    )
+    comment: t.Optional[str] = Field(
+        None, description="Comment explaining the reason behind the score."
+    )
+    duration: t.Optional[float] = Field(None, description="Duration of the tracking.")
+    created_at: t.Optional[str] = Field(
+        None,
+        description=(
+            "ISO Date of the rating.\nFormat : yyyy-MM-dd'T'HH:mm:ss.SSSXXX — for"
+            " example, '2000-10-31T01:30:00.000-05:00'\nIt associates a creation date"
+            " to the profile (ie:\nthis can be for example the original date of the"
+            " application of the profile).\nIf not provided the creation date will be"
+            " now by default.\n"
+        ),
+    )
+    updated_at: t.Optional[str] = Field(
+        None, description="type: datetime ISO8601, Last update date of the tracking."
     )
