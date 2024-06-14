@@ -26,6 +26,8 @@ simple-salesforce = "^1.12.4"
 typing-extensions = "^4.7.1"
 beautifulsoup4 = "4.10.0"
 puremagic = "^1.27"
+mysql-connector = "^2.2.9"
+smbprotocol = "^1.13.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"

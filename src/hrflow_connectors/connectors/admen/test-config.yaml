@@ -1,0 +1,87 @@
+warehouse:
+  AdmenJobWarehouse:
+    read:
+      - parameters:
+          db_host: $__DB_HOST
+          db_port: $__DB_PORT
+          db_name: $__DB_NAME
+          db_user: $__DB_USER
+          db_password: $__DB_PASSWORD
+          limit: 5
+actions:
+  pull_job_list:
+    - id: valid_parameters
+      origin_parameters:
+        db_host: $__DB_HOST
+        db_port: $__DB_PORT
+        db_name: $__DB_NAME
+        db_user: $__DB_USER
+        db_password: $__DB_PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+    - id: not_db_authentication_info
+      origin_parameters:
+        db_host: $__DB_HOST
+        db_port: $__DB_PORT
+        db_name: $__DB_NAME
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+    - id: id: not_db_password
+      origin_parameters:
+        db_host: $__DB_HOST
+        db_port: $__DB_PORT
+        db_name: $__DB_NAME
+        db_user: $__DB_USER
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+    - id: no_hrflow_board_key
+      origin_parameters:
+        db_host: $__DB_HOST
+        db_port: $__DB_PORT
+        db_name: $__DB_NAME
+        db_user: $__DB_USER
+        db_password: $__DB_PASSWORD
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_db_authentication_info
+      origin_parameters:
+        db_host: $__DB_HOST
+        db_port: $__DB_PORT
+        db_name: $__DB_NAME
+        db_user: $__DB_USER
+        db_password: bad_db_password
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+    - id: invalid_hrflow_api_secret
+      origin_parameters:
+        db_host: $__DB_HOST
+        db_port: $__DB_PORT
+        db_name: $__DB_NAME
+        db_user: $__DB_USER
+        db_password: $__DB_PASSWORD
+      target_parameters:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: write_failure
+
+
