@@ -1,3 +1,4 @@
+from hrflow_connectors.connectors.admen.connector import ADMEN  # noqa
 from hrflow_connectors.connectors.adzuna.connector import Adzuna
 from hrflow_connectors.connectors.breezyhr import BreezyHR
 from hrflow_connectors.connectors.bullhorn import Bullhorn
@@ -25,6 +26,7 @@ from hrflow_connectors.core.documentation import generate_docs  # noqa
 
 __version__ = "2.0.0"
 __CONNECTORS__ = [
+    ADMEN,
     SmartRecruiters,
     TalentSoft,
     PoleEmploi,
