@@ -5,7 +5,7 @@
 - [🔌 Connector Actions](#-connector-actions)
 - [🐍 Quick Start Example](#-quick-start-example)
 - [🔗 Useful Links](#-useful-links)
-- [🙏 Special Thanks](#-special-thanks)
+- [👏 Special Thanks](#-special-thanks)
 
 
 # 📝 About Adzuna
@@ -19,7 +19,7 @@ Adzuna is a smarter, more transparent job search engine that helps you dodge the
 </p>
 
 
-# 📊 Data Flow 
+# 📊 Data Flow
 
 In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
@@ -51,9 +51,9 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 <image src=https://user-images.githubusercontent.com/57711045/215874507-a36933f2-af97-4ee1-83d4-1d08eeebe06b.png width=90% height=100% >
 </p>
 
-Once the connector module is imported, you can leverage all the different actions that it offers. 
+Once the connector module is imported, you can leverage all the different actions that it offers.
 
-For more code details checkout connector code 
+For more code details checkout connector code
 
 
 # 🔗 Useful Links
@@ -63,7 +63,7 @@ For more code details checkout connector code
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/adzuna) on our Github.
 
 
-# 🙏 Special Thanks  
+# 👏 Special Thanks
 - 💻 HrFlow.ai :  [Nedhir Ebnou](https://github.com/nedhirouebnou) - Software Engineer
 
 

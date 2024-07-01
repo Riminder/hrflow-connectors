@@ -8,7 +8,7 @@
 - [🔌 Connector Actions](#-connector-actions)
 - [🐍 Quick Start Examples](#-quick-start-examples)
 - [🔗 Useful Links](#-useful-links)
-- [🙏 Special Thanks](#-special-thanks)
+- [👏 Special Thanks](#-special-thanks)
 
 
 # 💼 About Bullhorn
@@ -64,7 +64,7 @@ This new connector will enable:
 
 # 🐍 Quick Start Examples
 
-To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**. 
+To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**.
 
 
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
@@ -74,9 +74,9 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 </p>
 
 
-Once the connector module is imported, you can leverage all the different actions that it offers. 
+Once the connector module is imported, you can leverage all the different actions that it offers.
 
-For more code details checkout connector code 
+For more code details checkout connector code
 
 
 # 🔗 Useful Links
@@ -85,7 +85,7 @@ For more code details checkout connector code
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/bullhorn) on our Github.
 
 
-# 🙏 Special Thanks  
+# 👏 Special Thanks
 - 💻 HrFlow.ai : [Daniel ROSA](https://github.com/DanielRosa73) - Software Engineer
-- 🤝 Bullhorn : Arne LOOTEN - Partner Manager 
+- 🤝 Bullhorn : Arne LOOTEN - Partner Manager
 

@@ -5,7 +5,7 @@
 - [🔌 Connector Actions](#-connector-actions)
 - [🐍 Quick Start Examples](#-quick-start-examples)
 - [🔗 Useful Links](#-useful-links)
-- [🙏 Special Thanks](#-special-thanks)
+- [👏 Special Thanks](#-special-thanks)
 
 
 # 📝 About Workable
@@ -17,7 +17,7 @@ Workable is more than an applicant tracking system, Workable's talent acquisitio
 <image src=https://user-images.githubusercontent.com/55802491/212356711-8edfc9df-bf96-4dda-825b-f5bf1f324edf.png width=90% height=100% >
 </p>
 
-# 📊 Data Flow 
+# 📊 Data Flow
 In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
 <p align="center">
@@ -46,9 +46,9 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 <image src=https://user-images.githubusercontent.com/107410704/219015552-1ca1c524-3321-4f3e-81ee-b1ada3f675c4.png width=90% height=100% >
 </p>
 
-Once the connector module is imported, you can leverage all the different actions that it offers. 
+Once the connector module is imported, you can leverage all the different actions that it offers.
 
-For more code details checkout connector code 
+For more code details checkout connector code
 
 
 # 🔗 Useful Links
@@ -58,7 +58,7 @@ For more code details checkout connector code
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/workable) on our Github.
 
 
-# 🙏 Special Thanks  
+# 👏 Special Thanks
 - 💻 HrFlow.ai :  [Limam VADHEL](https://github.com/limamvadhel) - Software Engineer
 - 💻 HrFlow.ai : [Leo FERRETTI](https://github.com/Sprenger07) - Software Engineer
 - 💻 HrFlow.ai :[Corentin DUCHENE](https://github.com/CorentinDuchene) - Software Engineer

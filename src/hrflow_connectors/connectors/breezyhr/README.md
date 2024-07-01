@@ -7,7 +7,7 @@
   - [**Push Profiles Action**](#push-profiles-action)
   - [**Pull Jobs Action**](#pull-jobs-action)
 - [🔗 Useful Links](#-useful-links)
-- [🙏 Special Thanks](#-special-thanks)
+- [👏 Special Thanks](#-special-thanks)
 
 
 # 📝 About BreezyHR 
@@ -62,7 +62,7 @@ For more code details checkout connector code
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/breezyhr) on our Github.
 
 
-# 🙏 Special Thanks  
+# 👏 Special Thanks  
 - 💻 HrFlow.ai :  [Limam VADHEL](https://github.com/limamvadhel) - Software Engineer
 - 💻 HrFlow.ai : [Leo FERRETTI](https://github.com/Sprenger07) - Software Engineer
 - 💻 HrFlow.ai :[Corentin DUCHENE](https://github.com/CorentinDuchene) - Software Engineer

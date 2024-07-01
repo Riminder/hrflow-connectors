@@ -5,7 +5,7 @@
 - [🔌 Connector Actions](#-connector-actions)
 - [🐍 Quick Start Example](#-quick-start-example)
 - [🔗 Useful Links](#-useful-links)
-- [🙏 Special Thanks](#-special-thanks)
+- [👏 Special Thanks](#-special-thanks)
 
 
 # 📝 About Hubspot
@@ -18,7 +18,7 @@ HubSpot is a CRM platform with all the software, integrations, and resources you
 </p>
 
 
-# 📊 Data Flow 
+# 📊 Data Flow
 In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
 <p align="center">
@@ -51,9 +51,9 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 <image src=https://user-images.githubusercontent.com/107410704/219017227-8e7f86a6-fd8d-4e31-ab07-5ef13184eab0.png width=90% height=100% >
 </p>
 
-Once the connector module is imported, you can leverage all the different actions that it offers. 
+Once the connector module is imported, you can leverage all the different actions that it offers.
 
-For more code details checkout connector code 
+For more code details checkout connector code
 
 
 # 🔗 Useful Links
@@ -63,7 +63,7 @@ For more code details checkout connector code
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/hubspot) on our Github.
 
 
-# 🙏 Special Thanks  
+# 👏 Special Thanks
 - 💻 HrFlow.ai :  [Nedhir Ebnou](https://github.com/nedhirouebnou) - Software Engineer
 - 🤝 Hubspot :[Hubspot for the  accessible documentation](https://www.hubspot.com)
 

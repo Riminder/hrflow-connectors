@@ -10,7 +10,7 @@
 - [👍 Special Thanks](#-special-thanks)
 
 
-# 📝 About Salesforce 
+# 📝 About Salesforce
 
 Salesforce, Inc. is an American cloud-based software company headquartered in San Francisco, California. It provides customer relationship management (CRM) software and applications focused on sales, customer service, marketing automation, e-commerce, analytics, and application development.
 
@@ -21,8 +21,8 @@ Salesforce, Inc. is an American cloud-based software company headquartered in Sa
 
 # Prerequesit
 
-In order to leverage the Salesforce connector you need to perform initial setup of HrFlow tables in your Salesforce integration. 
-The code below uses Salesforce API to create the following Salesforce Custom Objects: 
+In order to leverage the Salesforce connector you need to perform initial setup of HrFlow tables in your Salesforce integration.
+The code below uses Salesforce API to create the following Salesforce Custom Objects:
 - `Hrflow_Job__c`
 - `Hrflow_Profile__c`
     - `Hrflow_Experience__c`
@@ -31,10 +31,10 @@ The code below uses Salesforce API to create the following Salesforce Custom Obj
 
 > 💡 _Before running the code you can review all details about the Custom Objects in this [JSON](./hrflow_custom_objects.json) file_
 
-In order to run code below you need: 
+In order to run code below you need:
 - API Access enabled for your organization. Check this [link](https://help.salesforce.com/s/articleView?id=000385436&type=1) to see if it is supported by your Salesforce Edition
 - A Salesforce user with API Enabled permission and enough privileges to create Custom Objects
-- Install the [simple-salesforce](https://github.com/simple-salesforce/simple-salesforce) Python package 
+- Install the [simple-salesforce](https://github.com/simple-salesforce/simple-salesforce) Python package
 ```python
 import json
 
@@ -45,10 +45,10 @@ HRFLOW_CUSTOM_OBJECTS_PATH = "./hrflow_custom_objects.json"
 # Salesforce credentials
 username = "==============FILL==ME=============="
 password = "==============FILL==ME=============="
-# How Can I Find My Security Token and Use It in Data Loader | Salesforce Platform 
+# How Can I Find My Security Token and Use It in Data Loader | Salesforce Platform
 # https://www.youtube.com/watch?v=nYbfxeSGKFM&ab_channel=SalesforceSupport
 security_token = "==============FILL==ME=============="
-# Find your Salesforce Organization ID 
+# Find your Salesforce Organization ID
 # https://help.salesforce.com/s/articleView?id=000385215&type=1
 organization_id = "==============FILL==ME=============="
 
@@ -79,7 +79,7 @@ for custom_object  in hrflow_custom_objects:
 ```
 
 ## How to create list view of HrFlow Custom Objects
-Once logged to your Salesforce environment go to Setup then click Create > Custom Tab. Once created you should be able to view the list of records in each of the tables. 
+Once logged to your Salesforce environment go to Setup then click Create > Custom Tab. Once created you should be able to view the list of records in each of the tables.
 
 <image width="1919" alt="HrFlow Jobs" src="https://github.com/Riminder/hrflow-connectors/assets/65894619/f20f62fd-e370-4e7f-8b85-0c4c2d4e43d1">
 <image width="1919" alt="HrFlow Profiles" src="https://github.com/Riminder/hrflow-connectors/assets/65894619/828f25f5-a3da-4a4f-bcbb-56d6f75c3304">
@@ -90,7 +90,7 @@ Once logged to your Salesforce environment go to Setup then click Create > Custo
 ## Hrflow.ai Recruiter Copilot Widget installed in Salesforce
 <image width="1919" alt="Scoring" src="https://github.com/Riminder/hrflow-connectors/assets/135601200/2434d21a-1994-4e16-a6b0-65d7e2a6fa49">
 
-# 📊 Data Flow 
+# 📊 Data Flow
 In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
 <p align="center">
@@ -120,9 +120,9 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 <image src=https://github.com/Riminder/hrflow-connectors/assets/65894619/2ee70c18-e557-4b6b-8b2b-ea2243d58c1b width=90% height=100% >
 </p>
 
-Once the connector module is imported, you can leverage all the different actions that it offers. 
+Once the connector module is imported, you can leverage all the different actions that it offers.
 
-For more code details checkout connector code 
+For more code details checkout connector code
 
 # 🔗 Useful Links
 
@@ -131,6 +131,6 @@ For more code details checkout connector code
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/salesforce) on our Github.
 
 
-# 👍 Special Thanks  
+# 👍 Special Thanks
 - 💻 HrFlow.ai : [the-forest-tree](https://github.com/the-forest-tree) - Software Engineer
 - 🤝 Salesforce : [Salesforce Developer Centers](https://developer.salesforce.com/)
