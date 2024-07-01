@@ -2,6 +2,41 @@
 
 
 
+## v4.15.0 (2024-07-01)
+
+### Documentation
+
+* docs: update README.md for Pole Emploi ([`914618a`](https://github.com/Riminder/hrflow-connectors/commit/914618ac6319868d145f387861d1c8fbaaf1822f))
+
+### Feature
+
+* feat: add pull_profile_list action for Hubspot
+
+update review pr
+
+update review pr ([`1a75e2e`](https://github.com/Riminder/hrflow-connectors/commit/1a75e2eb9a12a64cab3b4d1e93739de07e492124))
+
+* feat: add pull_profile_list action for Recruitee
+
+Added pull_profile_list action for Recruitee + updated READMEs
+
+update review pr
+
+update review pr ([`f0dd843`](https://github.com/Riminder/hrflow-connectors/commit/f0dd84378ad6e4316aac8448f79ec60aab2a6beb))
+
+* feat: add pull_profile_list action for Greenhouse
+
+update review pr
+
+update review pr
+
+update review pr ([`b5addfa`](https://github.com/Riminder/hrflow-connectors/commit/b5addfa659f2fadcfea2a131c1253bcd99d73882))
+
+### Unknown
+
+* doc: correct mismatch between template and readmes and trim trailing white space ([`4f988f6`](https://github.com/Riminder/hrflow-connectors/commit/4f988f62385947a77de8a6c9d1c5cc1a82ecd54a))
+
+
 ## v4.14.0 (2024-07-01)
 
 ### Feature
