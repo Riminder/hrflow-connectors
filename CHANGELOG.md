@@ -2,6 +2,19 @@
 
 
 
+## v4.14.0 (2024-07-01)
+
+### Feature
+
+* feat: add pull_profile_list for SAPSuccessFactors
+
+update review pr
+
+update review pr ([`a3e4ffe`](https://github.com/Riminder/hrflow-connectors/commit/a3e4ffe20f7752f0edebf45bfea61172f7b6cfba))
+
+* feat: Add a new pull profile list action to the BreezyHr connector ([`4e20c8d`](https://github.com/Riminder/hrflow-connectors/commit/4e20c8d7fb3b6e9e544fc3d8188053c939127085))
+
+
 ## v4.13.1 (2024-06-13)
 
 ### Ci
