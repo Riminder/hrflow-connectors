@@ -194,6 +194,78 @@ def format_profile(hrflow_profile: HrFlowProfile) -> BreezyProfileModel:
     return breezy_profile
 
 
+def format_date_to_iso(date):
+    year = date.get("year")
+    month = date.get("month")
+    day = date.get("day")
+    # Check if the date is complete, i.e., year, month, and day are all present
+    if year is not None and month is not None and day is not None:
+        return f"{year:04d}-{month:02d}-{day:02d}"
+    else:
+        return None
+
+
+def format_candidate(breezy_profile: BreezyProfileModel) -> HrFlowProfile:
+    """
+    Format a Breezy profile object into a Hrflow profile object
+    Args:
+        data (BreezyProfileModel): Breezy Profile to format
+    Returns:
+        HrFlowProfile: a Hrflow formatted profile object
+    """
+    info = dict(
+        full_name=breezy_profile["name"],
+        email=breezy_profile["email_address"],
+        phone=breezy_profile["phone_number"],
+        urls=[
+            dict(type=social_profile["type"], url=social_profile["url"])
+            for social_profile in breezy_profile["social_profiles"]
+        ],
+        summary=breezy_profile["summary"],
+        location={"text": breezy_profile["address"], "lat": None, "lng": None},
+    )
+    hrflow_profile = HrFlowProfile(info=info)
+    hrflow_profile["experiences"] = []
+    hrflow_profile["educations"] = []
+
+    educations = breezy_profile.get("education", [])
+    for education in educations:
+        format_education = dict()
+        format_education["school"] = education.get("school_name")
+        degree = education.get("degree")
+        field_of_study = education.get("field_of_study")
+        if degree or field_of_study:
+            format_education["title"] = (
+                (degree if degree else "")
+                + " "
+                + (field_of_study if field_of_study else "")
+            ).strip()
+        if education.get("start_date") is not None:
+            format_education["date_start"] = format_date_to_iso(education["start_date"])
+        if education.get("end_date") is not None:
+            format_education["date_end"] = format_date_to_iso(education["end_date"])
+        hrflow_profile["educations"].append(format_education)
+
+    experiences = breezy_profile.get("work_history", [])
+    for experience in experiences:
+        format_experience = dict()
+        format_experience["company"] = experience.get("company_name")
+
+        format_experience["title"] = experience.get("title")
+        format_experience["description"] = experience.get("summary")
+        if experience.get("start_date") is not None:
+            format_experience["date_start"] = format_date_to_iso(
+                experience["start_date"]
+            )
+        if experience.get("end_date") is not None:
+            format_experience["date_end"] = format_date_to_iso(experience["end_date"])
+        hrflow_profile["experiences"].append(format_experience)
+
+    hrflow_profile["tags"] = breezy_profile["tags"]
+
+    return hrflow_profile
+
+
 BreezyHR = Connector(
     name="BreezyHR",
     type=ConnectorType.ATS,
@@ -230,6 +302,20 @@ BreezyHR = Connector(
             origin=HrFlowProfileWarehouse,
             target=BreezyHRProfileWarehouse,
             action_type=ActionType.outbound,
+        ),
+        ConnectorAction(
+            name=ActionName.pull_profile_list,
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves all profiles via the ***BreezyHR*** API and send them"
+                " to a ***Hrflow.ai Source***."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "PullProfilesActionParameters", format=format_candidate
+            ),
+            origin=BreezyHRProfileWarehouse,
+            target=HrFlowProfileWarehouse,
+            action_type=ActionType.inbound,
         ),
     ],
 )

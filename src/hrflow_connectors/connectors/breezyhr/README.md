@@ -34,6 +34,7 @@ In this section, we outline the data flow between different components of the co
 | ------- | ----------- |
 | [**Pull job list**](docs/pull_job_list.md) | Retrieves all jobs via the ***BreezyHR*** API and send them to a ***Hrflow.ai Board***. |
 | [**Push profile list**](docs/push_profile_list.md) | Push all profiles from ***Hrflow.ai Source*** via ***BreezyHR*** API and send them to a ***BreezyHR***. |
+| [**Pull profile list**](docs/pull_profile_list.md) | Retrieves all profiles via the ***BreezyHR*** API and send them to a ***Hrflow.ai Source***. |
 
 
 </p>
@@ -65,5 +66,6 @@ For more code details checkout connector code
 - 💻 HrFlow.ai :  [Limam VADHEL](https://github.com/limamvadhel) - Software Engineer
 - 💻 HrFlow.ai : [Leo FERRETTI](https://github.com/Sprenger07) - Software Engineer
 - 💻 HrFlow.ai :[Corentin DUCHENE](https://github.com/CorentinDuchene) - Software Engineer
+- 💻 HrFlow.ai :  [Nedhir Ebnou](https://github.com/nedhirouebnou) - Software Engineer
 - 🤝 BreezyHR :[Breezy HR for the partnership and accessible documentation](https://breezy.hr/)
 
