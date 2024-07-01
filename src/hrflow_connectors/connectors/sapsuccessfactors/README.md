@@ -5,10 +5,10 @@
 - [🔌 Connector Actions](#-connector-actions)
 - [🐍 Quick Start Examples](#-quick-start-examples)
 - [🔗 Useful Links](#-useful-links)
-- [🙏 Special Thanks](#-special-thanks)
+- [👏 Special Thanks](#-special-thanks)
 
 
-# 📝 About SAP 
+# 📝 About SAP
 
 Get software and technology solutions from SAP, the leader in business applications. Run simple with the best in cloud, analytics, mobile and IT solutions.
 
@@ -16,7 +16,7 @@ Get software and technology solutions from SAP, the leader in business applicati
 <image src=https://user-images.githubusercontent.com/46778695/213727218-85872de6-f244-4c60-8904-ae9082fe8aa8.png width=90% height=100% >
 </p>
 
-# 📊 Data Flow 
+# 📊 Data Flow
 In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
 <p align="center">
@@ -46,9 +46,9 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 <image src=https://user-images.githubusercontent.com/57711045/219327857-d3f3ec48-38cc-466a-ad48-7dce0c37e7ad.png width=90% height=100% >
 </p>
 
-Once the connector module is imported, you can leverage all the different actions that it offers. 
+Once the connector module is imported, you can leverage all the different actions that it offers.
 
-For more code details checkout connector code 
+For more code details checkout connector code
 
 
 # 🔗 Useful Links
@@ -61,7 +61,7 @@ For more code details checkout connector code
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/sapsuccessfactors) on our Github.
 
 
-# 🙏 Special Thanks  
+# 👏 Special Thanks
 - 💻 HrFlow.ai: [Daniel ROSA](https://github.com/DanielRosa73) - Software Engineer
 - 💻 HrFlow.ai: [Limam VADHEL](https://github.com/limamvadhel) - Software Engineer
 - 💻 HrFlow.ai: [Corentin DUCHENE](https://github.com/CorentinDuchene) - Software Engineer

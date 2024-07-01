@@ -5,10 +5,10 @@
 - [🔌 Connector Actions](#-connector-actions)
 - [🐍 Quick Start Examples](#-quick-start-examples)
 - [🔗 Useful Links](#-useful-links)
-- [🙏 Special Thanks](#-special-thanks)
+- [👏 Special Thanks](#-special-thanks)
 
 
-# 📝 About Ceridian 
+# 📝 About Ceridian
 
 Cloud HCM software that brings together real-time payroll, HR, benefits, time reporting, talent and workforce management to empower your people.
 
@@ -16,7 +16,7 @@ Cloud HCM software that brings together real-time payroll, HR, benefits, time re
 <image src=https://user-images.githubusercontent.com/46778695/213708839-35e09e59-8535-423b-bd01-55c37b5fbddd.png width=90% height=100% >
 </p>
 
-# 📊 Data Flow 
+# 📊 Data Flow
 In this section, we outline the data flow between different components of the connector. The following schema provides a graphical representation of the data exchange process
 
 <p align="center">
@@ -46,9 +46,9 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 <image src=https://user-images.githubusercontent.com/107410704/219010630-f7f92608-48a9-43ce-95fb-2157a436b3cd.png width=90% height=100% >
 </p>
 
-Once the connector module is imported, you can leverage all the different actions that it offers. 
+Once the connector module is imported, you can leverage all the different actions that it offers.
 
-For more code details checkout connector code 
+For more code details checkout connector code
 
 
 # 🔗 Useful Links
@@ -58,7 +58,7 @@ For more code details checkout connector code
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/ceridian) on our Github.
 
 
-# 🙏 Special Thanks  
+# 👏 Special Thanks
 - 💻 HrFlow.ai: [Daniel ROSA](https://github.com/DanielRosa73) - Software Engineer
 - 💻 HrFlow.ai:  [Limam VADHEL](https://github.com/limamvadhel) - Software Engineer
 - 💻 HrFlow.ai: [Corentin DUCHENE](https://github.com/CorentinDuchene) - Software Engineer
