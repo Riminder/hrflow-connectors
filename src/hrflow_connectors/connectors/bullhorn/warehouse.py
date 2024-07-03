@@ -1,4 +1,6 @@
+import json
 import typing as t
+from datetime import datetime, timezone
 from logging import LoggerAdapter
 
 import requests
@@ -72,6 +74,27 @@ class ReadJobsParameters(ParametersModel):
     username: str = Field(
         ...,
         description="Username for Bullhorn login",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+
+    last_modified_date: str = Field(
+        ...,
+        description="Last Modified Date",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+
+    fields: str = Field(
+        ...,
+        description="Fields to be retrieved from Bullhorn",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+
+    query: str = Field(
+        ...,
+        description="the query parameters",
         repr=False,
         field_type=FieldType.Auth,
     )
@@ -177,41 +200,91 @@ def read_jobs(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
+    start = 0
+    last_modified_date = parameters.last_modified_date
     authentication = auth(
         parameters.username,
         parameters.password,
         parameters.client_id,
         parameters.client_secret,
     )
-    start = 0
+    if read_mode is ReadMode.sync:
+        if parameters.last_modified_date is None:
+            raise Exception("last_modified_date cannot be None in ReadMode.sync")
+        last_modified_date = parameters.last_modified_date
+    else:
+        if parameters.last_modified_date is not None:
+            adapter.warning(
+                "last_modified_date is ignored in ReadMode.incremental, using"
+                " read_from instead"
+            )
+        if read_from:
+            try:
+                read_from = json.loads(read_from)
+                last_modified_date = read_from["last_modified_date"]
+                last_id = read_from["last_id"]
+            except json.JSONDecodeError as e:
+                raise Exception(f"Failed to JSON parse read_from={read_from} error={e}")
+            except KeyError as e:
+                raise Exception(
+                    "Failed to find expected key in"
+                    f" read_from={read_from} error={repr(e)}"
+                )
+        else:
+            last_modified_date = parameters.last_modified_date
 
     while True:
-        jobs_url = (
-            authentication["restUrl"]
-            + "search/JobOrder?query=(isOpen:true)&fields=*&BhRestToken="
-            + authentication["BhRestToken"]
-            + "&start="
-            + str(start)
-        )
-
-        response = requests.get(url=jobs_url)
-        if response.status_code // 100 != 2:
-            adapter.error(
-                "Failed to pull jobs from Bullhorn status_code={} response={}".format(
-                    response.status_code, response.text
-                )
+        try:
+            # Utiliser le paramètre query et ajouter la partie dateLastModified
+            query = (
+                f"{parameters.query} AND"
+                f" dateLastModified:[{last_modified_date}%20TO%20*]"
             )
-            raise Exception("Failed to pull jobs from Bullhorn")
-        response = response.json()
+            jobs_url = (
+                authentication["restUrl"]
+                + f"search/JobOrder?query={query}&fields="
+                + parameters.fields
+                + "&BhRestToken="
+                + authentication["BhRestToken"]
+                + "&start="
+                + str(start)
+            )
 
-        start = response["start"] + response["count"]
-        data = response["data"]
+            response = requests.get(url=jobs_url)
 
-        for job in data:
-            yield job
+            response = response.json()
+            start = response["start"] + response["count"]
+            data = response["data"]
 
-        if start >= response["total"]:
-            break
+            for job in data:
+                if (
+                    job["dateLastModified"] == last_modified_date
+                    and job["id"] <= last_id
+                ):
+                    adapter.info("job with id <= last_id")
+                    continue
+                yield job
+
+            if start >= response["total"]:
+                break
+
+        except requests.HTTPError as e:
+            if e.response.status_code == 401:
+                adapter.info(
+                    "Received 401 error. Retrying authentication to continue fetching"
+                    " jobs."
+                )
+                authentication = auth(
+                    parameters.username,
+                    parameters.password,
+                    parameters.client_id,
+                    parameters.client_secret,
+                    refresh_token=authentication["refresh_token"],
+                )
+                continue
+            else:
+                adapter.error("Failed to fetch jobs from Bullhorn.")
+                raise e
 
 
 def read_profiles_parsing(
@@ -378,6 +451,12 @@ def read_profiles(
             break
 
 
+def item_to_read_from_job(item: t.Dict) -> str:
+    return json.dumps(
+        dict(last_modified_date=item["dateLastModified"], last_id=item["id"])
+    )
+
+
 BullhornProfileWarehouse = Warehouse(
     name="Bullhorn Profiles",
     data_schema=BullhornProfile,
@@ -408,4 +487,6 @@ BullhornJobWarehouse = Warehouse(
         function=read_jobs,
         endpoints=[],
     ),
+    supports_incremental=True,
+    item_to_read_from=item_to_read_from_job,
 )

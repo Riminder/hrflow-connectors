@@ -21,6 +21,9 @@ Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board
 | `client_secret` :red_circle: | `str` | None | Client secret identifier for Bullhorn |
 | `password` :red_circle: | `str` | None | Passoword for Bullhorn login |
 | `username` :red_circle: | `str` | None | Username for Bullhorn login |
+| `last_modified_date` :red_circle: | `str` | None | Last Modified Date |
+| `fields` :red_circle: | `str` | None | Fields to be retrieved from Bullhorn |
+| `query` :red_circle: | `str` | None | the query parameters |
 
 ## Destination Parameters
 
@@ -58,6 +61,9 @@ Bullhorn.pull_job_list(
         client_secret="your_client_secret",
         password="your_password",
         username="your_username",
+        last_modified_date="your_last_modified_date",
+        fields="your_fields",
+        query="your_query",
     ),
     target_parameters=dict(
         api_secret="your_api_secret",
