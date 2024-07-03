@@ -41,7 +41,6 @@ def make_token_request(data):
         f"Token request failed with status code {response.status_code}: {response.text}"
     )
 
-
 def login_to_bullhorn(access_token):
     """
     Log in to Bullhorn using the obtained access token.

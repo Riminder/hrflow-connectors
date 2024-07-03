@@ -73,6 +73,27 @@ class WriteApplicationsParameters(BaseParameters):
         field_type=FieldType.Auth,
     )
 
+    last_modified_date: str = Field(
+        ...,
+        description="Last Modified Date",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+
+    fields: str = Field(
+        ...,
+        description="Fields to be retrieved from Bullhorn",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+
+    query: str = Field(
+        ...,
+        description="the query parameters",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+
 
 class ReadJobsParameters(BaseParameters):
     last_modified_date: str = Field(
