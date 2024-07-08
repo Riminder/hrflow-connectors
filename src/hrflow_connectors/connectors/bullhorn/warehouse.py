@@ -1,6 +1,7 @@
 import json
+import time
 import typing as t
-from datetime import datetime, timezone
+from datetime import datetime
 from logging import LoggerAdapter
 
 import requests
@@ -19,28 +20,25 @@ from hrflow_connectors.core import (
 from hrflow_connectors.core.warehouse import ReadMode
 
 
-class WriteProfilesParameters(ParametersModel):
+class BaseParameters(ParametersModel):
     client_id: str = Field(
         ...,
         description="Client identifier for Bullhorn",
         repr=False,
         field_type=FieldType.Auth,
     )
-
     client_secret: str = Field(
         ...,
         description="Client secret identifier for Bullhorn",
         repr=False,
         field_type=FieldType.Auth,
     )
-
     password: str = Field(
         ...,
-        description="Passoword for Bullhorn login",
+        description="Password for Bullhorn login",
         repr=False,
         field_type=FieldType.Auth,
     )
-
     username: str = Field(
         ...,
         description="Username for Bullhorn login",
@@ -49,38 +47,37 @@ class WriteProfilesParameters(ParametersModel):
     )
 
 
-class ReadJobsParameters(ParametersModel):
-    client_id: str = Field(
+class WriteProfilesParameters(BaseParameters):
+    pass
+
+
+class WriteApplicationsParameters(BaseParameters):
+    job_id: str = Field(
         ...,
-        description="Client identifier for Bullhorn",
+        description="id for the job in Bullhorn",
         repr=False,
         field_type=FieldType.Auth,
     )
 
-    client_secret: str = Field(
+    status_when_created: str = Field(
         ...,
-        description="Client secret identifier for Bullhorn",
+        description="The status of the application when created in Bullhorn",
         repr=False,
         field_type=FieldType.Auth,
     )
 
-    password: str = Field(
-        ...,
-        description="Passoword for Bullhorn login",
+    source: str = Field(
+        None,
+        description="The source of the application to be created in Bullhorn",
         repr=False,
         field_type=FieldType.Auth,
     )
 
-    username: str = Field(
-        ...,
-        description="Username for Bullhorn login",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
 
+class ReadJobsParameters(BaseParameters):
     last_modified_date: str = Field(
         ...,
-        description="Last Modified Date",
+        description="Last Modified Date in timestamp",
         repr=False,
         field_type=FieldType.Auth,
     )
@@ -100,34 +97,8 @@ class ReadJobsParameters(ParametersModel):
     )
 
 
-class ReadProfileParameters(ParametersModel):
-    client_id: str = Field(
-        ...,
-        description="Client identifier for Bullhorn",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-
-    client_secret: str = Field(
-        ...,
-        description="Client secret identifier for Bullhorn",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-
-    password: str = Field(
-        ...,
-        description="Passoword for Bullhorn login",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-
-    username: str = Field(
-        ...,
-        description="Username for Bullhorn login",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
+class ReadProfileParameters(BaseParameters):
+    pass
 
 
 def write(
@@ -194,6 +165,207 @@ def write(
     return failed_profiles
 
 
+def write_application(
+    adapter: LoggerAdapter,
+    parameters: WriteApplicationsParameters,
+    profiles: t.Iterable[t.Dict],
+) -> t.List[t.Dict]:
+    adapter.info(f"Pushing {len(profiles)} profiles")
+    failed_profiles = []
+
+    def authenticate():
+        return auth(
+            parameters.username,
+            parameters.password,
+            parameters.client_id,
+            parameters.client_secret,
+        )
+
+    def make_request(method, url, params, json=None):
+        response = method(url, params=params, data=json)
+        if response.status_code == 401:
+            adapter.info("Auth token expired, regenerating...")
+            auth_info = authenticate()
+            params["BhRestToken"] = auth_info["BhRestToken"]
+            response = method(url, params=params, data=json)
+        return response
+
+    auth_info = authenticate()
+    rest_url = auth_info["restUrl"]
+    bh_rest_token = auth_info["BhRestToken"]
+    params = {"BhRestToken": bh_rest_token}
+    adapter.info(f"connexion info {params}, rest_url: {rest_url}")
+
+    for profile in profiles:
+        attachment = profile.pop("attachment")
+        if parameters.source:
+            profile["source"] = parameters.source
+        if parameters.status_when_created:
+            profile["status"] = parameters.status_when_created
+        email = profile["email"]
+        # Verify if the Candidate exists
+        search_url = f"{rest_url}search/Candidate"
+        search_query = f"(email:{email} OR email2:{email}) AND isDeleted:0"
+        search_response = make_request(
+            requests.get,
+            search_url,
+            params={
+                "BhRestToken": bh_rest_token,
+                "query": search_query,
+                "fields": (
+                    "id,isDeleted,dateAdded,status,source,"
+                    "email,firstName,lastName,name,mobile,address"
+                ),
+                "sort": "id",
+            },
+        )
+
+        if search_response.status_code != 200:
+            adapter.error(
+                f"Search failed for {email}, status_code={search_response.status_code}"
+                f" And full response {search_response.text}"
+            )
+            failed_profiles.append(profile)
+            continue
+        adapter.info(f"search response {search_response.text}")
+        search_results = search_response.json()
+        candidate_exists = search_results["count"] > 0
+        if candidate_exists:
+            candidate_data = search_results["data"][0]
+            candidate_id = candidate_data["id"]
+
+            # Update profile with existing candidate data if available
+            profile.update(
+                {
+                    "firstName": candidate_data.get(
+                        "firstName", profile.get("firstName")
+                    ),
+                    "lastName": candidate_data.get("lastName", profile.get("lastName")),
+                    "name": candidate_data.get("name", profile.get("name")),
+                    "address": candidate_data.get("address", profile.get("address")),
+                    "mobile": candidate_data.get("mobile", profile.get("mobile")),
+                    "status": candidate_data.get("status", profile.get("status")),
+                }
+            )
+        else:
+            candidate_id = None
+        # Create or Update the Candidate
+        candidate_url = f"{rest_url}entity/Candidate"
+        method = requests.post if candidate_exists else requests.put
+        url = f"{candidate_url}/{candidate_id}" if candidate_exists else candidate_url
+        profile = json.dumps(profile)
+        adapter.info(f"url to push candidate {url}")
+        adapter.info(f"params {params}")
+        adapter.info(f"profile {profile}")
+        profile_response = make_request(method, url, params, json=profile)
+
+        if profile_response.status_code // 100 != 2:
+            adapter.error(
+                f"Failed to push profile for {email},"
+                f" status_code={profile_response.status_code}"
+                f" and response={profile_response.text}"
+            )
+            failed_profiles.append(profile)
+            continue
+
+        adapter.info(f"profile_response {profile_response.text}")
+        if not candidate_exists:
+            candidate_id = profile_response.json().get("changedEntityId")
+
+        # Verify if the Attachment exists already
+        attachment_exists = False
+        attachment_url = f"{rest_url}file/Candidate/{candidate_id}"
+
+        if candidate_exists:
+            get_candidate_attachment_url = (
+                f"{rest_url}entityFiles/Candidate/{candidate_id}"
+            )
+            response = requests.get(get_candidate_attachment_url, params=params)
+
+            if response.status_code == 200:
+                attachments = response.json().get("EntityFiles", [])
+                if attachments and attachment["name"] == attachments[0]["name"]:
+                    attachment_exists = True
+        # Post the Attachment
+        if not attachment_exists:
+            attachment_response = make_request(
+                requests.put, attachment_url, params=params, json=json.dumps(attachment)
+            )
+
+            if attachment_response.status_code // 100 != 2:
+                adapter.info(
+                    f"Failed to push attachment for candidate ID {candidate_id},"
+                    f" status_code={attachment_response.status_code},"
+                    f" response is {attachment_response.text}"
+                )
+                failed_profiles.append(profile)
+            adapter.info(f"attachment_response {attachment_response.text}")
+
+        # Verify the candidtae has already applied for the job
+        job_submission_search_url = f"{rest_url}search/JobSubmission"
+        job_submission_search_query = (
+            f"candidate.id:{candidate_id} AND jobOrder.id:{parameters.job_id}"
+        )
+        job_submission_search_response = make_request(
+            requests.get,
+            job_submission_search_url,
+            params={
+                "BhRestToken": bh_rest_token,
+                "query": job_submission_search_query,
+                "fields": "id,status,dateAdded",
+                "sort": "id",
+            },
+        )
+
+        if job_submission_search_response.status_code != 200:
+            adapter.info(
+                f"Failed to search job submissions for candidate ID {candidate_id},"
+                f" status_code={job_submission_search_response.status_code},"
+                f" response={job_submission_search_response.text}"
+            )
+            failed_profiles.append(profile)
+            continue
+        adapter.info(
+            f"job_submission_search_response {job_submission_search_response.text}"
+        )
+        job_submission_search_results = job_submission_search_response.json()
+        job_submission_exists = job_submission_search_results["count"] > 0
+        job_submission_id = (
+            job_submission_search_results["data"][0]["id"]
+            if job_submission_exists
+            else None
+        )
+        job_submission_url = f"{rest_url}entity/JobSubmission"
+        job_submission_payload = {
+            "candidate": {"id": candidate_id},
+            "jobOrder": {"id": parameters.job_id},
+            "status": parameters.status_when_created,
+            "dateWebResponse": int(
+                time.time() * 1000
+            ),  # Unix timestamp in milliseconds
+        }
+
+        # Create or update the application
+        method = requests.put if not job_submission_exists else requests.post
+        if job_submission_exists:
+            job_submission_url = f"{job_submission_url}/{job_submission_id}"
+
+        job_submission_response = make_request(
+            method, job_submission_url, params, json=json.dumps(job_submission_payload)
+        )
+
+        if job_submission_response.status_code // 100 != 2:
+            adapter.info(
+                f"Failed to submit job application for candidate ID {candidate_id},"
+                f" status_code={job_submission_response.status_code},"
+                f" response={job_submission_response.text}"
+            )
+            failed_profiles.append(profile)
+        adapter.info(f"job_submission_response {job_submission_response.text}")
+
+    return failed_profiles
+
+
 def read_jobs(
     adapter: LoggerAdapter,
     parameters: ReadJobsParameters,
@@ -201,7 +373,7 @@ def read_jobs(
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
     start = 0
-    last_modified_date = parameters.last_modified_date
+
     authentication = auth(
         parameters.username,
         parameters.password,
@@ -233,12 +405,18 @@ def read_jobs(
         else:
             last_modified_date = parameters.last_modified_date
 
+    last_modified_date_filter = transform_timestamp(last_modified_date)
+    if not last_modified_date_filter:
+        raise Exception(
+            "error while applying a transformation date on last modified date to"
+            " perform filtering"
+        )
+
     while True:
         try:
-            # Utiliser le paramètre query et ajouter la partie dateLastModified
             query = (
                 f"{parameters.query} AND"
-                f" dateLastModified:[{last_modified_date}%20TO%20*]"
+                f" dateLastModified:[{last_modified_date_filter}%20TO%20*]"
             )
             jobs_url = (
                 authentication["restUrl"]
@@ -451,6 +629,19 @@ def read_profiles(
             break
 
 
+def transform_timestamp(timestamp):
+    if not timestamp:
+        return None
+    try:
+        # Convert the Unix timestamp (in milliseconds) to a datetime object
+        dt = datetime.fromtimestamp(int(timestamp) / 1000)
+        # Format the datetime object to something like 20221215121030
+        transformed_date = dt.strftime("%Y%m%d%H%M%S")
+        return transformed_date
+    except Exception:
+        return None
+
+
 def item_to_read_from_job(item: t.Dict) -> str:
     return json.dumps(
         dict(last_modified_date=item["dateLastModified"], last_id=item["id"])
@@ -466,6 +657,15 @@ BullhornProfileWarehouse = Warehouse(
     ),
     read=WarehouseReadAction(
         parameters=ReadProfileParameters, function=read_profiles, endpoints=[]
+    ),
+)
+
+BullhornApplicationWarehouse = Warehouse(
+    name="Bullhorn Applications",
+    data_schema=BullhornProfile,
+    data_type=DataType.profile,
+    write=WarehouseWriteAction(
+        parameters=WriteApplicationsParameters, function=write_application, endpoints=[]
     ),
 )
 
