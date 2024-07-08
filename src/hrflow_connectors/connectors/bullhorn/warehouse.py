@@ -73,9 +73,10 @@ class WriteApplicationsParameters(BaseParameters):
         field_type=FieldType.Auth,
     )
 
+class ReadJobsParameters(BaseParameters):
     last_modified_date: str = Field(
         ...,
-        description="Last Modified Date",
+        description="Last Modified Date in timestamp",
         repr=False,
         field_type=FieldType.Auth,
     )
