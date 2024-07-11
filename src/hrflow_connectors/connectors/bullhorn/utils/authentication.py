@@ -57,7 +57,6 @@ def login_to_bullhorn(access_token):
         f" {response.text}"
     )
 
-
 def get_or_refresh_token(
     grant_type, client_id, client_secret, ttl=None, code=None, refresh_token=None
 ):
