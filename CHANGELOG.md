@@ -2,6 +2,13 @@
 
 
 
+## v4.16.0 (2024-07-11)
+
+### Feature
+
+* feat: add more features to Bullhorn and new core action push_application ([`fecf357`](https://github.com/Riminder/hrflow-connectors/commit/fecf3572c7a012016905e59fe9bad52d40287436))
+
+
 ## v4.15.0 (2024-07-01)
 
 ### Documentation

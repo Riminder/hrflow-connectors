@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hrflow-connectors"
-version = "4.15.0"
+version = "4.16.0"
 description = "hrflow-connectors is an open source project created by HrFlow.ai to allow developers to connect easily HR ecosystem component."
 license = "Apache-2.0"
 authors = ["HrFlow.ai <support+hrflow_connectors@hrflow.ai>"]
