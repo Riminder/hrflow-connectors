@@ -56,6 +56,7 @@ This new connector will enable:
 | [**Pull job list**](docs/pull_job_list.md) | Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board |
 | [**Pull resume attachment list**](docs/pull_resume_attachment_list.md) | retrieves profiles attachments from Bullhorn and Parses them and sends them to Hrflow.ai source |
 | [**Pull profile list**](docs/pull_profile_list.md) | Retrieves profiles from Bullhorn and writes them to Hrflow.ai source |
+| [**Push application**](docs/push_application.md) | Retrieves profiles from Hrflow.ai and writes their applications to the Bullhorn source |
 
 
 </p>|

@@ -6,6 +6,7 @@ import requests
 from hrflow_connectors.connectors.bullhorn.schemas import BullhornProfile
 from hrflow_connectors.connectors.bullhorn.utils import date_format
 from hrflow_connectors.connectors.bullhorn.warehouse import (
+    BullhornApplicationWarehouse,
     BullhornJobWarehouse,
     BullhornProfileParsingWarehouse,
     BullhornProfileWarehouse,
@@ -43,6 +44,7 @@ def get_location(info: t.Dict) -> t.Dict:
             fields = {}
         location_dict = {
             "address1": location.get("text"),
+            "address2": None,
             "city": fields.get("city"),
             "state": fields.get("country"),
             "zip": fields.get("postcode"),
@@ -126,7 +128,13 @@ def get_experience(experience_list: t.List[t.Dict]) -> t.List[t.Dict]:
     return experience_json
 
 
-def get_attachments(attachment_list: t.List[t.Dict]) -> t.List[t.Dict]:
+def get_attachments(
+    attachment_list: t.List[t.Dict],
+    file_type: str = "SAMPLE",
+    content_type: str = "text/plain",
+    type: str = "cover",
+    format: bool = False,
+) -> t.List[t.Dict]:
     attachments_json = []
     for hrflow_attachment in attachment_list:
         url = hrflow_attachment["public_url"]
@@ -136,12 +144,15 @@ def get_attachments(attachment_list: t.List[t.Dict]) -> t.List[t.Dict]:
         attachment = {
             "externalID": "portfolio",
             "fileContent": b64.decode(),
-            "fileType": "SAMPLE",
+            "fileType": file_type,
             "name": hrflow_attachment["file_name"],
-            "contentType": "text/plain",
             "description": "Resume file for candidate.",
-            "type": "cover",
+            "type": type,
         }
+        if format:
+            attachment["format"] = "PDF"
+        else:
+            attachment["content_type"] = content_type
         attachments_json.append(attachment)
     return attachments_json
 
@@ -371,6 +382,28 @@ def profile_format(data: BullhornProfile) -> t.Dict:
     return profile
 
 
+def format_application(data: HrFlowProfile) -> t.Dict:
+    info = data.get("info") or {}
+    attachments = (
+        [data["attachments"][0]] if data.get("attachments") is not None else []
+    )
+    profile = {
+        "firstName": info.get("first_name"),
+        "lastName": info.get("last_name"),
+        "name": info.get("full_name"),
+        "address": get_location(info),
+        "email": info.get("email"),
+        "mobile": info.get("phone"),
+    }
+
+    attachment_list = get_attachments(
+        attachments, file_type="RESUME", type="RESUME", format=True
+    )
+
+    profile["attachment"] = attachment_list[0] if len(attachment_list) > 0 else {}
+    return profile
+
+
 DESCRIPTION = "Transform Your Business with Bullhorn Staffing and Recruitment Software"
 
 Bullhorn = Connector(
@@ -431,6 +464,20 @@ Bullhorn = Connector(
             origin=BullhornProfileWarehouse,
             target=HrFlowProfileWarehouse,
             action_type=ActionType.inbound,
+        ),
+        ConnectorAction(
+            name=ActionName.push_application,
+            trigger_type=WorkflowType.catch,
+            description=(
+                "Retrieves profiles from Hrflow.ai and writes their applications to the"
+                " Bullhorn source"
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "WriteProfileActionParameters", format=format_application
+            ),
+            origin=HrFlowProfileWarehouse,
+            target=BullhornApplicationWarehouse,
+            action_type=ActionType.outbound,
         ),
     ],
 )
