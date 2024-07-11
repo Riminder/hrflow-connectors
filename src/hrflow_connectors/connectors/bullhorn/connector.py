@@ -130,10 +130,10 @@ def get_experience(experience_list: t.List[t.Dict]) -> t.List[t.Dict]:
 
 def get_attachments(
     attachment_list: t.List[t.Dict],
-    file_type="SAMPLE",
-    content_type="text/plain",
-    type="cover",
-    format=False,
+    file_type: str = "SAMPLE",
+    content_type: str = "text/plain",
+    type: str = "cover",
+    format: bool = False,
 ) -> t.List[t.Dict]:
     attachments_json = []
     for hrflow_attachment in attachment_list:
@@ -383,22 +383,24 @@ def profile_format(data: BullhornProfile) -> t.Dict:
 
 
 def format_application(data: HrFlowProfile) -> t.Dict:
-    info = data.get("info")
-    attachments = [data.get("attachments")[0]]
+    info = data.get("info") or {}
+    attachments = (
+        [data.get("attachments")[0]] if data.get("attachments") is not None else []
+    )
     profile = {
-        "firstName": info.get("first_name") if info else None,
-        "lastName": info.get("last_name") if info else None,
-        "name": info.get("full_name") if info else None,
+        "firstName": info.get("first_name"),
+        "lastName": info.get("last_name"),
+        "name": info.get("full_name"),
         "address": get_location(info),
-        "email": info.get("email") if info else None,
-        "mobile": info.get("phone") if info else None,
+        "email": info.get("email"),
+        "mobile": info.get("phone"),
     }
 
     attachment_list = get_attachments(
         attachments, file_type="RESUME", type="RESUME", format=True
     )
 
-    profile["attachment"] = attachment_list[0]
+    profile["attachment"] = attachment_list[0] if len(attachment_list) > 0 else {}
     return profile
 
 

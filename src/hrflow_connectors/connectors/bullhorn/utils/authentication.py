@@ -1,29 +1,15 @@
 import json
-import urllib.parse as urlparse
-import urllib.request as urllib2
+from urllib.parse import parse_qs, urlparse
 
 import requests
 
 base_url = "https://auth.bullhornstaffing.com/oauth"
 
 
-class AuthCodeRedirectHandler(urllib2.HTTPRedirectHandler):
+def get_auth_code(username, password, client_id):
     """
-    A bare bones redirect handler that pulls the auth code sent back
-    by OAuth off the query string of the redirect URI given in the
-    Location header.  Does no checking for other errors or bad/missing
-    information.
+    Retrieve the authorization code by initiating the OAuth flow.
     """
-
-    def http_error_302(self, req, fp, code, msg, headers):
-        """Handler for 302 responses that assumes a properly constructed
-        OAuth 302 response and pulls the auth code out of the header."""
-        qs = urlparse.urlparse(headers["Location"]).query
-        auth_code = urlparse.parse_qs(qs)["code"][0]
-        return auth_code
-
-
-def build_auth_code_request(username, password, client_id):
     data = {
         "client_id": client_id,
         "response_type": "code",
@@ -31,67 +17,50 @@ def build_auth_code_request(username, password, client_id):
         "password": password,
         "action": "Login",
     }
-
-    encoded = urlparse.urlencode(data).encode("utf-8")
-    req = urllib2.Request(url=base_url + "/authorize", data=encoded)
-
-    try:
-        urllib2.urlopen(req)
-    except urllib2.HTTPError as e:
-        if e.code == 307:
-            redirect_url = e.headers["Location"]
-            req = urllib2.Request(url=redirect_url, data=encoded)
-        else:
-            raise Exception(f"HTTP Error {e.code}: {e.read()}")
-    return req
-
-
-def get_auth_code(username, password, client_id):
-    """
-    Helper function to get the authorization code.
-    """
-    req = build_auth_code_request(username, password, client_id)
-    opener = urllib2.build_opener(AuthCodeRedirectHandler)
-    return opener.open(req)
+    authorize_url = base_url + "/authorize"
+    response = requests.post(authorize_url, data=data, allow_redirects=True)
+    if response.ok:
+        redirect_url = response.url
+        parsed_url = urlparse(redirect_url)
+        auth_code = parse_qs(parsed_url.query)["code"][0]
+        return auth_code
+    else:
+        raise Exception(
+            f"Authorization failed with status code {response.status_code}:"
+            f" {response.text}"
+        )
 
 
 def make_token_request(data):
     """
-    Helper function to make the token request and handle 307 redirects.
+    Make a request to obtain the OAuth access token.
     """
-    encoded = urlparse.urlencode(data).encode("utf-8")
-    req = urllib2.Request(base_url + "/token", encoded)
-
-    try:
-        response = urllib2.urlopen(req)
-        return response.read().decode("utf-8")
-    except urllib2.HTTPError as e:
-        if e.code == 307:
-            redirect_url = e.headers["Location"]
-            req = urllib2.Request(url=redirect_url, data=encoded)
-            response = urllib2.urlopen(req)
-            return response.read().decode("utf-8")
-        else:
-            raise Exception(f"HTTP Error {e.code}: {e.read()}")
+    token_url = base_url + "/token"
+    response = requests.post(token_url, data=data)
+    if response.ok:
+        return response.json()
+    else:
+        raise Exception(
+            f"Token request failed with status code {response.status_code}:"
+            f" {response.text}"
+        )
 
 
 def login_to_bullhorn(access_token):
     """
-    Helper function to log in to Bullhorn using the access token.
+    Log in to Bullhorn using the obtained access token.
     """
     login_url = "https://rest.bullhornstaffing.com/rest-services/login"
     params = {"version": "2.0", "access_token": access_token["access_token"]}
     response = requests.post(url=login_url, params=params)
 
-    if response.status_code != 200:
+    if response.ok:
+        return response.json()
+    else:
         raise Exception(
             f"Login to Bullhorn failed with status code {response.status_code}:"
             f" {response.text}"
         )
-
-    response = response.json()
-    response["refresh_token"] = access_token["refresh_token"]
-    return response
 
 
 def get_or_refresh_token(
@@ -115,15 +84,16 @@ def get_or_refresh_token(
         data["ttl"] = ttl
 
     token_response = make_token_request(data)
-    access_token = json.loads(token_response)
-
     # Login to Bullhorn and return the response
-    return login_to_bullhorn(access_token)
+    return login_to_bullhorn(token_response)
 
 
 def auth(
     username, password, client_id, client_secret, refresh_token=None, auth_code=None
 ):
+    """
+    Obtain the access token for authentication.
+    """
     if refresh_token:
         access_token = get_or_refresh_token(
             "refresh_token",

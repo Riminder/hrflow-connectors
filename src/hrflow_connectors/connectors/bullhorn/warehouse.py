@@ -165,32 +165,69 @@ def write(
     return failed_profiles
 
 
+def authenticate(parameters):
+    return auth(
+        parameters.username,
+        parameters.password,
+        parameters.client_id,
+        parameters.client_secret,
+    )
+
+
+def make_request(method, url, params, adapter, json=None):
+    response = method(url, params=params, data=json)
+    if response.status_code == 401:
+        adapter.info("Auth token expired, regenerating...")
+        auth_info = authenticate()
+        params["BhRestToken"] = auth_info["BhRestToken"]
+        response = method(url, params=params, data=json)
+    return response
+
+
+def handle_response(response, adapter):
+    if not response.ok:
+        adapter.error(
+            f"Request failed, status_code={response.status_code},"
+            f" response={response.text}"
+        )
+        return None
+    return response.json()
+
+
+def search_entity(entity, rest_url, bh_rest_token, query, fields, adapter):
+    search_url = f"{rest_url}search/{entity}"
+    params = {
+        "BhRestToken": bh_rest_token,
+        "query": query,
+        "fields": fields,
+        "sort": "id",
+    }
+    response = make_request(requests.get, search_url, params, adapter)
+    return handle_response(response, adapter)
+
+
+def create_or_update_entity(entity, rest_url, params, data, adapter, entity_id=None):
+    url = f"{rest_url}entity/{entity}"
+    method = requests.post if entity_id else requests.put
+    if entity_id:
+        url = f"{url}/{entity_id}"
+    response = make_request(method, url, params, adapter, json.dumps(data))
+    return handle_response(response, adapter)
+
+
+def check_entity_files(entity, rest_url, params, entity_id, adapter):
+    url = f"{rest_url}entityFiles/{entity}/{entity_id}"
+    response = requests.get(url, params=params)
+    return handle_response(response, adapter)
+
+
 def write_application(
     adapter: LoggerAdapter,
     parameters: WriteApplicationsParameters,
     profiles: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
-    adapter.info(f"Pushing {len(profiles)} profiles")
     failed_profiles = []
-
-    def authenticate():
-        return auth(
-            parameters.username,
-            parameters.password,
-            parameters.client_id,
-            parameters.client_secret,
-        )
-
-    def make_request(method, url, params, json=None):
-        response = method(url, params=params, data=json)
-        if response.status_code == 401:
-            adapter.info("Auth token expired, regenerating...")
-            auth_info = authenticate()
-            params["BhRestToken"] = auth_info["BhRestToken"]
-            response = method(url, params=params, data=json)
-        return response
-
-    auth_info = authenticate()
+    auth_info = authenticate(parameters)
     rest_url = auth_info["restUrl"]
     bh_rest_token = auth_info["BhRestToken"]
     params = {"BhRestToken": bh_rest_token}
@@ -198,171 +235,119 @@ def write_application(
 
     for profile in profiles:
         attachment = profile.pop("attachment")
-        if parameters.source:
-            profile["source"] = parameters.source
-        if parameters.status_when_created:
-            profile["status"] = parameters.status_when_created
+        profile["source"] = parameters.source or profile.get("source")
+        profile["status"] = parameters.status_when_created or profile.get("status")
         email = profile["email"]
-        # Verify if the Candidate exists
-        search_url = f"{rest_url}search/Candidate"
-        search_query = f"(email:{email} OR email2:{email}) AND isDeleted:0"
-        search_response = make_request(
-            requests.get,
-            search_url,
-            params={
-                "BhRestToken": bh_rest_token,
-                "query": search_query,
-                "fields": (
-                    "id,isDeleted,dateAdded,status,source,"
-                    "email,firstName,lastName,name,mobile,address"
-                ),
-                "sort": "id",
-            },
+        adapter.info(f"checking if candidate with {email} already exists")
+        search_results = search_entity(
+            "Candidate",
+            rest_url,
+            bh_rest_token,
+            f"(email:{email} OR email2:{email}) AND isDeleted:0",
+            (
+                "id,isDeleted,dateAdded,status,source,email,"
+                "firstName,lastName,name,mobile,address"
+            ),
+            adapter,
         )
 
-        if search_response.status_code != 200:
-            adapter.error(
-                f"Search failed for {email}, status_code={search_response.status_code}"
-                f" And full response {search_response.text}"
-            )
+        if not search_results:
             failed_profiles.append(profile)
             continue
-        adapter.info(f"search response {search_response.text}")
-        search_results = search_response.json()
+        adapter.info(f"search profile response {search_results}")
         candidate_exists = search_results["count"] > 0
-        if candidate_exists:
-            candidate_data = search_results["data"][0]
-            candidate_id = candidate_data["id"]
+        candidate_data = search_results["data"][0] if candidate_exists else {}
+        candidate_id = candidate_data.get("id") if candidate_exists else None
 
-            # Update profile with existing candidate data if available
+        if candidate_exists:
             profile.update(
                 {
-                    "firstName": candidate_data.get(
-                        "firstName", profile.get("firstName")
+                    "firstName": candidate_data.get("firstName") or profile.get(
+                        "firstName"
                     ),
-                    "lastName": candidate_data.get("lastName", profile.get("lastName")),
-                    "name": candidate_data.get("name", profile.get("name")),
-                    "address": candidate_data.get("address", profile.get("address")),
-                    "mobile": candidate_data.get("mobile", profile.get("mobile")),
-                    "status": candidate_data.get("status", profile.get("status")),
+                    "lastName": candidate_data.get("lastName") or profile.get(
+                        "lastName"
+                    ),
+                    "name": candidate_data.get("name") or profile.get("name"),
+                    "address": candidate_data.get("address") or profile.get("address"),
+                    "mobile": candidate_data.get("mobile") or profile.get("mobile"),
+                    "status": candidate_data.get("status") or profile.get("status"),
                 }
             )
-        else:
-            candidate_id = None
-        # Create or Update the Candidate
-        candidate_url = f"{rest_url}entity/Candidate"
-        method = requests.post if candidate_exists else requests.put
-        url = f"{candidate_url}/{candidate_id}" if candidate_exists else candidate_url
-        profile = json.dumps(profile)
-        adapter.info(f"url to push candidate {url}")
-        adapter.info(f"params {params}")
-        adapter.info(f"profile {profile}")
-        profile_response = make_request(method, url, params, json=profile)
-
-        if profile_response.status_code // 100 != 2:
-            adapter.error(
-                f"Failed to push profile for {email},"
-                f" status_code={profile_response.status_code}"
-                f" and response={profile_response.text}"
-            )
+        adapter.info("creating or updating the candidate")
+        candidate_response = create_or_update_entity(
+            "Candidate", rest_url, params, profile, adapter, candidate_id
+        )
+        if not candidate_response:
             failed_profiles.append(profile)
             continue
-
-        adapter.info(f"profile_response {profile_response.text}")
+        adapter.info(f"candidate creation response {candidate_response}")
         if not candidate_exists:
-            candidate_id = profile_response.json().get("changedEntityId")
+            candidate_id = candidate_response.get("changedEntityId")
 
-        # Verify if the Attachment exists already
         attachment_exists = False
-        attachment_url = f"{rest_url}file/Candidate/{candidate_id}"
-
-        if candidate_exists:
-            get_candidate_attachment_url = (
-                f"{rest_url}entityFiles/Candidate/{candidate_id}"
+        if candidate_exists and attachment:
+            entity_files = check_entity_files(
+                "Candidate", rest_url, params, candidate_id, adapter
             )
-            response = requests.get(get_candidate_attachment_url, params=params)
-
-            if response.status_code == 200:
-                attachments = response.json().get("EntityFiles", [])
+            if entity_files:
+                attachments = entity_files.get("EntityFiles", [])
                 if attachments and attachment["name"] == attachments[0]["name"]:
                     attachment_exists = True
-        # Post the Attachment
-        if not attachment_exists:
+        adapter.info(f"attachment for the candidate exists {attachment_exists}")
+        if not attachment_exists and attachment:
             attachment_response = make_request(
-                requests.put, attachment_url, params=params, json=json.dumps(attachment)
+                requests.put,
+                f"{rest_url}file/Candidate/{candidate_id}",
+                params,
+                adapter,
+                json.dumps(attachment),
             )
-
-            if attachment_response.status_code // 100 != 2:
-                adapter.info(
-                    f"Failed to push attachment for candidate ID {candidate_id},"
-                    f" status_code={attachment_response.status_code},"
-                    f" response is {attachment_response.text}"
-                )
+            if not handle_response(attachment_response, adapter):
                 failed_profiles.append(profile)
-            adapter.info(f"attachment_response {attachment_response.text}")
-
-        # Verify the candidtae has already applied for the job
-        job_submission_search_url = f"{rest_url}search/JobSubmission"
-        job_submission_search_query = (
-            f"candidate.id:{candidate_id} AND jobOrder.id:{parameters.job_id}"
+                continue
+            attachment_response = handle_response(attachment_response, adapter)
+            adapter.info(f"attachment response {attachment_response}")
+        adapter.info(
+            "Verifying if candidate had already applied for the job"
+            f" {parameters.job_id}"
         )
-        job_submission_search_response = make_request(
-            requests.get,
-            job_submission_search_url,
-            params={
-                "BhRestToken": bh_rest_token,
-                "query": job_submission_search_query,
-                "fields": "id,status,dateAdded",
-                "sort": "id",
-            },
+        job_submission_results = search_entity(
+            "JobSubmission",
+            rest_url,
+            bh_rest_token,
+            f"candidate.id:{candidate_id} AND jobOrder.id:{parameters.job_id}",
+            "id,status,dateAdded",
+            adapter,
         )
 
-        if job_submission_search_response.status_code != 200:
-            adapter.info(
-                f"Failed to search job submissions for candidate ID {candidate_id},"
-                f" status_code={job_submission_search_response.status_code},"
-                f" response={job_submission_search_response.text}"
-            )
+        if not job_submission_results:
             failed_profiles.append(profile)
             continue
-        adapter.info(
-            f"job_submission_search_response {job_submission_search_response.text}"
-        )
-        job_submission_search_results = job_submission_search_response.json()
-        job_submission_exists = job_submission_search_results["count"] > 0
+        adapter.info(f"search job_submission response {job_submission_results}")
+        job_submission_exists = job_submission_results["count"] > 0
         job_submission_id = (
-            job_submission_search_results["data"][0]["id"]
-            if job_submission_exists
-            else None
+            job_submission_results["data"][0]["id"] if job_submission_exists else None
         )
-        job_submission_url = f"{rest_url}entity/JobSubmission"
+
         job_submission_payload = {
             "candidate": {"id": candidate_id},
             "jobOrder": {"id": parameters.job_id},
             "status": parameters.status_when_created,
-            "dateWebResponse": int(
-                time.time() * 1000
-            ),  # Unix timestamp in milliseconds
+            "dateWebResponse": int(time.time() * 1000),
         }
-
-        # Create or update the application
-        method = requests.put if not job_submission_exists else requests.post
-        if job_submission_exists:
-            job_submission_url = f"{job_submission_url}/{job_submission_id}"
-
-        job_submission_response = make_request(
-            method, job_submission_url, params, json=json.dumps(job_submission_payload)
+        adapter.info("Creating or updating if candidate jobSubmission")
+        job_submission_response = create_or_update_entity(
+            "JobSubmission",
+            rest_url,
+            params,
+            job_submission_payload,
+            adapter,
+            job_submission_id,
         )
-
-        if job_submission_response.status_code // 100 != 2:
-            adapter.info(
-                f"Failed to submit job application for candidate ID {candidate_id},"
-                f" status_code={job_submission_response.status_code},"
-                f" response={job_submission_response.text}"
-            )
+        if not job_submission_response:
             failed_profiles.append(profile)
-        adapter.info(f"job_submission_response {job_submission_response.text}")
-
+        adapter.info(f"creation of job_submission response {job_submission_response}")
     return failed_profiles
 
 
@@ -373,7 +358,7 @@ def read_jobs(
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
     start = 0
-
+    auth_retries = 0
     authentication = auth(
         parameters.username,
         parameters.password,
@@ -452,6 +437,12 @@ def read_jobs(
                     "Received 401 error. Retrying authentication to continue fetching"
                     " jobs."
                 )
+                if auth_retries > 2:
+                    raise Exception(
+                        f" retries the authentication {auth_retries}"
+                        " will stop the execution"
+                    )
+
                 authentication = auth(
                     parameters.username,
                     parameters.password,
@@ -459,6 +450,7 @@ def read_jobs(
                     parameters.client_secret,
                     refresh_token=authentication["refresh_token"],
                 )
+                auth_retries += 1
                 continue
             else:
                 adapter.error("Failed to fetch jobs from Bullhorn.")
@@ -629,17 +621,14 @@ def read_profiles(
             break
 
 
-def transform_timestamp(timestamp):
+def transform_timestamp(timestamp: t.Optional[t.Union[float, int]]) -> t.Optional[str]:
     if not timestamp:
         return None
-    try:
-        # Convert the Unix timestamp (in milliseconds) to a datetime object
-        dt = datetime.fromtimestamp(int(timestamp) / 1000)
-        # Format the datetime object to something like 20221215121030
-        transformed_date = dt.strftime("%Y%m%d%H%M%S")
-        return transformed_date
-    except Exception:
-        return None
+    # Convert the Unix timestamp (in milliseconds) to a datetime object
+    dt = datetime.fromtimestamp(int(timestamp) / 1000)
+    # Format the datetime object to something like 20221215121030
+    transformed_date = dt.strftime("%Y%m%d%H%M%S")
+    return transformed_date
 
 
 def item_to_read_from_job(item: t.Dict) -> str:
