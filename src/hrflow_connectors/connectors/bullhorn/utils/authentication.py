@@ -23,11 +23,9 @@ def get_auth_code(username, password, client_id):
         parsed_url = urlparse(redirect_url)
         auth_code = parse_qs(parsed_url.query)["code"][0]
         return auth_code
-    else:
-        raise Exception(
-            f"Authorization failed with status code {response.status_code}:"
-            f" {response.text}"
-        )
+    raise Exception(
+        f"Authorization failed with status code {response.status_code}: {response.text}"
+    )
 
 
 def make_token_request(data):
@@ -38,11 +36,10 @@ def make_token_request(data):
     response = requests.post(token_url, data=data)
     if response.ok:
         return response.json()
-    else:
-        raise Exception(
-            f"Token request failed with status code {response.status_code}:"
-            f" {response.text}"
-        )
+
+    raise Exception(
+        f"Token request failed with status code {response.status_code}: {response.text}"
+    )
 
 
 def login_to_bullhorn(access_token):
@@ -55,11 +52,11 @@ def login_to_bullhorn(access_token):
 
     if response.ok:
         return response.json()
-    else:
-        raise Exception(
-            f"Login to Bullhorn failed with status code {response.status_code}:"
-            f" {response.text}"
-        )
+
+    raise Exception(
+        f"Login to Bullhorn failed with status code {response.status_code}:"
+        f" {response.text}"
+    )
 
 
 def get_or_refresh_token(
