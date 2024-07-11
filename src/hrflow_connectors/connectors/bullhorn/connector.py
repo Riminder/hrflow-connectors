@@ -385,7 +385,7 @@ def profile_format(data: BullhornProfile) -> t.Dict:
 def format_application(data: HrFlowProfile) -> t.Dict:
     info = data.get("info") or {}
     attachments = (
-        [data.get("attachments")[0]] if data.get("attachments") is not None else []
+        [data["attachments"][0]] if data.get("attachments") is not None else []
     )
     profile = {
         "firstName": info.get("first_name"),
