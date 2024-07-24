@@ -64,16 +64,6 @@ class ReadJobsParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-    limit: int = Field(
-        100,
-        description="The number of jobs to retrieve",
-        field_type=FieldType.QueryParam,
-    )
-    offset: int = Field(
-        0,
-        description="The offset to start retrieving jobs",
-        field_type=FieldType.QueryParam,
-    )
 
 
 class ReadProfilesParameters(ParametersModel):
@@ -139,16 +129,6 @@ class ReadProfilesParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-    limit: int = Field(
-        100,
-        description="The number of profiles to retrieve",
-        field_type=FieldType.QueryParam,
-    )
-    offset: int = Field(
-        0,
-        description="The offset to start retrieving profiles",
-        field_type=FieldType.QueryParam,
-    )
 
 
 class WriteProfilesParameters(ParametersModel):
@@ -203,10 +183,7 @@ def read_jobs(
         # Table name
         jobs_table = "MISSIONS"
         # Query the database
-        query = (
-            f"SELECT * FROM {jobs_table} LIMIT {parameters.limit} OFFSET"
-            f" {parameters.offset}"
-        )
+        query = f"SELECT * FROM {jobs_table}"
         jobs = query_database(connection, query)
         for job in jobs:
             yield job
@@ -278,10 +255,7 @@ def read_profiles(
         experiences_table = "EXPERIENCES_PROFESSIONNELLES"
         documents_table = "DOCUMENTS"
         # Query the database
-        query = (
-            f"SELECT * FROM {profiles_table} LIMIT {parameters.limit} OFFSET"
-            f" {parameters.offset}"
-        )
+        query = f"SELECT * FROM {profiles_table}"
         profiles = query_database(connection, query)
         for profile in profiles:
             ID_PERSONNE = profile["ID_PERSONNE"]
