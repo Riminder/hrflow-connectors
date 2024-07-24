@@ -407,6 +407,7 @@ def read_jobs(
                 authentication["restUrl"]
                 + f"search/JobOrder?query={query}&fields="
                 + parameters.fields
+                + "&sort=dateLastModified,id"
                 + "&BhRestToken="
                 + authentication["BhRestToken"]
                 + "&start="
