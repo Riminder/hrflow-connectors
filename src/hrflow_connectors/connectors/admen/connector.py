@@ -110,7 +110,7 @@ def format_job(
 ):  # TODO: add created_at and culture, benefits, responsibilities, requirements, interviews,
     job = dict(
         name=admen_job["LIBELLE"],
-        reference=admen_job["ID_MISSION"],
+        reference=str(admen_job["ID_MISSION"]),
         # created_at = ,
         # updated_at = admen_mission['DATE_MAJ'].strftime('%Y-%m-%d'),
         location=get_job_location(admen_job),
@@ -255,7 +255,7 @@ def format_admen_profile_to_hrflow(admen_profile: t.Dict) -> t.Dict:
         gender=format_profile_gender(admen_profile["GENDER"]),
     )
     hrflow_profile = dict(
-        reference=admen_profile["ID_PERSONNE"],
+        reference=str(admen_profile["ID_PERSONNE"]),
         info=hrflow_profile_info,
         resume=admen_profile["resume"],
         experiences=get_profile_experiences(admen_profile_experiences),
