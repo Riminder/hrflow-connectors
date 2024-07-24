@@ -1,4 +1,5 @@
 import os
+import time
 import typing as t
 from logging import LoggerAdapter
 
@@ -190,22 +191,8 @@ def read_jobs(
         connection.close()
 
 
-def fetch_and_save_document(
-    server_name, share_name, username, password, domain, file_path
-):
+def fetch_and_save_document(tree, file_path):
     try:
-        # Establish a connection to the SMB server
-        connection = Connection(guid=os.urandom(16), server_name=server_name, port=445)
-        connection.connect()
-
-        # Create and authenticate a session
-        session = Session(connection, username, password, domain)
-        session.connect()
-
-        # Connect to the specified share
-        tree = TreeConnect(session, f"\\\\{server_name}\\{share_name}")
-        tree.connect()
-
         # Open the document and read its content
         document = Open(tree, file_path)
         document.create(
@@ -222,11 +209,6 @@ def fetch_and_save_document(
         file_data = document.read(read_offset, read_length)
         document.close()
 
-        # Close the directory and disconnect
-        tree.disconnect()
-        session.disconnect()
-        connection.disconnect()
-
         # Return the raw content and content type
         return {"raw": file_data, "content_type": "pdf"}
 
@@ -240,6 +222,8 @@ def read_profiles(
     parameters: ReadProfilesParameters,
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
+    max_retries: int = 5,
+    retry_delay: int = 5,
 ) -> t.Iterable[t.Dict]:
     # Connect to the database
     connection = connect_to_database(
@@ -254,34 +238,86 @@ def read_profiles(
         profiles_table = "PERSONNES"
         experiences_table = "EXPERIENCES_PROFESSIONNELLES"
         documents_table = "DOCUMENTS"
+
         # Query the database
         query = f"SELECT * FROM {profiles_table}"
         profiles = query_database(connection, query)
+
+        # Try to establish an SMB connection
+        smb_connected = False
+        retries = 0
+        smb_connection = smb_session = smb_tree = None
+        while retries < max_retries and not smb_connected:
+            try:
+                # Establish a connection to the SMB server
+                smb_connection = Connection(
+                    guid=os.urandom(16), server_name=parameters.share_server, port=445
+                )
+                smb_connection.connect()
+
+                # Create and authenticate a session
+                smb_session = Session(
+                    smb_connection,
+                    parameters.share_username,
+                    parameters.share_password,
+                    parameters.share_domain,
+                )
+                smb_session.connect()
+
+                # Connect to the specified share
+                smb_tree = TreeConnect(
+                    smb_session,
+                    f"\\\\{parameters.share_server}\\{parameters.share_name}",
+                )
+                smb_tree.connect()
+
+                smb_connected = True
+            except Exception as e:
+                print(f"An error occurred while connecting to SMB: {e}")
+                retries += 1
+                if retries < max_retries:
+                    print(
+                        f"Retrying SMB connection in {retry_delay} seconds... ({retries}/{max_retries})"
+                    )
+                    time.sleep(retry_delay)
+                else:
+                    print(
+                        "Max retries for SMB connection reached. Will not fetch documents."
+                    )
+
         for profile in profiles:
             ID_PERSONNE = profile["ID_PERSONNE"]
+
             # Query the experience Table
             experiences_query = (
                 f"SELECT * FROM {experiences_table} WHERE ID_PERSONNE = {ID_PERSONNE}"
             )
             experiences = query_database(connection, experiences_query)
             profile["experiences"] = experiences
+
             # Query the documents Table
             documents_query = (
                 f"SELECT * FROM {documents_table} WHERE ID_PERSONNE = '{ID_PERSONNE}'"
                 " LIMIT 1;"
             )
             document = query_database(connection, documents_query)
-            if document:
+            if document and smb_connected:
                 resume = fetch_and_save_document(
-                    parameters.share_server,
-                    parameters.share_name,
-                    parameters.share_username,
-                    parameters.share_password,
-                    parameters.share_domain,
+                    smb_tree,
                     document[0]["PATHNAME"].replace("/", "\\"),
                 )
                 profile["resume"] = resume
+            else:
+                profile["resume"] = None
+
             yield profile
+
+        # Close SMB connections if they were established
+        if smb_connected:
+            smb_tree.disconnect()
+            smb_session.disconnect()
+            smb_connection.disconnect()
+
         connection.close()
 
 
