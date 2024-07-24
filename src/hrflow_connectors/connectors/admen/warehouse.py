@@ -201,16 +201,16 @@ def read_jobs(
     )
     if connection:
         # Table name
-        jobs_table = "TANNONCES"
+        jobs_table = "MISSIONS"
         # Query the database
         query = (
             f"SELECT * FROM {jobs_table} LIMIT {parameters.limit} OFFSET"
             f" {parameters.offset}"
         )
         jobs = query_database(connection, query)
-        connection.close()
         for job in jobs:
             yield job
+        connection.close()
 
 
 def fetch_and_save_document(
@@ -307,9 +307,8 @@ def read_profiles(
                     document[0]["PATHNAME"].replace("/", "\\"),
                 )
                 profile["resume"] = resume
-        connection.close()
-        for profile in profiles:
             yield profile
+        connection.close()
 
 
 def write_profiles(

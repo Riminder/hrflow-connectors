@@ -22,20 +22,19 @@ from hrflow_connectors.core import (
 
 
 def get_job_location(admen_job: t.Dict) -> t.Dict:
-    admen_mission = admen_job["MISSION"]
     adress_components = []
     for key in ["CITY", "ZIP", "REGION", "PAYS"]:
-        if admen_mission[key]:
-            adress_components.append(admen_mission[key])
+        if admen_job[key]:
+            adress_components.append(admen_job[key])
     return dict(
         text=", ".join(adress_components),
         lat=None,
         lng=None,
         fields=dict(
-            city=admen_mission["CITY"],
-            country=admen_mission["PAYS"],
-            postcode=admen_mission["ZIP"],
-            state=admen_mission["REGION"],
+            city=admen_job["CITY"],
+            country=admen_job["PAYS"],
+            postcode=admen_job["ZIP"],
+            state=admen_job["REGION"],
         ),
     )
 
@@ -43,16 +42,9 @@ def get_job_location(admen_job: t.Dict) -> t.Dict:
 def get_job_sections(
     admen_job: t.Dict,
 ) -> t.List[t.Dict]:  # TODO: improve section names, titles and descriptions
-    admen_mission = admen_job["MISSION"]
     sections = []
-    for section_name in ["HTML_TXT", "DESCRCUSTOMER_TXT", "DESCRASSIGNMENT_TXT"]:
+    for section_name in ["DESC_MISSION", "DESC_CUSTOMER", "HTML"]:
         section = admen_job[section_name]
-        if section:
-            sections.append(
-                dict(name=section_name, title=section_name, description=section)
-            )
-    for section_name in ["DESC_MISSION", "HTML"]:
-        section = admen_mission[section_name]
         if section:
             sections.append(
                 dict(name=section_name, title=section_name, description=section)
@@ -61,63 +53,69 @@ def get_job_sections(
 
 
 def get_job_tags(admen_job: t.Dict) -> t.List[str]:
-    admen_mission = admen_job["MISSION"]
     tags = []
 
-    if admen_job["COUT"]:
-        tags.append({"name": "COUT", "value": str(admen_job["COUT"])})
-    if admen_job["DATE_DEBUT"]:
+    if admen_job["DATE_DEB_RECHERCHE"]:
         tags.append(
             {
-                "name": "DATE_DEBUT",
-                "value": admen_job["DATE_DEBUT"].strftime("%Y-%m-%d"),
+                "name": "DATE_DEB_RECHERCHE",
+                "value": admen_job["DATE_DEB_RECHERCHE"].strftime("%Y-%m-%d"),
             }
         )
-    if admen_job["DATE_FIN"]:
+    if admen_job["DATE_PROPOSITION"]:
         tags.append(
-            {"name": "DATE_FIN", "value": admen_job["DATE_FIN"].strftime("%Y-%m-%d")}
+            {
+                "name": "DATE_PROPOSITION",
+                "value": admen_job["DATE_PROPOSITION"].strftime("%Y-%m-%d"),
+            }
         )
-        tags.append({"name": "SECTEUR", "value": admen_mission["SECTEUR"]})
-    if admen_mission["SECTEUR"]:
-        tags.append({"name": "SECTEUR", "value": admen_mission["SECTEUR"]})
-    if admen_mission["FONCTION"]:
-        tags.append({"name": "FONCTION", "value": admen_mission["FONCTION"]})
-    if admen_mission["TYPEJOB"]:
-        tags.append({"name": "TYPEJOB", "value": admen_mission["TYPEJOB"]})
-    if admen_mission["TYPECONTRAT"]:
-        tags.append({"name": "TYPECONTRAT", "value": admen_mission["TYPECONTRAT"]})
-    if admen_mission["EDUCLEVEL"]:
-        tags.append({"name": "EDUCLEVEL", "value": admen_mission["EDUCLEVEL"]})
-    if admen_mission["JOBEXP"]:
-        tags.append({"name": "JOBEXP", "value": admen_mission["JOBEXP"]})
-    if admen_mission["PERIOD"]:
-        tags.append({"name": "PERIOD", "value": admen_mission["PERIOD"]})
-    if admen_mission["SALARYMIN"]:
-        tags.append({"name": "SALARYMIN", "value": str(admen_mission["SALARYMIN"])})
-    if admen_mission["SALARYMAX"]:
-        tags.append({"name": "SALARYMAX", "value": str(admen_mission["SALARYMAX"])})
-    if admen_mission["SALAIRE_ENTREE"]:
+    if admen_job["DATE_ENTREE_FONCT"]:
         tags.append(
-            {"name": "SALAIRE_ENTREE", "value": str(admen_mission["SALAIRE_ENTREE"])}
+            {
+                "name": "DATE_ENTREE_FONCT",
+                "value": admen_job["DATE_ENTREE_FONCT"].strftime("%Y-%m-%d"),
+            }
         )
-    if admen_mission["PROCESS"]:
-        tags.append({"name": "PROCESS", "value": admen_mission["PROCESS"]})
+    if admen_job["SECTEUR"]:
+        tags.append({"name": "SECTEUR", "value": admen_job["SECTEUR"]})
+    if admen_job["FONCTION"]:
+        tags.append({"name": "FONCTION", "value": admen_job["FONCTION"]})
+    if admen_job["TYPEJOB"]:
+        tags.append({"name": "TYPEJOB", "value": admen_job["TYPEJOB"]})
+    if admen_job["TYPECONTRAT"]:
+        tags.append({"name": "TYPECONTRAT", "value": admen_job["TYPECONTRAT"]})
+    if admen_job["EDUCLEVEL"]:
+        tags.append({"name": "EDUCLEVEL", "value": admen_job["EDUCLEVEL"]})
+    if admen_job["JOBEXP"]:
+        tags.append({"name": "JOBEXP", "value": admen_job["JOBEXP"]})
+    if admen_job["PERIOD"]:
+        tags.append({"name": "PERIOD", "value": admen_job["PERIOD"]})
+    if admen_job["SALARYMIN"]:
+        tags.append({"name": "SALARYMIN", "value": str(admen_job["SALARYMIN"])})
+    if admen_job["SALARYMAX"]:
+        tags.append({"name": "SALARYMAX", "value": str(admen_job["SALARYMAX"])})
+    if admen_job["SALAIRE_ENTREE"]:
+        tags.append(
+            {"name": "SALAIRE_ENTREE", "value": str(admen_job["SALAIRE_ENTREE"])}
+        )
+    if admen_job["PROCESS"]:
+        tags.append({"name": "PROCESS", "value": admen_job["PROCESS"]})
     return tags
 
 
 def format_job(
     admen_job: t.Dict,
-) -> t.Dict:  # TODO: add created_at and culture,
-    # benefits, responsibilities, requirements, interviews,
-    # admen_mission = admen_job["MISSION"]
+) -> (
+    t.Dict
+):  # TODO: add created_at and culture, benefits, responsibilities, requirements, interviews,
     job = dict(
         name=admen_job["LIBELLE"],
-        reference=admen_job["ID_ANNONCE"],
+        reference=admen_job["ID_MISSION"],
         # created_at = ,
         # updated_at = admen_mission['DATE_MAJ'].strftime('%Y-%m-%d'),
         location=get_job_location(admen_job),
         url=admen_job["URL"],
-        summary=admen_job["TEXTE_ANNONCE_TXT"],
+        summary=admen_job["DESC_MISSION"],
         sections=get_job_sections(admen_job),
         tags=get_job_tags(admen_job),
     )
