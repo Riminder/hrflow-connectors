@@ -1,0 +1,24 @@
+{
+    "name": "?.title",
+    "picture": "?.pictures != null ?? .pictures[0]?.default >> null",
+    "reference": "?.reference", 
+    "created_at": "?.published_at",
+    "location": "?.address != null ?? .address | {text: ?.formatted, lat: ?.position?.lat != null ?? .position.lat | $float : null, lng: ?.position?.lon != null ?? .position.lon | $float : null } : {text: '', lat: null, lng: null}",
+    "sections": "?.description != null && ?.profile != null ?? [{name: 'description', title: 'description', description: ?.description | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp', '&') | $sub('&quot;', '\"') | $sub('&apos;', '\"') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ') | $strip}, {name: 'profile', title: 'profile', description: ?.profile | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp', '&') | $sub('&quot;', '\"') | $sub('&apos;', '\"') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ') | $strip}] : []",
+    "requirements": "?.profile | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp', '&') | $sub('&quot;', '\"') | $sub('&apos;', '\"') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ') | $strip",
+    "skills": "?.skills >> [] | $map({name: ., type: null, value: null})",
+    "tags": [
+        { "name": "digitalrecruiters_compensation_min", "value": "?.salary?.min" },
+        { "name": "digitalrecruiters_compensation_max", "value": "?.salary?.max" },
+        { "name": "digitalrecruiters_compensation_currency", "value": "?.salary?.currency" },
+        { "name": "digitalrecruiters_manager_firstName", "value": "?.entity?.manager?.firstname" },
+        { "name": "digitalrecruiters_manager_lastName", "value": "?.entity?.manager?.lastname" },
+        { "name": "digitalrecruiters_manager_position", "value": "?.entity?.manager?.position" },
+        { "name": "digitalrecruiters_manager_picture", "value": "?.entity?.manager?.picture_url" },
+        { "name": "digitalrecruiters_recruiter_email", "value": "?.referent_recruiter?.email" },
+        { "name": "digitalrecruiters_recruiter_phoneNumber", "value": "?.referent_recruiter?.phoneNumber" },
+        { "name": "digitalrecruiters_recruiter_picture", "value": "?.referent_recruiter?.picture_url" },
+        "'Hierarchy list to be implemented''",
+        "custom_field_mapping to be implemented"
+    ]
+}
