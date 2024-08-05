@@ -43,10 +43,7 @@ ACTIONS_SECTIONS_REGEXP = (
     r"# 🔌 Connector Actions.+?\|\s*Action\s*\|\s*Description\s*\|.+?\|\s+?<\/p>"
 )
 
-
-GIT_UPDATE_EXCLUDE_PATTERN = (
-    r"(notebooks/\.gitkeep|README\.md|test\-config\.yaml|logo\.png|docs/)"
-)
+GIT_UPDATE_EXCLUDE_PATTERN = r"(notebooks/\.gitkeep|mappings/format/\.gitkeep|README\.md|test\-config\.yaml|logo\.png|docs/)"
 GIT_UPDATE_TIMEOUT = 5
 GIT_UPDATE_DATE = """
 git ls-tree -r --name-only HEAD {base_connector_path}/{connector} | while read filename; do
@@ -166,6 +163,26 @@ def py_37_38_compat_patch(content: str) -> str:
     )
 
 
+def ensure_gitkeep(directory: Path, gitkeep_filename: str = ".gitkeep") -> None:
+    gitkeep_file = directory / gitkeep_filename
+    create_empty_file = True
+
+    if directory.is_dir():
+        for child in directory.iterdir():
+            if not child.name == gitkeep_file.name:
+                create_empty_file = False
+                try:
+                    gitkeep_file.unlink()
+                except FileNotFoundError:
+                    pass
+                break
+    else:
+        directory.mkdir(parents=True)
+
+    if create_empty_file:
+        gitkeep_file.touch()
+
+
 def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
     readme = root / "README.md"
     if readme.exists() is False:
@@ -255,7 +272,7 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
     readme.write_bytes(readme_content.encode())
 
 
-KEEP_EMPTY_NOTEBOOKS = ".gitkeep"
+KEEP_EMPTY_FOLDER = ".gitkeep"
 
 
 def generate_docs(
@@ -306,23 +323,10 @@ def generate_docs(
             readme.write_bytes(updated_readme_content.encode())
 
         notebooks_directory = connector_directory / "notebooks"
-        empty_dir_file = notebooks_directory / KEEP_EMPTY_NOTEBOOKS
-        create_empty_file = True
+        ensure_gitkeep(notebooks_directory, KEEP_EMPTY_FOLDER)
 
-        if notebooks_directory.is_dir():
-            for child in notebooks_directory.iterdir():
-                if not child.name == empty_dir_file.name:
-                    create_empty_file = False
-                    try:
-                        empty_dir_file.unlink()
-                    except FileNotFoundError:
-                        pass
-                    break
-        else:
-            notebooks_directory.mkdir()
-
-        if create_empty_file:
-            empty_dir_file.touch()
+        format_mappings_directory = connector_directory / "mappings" / "format"
+        ensure_gitkeep(format_mappings_directory, KEEP_EMPTY_FOLDER)
 
         if len(model.actions) > 0:
             action_docs_directory = connector_directory / "docs"
