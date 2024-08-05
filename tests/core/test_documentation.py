@@ -1,6 +1,7 @@
 import logging
 import random
 import re
+import shutil
 from contextlib import contextmanager
 from datetime import date, datetime, time, timezone
 from os.path import relpath
@@ -279,6 +280,59 @@ def test_documentation_removes_keep_empty_notebooks_file_if_folder_has_other_fil
     )
     assert readme.exists() is True
     assert action_documentation.exists() is True
+
+
+def test_documentation_creates_format_mappings_directory_if_missing(
+    connectors_directory,
+):
+    connector_directory = connectors_directory / SmartLeads.model.name.lower()
+    format_mappings_directory = connector_directory / "mappings" / "format"
+
+    if format_mappings_directory.exists():
+        shutil.rmtree(format_mappings_directory)
+
+    connectors = [SmartLeads]
+    with patched_subprocess():
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert format_mappings_directory.exists() is True
+
+
+def test_documentation_does_not_create_format_mappings_directory_if_exists(
+    connectors_directory,
+):
+    connector_directory = connectors_directory / SmartLeads.model.name.lower()
+    format_mappings_directory = connector_directory / "mappings" / "format"
+
+    format_mappings_directory.mkdir(parents=True, exist_ok=True)
+
+    assert format_mappings_directory.exists() is True
+    connectors = [SmartLeads]
+    with patched_subprocess():
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert format_mappings_directory.exists() is True
+
+
+def test_documentation_does_not_remove_existing_files_in_format_mappings_directory(
+    connectors_directory,
+):
+    connector_directory = connectors_directory / SmartLeads.model.name.lower()
+    format_mappings_directory = connector_directory / "mappings" / "format"
+    other_file = format_mappings_directory / "pull_profile_list.json"
+
+    format_mappings_directory.mkdir(parents=True, exist_ok=True)
+    other_file.touch()
+
+    assert format_mappings_directory.exists() is True
+    assert other_file.exists() is True
+
+    connectors = [SmartLeads]
+    with patched_subprocess():
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert format_mappings_directory.exists() is True
+    assert other_file.exists() is True
 
 
 def test_documentation_fails_if_actions_section_not_found(connectors_directory):

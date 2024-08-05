@@ -324,6 +324,10 @@ def generate_docs(
         if create_empty_file:
             empty_dir_file.touch()
 
+        format_mappings_directory = connector_directory / "mappings" / "format"
+        if not format_mappings_directory.is_dir():
+            format_mappings_directory.mkdir(parents=True)
+
         if len(model.actions) > 0:
             action_docs_directory = connector_directory / "docs"
             if not action_docs_directory.is_dir():

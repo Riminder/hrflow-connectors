@@ -524,8 +524,7 @@ class ConnectorAction(BaseModel):
 
         read_started_at = time.time()
         adapter.info(
-            "Starting to read from warehouse={} with mode={} read_from={} parameters={}"
-            .format(
+            "Starting to read from warehouse={} with mode={} read_from={} parameters={}".format(
                 self.origin.name,
                 parameters.read_mode,
                 read_from,
@@ -569,8 +568,7 @@ class ConnectorAction(BaseModel):
 
         read_finished_at = time.time()
         adapter.info(
-            "Finished reading in {} from warehouse={} n_items={} read_failure={}"
-            .format(
+            "Finished reading in {} from warehouse={} n_items={} read_failure={}".format(
                 read_finished_at - read_started_at,
                 self.origin.name,
                 len(origin_items),
@@ -795,15 +793,17 @@ class ConnectorModel(BaseModel):
         size = logo.lstat().st_size
         if size > MAX_LOGO_SIZE_BYTES:
             raise ValueError(
-                "Logo size {} KB for connector {} is above maximum limit of {} KB"
-                .format(size // KB, self.name, MAX_LOGO_SIZE_BYTES // KB)
+                "Logo size {} KB for connector {} is above maximum limit of {} KB".format(
+                    size // KB, self.name, MAX_LOGO_SIZE_BYTES // KB
+                )
             )
         try:
             width, height = Image.open(logo).size
         except UnidentifiedImageError:
             raise ValueError(
-                "Logo file for connector {} at {} doesn't seem to be a valid image"
-                .format(self.name, logo)
+                "Logo file for connector {} at {} doesn't seem to be a valid image".format(
+                    self.name, logo
+                )
             )
 
         if width != height or width > MAX_LOGO_PIXEL or width < MIN_LOGO_PIXEL:
@@ -912,6 +912,19 @@ class Connector:
             format_placeholder = action.WORKFLOW_FORMAT_PLACEHOLDER
             logics_placeholder = action.WORKFLOW_LOGICS_PLACEHOLDER
             event_parser_placeholder = action.WORKFLOW_EVENT_PARSER_PLACEHOLDER
+
+            jsonmap_path = (
+                connectors_directory
+                / model.name.lower()
+                / "mappings"
+                / "format"
+                / "{}.json".format(action.name.value)
+            )
+            try:
+                jsonmap = json.loads(jsonmap_path.read_text())
+            except FileNotFoundError:
+                jsonmap = {}
+
             action_manifest = dict(
                 name=action.name.value,
                 action_type=action.action_type.value,
@@ -925,6 +938,7 @@ class Connector:
                 target=action.target.name,
                 target_parameters=action.target.write.parameters.schema(),
                 target_data_schema=action.target.data_schema.schema(),
+                jsonmap=jsonmap,
                 workflow_code=action.workflow_code(
                     connector_name=model.name, workflow_type=action.trigger_type
                 ),
