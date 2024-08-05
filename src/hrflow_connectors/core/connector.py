@@ -912,6 +912,19 @@ class Connector:
             format_placeholder = action.WORKFLOW_FORMAT_PLACEHOLDER
             logics_placeholder = action.WORKFLOW_LOGICS_PLACEHOLDER
             event_parser_placeholder = action.WORKFLOW_EVENT_PARSER_PLACEHOLDER
+
+            jsonmap_path = (
+                connectors_directory
+                / model.name.lower()
+                / "mappings"
+                / "format"
+                / "{}.json".format(action.name.value)
+            )
+            try:
+                jsonmap = json.loads(jsonmap_path.read_text())
+            except FileNotFoundError:
+                jsonmap = {}
+
             action_manifest = dict(
                 name=action.name.value,
                 action_type=action.action_type.value,
@@ -925,6 +938,7 @@ class Connector:
                 target=action.target.name,
                 target_parameters=action.target.write.parameters.schema(),
                 target_data_schema=action.target.data_schema.schema(),
+                jsonmap=jsonmap,
                 workflow_code=action.workflow_code(
                     connector_name=model.name, workflow_type=action.trigger_type
                 ),
