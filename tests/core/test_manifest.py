@@ -154,7 +154,6 @@ def test_manifest_includes_jsonmap_when_file_exists(test_connectors_directory):
     format_mappings_directory = connector_directory / "mappings" / "format"
     connector = SmartLeadsF()
 
-    # Ensure the format_mappings_directory exists
     format_mappings_directory.mkdir(parents=True, exist_ok=True)
 
     for action in connector.model.actions:
@@ -174,7 +173,6 @@ def test_manifest_includes_empty_jsonmap_when_file_missing(test_connectors_direc
     format_mappings_directory = connector_directory / "mappings" / "format"
     connector = SmartLeadsF()
 
-    # Ensure the format_mappings_directory exists but not the jsonmap_file
     format_mappings_directory.mkdir(parents=True, exist_ok=True)
 
     for action in connector.model.actions:
