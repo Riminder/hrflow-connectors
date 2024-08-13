@@ -44,6 +44,7 @@ def format_jobijoba_profile(jobijoba_profile: t.List) -> t.Dict:
         created_at=None,
         resume=resume_dict,
         tags=tags,
+        metadatas=[],
     )
 
 
