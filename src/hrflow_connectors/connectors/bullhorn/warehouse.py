@@ -407,6 +407,7 @@ def read_jobs(
                 authentication["restUrl"]
                 + f"search/JobOrder?query={query}&fields="
                 + parameters.fields
+                + "&sort=dateLastModified,id"
                 + "&BhRestToken="
                 + authentication["BhRestToken"]
                 + "&start="
@@ -622,10 +623,10 @@ def read_profiles(
 
 
 def transform_timestamp(timestamp: t.Optional[t.Union[float, int]]) -> t.Optional[str]:
-    if not timestamp:
+    if timestamp is None:
         return None
     # Convert the Unix timestamp (in milliseconds) to a datetime object
-    dt = datetime.fromtimestamp(int(timestamp) / 1000)
+    dt = datetime.utcfromtimestamp(int(timestamp) / 1000)
     # Format the datetime object to something like 20221215121030
     transformed_date = dt.strftime("%Y%m%d%H%M%S")
     return transformed_date
