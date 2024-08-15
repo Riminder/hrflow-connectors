@@ -2,6 +2,17 @@
 
 
 
+## v4.16.1 (2024-08-15)
+
+### Documentation
+
+* docs: update Bulhorn last updated at ([`d182743`](https://github.com/Riminder/hrflow-connectors/commit/d1827431b85589d43e1a4359a5901dd711d5b297))
+
+### Fix
+
+* fix: add sorting jobs for Bulhorn ([`c8b3286`](https://github.com/Riminder/hrflow-connectors/commit/c8b328613d2ce23222d4944f0f92a47762710d8c))
+
+
 ## v4.16.0 (2024-07-11)
 
 ### Feature
