@@ -47,7 +47,7 @@ GIT_UPDATE_EXCLUDE_PATTERN = r"(notebooks/\.gitkeep|mappings/format/\.gitkeep|RE
 GIT_UPDATE_TIMEOUT = 5
 GIT_UPDATE_DATE = """
 git ls-tree -r --name-only HEAD {base_connector_path}/{connector} | while read filename; do
-  echo "$(git log -1 --format="%aI" -- $filename) $filename"
+  echo "$(git log -1 --format="%cI" -- $filename) $filename"
 done
 """
 
