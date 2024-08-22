@@ -1,4 +1,5 @@
 import json
+import shutil
 import tempfile
 from pathlib import Path
 
@@ -147,3 +148,42 @@ def test_manifest_logo_bad_dimension(test_connectors_directory, shape):
             LocalUsers.manifest(test_connectors_directory)
 
     assert "Bad logo dimensions" in excinfo.value.args[0]
+
+
+def test_manifest_includes_jsonmap_when_file_exists(test_connectors_directory):
+    connector_directory = test_connectors_directory / SmartLeadsF().model.name.lower()
+    format_mappings_directory = connector_directory / "mappings" / "format"
+    connector = SmartLeadsF()
+
+    format_mappings_directory.mkdir(parents=True, exist_ok=True)
+
+    for action in connector.model.actions:
+        jsonmap_file = format_mappings_directory / f"{action.name.value}.json"
+        jsonmap_content = {"key": "value"}
+        jsonmap_file.write_text(json.dumps(jsonmap_content))
+
+    manifest = connector.manifest(connectors_directory=test_connectors_directory)
+
+    for action_manifest in manifest["actions"]:
+        assert "jsonmap" in action_manifest
+        assert action_manifest["jsonmap"] == {"key": "value"}
+
+    # Tear down
+    shutil.rmtree(connector_directory / "mappings")
+
+
+def test_manifest_includes_empty_jsonmap_when_file_missing(test_connectors_directory):
+    connector_directory = test_connectors_directory / SmartLeadsF().model.name.lower()
+    format_mappings_directory = connector_directory / "mappings" / "format"
+    connector = SmartLeadsF()
+
+    format_mappings_directory.mkdir(parents=True, exist_ok=True)
+
+    manifest = connector.manifest(connectors_directory=test_connectors_directory)
+
+    for action_manifest in manifest["actions"]:
+        assert "jsonmap" in action_manifest
+        assert action_manifest["jsonmap"] == {}
+
+    # Tear down
+    shutil.rmtree(connector_directory / "mappings")

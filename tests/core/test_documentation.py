@@ -20,7 +20,7 @@ from hrflow_connectors.core import (
     WorkflowType,
 )
 from hrflow_connectors.core.documentation import (
-    KEEP_EMPTY_NOTEBOOKS,
+    KEEP_EMPTY_FOLDER,
     USE_REMOTE_REV,
     InvalidConnectorReadmeFormat,
 )
@@ -89,6 +89,7 @@ def patched_subprocess(**kwargs):
 
 
 NOTEBOOKS_FILE = "anyfile.txt"
+FORMAT_FILE = "pull_profile_list.json"
 
 
 @pytest.fixture
@@ -112,21 +113,40 @@ def connectors_directory(root_readme: Path):
     readme = path / SmartLeads.model.name.lower() / "README.md"
     notebooks_directory = path / SmartLeads.model.name.lower() / "notebooks"
     keep_empty_notebooks_file = (
-        path / SmartLeads.model.name.lower() / "notebooks" / KEEP_EMPTY_NOTEBOOKS
+        path / SmartLeads.model.name.lower() / "notebooks" / KEEP_EMPTY_FOLDER
     )
     notebook = notebooks_directory / NOTEBOOKS_FILE
+    mappings_directory = path / SmartLeads.model.name.lower() / "mappings"
+    format_mappings_directory = (
+        path / SmartLeads.model.name.lower() / "mappings" / "format"
+    )
+    keep_empty_format_file = format_mappings_directory / KEEP_EMPTY_FOLDER
+    format_file = format_mappings_directory / FORMAT_FILE
+
     actions_documentation_directory = path / SmartLeads.model.name.lower() / "docs"
     action_documentation = actions_documentation_directory / "{}.md".format(
         SmartLeads.model.actions[0].name.value
     )
 
-    for file in [readme, action_documentation, keep_empty_notebooks_file, notebook]:
+    for file in [
+        readme,
+        action_documentation,
+        keep_empty_notebooks_file,
+        notebook,
+        format_file,
+        keep_empty_format_file,
+    ]:
         try:
             file.unlink()
         except FileNotFoundError:
             pass
 
-    for directory in [actions_documentation_directory, notebooks_directory]:
+    for directory in [
+        actions_documentation_directory,
+        notebooks_directory,
+        format_mappings_directory,
+        mappings_directory,
+    ]:
         if directory.is_dir():
             directory.rmdir()
 
@@ -140,7 +160,17 @@ def test_documentation(connectors_directory):
         connectors_directory
         / SmartLeads.model.name.lower()
         / "notebooks"
-        / KEEP_EMPTY_NOTEBOOKS
+        / KEEP_EMPTY_FOLDER
+    )
+    format_mappings_directory = (
+        connectors_directory / SmartLeads.model.name.lower() / "mappings" / "format"
+    )
+    keep_empty_format_file = (
+        connectors_directory
+        / SmartLeads.model.name.lower()
+        / "mappings"
+        / "format"
+        / KEEP_EMPTY_FOLDER
     )
     action_documentation = (
         connectors_directory
@@ -152,6 +182,8 @@ def test_documentation(connectors_directory):
     assert readme.exists() is False
     assert notebooks_directory.exists() is False
     assert keep_empty_notebooks_file.exists() is False
+    assert format_mappings_directory.exists() is False
+    assert keep_empty_format_file.exists() is False
     assert action_documentation.exists() is False
 
     connectors = [SmartLeads]
@@ -161,6 +193,8 @@ def test_documentation(connectors_directory):
     assert readme.exists() is True
     assert notebooks_directory.exists() is True
     assert keep_empty_notebooks_file.exists() is True
+    assert format_mappings_directory.exists() is True
+    assert keep_empty_format_file.exists() is True
     assert action_documentation.exists() is True
 
 
@@ -174,7 +208,7 @@ def test_documentation_adds_keep_empty_notebooks_file_if_folder_is_empty(
         connectors_directory
         / SmartLeads.model.name.lower()
         / "notebooks"
-        / KEEP_EMPTY_NOTEBOOKS
+        / KEEP_EMPTY_FOLDER
     )
 
     notebooks_directory.mkdir()
@@ -210,7 +244,7 @@ def test_documentation_does_not_add_keep_empty_notebooks_file_if_folder_has_othe
         connectors_directory
         / SmartLeads.model.name.lower()
         / "notebooks"
-        / KEEP_EMPTY_NOTEBOOKS
+        / KEEP_EMPTY_FOLDER
     )
 
     notebooks_directory.mkdir()
@@ -250,7 +284,7 @@ def test_documentation_removes_keep_empty_notebooks_file_if_folder_has_other_fil
         connectors_directory
         / SmartLeads.model.name.lower()
         / "notebooks"
-        / KEEP_EMPTY_NOTEBOOKS
+        / KEEP_EMPTY_FOLDER
     )
 
     notebooks_directory.mkdir()
@@ -279,6 +313,95 @@ def test_documentation_removes_keep_empty_notebooks_file_if_folder_has_other_fil
     )
     assert readme.exists() is True
     assert action_documentation.exists() is True
+
+
+def test_documentation_adds_keep_empty_format_file_if_folder_is_empty(
+    connectors_directory,
+):
+    format_mappings_directory = (
+        connectors_directory / SmartLeads.model.name.lower() / "mappings" / "format"
+    )
+    keep_empty_format_file = (
+        connectors_directory
+        / SmartLeads.model.name.lower()
+        / "mappings"
+        / "format"
+        / KEEP_EMPTY_FOLDER
+    )
+
+    format_mappings_directory.mkdir(parents=True, exist_ok=True)
+
+    assert format_mappings_directory.exists() is True
+    assert keep_empty_format_file.exists() is False
+
+    connectors = [SmartLeads]
+    with patched_subprocess():
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert format_mappings_directory.exists() is True
+    assert keep_empty_format_file.exists() is True
+
+
+def test_documentation_does_not_add_keep_empty_format_file_if_folder_has_other_files(
+    connectors_directory,
+):
+    format_mappings_directory = (
+        connectors_directory / SmartLeads.model.name.lower() / "mappings" / "format"
+    )
+    keep_empty_format_file = (
+        connectors_directory
+        / SmartLeads.model.name.lower()
+        / "mappings"
+        / "format"
+        / KEEP_EMPTY_FOLDER
+    )
+    format_mappings_directory.mkdir(parents=True, exist_ok=True)
+    other = format_mappings_directory / FORMAT_FILE
+    other.touch()
+
+    assert format_mappings_directory.exists() is True
+    assert other.exists() is True
+    assert keep_empty_format_file.exists() is False
+
+    connectors = [SmartLeads]
+    with patched_subprocess():
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert format_mappings_directory.exists() is True
+    assert other.exists() is True
+    assert keep_empty_format_file.exists() is False
+
+
+def test_documentation_removes_keep_empty_format_file_if_folder_has_other_files(
+    connectors_directory,
+):
+    format_mappings_directory = (
+        connectors_directory / SmartLeads.model.name.lower() / "mappings" / "format"
+    )
+    keep_empty_format_file = (
+        connectors_directory
+        / SmartLeads.model.name.lower()
+        / "mappings"
+        / "format"
+        / KEEP_EMPTY_FOLDER
+    )
+
+    format_mappings_directory.mkdir(parents=True, exist_ok=True)
+    keep_empty_format_file.touch()
+    other = format_mappings_directory / FORMAT_FILE
+    other.touch()
+
+    assert format_mappings_directory.exists() is True
+    assert other.exists() is True
+    assert keep_empty_format_file.exists() is True
+
+    connectors = [SmartLeads]
+    with patched_subprocess():
+        generate_docs(connectors=connectors, connectors_directory=connectors_directory)
+
+    assert format_mappings_directory.exists() is True
+    assert other.exists() is True
+    assert keep_empty_format_file.exists() is False
 
 
 def test_documentation_fails_if_actions_section_not_found(connectors_directory):
@@ -333,7 +456,8 @@ def test_main_readme_update_at_expected_value(root_readme, connectors_directory)
 
 
 IGNORED_PATHS = [
-    "notebooks/{}".format(KEEP_EMPTY_NOTEBOOKS),
+    "notebooks/{}".format(KEEP_EMPTY_FOLDER),
+    "mappings/format/{}".format(KEEP_EMPTY_FOLDER),
     "README.md",
     "test-config.yaml",
     "logo.png",
