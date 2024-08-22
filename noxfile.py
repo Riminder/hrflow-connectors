@@ -11,7 +11,7 @@ import nox
 
 nox.options.reuse_existing_virtualenvs = True
 
-PYTHON_VERSIONS = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11"]
 REQUIREMENTS_CONTENT = {}
 
 
