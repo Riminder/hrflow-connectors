@@ -644,22 +644,20 @@ files = [
 
 [package.dependencies]
 gitdb = ">=4.0.1,<5"
-typing-extensions = {version = ">=3.7.4.3", markers = "python_version < \"3.8\""}
 
 [[package]]
 name = "hrflow"
-version = "2.1.0"
+version = "3.3.0"
 description = "Python hrflow.ai API package"
 optional = false
-python-versions = ">=3.5"
+python-versions = "<4.0.0,>=3.8.1"
 files = [
-    {file = "hrflow-2.1.0-py3-none-any.whl", hash = "sha256:303c91086af9dc0234521d6ea6838813dd233b5843f32d5aed4ef23a74de2fa9"},
-    {file = "hrflow-2.1.0.tar.gz", hash = "sha256:9d72470184efeb81b6c2fc29d6d24418f240aa24dc1fd35a19468e8a879ea69c"},
+    {file = "hrflow-3.3.0-py3-none-any.whl", hash = "sha256:13c2a704054c1929b009831eb8f2492e6bbd93afe4c290a9e1357953d99455c9"},
+    {file = "hrflow-3.3.0.tar.gz", hash = "sha256:e6e45bc2884525600816992028af3156a8d1fc9ad8c7a99987277acdce17e292"},
 ]
 
 [package.dependencies]
-python-magic = "*"
-requests = "*"
+requests = ">=2.31.0,<3.0.0"
 
 [[package]]
 name = "identify"
