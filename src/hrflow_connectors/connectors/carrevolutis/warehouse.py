@@ -1,8 +1,9 @@
 import base64
 import typing as t
+from io import BytesIO
 from logging import LoggerAdapter
 
-import magic
+import puremagic
 from pydantic import Field
 
 from hrflow_connectors.core import (
@@ -24,11 +25,16 @@ class ReadProfilesParameters(ParametersModel):
 
 
 def get_content_type(binary_data: bytes):
-    mime = magic.Magic(mime=True)
-    content_type = mime.from_buffer(binary_data)
-    if not content_type:
-        return "application/octet-stream"
-    return content_type
+    inferred = "application/octet-stream"
+
+    try:
+        results = puremagic.magic_stream(BytesIO(binary_data))
+        if len(results) > 0:
+            inferred = results[0].mime_type
+    except puremagic.PureError:
+        pass
+
+    return inferred
 
 
 def read(
