@@ -2,6 +2,17 @@
 
 
 
+## v4.17.0 (2024-08-22)
+
+### Feature
+
+* feat: add JSONMap mappings file to manifest during doc generation
+
+Add Jsonmap mappings to manifest.json &amp; automattically add &#39;mappings/format&#39; folder in every connector&#39;s directory
+
+Co-authored-by: Nedhir Ebnou &lt;nebnou@gmail.com&gt; ([`11f6d51`](https://github.com/Riminder/hrflow-connectors/commit/11f6d511142c662b447c748e578b722692bf0273))
+
+
 ## v4.16.1 (2024-08-15)
 
 ### Documentation
