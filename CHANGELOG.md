@@ -2,6 +2,24 @@
 
 
 
+## v4.18.0 (2024-08-26)
+
+### Documentation
+
+* docs: use commit date for README last updated at and update docs ([`dfb9ee3`](https://github.com/Riminder/hrflow-connectors/commit/dfb9ee3dbda55c602deeaff3f52e4dab9308ebfa))
+
+### Feature
+
+* feat: replace calls to magic with puremagic ([`9ecb9cd`](https://github.com/Riminder/hrflow-connectors/commit/9ecb9cdff55eba998ce885d4ded706d481f34981))
+
+### Unknown
+
+* core: use hrflow v3.3.0 without python-magic dependency ([`0a47d95`](https://github.com/Riminder/hrflow-connectors/commit/0a47d95c664475976aa2ce7409487654e7b65d23))
+
+* core: drop support for python&lt;3.8.1
+BREAKING CHANGE ([`6d66cf5`](https://github.com/Riminder/hrflow-connectors/commit/6d66cf50c79e741c88be15e94cb7c2cf3acc5d22))
+
+
 ## v4.17.0 (2024-08-22)
 
 ### Feature
