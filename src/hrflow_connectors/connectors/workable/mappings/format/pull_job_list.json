@@ -1,0 +1,73 @@
+{
+  "name": "?.title",
+  "reference": "?.shortcode",
+  "url": "?.url",
+  "location": {
+    "text": "?.location?.location_str",
+    "geojson": {
+      "country": "?.location?.country",
+      "country_code": "?.location?.country_code",
+      "region_code": "?.location?.region_code",
+      "region": "?.location?.region",
+      "city": "?.location?.city",
+      "zip_code": "?.location?.zip_code",
+      "telecommuting": "?.location?.telecommuting"
+    }
+  },
+  "sections": [
+    {
+      "name": "workable_description",
+      "title": "workable_description",
+      "description": "?.description | $sub('<[^<]+?>', '')"
+    },
+    {
+      "name": "workable_requirements",
+      "title": "workable_requirements",
+      "description": "?.requirements | $sub('<[^<]+?>', '')"
+    },
+    {
+      "name": "workable_benefits",
+      "title": "workable_benefits",
+      "description": "?.benefits | $sub('<[^<]+?>', '')"
+    }
+  ],
+  "created_at": "?.created_at",
+  "tags": [
+    {
+      "name": "workable_employment_type",
+      "value": "?.employment_type"
+    },
+    {
+      "name": "workable_full_title",
+      "value": "?.full_title"
+    },
+    {
+      "name": "workable_id",
+      "value": "?.id"
+    },
+    {
+      "name": "workable_code",
+      "value": "?.code"
+    },
+    {
+      "name": "workable_state",
+      "value": "?.state"
+    },
+    {
+      "name": "workable_department",
+      "value": "?.department"
+    },
+    {
+      "name": "workable_application_url",
+      "value": "?.application_url"
+    },
+    {
+      "name": "workable_shortlink",
+      "value": "?.shortlink"
+    },
+    {
+      "name": "workable_employment_type",
+      "value": "?.employment_type"
+    }
+  ]
+}

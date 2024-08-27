@@ -1,0 +1,15 @@
+{
+  "reference": "?.id | $string",
+  "tags": [
+    { "name": "dateAvailable", "value": "?.dateAvailable" },
+    { "name": "status", "value": "?.status" },
+    { "name": "employeeType", "value": "?.employeeType" },
+    { "name": "activePlacements", "value": "?.activePlacements?.total" }
+  ],
+  "metadatas": [],
+  "created_at": null,
+  "resume": {
+    "raw": ".cvFile",
+    "content_type": "application/pdf"
+  }
+}

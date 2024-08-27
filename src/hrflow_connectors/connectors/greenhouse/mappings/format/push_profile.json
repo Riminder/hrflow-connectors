@@ -1,0 +1,15 @@
+{
+  "applications": "?.tags | $map(.name == 'application_boardKey_jobReference'?? .) | $map(.value | $split('_') | .[1] | $int)",
+  "first_name": "?.info?.first_name",
+  "last_name": "?.info?.last_name",
+  "external_id": "?.reference",
+  "resume": "?.attachments.[0].public_url",
+  "phone_numbers": [{ "value": "?.info?.phone", "type": "mobile" }],
+  "email_addresses": [{ "value": "?.info?.email", "type": "personal" }],
+  "addresses": [{ "value": "?.info?.location?.text", "type": "home" }],
+  "notes": "?.text",
+  "social_media_addresses": ".info?.urls | $map({value: ?.url})",
+  "company": "?.experiences.[0].company",
+  "title": "?.experiences.[0].title",
+  "employments": "?.experiences | $map({company_name: ?.company, title: ?.title, start_date: ?.date_start, end_date: ?.date_end})"
+}

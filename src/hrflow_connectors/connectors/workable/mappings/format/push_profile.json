@@ -1,0 +1,11 @@
+{
+  "sourced": true,
+  "candidate": {
+    "name": "?.info?.full_name",
+    "summary": "?.info?.summary",
+    "email": "?.info?.email",
+    "phone": "?.info?.phone",
+    "address": "?.info?.location?.text",
+    "resume_url": "?.attachments | $map(.type == 'resume' ?? .)| .[0].public_url"
+  }
+}

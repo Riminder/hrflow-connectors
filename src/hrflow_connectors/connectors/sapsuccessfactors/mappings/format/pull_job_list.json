@@ -1,0 +1,35 @@
+{
+    "name" : "?.job?.jobTitle >> 'Undefined'",
+    "reference" : "?.job?.jobReqId",
+    "location" : {
+        "text" : "?.requisition?.location",
+        "city" : "?.requisition?.city",
+        "geojson" : {
+            "city" : "?.requisition?.city",
+            "country" : "?.requisition?.country",
+            "facility" : "?.requisition?.facility",
+            "province" : "?.requisition?.stateProvince"
+        },
+        "lat" : null,
+        "lng" : null
+    },
+    "sections": "?.job?.jobDescription | $map({name: 'sap_description', title: 'sap_description', description: . | $sub('<[^<]+?>', '') | $sub('#13;', ' ') | $sub('&', '') | $sub('&nbsp;', '') | $sub('quo;s', '')})",
+    "tags": [
+        { "name": "sapsuccessfactors_annual_SA", "value": "?.requisition?.annual_SA"},
+        { "name": "sapsuccessfactors_department", "value": "?.requisition?.department"},
+        { "name": "sapsuccessfactors_function", "value": "?.requisition?.function"},
+        { "name": "sapsuccessfactors_division", "value": "?.requisition?.division"},
+        { "name": "sapsuccessfactors_industry", "value": "?.requisition?.industry"},
+        { "name": "sapsuccessfactors_monthly_salary", "value": "?.requisition?.monthly_salary"},
+        { "name": "sapsuccessfactors_otherBonus", "value": "?.requisition?.otherBonus"},
+        { "name": "sapsuccessfactors_salaryBase", "value": "?.requisition?.salaryBase"},
+        { "name": "sapsuccessfactors_salaryMax", "value": "?.requisition?.salaryMax"},
+        { "name": "sapsuccessfactors_salaryMin", "value": "?.requisition?.salaryMin"},
+        { "name": "sapsuccessfactors_jobStartDate", "value": "?.requisition?.jobStartDate"}
+    ],
+    "metadatas": [
+        { "name": "sapsuccessfactors_recruiterTeam", "value": "?.requisition?.recruiterTeam"},
+        { "name": "sapsuccessfactors_sourcerTeam", "value": "?.requisition?.sourcerTeam"},
+        { "name": "sapsuccessfactors_hiringManagerTeam", "value": "?.requisition?.hiringManagerTeam"}
+    ]
+}

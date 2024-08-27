@@ -1,0 +1,15 @@
+{
+  "data": {
+    "type": "candidates",
+    "attributes": {
+      "first-name": "?.info?.first_name",
+      "last-name": "?.info?.last_name",
+      "email": "?.info?.email",
+      "phone": "?.info?.phone",
+      "pitch": "?.info?.summary | $slice(0,139)",
+      "resume": "?.attachments[1]?.public_url",
+      "sourced": "sourced",
+      "tags": "?.tags"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "reference": "._id",
+  "tags": [
+    { "name": "prospectList", "value": ".prospectList" },
+    { "name": "messageSent", "value": ".messageSent" },
+    { "name": "messageReplied", "value": ".messageReplied" },
+    { "name": "emailSent", "value": ".emailSent" },
+    { "name": "emailReplied", "value": ".emailReplied" }
+  ],
+  "info": {
+    "first_name": ".firstName",
+    "last_name": ".lastName",
+    "full_name": "$concat(.firstName, ' ', .lastName)",
+    "email": ".email",
+    "phone": ".phoneNumbers",
+    "location": {
+      "text": ".location",
+      "lat": null,
+      "lng": null
+    },
+    "urls": [
+      { "type": "linkedin", "url": ".linkedinUrl" },
+      { "type": "company_linkedin", "url": ".company_linkedinUrl" },
+      { "type": "company_website", "url": ".company_website" },
+      { "type": "salesNavigator", "url": ".salesNavigatorUrl" }
+    ],
+    "summary": ".occupation"
+  },
+  "text_language": "en",
+  "experiences": [],
+  "educations": []
+}

@@ -1,0 +1,40 @@
+{
+  "name": "?.title",
+  "reference": "?.id",
+  "location": {
+    "text": "?.address.address1",
+    "fields": {
+      "city": "?.address.city",
+      "country": "?.address.countryCode",
+      "postal_code": "?.address.zip"
+    }
+  },
+  "sections": [
+    {
+      "name": "Bullhorn_description",
+      "title": "Bullhorn_description",
+      "description": ".publicDescription"
+    }
+  ],
+  "skills": "?.skillList != null ?? .skillList | $split(',')| $map({name: ., type: 'undefined', value: null}) : []",
+  "tags": [
+    { "name": "durationWeeks", "value": "?.durationWeeks" },
+    {
+      "name": "degreeList",
+      "value": "?.degreeList != null ?? .degreeList | $join(',') : null"
+    },
+    { "name": "employmentType", "value": "?.employmentType" },
+    { "name": "numOpenings", "value": "?.numOpenings" },
+    { "name": "onSite", "value": "?.onSite" },
+    { "name": "salaryUnit", "value": "?.salaryUnit" },
+    { "name": "startDate", "value": "?.startDate" },
+    { "name": "status", "value": "?.status" },
+    { "name": "type", "value": "?.type" },
+    { "name": "willRelocate", "value": "?.willRelocate" },
+    { "name": "salary", "value": "?.salary" },
+    { "name": "isWorkFromHome", "value": "?.isWorkFromHome" },
+    { "name": "hoursPerWeek", "value": "?.hoursPerWeek" },
+    { "name": "hoursOfOperation", "value": "?.hoursOfOperation" },
+    { "name": "dateAdded", "value": "?.dateAdded" }
+  ]
+}
