@@ -1,0 +1,59 @@
+{
+  "reference": null,
+  "resume": {
+    "raw": ".cv",
+    "content_type": ".content_type"
+  },
+  "tags": [
+    {
+      "name": "job-number",
+      "value": "?.jobkey != null ?? .jobkey  | $slice(0,10) : null"
+    },
+    {
+      "name": "first_name",
+      "value": "?.firstName"
+    },
+    {
+      "name": "last_name",
+      "value": "?.lastName"
+    },
+    {
+      "name": "phone",
+      "value": "?.phone"
+    },
+    {
+      "name": "email",
+      "value": "?.email"
+    },
+    {
+      "name": "coverText",
+      "value": "?.coverText"
+    },
+    {
+      "name": "profile-country",
+      "value": "?.profilecountry"
+    },
+    {
+      "name": "profile-regions",
+      "value": "?.profileregions"
+    },
+    {
+      "name": "profile-domains",
+      "value": "?.profiledomains"
+    },
+    {
+      "name": "job-lien_annonce_site_carriere",
+      "value": "?.joblien_annonce_site_carriere"
+    },
+    {
+      "name": "statistic-source",
+      "value": "?.statisticsource"
+    },
+    {
+      "name": "statistic-jbsource",
+      "value": "?.statisticjbsource"
+    }
+  ],
+  "metadatas": [],
+  "created_at": null
+}

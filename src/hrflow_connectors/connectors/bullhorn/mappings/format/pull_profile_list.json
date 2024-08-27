@@ -1,0 +1,22 @@
+{
+  "info": {
+    "full_name": ".name",
+    "first_name": ".firstName",
+    "last_name": ".lastName",
+    "email": ".email",
+    "phone": ".mobile",
+    "date_birth": ".dateOfBirth",
+    "location": { "text": ".address.address1" },
+    "gender": ".gender"
+  },
+  "skills": ".skillSet.[0] ?? .skillSet | $split(',') | . >> [] | $map({ name: ., type: hard, value: null })",
+  "experiences": ".workHistories | $map({ title: .title, location: { text: '', lng: null, lat: null }, company: .companyName, date_start: .startDate, date_end: .endDate, title: .title, description: .comments })",
+  "tags": [
+    { "name": "dateAvailable", "value": "?.dateAvailable" },
+    { "name": "status", "value": "?.status" },
+    { "name": "employeeType", "value": "?.employeeType" },
+    { "name": "activePlacements", "value": "?.activePlacements?.total" }
+  ],
+  "educations": ".educations | $map({ location: { text: .city, lng: null, lat: null }, school: .school, date_start: .startDate, date_end: .endDate, title: .degree, certifications: [ .certification ], description: .comments })",
+  "reference": "?.id | $string"
+}

@@ -1,0 +1,60 @@
+{
+  "name": "?.title",
+  "reference": "?.id | $string",
+  "created_at": "?.created_at",
+  "updated_at": "?.updated_at",
+  "location": {
+    "text": "?.location",
+    "lat": null,
+    "lng": null
+  },
+  "url": "?.url",
+  "summary": "?.description",
+  "sections": [
+    {
+      "name": "recruitee_job_requirements",
+      "title": "'Job Requirements'",
+      "description": "?.requirements"
+    }
+  ],
+  "tags": [
+    { "name": "recruitee_category", "value": "?.category" },
+    { "name": "recruitee_department", "value": "?.department" },
+    { "name": "recruitee_options_cv", "value": "?.options_cv" },
+    {
+      "name": "recruitee_options_cover_letter",
+      "value": "?.options_cover_letter"
+    },
+    { "name": "recruitee_experience", "value": "?.experience" },
+    { "name": "recruitee_education", "value": "?.education" },
+    { "name": "recruitee_employment_type", "value": "?.employment_type" },
+    { "name": "recruitee_remote_option", "value": "?.remote" },
+    { "name": "recruitee_candidates_count", "value": "?.candidates_count" },
+    {
+      "name": "recruitee_disqualified_candidates_count",
+      "value": "?.disqualified_candidates_count"
+    },
+    {
+      "name": "recruitee_qualified_candidates_count",
+      "value": "?.qualified_candidates_count"
+    },
+    {
+      "name": "recruitee_hired_candidates_count",
+      "value": "?.hired_candidates_count"
+    }
+  ],
+  "ranges_float": [
+    {
+      "name": "'working hours'",
+      "value_min": "?.min_hours",
+      "value_max": "?.max_hours",
+      "unit": "'Hours per week'"
+    },
+    {
+      "name": "$concat('salary per ',?.salary.period)",
+      "value_min": "?.salary.min",
+      "value_max": "?.salary.max",
+      "unit": "?.salary.currency"
+    }
+  ]
+}

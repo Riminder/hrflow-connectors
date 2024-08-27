@@ -1,0 +1,18 @@
+{
+  "reference": "?.id",
+  "info": {
+    "first_name": "?.first_name",
+    "last_name": "?.last_name",
+    "email": "?.email_addresses.[0] ?? .email_addresses.[0].value : null",
+    "phone": "?.phone_numbers.[0] ?? .phone_numbers.[0].value : null",
+    "location": {
+      "text": "?.addresses | $map(.type == 'home' ?? .) | .[0].value",
+      "lat": null,
+      "lng": null
+    }
+  },
+  "text": "?.notes",
+  "attachments": "?.attachments | $map({public_url: .url, type: .type})",
+  "experiences": "?.employments | $map({title: .title, company: .company_name, date_start: .start_date, date_end: .end_date})",
+  "educations": "?.educations | $map({school: .school_name, title: $concat(.degree, ' ', .discipline), date_start: .start_date, date_end: .end_date})"
+}

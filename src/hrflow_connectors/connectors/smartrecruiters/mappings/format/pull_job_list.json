@@ -1,0 +1,62 @@
+{
+  "name": ".title || 'Undefined'",
+  "reference": "?.refNumber",
+  "created_at": "?.createdon",
+  "updated_at": "?.updatedon",
+  "url": null,
+  "summary": null,
+  "location": {
+    "lat": ".location.latitude != null ?? .location.latitude | $float : null",
+    "lng": ".location.longitude != null ?? .location.longitude | $float : null",
+    "text": ".location ?? '' : $concat(.location?.country >> '', ' ', .location?.region >> '', ' ', .location?.city >> '', ' ', .location?.address >> '') | $strip"
+  },
+  "sections": [
+    ".jobAd.sections.companyDescription != null ?? .jobAd.sections.companyDescription | {name: 'smartrecruiters_jobAd-sections-companyDescription', title: ?.title, description: ?.text}",
+    ".jobAd.sections.jobDescription != null ?? .jobAd.sections.jobDescription | {name: 'smartrecruiters_jobAd-sections-jobDescription', title: ?.title, description: ?.text}",
+    ".jobAd.sections.qualifications != null ?? .jobAd.sections.qualifications | {name: 'smartrecruiters_jobAd-sections-qualifications', title: ?.title, description: ?.text}",
+    ".jobAd.sections.additionalInformation != null ?? .jobAd.sections.additionalInformation | {name: 'smartrecruiters_jobAd-sections-additionalInformation', title: ?.title, description: ?.text}"
+  ],
+  "tags": [
+    { "name": "smartrecruiters_status", "value": "?.status" },
+    { "name": "smartrecruiters_postingStatus", "value": "?.postingStatus" },
+    { "name": "smartrecruiters_id", "value": "?.id" },
+    {
+      "name": "smartrecruiters_experienceLevel-id",
+      "value": "?.experienceLevel?.id"
+    },
+    {
+      "name": "smartrecruiters_typeOfEmployment-id",
+      "value": "?.typeOfEmployment?.id"
+    },
+    {
+      "name": "smartrecruiters_compensation-min",
+      "value": "?.compensation?.min"
+    },
+    {
+      "name": "smartrecruiters_compensation-max",
+      "value": "?.compensation?.max"
+    },
+    {
+      "name": "smartrecruiters_compensation-currency",
+      "value": "?.compensation?.currency"
+    },
+    { "name": "smartrecruiters_industry-id", "value": "?.industry?.id" },
+    { "name": "smartrecruiters_creator-firstName", "value": "?.firstName" },
+    { "name": "smartrecruiters_creator-lastName", "value": "?.lastName" },
+    { "name": "smartrecruiters_function-id", "value": "?.function?.id" },
+    { "name": "smartrecruiters_department-id", "value": "?.department?.id" },
+    {
+      "name": "smartrecruiters_location-manual",
+      "value": "?.location?.manual"
+    },
+    {
+      "name": "smartrecruiters_location-remote",
+      "value": "?.location?.remote"
+    },
+    { "name": "smartrecruiters_eeoCategory-id", "value": "?.eeoCategory?.id" },
+    {
+      "name": "smartrecruiters_targetHiringDate",
+      "value": "?.targetHiringDate"
+    }
+  ]
+}

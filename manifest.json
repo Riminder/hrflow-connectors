@@ -805,7 +805,95 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": ".title || 'Undefined'",
+            "reference": "?.refNumber",
+            "created_at": "?.createdon",
+            "updated_at": "?.updatedon",
+            "url": null,
+            "summary": null,
+            "location": {
+              "lat": ".location.latitude != null ?? .location.latitude | $float : null",
+              "lng": ".location.longitude != null ?? .location.longitude | $float : null",
+              "text": ".location ?? '' : $concat(.location?.country >> '', ' ', .location?.region >> '', ' ', .location?.city >> '', ' ', .location?.address >> '') | $strip"
+            },
+            "sections": [
+              ".jobAd.sections.companyDescription != null ?? .jobAd.sections.companyDescription | {name: 'smartrecruiters_jobAd-sections-companyDescription', title: ?.title, description: ?.text}",
+              ".jobAd.sections.jobDescription != null ?? .jobAd.sections.jobDescription | {name: 'smartrecruiters_jobAd-sections-jobDescription', title: ?.title, description: ?.text}",
+              ".jobAd.sections.qualifications != null ?? .jobAd.sections.qualifications | {name: 'smartrecruiters_jobAd-sections-qualifications', title: ?.title, description: ?.text}",
+              ".jobAd.sections.additionalInformation != null ?? .jobAd.sections.additionalInformation | {name: 'smartrecruiters_jobAd-sections-additionalInformation', title: ?.title, description: ?.text}"
+            ],
+            "tags": [
+              {
+                "name": "smartrecruiters_status",
+                "value": "?.status"
+              },
+              {
+                "name": "smartrecruiters_postingStatus",
+                "value": "?.postingStatus"
+              },
+              {
+                "name": "smartrecruiters_id",
+                "value": "?.id"
+              },
+              {
+                "name": "smartrecruiters_experienceLevel-id",
+                "value": "?.experienceLevel?.id"
+              },
+              {
+                "name": "smartrecruiters_typeOfEmployment-id",
+                "value": "?.typeOfEmployment?.id"
+              },
+              {
+                "name": "smartrecruiters_compensation-min",
+                "value": "?.compensation?.min"
+              },
+              {
+                "name": "smartrecruiters_compensation-max",
+                "value": "?.compensation?.max"
+              },
+              {
+                "name": "smartrecruiters_compensation-currency",
+                "value": "?.compensation?.currency"
+              },
+              {
+                "name": "smartrecruiters_industry-id",
+                "value": "?.industry?.id"
+              },
+              {
+                "name": "smartrecruiters_creator-firstName",
+                "value": "?.firstName"
+              },
+              {
+                "name": "smartrecruiters_creator-lastName",
+                "value": "?.lastName"
+              },
+              {
+                "name": "smartrecruiters_function-id",
+                "value": "?.function?.id"
+              },
+              {
+                "name": "smartrecruiters_department-id",
+                "value": "?.department?.id"
+              },
+              {
+                "name": "smartrecruiters_location-manual",
+                "value": "?.location?.manual"
+              },
+              {
+                "name": "smartrecruiters_location-remote",
+                "value": "?.location?.remote"
+              },
+              {
+                "name": "smartrecruiters_eeoCategory-id",
+                "value": "?.eeoCategory?.id"
+              },
+              {
+                "name": "smartrecruiters_targetHiringDate",
+                "value": "?.targetHiringDate"
+              }
+            ]
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import SmartRecruiters\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return SmartRecruiters.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['x_smart_token', 'query', 'updated_after', 'posting_status', 'job_status', 'limit']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return SmartRecruiters.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -1683,7 +1771,19 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "firstName": ".info.first_name",
+            "lastName": ".info.last_name",
+            "email": ".info.email",
+            "phoneNumber": ".info.phone",
+            "location": ".info.location | {lat: .lat >> 0, lng: .lng >> 0, city: .fields >> {} | ?.city >> Undefined, country: .fields >> {} | ?.country >> Undefined, region: .fields >> {} | ?.region >> Undefined }",
+            "experiences": ".experiences | $map({title: .title >> Undefined, company: .company >> Undefined, description: .description, current: false, startDate: .date_start >> XXXX | $split(T) | .[0], endDate: .date_end >> XXXX | $split(T) | .[0], location: .location.text >> Undefined })",
+            "educations": ".educations | $map({institution: .school >> Undefined, degree: .title >> Undefined, major: Undefined, description: .description, current: false, startDate: .date_start >> XXXX | $split(T) | .[0], endDate: .date_end >> XXXX | $split(T) | .[0], location: .location.text >> Undefined })",
+            "web": "{'type': 'url'}",
+            "tags": "[]",
+            "consent": true,
+            "attachments": "?.attachments >> []"
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import SmartRecruiters\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return SmartRecruiters.push_profile(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = SmartRecruiters.model.action_by_name(\"push_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return SmartRecruiters.push_profile(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'profile_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['x_smart_token', 'job_id']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return SmartRecruiters.push_profile(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -3519,7 +3619,79 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": ".jobDescription.title",
+            "reference": ".reference",
+            "created_at": ".creationDate",
+            "location": {
+              "text": ".location.address",
+              "lat": ".location.latitude",
+              "lng": ".location.longitude"
+            },
+            "url": null,
+            "summary": null,
+            "sections": [
+              {
+                "name": "description1",
+                "title": "description1",
+                "description": ".jobDescription.description1 >> ''"
+              },
+              {
+                "name": "description2",
+                "title": "description2",
+                "description": ".jobDescription.description2 >> ''"
+              },
+              {
+                "name": "'Compl\u00e9ment du descriptif'",
+                "title": "'Compl\u00e9ment du descriptif'",
+                "description": "$concat(.jobDescription.jobDescriptionCustomFields.longText1 >> '', '\n' , .jobDescription.jobDescriptionCustomFields.longText2>> '', '\n' ,.jobDescription.jobDescriptionCustomFields.longText3>> '')"
+              }
+            ],
+            "tags": [
+              {
+                "name": "talentsoft-organisation-id",
+                "value": "?.organisation?.id"
+              },
+              {
+                "name": "talentsoft-status-id",
+                "value": "?.status?.id"
+              },
+              {
+                "name": "talentsoft-professionalCategory-id",
+                "value": "?.jobDescription.professionalCategory?.id"
+              },
+              {
+                "name": "talentsoft-country-id",
+                "value": "?.jobDescription.country?.id"
+              },
+              {
+                "name": "talentsoft-primaryProfile-id",
+                "value": "?.jobDescription.primaryProfile?.id"
+              },
+              {
+                "name": "talentsoft-contractType-id",
+                "value": "?.jobDescription.contractType?.id"
+              },
+              {
+                "name": "talentsoft-publishedOnInternet",
+                "value": "?.publishedOnInternet"
+              },
+              {
+                "name": "talentsoft-publishedOnIntranet",
+                "value": "?.publishedOnIntranet"
+              },
+              {
+                "name": "talentsoft-experienceLevel",
+                "value": "?.criteria.experienceLevel?.id"
+              },
+              {
+                "name": "talentsoft-educationLevel",
+                "value": "?.criteria.educationLevel?.id"
+              }
+            ],
+            "skills": ".criteria.skills",
+            "languages": "?.languages >> [] | {name: .language.label, value: null}"
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import TalentSoft\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return TalentSoft.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'client_url', 'q', 'filter', 'max_read']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return TalentSoft.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -5507,7 +5679,80 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": "?.intitule",
+            "reference": "?.id",
+            "created_at": "?.dateCreation",
+            "updated_at": "?.dateActualisation",
+            "location": {
+              "lat": "?.lieuTravail?.latitude!= null ?? .lieuTravail.latitude | $float : null",
+              "lng": ".lieuTravail.longitude != null ?? .lieuTravail.longitude | $float : null",
+              "text": ".lieuTravail ?? '' : $concat(.lieuTravail?.libelle >> '', ' ', .location?.codePostal >> '') | $strip"
+            },
+            "url": null,
+            "summary": "?.description",
+            "sections": [
+              {
+                "name": "pole_emploi_company_description",
+                "title": "'Company Description'",
+                "description": "?.entreprise?.description"
+              }
+            ],
+            "tags": [
+              {
+                "name": "pole_emploi_romeCode",
+                "value": "?.romeCode"
+              },
+              {
+                "name": "pole_emploi_romeLibelle",
+                "value": "?.romeLibelle"
+              },
+              {
+                "name": "pole_emploi_appellationLibelle",
+                "value": "?.appellationLibelle"
+              },
+              {
+                "name": "pole_emploi_contractNature",
+                "value": "?.natureContrat"
+              },
+              {
+                "name": "pole_emploi_contractType",
+                "value": "?.typeContratLibelle"
+              },
+              {
+                "name": "pole_emploi_experience",
+                "value": "?.experienceLibelle"
+              },
+              {
+                "name": "pole_emploi_salary",
+                "value": "?.salaire?.libelle"
+              },
+              {
+                "name": "pole_emploi_working_hours",
+                "value": "?.dureeTravailLibelle"
+              },
+              {
+                "name": "pole_emploi_qualification",
+                "value": "?.qualificationLibelle"
+              },
+              {
+                "name": "pole_emploi_secteurActivite",
+                "value": "?.secteurActiviteLibelle"
+              },
+              {
+                "name": "pole_emploi_contact-name",
+                "value": "?.contact?.nom"
+              },
+              {
+                "name": "pole_emploi_contact-email",
+                "value": "?.contact?.courriel"
+              },
+              {
+                "name": "pole_emploi_contact-phone",
+                "value": "?.contact?.telephone"
+              }
+            ]
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import PoleEmploi\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return PoleEmploi.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'range', 'sort', 'domaine', 'codeROME', 'theme', 'appellation', 'secteurActivite', 'experience', 'typeContrat', 'natureContrat', 'origineOffre', 'qualification', 'tempsPlein', 'commune', 'distance', 'departement', 'inclureLimitrophes', 'region', 'paysContinent', 'niveauFormation', 'permis', 'motsCles', 'salaireMin', 'periodeSalaire', 'accesTravailleurHandicape', 'offresMRS', 'grandDomaine', 'experienceExige', 'publieeDepuis', 'minCreationDate', 'maxCreationDate', 'partenaires', 'modeSelectionPartenaires', 'dureeHebdo', 'dureeHebdoMin', 'dureeHebdoMax', 'dureeContratMin', 'dureeContratMax', 'offresManqueCandidats', 'entreprisesAdaptees']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return PoleEmploi.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -6338,7 +6583,41 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": "?.title",
+            "reference": "?.id | $string",
+            "created_at": "?.created",
+            "location": {
+              "lat": "?.latitude != null ?? .latitude | $float : null",
+              "lng": "?.longitude != null ?? .longitude | $float : null",
+              "text": "?.location.display_name"
+            },
+            "url": "?.redirect_url",
+            "summary": "?.description",
+            "sections": [],
+            "tags": [
+              {
+                "name": "salary_min",
+                "value": "?.salary_min"
+              },
+              {
+                "name": "salary_max",
+                "value": "?.salary_max"
+              },
+              {
+                "name": "salaries_are_predicted",
+                "value": "?.salary_is_predicted == '1' ?? true : false"
+              },
+              {
+                "name": "category",
+                "value": "?.category?.label"
+              },
+              {
+                "name": "company",
+                "value": "?.company?.display_name"
+              }
+            ]
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Adzuna\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Adzuna.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['country', 'app_id', 'app_key', 'results_per_page', 'what', 'what_and', 'what_phrase', 'what_or', 'what_exclude', 'title_only', 'where', 'distance', 'location0', 'location1', 'location2', 'location3', 'location4', 'location5', 'location6', 'location7', 'max_days_old', 'category', 'sort_dir', 'sort_by', 'salary_min', 'salary_max', 'salary_include_unknown', 'full_time', 'part_time', 'contract', 'permanent', 'company']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Adzuna.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -7080,7 +7359,22 @@
               "name"
             ]
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": ".info.full_name",
+            "remote_cv_url": ".attachments | $map(?.type == 'resume' ?? .) | .[0].public_url",
+            "emails": [
+              ".info.email"
+            ],
+            "phones": [
+              ".info.phone"
+            ],
+            "social_links": ".info.urls | $map(?.type != 'from_resume' ?? .url)",
+            "links": ".info.urls | $map(?.type == 'from_resume' ?? .url)",
+            "cover_letter": "''",
+            "sources": [
+              ".source.name"
+            ]
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Recruitee\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Recruitee.push_profile(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = Recruitee.model.action_by_name(\"push_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return Recruitee.push_profile(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'profile_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['company_id', 'api_token', 'recruitee_endpoint', 'offer_ids']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return Recruitee.push_profile(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -7604,7 +7898,90 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": "?.title",
+            "reference": "?.id | $string",
+            "created_at": "?.created_at",
+            "updated_at": "?.updated_at",
+            "location": {
+              "text": "?.location",
+              "lat": null,
+              "lng": null
+            },
+            "url": "?.url",
+            "summary": "?.description",
+            "sections": [
+              {
+                "name": "recruitee_job_requirements",
+                "title": "'Job Requirements'",
+                "description": "?.requirements"
+              }
+            ],
+            "tags": [
+              {
+                "name": "recruitee_category",
+                "value": "?.category"
+              },
+              {
+                "name": "recruitee_department",
+                "value": "?.department"
+              },
+              {
+                "name": "recruitee_options_cv",
+                "value": "?.options_cv"
+              },
+              {
+                "name": "recruitee_options_cover_letter",
+                "value": "?.options_cover_letter"
+              },
+              {
+                "name": "recruitee_experience",
+                "value": "?.experience"
+              },
+              {
+                "name": "recruitee_education",
+                "value": "?.education"
+              },
+              {
+                "name": "recruitee_employment_type",
+                "value": "?.employment_type"
+              },
+              {
+                "name": "recruitee_remote_option",
+                "value": "?.remote"
+              },
+              {
+                "name": "recruitee_candidates_count",
+                "value": "?.candidates_count"
+              },
+              {
+                "name": "recruitee_disqualified_candidates_count",
+                "value": "?.disqualified_candidates_count"
+              },
+              {
+                "name": "recruitee_qualified_candidates_count",
+                "value": "?.qualified_candidates_count"
+              },
+              {
+                "name": "recruitee_hired_candidates_count",
+                "value": "?.hired_candidates_count"
+              }
+            ],
+            "ranges_float": [
+              {
+                "name": "'working hours'",
+                "value_min": "?.min_hours",
+                "value_max": "?.max_hours",
+                "unit": "'Hours per week'"
+              },
+              {
+                "name": "$concat('salary per ',?.salary.period)",
+                "value_min": "?.salary.min",
+                "value_max": "?.salary.max",
+                "unit": "?.salary.currency"
+              }
+            ]
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Recruitee\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Recruitee.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['company_id', 'api_token', 'recruitee_endpoint', 'kind', 'scope', 'view_mode']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Recruitee.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -8829,7 +9206,79 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": "?.title",
+            "reference": "?.shortcode",
+            "url": "?.url",
+            "location": {
+              "text": "?.location?.location_str",
+              "geojson": {
+                "country": "?.location?.country",
+                "country_code": "?.location?.country_code",
+                "region_code": "?.location?.region_code",
+                "region": "?.location?.region",
+                "city": "?.location?.city",
+                "zip_code": "?.location?.zip_code",
+                "telecommuting": "?.location?.telecommuting"
+              }
+            },
+            "sections": [
+              {
+                "name": "workable_description",
+                "title": "workable_description",
+                "description": "?.description | $sub('<[^<]+?>', '')"
+              },
+              {
+                "name": "workable_requirements",
+                "title": "workable_requirements",
+                "description": "?.requirements | $sub('<[^<]+?>', '')"
+              },
+              {
+                "name": "workable_benefits",
+                "title": "workable_benefits",
+                "description": "?.benefits | $sub('<[^<]+?>', '')"
+              }
+            ],
+            "created_at": "?.created_at",
+            "tags": [
+              {
+                "name": "workable_employment_type",
+                "value": "?.employment_type"
+              },
+              {
+                "name": "workable_full_title",
+                "value": "?.full_title"
+              },
+              {
+                "name": "workable_id",
+                "value": "?.id"
+              },
+              {
+                "name": "workable_code",
+                "value": "?.code"
+              },
+              {
+                "name": "workable_state",
+                "value": "?.state"
+              },
+              {
+                "name": "workable_department",
+                "value": "?.department"
+              },
+              {
+                "name": "workable_application_url",
+                "value": "?.application_url"
+              },
+              {
+                "name": "workable_shortlink",
+                "value": "?.shortlink"
+              },
+              {
+                "name": "workable_employment_type",
+                "value": "?.employment_type"
+              }
+            ]
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Workable\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Workable.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['auth', 'subdomain']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Workable.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -9490,7 +9939,17 @@
             "type": "object",
             "properties": {}
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "sourced": true,
+            "candidate": {
+              "name": "?.info?.full_name",
+              "summary": "?.info?.summary",
+              "email": "?.info?.email",
+              "phone": "?.info?.phone",
+              "address": "?.info?.location?.text",
+              "resume_url": "?.attachments | $map(.type == 'resume' ?? .)| .[0].public_url"
+            }
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Workable\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Workable.push_profile(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = Workable.model.action_by_name(\"push_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return Workable.push_profile(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'profile_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['auth', 'subdomain', 'shortcode']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return Workable.push_profile(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -9920,7 +10379,63 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": "?.name",
+            "reference": "?.friendly_id",
+            "summary": null,
+            "location": {
+              "text": "?.location?.name",
+              "geojson": {
+                "country": "?.location?.country?.name",
+                "city": "?.location?.city"
+              },
+              "lat": null,
+              "lng": null
+            },
+            "sections": [
+              {
+                "name": "breezy_hr_description",
+                "title": "Breezy_hr_description",
+                "description": "?.description | $sub('<[^<]+?>', '') | $sub('&nbsp;', ' ')"
+              }
+            ],
+            "tags": [
+              {
+                "name": "breezy_hr_type",
+                "value": ".type?.name ?? .type.name: .type"
+              },
+              {
+                "name": "breezy_hr_experience",
+                "value": ".experience?.name ?? .experience.name: .experience"
+              },
+              {
+                "name": "breezy_hr_education",
+                "value": ".education?.name ?? .education.name: .education"
+              },
+              {
+                "name": "breezy_hr_department",
+                "value": ".department?.name ?? .department.name: .department"
+              },
+              {
+                "name": "breezy_hr_requisition_id",
+                "value": ".requisition_id"
+              },
+              {
+                "name": "breezy_hr_category",
+                "value": ".category?.name ?? .category.name: .category"
+              },
+              {
+                "name": "breezy_hr_candidate_type",
+                "value": ".candidate_type?.name ?? .candidate_type.name: .candidate_type"
+              },
+              {
+                "name": "breezy_hr_remote",
+                "value": "?.location?.is_remote"
+              }
+            ],
+            "created_at": "?.creation_date",
+            "updated_at": "?.updated_date"
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import BreezyHR\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return BreezyHR.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['email', 'password', 'company_id', 'company_name']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return BreezyHR.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -11823,7 +12338,83 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": "?.job?.jobTitle >> 'Undefined'",
+            "reference": "?.job?.jobReqId",
+            "location": {
+              "text": "?.requisition?.location",
+              "city": "?.requisition?.city",
+              "geojson": {
+                "city": "?.requisition?.city",
+                "country": "?.requisition?.country",
+                "facility": "?.requisition?.facility",
+                "province": "?.requisition?.stateProvince"
+              },
+              "lat": null,
+              "lng": null
+            },
+            "sections": "?.job?.jobDescription | $map({name: 'sap_description', title: 'sap_description', description: . | $sub('<[^<]+?>', '') | $sub('#13;', ' ') | $sub('&', '') | $sub('&nbsp;', '') | $sub('quo;s', '')})",
+            "tags": [
+              {
+                "name": "sapsuccessfactors_annual_SA",
+                "value": "?.requisition?.annual_SA"
+              },
+              {
+                "name": "sapsuccessfactors_department",
+                "value": "?.requisition?.department"
+              },
+              {
+                "name": "sapsuccessfactors_function",
+                "value": "?.requisition?.function"
+              },
+              {
+                "name": "sapsuccessfactors_division",
+                "value": "?.requisition?.division"
+              },
+              {
+                "name": "sapsuccessfactors_industry",
+                "value": "?.requisition?.industry"
+              },
+              {
+                "name": "sapsuccessfactors_monthly_salary",
+                "value": "?.requisition?.monthly_salary"
+              },
+              {
+                "name": "sapsuccessfactors_otherBonus",
+                "value": "?.requisition?.otherBonus"
+              },
+              {
+                "name": "sapsuccessfactors_salaryBase",
+                "value": "?.requisition?.salaryBase"
+              },
+              {
+                "name": "sapsuccessfactors_salaryMax",
+                "value": "?.requisition?.salaryMax"
+              },
+              {
+                "name": "sapsuccessfactors_salaryMin",
+                "value": "?.requisition?.salaryMin"
+              },
+              {
+                "name": "sapsuccessfactors_jobStartDate",
+                "value": "?.requisition?.jobStartDate"
+              }
+            ],
+            "metadatas": [
+              {
+                "name": "sapsuccessfactors_recruiterTeam",
+                "value": "?.requisition?.recruiterTeam"
+              },
+              {
+                "name": "sapsuccessfactors_sourcerTeam",
+                "value": "?.requisition?.sourcerTeam"
+              },
+              {
+                "name": "sapsuccessfactors_hiringManagerTeam",
+                "value": "?.requisition?.hiringManagerTeam"
+              }
+            ]
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import SAPSuccessFactors\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return SAPSuccessFactors.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_server', 'api_key', 'top', 'skip', 'filter', 'search']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return SAPSuccessFactors.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -12989,7 +13580,19 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "reference": ".candidateId",
+            "created_at": ".creationDateTime | $sub('[^d]*', '') | $fromtimestamp(true)",
+            "updated_at": ".lastModifiedDateTime | $sub('[^d]*', '') | $fromtimestamp(true)",
+            "resume": ".resume",
+            "tags": ".tags",
+            "metadatas": [
+              {
+                "name": "'profile url'",
+                "value": ".metadata.uri"
+              }
+            ]
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import SAPSuccessFactors\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return SAPSuccessFactors.pull_profile_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_server', 'api_key', 'top', 'skip', 'filter', 'search']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'only_insert']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return SAPSuccessFactors.pull_profile_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -14203,7 +14806,88 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": "?.title",
+            "reference": "?.id",
+            "location": {
+              "text": "?.address.address1",
+              "fields": {
+                "city": "?.address.city",
+                "country": "?.address.countryCode",
+                "postal_code": "?.address.zip"
+              }
+            },
+            "sections": [
+              {
+                "name": "Bullhorn_description",
+                "title": "Bullhorn_description",
+                "description": ".publicDescription"
+              }
+            ],
+            "skills": "?.skillList != null ?? .skillList | $split(',')| $map({name: ., type: 'undefined', value: null}) : []",
+            "tags": [
+              {
+                "name": "durationWeeks",
+                "value": "?.durationWeeks"
+              },
+              {
+                "name": "degreeList",
+                "value": "?.degreeList != null ?? .degreeList | $join(',') : null"
+              },
+              {
+                "name": "employmentType",
+                "value": "?.employmentType"
+              },
+              {
+                "name": "numOpenings",
+                "value": "?.numOpenings"
+              },
+              {
+                "name": "onSite",
+                "value": "?.onSite"
+              },
+              {
+                "name": "salaryUnit",
+                "value": "?.salaryUnit"
+              },
+              {
+                "name": "startDate",
+                "value": "?.startDate"
+              },
+              {
+                "name": "status",
+                "value": "?.status"
+              },
+              {
+                "name": "type",
+                "value": "?.type"
+              },
+              {
+                "name": "willRelocate",
+                "value": "?.willRelocate"
+              },
+              {
+                "name": "salary",
+                "value": "?.salary"
+              },
+              {
+                "name": "isWorkFromHome",
+                "value": "?.isWorkFromHome"
+              },
+              {
+                "name": "hoursPerWeek",
+                "value": "?.hoursPerWeek"
+              },
+              {
+                "name": "hoursOfOperation",
+                "value": "?.hoursOfOperation"
+              },
+              {
+                "name": "dateAdded",
+                "value": "?.dateAdded"
+              }
+            ]
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Bullhorn\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'password', 'username', 'last_modified_date', 'fields', 'query']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Bullhorn.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -14504,7 +15188,33 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "reference": "?.id | $string",
+            "tags": [
+              {
+                "name": "dateAvailable",
+                "value": "?.dateAvailable"
+              },
+              {
+                "name": "status",
+                "value": "?.status"
+              },
+              {
+                "name": "employeeType",
+                "value": "?.employeeType"
+              },
+              {
+                "name": "activePlacements",
+                "value": "?.activePlacements?.total"
+              }
+            ],
+            "metadatas": [],
+            "created_at": null,
+            "resume": {
+              "raw": ".cvFile",
+              "content_type": "application/pdf"
+            }
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Bullhorn\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.pull_resume_attachment_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'password', 'username']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'only_insert']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Bullhorn.pull_resume_attachment_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -15263,7 +15973,42 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "info": {
+              "full_name": ".name",
+              "first_name": ".firstName",
+              "last_name": ".lastName",
+              "email": ".email",
+              "phone": ".mobile",
+              "date_birth": ".dateOfBirth",
+              "location": {
+                "text": ".address.address1"
+              },
+              "gender": ".gender"
+            },
+            "skills": ".skillSet.[0] ?? .skillSet | $split(',') | . >> [] | $map({ name: ., type: hard, value: null })",
+            "experiences": ".workHistories | $map({ title: .title, location: { text: '', lng: null, lat: null }, company: .companyName, date_start: .startDate, date_end: .endDate, title: .title, description: .comments })",
+            "tags": [
+              {
+                "name": "dateAvailable",
+                "value": "?.dateAvailable"
+              },
+              {
+                "name": "status",
+                "value": "?.status"
+              },
+              {
+                "name": "employeeType",
+                "value": "?.employeeType"
+              },
+              {
+                "name": "activePlacements",
+                "value": "?.activePlacements?.total"
+              }
+            ],
+            "educations": ".educations | $map({ location: { text: .city, lng: null, lat: null }, school: .school, date_start: .startDate, date_end: .endDate, title: .degree, certifications: [ .certification ], description: .comments })",
+            "reference": "?.id | $string"
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Bullhorn\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.pull_profile_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['client_id', 'client_secret', 'password', 'username']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'edit', 'only_edit_fields']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Bullhorn.pull_profile_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -16558,7 +17303,53 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": "?.Title",
+            "summary": null,
+            "reference": "$concat(?.ReferenceNumber,?.ParentRequisitionCode) | $string",
+            "url": "?.JobDetailsUrl",
+            "location": {
+              "text": "?.City",
+              "lat": null,
+              "lng": null,
+              "geojson": {
+                "state": "?.State",
+                "country": "?.Country",
+                "postal_code": "?.PostalCode"
+              }
+            },
+            "sections": [
+              {
+                "name": "dayforce_description",
+                "title": "dayforce_description",
+                "description": "?.Description"
+              }
+            ],
+            "created_at": "?.DatePosted",
+            "updated_at": "?.LastUpdated",
+            "tags": [
+              {
+                "name": "dayforce_apply_url",
+                "value": "?.ApplyUrl | $string"
+              },
+              {
+                "name": "dayforce_client-site-name",
+                "value": "?.ClientSiteName | $string"
+              },
+              {
+                "name": "dayforce_client-site-ref-code",
+                "value": "?.ClientSiteXRefCode | $string"
+              },
+              {
+                "name": "dayforce_company_name",
+                "value": "?.CompanyName | $string"
+              },
+              {
+                "name": "dayforce_remote",
+                "value": "?.IsVirtualLocation | $string"
+              }
+            ]
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Ceridian\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Ceridian.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['subdomain', 'client_name_space', 'companyName', 'parentCompanyName', 'lastUpdateTimeFrom', 'htmlDescription']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Ceridian.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -17109,7 +17900,52 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": "?.title",
+            "summary": null,
+            "reference": "?.id | $string",
+            "url": "?.absolute_url",
+            "location": {
+              "text": "?.location.name",
+              "lat": null,
+              "lng": null
+            },
+            "sections": [
+              {
+                "name": "greenhouse_description",
+                "title": "greenhouse_description",
+                "description": "?.content | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp', '&') | $sub('&quot;', '\"') | $sub('&apos;', '\"') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ') | $strip"
+              }
+            ],
+            "metadatas": "?.metadata",
+            "tags": [
+              {
+                "name": "greenhouse_department-name",
+                "value": "?.departments.[0]?.name != null ?? .departments.[0]?.name : 'Undefined'"
+              },
+              {
+                "name": "greenhouse_department-id",
+                "value": "?.departments.[0]?.id != null ?? .departments.[0]?.id | $string : 'Undefined'"
+              },
+              {
+                "name": "greenhouse_office-location",
+                "value": "?.offices.[0]?.name != null ?? .offices.[0]?.name : 'Undefined'"
+              },
+              {
+                "name": "greenhouse_office-id",
+                "value": "?.offices.[0]?.id != null ?? .offices.[0]?.id | $string : 'Undefined'"
+              },
+              {
+                "name": "greenhouse_education",
+                "value": "?.education"
+              },
+              {
+                "name": "greenhouse_employment",
+                "value": "?.employment"
+              }
+            ],
+            "updated_at": "?.updated_at"
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Greenhouse\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Greenhouse.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['board_token']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Greenhouse.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -18053,7 +18889,36 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "applications": "?.tags | $map(.name == 'application_boardKey_jobReference'?? .) | $map(.value | $split('_') | .[1] | $int)",
+            "first_name": "?.info?.first_name",
+            "last_name": "?.info?.last_name",
+            "external_id": "?.reference",
+            "resume": "?.attachments.[0].public_url",
+            "phone_numbers": [
+              {
+                "value": "?.info?.phone",
+                "type": "mobile"
+              }
+            ],
+            "email_addresses": [
+              {
+                "value": "?.info?.email",
+                "type": "personal"
+              }
+            ],
+            "addresses": [
+              {
+                "value": "?.info?.location?.text",
+                "type": "home"
+              }
+            ],
+            "notes": "?.text",
+            "social_media_addresses": ".info?.urls | $map({value: ?.url})",
+            "company": "?.experiences.[0].company",
+            "title": "?.experiences.[0].title",
+            "employments": "?.experiences | $map({company_name: ?.company, title: ?.title, start_date: ?.date_start, end_date: ?.date_end})"
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Greenhouse\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Greenhouse.push_profile(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = Greenhouse.model.action_by_name(\"push_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return Greenhouse.push_profile(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'profile_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['auth', 'on_behalf_of']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return Greenhouse.push_profile(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -19025,7 +19890,24 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "reference": "?.id",
+            "info": {
+              "first_name": "?.first_name",
+              "last_name": "?.last_name",
+              "email": "?.email_addresses.[0] ?? .email_addresses.[0].value : null",
+              "phone": "?.phone_numbers.[0] ?? .phone_numbers.[0].value : null",
+              "location": {
+                "text": "?.addresses | $map(.type == 'home' ?? .) | .[0].value",
+                "lat": null,
+                "lng": null
+              }
+            },
+            "text": "?.notes",
+            "attachments": "?.attachments | $map({public_url: .url, type: .type})",
+            "experiences": "?.employments | $map({title: .title, company: .company_name, date_start: .start_date, date_end: .end_date})",
+            "educations": "?.educations | $map({school: .school_name, title: $concat(.degree, ' ', .discipline), date_start: .start_date, date_end: .end_date})"
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Greenhouse\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Greenhouse.pull_profile_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['auth', 'created_after', 'updated_after', 'job_id', 'email', 'candidate_ids']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'edit', 'only_edit_fields']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Greenhouse.pull_profile_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -19586,7 +20468,72 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": "?.job?.data?.attributes?.title",
+            "reference": "?.job?.data?.id",
+            "summary": "?.job?.data?.attributes?.pitch",
+            "created_at": "?.job?.data?.attributes?.created-at",
+            "updated_at": "?.job?.data?.attributes?.updated-at",
+            "url": "?.job?.data?.links?.careersite-job-url",
+            "location": {
+              "text": "?.job_location?.text",
+              "lat": "?.job_location?.lat | $float(0)",
+              "lng": "?.job_location?.lng | $float(0)"
+            },
+            "sections": [
+              {
+                "name": "teamtailor_description",
+                "title": "teamtailor_description",
+                "description": "?.job?.data?.attributes?.body | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp', '&') | $sub('&quot;', '\"') | $sub('&apos;', '\"') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ') | $strip"
+              }
+            ],
+            "tags": [
+              {
+                "name": "start-date",
+                "value": "?.job?.data?.attributes?.start-date"
+              },
+              {
+                "name": "end-date",
+                "value": "?.job?.data?.attributes?.end-date"
+              },
+              {
+                "name": "status",
+                "value": "?.job?.data?.attributes?.status"
+              },
+              {
+                "name": "employment-type",
+                "value": "?.job?.data?.attributes?.employment-type"
+              },
+              {
+                "name": "employment-level",
+                "value": "?.job?.data?.attributes?.employment-level"
+              },
+              {
+                "name": "remote-status",
+                "value": "?.job?.data?.attributes?.remote-status"
+              },
+              {
+                "name": "salary-time-unit",
+                "value": "?.job?.data?.attributes?.salary-time-unit"
+              },
+              {
+                "name": "min-salary",
+                "value": "?.job?.data?.attributes?.min-salary"
+              },
+              {
+                "name": "max-salary",
+                "value": "?.job?.data?.attributes?.max-salary"
+              },
+              {
+                "name": "currency",
+                "value": "?.job?.data?.attributes?.currency"
+              },
+              {
+                "name": "internal",
+                "value": "?.job?.data?.attributes?.internal"
+              }
+            ]
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Teamtailor\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Teamtailor.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['Authorization', 'X_Api_Version', 'filter_status', 'filter_feed']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Teamtailor.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -20281,7 +21228,21 @@
               "email"
             ]
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "data": {
+              "type": "candidates",
+              "attributes": {
+                "first-name": "?.info?.first_name",
+                "last-name": "?.info?.last_name",
+                "email": "?.info?.email",
+                "phone": "?.info?.phone",
+                "pitch": "?.info?.summary | $slice(0,139)",
+                "resume": "?.attachments[1]?.public_url",
+                "sourced": "sourced",
+                "tags": "?.tags"
+              }
+            }
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Teamtailor\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Teamtailor.push_profile(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = Teamtailor.model.action_by_name(\"push_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return Teamtailor.push_profile(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'profile_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['Authorization', 'X_Api_Version']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return Teamtailor.push_profile(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -20943,7 +21904,65 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "reference": "._id",
+            "tags": [
+              {
+                "name": "prospectList",
+                "value": ".prospectList"
+              },
+              {
+                "name": "messageSent",
+                "value": ".messageSent"
+              },
+              {
+                "name": "messageReplied",
+                "value": ".messageReplied"
+              },
+              {
+                "name": "emailSent",
+                "value": ".emailSent"
+              },
+              {
+                "name": "emailReplied",
+                "value": ".emailReplied"
+              }
+            ],
+            "info": {
+              "first_name": ".firstName",
+              "last_name": ".lastName",
+              "full_name": "$concat(.firstName, ' ', .lastName)",
+              "email": ".email",
+              "phone": ".phoneNumbers",
+              "location": {
+                "text": ".location",
+                "lat": null,
+                "lng": null
+              },
+              "urls": [
+                {
+                  "type": "linkedin",
+                  "url": ".linkedinUrl"
+                },
+                {
+                  "type": "company_linkedin",
+                  "url": ".company_linkedinUrl"
+                },
+                {
+                  "type": "company_website",
+                  "url": ".company_website"
+                },
+                {
+                  "type": "salesNavigator",
+                  "url": ".salesNavigatorUrl"
+                }
+              ],
+              "summary": ".occupation"
+            },
+            "text_language": "en",
+            "experiences": [],
+            "educations": []
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Waalaxy\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Waalaxy.catch_profile(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = Waalaxy.model.action_by_name(\"catch_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return Waalaxy.catch_profile(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['profile']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'edit', 'only_edit_fields']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return Waalaxy.catch_profile(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -21755,7 +22774,21 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "properties": {
+              "email": ".info.email",
+              "firstname": ".info.first_name",
+              "lastname": ".info.last_name",
+              "date_of_birth": ".info.date_birth",
+              "phone": ".info.phone",
+              "address": ".location.text",
+              "zip": ".fields >> {} | ?.postcode >> Undefined",
+              "city": ".fields >> {} | ?.city >> Undefined",
+              "state": ".fields >> {} | ?.state >> Undefined",
+              "country": ".fields >> {} | ?.country >> Undefined",
+              "company": "''"
+            }
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Hubspot\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Hubspot.push_profile(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = Hubspot.model.action_by_name(\"push_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return Hubspot.push_profile(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'profile_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['access_token', 'dealID', 'ticketID', 'pipeline']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return Hubspot.push_profile(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -22530,7 +23563,28 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "reference": ".id",
+            "info": {
+              "email": ".properties.email",
+              "first_name": ".properties.firstname",
+              "last_name": ".properties.lastname",
+              "full_name": "$concat(.properties.firstname, ' ', .properties.lastname)",
+              "date_birth": ".properties.date_of_birth",
+              "phone": ".properties.phone",
+              "location": {
+                "text": ".properties.address",
+                "fields": {
+                  "postcode": ".properties.zip",
+                  "city": ".properties.city",
+                  "state": ".properties.state",
+                  "country": ".properties.country"
+                }
+              }
+            },
+            "experiences": [],
+            "educations": []
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Hubspot\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Hubspot.pull_profile_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['access_token', 'limit', 'after', 'properties', 'propertiesWithHistory', 'associations', 'archived']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'edit', 'only_edit_fields']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Hubspot.pull_profile_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -27297,7 +28351,42 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "key": ".Hash_Id__c",
+            "reference": ".Reference__c",
+            "archived_at": ".Archive__c",
+            "updated_at": ".Date_Edition__c",
+            "created_at": ".Date_Reception__c",
+            "info": {
+              "full_name": "$concat(.Last_Name__c, ' ', .First_Name__c)",
+              "first_name": ".First_Name__c",
+              "last_name": ".Last_Name__c",
+              "email": ".Email__c",
+              "phone": ".Phone__c",
+              "date_birth": ".Date_Birth__c",
+              "location": {
+                "text": ".Location_Text__c",
+                "lat": ".Location_Lat__c",
+                "lng": ".Location_Lng__c"
+              },
+              "gender": ".Gender__c"
+            },
+            "text_language": ".Text_Language__c",
+            "text": ".Text__c",
+            "educations_duration": ".Experiences_Duration__c",
+            "experiences": ".HrFlow_Profile_Experiences__r != null ?? .HrFlow_Profile_Experiences__r.records | $map({title: .Title__c, location: {text: .Location_Text__c, lat: .Location_Lat__c, lng: .Location_Lng__c}, company: .Company__c, date_start: .Date_Begin__c, date_end: .Date_End__c, description: .Description__c, skills: .Skills__c | $jsonload,  tasks: .Tasks__c | $jsonload, certifications: .Certifications__c | $jsonload })",
+            "educations": ".HrFlow_Profile_Educations__r != null ?? .HrFlow_Profile_Educations__r.records | $map({title: .Title__c, location: {text: .Location_Text__c, lat: .Location_Lat__c, lng: .Location_Lng__c}, school: .School__c, date_start: .Date_Begin__c, date_end: .Date_End__c, description: .Description__c, skills: .Skills__c | $jsonload,  tasks: .Tasks__c | $jsonload, certifications: .Certifications__c | $jsonload, courses: .Courses__c | $jsonload })",
+            "attachments": ".HrFlow_Profile_Attachments__r != null ?? .HrFlow_Profile_Attachments__r.records | $map({text: .Text__c, type: .Type__c, alt: .Alt__c, file_size: .File_Size__c, file_name: .File_Name__c, original_file_name: .Original_File_Name__c, extension: .Extension__c, url: .URL__c})",
+            "skills": ".Skills__c | $jsonload",
+            "languages": ".Languages__c | $jsonload",
+            "certifications": ".Certifications__c | $jsonload",
+            "courses": ".Courses__c | $jsonload",
+            "tasks": ".Tasks__c | $jsonload",
+            "interests": ".Interests__c | $jsonload",
+            "labels": ".Labels__c | $jsonload",
+            "tags": ".Tags__c | $jsonload",
+            "metadatas": ".Metadatas__c | $jsonload"
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Salesforce\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Salesforce.pull_profile_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['sf_username', 'sf_password', 'sf_security_token', 'sf_organization_id', 'last_modified_date', 'limit']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'edit', 'only_edit_fields']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Salesforce.pull_profile_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -28603,7 +29692,44 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "Id__c": ".id",
+            "Hash_Id__c": ".key",
+            "Reference__c": ".reference",
+            "Archive__c": ".archived_at",
+            "Date_Edition__c": ".updated_at",
+            "Date_Reception__c": ".created_at",
+            "First_Name__c": ".info.first_name",
+            "Last_Name__c": ".info.last_name",
+            "Email__c": ".info.email",
+            "Phone__c": ".info.phone",
+            "Date_Birth__c": ".info.date_birth",
+            "Location_Fields__c": ".info.location.fields | $jsondump",
+            "Location_Lat__c": ".info.location.lat",
+            "Location_Lng__c": ".info.location.lng",
+            "Location_Text__c": ".info.location.text",
+            "Location_Gmaps__c": ".info.location.gmaps",
+            "URLs__c": ".info.urls | $jsondump",
+            "Picture__c": ".info.picture",
+            "Gender__c": ".info.gender",
+            "Summary__c": ".info.summary",
+            "Text_Language__c": ".text_language",
+            "Text__c": ".text",
+            "Experiences_Duration__c": ".experiences_duration",
+            "Educations_Duration__c": ".educations_duration",
+            "HrFlow_Profile_Experiences__r": ".experiences != null ?? .experiences | {done:true, totalSize: $len, records: $map({Certifications__c: .certifications | $jsondump, Company__c: .company, Courses__c: .courses | $jsondump, Date_Begin__c: .date_start, Date_End__c: .date_end, Description__c: .description, Hash_Id__c: .key, Location_Fields__c: .location.fields | $jsondump, Location_Lat__c: .location.lat, Location_Lng__c: .location.lng, Location_Text__c: .location.text, Location_Gmaps__c: .location.gmaps, Skills__c: .skills | $jsondump, Tasks__c: .tasks | $jsondump, Title__c: .title})} : null",
+            "HrFlow_Profile_Educations__r": ".educations != null ?? .educations | {done:true, totalSize: $len, records: $map({Certifications__c: .certifications | $jsondump, School__c: .school, Courses__c: .courses | $jsondump, Date_Begin__c: .date_start, Date_End__c: .date_end, Description__c: .description, Hash_Id__c: .key, Location_Fields__c: .location.fields | $jsondump, Location_Lat__c: .location.lat, Location_Lng__c: .location.lng, Location_Text__c: .location.text, Location_Gmaps__c: .location.gmaps, Skills__c: .skills | $jsondump, Tasks__c: .tasks | $jsondump, Title__c: .title})} : null",
+            "HrFlow_Profile_Attachments__r": ".attachments != null ?? .attachments | {done:true, totalSize: $len, records: $map({Alt__c: .alt, Date_Edition__c: .updated_at, Extension__c: .extension, File_Name__c: .file_name, File_Size__c: .file_size, Original_File_Name__c: .original_file_name, Timestamp__c: .created_at, Type__c: .type, URL__c: .public_url})} : null",
+            "Skills__c": ".skills | $jsondump",
+            "Languages__c": ".languages | $jsondump",
+            "Certifications__c": ".certifications | $jsondump",
+            "Courses__c": ".courses | $jsondump",
+            "Tasks__c": ".tasks | $jsondump",
+            "Interests__c": ".interests | $jsondump",
+            "Labels__c": ".labels | $jsondump",
+            "Tags__c": ".tags | $jsondump",
+            "Metadatas__c": ".metadatas | $jsondump"
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Salesforce\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Salesforce.push_profile(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = Salesforce.model.action_by_name(\"push_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return Salesforce.push_profile(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'profile_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['sf_username', 'sf_password', 'sf_security_token', 'sf_organization_id']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return Salesforce.push_profile(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -29359,7 +30485,32 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "archived_at": ".Archive__c",
+            "archive": ".Archive__c",
+            "name": ".Name__c",
+            "reference": ".Reference__c",
+            "url": ".URL__c",
+            "picture": ".Picture__c",
+            "summary": ".Summary__c",
+            "location": {
+              "text": ".Location_Text__c",
+              "lat": ".Location_Lat__c",
+              "lng": ".Location_Lng__c"
+            },
+            "culture": ".Culture__c",
+            "responsibilities": ".Responsibilities__c",
+            "requirements": ".Requirements__c",
+            "benefits": ".Benefits__c",
+            "interviews": ".Interviews__c",
+            "sections": ".Sections__c | $jsonload",
+            "skills": ".Skills__c | $jsonload",
+            "languages": ".Languages__c | $jsonload",
+            "tags": ".Tags__c | $jsonload",
+            "ranges_date": ".Ranges_Date__c | $jsonload",
+            "ranges_float": ".Ranges_Float__c | $jsonload",
+            "metadatas": ".Metadatas__c | $jsonload"
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Salesforce\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Salesforce.pull_job_list(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    origin_parameters = dict()\n    for parameter in ['sf_username', 'sf_password', 'sf_security_token', 'sf_organization_id', 'last_modified_date', 'limit']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'board_key', 'sync', 'update_content', 'enrich_with_parsing']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n\n    return Salesforce.pull_job_list(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -31642,7 +32793,65 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "reference": null,
+            "resume": {
+              "raw": ".cv",
+              "content_type": ".content_type"
+            },
+            "tags": [
+              {
+                "name": "job-number",
+                "value": "?.jobkey != null ?? .jobkey  | $slice(0,10) : null"
+              },
+              {
+                "name": "first_name",
+                "value": "?.firstName"
+              },
+              {
+                "name": "last_name",
+                "value": "?.lastName"
+              },
+              {
+                "name": "phone",
+                "value": "?.phone"
+              },
+              {
+                "name": "email",
+                "value": "?.email"
+              },
+              {
+                "name": "coverText",
+                "value": "?.coverText"
+              },
+              {
+                "name": "profile-country",
+                "value": "?.profilecountry"
+              },
+              {
+                "name": "profile-regions",
+                "value": "?.profileregions"
+              },
+              {
+                "name": "profile-domains",
+                "value": "?.profiledomains"
+              },
+              {
+                "name": "job-lien_annonce_site_carriere",
+                "value": "?.joblien_annonce_site_carriere"
+              },
+              {
+                "name": "statistic-source",
+                "value": "?.statisticsource"
+              },
+              {
+                "name": "statistic-jbsource",
+                "value": "?.statisticjbsource"
+              }
+            ],
+            "metadatas": [],
+            "created_at": null
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Jobology\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Jobology.catch_profile(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = Jobology.model.action_by_name(\"catch_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return Jobology.catch_profile(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['profile']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'only_insert']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return Jobology.catch_profile(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -31846,7 +33055,65 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "reference": null,
+            "resume": {
+              "raw": ".cv",
+              "content_type": ".content_type"
+            },
+            "tags": [
+              {
+                "name": "job-number",
+                "value": "?.jobkey != null ?? .jobkey  | $slice(0,10) : null"
+              },
+              {
+                "name": "first_name",
+                "value": "?.firstName"
+              },
+              {
+                "name": "last_name",
+                "value": "?.lastName"
+              },
+              {
+                "name": "phone",
+                "value": "?.phone"
+              },
+              {
+                "name": "email",
+                "value": "?.email"
+              },
+              {
+                "name": "coverText",
+                "value": "?.coverText"
+              },
+              {
+                "name": "profile-country",
+                "value": "?.profilecountry"
+              },
+              {
+                "name": "profile-regions",
+                "value": "?.profileregions"
+              },
+              {
+                "name": "profile-domains",
+                "value": "?.profiledomains"
+              },
+              {
+                "name": "job-lien_annonce_site_carriere",
+                "value": "?.joblien_annonce_site_carriere"
+              },
+              {
+                "name": "statistic-source",
+                "value": "?.statisticsource"
+              },
+              {
+                "name": "statistic-jbsource",
+                "value": "?.statisticjbsource"
+              }
+            ],
+            "metadatas": [],
+            "created_at": null
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Meteojob\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Meteojob.catch_profile(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = Meteojob.model.action_by_name(\"catch_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return Meteojob.catch_profile(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['profile']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'only_insert']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return Meteojob.catch_profile(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -32050,7 +33317,65 @@
               }
             }
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "reference": null,
+            "resume": {
+              "raw": ".cv",
+              "content_type": ".content_type"
+            },
+            "tags": [
+              {
+                "name": "job-number",
+                "value": "?.jobkey != null ?? .jobkey  | $slice(0,10) : null"
+              },
+              {
+                "name": "first_name",
+                "value": "?.firstName"
+              },
+              {
+                "name": "last_name",
+                "value": "?.lastName"
+              },
+              {
+                "name": "phone",
+                "value": "?.phone"
+              },
+              {
+                "name": "email",
+                "value": "?.email"
+              },
+              {
+                "name": "coverText",
+                "value": "?.coverText"
+              },
+              {
+                "name": "profile-country",
+                "value": "?.profilecountry"
+              },
+              {
+                "name": "profile-regions",
+                "value": "?.profileregions"
+              },
+              {
+                "name": "profile-domains",
+                "value": "?.profiledomains"
+              },
+              {
+                "name": "job-lien_annonce_site_carriere",
+                "value": "?.joblien_annonce_site_carriere"
+              },
+              {
+                "name": "statistic-source",
+                "value": "?.statisticsource"
+              },
+              {
+                "name": "statistic-jbsource",
+                "value": "?.statisticjbsource"
+              }
+            ],
+            "metadatas": [],
+            "created_at": null
+          },
           "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Carrevolutis\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << event_parser_placeholder >>\n\n\ndef workflow(\n        \n        _request: t.Dict,\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Carrevolutis.catch_profile(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    try:\n        event_parser\n        _event_parser = event_parser\n    except NameError as e:\n        action = Carrevolutis.model.action_by_name(\"catch_profile\")\n        # Without this trick event_parser is always only fetched from the local scope\n        # meaning that try block always raises NameError even if the function is\n        # defined in the placeholder\n        _event_parser = action.parameters.__fields__[\"event_parser\"].default\n\n    if _event_parser is not None:\n        try:\n            _request = _event_parser(_request)\n        except Exception as e:\n            return Carrevolutis.catch_profile(\n                workflow_id=workflow_id,\n                action_parameters=dict(),\n                origin_parameters=dict(),\n                target_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    origin_parameters = dict()\n    for parameter in ['profile']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            origin_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            origin_parameters[parameter] = _request[parameter]\n        \n\n    target_parameters = dict()\n    for parameter in ['api_secret', 'api_user', 'source_key', 'only_insert']:\n        if \"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter) in settings:\n            target_parameters[parameter] = settings[\"{}{}\".format(TARGET_SETTINGS_PREFIX, parameter)]\n        \n        if parameter in _request:\n            target_parameters[parameter] = _request[parameter]\n        \n\n    return Carrevolutis.catch_profile(\n        workflow_id=workflow_id,\n        action_parameters=actions_parameters,\n        origin_parameters=origin_parameters,\n        target_parameters=target_parameters,\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",

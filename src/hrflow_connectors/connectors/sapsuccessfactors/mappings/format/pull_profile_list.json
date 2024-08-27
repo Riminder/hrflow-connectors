@@ -1,0 +1,13 @@
+{
+  "reference": ".candidateId",
+  "created_at": ".creationDateTime | $sub('[^d]*', '') | $fromtimestamp(true)",
+  "updated_at": ".lastModifiedDateTime | $sub('[^d]*', '') | $fromtimestamp(true)",
+  "resume": ".resume",
+  "tags": ".tags",
+  "metadatas": [
+    {
+      "name": "'profile url'",
+      "value": ".metadata.uri"
+    }
+  ]
+}

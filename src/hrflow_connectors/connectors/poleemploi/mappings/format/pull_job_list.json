@@ -1,0 +1,74 @@
+{
+  "name": "?.intitule",
+  "reference": "?.id",
+  "created_at": "?.dateCreation",
+  "updated_at": "?.dateActualisation",
+  "location": {
+    "lat": "?.lieuTravail?.latitude!= null ?? .lieuTravail.latitude | $float : null",
+    "lng": ".lieuTravail.longitude != null ?? .lieuTravail.longitude | $float : null",
+    "text": ".lieuTravail ?? '' : $concat(.lieuTravail?.libelle >> '', ' ', .location?.codePostal >> '') | $strip"
+  },
+  "url": null,
+  "summary": "?.description",
+  "sections": [
+    {
+      "name": "pole_emploi_company_description",
+      "title": "'Company Description'",
+      "description": "?.entreprise?.description"
+    }
+  ],
+  "tags": [
+    {
+      "name": "pole_emploi_romeCode",
+      "value": "?.romeCode"
+    },
+    {
+      "name": "pole_emploi_romeLibelle",
+      "value": "?.romeLibelle"
+    },
+    {
+      "name": "pole_emploi_appellationLibelle",
+      "value": "?.appellationLibelle"
+    },
+    {
+      "name": "pole_emploi_contractNature",
+      "value": "?.natureContrat"
+    },
+    {
+      "name": "pole_emploi_contractType",
+      "value": "?.typeContratLibelle"
+    },
+    {
+      "name": "pole_emploi_experience",
+      "value": "?.experienceLibelle"
+    },
+    {
+      "name": "pole_emploi_salary",
+      "value": "?.salaire?.libelle"
+    },
+    {
+      "name": "pole_emploi_working_hours",
+      "value": "?.dureeTravailLibelle"
+    },
+    {
+      "name": "pole_emploi_qualification",
+      "value": "?.qualificationLibelle"
+    },
+    {
+      "name": "pole_emploi_secteurActivite",
+      "value": "?.secteurActiviteLibelle"
+    },
+    {
+      "name": "pole_emploi_contact-name",
+      "value": "?.contact?.nom"
+    },
+    {
+      "name": "pole_emploi_contact-email",
+      "value": "?.contact?.courriel"
+    },
+    {
+      "name": "pole_emploi_contact-phone",
+      "value": "?.contact?.telephone"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": ".info.full_name",
+  "remote_cv_url": ".attachments | $map(?.type == 'resume' ?? .) | .[0].public_url",
+  "emails": [".info.email"],
+  "phones": [".info.phone"],
+  "social_links": ".info.urls | $map(?.type != 'from_resume' ?? .url)",
+  "links": ".info.urls | $map(?.type == 'from_resume' ?? .url)",
+  "cover_letter": "''",
+  "sources": [".source.name"]
+}

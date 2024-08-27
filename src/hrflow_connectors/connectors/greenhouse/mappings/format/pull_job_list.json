@@ -1,0 +1,40 @@
+{
+  "name": "?.title",
+  "summary": null,
+  "reference": "?.id | $string",
+  "url": "?.absolute_url",
+  "location": {
+    "text": "?.location.name",
+    "lat": null,
+    "lng": null
+  },
+  "sections": [
+    {
+      "name": "greenhouse_description",
+      "title": "greenhouse_description",
+      "description": "?.content | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp', '&') | $sub('&quot;', '\"') | $sub('&apos;', '\"') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ') | $strip"
+    }
+  ],
+  "metadatas": "?.metadata",
+  "tags": [
+    {
+      "name": "greenhouse_department-name",
+      "value": "?.departments.[0]?.name != null ?? .departments.[0]?.name : 'Undefined'"
+    },
+    {
+      "name": "greenhouse_department-id",
+      "value": "?.departments.[0]?.id != null ?? .departments.[0]?.id | $string : 'Undefined'"
+    },
+    {
+      "name": "greenhouse_office-location",
+      "value": "?.offices.[0]?.name != null ?? .offices.[0]?.name : 'Undefined'"
+    },
+    {
+      "name": "greenhouse_office-id",
+      "value": "?.offices.[0]?.id != null ?? .offices.[0]?.id | $string : 'Undefined'"
+    },
+    { "name": "greenhouse_education", "value": "?.education" },
+    { "name": "greenhouse_employment", "value": "?.employment" }
+  ],
+  "updated_at": "?.updated_at"
+}

@@ -1,0 +1,73 @@
+{
+  "name": ".jobDescription.title",
+  "reference": ".reference",
+  "created_at": ".creationDate",
+  "location": {
+    "text": ".location.address",
+    "lat": ".location.latitude",
+    "lng": ".location.longitude"
+  },
+  "url": null,
+  "summary": null,
+  "sections": [
+    {
+      "name": "description1",
+      "title": "description1",
+      "description": ".jobDescription.description1 >> ''"
+    },
+    {
+      "name": "description2",
+      "title": "description2",
+      "description": ".jobDescription.description2 >> ''"
+    },
+    {
+      "name": "'Complément du descriptif'",
+      "title": "'Complément du descriptif'",
+      "description": "$concat(.jobDescription.jobDescriptionCustomFields.longText1 >> '', '\n' , .jobDescription.jobDescriptionCustomFields.longText2>> '', '\n' ,.jobDescription.jobDescriptionCustomFields.longText3>> '')"
+    }
+  ],
+  "tags": [
+    {
+      "name": "talentsoft-organisation-id",
+      "value": "?.organisation?.id"
+    },
+    {
+      "name": "talentsoft-status-id",
+      "value": "?.status?.id"
+    },
+    {
+      "name": "talentsoft-professionalCategory-id",
+      "value": "?.jobDescription.professionalCategory?.id"
+    },
+    {
+      "name": "talentsoft-country-id",
+      "value": "?.jobDescription.country?.id"
+    },
+    {
+      "name": "talentsoft-primaryProfile-id",
+      "value": "?.jobDescription.primaryProfile?.id"
+    },
+    {
+      "name": "talentsoft-contractType-id",
+      "value": "?.jobDescription.contractType?.id"
+    },
+    {
+      "name": "talentsoft-publishedOnInternet",
+      "value": "?.publishedOnInternet"
+    },
+    {
+      "name": "talentsoft-publishedOnIntranet",
+      "value": "?.publishedOnIntranet"
+    },
+    {
+      "name": "talentsoft-experienceLevel",
+      "value": "?.criteria.experienceLevel?.id"
+    },
+    {
+      "name": "talentsoft-educationLevel",
+      "value": "?.criteria.educationLevel?.id"
+    }
+  ],
+  "skills": ".criteria.skills",
+  "languages": "?.languages >> [] | {name: .language.label, value: null}"
+}

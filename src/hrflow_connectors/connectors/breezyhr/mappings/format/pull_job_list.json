@@ -1,0 +1,57 @@
+{
+  "name": "?.name",
+  "reference": "?.friendly_id",
+  "summary": null,
+  "location": {
+    "text": "?.location?.name",
+    "geojson": {
+      "country": "?.location?.country?.name",
+      "city": "?.location?.city"
+    },
+    "lat": null,
+    "lng": null
+  },
+  "sections": [
+    {
+      "name": "breezy_hr_description",
+      "title": "Breezy_hr_description",
+      "description": "?.description | $sub('<[^<]+?>', '') | $sub('&nbsp;', ' ')"
+    }
+  ],
+  "tags": [
+    {
+      "name": "breezy_hr_type",
+      "value": ".type?.name ?? .type.name: .type"
+    },
+    {
+      "name": "breezy_hr_experience",
+      "value": ".experience?.name ?? .experience.name: .experience"
+    },
+    {
+      "name": "breezy_hr_education",
+      "value": ".education?.name ?? .education.name: .education"
+    },
+    {
+      "name": "breezy_hr_department",
+      "value": ".department?.name ?? .department.name: .department"
+    },
+    {
+      "name": "breezy_hr_requisition_id",
+      "value": ".requisition_id"
+    },
+    {
+      "name": "breezy_hr_category",
+      "value": ".category?.name ?? .category.name: .category"
+    },
+    {
+      "name": "breezy_hr_candidate_type",
+      "value": ".candidate_type?.name ?? .candidate_type.name: .candidate_type"
+    },
+    {
+      "name": "breezy_hr_remote",
+      "value": "?.location?.is_remote"
+    }
+  ],
+  "created_at": "?.creation_date",
+  "updated_at": "?.updated_date"
+}

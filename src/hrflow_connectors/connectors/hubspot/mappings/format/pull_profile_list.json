@@ -1,0 +1,22 @@
+{
+  "reference": ".id",
+  "info": {
+    "email": ".properties.email",
+    "first_name": ".properties.firstname",
+    "last_name": ".properties.lastname",
+    "full_name": "$concat(.properties.firstname, ' ', .properties.lastname)",
+    "date_birth": ".properties.date_of_birth",
+    "phone": ".properties.phone",
+    "location": {
+      "text": ".properties.address",
+      "fields": {
+        "postcode": ".properties.zip",
+        "city": ".properties.city",
+        "state": ".properties.state",
+        "country": ".properties.country"
+      }
+    }
+  },
+  "experiences": [],
+  "educations": []
+}

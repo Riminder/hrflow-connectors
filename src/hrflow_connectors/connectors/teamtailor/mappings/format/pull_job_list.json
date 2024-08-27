@@ -1,0 +1,45 @@
+{
+  "name": "?.job?.data?.attributes?.title",
+  "reference": "?.job?.data?.id",
+  "summary": "?.job?.data?.attributes?.pitch",
+  "created_at": "?.job?.data?.attributes?.created-at",
+  "updated_at": "?.job?.data?.attributes?.updated-at",
+  "url": "?.job?.data?.links?.careersite-job-url",
+  "location": {
+    "text": "?.job_location?.text",
+    "lat": "?.job_location?.lat | $float(0)",
+    "lng": "?.job_location?.lng | $float(0)"
+  },
+  "sections": [
+    {
+      "name": "teamtailor_description",
+      "title": "teamtailor_description",
+      "description": "?.job?.data?.attributes?.body | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp', '&') | $sub('&quot;', '\"') | $sub('&apos;', '\"') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ') | $strip"
+    }
+  ],
+  "tags": [
+    { "name": "start-date", "value": "?.job?.data?.attributes?.start-date" },
+    { "name": "end-date", "value": "?.job?.data?.attributes?.end-date" },
+    { "name": "status", "value": "?.job?.data?.attributes?.status" },
+    {
+      "name": "employment-type",
+      "value": "?.job?.data?.attributes?.employment-type"
+    },
+    {
+      "name": "employment-level",
+      "value": "?.job?.data?.attributes?.employment-level"
+    },
+    {
+      "name": "remote-status",
+      "value": "?.job?.data?.attributes?.remote-status"
+    },
+    {
+      "name": "salary-time-unit",
+      "value": "?.job?.data?.attributes?.salary-time-unit"
+    },
+    { "name": "min-salary", "value": "?.job?.data?.attributes?.min-salary" },
+    { "name": "max-salary", "value": "?.job?.data?.attributes?.max-salary" },
+    { "name": "currency", "value": "?.job?.data?.attributes?.currency" },
+    { "name": "internal", "value": "?.job?.data?.attributes?.internal" }
+  ]
+}
