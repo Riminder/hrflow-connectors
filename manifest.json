@@ -14476,7 +14476,7 @@
               }
             }
           },
-          "supports_incremental": false,
+          "supports_incremental": true,
           "target": "HrFlow.ai Jobs",
           "target_parameters": {
             "title": "WriteJobParameters",
