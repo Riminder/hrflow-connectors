@@ -675,8 +675,7 @@ BullhornJobWarehouse = Warehouse(
     read=WarehouseReadAction(
         parameters=ReadJobsParameters,
         function=read_jobs,
-        endpoints=[],
+        supports_incremental=True,
+        item_to_read_from=item_to_read_from_job,
     ),
-    supports_incremental=True,
-    item_to_read_from=item_to_read_from_job,
 )
