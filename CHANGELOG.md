@@ -2,6 +2,17 @@
 
 
 
+## v4.19.0 (2024-08-29)
+
+### Documentation
+
+* docs: With updated Last Updated At date in README ([`9a22a35`](https://github.com/Riminder/hrflow-connectors/commit/9a22a35f8abb2479a8abe413cc0915a8ea8ad51e))
+
+### Feature
+
+* feat: add Jsonmap objects to connectors ([`23d16a2`](https://github.com/Riminder/hrflow-connectors/commit/23d16a2559eb1b87d3f13db26e23ef6d7c4405c8))
+
+
 ## v4.18.0 (2024-08-26)
 
 ### Documentation
