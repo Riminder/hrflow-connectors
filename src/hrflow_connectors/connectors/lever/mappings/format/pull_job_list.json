@@ -1,0 +1,16 @@
+{
+  "reference": ".id",
+  "name": ".text",
+  "location": {
+    "text": "?.categories?.location",
+    "lat": null,
+    "lng": null
+  },
+  "url": ".urls.show",
+  "summary": ".content.description",
+  "sections": ".content?.lists >> [] | $map({name: ?.text, title: ?.text, description: .content | $sub('<[^<]+?>', '') | $sub('&nbsp;', ' ')})",
+  "tags": "$merge([{name: lever_confidential, value: .confidentiality == 'non-confidential' ?? False : True}, .country != null ?? {name: lever_country, value: .country}, .state != null ?? {name: lever_state, value: .state}, .workplaceType != null ?? {name: lever_workplaceType, value: .workplaceType}], .categories | $items | $map({name: $concat('lever_', .[0]), value: .[1]}) ,.tags | $map({name: $concat('lever_additional_tag_', #i), value: .}), .distributionChannels | $map({name: $concat('lever_distributionChannel_', #i), value: .}), .urls | $items | $map({name: $concat('lever_url_', .[0]), value: .[1]}))",
+  "ranges_float": "?.salaryRange >> [] | $map({name: 'salary', value_min: ?.min, value_max: ?.max, unit: ?.currency})",
+  "created_at": ".createdAt | $fromtimestamp(true)",
+  "updated_at": ".uploadedAt | $fromtimestamp(true)"
+}
