@@ -1,0 +1,50 @@
+{
+  "reference": "?.id",
+  "created_at": "?.createdAt",
+  "updated_at": "$now(iso)",
+  "resume": "?.resume",
+  "tags": [
+    { "name": "digitalrecruiters_profile-email", "value": "?.email" },
+    {
+      "name": "digitalrecruiters_profile-phoneNumber",
+      "value": "?.phoneNumber"
+    },
+    { "name": "digitalrecruiters_profile-fullName", "value": ".full_name" },
+    { "name": "digitalrecruiters_avatar", "value": ".avatar" },
+    {
+      "name": "digitalrecruiters_profile-location",
+      "value": "?.location != null ?? .location | $concat(?.street >> '', ', ',?.city >> '', ', ', ?.zip >> '', ', ', ?.country >> ''): '' "
+    },
+    {
+      "name": "digitalrecruiters_education-level",
+      "value": "?.educationLevel"
+    },
+    {
+      "name": "digitalrecruiters_job-experience-level",
+      "value": "?.experienceLevel"
+    },
+    { "name": "digitalrecruiters_job-title", "value": "?.jobTitle" },
+    { "name": "digitalrecruiters_job-id", "value": "?.jobAd?.id" },
+    {
+      "name": "digitalrecruiters_job-published-at",
+      "value": "?.jobAd?.publishedAt"
+    },
+    { "name": "digitalrecruiters_locale", "value": "?.locale" },
+    { "name": "digitalrecruiters_origin", "value": "?.origin" },
+    { "name": "digitalrecruiters_is-spontaneous", "value": "?.isSpontaneous" },
+    { "name": "digitalrecruiters_is-imported", "value": "?.isImported" },
+    {
+      "name": "digitalrecruiters_is-from-external-api",
+      "value": "?.isFromExternalApi"
+    },
+    {
+      "name": "digitalrecruiters_rejected-reason",
+      "value": "?.rejectedReason"
+    },
+    {
+      "name": "digitalrecruiters_application-status",
+      "value": "?.applicationStatus"
+    }
+  ],
+  "metadatas": []
+}
