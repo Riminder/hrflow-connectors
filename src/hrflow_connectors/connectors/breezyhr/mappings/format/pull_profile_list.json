@@ -1,0 +1,17 @@
+{
+  "info": {
+    "full_name": ".name",
+    "email": ".email_address",
+    "phone": ".phone_number",
+    "urls": ".social_profiles | $map({type: .type, url: .url})",
+    "summary": ".summary",
+    "location": {
+      "text": ".address",
+      "lat": null,
+      "lng": null
+    }
+  },
+  "experiences": "?.work_history >> [] | $map({company: ?.company_name, title: ?.title, description: ?.summary, date_start: ?.start_date.year != null and ?.start_date.month != null and ?.start_date.day != null ?? .start_date | $concat(.year, '-', $concat('0', .month) | $slice(-2), '-', $concat('0', .day) | $slice(-2)) : null, date_end: ?.end_date.year != null and ?.end_date.month != null and ?.end_date.day != null ?? .end_date | $concat(.year, '-', $concat('0', .month) | $slice(-2), '-', $concat('0', .day) | $slice(-2)) : null})",
+  "educations": "?.education >> [] | $map({school: ?.school_name, title: $concat(?.degree >> '', ' ', ?.field_of_study >> '')| $strip, date_start: ?.start_date.year != null and ?.start_date.month != null and ?.start_date.day != null ?? .start_date | $concat(.year, '-', $concat('0', .month) | $slice(-2), '-', $concat('0', .day) | $slice(-2)) : null, date_end: ?.end_date.year != null and ?.end_date.month != null and ?.end_date.day != null ?? .end_date | $concat(.year, '-', $concat('0', .month) | $slice(-2), '-', $concat('0', .day) | $slice(-2)) : null})",
+  "tags": ".tags"
+}

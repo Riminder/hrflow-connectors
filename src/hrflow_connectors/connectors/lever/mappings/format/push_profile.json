@@ -1,0 +1,11 @@
+{
+  "name": ".info.full_name",
+  "headline": "$merge(.experiences || [] | $map(.company), .educations || [] | $map(.school)) | $join(',')",
+  "location": ".info.location.text",
+  "phones": [{ "type": "mobile", "value": ".info.phone" }],
+  "emails": [".info.email"],
+  "links": ".info?.urls != null ?? .info.urls | $map(?.url) : []",
+  "tags": "?.skills != null ?? .skills | $map(?.name) : []",
+  "createdAt": ".createdAt != null ?? $timestamp(true) : null",
+  "file": "?.attachments.[0]"
+}
