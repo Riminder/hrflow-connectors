@@ -1,0 +1,25 @@
+{
+  "#custom_field_mapping": {
+    "Possibilité de télétravail": "digitalrecruiters_possibilite_de_teletravail",
+    "Automatisation (HRFlow.ai)": "digitalrecruiters_automatisation_hrflow",
+    "Heures hebdomadaires": "digitalrecruiters_heures_hebdomadaires",
+    "Date envisagée de recrutement": "digitalrecruiters_date_enviseagee_de_recrutement",
+    "Date de fin": "digitalrecruiters_date_de_fin",
+    "Motif de recrutement": "digitalrecruiters_motif_de_recrutement",
+    "Nom de la personne remplacée": "digitalrecruiters_nom_de_la_personne_remplacee",
+    "Echelon": "digitalrecruiters_echelon",
+    "Filière": "digitalrecruiters_filiere",
+    "Horaires": "digitalrecruiters_horaires",
+    "Un candidat est déjà identifié": "digitalrecruiters_candidat_deja_identifie",
+    "Nom de ce candidat": "digitalrecruiters_nom_du_candidat"
+  },
+  "name": "?.title",
+  "picture": "?.pictures != null ?? .pictures[0]?.default >> null",
+  "reference": "?.reference",
+  "created_at": "?.published_at",
+  "location": "?.address != null ?? .address | {text: ?.formatted, lat: ?.position?.lat != null ?? .position.lat | $float : null, lng: ?.position?.lon != null ?? .position.lon | $float : null } : {text: '', lat: null, lng: null}",
+  "sections": "?.description != null && ?.profile != null ?? [{name: 'description', title: 'description', description: ?.description | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp', '&') | $sub('&quot;', '\"') | $sub('&apos;', '\"') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ') | $strip}, {name: 'profile', title: 'profile', description: ?.profile | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp', '&') | $sub('&quot;', '\"') | $sub('&apos;', '\"') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ') | $strip}] : []",
+  "requirements": "?.profile | $sub('<.*?>', '') | $sub('&nbsp;', ' ') | $sub('&amp', '&') | $sub('&quot;', '\"') | $sub('&apos;', '\"') | $sub('&lt;', '<') | $sub('&gt;', '>') | $sub('\\s+', ' ') | $strip",
+  "skills": "?.skills >> [] | $map({name: ., type: null, value: null})",
+  "tags": "$merge(.salary ?? [{name: digitalrecruiters_compensation_min, value: .salary?.min }, {name: digitalrecruiters_compensation_max, value: .salary?.max }, {name: digitalrecruiters_compensation_currency, value: .salary?.currency }], .entity ?? [{name: digitalrecruiters_manager_firstName, value: .entity?.manager?.firstname }, {name: digitalrecruiters_manager_lastName, value: .entity?.manager?.lastname }, {name: digitalrecruiters_manager_position, value: .entity?.manager?.position }, {name: digitalrecruiters_manager_picture, value: .entity?.manager?.picture_url }], .referent_recruiter ?? [{name: digitalrecruiters_recruiter_email, value: .referent_recruiter?.email }, {name: digitalrecruiters_recruiter_phoneNumber, value: .referent_recruiter?.phoneNumber }, {name: digitalrecruiters_recruiter_picture, value: .referent_recruiter?.picture_url }], ?.hierarchy >> [] | $map({name: $concat('hierarchy_', ?.depth >> ''), value: $concat(?.column_name >> '', ':', ?.public_name >> '')}), ?.custom_fields >> [] | $map({name: #custom_field_mapping.[.name], value: ?.value}))"
+}

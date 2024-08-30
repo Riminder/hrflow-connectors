@@ -1,0 +1,15 @@
+{
+  "consent_date": "$now('iso')",
+  "s_o": "?.s_o >> ''",
+  "locale": "'fr_FR'",
+  "ApplicationProfile": {
+    "gender": ".info.gender | $lower == 'male' ?? 1 : 2",
+    "firstName": ".info.first_name",
+    "lastName": ".info.last_name",
+    "email": ".info.email",
+    "phoneNumber": ".info?.phone",
+    "addressStreet": ".info?.location >> {} | ?.text",
+    "addressZip": ".info?.location >> {} | ?.fields[0]?.postcode",
+    "addressCity": ".info?.location >> {} | ?.fields[0]?.state_district"
+  }
+}

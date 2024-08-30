@@ -1,0 +1,21 @@
+{
+  "candidate": {
+    "firstName": ".info.first_name",
+    "lastName": ".info.last_name",
+    "mail": ".info.email",
+    "initialReferrer": "HrFlow",
+    "lang": ".text_language | $upper | $str",
+    "social_links": {
+      "linkedin": ".info.urls | .type == linkedin ?? .url",
+      "viadeo": ".info.urls | .type == viadeo ?? .url",
+      "twitter": ".info.urls | .type == twitter ?? .url",
+      "github": ".info.urls | .type == github ?? .url",
+      "behance": ".info.urls | .type == behance ?? .url",
+      "other": ".info.urls | .type == other ?? .url",
+      "website": ".info.urls | .type == website ?? .url",
+      "dribble": ".info.urls | .type == dribble ?? .url"
+    }
+  },
+  "CV": ".attachments | .type == resume ?? ?.public_url : null",
+  "properties": "[{id: 51940, value: .source.name}, {id: 56260, value: .skills | $map(.name)| $join(', ')}, {id: 56261, value: .languages | $map(.name)| $join(', ')}, {id: 56262, value: .courses | $map(.name)| $join(', ')}, {id: 56263, value: .experiences ?? .experiences[0].title}, {id: 59898, value: .educations ?? .educations[0].school}]"
+}
