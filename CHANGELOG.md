@@ -2,6 +2,33 @@
 
 
 
+## v4.20.0 (2024-08-30)
+
+### Documentation
+
+* docs: update readme bullhorn ([`32e7863`](https://github.com/Riminder/hrflow-connectors/commit/32e78634000a68e3bc46e71ed83054b949ef36c3))
+
+### Feature
+
+* feat: add action push application to the core and create the action in bullhorn connector ([`26595f4`](https://github.com/Riminder/hrflow-connectors/commit/26595f4dce63126e3e471a05d1d740e894738065))
+
+* feat: Add more features to  Bullhorn Connector
+
+docs: update readme
+
+docs: update docs ([`6c171d8`](https://github.com/Riminder/hrflow-connectors/commit/6c171d8be48789d5798969b92fa8dd08999f308e))
+
+### Fix
+
+* fix: update docs ([`b0f3c07`](https://github.com/Riminder/hrflow-connectors/commit/b0f3c07d7592bdc5a690ff36be798de5d646e832))
+
+* fix: error in incremental reading ([`9cdda0c`](https://github.com/Riminder/hrflow-connectors/commit/9cdda0ce143917f4f2e00731d02d3346aa96e0c1))
+
+* fix: rebase ([`827c27c`](https://github.com/Riminder/hrflow-connectors/commit/827c27cc1e841463e04e4d9a318958259ab89304))
+
+* fix: use requests instead of urllib2 when authenticating ([`36979c3`](https://github.com/Riminder/hrflow-connectors/commit/36979c36cb146d63accecba06df5d081e1807231))
+
+
 ## v4.19.0 (2024-08-29)
 
 ### Documentation
