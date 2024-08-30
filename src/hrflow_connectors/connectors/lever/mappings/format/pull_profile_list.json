@@ -1,0 +1,25 @@
+{
+  "reference": ".id",
+  "updated_at": ".updatedAt | $fromtimestamp(true)",
+  "created_at": ".createdAt | $fromtimestamp(true)",
+  "info": {
+    "full_name": "?.name",
+    "first_name": "?.name | $split('') | .[0]",
+    "last_name": "?.name | $split('') | $length  != 1 ?? ?.name | $split('') | $slice(1) | $join(' ') : null",
+    "email": "?.emails[0] >> null",
+    "phone": "?.phones[0]?.value",
+    "location": {
+      "text": "?.location",
+      "lat": null,
+      "lng": null
+    },
+    "urls": "?.links >> [] | $map({url: ., type: 'from lever'})"
+  },
+  "text_language": null,
+  "text": "?.headline",
+  "experiences": "?.profile?.parsedData?.positions >> [] | $map({company: ?.org, title: ?.title, description: ?.summary, location: { text: ?.location, lat: null, lng: null }, date_start: .start.year and .start.month ?? $concat(.start.year, '-', .start.month | $string | $sub('^\\d$', '0\\g<0>'), '-01') : null, date_end: .end.year and .end.month ?? $concat(.end.year, '-', .end.month | $string | $sub('^\\d$', '0\\g<0>'), '-01') : null, skills: []})",
+  "educations": "?.profile?.parsedData?.schools >> [] | $map({school: ?.org, title: ?.degree, description: ?.summary, location: { text: ?.location, lat: null, lng: null }, date_start: .start.year and .start.month ?? $concat(.start.year, '-', .start.month | $string | $sub('^\\d$', '0\\g<0>'), '-01') : null, date_end: .end.year and .end.month ?? $concat(.end.year, '-', .end.month | $string | $sub('^\\d$', '0\\g<0>'), '-01') : null, skills: []})",
+  "attachments": "?.profile?.file != null ?? .profile.file | [{type: original, file_name: .name, original_file_name: .name, extension: .ext, public_url: .downloadUrl, file_size: .size, created_at: .uploadedAt | $fromtimestamp(true) }]: []",
+  "skills": [],
+  "tags": []
+}

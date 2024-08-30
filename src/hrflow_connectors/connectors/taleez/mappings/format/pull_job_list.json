@@ -1,0 +1,31 @@
+{
+  "name": "?.label >> Undefined",
+  "reference": "?.id | $string",
+  "created_at": ".dateCreation | $fromtimestamp",
+  "updated_at": ".dateLastPublish | $fromtimestamp",
+  "location": {
+    "lat": "?.lat != null ?? .lat | $float: null",
+    "lng": "?.lng != null ?? .lng | $float: null",
+    "text": "$concat(?.postalCode>> '', ' ', ?.city>> '', ' ', ?.country >> '') | $strip"
+  },
+  "url": "?.url",
+  "summary": null,
+  "sections": [
+    {
+      "name": "taleez-sections-jobDescription",
+      "title": "jobDescription",
+      "description": "?.jobDescription"
+    },
+    {
+      "name": "taleez-sections-profileDescription",
+      "title": "profileDescription",
+      "description": "?.profileDescription"
+    },
+    {
+      "name": "taleez-sections-companyDescription",
+      "title": "companyDescription",
+      "description": "?.companyDescription"
+    }
+  ],
+  "tags": "$merge(?.tags == null ?? [] : .tags | $map({name: taleez_tag, value: .}), [{name: taleez_contract, value: ?.contract},{name: taleez_profile, value: ?.profile}, {name: taleez_urlApplying, value: ?.urlApplying},  {name: taleez_currentStatus, value: ?.currentStatus}])"
+}
