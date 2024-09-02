@@ -65,7 +65,6 @@ DESCRIPTION = (
 Carrevolutis = Connector(
     name="Carrevolutis",
     type=ConnectorType.JobBoard,
-    subtype="carrevolutis",
     description=DESCRIPTION,
     url="https://www.carrevolutis.com/",
     actions=[

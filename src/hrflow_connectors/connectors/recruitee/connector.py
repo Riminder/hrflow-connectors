@@ -200,7 +200,6 @@ def format_job(recruitee_job: t.Dict) -> t.Dict:
 Recruitee = Connector(
     name="Recruitee",
     type=ConnectorType.ATS,
-    subtype="recruitee",
     description="",
     url="https://recruitee.com/",
     actions=[

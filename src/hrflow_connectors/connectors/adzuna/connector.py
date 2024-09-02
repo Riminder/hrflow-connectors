@@ -58,7 +58,6 @@ def format_job(
 Adzuna = Connector(
     name="Adzuna",
     type=ConnectorType.JobBoard,
-    subtype="adzuna",
     description="Retrieve Adzuna's job, property and car advertisement listings.",
     url="https://www.adzuna.fr/",
     actions=[

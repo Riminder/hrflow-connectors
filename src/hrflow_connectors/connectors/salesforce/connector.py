@@ -273,7 +273,6 @@ DESCRIPTION = (
 Salesforce = Connector(
     name="Salesforce",
     type=ConnectorType.CRM,
-    subtype="salesforce",
     description=DESCRIPTION,
     url="https://www.salesforce.com",
     actions=[

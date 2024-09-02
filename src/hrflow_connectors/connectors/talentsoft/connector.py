@@ -440,7 +440,6 @@ DESCRIPTION = "TalentSoft"
 TalentSoft = Connector(
     name="TalentSoft",
     type=ConnectorType.HCM,
-    subtype="talentsoft",
     description=DESCRIPTION,
     url="https://www.cegid.com/fr/produits/cegid-talentsoft/",
     actions=[

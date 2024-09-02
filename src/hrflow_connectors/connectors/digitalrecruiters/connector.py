@@ -321,7 +321,6 @@ DESCRIPTION = (
 DigitalRecruiters = Connector(
     name="DigitalRecruiters",
     type=ConnectorType.ATS,
-    subtype="digitalrecruiters",
     description=DESCRIPTION,
     url="https://www.digitalrecruiters.com/",
     actions=[
