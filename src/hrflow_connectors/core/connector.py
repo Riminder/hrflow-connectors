@@ -17,7 +17,6 @@ from pydantic import (
     BaseModel,
     Field,
     ValidationError,
-    constr,
     create_model,
     root_validator,
     validator,
@@ -765,20 +764,23 @@ class ConnectorModel(BaseModel):
     description: str
     url: str
     type: ConnectorType
-    subtype: constr(regex=CONNECTOR_SUBTYPE_FORMAT_REGEX) = Field(
-        ..., description="Lowercased string with no spaces"
+    subtype: t.Optional[str] = Field(
+        regex=CONNECTOR_SUBTYPE_FORMAT_REGEX,
+        description="Lowercased string with no spaces",
     )
     actions: t.List[ConnectorAction]
 
     @validator("subtype", pre=True, always=True)
-    def check_subtype(cls, value: str) -> str:
-        cleaned_value = value.lower()
-        if cleaned_value != value:
-            raise ValueError(f"ConnectorModel's `subtype` {value} must be lowercase.")
-        if " " in cleaned_value:
-            raise ValueError(
-                f"ConnectorModel's `subtype` {value} must not contain any spaces."
-            )
+    def check_subtype(cls, value: t.Optional[str], values: dict) -> str:
+        if value is None:
+            cleaned_value = values.get("name", "").lower().replace(" ", "")
+        else:
+            cleaned_value = value.lower().replace(" ", "")
+            if cleaned_value != value:
+                raise ValueError(
+                    "ConnectorModel's `subtype`={} must be lowercase without any"
+                    " spaces.".format(value)
+                )
         return cleaned_value
 
     def logo(self, connectors_directory: Path) -> str:
