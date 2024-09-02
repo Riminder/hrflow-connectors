@@ -225,6 +225,7 @@ def format_to_hrflow_profile(data):
 Greenhouse = Connector(
     name="Greenhouse",
     type=ConnectorType.ATS,
+    subtype="greenhouse",
     description="",
     url="https://www.greenhouse.io/",
     actions=[
