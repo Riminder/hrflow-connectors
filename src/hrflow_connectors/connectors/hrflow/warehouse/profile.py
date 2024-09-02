@@ -102,7 +102,7 @@ def read(
     hrflow_client = Hrflow(
         api_secret=parameters.api_secret, api_user=parameters.api_user
     )
-    response = hrflow_client.profile.indexing.get(
+    response = hrflow_client.profile.storing.get(
         source_key=parameters.source_key, key=parameters.profile_key
     )
     if "Unable to find object" in response["message"]:
@@ -133,7 +133,7 @@ def write(
     )
     for profile in profiles:
         if parameters.edit:
-            current_profile = hrflow_client.profile.indexing.get(
+            current_profile = hrflow_client.profile.storing.get(
                 source_key=parameters.source_key, reference=profile["reference"]
             ).get("data")
             if not current_profile:
@@ -151,7 +151,7 @@ def write(
                 edit = profile
             profile_to_index = {**current_profile, **edit}
 
-            response = hrflow_client.profile.indexing.edit(
+            response = hrflow_client.profile.storing.edit(
                 source_key=parameters.source_key,
                 key=current_profile["key"],
                 profile_json=profile_to_index,
@@ -165,7 +165,7 @@ def write(
                 )
                 failed.append(profile)
         else:
-            response = hrflow_client.profile.indexing.add_json(
+            response = hrflow_client.profile.storing.add_json(
                 source_key=parameters.source_key, profile_json=profile
             )
             if response["code"] // 100 != 2:
@@ -251,7 +251,7 @@ def write_parsing(
     source_response = hrflow_client.source.get(key=parameters.source_key)
 
     for profile in profiles:
-        if parameters.only_insert and hrflow_client.profile.indexing.get(
+        if parameters.only_insert and hrflow_client.profile.storing.get(
             source_key=parameters.source_key, reference=profile["reference"]
         ).get("data"):
             adapter.info(
@@ -261,7 +261,7 @@ def write_parsing(
             continue
 
         if profile.get("resume") is None:
-            indexing_response = hrflow_client.profile.indexing.add_json(
+            indexing_response = hrflow_client.profile.storing.add_json(
                 source_key=parameters.source_key, profile_json=profile
             )
             if indexing_response["code"] != 201:
@@ -303,7 +303,7 @@ def write_parsing(
             current_profile = parsing_response["data"]["profile"]
             profile_result = hydrate_profile(current_profile, profile)
 
-            edit_response = hrflow_client.profile.indexing.edit(
+            edit_response = hrflow_client.profile.storing.edit(
                 source_key=parameters.source_key,
                 key=profile_result["key"],
                 profile_json=profile_result,
