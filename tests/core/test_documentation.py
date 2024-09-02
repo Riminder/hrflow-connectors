@@ -51,7 +51,6 @@ DESCRIPTION = "Test Connector for seamless users to leads integration"
 SmartLeads = Connector(
     name="SmartLeads",
     type=ConnectorType.Other,
-    subtype="smartleads",
     description=DESCRIPTION,
     url="https://www.smartleads.test/",
     actions=[
@@ -644,7 +643,6 @@ def test_documentation_connector_directory_not_found(caplog, connectors_director
     NameMismatchSmartLeads = Connector(
         name=mismatch_name,
         type=ConnectorType.Other,
-        subtype="noconnectordir",
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -718,7 +716,6 @@ def test_documentation_fails_if_connector_not_already_listed_in_root_readme(
     NotListed = Connector(
         name=name,
         type=ConnectorType.Other,
-        subtype="notlistedinrootreadme",
         description=DESCRIPTION,
         url="https://not.listed.in.root.test/",
         actions=[
