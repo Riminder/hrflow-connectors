@@ -403,6 +403,7 @@ DESCRIPTION = (
 Lever = Connector(
     name="Lever",
     type=ConnectorType.ATS,
+    subtype="lever",
     description=DESCRIPTION,
     url="https://www.lever.co/",
     actions=[

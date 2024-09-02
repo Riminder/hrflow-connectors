@@ -102,6 +102,7 @@ DESCRIPTION = (
 PoleEmploi = Connector(
     name="PoleEmploi",
     type=ConnectorType.JobBoard,
+    subtype="poleemploi",
     description=DESCRIPTION,
     url="https://www.pole-emploi.fr/",
     actions=[
