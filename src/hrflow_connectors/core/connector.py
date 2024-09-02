@@ -861,11 +861,11 @@ class Connector:
         base: t.Self,
         name: str,
         type: ConnectorType,
-        subtype: str,
         description: str,
         url: str,
         with_parameters_override: t.Optional[t.List[ParametersOverride]] = None,
         with_actions: t.Optional[t.List[ConnectorAction]] = None,
+        subtype: t.Optional[str] = None,
     ) -> t.Self:
         base_actions = base.model.actions
 
@@ -913,7 +913,7 @@ class Connector:
         connector = cls(
             name=name,
             type=type,
-            subtype=subtype,
+            subtype=name.lower().replace(" ", "") if subtype is None else subtype,
             description=description,
             url=url,
             actions=list(actions.values()),
