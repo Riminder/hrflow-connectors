@@ -171,7 +171,7 @@ def write(
         )
         for reference in references_to_archive:
             response = hrflow_client.job.storing.archive(
-                board_key=parameters.board_key, reference=reference, is_archive=1
+                board_key=parameters.board_key, reference=reference
             )
             if response["code"] >= 400:
                 adapter.error(
@@ -237,35 +237,8 @@ def write(
                 failed_jobs.append(job)
                 continue
         elif response["code"] == 200:
-            archived_at = response["data"].get("archived_at")
             job_key = response["data"]["key"]
-            if archived_at is None:
-                if parameters.update_content:
-                    response = hrflow_client.job.storing.edit(
-                        board_key=parameters.board_key, key=job_key, job_json=job
-                    )
-                    if response["code"] >= 400:
-                        adapter.error(
-                            "Failed to edit job board_key={} "
-                            "reference={} response={}".format(
-                                parameters.board_key, reference, response
-                            )
-                        )
-                        failed_jobs.append(job)
-                        continue
-            else:
-                response = hrflow_client.job.storing.archive(
-                    board_key=parameters.board_key, reference=reference, is_archive=0
-                )
-                if response["code"] >= 400:
-                    adapter.error(
-                        "Failed to unarchive job board_key={} "
-                        "reference={} response={}".format(
-                            parameters.board_key, reference, response
-                        )
-                    )
-                    failed_jobs.append(job)
-                    continue
+            if parameters.update_content:
                 response = hrflow_client.job.storing.edit(
                     board_key=parameters.board_key, key=job_key, job_json=job
                 )
