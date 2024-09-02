@@ -83,11 +83,11 @@ def enrich_job_with_parsing(hrflow_client: Hrflow, job: t.Dict) -> None:
     if cleaned == "":
         return
 
-    response = hrflow_client.document.parsing.post(text=cleaned)
+    response = hrflow_client.text.parsing.post(texts=[cleaned])
     if response["code"] >= 400:
         raise JobParsingException("Failed to parse job", client_response=response)
 
-    entities, parsed_text = response["data"]["entities"], response["data"]["text"]
+    entities, parsed_text = response["data"][0]["entities"], response["data"][0]["text"]
     for field in ["skills", "languages", "certifications", "courses", "tasks"]:
         if job.get(field) is None:
             job[field] = []
@@ -170,7 +170,7 @@ def write(
             )
         )
         for reference in references_to_archive:
-            response = hrflow_client.job.indexing.archive(
+            response = hrflow_client.job.storing.archive(
                 board_key=parameters.board_key, reference=reference, is_archive=1
             )
             if response["code"] >= 400:
@@ -197,7 +197,7 @@ def write(
                     )
                     failed_jobs.append(job)
                     continue
-            response = hrflow_client.job.indexing.add_json(
+            response = hrflow_client.job.storing.add_json(
                 board_key=parameters.board_key, job_json=job
             )
             if response["code"] >= 400:
@@ -208,7 +208,7 @@ def write(
                 failed_jobs.append(job)
             continue
 
-        response = hrflow_client.job.indexing.get(
+        response = hrflow_client.job.storing.get(
             board_key=parameters.board_key, reference=reference
         )
         if "Unable to find object: job" in response["message"]:
@@ -225,7 +225,7 @@ def write(
                     )
                     failed_jobs.append(job)
                     continue
-            response = hrflow_client.job.indexing.add_json(
+            response = hrflow_client.job.storing.add_json(
                 board_key=parameters.board_key, job_json=job
             )
             if response["code"] >= 400:
@@ -241,7 +241,7 @@ def write(
             job_key = response["data"]["key"]
             if archived_at is None:
                 if parameters.update_content:
-                    response = hrflow_client.job.indexing.edit(
+                    response = hrflow_client.job.storing.edit(
                         board_key=parameters.board_key, key=job_key, job_json=job
                     )
                     if response["code"] >= 400:
@@ -254,7 +254,7 @@ def write(
                         failed_jobs.append(job)
                         continue
             else:
-                response = hrflow_client.job.indexing.archive(
+                response = hrflow_client.job.storing.archive(
                     board_key=parameters.board_key, reference=reference, is_archive=0
                 )
                 if response["code"] >= 400:
@@ -266,7 +266,7 @@ def write(
                     )
                     failed_jobs.append(job)
                     continue
-                response = hrflow_client.job.indexing.edit(
+                response = hrflow_client.job.storing.edit(
                     board_key=parameters.board_key, key=job_key, job_json=job
                 )
                 if response["code"] >= 400:
