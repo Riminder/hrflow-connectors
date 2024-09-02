@@ -80,7 +80,6 @@ DESCRIPTION = (
 Ceridian = Connector(
     name="Ceridian",
     type=ConnectorType.HCM,
-    subtype="ceridian",
     description=DESCRIPTION,
     url="https://www.ceridian.com/",
     actions=[

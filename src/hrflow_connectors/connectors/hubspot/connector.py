@@ -64,7 +64,6 @@ def format_hubspot_contact(hubspot_contact: t.Dict) -> t.Dict:
 Hubspot = Connector(
     name="Hubspot",
     type=ConnectorType.CRM,
-    subtype="hubspot",
     description="",
     url="https://www.hubspot.com/",
     actions=[

@@ -128,7 +128,6 @@ DESCRIPTION = (
 Teamtailor = Connector(
     name="Teamtailor",
     type=ConnectorType.ATS,
-    subtype="teamtailor",
     description=DESCRIPTION,
     url="https://www.teamtailor.com/",
     actions=[

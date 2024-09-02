@@ -63,7 +63,6 @@ DESCRIPTION = (
 Jobology = Connector(
     name="Jobology",
     type=ConnectorType.JobBoard,
-    subtype="jobology",
     description=DESCRIPTION,
     url="https://www.jobology.fr/",
     actions=[
