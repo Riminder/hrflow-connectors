@@ -27,6 +27,7 @@ DESCRIPTION = "Test Connector for seamless users to leads integration"
 SmartLeads = Connector(
     name="SmartLeads",
     type=ConnectorType.Other,
+    subtype="smartleads",
     description=DESCRIPTION,
     url="https://www.smartleads.test/",
     actions=[
