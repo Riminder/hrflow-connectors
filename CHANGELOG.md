@@ -2,6 +2,13 @@
 
 
 
+## v4.20.1 (2024-09-02)
+
+### Fix
+
+* fix: update usage of Hrflow python SDK to match 3.3.0 ([`8e1c4e8`](https://github.com/Riminder/hrflow-connectors/commit/8e1c4e8ca579321d7905c5d8e6b585df2f6efbff))
+
+
 ## v4.20.0 (2024-08-30)
 
 ### Documentation
