@@ -1690,28 +1690,19 @@ def test_connector_based_on_duplicate_action():
     ).format(parameters_action_name.name)
 
 
-def test_connector_lowercase_subtype_constraint():
-    subtype = "SmartLeads"
-    with pytest.raises(ValidationError) as excinfo:
-        Connector(
-            name="SmartLeads",
-            type=ConnectorType.Other,
-            subtype=subtype,
-            description=DESCRIPTION,
-            url="https://www.smartleads.test/",
-            actions=[],
-        )
-    expected_error = (
-        "1 validation error for ConnectorModel"
-        "\nsubtype"
-        "\n  ConnectorModel's `subtype` {} must be lowercase. (type=value_error)"
-        .format(subtype)
+def test_connector_model_subtype_missing():
+    model = Connector(
+        name="SmartLeads",
+        type=ConnectorType.Other,
+        description=DESCRIPTION,
+        url="https://www.smartleads.test/",
+        actions=[],
     )
-    assert str(excinfo.value) == expected_error
+    assert model.model.subtype == "smartleads"
 
 
-def test_connector_space_subtype_constraint():
-    subtype = "smart leads"
+def test_connector_subtype_constraint():
+    subtype = "Smart Leads"
     with pytest.raises(ValidationError) as excinfo:
         Connector(
             name="SmartLeads",
@@ -1722,7 +1713,9 @@ def test_connector_space_subtype_constraint():
             actions=[],
         )
     expected_error = (
-        "1 validation error for ConnectorModel\nsubtype\n  ConnectorModel's `subtype`"
-        " {} must not contain any spaces. (type=value_error)".format(subtype)
+        "1 validation error for ConnectorModel\nsubtype\n  ConnectorModel's"
+        " `subtype`={} must be lowercase without any spaces. (type=value_error)".format(
+            subtype
+        )
     )
     assert str(excinfo.value) == expected_error
