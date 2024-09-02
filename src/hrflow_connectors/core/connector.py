@@ -774,9 +774,11 @@ class ConnectorModel(BaseModel):
     def check_subtype(cls, value: str) -> str:
         cleaned_value = value.lower()
         if cleaned_value != value:
-            raise ValueError("ConnectorModel's `subtype` must be lowercase.")
+            raise ValueError(f"ConnectorModel's `subtype` {value} must be lowercase.")
         if " " in cleaned_value:
-            raise ValueError("ConnectorModel's `subtype` must not contain any spaces.")
+            raise ValueError(
+                f"ConnectorModel's `subtype` {value} must not contain any spaces."
+            )
         return cleaned_value
 
     def logo(self, connectors_directory: Path) -> str:

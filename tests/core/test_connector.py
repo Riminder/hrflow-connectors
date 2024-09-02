@@ -1688,3 +1688,41 @@ def test_connector_based_on_duplicate_action():
     assert str(excinfo.value) == (
         "Duplicate action name {} in `with_parameters_override` and `with_actions`"
     ).format(parameters_action_name.name)
+
+
+def test_connector_lowercase_subtype_constraint():
+    subtype = "SmartLeads"
+    with pytest.raises(ValidationError) as excinfo:
+        Connector(
+            name="SmartLeads",
+            type=ConnectorType.Other,
+            subtype=subtype,
+            description=DESCRIPTION,
+            url="https://www.smartleads.test/",
+            actions=[],
+        )
+    expected_error = (
+        "1 validation error for ConnectorModel"
+        "\nsubtype"
+        "\n  ConnectorModel's `subtype` {} must be lowercase. (type=value_error)"
+        .format(subtype)
+    )
+    assert str(excinfo.value) == expected_error
+
+
+def test_connector_space_subtype_constraint():
+    subtype = "smart leads"
+    with pytest.raises(ValidationError) as excinfo:
+        Connector(
+            name="SmartLeads",
+            type=ConnectorType.Other,
+            subtype=subtype,
+            description=DESCRIPTION,
+            url="https://www.smartleads.test/",
+            actions=[],
+        )
+    expected_error = (
+        "1 validation error for ConnectorModel\nsubtype\n  ConnectorModel's `subtype`"
+        " {} must not contain any spaces. (type=value_error)".format(subtype)
+    )
+    assert str(excinfo.value) == expected_error
