@@ -11806,7 +11806,7 @@
       "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/breezyhr/logo.jpg"
     },
     {
-      "name": "SAPSuccessFactors",
+      "name": "SAP SuccessFactors",
       "actions": [
         {
           "name": "pull_job_list",

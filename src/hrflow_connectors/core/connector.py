@@ -416,7 +416,7 @@ class ConnectorAction(BaseModel):
             workflow_id_settings_key=self.WORKFLOW_ID_SETTINGS_KEY,
             origin_settings_prefix=self.ORIGIN_SETTINGS_PREFIX,
             target_settings_prefix=self.TARGET_SETTINGS_PREFIX,
-            connector_name=connector_name,
+            connector_name=connector_name.replace(" ", ""),
             action_name=self.name.value,
             type=workflow_type.name,
             origin_parameters=[
@@ -773,7 +773,8 @@ class ConnectorModel(BaseModel):
                 "PIL is not found in current environment. Mind that you need to install"
                 " the package with dev dependencies to use manifest utility"
             )
-        connector_directory = connectors_directory / self.name.lower()
+        # FIXME: use self.subtype instead of self.name.lower().replace(" ", "")
+        connector_directory = connectors_directory / self.name.lower().replace(" ", "")
         if not connector_directory.is_dir():
             raise ValueError(
                 "No directory found for connector {} in {}".format(
@@ -912,10 +913,10 @@ class Connector:
             format_placeholder = action.WORKFLOW_FORMAT_PLACEHOLDER
             logics_placeholder = action.WORKFLOW_LOGICS_PLACEHOLDER
             event_parser_placeholder = action.WORKFLOW_EVENT_PARSER_PLACEHOLDER
-
+            # FIXME: use model.subtype instead of model.name.lower().replace(" ", "")
             jsonmap_path = (
                 connectors_directory
-                / model.name.lower()
+                / model.name.lower().replace(" ", "")
                 / "mappings"
                 / "format"
                 / "{}.json".format(action.name.value)
