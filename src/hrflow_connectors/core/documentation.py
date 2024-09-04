@@ -221,8 +221,6 @@ def update_root_readme(
             actions_status[ActionName.pull_job_list] = KO_MARKUP
             actions_status[ActionName.push_job] = KO_MARKUP
             actions_status[ActionName.catch_profile] = KO_MARKUP
-        else:
-            pass
 
         if connector["object"] is None:
             updated_listing = line_pattern.format(
