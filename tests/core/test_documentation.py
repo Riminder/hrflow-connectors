@@ -50,7 +50,7 @@ DESCRIPTION = "Test Connector for seamless users to leads integration"
 
 ALL_TARGET_CONNECTORS = [
     dict(
-        name="SmartLeads HCM",
+        name="SmartLeads",
         type="HCM",
         subtype="smartleadshcm",
         release_date="27/09/2021",
@@ -87,7 +87,7 @@ ALL_TARGET_CONNECTORS = [
 ]
 
 SmartLeads = Connector(
-    name="SmartLeads HCM",
+    name="SmartLeads",
     type=ConnectorType.HCM,
     description=DESCRIPTION,
     url="https://www.smartleads.test/",
