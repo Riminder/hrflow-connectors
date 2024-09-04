@@ -284,7 +284,7 @@ def update_root_readme(
                 name=model.name,
                 readme_link="./{base_connector_path}/{connector}/README.md".format(
                     base_connector_path=BASE_CONNECTOR_PATH.get().strip("/"),
-                    connector=model.name.lower(),
+                    connector=model.name.lower().replace(" ", ""),
                 ),
                 type=model.type.value,
                 status=IN_PROGRESS_MARKUP if connector["in_progress"] else DONE_MARKUP,

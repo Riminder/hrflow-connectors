@@ -154,7 +154,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Recruiterflow** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Recruitive** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Rippling** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
-| [**SAP SuccessFactors**](./src/hrflow_connectors/connectors/sap successfactors/README.md) | ATS | :white_check_mark: | *19/01/2022* | *04/09/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
+| [**SAP SuccessFactors**](./src/hrflow_connectors/connectors/sapsuccessfactors/README.md) | ATS | :white_check_mark: | *19/01/2022* | *04/09/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
 | **Sage HR** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Sage People** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
 | [**Salesforce**](./src/hrflow_connectors/connectors/salesforce/README.md) | CRM | :white_check_mark: | *03/08/2023* | *29/08/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
