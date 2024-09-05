@@ -39,6 +39,7 @@ DESCRIPTION = "Test Connector for seamless users to leads integration"
 SmartLeadsF = lambda: Connector(
     name="SmartLeads",
     type=ConnectorType.Other,
+    subtype="smartleads",
     description=DESCRIPTION,
     url="https://www.smartleads.test/",
     actions=[
@@ -94,6 +95,7 @@ def test_action_name_constraint():
         Connector(
             name="SmartLeads",
             type=ConnectorType.Other,
+            subtype="smartleads",
             description=DESCRIPTION,
             url="https://www.smartleads.test/",
             actions=[
@@ -119,6 +121,7 @@ def test_action_pull_profile_list_only_with_trigger_type_pull():
         Connector(
             name="SmartLeads",
             type=ConnectorType.Other,
+            subtype="smartleads",
             description=DESCRIPTION,
             url="https://www.smartleads.test/",
             actions=[
@@ -148,6 +151,7 @@ def test_action_pull_job_list_only_with_trigger_type_pull():
         Connector(
             name="SmartLeads",
             type=ConnectorType.Other,
+            subtype="smartleads",
             description=DESCRIPTION,
             url="https://www.smartleads.test/",
             actions=[
@@ -177,6 +181,7 @@ def test_action_pull_application_list_only_with_trigger_type_pull():
         Connector(
             name="SmartLeads",
             type=ConnectorType.Other,
+            subtype="smartleads",
             description=DESCRIPTION,
             url="https://www.smartleads.test/",
             actions=[
@@ -254,6 +259,7 @@ def test_origin_warehouse_failure():
     connector = Connector(
         name="SmartLeads",
         type=ConnectorType.Other,
+        subtype="smartleads",
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -285,6 +291,7 @@ def test_origin_not_readable_failure():
         Connector(
             name="SmartLeads",
             type=ConnectorType.Other,
+            subtype="smartleads",
             description=DESCRIPTION,
             url="https://www.smartleads.test/",
             actions=[
@@ -309,6 +316,7 @@ def test_target_warehouse_failure():
     connector = Connector(
         name="SmartLeads",
         type=ConnectorType.Other,
+        subtype="smartleads",
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -340,6 +348,7 @@ def test_target_not_writable_failure():
         Connector(
             name="SmartLeads",
             type=ConnectorType.Other,
+            subtype="smartleads",
             description=DESCRIPTION,
             url="https://www.smartleads.test/",
             actions=[
@@ -505,6 +514,7 @@ def test_connector_default_format():
     EvenSmarterLeads = Connector(
         name="SmartLeads",
         type=ConnectorType.Other,
+        subtype="smartleads",
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -589,6 +599,7 @@ def test_action_with_failures():
     FailingSmartLeads = Connector(
         name="SmartLeads",
         type=ConnectorType.Other,
+        subtype="smartleads",
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -735,6 +746,7 @@ def test_action_with_callback_success():
     SmartLeads = Connector(
         name="SmartLeads",
         type=ConnectorType.Other,
+        subtype="smartleads",
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -779,6 +791,7 @@ def test_action_with_callback_failure():
     SmartLeads = Connector(
         name="SmartLeads",
         type=ConnectorType.Other,
+        subtype="smartleads",
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -1674,6 +1687,7 @@ def test_connector_model_subtype_missing():
     model = Connector(
         name="SmartLeads",
         type=ConnectorType.Other,
+        subtype="smartleads",
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[],
@@ -1687,6 +1701,7 @@ def test_connector_subtype_constraint():
         Connector(
             name="SmartLeads",
             type=ConnectorType.Other,
+            subtype="smartleads",
             subtype=subtype,
             description=DESCRIPTION,
             url="https://www.smartleads.test/",

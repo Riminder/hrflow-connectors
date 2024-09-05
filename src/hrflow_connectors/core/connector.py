@@ -764,24 +764,11 @@ class ConnectorModel(BaseModel):
     description: str
     url: str
     type: ConnectorType
-    subtype: t.Optional[str] = Field(
+    subtype: str = Field(
         regex=CONNECTOR_SUBTYPE_FORMAT_REGEX,
         description="Lowercased string with no spaces",
     )
     actions: t.List[ConnectorAction]
-
-    @validator("subtype", pre=True, always=True)
-    def check_subtype(cls, value: t.Optional[str], values: dict) -> str:
-        if value is None:
-            cleaned_value = values.get("name", "").lower().replace(" ", "")
-        else:
-            cleaned_value = value.lower().replace(" ", "")
-            if cleaned_value != value:
-                raise ValueError(
-                    "ConnectorModel's `subtype`={} must be lowercase without any"
-                    " spaces.".format(value)
-                )
-        return cleaned_value
 
     def logo(self, connectors_directory: Path) -> str:
         try:
@@ -861,11 +848,11 @@ class Connector:
         base: t.Self,
         name: str,
         type: ConnectorType,
+        subtype: str,
         description: str,
         url: str,
         with_parameters_override: t.Optional[t.List[ParametersOverride]] = None,
         with_actions: t.Optional[t.List[ConnectorAction]] = None,
-        subtype: t.Optional[str] = None,
     ) -> t.Self:
         base_actions = base.model.actions
 
@@ -913,7 +900,7 @@ class Connector:
         connector = cls(
             name=name,
             type=type,
-            subtype=name.lower().replace(" ", "") if subtype is None else subtype,
+            subtype=subtype,
             description=description,
             url=url,
             actions=list(actions.values()),

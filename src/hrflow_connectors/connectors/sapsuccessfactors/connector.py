@@ -301,6 +301,7 @@ DESCRIPTION = (
 SAPSuccessFactors = Connector(
     name="SAPSuccessFactors",
     type=ConnectorType.ATS,
+    subtype="sapsuccessfactors",
     description=DESCRIPTION,
     url="https://www.sap.com/",
     actions=[

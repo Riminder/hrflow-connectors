@@ -55,6 +55,7 @@ DESCRIPTION = "Waalaxy"
 Waalaxy = Connector(
     name="Waalaxy",
     type=ConnectorType.Automation,
+    subtype="waalaxy",
     description=DESCRIPTION,
     url="https://www.waalaxy.com/fr/",
     actions=[
