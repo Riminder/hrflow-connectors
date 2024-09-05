@@ -1292,6 +1292,7 @@ def test_connector_based_on_simple():
         base=SmartLeads,
         name="SmartLeadsCopy",
         type=ConnectorType.Other,
+        subtype="smartleadscopy",
         description="SmartLeadsCopy",
         url="Some URL",
     )
@@ -1315,6 +1316,7 @@ def test_connector_based_on_action_override():
         base=SmartLeads,
         name="SmartLeadsCopy",
         type=ConnectorType.Other,
+        subtype="smartleadscopy",
         description="SmartLeadsCopy",
         url="Some URL",
         with_actions=[
@@ -1360,6 +1362,7 @@ def test_connector_based_on_new_action():
         base=SmartLeads,
         name="SmartLeadsCopy",
         type=ConnectorType.Other,
+        subtype="smartleadscopy",
         description="SmartLeadsCopy",
         url="Some URL",
         with_actions=[
@@ -1414,6 +1417,7 @@ def test_connector_based_on_parameters_override():
         base=SmartLeads,
         name="SmartLeadsCopy",
         type=ConnectorType.Other,
+        subtype="smartleadscopy",
         description="SmartLeadsCopy",
         url="Some URL",
         with_parameters_override=[
@@ -1483,6 +1487,7 @@ def test_connector_based_on_parameters_override_and_new_action():
         base=SmartLeads,
         name="SmartLeadsCopy",
         type=ConnectorType.Other,
+        subtype="smartleadscopy",
         description="SmartLeadsCopy",
         url="Some URL",
         with_parameters_override=[
@@ -1626,6 +1631,7 @@ def test_connector_based_on_bad_parameters_override():
             base=SmartLeads,
             name="SmartLeadsCopy",
             type=ConnectorType.Other,
+            subtype="smartleadscopy",
             description="SmartLeadsCopy",
             url="Some URL",
             with_parameters_override=[
@@ -1657,6 +1663,7 @@ def test_connector_based_on_duplicate_action():
             base=SmartLeads,
             name="SmartLeadsCopy",
             type=ConnectorType.Other,
+            subtype="smartleadscopy",
             description="SmartLeadsCopy",
             url="Some URL",
             with_parameters_override=[
@@ -1701,16 +1708,11 @@ def test_connector_subtype_constraint():
         Connector(
             name="SmartLeads",
             type=ConnectorType.Other,
-            subtype="smartleads",
             subtype=subtype,
             description=DESCRIPTION,
             url="https://www.smartleads.test/",
             actions=[],
         )
-    expected_error = (
-        "1 validation error for ConnectorModel\nsubtype\n  ConnectorModel's"
-        " `subtype`={} must be lowercase without any spaces. (type=value_error)".format(
-            subtype
-        )
-    )
-    assert str(excinfo.value) == expected_error
+    errors = excinfo.value.errors()
+    assert errors[0]["loc"] == ("subtype",)
+    assert errors[0]["msg"].startswith('string does not match regex "')
