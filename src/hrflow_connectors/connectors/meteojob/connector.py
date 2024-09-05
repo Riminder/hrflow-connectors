@@ -63,6 +63,7 @@ DESCRIPTION = (
 Meteojob = Connector(
     name="Meteojob",
     type=ConnectorType.JobBoard,
+    subtype="meteojob",
     description=DESCRIPTION,
     url="https://www.meteojob.com/",
     actions=[

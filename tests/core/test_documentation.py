@@ -89,6 +89,7 @@ ALL_TARGET_CONNECTORS = [
 SmartLeads = Connector(
     name="SmartLeads",
     type=ConnectorType.HCM,
+    subtype="smartleads",
     description=DESCRIPTION,
     url="https://www.smartleads.test/",
     actions=[
@@ -730,6 +731,7 @@ def test_documentation_connector_directory_not_found(caplog, connectors_director
     NameMismatchSmartLeads = Connector(
         name=mismatch_name,
         type=ConnectorType.Other,
+        subtype=mismatch_name.lower().replace(" ", ""),
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[

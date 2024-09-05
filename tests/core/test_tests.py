@@ -33,6 +33,7 @@ from tests.core.src.hrflow_connectors.connectors.smartleads.warehouse import (
 SmartLeads = Connector(
     name="SmartLeads",
     type=ConnectorType.Other,
+    subtype="smartleads",
     description="Test Connector for seamless users to leads integration",
     url="https://www.smartleads.test/",
     actions=[
@@ -59,6 +60,7 @@ SmartLeads = Connector(
 LocalUsers = Connector(
     name="LocalUsers",
     type=ConnectorType.Other,
+    subtype="localusers",
     description="Local users connector",
     url="https://www.localusers.test/",
     actions=[],

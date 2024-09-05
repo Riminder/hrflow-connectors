@@ -269,6 +269,7 @@ def format_candidate(breezy_profile: BreezyProfileModel) -> HrFlowProfile:
 BreezyHR = Connector(
     name="BreezyHR",
     type=ConnectorType.ATS,
+    subtype="breezyhr",
     description=(
         "Breezyhr is an end-to-end recruiting software "
         "to help you attract & hire great employees with less effort"

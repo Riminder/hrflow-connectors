@@ -358,6 +358,7 @@ DESCRIPTION = (
 Taleez = Connector(
     name="Taleez",
     type=ConnectorType.ATS,
+    subtype="taleez",
     description=DESCRIPTION,
     url="https://taleez.com/",
     actions=[

@@ -2,6 +2,13 @@
 
 
 
+## v4.21.0 (2024-09-05)
+
+### Feature
+
+* feat: use last hrflow sdk version 4.2.0 ([`4489706`](https://github.com/Riminder/hrflow-connectors/commit/4489706c6890c4d028e7fe0e5d71c0487a562113))
+
+
 ## v4.20.1 (2024-09-02)
 
 ### Fix
