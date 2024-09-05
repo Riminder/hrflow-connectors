@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hrflow-connectors"
-version = "4.20.1"
+version = "4.21.0"
 description = "hrflow-connectors is an open source project created by HrFlow.ai to allow developers to connect easily HR ecosystem component."
 license = "Apache-2.0"
 authors = ["HrFlow.ai <support+hrflow_connectors@hrflow.ai>"]
@@ -19,7 +19,7 @@ exclude = ["Makefile", ".pre-commit-config.yaml", "manifest.json", "tests", "poe
 python = "^3.8.1"
 pydantic = "1.10.8"
 Jinja2 = "^3.0.3"
-hrflow = "^3.3.0"
+hrflow = "^4.2.0"
 requests = "^2.27.1"
 boto3 = {version = "^1.24.66", optional = true}
 simple-salesforce = "^1.12.4"
