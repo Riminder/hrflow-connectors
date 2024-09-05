@@ -30,6 +30,7 @@ HRFLOW_CONNECTORS_RAW_GITHUB_CONTENT_BASE = (
     "https://raw.githubusercontent.com/Riminder/hrflow-connectors"
 )
 CONNECTORS_DIRECTORY = Path(__file__).parent.parent / "connectors"
+CONNECTOR_SUBTYPE_FORMAT_REGEX = r"^[a-z]+$"
 KB = 1024
 MAX_LOGO_SIZE_BYTES = 100 * KB
 MAX_LOGO_PIXEL = 150
@@ -763,6 +764,10 @@ class ConnectorModel(BaseModel):
     description: str
     url: str
     type: ConnectorType
+    subtype: str = Field(
+        regex=CONNECTOR_SUBTYPE_FORMAT_REGEX,
+        description="Lowercased string with no spaces",
+    )
     actions: t.List[ConnectorAction]
 
     def logo(self, connectors_directory: Path) -> str:
@@ -843,6 +848,7 @@ class Connector:
         base: t.Self,
         name: str,
         type: ConnectorType,
+        subtype: str,
         description: str,
         url: str,
         with_parameters_override: t.Optional[t.List[ParametersOverride]] = None,
@@ -894,6 +900,7 @@ class Connector:
         connector = cls(
             name=name,
             type=type,
+            subtype=subtype,
             description=description,
             url=url,
             actions=list(actions.values()),
@@ -906,6 +913,7 @@ class Connector:
             name=model.name,
             actions=[],
             type=model.type.value,
+            subtype=model.subtype,
             logo=model.logo(connectors_directory=connectors_directory),
         )
         for action in model.actions:

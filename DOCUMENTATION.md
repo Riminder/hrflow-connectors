@@ -368,6 +368,7 @@ from hrflow_connectors.core import (
 LocalJSON = Connector(
     name="LocalJSON",
     type=ConnectorType.Other,
+    subtype="localjson",
     description="Read from JSON, Write to JSON",
     url="https://localjson.ai",
     actions=[
@@ -426,6 +427,7 @@ def format_job(job: t.Dict) -> t.Dict:
 LocalJSON = Connector(
     name="JSON file",
     type=ConnectorType.Other,
+    subtype="localjson",
     description="Read from JSON, Write to JSON",
     url="https://localjson.ai",
     actions=[
@@ -1142,6 +1144,7 @@ from hrflow_connectors.core import (
 LocalJSON = Connector(
     name="LocalJSON",
     type=ConnectorType.Other,
+    subtype="localjson",
     description="Read from JSON, Write to JSON",
     url="https://localjson.ai",
     actions=[
@@ -1167,6 +1170,7 @@ Below are a few examples :
 LocalJSON = Connector(
     name="LocalJSON",
     type=ConnectorType.Other,
+    subtype="localjson",
     description="Read from JSON, Write to JSON",
     url="https://localjson.ai",
     actions=[
@@ -1436,6 +1440,7 @@ With the concepts and example code at hand let's put all that theory into practi
     SQLiteOrders = Connector(
         name="SQLiteOrders",
         type=ConnectorType.Other,
+        subtype="sqliteorders",
         description="Read from SQLite, Write to JSON",
         url="https://sqliteorder.ai",
         actions=[

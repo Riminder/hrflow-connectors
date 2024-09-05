@@ -183,6 +183,7 @@ DESCRIPTION = (
 SmartRecruiters = Connector(
     name="SmartRecruiters",
     type=ConnectorType.ATS,
+    subtype="smartrecruiters",
     description=DESCRIPTION,
     url="https://www.smartrecruiters.com/",
     actions=[
