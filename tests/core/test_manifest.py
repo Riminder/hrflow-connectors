@@ -48,6 +48,7 @@ def test_hrflow_connectors_manifest(manifest_directory, test_connectors_director
 def test_manifest_connector_directory_not_found(test_connectors_directory):
     SmartLeads = SmartLeadsF()
     SmartLeads.model.name = "SmartLeadsX"
+    SmartLeads.model.subtype = "smartleadsx"
     with pytest.raises(ValueError) as excinfo:
         SmartLeads.manifest(test_connectors_directory)
 
@@ -58,6 +59,7 @@ def test_manifest_connector_directory_not_found(test_connectors_directory):
 def test_manifest_logo_is_missing(test_connectors_directory):
     LocalUsers = SmartLeadsF()
     LocalUsers.model.name = "LocalUsers"
+    LocalUsers.model.subtype = "localusers"
     with pytest.raises(ValueError) as excinfo:
         LocalUsers.manifest(test_connectors_directory)
 
@@ -87,6 +89,7 @@ def test_manifest_logo_above_size_limit(test_connectors_directory):
         large_logo.write(bytes([255] * above_limit_size))
         LocalUsers = SmartLeadsF()
         LocalUsers.model.name = "LocalUsers"
+        LocalUsers.model.subtype = "localusers"
         with pytest.raises(ValueError) as excinfo:
             LocalUsers.manifest(test_connectors_directory)
 
@@ -106,6 +109,7 @@ def test_manifest_logo_not_valid_image(test_connectors_directory):
     ):
         LocalUsers = SmartLeadsF()
         LocalUsers.model.name = "LocalUsers"
+        LocalUsers.model.subtype = "localusers"
         with pytest.raises(ValueError) as excinfo:
             LocalUsers.manifest(test_connectors_directory)
 
@@ -143,7 +147,7 @@ def test_manifest_logo_bad_dimension(test_connectors_directory, shape):
         resized.save(bad_shape_logo)
 
         LocalUsers = SmartLeadsF()
-        LocalUsers.model.name = "LocalUsers"
+        LocalUsers.model.subtype = "localusers"
         with pytest.raises(ValueError) as excinfo:
             LocalUsers.manifest(test_connectors_directory)
 
@@ -151,7 +155,7 @@ def test_manifest_logo_bad_dimension(test_connectors_directory, shape):
 
 
 def test_manifest_includes_jsonmap_when_file_exists(test_connectors_directory):
-    connector_directory = test_connectors_directory / SmartLeadsF().model.name.lower()
+    connector_directory = test_connectors_directory / SmartLeadsF().model.subtype
     format_mappings_directory = connector_directory / "mappings" / "format"
     connector = SmartLeadsF()
 
@@ -173,7 +177,7 @@ def test_manifest_includes_jsonmap_when_file_exists(test_connectors_directory):
 
 
 def test_manifest_includes_empty_jsonmap_when_file_missing(test_connectors_directory):
-    connector_directory = test_connectors_directory / SmartLeadsF().model.name.lower()
+    connector_directory = test_connectors_directory / SmartLeadsF().model.subtype
     format_mappings_directory = connector_directory / "mappings" / "format"
     connector = SmartLeadsF()
 
