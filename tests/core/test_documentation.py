@@ -111,20 +111,18 @@ def connectors_directory(root_readme: Path):
     except FileNotFoundError:
         pass
 
-    readme = path / SmartLeads.model.name.lower() / "README.md"
-    notebooks_directory = path / SmartLeads.model.name.lower() / "notebooks"
+    readme = path / SmartLeads.model.subtype / "README.md"
+    notebooks_directory = path / SmartLeads.model.subtype / "notebooks"
     keep_empty_notebooks_file = (
-        path / SmartLeads.model.name.lower() / "notebooks" / KEEP_EMPTY_FOLDER
+        path / SmartLeads.model.subtype / "notebooks" / KEEP_EMPTY_FOLDER
     )
     notebook = notebooks_directory / NOTEBOOKS_FILE
-    mappings_directory = path / SmartLeads.model.name.lower() / "mappings"
-    format_mappings_directory = (
-        path / SmartLeads.model.name.lower() / "mappings" / "format"
-    )
+    mappings_directory = path / SmartLeads.model.subtype / "mappings"
+    format_mappings_directory = path / SmartLeads.model.subtype / "mappings" / "format"
     keep_empty_format_file = format_mappings_directory / KEEP_EMPTY_FOLDER
     format_file = format_mappings_directory / FORMAT_FILE
 
-    actions_documentation_directory = path / SmartLeads.model.name.lower() / "docs"
+    actions_documentation_directory = path / SmartLeads.model.subtype / "docs"
     action_documentation = actions_documentation_directory / "{}.md".format(
         SmartLeads.model.actions[0].name.value
     )
@@ -153,29 +151,27 @@ def connectors_directory(root_readme: Path):
 
 
 def test_documentation(connectors_directory):
-    readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
-    notebooks_directory = (
-        connectors_directory / SmartLeads.model.name.lower() / "notebooks"
-    )
+    readme = connectors_directory / SmartLeads.model.subtype / "README.md"
+    notebooks_directory = connectors_directory / SmartLeads.model.subtype / "notebooks"
     keep_empty_notebooks_file = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "notebooks"
         / KEEP_EMPTY_FOLDER
     )
     format_mappings_directory = (
-        connectors_directory / SmartLeads.model.name.lower() / "mappings" / "format"
+        connectors_directory / SmartLeads.model.subtype / "mappings" / "format"
     )
     keep_empty_format_file = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "mappings"
         / "format"
         / KEEP_EMPTY_FOLDER
     )
     action_documentation = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "docs"
         / "{}.md".format(SmartLeads.model.actions[0].name.value)
     )
@@ -202,12 +198,10 @@ def test_documentation(connectors_directory):
 def test_documentation_adds_keep_empty_notebooks_file_if_folder_is_empty(
     connectors_directory,
 ):
-    notebooks_directory = (
-        connectors_directory / SmartLeads.model.name.lower() / "notebooks"
-    )
+    notebooks_directory = connectors_directory / SmartLeads.model.subtype / "notebooks"
     keep_empty_notebooks_file = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "notebooks"
         / KEEP_EMPTY_FOLDER
     )
@@ -224,10 +218,10 @@ def test_documentation_adds_keep_empty_notebooks_file_if_folder_is_empty(
     assert notebooks_directory.exists() is True
     assert keep_empty_notebooks_file.exists() is True
 
-    readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
+    readme = connectors_directory / SmartLeads.model.subtype / "README.md"
     action_documentation = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "docs"
         / "{}.md".format(SmartLeads.model.actions[0].name.value)
     )
@@ -238,12 +232,10 @@ def test_documentation_adds_keep_empty_notebooks_file_if_folder_is_empty(
 def test_documentation_does_not_add_keep_empty_notebooks_file_if_folder_has_other_files(
     connectors_directory,
 ):
-    notebooks_directory = (
-        connectors_directory / SmartLeads.model.name.lower() / "notebooks"
-    )
+    notebooks_directory = connectors_directory / SmartLeads.model.subtype / "notebooks"
     keep_empty_notebooks_file = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "notebooks"
         / KEEP_EMPTY_FOLDER
     )
@@ -264,10 +256,10 @@ def test_documentation_does_not_add_keep_empty_notebooks_file_if_folder_has_othe
     assert other.exists() is True
     assert keep_empty_notebooks_file.exists() is False
 
-    readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
+    readme = connectors_directory / SmartLeads.model.subtype / "README.md"
     action_documentation = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "docs"
         / "{}.md".format(SmartLeads.model.actions[0].name.value)
     )
@@ -278,12 +270,10 @@ def test_documentation_does_not_add_keep_empty_notebooks_file_if_folder_has_othe
 def test_documentation_removes_keep_empty_notebooks_file_if_folder_has_other_files(
     connectors_directory,
 ):
-    notebooks_directory = (
-        connectors_directory / SmartLeads.model.name.lower() / "notebooks"
-    )
+    notebooks_directory = connectors_directory / SmartLeads.model.subtype / "notebooks"
     keep_empty_notebooks_file = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "notebooks"
         / KEEP_EMPTY_FOLDER
     )
@@ -305,10 +295,10 @@ def test_documentation_removes_keep_empty_notebooks_file_if_folder_has_other_fil
     assert other.exists() is True
     assert keep_empty_notebooks_file.exists() is False
 
-    readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
+    readme = connectors_directory / SmartLeads.model.subtype / "README.md"
     action_documentation = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "docs"
         / "{}.md".format(SmartLeads.model.actions[0].name.value)
     )
@@ -320,11 +310,11 @@ def test_documentation_adds_keep_empty_format_file_if_folder_is_empty(
     connectors_directory,
 ):
     format_mappings_directory = (
-        connectors_directory / SmartLeads.model.name.lower() / "mappings" / "format"
+        connectors_directory / SmartLeads.model.subtype / "mappings" / "format"
     )
     keep_empty_format_file = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "mappings"
         / "format"
         / KEEP_EMPTY_FOLDER
@@ -347,11 +337,11 @@ def test_documentation_does_not_add_keep_empty_format_file_if_folder_has_other_f
     connectors_directory,
 ):
     format_mappings_directory = (
-        connectors_directory / SmartLeads.model.name.lower() / "mappings" / "format"
+        connectors_directory / SmartLeads.model.subtype / "mappings" / "format"
     )
     keep_empty_format_file = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "mappings"
         / "format"
         / KEEP_EMPTY_FOLDER
@@ -377,11 +367,11 @@ def test_documentation_removes_keep_empty_format_file_if_folder_has_other_files(
     connectors_directory,
 ):
     format_mappings_directory = (
-        connectors_directory / SmartLeads.model.name.lower() / "mappings" / "format"
+        connectors_directory / SmartLeads.model.subtype / "mappings" / "format"
     )
     keep_empty_format_file = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "mappings"
         / "format"
         / KEEP_EMPTY_FOLDER
@@ -406,7 +396,7 @@ def test_documentation_removes_keep_empty_format_file_if_folder_has_other_files(
 
 
 def test_documentation_fails_if_actions_section_not_found(connectors_directory):
-    readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
+    readme = connectors_directory / SmartLeads.model.subtype / "README.md"
     with patched_subprocess():
         generate_docs(
             connectors=[SmartLeads], connectors_directory=connectors_directory
@@ -584,10 +574,10 @@ def test_main_readme_update_at_helper_doesnt_override_handwritten_updated_at(
 
 
 def test_documentation_with_remote_code_links(connectors_directory):
-    readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
+    readme = connectors_directory / SmartLeads.model.subtype / "README.md"
     action_documentation = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "docs"
         / "{}.md".format(SmartLeads.model.actions[0].name.value)
     )
@@ -641,10 +631,11 @@ def test_documentation_with_remote_code_links(connectors_directory):
 
 def test_documentation_connector_directory_not_found(caplog, connectors_directory):
     mismatch_name = "NoConnectorDir"
+    subtype = mismatch_name.lower().replace(" ", "")
     NameMismatchSmartLeads = Connector(
         name=mismatch_name,
         type=ConnectorType.Other,
-        subtype=mismatch_name.lower().replace(" ", ""),
+        subtype=subtype,
         description=DESCRIPTION,
         url="https://www.smartleads.test/",
         actions=[
@@ -660,12 +651,10 @@ def test_documentation_connector_directory_not_found(caplog, connectors_director
         ],
     )
 
-    readme = (
-        connectors_directory / NameMismatchSmartLeads.model.name.lower() / "README.md"
-    )
+    readme = connectors_directory / NameMismatchSmartLeads.model.subtype / "README.md"
     action_documentation = (
         connectors_directory
-        / NameMismatchSmartLeads.model.name.lower()
+        / NameMismatchSmartLeads.model.subtype
         / "docs"
         / "{}.md".format(NameMismatchSmartLeads.model.actions[0].name.value)
     )
@@ -715,10 +704,11 @@ def test_documentation_fails_if_connector_not_already_listed_in_root_readme(
     connectors_directory,
 ):
     name = "Not Listed In Root README"
+    subtype = name.lower().replace(" ", "")
     NotListed = Connector(
         name=name,
         type=ConnectorType.Other,
-        subtype=name.lower().replace(" ", ""),
+        subtype=subtype,
         description=DESCRIPTION,
         url="https://not.listed.in.root.test/",
         actions=[

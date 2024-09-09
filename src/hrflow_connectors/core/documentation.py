@@ -193,7 +193,7 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
         model = connector.model
         result = subprocess.run(
             GIT_UPDATE_DATE.format(
-                connector=model.name.lower(),
+                connector=model.subtype,
                 base_connector_path=BASE_CONNECTOR_PATH.get().rstrip("/"),
             ),
             shell=True,
@@ -204,7 +204,7 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
         if result.stderr:
             raise Exception(
                 "Subprocess run for Git update dates failed for connector {} with"
-                " errors {}".format(model.name.lower(), result.stderr)
+                " errors {}".format(model.subtype, result.stderr)
             )
         filtered = [
             line.split(" ")[0]
@@ -253,7 +253,7 @@ def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
             name=match.group("name"),
             readme_link="./{base_connector_path}/{connector}/README.md".format(
                 base_connector_path=BASE_CONNECTOR_PATH.get().strip("/"),
-                connector=model.name.lower(),
+                connector=model.subtype,
             ),
             type=model.type.value,
             release_date=match.group("release_date"),
@@ -283,7 +283,7 @@ def generate_docs(
     )
     for connector in connectors:
         model = connector.model
-        connector_directory = connectors_directory / model.name.lower()
+        connector_directory = connectors_directory / model.subtype
         if not connector_directory.is_dir():
             logging.error(
                 "Skipping documentation for {}: no directory found at {}".format(
