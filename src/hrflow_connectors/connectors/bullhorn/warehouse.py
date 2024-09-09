@@ -1,7 +1,9 @@
 import json
+import pdb
 import time
 import typing as t
 from datetime import datetime
+from io import BytesIO
 from logging import LoggerAdapter
 
 import requests
@@ -74,7 +76,7 @@ class WriteApplicationsParameters(BaseParameters):
     )
 
 
-class ReadJobsParameters(BaseParameters):
+class ReadParameters(BaseParameters):
     last_modified_date: str = Field(
         ...,
         description="Last Modified Date in timestamp",
@@ -92,6 +94,13 @@ class ReadJobsParameters(BaseParameters):
     query: str = Field(
         ...,
         description="the query parameters",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+
+    count: int = Field(
+        ...,
+        description="Number of items to be returned",
         repr=False,
         field_type=FieldType.Auth,
     )
@@ -353,12 +362,14 @@ def write_application(
 
 def read_jobs(
     adapter: LoggerAdapter,
-    parameters: ReadJobsParameters,
+    parameters: ReadParameters,
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
     start = 0
     auth_retries = 0
+    total_returned = 0
+    should_break = False
     authentication = auth(
         parameters.username,
         parameters.password,
@@ -413,6 +424,8 @@ def read_jobs(
                 + "&start="
                 + str(start)
             )
+            if parameters.count:
+                jobs_url += f"&count={parameters.count}"
 
             response = requests.get(url=jobs_url)
 
@@ -421,14 +434,20 @@ def read_jobs(
             data = response["data"]
 
             for job in data:
+                if parameters.count and total_returned >= parameters.count:
+                    should_break = True
+                    break
                 if (
-                    job["dateLastModified"] == last_modified_date
+                    read_mode is ReadMode.incremental
+                    and job["dateLastModified"] == last_modified_date
                     and job["id"] <= last_id
                 ):
                     adapter.info("job with id <= last_id")
                     continue
                 yield job
-
+                total_returned += 1
+            if should_break:
+                break
             if start >= response["total"]:
                 break
 
@@ -460,7 +479,7 @@ def read_jobs(
 
 def read_profiles_parsing(
     adapter: LoggerAdapter,
-    parameters: ReadProfileParameters,
+    parameters: ReadParameters,
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
@@ -470,74 +489,157 @@ def read_profiles_parsing(
         parameters.client_id,
         parameters.client_secret,
     )
+
     start = 0
-    while True:
-        profiles_url = (
-            authentication["restUrl"] + "myCandidates?fields=*&start=" + str(start)
-        )
-        headers = {"BhRestToken": authentication["BhRestToken"]}
+    auth_retries = 0
+    total_returned = 0
+    should_break = False
+    last_id = None
 
-        response = requests.get(url=profiles_url, headers=headers)
-        if response.status_code // 100 != 2:
-            adapter.error(
-                "Failed to pull profiles from Bullhorn"
-                " status_code={} response={}".format(
-                    response.status_code, response.text
+    if read_mode is ReadMode.sync:
+        if parameters.last_modified_date is None:
+            raise Exception("last_modified_date cannot be None in ReadMode.sync")
+        last_modified_date = parameters.last_modified_date
+    else:
+        if parameters.last_modified_date is not None:
+            adapter.warning(
+                "last_modified_date is ignored in ReadMode.incremental, using"
+                " read_from instead"
+            )
+        if read_from:
+            try:
+                read_from = json.loads(read_from)
+                last_modified_date = read_from["last_modified_date"]
+                last_id = read_from["last_id"]
+            except json.JSONDecodeError as e:
+                raise Exception(f"Failed to JSON parse read_from={read_from} error={e}")
+            except KeyError as e:
+                raise Exception(
+                    "Failed to find expected key in"
+                    f" read_from={read_from} error={repr(e)}"
                 )
+        else:
+            last_modified_date = parameters.last_modified_date
+
+    last_modified_date_filter = transform_timestamp(last_modified_date)
+    if not last_modified_date_filter:
+        raise Exception(
+            "Error while applying a transformation date on last modified date to"
+            " perform filtering"
+        )
+
+    while True:
+        try:
+            query = (
+                f"{parameters.query} AND "
+                f"dateLastModified:[{last_modified_date_filter}%20TO%20*]"
             )
-            raise Exception("Failed to pull profiles from Bullhorn")
-        response = response.json()
 
-        start = response["start"] + response["count"]
-        data = response["data"]
-        total = response["total"]
-
-        for profile in data:
-            profile["cvFile"] = None
-            url_files = (
+            profiles_url = (
                 authentication["restUrl"]
-                + "entityFiles/Candidate/"
-                + str(profile["id"])
+                + f"search/Candidate?query={query}&fields="
+                + f"{parameters.fields}&sort=dateLastModified,id"
+                + f"&BhRestToken={authentication['BhRestToken']}"
+                + f"&start={start}"
             )
-            headers = {"BhRestToken": authentication["BhRestToken"]}
-            response = requests.get(url=url_files, headers=headers)
+            if parameters.count:
+                profiles_url += f"&count={parameters.count}"
+
+            response = requests.get(url=profiles_url)
+            if response.status_code // 100 != 2:
+                adapter.error(
+                    "Failed to pull profiles from Bullhorn"
+                    f" status_code={response.status_code} response={response.text}"
+                )
+                raise Exception("Failed to pull profiles from Bullhorn")
             response = response.json()
 
-            last_cv = None
-            curr_entity = None
-            if len(response["EntityFiles"]) > 0:
-                for entity_file in response["EntityFiles"]:
-                    if entity_file["type"] == "Resume":
-                        if not curr_entity:
-                            curr_entity = entity_file
-                            last_cv = entity_file["id"]
-                        elif curr_entity["dateAdded"] < entity_file["dateAdded"]:
-                            curr_entity = entity_file
-                            last_cv = entity_file["id"]
+            start = response["start"] + response["count"]
+            data = response["data"]
+            total = response["total"]
 
-            if last_cv is not None:
-                url_cv = (
+            for profile in data:
+                if parameters.count and total_returned >= parameters.count:
+                    should_break = True
+                    break
+                if (
+                    read_mode is ReadMode.incremental
+                    and profile["dateLastModified"] == last_modified_date
+                    and profile["id"] <= last_id
+                ):
+                    adapter.info("Profile with id <= last_id")
+                    continue
+
+                profile["cvFile"] = None
+                url_files = (
                     authentication["restUrl"]
-                    + "/file/Candidate/"
+                    + "entityFiles/Candidate/"
                     + str(profile["id"])
-                    + "/"
-                    + str(last_cv)
-                    + "/raw"
                 )
-                response = requests.get(url=url_cv, headers=headers)
+                headers = {"BhRestToken": authentication["BhRestToken"]}
+                response = requests.get(url=url_files, headers=headers)
+                response = response.json()
 
-                file = response.content
-                with open("cv_file.pdf", "wb") as f:
-                    f.write(file)
+                last_cv = None
+                curr_entity = None
+                if len(response["EntityFiles"]) > 0:
+                    for entity_file in response["EntityFiles"]:
+                        if entity_file["type"] == "Resume":
+                            if not curr_entity:
+                                curr_entity = entity_file
+                                last_cv = entity_file["id"]
+                            elif curr_entity["dateAdded"] < entity_file["dateAdded"]:
+                                curr_entity = entity_file
+                                last_cv = entity_file["id"]
 
-                with open("cv_file.pdf", "rb") as f:
-                    profile_file = f.read()
+                if last_cv is not None:
+                    url_cv = (
+                        authentication["restUrl"]
+                        + "/file/Candidate/"
+                        + str(profile["id"])
+                        + "/"
+                        + str(last_cv)
+                        + "/raw"
+                    )
+                    response = requests.get(url=url_cv, headers=headers)
+
+                    file = response.content
+                    profile_file = BytesIO(file)
                     profile["cvFile"] = profile_file
 
+                total_returned += 1
                 yield profile
 
-        if start >= total:
-            break
+            if should_break:
+                break
+
+            if start >= total:
+                break
+
+        except requests.HTTPError as e:
+            if e.response.status_code == 401:
+                adapter.info(
+                    "Received 401 error. Retrying authentication to continue fetching"
+                    " profiles."
+                )
+                if auth_retries > 2:
+                    raise Exception(
+                        f"Retries exceeded for authentication ({auth_retries})."
+                        " Stopping execution."
+                    )
+
+                authentication = auth(
+                    parameters.username,
+                    parameters.password,
+                    parameters.client_id,
+                    parameters.client_secret,
+                    refresh_token=authentication["refresh_token"],
+                )
+                auth_retries += 1
+                continue
+            else:
+                adapter.error("Failed to fetch profiles from Bullhorn.")
+                raise e
 
 
 def read_profiles(
@@ -632,7 +734,7 @@ def transform_timestamp(timestamp: t.Optional[t.Union[float, int]]) -> t.Optiona
     return transformed_date
 
 
-def item_to_read_from_job(item: t.Dict) -> str:
+def item_to_read_from(item: t.Dict) -> str:
     return json.dumps(
         dict(last_modified_date=item["dateLastModified"], last_id=item["id"])
     )
@@ -664,7 +766,11 @@ BullhornProfileParsingWarehouse = Warehouse(
     data_schema=BullhornProfile,
     data_type=DataType.profile,
     read=WarehouseReadAction(
-        parameters=ReadProfileParameters, function=read_profiles_parsing, endpoints=[]
+        parameters=ReadParameters,
+        function=read_profiles_parsing,
+        endpoints=[],
+        supports_incremental=True,
+        item_to_read_from=item_to_read_from,
     ),
 )
 
@@ -673,9 +779,9 @@ BullhornJobWarehouse = Warehouse(
     data_schema=BullhornJob,
     data_type=DataType.job,
     read=WarehouseReadAction(
-        parameters=ReadJobsParameters,
+        parameters=ReadParameters,
         function=read_jobs,
         supports_incremental=True,
-        item_to_read_from=item_to_read_from_job,
+        item_to_read_from=item_to_read_from,
     ),
 )

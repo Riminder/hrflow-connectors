@@ -51,7 +51,9 @@ def login_to_bullhorn(access_token):
     response = requests.post(url=login_url, params=params)
 
     if response.ok:
-        return response.json()
+        auth_response = response.json()
+        auth_response["refresh_token"] = access_token["refresh_token"]
+        return auth_response
 
     raise Exception(
         f"Login to Bullhorn failed with status code {response.status_code}:"
