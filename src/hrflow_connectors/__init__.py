@@ -47,9 +47,4 @@ __CONNECTORS__ = [
     Carrevolutis,
 ]
 
-# This makes sure that connector are in module namespace
-# and that the automatic workflow code generation should work
-for connector in __CONNECTORS__:
-    globals()[connector.model.name] = connector
-
 backend.configure_store()

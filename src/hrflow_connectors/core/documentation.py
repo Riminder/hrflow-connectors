@@ -12,7 +12,7 @@ from pydantic import BaseModel
 from pydantic.fields import ModelField
 
 from hrflow_connectors.core import ActionName
-from hrflow_connectors.core.connector import Connector
+from hrflow_connectors.core.connector import Connector, get_import_name
 from hrflow_connectors.core.templates import Templates
 
 logger = logging.getLogger(__name__)
@@ -291,6 +291,9 @@ def generate_docs(
                 )
             )
             continue
+
+        import_name = get_import_name(connector)
+
         readme = connector_directory / "README.md"
         if readme.exists() is False:
             readme_content = Templates.get_template("connector_readme.md.j2").render(
@@ -349,7 +352,7 @@ def generate_docs(
                 action_documentation_content = Templates.get_template(
                     "action_readme.md.j2"
                 ).render(
-                    connector_name=model.name,
+                    import_name=import_name,
                     action_name=action_name,
                     description=action.description,
                     action_fields=action_fields,
