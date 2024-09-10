@@ -922,7 +922,6 @@ class Connector:
             format_placeholder = action.WORKFLOW_FORMAT_PLACEHOLDER
             logics_placeholder = action.WORKFLOW_LOGICS_PLACEHOLDER
             event_parser_placeholder = action.WORKFLOW_EVENT_PARSER_PLACEHOLDER
-            # FIXME: use model.subtype instead of model.name.lower().replace(" ", "")
             jsonmap_path = (
                 connectors_directory
                 / model.subtype

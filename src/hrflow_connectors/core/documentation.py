@@ -239,10 +239,9 @@ def update_root_readme(
             )
         else:
             model = connector["object"].model
-            # FIXME: use model.subtype instead of model.name.lower().replace(" ", "")
             result = subprocess.run(
                 GIT_UPDATE_DATE.format(
-                    connector=model.name.lower().replace(" ", ""),
+                    connector=model.subtype,
                     base_connector_path=BASE_CONNECTOR_PATH.get().rstrip("/"),
                 ),
                 shell=True,
