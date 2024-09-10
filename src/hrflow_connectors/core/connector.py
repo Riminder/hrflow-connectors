@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import enum
+import inspect
 import json
 import logging
 import time
@@ -409,7 +410,7 @@ class ConnectorAction(BaseModel):
     def data_type(self) -> str:
         return self.origin.data_type.name
 
-    def workflow_code(self, connector_name: str, workflow_type: WorkflowType) -> str:
+    def workflow_code(self, import_name: str, workflow_type: WorkflowType) -> str:
         return Templates.get_template("workflow.py.j2").render(
             format_placeholder=self.WORKFLOW_FORMAT_PLACEHOLDER,
             logics_placeholder=self.WORKFLOW_LOGICS_PLACEHOLDER,
@@ -417,7 +418,7 @@ class ConnectorAction(BaseModel):
             workflow_id_settings_key=self.WORKFLOW_ID_SETTINGS_KEY,
             origin_settings_prefix=self.ORIGIN_SETTINGS_PREFIX,
             target_settings_prefix=self.TARGET_SETTINGS_PREFIX,
-            connector_name=connector_name.replace(" ", ""),
+            import_name=import_name,
             action_name=self.name.value,
             type=workflow_type.name,
             origin_parameters=[
@@ -778,8 +779,7 @@ class ConnectorModel(BaseModel):
                 "PIL is not found in current environment. Mind that you need to install"
                 " the package with dev dependencies to use manifest utility"
             )
-        # FIXME: use self.subtype instead of self.name.lower().replace(" ", "")
-        connector_directory = connectors_directory / self.name.lower().replace(" ", "")
+        connector_directory = connectors_directory / self.subtype
         if not connector_directory.is_dir():
             raise ValueError(
                 "No directory found for connector {} in {}".format(
@@ -909,6 +909,7 @@ class Connector:
         return connector
 
     def manifest(self, connectors_directory: Path) -> t.Dict:
+        import_name = get_import_name(self)
         model = self.model
         manifest = dict(
             name=model.name,
@@ -924,7 +925,7 @@ class Connector:
             # FIXME: use model.subtype instead of model.name.lower().replace(" ", "")
             jsonmap_path = (
                 connectors_directory
-                / model.name.lower().replace(" ", "")
+                / model.subtype
                 / "mappings"
                 / "format"
                 / "{}.json".format(action.name.value)
@@ -949,7 +950,7 @@ class Connector:
                 target_data_schema=action.target.data_schema.schema(),
                 jsonmap=jsonmap,
                 workflow_code=action.workflow_code(
-                    connector_name=model.name, workflow_type=action.trigger_type
+                    import_name=import_name, workflow_type=action.trigger_type
                 ),
                 workflow_code_format_placeholder=format_placeholder,
                 workflow_code_logics_placeholder=logics_placeholder,
@@ -964,6 +965,34 @@ class Connector:
 
             manifest["actions"].append(action_manifest)
         return manifest
+
+
+class ConnectorImportNameNotFound(Exception):
+    pass
+
+
+class AmbiguousConnectorImportName(Exception):
+    pass
+
+
+def get_import_name(connector: Connector) -> str:
+    import hrflow_connectors
+
+    members = inspect.getmembers(hrflow_connectors, lambda s: s is connector)
+    if len(members) == 0:
+        raise ConnectorImportNameNotFound(
+            "Failed to find import name for"
+            f" Connector(name={connector.model.name})={connector}\nNot match found for"
+            " below members"
+            f" {[symbol for symbol, _ in inspect.getmembers(hrflow_connectors)]}"
+        )
+    if len(members) > 1:
+        raise AmbiguousConnectorImportName(
+            "Found multiple import names for"
+            f" Connector(name={connector.model.name})={connector}={connector}\n"
+            f" {[symbol for symbol, _ in members]}"
+        )
+    return members[0][0]
 
 
 def hrflow_connectors_manifest(

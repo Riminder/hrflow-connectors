@@ -41,7 +41,7 @@ class InvalidTestConfigException(Exception):
 
 
 @contextmanager
-def secrets(connector_name: str, connectors_directory: Path):
+def secrets(connector_name: str, connector_subtype: str, connectors_directory: Path):
     secrets_prefix = ENVIRON_SECRETS_PREFIX.format(
         connector_name=connector_name.upper()
     )
@@ -63,9 +63,7 @@ def secrets(connector_name: str, connectors_directory: Path):
     else:
         global_secrets = dict()
 
-    connector_secrets_file = (
-        connectors_directory / connector_name.lower() / "secrets.json"
-    )
+    connector_secrets_file = connectors_directory / connector_subtype / "secrets.json"
     if connector_secrets_file.exists():
         try:
             connector_secrets = json.loads(connector_secrets_file.read_text())
@@ -97,16 +95,16 @@ def actions(connector: Connector):
 
 
 @contextmanager
-def warehouses(connector_name: str, connectors_directory: Path):
+def warehouses(connector_subtype: str, connectors_directory: Path):
     if connectors_directory is CONNECTORS_DIRECTORY:  # pragma: no cover
         warehouse_module = import_module(
-            "hrflow_connectors.connectors.{}.warehouse".format(connector_name.lower())
+            "hrflow_connectors.connectors.{}.warehouse".format(connector_subtype)
         )
     else:
         import_from = connectors_directory.relative_to(PROJECT_DIRECTORY)
         warehouse_module = import_module(
             "{}.{}.warehouse".format(
-                str(import_from).replace("/", "."), connector_name.lower()
+                str(import_from).replace("/", "."), connector_subtype
             )
         )
     warehouse_names = []
@@ -223,9 +221,8 @@ def collect_connector_tests(
     connector: Connector, connectors_directory: Path = CONNECTORS_DIRECTORY
 ):
     connector_name = connector.model.name
-    test_config_file = (
-        connectors_directory / connector_name.lower() / "test-config.yaml"
-    )
+    connector_subtype = connector.model.subtype
+    test_config_file = connectors_directory / connector_subtype / "test-config.yaml"
     if test_config_file.exists() is False:
         raise NoTestConfigException(
             "No test configuration found for connector {} at {}".format(
@@ -243,7 +240,7 @@ def collect_connector_tests(
 
     try:
         with warehouses(
-            connector_name=connector_name,
+            connector_subtype=connector_subtype,
             connectors_directory=connectors_directory,
         ):
             with actions(
@@ -251,6 +248,7 @@ def collect_connector_tests(
             ):
                 with secrets(
                     connector_name=connector_name,
+                    connector_subtype=connector_subtype,
                     connectors_directory=connectors_directory,
                 ):
                     test_suite = ConnectorTestConfig(**test_config)

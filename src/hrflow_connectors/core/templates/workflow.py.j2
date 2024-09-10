@@ -1,6 +1,6 @@
 import typing as t
 
-from hrflow_connectors import {{ connector_name }}
+from hrflow_connectors import {{ import_name }}
 from hrflow_connectors.core.connector import ActionInitError, Reason
 
 ORIGIN_SETTINGS_PREFIX = "{{ origin_settings_prefix }}"
@@ -35,7 +35,7 @@ def workflow(
         actions_parameters["logics"] = logics
 
     if "{{ workflow_id_settings_key }}" not in settings:
-        return {{ connector_name }}.{{ action_name }}(
+        return {{ import_name }}.{{ action_name }}(
             workflow_id="",
             action_parameters=dict(),
             origin_parameters=dict(),
@@ -52,7 +52,7 @@ def workflow(
         event_parser
         _event_parser = event_parser
     except NameError as e:
-        action = {{ connector_name }}.model.action_by_name("{{ action_name }}")
+        action = {{ import_name }}.model.action_by_name("{{ action_name }}")
         # Without this trick event_parser is always only fetched from the local scope
         # meaning that try block always raises NameError even if the function is
         # defined in the placeholder
@@ -62,7 +62,7 @@ def workflow(
         try:
             _request = _event_parser(_request)
         except Exception as e:
-            return {{ connector_name }}.{{ action_name }}(
+            return {{ import_name }}.{{ action_name }}(
                 workflow_id=workflow_id,
                 action_parameters=dict(),
                 origin_parameters=dict(),
@@ -92,7 +92,7 @@ def workflow(
             target_parameters[parameter] = _request[parameter]
         {% endif %}
 
-    return {{ connector_name }}.{{ action_name }}(
+    return {{ import_name }}.{{ action_name }}(
         workflow_id=workflow_id,
         action_parameters=actions_parameters,
         origin_parameters=origin_parameters,

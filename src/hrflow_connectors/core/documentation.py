@@ -13,7 +13,7 @@ from pydantic import BaseModel
 from pydantic.fields import ModelField
 
 from hrflow_connectors.core import ActionName
-from hrflow_connectors.core.connector import Connector
+from hrflow_connectors.core.connector import Connector, get_import_name
 from hrflow_connectors.core.templates import Templates
 
 logger = logging.getLogger(__name__)
@@ -198,7 +198,7 @@ def update_root_readme(
         ],
         key=lambda c: c["name"],
     )
-
+    
     line_pattern = (
         "| **{name}** | {type} | {status} |"
         " {release_date} | {updated_at} | {pull_profile_list_status} |"
@@ -323,8 +323,7 @@ def generate_docs(
     )
     for connector in connectors:
         model = connector.model
-        # FIXME: use model.subtype instead of model.name.lower().replace(" ", "")
-        connector_directory = connectors_directory / model.name.lower().replace(" ", "")
+        connector_directory = connectors_directory / model.subtype
         if not connector_directory.is_dir():
             logging.error(
                 "Skipping documentation for {}: no directory found at {}".format(
@@ -332,6 +331,9 @@ def generate_docs(
                 )
             )
             continue
+
+        import_name = get_import_name(connector)
+
         readme = connector_directory / "README.md"
         if readme.exists() is False:
             readme_content = Templates.get_template("connector_readme.md.j2").render(
@@ -390,7 +392,7 @@ def generate_docs(
                 action_documentation_content = Templates.get_template(
                     "action_readme.md.j2"
                 ).render(
-                    connector_name=model.name.replace(" ", ""),
+                    import_name=import_name,
                     action_name=action_name,
                     description=action.description,
                     action_fields=action_fields,

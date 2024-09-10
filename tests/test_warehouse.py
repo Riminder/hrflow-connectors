@@ -35,7 +35,7 @@ def parameterize_read_warehouse_tests(
         if connector_test_suite.warehouse:
             warehouses = import_module(
                 "hrflow_connectors.connectors.{}.warehouse".format(
-                    connector.model.name.lower()
+                    connector.model.subtype
                 )
             )
             for (

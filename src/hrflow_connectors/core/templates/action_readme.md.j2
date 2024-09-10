@@ -51,14 +51,14 @@
 
 ```python
 import logging
-from hrflow_connectors import {{ connector_name }}
+from hrflow_connectors import {{ import_name }}
 from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
-{{ connector_name }}.{{ action_name }}(
+{{ import_name }}.{{ action_name }}(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         {%- for field in action_fields %}
