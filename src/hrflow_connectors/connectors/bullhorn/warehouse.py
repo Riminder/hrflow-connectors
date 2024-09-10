@@ -410,28 +410,26 @@ def read_jobs(
     while True:
         try:
             query = (
-                f"{parameters.query} AND"
-                f" dateLastModified:[{last_modified_date_filter}%20TO%20*]"
+                f"{parameters.query} AND "
+                f"dateLastModified:[{last_modified_date_filter} TO *]"
             )
-            jobs_url = (
-                authentication["restUrl"]
-                + f"search/JobOrder?query={query}&fields="
-                + parameters.fields
-                + "&sort=dateLastModified,id"
-                + "&BhRestToken="
-                + authentication["BhRestToken"]
-                + "&start="
-                + str(start)
-            )
-            if parameters.count:
-                jobs_url += f"&count={parameters.count}"
+            jobs_url = f"{authentication['restUrl']}search/JobOrder"
+            params = {
+                "query": query,
+                "fields": parameters.fields,
+                "sort": "dateLastModified,id",
+                "BhRestToken": authentication["BhRestToken"],
+                "start": str(start),
+            }
 
-            response = requests.get(url=jobs_url)
+            if parameters.count:
+                params["count"] = parameters.count
+
+            response = requests.get(url=jobs_url, params=params)
 
             response = response.json()
             start = response["start"] + response["count"]
             data = response["data"]
-
             for job in data:
                 if parameters.count and total_returned >= parameters.count:
                     should_break = True
@@ -531,20 +529,22 @@ def read_profiles_parsing(
         try:
             query = (
                 f"{parameters.query} AND "
-                f"dateLastModified:[{last_modified_date_filter}%20TO%20*]"
+                f"dateLastModified:[{last_modified_date_filter} TO *]"
             )
 
-            profiles_url = (
-                authentication["restUrl"]
-                + f"search/Candidate?query={query}&fields="
-                + f"{parameters.fields}&sort=dateLastModified,id"
-                + f"&BhRestToken={authentication['BhRestToken']}"
-                + f"&start={start}"
-            )
+            profiles_url = f"{authentication['restUrl']}search/Candidate"
+            params = {
+                "query": query,
+                "fields": parameters.fields,
+                "sort": "dateLastModified,id",
+                "BhRestToken": authentication["BhRestToken"],
+                "start": str(start),
+            }
+
             if parameters.count:
-                profiles_url += f"&count={parameters.count}"
+                params["count"] = parameters.count
 
-            response = requests.get(url=profiles_url)
+            response = requests.get(url=profiles_url, params=params)
             if response.status_code // 100 != 2:
                 adapter.error(
                     "Failed to pull profiles from Bullhorn"
