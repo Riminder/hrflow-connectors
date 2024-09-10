@@ -421,50 +421,76 @@ def test_documentation_removes_keep_empty_format_file_if_folder_has_other_files(
     assert keep_empty_format_file.exists() is False
 
 
-def test_documentation_fails_if_actions_section_not_found(connectors_directory):
+def test_documentation_fails_if_cannot_find_import_name(connectors_directory):
     readme = connectors_directory / SmartLeads.model.subtype / "README.md"
-    with patched_subprocess():
-        generate_docs(
-            connectors=[SmartLeads], connectors_directory=connectors_directory
-        )
-
-    content = readme.read_text()
-    content = content.replace(
-        "# 🔌 Connector Actions", "This breaks the expect section start"
-    )
-    readme.write_bytes(content.encode())
-
-    with pytest.raises(InvalidConnectorReadmeFormat):
-        with patched_subprocess():
-            generate_docs(
-                connectors=[SmartLeads], connectors_directory=connectors_directory
-            )
-
-
-def test_documentation_fails_if_connector_misconfigured(connectors_directory):
-    readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
-    notebooks_directory = (
-        connectors_directory / SmartLeads.model.name.lower() / "notebooks"
-    )
+    notebooks_directory = connectors_directory / SmartLeads.model.subtype / "notebooks"
     keep_empty_notebooks_file = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "notebooks"
         / KEEP_EMPTY_FOLDER
     )
     format_mappings_directory = (
-        connectors_directory / SmartLeads.model.name.lower() / "mappings" / "format"
+        connectors_directory / SmartLeads.model.subtype / "mappings" / "format"
     )
     keep_empty_format_file = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
         / "mappings"
         / "format"
         / KEEP_EMPTY_FOLDER
     )
     action_documentation = (
         connectors_directory
-        / SmartLeads.model.name.lower()
+        / SmartLeads.model.subtype
+        / "docs"
+        / "{}.md".format(SmartLeads.model.actions[0].name.value)
+    )
+
+    assert readme.exists() is False
+    assert notebooks_directory.exists() is False
+    assert keep_empty_notebooks_file.exists() is False
+    assert format_mappings_directory.exists() is False
+    assert keep_empty_format_file.exists() is False
+    assert action_documentation.exists() is False
+
+    connectors = [SmartLeads]
+    with pytest.raises(ConnectorImportNameNotFound):
+        with patched_subprocess():
+            generate_docs(
+                connectors=connectors, connectors_directory=connectors_directory
+            )
+
+    assert readme.exists() is False
+    assert notebooks_directory.exists() is False
+    assert keep_empty_notebooks_file.exists() is False
+    assert format_mappings_directory.exists() is False
+    assert keep_empty_format_file.exists() is False
+    assert action_documentation.exists() is False
+
+
+def test_documentation_fails_if_connector_misconfigured(connectors_directory):
+    readme = connectors_directory / SmartLeads.model.subtype / "README.md"
+    notebooks_directory = connectors_directory / SmartLeads.model.subtype / "notebooks"
+    keep_empty_notebooks_file = (
+        connectors_directory
+        / SmartLeads.model.subtype
+        / "notebooks"
+        / KEEP_EMPTY_FOLDER
+    )
+    format_mappings_directory = (
+        connectors_directory / SmartLeads.model.subtype / "mappings" / "format"
+    )
+    keep_empty_format_file = (
+        connectors_directory
+        / SmartLeads.model.subtype
+        / "mappings"
+        / "format"
+        / KEEP_EMPTY_FOLDER
+    )
+    action_documentation = (
+        connectors_directory
+        / SmartLeads.model.subtype
         / "docs"
         / "{}.md".format(SmartLeads.model.actions[0].name.value)
     )
@@ -495,7 +521,7 @@ def test_documentation_fails_if_connector_misconfigured(connectors_directory):
 
 
 def test_documentation_fails_if_actions_section_not_found(connectors_directory):
-    readme = connectors_directory / SmartLeads.model.name.lower() / "README.md"
+    readme = connectors_directory / SmartLeads.model.subtype / "README.md"
     with added_connectors(("SmartLeads", SmartLeads)):
         with patched_subprocess():
             generate_docs(
