@@ -2,11 +2,84 @@
 
 
 
+## v4.22.0 (2024-09-09)
+
+### Documentation
+
+* docs: update documentation ([`e20b1bd`](https://github.com/Riminder/hrflow-connectors/commit/e20b1bda22c8847a79ace67315eb7bb2ff8fd1e8))
+
+* docs: updating readme caused by subtype addition ([`69be864`](https://github.com/Riminder/hrflow-connectors/commit/69be86489cf56024a14d71c0463a0fa134a4f503))
+
+### Feature
+
+* feat: setting all connectors subtype value ([`1269ad8`](https://github.com/Riminder/hrflow-connectors/commit/1269ad831eaee865305fb1f607aa82a957c7644d))
+
+### Fix
+
+* fix: connectors tests ([`aa658c3`](https://github.com/Riminder/hrflow-connectors/commit/aa658c3dbae75dcd12af4fa7deb6db76d0422004))
+
+* fix: connectors tests that uses based_on method ([`912611a`](https://github.com/Riminder/hrflow-connectors/commit/912611a5c84532fe316edadd9b31897847aec859))
+
+* fix: removing unecessary subtype in connectors initialization in tests ([`4fd07de`](https://github.com/Riminder/hrflow-connectors/commit/4fd07de30c664a369a18923b619a91bd41903aa3))
+
+* fix: removing unecessary subtype in connectors initialization ([`c953ff9`](https://github.com/Riminder/hrflow-connectors/commit/c953ff947e25975fb1734615f972cd7eae5be82f))
+
+* fix: updating pytests for subtype addition and making subtype optional ([`d14a679`](https://github.com/Riminder/hrflow-connectors/commit/d14a6791b3119028d5dfa873e80cf375c011b31e))
+
+* fix: adding missing tests related to subtype addition ([`fa5b855`](https://github.com/Riminder/hrflow-connectors/commit/fa5b855137fa3c936064e2135495896e5bf87df3))
+
+### Unknown
+
+* Merge pull request #280 from Riminder/feature/update-subtype-paths
+
+core: replacing all ConnectorModel.name.lower() into ConnectorModel.s… ([`6b66cda`](https://github.com/Riminder/hrflow-connectors/commit/6b66cda573953f0b67265538b1f6a03685d1faa1))
+
+* core: replacing all ConnectorModel.name.lower() into ConnectorModel.subtype ([`7a7f346`](https://github.com/Riminder/hrflow-connectors/commit/7a7f346edb91400887c74921c7adbe795c0a9f99))
+
+* Merge pull request #275 from Riminder/feature/add-connector-subtype
+
+feat: add subtype property to all connectors ([`7c325a0`](https://github.com/Riminder/hrflow-connectors/commit/7c325a042cf7ecca3a0332418918550d185cc0e0))
+
+* core: making subtype property from Connector object mandatory ([`65f24f0`](https://github.com/Riminder/hrflow-connectors/commit/65f24f02e4213ba28b011eb4c6ce6641b8ffaf04))
+
+* Merge branch &#39;feature/add-connector-subtype&#39; of github.com:Riminder/hrflow-connectors into feature/add-connector-subtype ([`9fb79a6`](https://github.com/Riminder/hrflow-connectors/commit/9fb79a61d6efb53d61eb86d3a362aefbbbc7cb74))
+
+* core: adding subtype property for ConnectorModel ([`5ef2604`](https://github.com/Riminder/hrflow-connectors/commit/5ef260443cce61b1a30aa691391458443cd5679c))
+
+
 ## v4.21.0 (2024-09-05)
+
+### Documentation
+
+* docs: updating readme caused by subtype addition ([`35c7365`](https://github.com/Riminder/hrflow-connectors/commit/35c7365b923df0fdc6aa6b7726e39e9876f2039f))
+
+* docs: updating readme caused by subtype addition ([`ee8f09b`](https://github.com/Riminder/hrflow-connectors/commit/ee8f09b285bd24d0781c58dfeaec2603b19fa80e))
 
 ### Feature
 
 * feat: use last hrflow sdk version 4.2.0 ([`4489706`](https://github.com/Riminder/hrflow-connectors/commit/4489706c6890c4d028e7fe0e5d71c0487a562113))
+
+* feat: setting all connectors subtype value ([`58f24e1`](https://github.com/Riminder/hrflow-connectors/commit/58f24e10d0703c803f50aef133c9fbf1b5de79c2))
+
+* feat: setting all connectors subtype value ([`9d8af7b`](https://github.com/Riminder/hrflow-connectors/commit/9d8af7ba6ffb688a75438869c8a18d588676539c))
+
+### Fix
+
+* fix: connectors tests that uses based_on method ([`aba8233`](https://github.com/Riminder/hrflow-connectors/commit/aba8233db6ea1c23be381575efbd969574f906d3))
+
+* fix: removing unecessary subtype in connectors initialization in tests ([`e3bff24`](https://github.com/Riminder/hrflow-connectors/commit/e3bff247f51bec496caf403fb7d4aa3724e15994))
+
+* fix: removing unecessary subtype in connectors initialization ([`d7f0960`](https://github.com/Riminder/hrflow-connectors/commit/d7f096060ff0264abda3d08dc721e0d3eaf7ff72))
+
+* fix: updating pytests for subtype addition and making subtype optional ([`a492118`](https://github.com/Riminder/hrflow-connectors/commit/a492118a4a866e6f9269a20c2ae3bb3496b76509))
+
+* fix: adding missing tests related to subtype addition ([`93fc2c4`](https://github.com/Riminder/hrflow-connectors/commit/93fc2c431557867f155b2aa1d7cfed2b7a11cfb8))
+
+### Unknown
+
+* Merge branches &#39;feature/add-connector-subtype&#39; and &#39;feature/add-connector-subtype&#39; of github.com:Riminder/hrflow-connectors into feature/add-connector-subtype ([`b06bfcc`](https://github.com/Riminder/hrflow-connectors/commit/b06bfcc0e2200e02693b125c6df94bc51c7147f7))
+
+* core: adding subtype property for ConnectorModel ([`ec5c860`](https://github.com/Riminder/hrflow-connectors/commit/ec5c860327b443bd9176505e7ec76f4f22bada5a))
 
 
 ## v4.20.1 (2024-09-02)
@@ -14,6 +87,10 @@
 ### Fix
 
 * fix: update usage of Hrflow python SDK to match 3.3.0 ([`8e1c4e8`](https://github.com/Riminder/hrflow-connectors/commit/8e1c4e8ca579321d7905c5d8e6b585df2f6efbff))
+
+### Unknown
+
+* core: adding subtype property for ConnectorModel ([`d3f6d7c`](https://github.com/Riminder/hrflow-connectors/commit/d3f6d7cd36c25b3034f00101a31a00bb9fa28f4a))
 
 
 ## v4.20.0 (2024-08-30)

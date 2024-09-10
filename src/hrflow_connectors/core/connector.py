@@ -779,7 +779,7 @@ class ConnectorModel(BaseModel):
                 "PIL is not found in current environment. Mind that you need to install"
                 " the package with dev dependencies to use manifest utility"
             )
-        connector_directory = connectors_directory / self.name.lower()
+        connector_directory = connectors_directory / self.subtype
         if not connector_directory.is_dir():
             raise ValueError(
                 "No directory found for connector {} in {}".format(
@@ -925,7 +925,7 @@ class Connector:
 
             jsonmap_path = (
                 connectors_directory
-                / model.name.lower()
+                / model.subtype
                 / "mappings"
                 / "format"
                 / "{}.json".format(action.name.value)

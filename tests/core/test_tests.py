@@ -85,9 +85,7 @@ def global_secrets_file(connectors_directory):
 
 @pytest.fixture
 def smartleads_test_config(connectors_directory):
-    test_config = (
-        connectors_directory / SmartLeads.model.name.lower() / "test-config.yaml"
-    )
+    test_config = connectors_directory / SmartLeads.model.subtype / "test-config.yaml"
     yield test_config
     try:
         test_config.unlink()
@@ -97,7 +95,7 @@ def smartleads_test_config(connectors_directory):
 
 @pytest.fixture
 def smartleads_secrets_file(connectors_directory):
-    secrets_file = connectors_directory / SmartLeads.model.name.lower() / "secrets.json"
+    secrets_file = connectors_directory / SmartLeads.model.subtype / "secrets.json"
     yield secrets_file
     try:
         secrets_file.unlink()
@@ -107,9 +105,7 @@ def smartleads_secrets_file(connectors_directory):
 
 @pytest.fixture
 def localusers_test_config(connectors_directory):
-    test_config = (
-        connectors_directory / LocalUsers.model.name.lower() / "test-config.yaml"
-    )
+    test_config = connectors_directory / LocalUsers.model.subtype / "test-config.yaml"
     yield test_config
     try:
         test_config.unlink()
@@ -119,7 +115,7 @@ def localusers_test_config(connectors_directory):
 
 @pytest.fixture
 def localusers_secrets_file(connectors_directory):
-    secrets_file = connectors_directory / LocalUsers.model.name.lower() / "secrets.json"
+    secrets_file = connectors_directory / LocalUsers.model.subtype / "secrets.json"
     yield secrets_file
     try:
         secrets_file.unlink()
