@@ -59,7 +59,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **BizMerlinHR** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Breezy HR** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Broadbean** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
-| [**Bullhorn**](./src/hrflow_connectors/connectors/bullhorn/README.md) | ATS | :white_check_mark: | *26/01/2022* | *05/09/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
+| [**Bullhorn**](./src/hrflow_connectors/connectors/bullhorn/README.md) | ATS | :white_check_mark: | *26/01/2022* | *11/09/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
 | **CATS** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Carerix** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Cegid (Meta4)** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
