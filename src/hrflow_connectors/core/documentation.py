@@ -1,11 +1,12 @@
 import enum
+import json
 import logging
 import os
 import re
 import subprocess
 import typing as t
 from contextvars import ContextVar
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 
 from pydantic import BaseModel
@@ -17,9 +18,17 @@ from hrflow_connectors.core.templates import Templates
 
 logger = logging.getLogger(__name__)
 CONNECTORS_DIRECTORY = Path(__file__).parent.parent / "connectors"
+ALL_TARGET_CONNECTORS_LIST_PATH = (
+    Path(__file__).parent.parent / "data" / "connectors.json"
+)
+with open(ALL_TARGET_CONNECTORS_LIST_PATH, "r") as f:
+    ALL_TARGET_CONNECTORS = json.load(f)
+
 
 DONE_MARKUP = ":white_check_mark:"
 KO_MARKUP = ":x:"
+TARGET_MARKUP = ":dart:"
+IN_PROGRESS_MARKUP = ":hourglass_flowing_sand:"
 
 
 ROOT_README_TRACKED_ACTIONS = {
@@ -29,14 +38,6 @@ ROOT_README_TRACKED_ACTIONS = {
     ActionName.push_job,
     ActionName.catch_profile,
 }
-
-
-def CONNECTOR_LISTING_REGEXP_F(name: str) -> str:
-    return (
-        r"\|\s*\[?\*{0,2}(?i:(?P<name>"
-        + r" ?".join([c for c in name if c.strip()])
-        + r"))\*{0,2}(\]\([^)]+\))?\s*\|[^|]+\|[^|]+\|\s*(\*|_)(?P<release_date>[\d\/]+)(\*|_)\s*\|\s*(\*|_)(?P<update_date>[\d\/]+)(\*|_)\s*\|.+"
-    )
 
 
 ACTIONS_SECTIONS_REGEXP = (
@@ -183,92 +184,126 @@ def ensure_gitkeep(directory: Path, gitkeep_filename: str = ".gitkeep") -> None:
         gitkeep_file.touch()
 
 
-def update_root_readme(connectors: t.List[Connector], root: Path) -> t.Dict:
-    readme = root / "README.md"
-    if readme.exists() is False:
-        raise Exception("Failed to find root README.md at {}".format(readme))
-    readme_content = readme.read_text()
+def update_root_readme(
+    connectors: t.List[Connector], target_connectors: t.List[t.Dict], root: Path
+) -> t.Dict:
+    connector_by_name = {connector.model.name: connector for connector in connectors}
+    all_connectors = sorted(
+        [
+            {
+                **connector,
+                "object": connector_by_name.get(connector["name"]),
+            }
+            for connector in target_connectors
+        ],
+        key=lambda c: c["name"],
+    )
 
-    for connector in connectors:
-        model = connector.model
-        result = subprocess.run(
-            GIT_UPDATE_DATE.format(
-                connector=model.subtype,
-                base_connector_path=BASE_CONNECTOR_PATH.get().rstrip("/"),
-            ),
-            shell=True,
-            text=True,
-            capture_output=True,
-            timeout=GIT_UPDATE_TIMEOUT,
-        )
-        if result.stderr:
-            raise Exception(
-                "Subprocess run for Git update dates failed for connector {} with"
-                " errors {}".format(model.subtype, result.stderr)
-            )
-        filtered = [
-            line.split(" ")[0]
-            for line in filter(
-                lambda line: not re.search(GIT_UPDATE_EXCLUDE_PATTERN, line),
-                result.stdout.strip().splitlines(),
-            )
-        ]
-        updated_at = datetime.fromisoformat(
-            max(
-                filtered,
-                key=lambda d: datetime.fromisoformat(d.replace("Z", "+00:00")),
-            ).replace("Z", "+00:00")
-        )
-        actions_status = dict(
-            zip(
-                ROOT_README_TRACKED_ACTIONS,
-                [KO_MARKUP] * len(ROOT_README_TRACKED_ACTIONS),
-            )
-        )
-        for action in model.actions:
-            if action.name in ROOT_README_TRACKED_ACTIONS:
-                actions_status[action.name] = DONE_MARKUP
+    line_pattern = (
+        "| **{name}** | {type} | {status} |"
+        " {release_date} | {updated_at} | {pull_profile_list_status} |"
+        " {pull_job_list_status} | {push_profile_status} | {push_job_status} |"
+        " {catch_profile_status} |"
+    )
+    connectors_table = ""
+    jobboards_table = ""
+    for connector in all_connectors:
+        actions_status = {
+            action_name: "" for action_name in ROOT_README_TRACKED_ACTIONS
+        }
+        if connector["type"] in ["ATS", "HCM", "CRM"]:
+            actions_status[ActionName.pull_job_list] = KO_MARKUP
+            actions_status[ActionName.pull_profile_list] = KO_MARKUP
+            actions_status[ActionName.push_profile] = KO_MARKUP
+        elif connector["type"] == "Automation":
+            actions_status[ActionName.catch_profile] = KO_MARKUP
+        elif connector["type"] == "Job Board":
+            actions_status[ActionName.pull_job_list] = KO_MARKUP
+            actions_status[ActionName.push_job] = KO_MARKUP
+            actions_status[ActionName.catch_profile] = KO_MARKUP
 
-        pattern = CONNECTOR_LISTING_REGEXP_F(name=model.name)
-        match = re.search(pattern, readme_content)
-        if match is None:
-            raise Exception(
-                "Could not find listing for {} in root README with regexp={}".format(
-                    model.name, pattern
+        if connector["object"] is None:
+            updated_listing = line_pattern.format(
+                name=connector["name"],
+                type=connector["type"],
+                status=(
+                    IN_PROGRESS_MARKUP if connector["in_progress"] else TARGET_MARKUP
+                ),
+                release_date="",
+                updated_at="",
+                pull_profile_list_status=actions_status[ActionName.pull_profile_list],
+                pull_job_list_status=actions_status[ActionName.pull_job_list],
+                push_profile_status=actions_status[ActionName.push_profile],
+                push_job_status=actions_status[ActionName.push_job],
+                catch_profile_status=actions_status[ActionName.catch_profile],
+            )
+        else:
+            model = connector["object"].model
+            result = subprocess.run(
+                GIT_UPDATE_DATE.format(
+                    connector=model.subtype,
+                    base_connector_path=BASE_CONNECTOR_PATH.get().rstrip("/"),
+                ),
+                shell=True,
+                text=True,
+                capture_output=True,
+                timeout=GIT_UPDATE_TIMEOUT,
+            )
+            if result.stderr:
+                raise Exception(
+                    "Subprocess run for Git update dates failed for connector {} with"
+                    " errors {}".format(model.name.lower(), result.stderr)
                 )
+            filtered = [
+                line.split(" ")[0]
+                for line in filter(
+                    lambda line: not re.search(GIT_UPDATE_EXCLUDE_PATTERN, line),
+                    result.stdout.strip().splitlines(),
+                )
+            ]
+            updated_at = datetime.fromisoformat(
+                max(
+                    filtered,
+                    key=lambda d: datetime.fromisoformat(d.replace("Z", "+00:00")),
+                ).replace("Z", "+00:00")
             )
-        current_updated_at = datetime.strptime(
-            match.group("update_date"), "%d/%m/%Y"
-        ).replace(tzinfo=timezone.utc)
-        updated_at = (
-            current_updated_at if current_updated_at >= updated_at else updated_at
-        )
 
-        updated_listing = (
-            "| [**{name}**]({readme_link}) | {type} | :white_check_mark: |"
-            " *{release_date}* | *{updated_at}* | {pull_profile_list_status} |"
-            " {pull_job_list_status} | {push_profile_status} | {push_job_status} |"
-            " {catch_profile_status} |"
-        ).format(
-            name=match.group("name"),
-            readme_link="./{base_connector_path}/{connector}/README.md".format(
-                base_connector_path=BASE_CONNECTOR_PATH.get().strip("/"),
-                connector=model.subtype,
-            ),
-            type=model.type.value,
-            release_date=match.group("release_date"),
-            updated_at=updated_at.strftime("%d/%m/%Y"),
-            pull_profile_list_status=actions_status[ActionName.pull_profile_list],
-            pull_job_list_status=actions_status[ActionName.pull_job_list],
-            push_profile_status=actions_status[ActionName.push_profile],
-            push_job_status=actions_status[ActionName.push_job],
-            catch_profile_status=actions_status[ActionName.catch_profile],
-        )
-        readme_content = (
-            readme_content[: match.start()]
-            + updated_listing
-            + readme_content[match.end() :]
-        )
+            for action in model.actions:
+                if action.name in ROOT_README_TRACKED_ACTIONS:
+                    actions_status[action.name] = DONE_MARKUP
+
+            updated_listing = (
+                "| [**{name}**]({readme_link}) | {type} | {status} |"
+                " {release_date} | {updated_at} | {pull_profile_list_status} |"
+                " {pull_job_list_status} | {push_profile_status} | {push_job_status} |"
+                " {catch_profile_status} |"
+            ).format(
+                name=model.name,
+                readme_link="./{base_connector_path}/{connector}/README.md".format(
+                    base_connector_path=BASE_CONNECTOR_PATH.get().strip("/"),
+                    connector=model.name.lower().replace(" ", ""),
+                ),
+                type=model.type.value,
+                status=IN_PROGRESS_MARKUP if connector["in_progress"] else DONE_MARKUP,
+                release_date=f'*{connector["release_date"]}*',
+                updated_at=f'*{updated_at.strftime("%d/%m/%Y")}*',
+                pull_profile_list_status=actions_status[ActionName.pull_profile_list],
+                pull_job_list_status=actions_status[ActionName.pull_job_list],
+                push_profile_status=actions_status[ActionName.push_profile],
+                push_job_status=actions_status[ActionName.push_job],
+                catch_profile_status=actions_status[ActionName.catch_profile],
+            )
+        if connector["type"] == "Job Board":
+            jobboards_table += updated_listing + "\n"
+        else:
+            connectors_table += updated_listing + "\n"
+
+    readme = root / "README.md"
+    readme_content = Templates.get_template("root_readme.md.j2").render(
+        connectors_table=connectors_table.strip("\n"),
+        jobboards_table=jobboards_table.strip("\n"),
+    )
+    readme_content = py_37_38_compat_patch(readme_content)
     readme.write_bytes(readme_content.encode())
 
 
@@ -276,10 +311,14 @@ KEEP_EMPTY_FOLDER = ".gitkeep"
 
 
 def generate_docs(
-    connectors: t.List[Connector], connectors_directory: Path = CONNECTORS_DIRECTORY
+    connectors: t.List[Connector],
+    target_connectors: t.List[t.Dict] = ALL_TARGET_CONNECTORS,
+    connectors_directory: Path = CONNECTORS_DIRECTORY,
 ) -> None:
     update_root_readme(
-        connectors=connectors, root=connectors_directory.parent.parent.parent
+        connectors=connectors,
+        target_connectors=target_connectors,
+        root=connectors_directory.parent.parent.parent,
     )
     for connector in connectors:
         model = connector.model
@@ -297,7 +336,7 @@ def generate_docs(
         readme = connector_directory / "README.md"
         if readme.exists() is False:
             readme_content = Templates.get_template("connector_readme.md.j2").render(
-                connector_name=model.name.capitalize(),
+                connector_name=model.name.replace(" ", "").capitalize(),
                 description=model.description,
                 url=model.url,
                 actions=model.actions,

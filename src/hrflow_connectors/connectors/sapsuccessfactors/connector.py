@@ -299,7 +299,7 @@ DESCRIPTION = (
 )
 
 SAPSuccessFactors = Connector(
-    name="SAPSuccessFactors",
+    name="SAP SuccessFactors",
     type=ConnectorType.ATS,
     subtype="sapsuccessfactors",
     description=DESCRIPTION,
