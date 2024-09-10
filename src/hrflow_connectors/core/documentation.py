@@ -198,7 +198,7 @@ def update_root_readme(
         ],
         key=lambda c: c["name"],
     )
-    
+
     line_pattern = (
         "| **{name}** | {type} | {status} |"
         " {release_date} | {updated_at} | {pull_profile_list_status} |"
