@@ -9,6 +9,7 @@ from contextvars import ContextVar
 from datetime import datetime
 from pathlib import Path
 
+from jinja2 import Template
 from pydantic import BaseModel
 from pydantic.fields import ModelField
 
@@ -185,7 +186,10 @@ def ensure_gitkeep(directory: Path, gitkeep_filename: str = ".gitkeep") -> None:
 
 
 def update_root_readme(
-    connectors: t.List[Connector], target_connectors: t.List[t.Dict], root: Path
+    connectors: t.List[Connector],
+    target_connectors: t.List[t.Dict],
+    root: Path,
+    root_template: Template,
 ) -> t.Dict:
     connector_by_name = {connector.model.name: connector for connector in connectors}
     all_connectors = sorted(
@@ -299,7 +303,7 @@ def update_root_readme(
             connectors_table += updated_listing + "\n"
 
     readme = root / "README.md"
-    readme_content = Templates.get_template("root_readme.md.j2").render(
+    readme_content = root_template.render(
         connectors_table=connectors_table.strip("\n"),
         jobboards_table=jobboards_table.strip("\n"),
     )
@@ -314,11 +318,13 @@ def generate_docs(
     connectors: t.List[Connector],
     target_connectors: t.List[t.Dict] = ALL_TARGET_CONNECTORS,
     connectors_directory: Path = CONNECTORS_DIRECTORY,
+    root_template: Template = Templates.get_template("root_readme.md.j2"),
 ) -> None:
     update_root_readme(
         connectors=connectors,
         target_connectors=target_connectors,
         root=connectors_directory.parent.parent.parent,
+        root_template=root_template,
     )
     for connector in connectors:
         model = connector.model
