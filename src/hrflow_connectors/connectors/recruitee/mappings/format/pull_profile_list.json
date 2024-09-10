@@ -1,0 +1,14 @@
+{
+  "reference": "?.id | $string",
+  "text": "?.description",
+  "info": {
+    "full_name": "?.name",
+    "email": "?.emails[0]",
+    "phone": "?.phones[0]",
+    "urls": "$merge(.social_links || [], .links || []) | $map({url: ., type: 'from_resume'})"
+  },
+  "educations": ".fields | $map(.kind == 'education' ?? .values) | $map({school: .school, date_start: .start_date, date_end: .end_date, description: .description, title: .major})",
+  "experiences": ".fields | $map(.kind == 'experience' ?? .values) | $map({company: .company, date_start: .start_date, date_end: .end_date, description: .description, title: .title, location: {text: .location, lat: null, lng: null}})",
+  "attachments": "[{type: 'resume', public_url: ?.cv_original_url, filename: 'original_cv'}]",
+  "source": "{name: ?.source}"
+}
