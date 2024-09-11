@@ -911,10 +911,11 @@ class Connector:
     def manifest(self, connectors_directory: Path) -> t.Dict:
         import_name = get_import_name(self)
         model = self.model
+        # FIXME: model.type.value is not lowered and without spaces
         manifest = dict(
             name=model.name,
             actions=[],
-            type=model.type.value,
+            type=model.type.value.lower().replace(" ", ""),
             subtype=model.subtype,
             logo=model.logo(connectors_directory=connectors_directory),
         )
