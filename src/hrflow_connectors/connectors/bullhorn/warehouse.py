@@ -418,14 +418,15 @@ def read_jobs(
                 "query": query,
                 "fields": parameters.fields,
                 "sort": "dateLastModified,id",
-                "BhRestToken": authentication["BhRestToken"],
                 "start": str(start),
             }
 
             if parameters.count:
                 params["count"] = parameters.count
 
-            response = requests.get(url=jobs_url, params=params)
+            headers = {"BhRestToken": authentication["BhRestToken"]}
+
+            response = requests.get(url=jobs_url, params=params, headers=headers)
 
             response = response.json()
             start = response["start"] + response["count"]
@@ -537,14 +538,15 @@ def read_profiles_parsing(
                 "query": query,
                 "fields": parameters.fields,
                 "sort": "dateLastModified,id",
-                "BhRestToken": authentication["BhRestToken"],
                 "start": str(start),
             }
 
             if parameters.count:
                 params["count"] = parameters.count
 
-            response = requests.get(url=profiles_url, params=params)
+            headers = {"BhRestToken": authentication["BhRestToken"]}
+
+            response = requests.get(url=profiles_url, params=params, headers=headers)
             if response.status_code // 100 != 2:
                 adapter.error(
                     "Failed to pull profiles from Bullhorn"
