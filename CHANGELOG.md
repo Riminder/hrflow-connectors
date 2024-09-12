@@ -2,6 +2,45 @@
 
 
 
+## v4.22.1 (2024-09-12)
+
+### Fix
+
+* fix: lower case and remove spaces from ConnectorModel.type in manifest ([`fc91d61`](https://github.com/Riminder/hrflow-connectors/commit/fc91d6157d7f79182385a5420aea7fbcb4ceb2d6))
+
+* fix: adding &#39;root_template&#39; input in &#39;generate_docs&#39; ([`e34e165`](https://github.com/Riminder/hrflow-connectors/commit/e34e165d6364f6057d28eeb54c33a5195a625bfe))
+
+* fix: connectors.json &#39;in_progress&#39; field from  str to boolean ([`a516f55`](https://github.com/Riminder/hrflow-connectors/commit/a516f554c355693cfa8015929611abe34d18de7f))
+
+* fix: documentation tests ([`97642ff`](https://github.com/Riminder/hrflow-connectors/commit/97642ffb30bcc24c558d29a287c19f4005ac89cd))
+
+* fix: change ConnectorModel.name.lower() to ConnectorModel.subtype ([`67fae73`](https://github.com/Riminder/hrflow-connectors/commit/67fae7396b2efe927840831e2df7fa4282e83f5c))
+
+### Unknown
+
+* Merge pull request #283 from Riminder/fix/connector-type-format-in-manifest
+
+fix: lower case and remove spaces from ConnectorModel.type in manifest ([`851baaf`](https://github.com/Riminder/hrflow-connectors/commit/851baaf2427a9d9b1d92aff76611ac0803ac5c26))
+
+* Merge pull request #282 from Riminder/fix/documentation-generation-with-template
+
+fix: adding &#39;root_template&#39; input in &#39;generate_docs&#39; ([`bc4d6dd`](https://github.com/Riminder/hrflow-connectors/commit/bc4d6dd34a49db064205bbb88d157dc839f96e87))
+
+* Merge pull request #277 from Riminder/feature/update-connectors-list
+
+Feature/update docs generation ([`6e4f20c`](https://github.com/Riminder/hrflow-connectors/commit/6e4f20c1863687fc9e2ac5cae0701b56f0b656c2))
+
+* core: remove obsolete FIXME ([`866e16e`](https://github.com/Riminder/hrflow-connectors/commit/866e16e6d36fb6bc1889c7b5b26000f0d0e4fa97))
+
+* Merge branch &#39;master&#39; into feature/update-connectors-list ([`a44a182`](https://github.com/Riminder/hrflow-connectors/commit/a44a182849813eb551e34ca5785b0f52b3567d59))
+
+* Merge pull request #278 from Riminder/feature/fix-import-name-for-connectors
+
+Feature/fix import name for connectors ([`85fb123`](https://github.com/Riminder/hrflow-connectors/commit/85fb123d2b264b7017d040622d8fef5d68246706))
+
+* Merge branch &#39;master&#39; into feature/fix-import-name-for-connectors ([`5219d3b`](https://github.com/Riminder/hrflow-connectors/commit/5219d3b7d9be2be1030bfa530b80c9e12d56cd9b))
+
+
 ## v4.22.0 (2024-09-09)
 
 ### Documentation
@@ -16,6 +55,8 @@
 
 ### Fix
 
+* fix: update connectors list ([`0af6157`](https://github.com/Riminder/hrflow-connectors/commit/0af61578c9d12ae8be6b9ed069882b2d356e476a))
+
 * fix: connectors tests ([`aa658c3`](https://github.com/Riminder/hrflow-connectors/commit/aa658c3dbae75dcd12af4fa7deb6db76d0422004))
 
 * fix: connectors tests that uses based_on method ([`912611a`](https://github.com/Riminder/hrflow-connectors/commit/912611a5c84532fe316edadd9b31897847aec859))
@@ -28,6 +69,16 @@
 
 * fix: adding missing tests related to subtype addition ([`fa5b855`](https://github.com/Riminder/hrflow-connectors/commit/fa5b855137fa3c936064e2135495896e5bf87df3))
 
+### Refactor
+
+* refactor: use inpect to determine exact import name of connectors
+
+This is critical for code that generated:
+   - Python code examples which are expected to be accurate
+   - Workflow code used by integrations via manifest.json ([`cf74170`](https://github.com/Riminder/hrflow-connectors/commit/cf741704e61940f4ea58833b24d325c35f416b6d))
+
+* refactor: remove unused __version__ since accurate version is found in pyproject.toml ([`ca2b797`](https://github.com/Riminder/hrflow-connectors/commit/ca2b797dec2c5c2f5064540c8c317a61b0af6d95))
+
 ### Unknown
 
 * Merge pull request #280 from Riminder/feature/update-subtype-paths
@@ -35,6 +86,8 @@
 core: replacing all ConnectorModel.name.lower() into ConnectorModel.s… ([`6b66cda`](https://github.com/Riminder/hrflow-connectors/commit/6b66cda573953f0b67265538b1f6a03685d1faa1))
 
 * core: replacing all ConnectorModel.name.lower() into ConnectorModel.subtype ([`7a7f346`](https://github.com/Riminder/hrflow-connectors/commit/7a7f346edb91400887c74921c7adbe795c0a9f99))
+
+* Merge branch &#39;master&#39; into feature/update-connectors-list ([`d9888ea`](https://github.com/Riminder/hrflow-connectors/commit/d9888eac637dd2abc5d96a690d042355d2c557f6))
 
 * Merge pull request #275 from Riminder/feature/add-connector-subtype
 
@@ -51,6 +104,8 @@ feat: add subtype property to all connectors ([`7c325a0`](https://github.com/Rim
 
 ### Documentation
 
+* docs: update readme caused by an update from SAP SuccessFactor&#39;s name ([`0cd5718`](https://github.com/Riminder/hrflow-connectors/commit/0cd571831ddd5c276b146a0821de032db1fb7122))
+
 * docs: updating readme caused by subtype addition ([`35c7365`](https://github.com/Riminder/hrflow-connectors/commit/35c7365b923df0fdc6aa6b7726e39e9876f2039f))
 
 * docs: updating readme caused by subtype addition ([`ee8f09b`](https://github.com/Riminder/hrflow-connectors/commit/ee8f09b285bd24d0781c58dfeaec2603b19fa80e))
@@ -65,6 +120,14 @@ feat: add subtype property to all connectors ([`7c325a0`](https://github.com/Rim
 
 ### Fix
 
+* fix: nox documentation tests ([`496be4d`](https://github.com/Riminder/hrflow-connectors/commit/496be4dc90bf69bcdf026e684c7a930a5bb13a62))
+
+* fix: removing useless else branching ([`936a7a5`](https://github.com/Riminder/hrflow-connectors/commit/936a7a506932e14aaf417f6197a11a13318885fe))
+
+* fix: connectors readme link generation in docs ([`25c5bde`](https://github.com/Riminder/hrflow-connectors/commit/25c5bdedea741acaf68d9154856fd5b7906bbf7a))
+
+* fix: updating SAP SuccessFactors connector&#39;s name ([`a19b835`](https://github.com/Riminder/hrflow-connectors/commit/a19b8352bdab015131a754bc33efec7b2aeeda30))
+
 * fix: connectors tests that uses based_on method ([`aba8233`](https://github.com/Riminder/hrflow-connectors/commit/aba8233db6ea1c23be381575efbd969574f906d3))
 
 * fix: removing unecessary subtype in connectors initialization in tests ([`e3bff24`](https://github.com/Riminder/hrflow-connectors/commit/e3bff247f51bec496caf403fb7d4aa3724e15994))
@@ -76,6 +139,8 @@ feat: add subtype property to all connectors ([`7c325a0`](https://github.com/Rim
 * fix: adding missing tests related to subtype addition ([`93fc2c4`](https://github.com/Riminder/hrflow-connectors/commit/93fc2c431557867f155b2aa1d7cfed2b7a11cfb8))
 
 ### Unknown
+
+* core: generating root readme based on a list of target connectors ([`60ba2fb`](https://github.com/Riminder/hrflow-connectors/commit/60ba2fbaf225764959af1f0842e37d61581e3b75))
 
 * Merge branches &#39;feature/add-connector-subtype&#39; and &#39;feature/add-connector-subtype&#39; of github.com:Riminder/hrflow-connectors into feature/add-connector-subtype ([`b06bfcc`](https://github.com/Riminder/hrflow-connectors/commit/b06bfcc0e2200e02693b125c6df94bc51c7147f7))
 
