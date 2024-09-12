@@ -36,7 +36,121 @@ KB = 1024
 MAX_LOGO_SIZE_BYTES = 100 * KB
 MAX_LOGO_PIXEL = 150
 MIN_LOGO_PIXEL = 34
+CONNECTORS_DIRECTORY = Path(__file__).parent.parent / "connectors"
+ALL_TARGET_CONNECTORS_LIST_PATH = (
+    Path(__file__).parent.parent / "data" / "connectors.json"
+)
+with open(ALL_TARGET_CONNECTORS_LIST_PATH, "r") as f:
+    ALL_TARGET_CONNECTORS = json.load(f)
 logger = logging.getLogger(__name__)
+DEFAULT_PULL_JOB_LIST_ACTION_MANIFEST = {
+    "action_parameters": {},
+    "action_type": "inbound",
+    "data_type": "job",
+    "jsonmap": {},
+    "name": "pull_job_list",
+    "origin": "",
+    "origin_data_schema": {},
+    "origin_parameters": {},
+    "supports_incremental": False,
+    "target": "HrFlow.ai Jobs",
+    "target_data_schema": {},
+    "target_parameters": {},
+    "trigger_type": "",
+    "workflow_code": "",
+    "workflow_code_format_placeholder": "# << format_placeholder >>",
+    "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+    "workflow_code_origin_settings_prefix": "origin_",
+    "workflow_code_target_settings_prefix": "target_",
+    "workflow_code_workflow_id_settings_key": "__workflow_id",
+}
+DEFAULT_PULL_PROFILE_LIST_ACTION_MANIFEST = {
+    "action_parameters": {},
+    "action_type": "inbound",
+    "data_type": "profile",
+    "jsonmap": {},
+    "name": "pull_profile_list",
+    "origin": "",
+    "origin_data_schema": {},
+    "origin_parameters": {},
+    "supports_incremental": False,
+    "target": "HrFlow.ai Profiles",
+    "target_data_schema": {},
+    "target_parameters": {},
+    "trigger_type": "schedule",
+    "workflow_code": "",
+    "workflow_code_format_placeholder": "# << format_placeholder >>",
+    "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+    "workflow_code_origin_settings_prefix": "origin_",
+    "workflow_code_target_settings_prefix": "target_",
+    "workflow_code_workflow_id_settings_key": "__workflow_id",
+}
+DEFAULT_PUSH_PROFILE_ACTION_MANIFEST = {
+    "action_parameters": {},
+    "action_type": "outbound",
+    "data_type": "profile",
+    "jsonmap": {},
+    "name": "push_profile",
+    "origin": "HrFlow.ai Profiles",
+    "origin_data_schema": {},
+    "origin_parameters": {},
+    "supports_incremental": False,
+    "target": "",
+    "target_data_schema": {},
+    "target_parameters": {},
+    "trigger_type": "hook",
+    "workflow_code": "",
+    "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
+    "workflow_code_format_placeholder": "# << format_placeholder >>",
+    "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+    "workflow_code_origin_settings_prefix": "origin_",
+    "workflow_code_target_settings_prefix": "target_",
+    "workflow_code_workflow_id_settings_key": "__workflow_id",
+}
+DEFAULT_CATCH_PROFILE_ACTION_MANIFEST = {
+    "action_parameters": {},
+    "action_type": "inbound",
+    "data_type": "profile",
+    "jsonmap": {},
+    "name": "catch_profile",
+    "origin": "",
+    "origin_data_schema": {},
+    "origin_parameters": {},
+    "supports_incremental": False,
+    "target": "HrFlow.ai Profile Parsing",
+    "target_data_schema": {},
+    "target_parameters": {},
+    "trigger_type": "hook",
+    "workflow_code": "",
+    "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
+    "workflow_code_format_placeholder": "# << format_placeholder >>",
+    "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+    "workflow_code_origin_settings_prefix": "origin_",
+    "workflow_code_target_settings_prefix": "target_",
+    "workflow_code_workflow_id_settings_key": "__workflow_id",
+}
+DEFAULT_PUSH_JOB_ACTION_MANIFEST = {
+    "action_parameters": {},
+    "action_type": "outbound",
+    "data_type": "job",
+    "jsonmap": {},
+    "name": "push_job",
+    "origin": "HrFlow.ai Jobs",
+    "origin_data_schema": {},
+    "origin_parameters": {},
+    "supports_incremental": False,
+    "target": "",
+    "target_data_schema": {},
+    "target_parameters": {},
+    "trigger_type": "hook",
+    "workflow_code": "",
+    "workflow_code_event_parser_placeholder": "# << event_parser_placeholder >>",
+    "workflow_code_format_placeholder": "# << format_placeholder >>",
+    "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+    "workflow_code_origin_settings_prefix": "origin_",
+    "workflow_code_target_settings_prefix": "target_",
+    "workflow_code_workflow_id_settings_key": "__workflow_id",
+}
 
 
 class ConnectorActionAdapter(logging.LoggerAdapter):
@@ -760,6 +874,66 @@ class ConnectorType(enum.Enum):
     Other = "Other"
 
 
+def compute_logo_path(name: str, subtype: str, connectors_directory: Path) -> str:
+    try:
+        from PIL import Image, UnidentifiedImageError
+    except ModuleNotFoundError:  # pragma: no cover
+        raise Exception(
+            "PIL is not found in current environment. Mind that you need to install"
+            " the package with dev dependencies to use manifest utility"
+        )
+    connector_directory = connectors_directory / subtype
+    if not connector_directory.is_dir():
+        raise ValueError(
+            "No directory found for connector {} in {}".format(
+                name, connector_directory
+            )
+        )
+    logo_paths = list(connector_directory.glob("logo.*"))
+    if len(logo_paths) == 0:
+        raise ValueError(
+            "Missing logo for connector {}. Add a logo file at {} named"
+            " 'logo.(png|jpeg|...)'".format(name, connector_directory)
+        )
+    elif len(logo_paths) > 1:
+        raise ValueError(
+            "Found multiple logos for connector {} => {}. Only a single one should"
+            " be present".format(name, logo_paths)
+        )
+    logo = logo_paths[0]
+    size = logo.lstat().st_size
+    if size > MAX_LOGO_SIZE_BYTES:
+        raise ValueError(
+            "Logo size {} KB for connector {} is above maximum limit of {} KB".format(
+                size // KB, name, MAX_LOGO_SIZE_BYTES // KB
+            )
+        )
+    try:
+        width, height = Image.open(logo).size
+    except UnidentifiedImageError:
+        raise ValueError(
+            "Logo file for connector {} at {} doesn't seem to be a valid image".format(
+                name, logo
+            )
+        )
+
+    if width != height or width > MAX_LOGO_PIXEL or width < MIN_LOGO_PIXEL:
+        raise ValueError(
+            "Bad logo dimensions of ({}, {}) for connector {}. Logo should have"
+            " square dimensions within range {min}x{min} {max}x{max}".format(
+                width,
+                height,
+                name,
+                min=MIN_LOGO_PIXEL,
+                max=MAX_LOGO_PIXEL,
+            )
+        )
+    return "{}/master/src/{}".format(
+        HRFLOW_CONNECTORS_RAW_GITHUB_CONTENT_BASE,
+        str(logo).split("src/")[1],
+    )
+
+
 class ConnectorModel(BaseModel):
     name: str
     description: str
@@ -772,60 +946,10 @@ class ConnectorModel(BaseModel):
     actions: t.List[ConnectorAction]
 
     def logo(self, connectors_directory: Path) -> str:
-        try:
-            from PIL import Image, UnidentifiedImageError
-        except ModuleNotFoundError:  # pragma: no cover
-            raise Exception(
-                "PIL is not found in current environment. Mind that you need to install"
-                " the package with dev dependencies to use manifest utility"
-            )
-        connector_directory = connectors_directory / self.subtype
-        if not connector_directory.is_dir():
-            raise ValueError(
-                "No directory found for connector {} in {}".format(
-                    self.name, connector_directory
-                )
-            )
-        logo_paths = list(connector_directory.glob("logo.*"))
-        if len(logo_paths) == 0:
-            raise ValueError(
-                "Missing logo for connector {}. Add a logo file at {} named"
-                " 'logo.(png|jpeg|...)'".format(self.name, connector_directory)
-            )
-        elif len(logo_paths) > 1:
-            raise ValueError(
-                "Found multiple logos for connector {} => {}. Only a single one should"
-                " be present".format(self.name, logo_paths)
-            )
-        logo = logo_paths[0]
-        size = logo.lstat().st_size
-        if size > MAX_LOGO_SIZE_BYTES:
-            raise ValueError(
-                "Logo size {} KB for connector {} is above maximum limit of {} KB"
-                .format(size // KB, self.name, MAX_LOGO_SIZE_BYTES // KB)
-            )
-        try:
-            width, height = Image.open(logo).size
-        except UnidentifiedImageError:
-            raise ValueError(
-                "Logo file for connector {} at {} doesn't seem to be a valid image"
-                .format(self.name, logo)
-            )
-
-        if width != height or width > MAX_LOGO_PIXEL or width < MIN_LOGO_PIXEL:
-            raise ValueError(
-                "Bad logo dimensions of ({}, {}) for connector {}. Logo should have"
-                " square dimensions within range {min}x{min} {max}x{max}".format(
-                    width,
-                    height,
-                    self.name,
-                    min=MIN_LOGO_PIXEL,
-                    max=MAX_LOGO_PIXEL,
-                )
-            )
-        return "{}/master/src/{}".format(
-            HRFLOW_CONNECTORS_RAW_GITHUB_CONTENT_BASE,
-            str(logo).split("src/")[1],
+        return compute_logo_path(
+            name=self.name,
+            subtype=self.subtype,
+            connectors_directory=connectors_directory,
         )
 
     def action_by_name(self, action_name: str) -> t.Optional[ConnectorAction]:
@@ -914,10 +1038,10 @@ class Connector:
         # FIXME: model.type.value is not lowered and without spaces
         manifest = dict(
             name=model.name,
-            actions=[],
             type=model.type.value.lower().replace(" ", ""),
             subtype=model.subtype,
             logo=model.logo(connectors_directory=connectors_directory),
+            actions=[],
         )
         for action in model.actions:
             format_placeholder = action.WORKFLOW_FORMAT_PLACEHOLDER
@@ -997,9 +1121,22 @@ def get_import_name(connector: Connector) -> str:
 
 def hrflow_connectors_manifest(
     connectors: t.List[Connector],
+    target_connectors: t.List[t.Dict] = ALL_TARGET_CONNECTORS,
     directory_path: str = ".",
     connectors_directory: Path = CONNECTORS_DIRECTORY,
 ) -> None:
+    connector_by_name = {connector.model.name: connector for connector in connectors}
+    all_connectors = sorted(
+        [
+            {
+                **connector,
+                "object": connector_by_name.get(connector["name"]),
+            }
+            for connector in target_connectors
+        ],
+        key=lambda c: c["name"],
+    )
+
     with warnings.catch_warnings():
         warnings.filterwarnings(
             action="ignore",
@@ -1008,10 +1145,41 @@ def hrflow_connectors_manifest(
         )
         manifest = dict(
             name="HrFlow.ai Connectors",
-            connectors=[
-                connector.manifest(connectors_directory=connectors_directory)
-                for connector in connectors
-            ],
+            connectors=[],
         )
+        for connector in all_connectors:
+            if connector["object"] is not None:
+                manifest_connector = connector["object"].manifest(
+                    connectors_directory=connectors_directory
+                )
+            else:
+                manifest_connector = dict(
+                    name=connector["name"],
+                    type=connector["type"],
+                    subtype=connector["subtype"],
+                    logo=compute_logo_path(
+                        name=connector["name"],
+                        subtype=connector["subtype"],
+                        connectors_directory=connectors_directory,
+                    ),
+                )
+                if connector["type"] in ["ATS", "HCM", "CRM"]:
+                    manifest_connector["actions"] = [
+                        DEFAULT_PULL_JOB_LIST_ACTION_MANIFEST,
+                        DEFAULT_PULL_PROFILE_LIST_ACTION_MANIFEST,
+                        DEFAULT_PUSH_PROFILE_ACTION_MANIFEST,
+                    ]
+                elif connector["type"] == "Automation":
+                    manifest_connector["actions"] = [
+                        DEFAULT_CATCH_PROFILE_ACTION_MANIFEST,
+                    ]
+                elif connector["type"] == "Job Board":
+                    manifest_connector["actions"] = [
+                        DEFAULT_PULL_JOB_LIST_ACTION_MANIFEST,
+                        DEFAULT_PUSH_JOB_ACTION_MANIFEST,
+                        DEFAULT_CATCH_PROFILE_ACTION_MANIFEST,
+                    ]
+            if manifest_connector.get("actions") is not None:
+                manifest["connectors"].append(manifest_connector)
     with open("{}/manifest.json".format(directory_path), "w") as f:
         f.write(json.dumps(manifest, indent=2))

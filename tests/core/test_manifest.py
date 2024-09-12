@@ -39,21 +39,30 @@ def test_hrflow_connectors_manifest(manifest_directory, test_connectors_director
     manifest = Path(__file__).parent / "manifest.json"
     assert manifest.exists() is False
 
-    connectors = [SmartLeadsF(), SmartLeadsF()]
+    connector = SmartLeadsF()
+    target_connectors = [
+        dict(name="SmartLeads", type="Other", subtype="smartleads"),
+        dict(name="ATSConnector", type="ATS", subtype="atsconnector"),
+        dict(
+            name="AutomationConnector",
+            type="Automation",
+            subtype="automationconnector",
+        ),
+        dict(name="JobboardConnector", type="Job Board", subtype="jobboardconnector"),
+        dict(name="WrongConnector", type=None, subtype="wrongconnector"),
+    ]
     with added_connectors(
-        *[
-            (f"SmartLeads-{i}", connector)
-            for i, connector in enumerate(connectors, start=1)
-        ]
+        ("SmartLeads", connector),
     ):
         hrflow_connectors_manifest(
-            connectors=connectors,
+            connectors=[connector],
+            target_connectors=target_connectors,
             directory_path=manifest_directory,
             connectors_directory=test_connectors_directory,
         )
 
     assert manifest.exists() is True
-    assert len(json.loads(manifest.read_text())["connectors"]) == len(connectors)
+    assert len(json.loads(manifest.read_text())["connectors"]) == 4
 
 
 def test_connector_manifest_fails_if_cannot_find_import_name(test_connectors_directory):
