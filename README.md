@@ -56,7 +56,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **BITE** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **BambooHR** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Beetween** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
-| **BizMerlinHR** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Breezy HR** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Broadbean** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | [**Bullhorn**](./src/hrflow_connectors/connectors/bullhorn/README.md) | ATS | :white_check_mark: | *26/01/2022* | *05/09/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
@@ -168,7 +167,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 
 | Name                                                                                                                                      | Type                 | Available         | Release date   | Last update     | Pull profile list action | Pull job list action | Push profile action | Push job action | Catch profile action |
 |-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|---------------------|-----------------|-------------------------|----------------------|----------------------|
-| **ADENCLASSIFIEDS** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **APEC** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | [**Adzuna**](./src/hrflow_connectors/connectors/adzuna/README.md) | Job Board | :white_check_mark: | *08/09/2022* | *05/09/2024* |  | :white_check_mark: |  | :x: | :x: |
 | **Agefiph** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
@@ -178,6 +176,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Distrijob** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Engagement Jeunes** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **FashionJobs** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Figaro Classifieds** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Glassdoor** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **GoldenBees** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Handicap-Job** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
@@ -196,14 +195,13 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **LesJeudis** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **LinkedIn** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | [**Meteojob**](./src/hrflow_connectors/connectors/meteojob/README.md) | Job Board | :white_check_mark: | *15/02/2024* | *05/09/2024* |  | :x: |  | :x: | :white_check_mark: |
-| **Nuevoo** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Neuvoo** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Optioncarriere** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Pole Emploi** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Staffme** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Staffsante** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Tekkit** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Wizbii** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
-| **XML** | Job Board | :hourglass_flowing_sand: |  |  |  | :x: |  | :x: | :x: |
 | **freework** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 
 - :white_check_mark: : Done
