@@ -24,6 +24,7 @@ Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board
 | `last_modified_date` :red_circle: | `str` | None | Last Modified Date in timestamp |
 | `fields` :red_circle: | `str` | None | Fields to be retrieved from Bullhorn |
 | `query` :red_circle: | `str` | None | the query parameters |
+| `count` :red_circle: | `int` | None | Number of items to be returned |
 
 ## Destination Parameters
 
@@ -64,6 +65,7 @@ Bullhorn.pull_job_list(
         last_modified_date="your_last_modified_date",
         fields="your_fields",
         query="your_query",
+        count=0,
     ),
     target_parameters=dict(
         api_secret="your_api_secret",
