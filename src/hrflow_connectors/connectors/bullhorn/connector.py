@@ -349,7 +349,6 @@ def profile_format(data: BullhornProfile) -> t.Dict:
         }
         hrflow_education.append(object_education)
 
-    # Experience
     hrflow_experience = []
     for experience in data["workHistories"]:
         location = {"text": "", "lng": None, "lat": None}
