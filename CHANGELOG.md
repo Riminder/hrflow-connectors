@@ -2,9 +2,58 @@
 
 
 
-## v4.22.1 (2024-09-12)
+## v4.22.2 (2024-09-18)
+
+### Documentation
+
+* docs: update docs ([`84dff54`](https://github.com/Riminder/hrflow-connectors/commit/84dff5457c02889e8d25cbab0cf7135cf1f78166))
+
+* docs: update manifest and readme ([`46633ec`](https://github.com/Riminder/hrflow-connectors/commit/46633ecf8b71faba4c409c82d460eea19c4b39f9))
+
+* docs: adding new connectors logo ([`4bfa459`](https://github.com/Riminder/hrflow-connectors/commit/4bfa4597aba1139e5525ebe64b47486edc0eb160))
 
 ### Fix
+
+* fix: to generate version ([`6798f0c`](https://github.com/Riminder/hrflow-connectors/commit/6798f0c9f14d8369db942e56c964a5cf081f3260))
+
+* fix: merging with master ([`3f56fe4`](https://github.com/Riminder/hrflow-connectors/commit/3f56fe4d9658a6605fa594467bfb4fd653bd2878))
+
+### Unknown
+
+* Merge pull request #285 from Riminder/fix/connector-bullhorn
+
+Fix/connector bullhorn ([`aa0f255`](https://github.com/Riminder/hrflow-connectors/commit/aa0f255e3bb954953d1d269dc92d9232549f0adc))
+
+* Merge pull request #281 from Riminder/fix/connector-bullhorn
+
+fix: pulling resume list to add more params and correct some function… ([`b176b83`](https://github.com/Riminder/hrflow-connectors/commit/b176b831d810bcb1ecb56edc3d0a5b9a01e9f0c1))
+
+* Merge branch &#39;master&#39; into fix/connector-bullhorn ([`348c08e`](https://github.com/Riminder/hrflow-connectors/commit/348c08e7988d3ff85114739f1247a76c94402d13))
+
+* Merge pull request #284 from Riminder/feature/init-new-connectors-in-manifest
+
+Feature/init new connectors in manifest ([`80254f6`](https://github.com/Riminder/hrflow-connectors/commit/80254f6a5cbb5f273624ae6ab9aa67aec2e4d4c4))
+
+* core: initialize new connectors in manifest ([`a5ffda8`](https://github.com/Riminder/hrflow-connectors/commit/a5ffda875e94e97c6296f54dc920d5d5456b1155))
+
+
+## v4.22.1 (2024-09-12)
+
+### Documentation
+
+* docs: update docs ([`04716eb`](https://github.com/Riminder/hrflow-connectors/commit/04716eb961a3729790923ad22c986de87eba34b1))
+
+* docs: update docs ([`5fe210c`](https://github.com/Riminder/hrflow-connectors/commit/5fe210c8a9583a4dc670583b06cf77f72c02a562))
+
+### Fix
+
+* fix: add token in headers ([`7109eec`](https://github.com/Riminder/hrflow-connectors/commit/7109eec9301d9e2adf2a912ba886eec54fa54bae))
+
+* fix: docs ([`ee019d0`](https://github.com/Riminder/hrflow-connectors/commit/ee019d0134d21422746197999576abff47e00729))
+
+* fix: add params in request params instead of manually url concatenation ([`47b9231`](https://github.com/Riminder/hrflow-connectors/commit/47b9231286e8f503a28c16bad4639b898c973a60))
+
+* fix: pulling resume list to add more params and correct some functionalities ([`39c5e5f`](https://github.com/Riminder/hrflow-connectors/commit/39c5e5fd68433c6f163f4077fd42e5f75a22b800))
 
 * fix: lower case and remove spaces from ConnectorModel.type in manifest ([`fc91d61`](https://github.com/Riminder/hrflow-connectors/commit/fc91d6157d7f79182385a5420aea7fbcb4ceb2d6))
 
