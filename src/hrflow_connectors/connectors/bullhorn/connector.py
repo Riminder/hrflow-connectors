@@ -18,7 +18,6 @@ from hrflow_connectors.connectors.hrflow.warehouse_v2.profile import (
     HrFlowProfileWarehouse,
 )
 from hrflow_connectors.core.connector_v2 import (  # noqa
-    ActionName,
     ActionType,
     BaseActionParameters,
     Connector,
@@ -414,7 +413,7 @@ Bullhorn = Connector(
     url="https://www.bullhorn.com/",
     actions=[
         ConnectorAction(
-            name=ActionName.push_profile,
+            name="create_profiles_in_bullhorn",
             trigger_type=WorkflowType.catch,
             description=(
                 "Writes a profile from Hrflow.ai Source to Bullhorn via the API"
@@ -427,7 +426,7 @@ Bullhorn = Connector(
             action_type=ActionType.outbound,
         ),
         ConnectorAction(
-            name=ActionName.pull_job_list,
+            name="create_jobs_in_hrflow",
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board"
@@ -440,7 +439,7 @@ Bullhorn = Connector(
             action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name=ActionName.pull_resume_attachment_list,
+            name="create_profiles_from_attachments_in_hrflow",
             trigger_type=WorkflowType.pull,
             description=(
                 "retrieves profiles attachments from Bullhorn and Parses them and sends"
@@ -454,7 +453,7 @@ Bullhorn = Connector(
             action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name=ActionName.pull_profile_list,
+            name="create_profiles_in_hrflow",
             trigger_type=WorkflowType.pull,
             description=(
                 "Retrieves profiles from Bullhorn and writes them to Hrflow.ai source"
@@ -467,7 +466,7 @@ Bullhorn = Connector(
             action_type=ActionType.inbound,
         ),
         ConnectorAction(
-            name=ActionName.push_application,
+            name="update_applications_in_bullhorn",
             trigger_type=WorkflowType.catch,
             description=(
                 "Retrieves profiles from Hrflow.ai and writes their applications to the"
