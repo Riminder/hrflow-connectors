@@ -43,175 +43,170 @@ We invite developers to join us in our mission to bring AI and data integration 
 
 📃 **More instructions are available in the Documentation section below**
 
-# :book: Open Source Connectors
+# 🤝 List of Connectors (ATS/CRM/HCM)
 
-## 🤝 List of ATS, CRM and HCM
+| Name                                                                                                                                      | Type                 | Available         | Release date   | Last update     | Pull profile list action | Pull job list action | Push profile action | Push job action | Catch profile action |
+|-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|---------------------|-----------------|-------------------------|----------------------|----------------------|
+| **ADP Workforce Now** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **AFAS Software** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Abacus Umantis** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Applicantstack** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Ashby** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Avature** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **BITE** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **BambooHR** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Beetween** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Breezy HR** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Broadbean** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Bullhorn** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **CATS** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Carerix** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Cegid (Meta4)** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Ceipal** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| [**Ceridian**](./src/hrflow_connectors/connectors/ceridian/README.md) | HCM | :white_check_mark: | *19/01/2022* | *05/09/2024* | :x: | :white_check_mark: | :x: |  |  |
+| **ClayHR** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **ClockWork** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Comeet** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Connexys By Bullhorn** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Cornerstone OnDemand** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Cornerstone TalentLink** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Crosstalent** | ATS | :hourglass_flowing_sand: |  |  | :x: | :x: | :x: |  |  |
+| **Digitalrecruiters** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **EOLIA Software** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **EngageATS** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Eploy** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Factorial** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Fieldglass SAP** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Flatchr** | ATS | :hourglass_flowing_sand: |  |  | :x: | :x: | :x: |  |  |
+| **Fountain** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Freshteam** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| [**Greenhouse**](./src/hrflow_connectors/connectors/greenhouse/README.md) | ATS | :white_check_mark: | *19/01/2022* | *05/09/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
+| **GuideCom** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **HR Cloud** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **HR Office** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **HRworks** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Harbour ATS** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Haufe Umantis** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Heyrecruit** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Homerun** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| [**Hubspot**](./src/hrflow_connectors/connectors/hubspot/README.md) | CRM | :white_check_mark: | *27/10/2022* | *05/09/2024* | :white_check_mark: | :x: | :white_check_mark: |  |  |
+| **InRecruiting** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Indeed** | Job board | :dart: |  |  |  |  |  |  |  |
+| **Infinite BrassRing** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **JOIN** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **JazzHR** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **JobAdder** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **JobDiva** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **JobScore** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Jobaffinity** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Jobsoid** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Jobvite** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Jobylon** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Lano** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| [**Lever**](./src/hrflow_connectors/connectors/lever/README.md) | ATS | :white_check_mark: | *18/08/2023* | *05/09/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
+| **Lucca** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Mailchimp** | Automation | :dart: |  |  |  |  |  |  | :x: |
+| **Microsoft Dynamics** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Monster** | Job board | :hourglass_flowing_sand: |  |  |  |  |  |  |  |
+| **Mysolution** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **OTYS** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Occupop** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Onlyfy** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Oracle** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Oracle Fusion - Recruiting Cloud** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Oracle Recruiting Cloud** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Oracle Taleo** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **P&I Loga** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Personio** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Personio Recruiting** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Pinpoint** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Polymer** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **RECRU** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Radancy** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **ReachMee** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| [**Recruitee**](./src/hrflow_connectors/connectors/recruitee/README.md) | ATS | :white_check_mark: | *30/10/2022* | *05/09/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
+| **Recruiterflow** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Recruitive** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **SAP Successfactors** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Sage HR** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| [**Salesforce**](./src/hrflow_connectors/connectors/salesforce/README.md) | CRM | :white_check_mark: | *03/08/2023* | *05/09/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
+| [**SmartRecruiters**](./src/hrflow_connectors/connectors/smartrecruiters/README.md) | ATS | :white_check_mark: | *21/03/2022* | *05/09/2024* | :x: | :white_check_mark: | :white_check_mark: |  |  |
+| **Softgarden** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **TRAFFIT** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| [**Taleez**](./src/hrflow_connectors/connectors/taleez/README.md) | ATS | :white_check_mark: | *19/01/2022* | *05/09/2024* | :x: | :white_check_mark: | :white_check_mark: |  |  |
+| **Talent Clue** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **TalentAdore** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **TalentLyft** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **TalentReef** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Talentlink** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Talentsoft** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
+| [**Teamtailor**](./src/hrflow_connectors/connectors/teamtailor/README.md) | ATS | :white_check_mark: | *06/10/2022* | *05/09/2024* | :x: | :white_check_mark: | :white_check_mark: |  |  |
+| **Tellent** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Trakstar** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Tribepad** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Twilio** | Automation | :dart: |  |  |  |  |  |  | :x: |
+| **UKG Ready Recruiting** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Ubeeo** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| [**Waalaxy**](./src/hrflow_connectors/connectors/waalaxy/README.md) | Automation | :white_check_mark: | *18/11/2022* | *05/09/2024* |  |  |  |  | :white_check_mark: |
+| **Welcome To The Jungle** | Job Board/ATS | :dart: |  |  |  |  |  |  |  |
+| **Welcome to the Jungle Solutions ATS** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| [**Workable**](./src/hrflow_connectors/connectors/workable/README.md) | HCM | :white_check_mark: | *27/09/2022* | *05/09/2024* | :x: | :white_check_mark: | :white_check_mark: |  |  |
+| **Workday** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **Zoho Recruit** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **concludis** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **d.vinci** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **eRecruiter** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **iCIMS** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **rexx systems** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 
-| Name                                                                                                                                      | Type                 | Status             | Release date   | Last update     |
-|-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|
-| [**Breezy HR**](./src/hrflow_connectors/connectors/breezyhr/README.md) | ATS | :book: Open source | *19/01/2022* | *24/10/2024* |
-| [**Bullhorn**](./src/hrflow_connectors/connectors/bullhorn/README.md) | ATS | :book: Open source | *26/01/2022* | *23/10/2024* |
-| [**Ceridian**](./src/hrflow_connectors/connectors/ceridian/README.md) | HCM | :book: Open source | *19/01/2022* | *05/09/2024* |
-| [**Digitalrecruiters**](./src/hrflow_connectors/connectors/digitalrecruiters/README.md) | ATS | :book: Open source | *17/08/2023* | *24/10/2024* |
-| [**Greenhouse**](./src/hrflow_connectors/connectors/greenhouse/README.md) | ATS | :book: Open source | *19/01/2022* | *05/09/2024* |
-| [**Hubspot**](./src/hrflow_connectors/connectors/hubspot/README.md) | CRM | :book: Open source | *27/10/2022* | *05/09/2024* |
-| [**Lever**](./src/hrflow_connectors/connectors/lever/README.md) | ATS | :book: Open source | *18/08/2023* | *23/10/2024* |
-| [**Recruitee**](./src/hrflow_connectors/connectors/recruitee/README.md) | ATS | :book: Open source | *30/10/2022* | *23/10/2024* |
-| [**Salesforce**](./src/hrflow_connectors/connectors/salesforce/README.md) | CRM | :book: Open source | *03/08/2023* | *05/09/2024* |
-| [**SAP SuccessFactors**](./src/hrflow_connectors/connectors/sapsuccessfactors/README.md) | ATS | :book: Open source | *19/01/2022* | *23/10/2024* |
-| [**SmartRecruiters**](./src/hrflow_connectors/connectors/smartrecruiters/README.md) | ATS | :book: Open source | *21/03/2022* | *05/09/2024* |
-| [**Taleez**](./src/hrflow_connectors/connectors/taleez/README.md) | ATS | :book: Open source | *19/01/2022* | *23/10/2024* |
-| [**TalentSoft**](./src/hrflow_connectors/connectors/talentsoft/README.md) | HCM | :book: Open source | *19/04/2022* | *23/10/2024* |
-| [**Teamtailor**](./src/hrflow_connectors/connectors/teamtailor/README.md) | ATS | :book: Open source | *06/10/2022* | *05/09/2024* |
-| [**Waalaxy**](./src/hrflow_connectors/connectors/waalaxy/README.md) | Automation | :book: Open source | *18/11/2022* | *05/09/2024* |
-| [**Workable**](./src/hrflow_connectors/connectors/workable/README.md) | HCM | :book: Open source | *27/09/2022* | *05/09/2024* |
+- :white_check_mark: : Done
+- :hourglass: : Work in progress
+- 🎯 : Backlog
 
-## 🤝 List of Job Boards
+# 🤝 List of Connectors (Job Boards)
 
-| Name                                                                                                                                      | Type                 | Status             | Release date   | Last update     |
-|-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|
-| [**Adzuna**](./src/hrflow_connectors/connectors/adzuna/README.md) | Job Board | :book: Open source | *08/09/2022* | *05/09/2024* |
-| [**Carrevolutis**](./src/hrflow_connectors/connectors/carrevolutis/README.md) | Job Board | :book: Open source | *20/03/2024* | *05/09/2024* |
-| [**Jobology**](./src/hrflow_connectors/connectors/jobology/README.md) | Job Board | :book: Open source | *21/12/2022* | *05/09/2024* |
-| [**Meteojob**](./src/hrflow_connectors/connectors/meteojob/README.md) | Job Board | :book: Open source | *15/02/2024* | *05/09/2024* |
-| [**Pole Emploi**](./src/hrflow_connectors/connectors/poleemploi/README.md) | Job Board | :book: Open source | *15/07/2022* | *24/10/2024* |
+| Name                                                                                                                                      | Type                 | Available         | Release date   | Last update     | Pull profile list action | Pull job list action | Push profile action | Push job action | Catch profile action |
+|-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|---------------------|-----------------|-------------------------|----------------------|----------------------|
+| **APEC** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| [**Adzuna**](./src/hrflow_connectors/connectors/adzuna/README.md) | Job Board | :white_check_mark: | *08/09/2022* | *05/09/2024* |  | :white_check_mark: |  | :x: | :x: |
+| **Agefiph** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Cadreemploi** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| [**Carrevolutis**](./src/hrflow_connectors/connectors/carrevolutis/README.md) | Job Board | :white_check_mark: | *20/03/2024* | *05/09/2024* |  | :x: |  | :x: | :white_check_mark: |
+| **Cornerjob** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Distrijob** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Engagement Jeunes** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **FashionJobs** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Figaro Classifieds** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Glassdoor** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **GoldenBees** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Handicap-Job** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **HelloWork** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Inzojob** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **JobTeaser** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Jobijoba** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| [**Jobology**](./src/hrflow_connectors/connectors/jobology/README.md) | Job Board | :white_check_mark: | *21/12/2022* | *05/09/2024* |  | :x: |  | :x: | :white_check_mark: |
+| **Jobrapido** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Jobtransport** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Jobvitae** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Jooble** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Keljob** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Laponi** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Leboncoin** | Job Board | :hourglass_flowing_sand: |  |  |  | :x: |  | :x: | :x: |
+| **LesJeudis** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **LinkedIn** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| [**Meteojob**](./src/hrflow_connectors/connectors/meteojob/README.md) | Job Board | :white_check_mark: | *15/02/2024* | *05/09/2024* |  | :x: |  | :x: | :white_check_mark: |
+| **Neuvoo** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Optioncarriere** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Pole Emploi** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Staffme** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Staffsante** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Tekkit** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **Wizbii** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
+| **freework** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 
-# :lock: Premium Connectors
-
-## 🤝 List of ATS, CRM and HCM
-
-| Name                                                                                                                                      | Type                 | Status             | Release date   | Last update     |
-|-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|
-| [**Abacus Umantis**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**ADP Workforce Now**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |
-| [**AFAS Software**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Applicantstack**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Ashby**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Avature**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**BambooHR**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Beetween**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**BITE**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Broadbean**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Carerix**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**CATS**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Cegid (Meta4)**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Ceipal**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**ClayHR**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**ClockWork**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Comeet**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**concludis**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Connexys By Bullhorn**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Cornerstone OnDemand**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Cornerstone TalentLink**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Crosstalent**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**d.vinci**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**EngageATS**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**EOLIA Software**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Eploy**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**eRecruiter**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Factorial**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Fieldglass SAP**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Flatchr**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Fountain**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Freshteam**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**GuideCom**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Harbour ATS**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Haufe Umantis**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Heyrecruit**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Homerun**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**HR Cloud**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**HR Office**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**HRworks**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**iCIMS**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Infinite BrassRing**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**InRecruiting**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**JazzHR**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**JobAdder**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Jobaffinity**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**JobDiva**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**JobScore**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Jobsoid**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Jobvite**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Jobylon**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**JOIN**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Lano**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Lucca**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |
-| [**Mailchimp**](https://forms.gle/pokoE9pAjSVSFtCe7) | Automation | :lock: Premium |  |  |
-| [**Microsoft Dynamics**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |
-| [**Mysolution**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Occupop**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Onlyfy**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Oracle**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |
-| [**Oracle Fusion - Recruiting Cloud**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Oracle Recruiting Cloud**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Oracle Taleo**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**OTYS**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**P&I Loga**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Personio**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |
-| [**Personio Recruiting**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Pinpoint**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Polymer**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Radancy**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |
-| [**ReachMee**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**RECRU**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Recruiterflow**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Recruitive**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**rexx systems**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Sage HR**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Softgarden**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Talent Clue**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**TalentAdore**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Talentlink**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**TalentLyft**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**TalentReef**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Tellent**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**TRAFFIT**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Trakstar**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Tribepad**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Twilio**](https://forms.gle/pokoE9pAjSVSFtCe7) | Automation | :lock: Premium |  |  |
-| [**Ubeeo**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**UKG Ready Recruiting**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Workday**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Zoho Recruit**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-
-## 🤝 List of Job Boards
-
-| Name                                                                                                                                      | Type                 | Status             | Release date   | Last update     |
-|-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|
-| [**Agefiph**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**APEC**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Cadreemploi**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Cornerjob**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Distrijob**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Engagement Jeunes**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**FashionJobs**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Figaro Classifieds**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**freework**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Glassdoor**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**GoldenBees**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Handicap-Job**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**HelloWork**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Indeed**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Inzojob**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Jobijoba**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Jobrapido**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**JobTeaser**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Jobtransport**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Jobvitae**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Jooble**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Keljob**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Laponi**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Leboncoin**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**LesJeudis**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**LinkedIn**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Monster**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Neuvoo**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Optioncarriere**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Staffme**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Staffsante**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Tekkit**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Welcome To The Jungle**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Wizbii**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
+- :white_check_mark: : Done
+- :hourglass: : Work in progress
+- 🎯 : Backlog
 
 # 🪄 Quickstart
 
@@ -231,7 +226,7 @@ The features offered by this package:
 - **Synchronize an entire data** stream with a ready-to-use solution
 - **Synchronize only certain data** in a stream meeting a condition defined by you : [`logics`](DOCUMENTATION.md#logics)
 - **Format the data as you wish** or use the default formatting that we propose adapted to each connector : [`format`](DOCUMENTATION.md#format)
-- **Leverage the provider *HrFlow.ai's* Job and Profile Warehouse** with a many available options like [`hydrate_with_parsing`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L42) or [`update_content`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L39)
+- **Leverage the provider *HrFlow.ai's ** Job and Profile Warehouse* with a many available options like [`hydrate_with_parsing`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L42) or [`update_content`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L39)
 
 ## ❓ How to use a connector ?
 
