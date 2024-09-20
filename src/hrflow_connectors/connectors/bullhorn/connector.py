@@ -411,19 +411,19 @@ Bullhorn = Connector(
     description=DESCRIPTION,
     url="https://www.bullhorn.com/",
     actions=[
-        ConnectorAction(
-            name="create_profiles_in_bullhorn",
-            trigger_type=WorkflowType.catch,
-            description=(
-                "Writes a profile from Hrflow.ai Source to Bullhorn via the API"
-            ),
-            parameters=BaseActionParameters.with_defaults(
-                "WriteProfileActionParameters", format=format_profile
-            ),
-            origin=HrFlowProfileWarehouse,
-            target=BullhornProfileWarehouse,
-            action_type=ActionType.outbound,
-        ),
+        # ConnectorAction(
+        #     name="create_profiles_in_bullhorn",
+        #     trigger_type=WorkflowType.catch,
+        #     description=(
+        #         "Writes a profile from Hrflow.ai Source to Bullhorn via the API"
+        #     ),
+        #     parameters=BaseActionParameters.with_defaults(
+        #         "WriteProfileActionParameters", format=format_profile
+        #     ),
+        #     origin=HrFlowProfileWarehouse,
+        #     target=BullhornProfileWarehouse,
+        #     action_type=ActionType.outbound,
+        # ),
         ConnectorAction(
             name="create_jobs_in_hrflow",
             trigger_type=WorkflowType.pull,
