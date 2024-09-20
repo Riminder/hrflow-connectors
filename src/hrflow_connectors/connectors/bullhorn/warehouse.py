@@ -10,15 +10,15 @@ from pydantic import Field
 
 from hrflow_connectors.connectors.bullhorn.schemas import BullhornJob, BullhornProfile
 from hrflow_connectors.connectors.bullhorn.utils.authentication import auth
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse_v2 import (
     DataType,
     FieldType,
     ParametersModel,
+    ReadMode,
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
 )
-from hrflow_connectors.core.warehouse import ReadMode
 
 
 class BaseParameters(ParametersModel):
@@ -109,7 +109,7 @@ class ReadProfileParameters(BaseParameters):
     pass
 
 
-def write(
+def create_profiles(
     adapter: LoggerAdapter,
     parameters: WriteProfilesParameters,
     profiles: t.Iterable[t.Dict],
@@ -215,6 +215,7 @@ def search_entity(entity, rest_url, bh_rest_token, query, fields, adapter):
 
 
 def create_or_update_entity(entity, rest_url, params, data, adapter, entity_id=None):
+    # FIXME: split into create and update
     url = f"{rest_url}entity/{entity}"
     method = requests.post if entity_id else requests.put
     if entity_id:
@@ -234,6 +235,8 @@ def write_application(
     parameters: WriteApplicationsParameters,
     profiles: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
+    # FIXME: split into create and update
+    # According to the specs, we don't need to create applications
     failed_profiles = []
     auth_info = authenticate(parameters)
     rest_url = auth_info["restUrl"]
@@ -741,13 +744,15 @@ def item_to_read_from(item: t.Dict) -> str:
     )
 
 
+# TODO: missing update action
 BullhornProfileWarehouse = Warehouse(
     name="Bullhorn Profiles",
     data_schema=BullhornProfile,
     data_type=DataType.profile,
-    write=WarehouseWriteAction(
-        parameters=WriteProfilesParameters, function=write, endpoints=[]
+    create=WarehouseWriteAction(
+        parameters=WriteProfilesParameters, function=create_profiles, endpoints=[]
     ),
+    update=None,
     read=WarehouseReadAction(
         parameters=ReadProfileParameters, function=read_profiles, endpoints=[]
     ),
@@ -757,7 +762,7 @@ BullhornApplicationWarehouse = Warehouse(
     name="Bullhorn Applications",
     data_schema=BullhornProfile,
     data_type=DataType.profile,
-    write=WarehouseWriteAction(
+    update=WarehouseWriteAction(
         parameters=WriteApplicationsParameters, function=write_application, endpoints=[]
     ),
 )
