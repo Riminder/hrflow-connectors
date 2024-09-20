@@ -12,12 +12,12 @@ from hrflow_connectors.connectors.bullhorn.warehouse import (
     BullhornProfileWarehouse,
 )
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
-from hrflow_connectors.connectors.hrflow.warehouse.job import HrFlowJobWarehouse
-from hrflow_connectors.connectors.hrflow.warehouse.profile import (
+from hrflow_connectors.connectors.hrflow.warehouse_v2.job import HrFlowJobWarehouse
+from hrflow_connectors.connectors.hrflow.warehouse_v2.profile import (
     HrFlowProfileParsingWarehouse,
     HrFlowProfileWarehouse,
 )
-from hrflow_connectors.core import (
+from hrflow_connectors.core.connector_v2 import (  # noqa
     ActionName,
     ActionType,
     BaseActionParameters,
