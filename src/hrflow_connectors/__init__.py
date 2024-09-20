@@ -1,6 +1,5 @@
 from hrflow_connectors.connectors.adzuna.connector import Adzuna
 from hrflow_connectors.connectors.breezyhr import BreezyHR
-from hrflow_connectors.connectors.bullhorn import Bullhorn
 from hrflow_connectors.connectors.carrevolutis import Carrevolutis
 from hrflow_connectors.connectors.ceridian import Ceridian
 from hrflow_connectors.connectors.digitalrecruiters import DigitalRecruiters
@@ -32,7 +31,6 @@ __CONNECTORS__ = [
     Workable,
     BreezyHR,
     SAPSuccessFactors,
-    Bullhorn,
     Ceridian,
     Greenhouse,
     Teamtailor,
