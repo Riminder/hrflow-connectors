@@ -228,17 +228,59 @@ class Warehouse(BaseModel):
             __base__=action_to_fix.parameters,
             **fixed,
         )
-        return Warehouse(
-            name=self.name,
-            data_schema=self.data_schema,
-            data_type=self.data_type,
-            read=WarehouseReadAction(
-                endpoints=self.read.endpoints,
-                parameters=with_fixed_parameters,
-                function=self.read.function,
-            ),
-            create=self.create,
-            read=self.read,
-            update=self.update,
-            archive=self.archive,
-        )
+        if action_type is ActionType.read:
+            return Warehouse(
+                name=self.name,
+                data_schema=self.data_schema,
+                data_type=self.data_type,
+                read=WarehouseReadAction(
+                    endpoints=self.read.endpoints,
+                    parameters=with_fixed_parameters,
+                    function=self.read.function,
+                ),
+                create=self.create,
+                update=self.update,
+                archive=self.archive,
+            )
+        elif action_type is ActionType.create:
+            return Warehouse(
+                name=self.name,
+                data_schema=self.data_schema,
+                data_type=self.data_type,
+                read=self.read,
+                create=WarehouseWriteAction(
+                    endpoints=self.create.endpoints,
+                    parameters=with_fixed_parameters,
+                    function=self.create.function,
+                ),
+                update=self.update,
+                archive=self.archive,
+            )
+        elif action_type is ActionType.update:
+            return Warehouse(
+                name=self.name,
+                data_schema=self.data_schema,
+                data_type=self.data_type,
+                read=self.read,
+                create=self.create,
+                update=WarehouseWriteAction(
+                    endpoints=self.update.endpoints,
+                    parameters=with_fixed_parameters,
+                    function=self.update.function,
+                ),
+                archive=self.archive,
+            )
+        elif action_type is ActionType.archive:
+            return Warehouse(
+                name=self.name,
+                data_schema=self.data_schema,
+                data_type=self.data_type,
+                read=self.read,
+                create=self.create,
+                update=self.update,
+                archive=WarehouseWriteAction(
+                    endpoints=self.archive.endpoints,
+                    parameters=with_fixed_parameters,
+                    function=self.archive.function,
+                ),
+            )
