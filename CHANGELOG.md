@@ -2,6 +2,17 @@
 
 
 
+## v4.23.0 (2024-09-23)
+
+### Feature
+
+* feat: Allow main module name to be parameterized ([`d160bbf`](https://github.com/Riminder/hrflow-connectors/commit/d160bbfbcb8cbe53f3a7256456145e2e751c3f89))
+
+### Fix
+
+* fix: use correct main module name in templates ([`c022e96`](https://github.com/Riminder/hrflow-connectors/commit/c022e96a826d653c3793e49268fc414f70c11fcc))
+
+
 ## v4.22.2 (2024-09-18)
 
 ### Documentation
