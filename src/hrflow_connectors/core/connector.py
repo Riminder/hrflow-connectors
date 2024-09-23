@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import enum
+import importlib
 import inspect
 import json
 import logging
@@ -10,6 +11,7 @@ import typing as t
 import uuid
 import warnings
 from collections import Counter
+from contextvars import ContextVar
 from datetime import datetime
 from functools import partial
 from pathlib import Path
@@ -1099,21 +1101,26 @@ class AmbiguousConnectorImportName(Exception):
     pass
 
 
-def get_import_name(connector: Connector) -> str:
-    import hrflow_connectors
+MAIN_IMPORT_NAME: ContextVar[str] = ContextVar(
+    "MAIN_IMPORT_NAME", default="hrflow_connectors"
+)
 
-    members = inspect.getmembers(hrflow_connectors, lambda s: s is connector)
+
+def get_import_name(connector: Connector) -> str:
+    main_module = importlib.import_module(MAIN_IMPORT_NAME.get())
+
+    members = inspect.getmembers(main_module, lambda s: s is connector)
     if len(members) == 0:
         raise ConnectorImportNameNotFound(
             "Failed to find import name for"
-            f" Connector(name={connector.model.name})={connector}\nNot match found for"
+            f" Connector(name={connector.model.name})={connector}\nNo match found for"
             " below members"
-            f" {[symbol for symbol, _ in inspect.getmembers(hrflow_connectors)]}"
+            f" {[symbol for symbol, _ in inspect.getmembers(main_module)]}"
         )
     if len(members) > 1:
         raise AmbiguousConnectorImportName(
             "Found multiple import names for"
-            f" Connector(name={connector.model.name})={connector}={connector}\n"
+            f" Connector(name={connector.model.name})={connector}\n"
             f" {[symbol for symbol, _ in members]}"
         )
     return members[0][0]
