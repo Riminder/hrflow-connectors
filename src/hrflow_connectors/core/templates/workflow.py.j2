@@ -1,6 +1,6 @@
 import typing as t
 
-from hrflow_connectors import {{ import_name }}
+from {{ main_module | default("hrflow_connectors") }} import {{ import_name }}
 from hrflow_connectors.core.connector import ActionInitError, Reason
 
 ORIGIN_SETTINGS_PREFIX = "{{ origin_settings_prefix }}"

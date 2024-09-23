@@ -29,6 +29,9 @@ from hrflow_connectors.core import backend
 from hrflow_connectors.core.templates import Templates
 from hrflow_connectors.core.warehouse import ReadMode, Warehouse
 
+MAIN_IMPORT_NAME: ContextVar[str] = ContextVar(
+    "MAIN_IMPORT_NAME", default="hrflow_connectors"
+)
 HRFLOW_CONNECTORS_RAW_GITHUB_CONTENT_BASE = (
     "https://raw.githubusercontent.com/Riminder/hrflow-connectors"
 )
@@ -534,6 +537,7 @@ class ConnectorAction(BaseModel):
             workflow_id_settings_key=self.WORKFLOW_ID_SETTINGS_KEY,
             origin_settings_prefix=self.ORIGIN_SETTINGS_PREFIX,
             target_settings_prefix=self.TARGET_SETTINGS_PREFIX,
+            main_module=MAIN_IMPORT_NAME.get(),
             import_name=import_name,
             action_name=self.name.value,
             type=workflow_type.name,
@@ -1099,11 +1103,6 @@ class ConnectorImportNameNotFound(Exception):
 
 class AmbiguousConnectorImportName(Exception):
     pass
-
-
-MAIN_IMPORT_NAME: ContextVar[str] = ContextVar(
-    "MAIN_IMPORT_NAME", default="hrflow_connectors"
-)
 
 
 def get_import_name(connector: Connector) -> str:
