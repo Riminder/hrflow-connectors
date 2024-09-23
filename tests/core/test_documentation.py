@@ -242,6 +242,10 @@ def test_documentation(connectors_directory):
     assert keep_empty_format_file.exists() is True
     assert action_documentation.exists() is True
 
+    assert (
+        "from hrflow_connectors import SmartLeads" in action_documentation.read_text()
+    )
+
 
 def test_documentation_works_with_parameterized_main_module_name(connectors_directory):
     readme = connectors_directory / SmartLeads.model.subtype / "README.md"
@@ -278,7 +282,7 @@ def test_documentation_works_with_parameterized_main_module_name(connectors_dire
 
     connectors = [SmartLeads]
 
-    parameterized_name = "third-party"
+    parameterized_name = "third_party"
     with main_import_name_as(parameterized_name):
         # Should fail because by default add_connectors adds names to
         # hrflow_connectors default import name
@@ -307,6 +311,11 @@ def test_documentation_works_with_parameterized_main_module_name(connectors_dire
     assert format_mappings_directory.exists() is True
     assert keep_empty_format_file.exists() is True
     assert action_documentation.exists() is True
+
+    assert (
+        f"from {parameterized_name} import SmartLeads"
+        in action_documentation.read_text()
+    )
 
 
 def test_documentation_adds_keep_empty_notebooks_file_if_folder_is_empty(

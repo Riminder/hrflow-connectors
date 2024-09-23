@@ -51,7 +51,7 @@
 
 ```python
 import logging
-from hrflow_connectors import {{ import_name }}
+from {{ main_module | default("hrflow_connectors") }} import {{ import_name }}
 from hrflow_connectors.core import ReadMode
 
 

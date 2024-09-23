@@ -32,13 +32,16 @@ def manifest_directory():
 def test_connector_manifest(test_connectors_directory):
     SmartLeads = SmartLeadsF()
     with added_connectors([("SmartLeads", SmartLeads)]):
-        SmartLeads.manifest(test_connectors_directory)
+        manifest = SmartLeads.manifest(test_connectors_directory)
+
+    for action in manifest["actions"]:
+        assert "from hrflow_connectors import SmartLeads" in action["workflow_code"]
 
 
 def test_connector_manifest_works_with_parameterized_main_module_name(
     test_connectors_directory,
 ):
-    parameterized_name = "third-party"
+    parameterized_name = "third_party"
 
     SmartLeads = SmartLeadsF()
     with main_import_name_as(parameterized_name):
@@ -51,7 +54,10 @@ def test_connector_manifest_works_with_parameterized_main_module_name(
         with added_connectors(
             [("SmartLeads", SmartLeads)], parameterized_name, create_module=True
         ):
-            SmartLeads.manifest(test_connectors_directory)
+            manifest = SmartLeads.manifest(test_connectors_directory)
+
+    for action in manifest["actions"]:
+        assert f"from {parameterized_name} import SmartLeads" in action["workflow_code"]
 
 
 def test_hrflow_connectors_manifest(manifest_directory, test_connectors_directory):

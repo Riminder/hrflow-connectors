@@ -14,7 +14,11 @@ from pydantic import BaseModel
 from pydantic.fields import ModelField
 
 from hrflow_connectors.core import ActionName
-from hrflow_connectors.core.connector import Connector, get_import_name
+from hrflow_connectors.core.connector import (
+    MAIN_IMPORT_NAME,
+    Connector,
+    get_import_name,
+)
 from hrflow_connectors.core.templates import Templates
 
 logger = logging.getLogger(__name__)
@@ -397,6 +401,7 @@ def generate_docs(
                 action_documentation_content = Templates.get_template(
                     "action_readme.md.j2"
                 ).render(
+                    main_module=MAIN_IMPORT_NAME.get(),
                     import_name=import_name,
                     action_name=action_name,
                     description=action.description,
