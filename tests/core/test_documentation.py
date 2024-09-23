@@ -34,7 +34,7 @@ from tests.core.src.hrflow_connectors.connectors.localusers.warehouse import (
 from tests.core.src.hrflow_connectors.connectors.smartleads.warehouse import (
     LeadsWarehouse,
 )
-from tests.core.utils import added_connectors
+from tests.core.utils import added_connectors, main_import_name_as
 
 DUMMY_ROOT_README = """
 # Test README used for documentation tests
@@ -228,12 +228,78 @@ def test_documentation(connectors_directory):
 
     connectors = [SmartLeads]
     with patched_subprocess():
-        with added_connectors(("SmartLeads", SmartLeads)):
+        with added_connectors([("SmartLeads", SmartLeads)]):
             generate_docs(
                 connectors=connectors,
                 target_connectors=ALL_TARGET_CONNECTORS,
                 connectors_directory=connectors_directory,
             )
+
+    assert readme.exists() is True
+    assert notebooks_directory.exists() is True
+    assert keep_empty_notebooks_file.exists() is True
+    assert format_mappings_directory.exists() is True
+    assert keep_empty_format_file.exists() is True
+    assert action_documentation.exists() is True
+
+
+def test_documentation_works_with_parameterized_main_module_name(connectors_directory):
+    readme = connectors_directory / SmartLeads.model.subtype / "README.md"
+    notebooks_directory = connectors_directory / SmartLeads.model.subtype / "notebooks"
+    keep_empty_notebooks_file = (
+        connectors_directory
+        / SmartLeads.model.subtype
+        / "notebooks"
+        / KEEP_EMPTY_FOLDER
+    )
+    format_mappings_directory = (
+        connectors_directory / SmartLeads.model.subtype / "mappings" / "format"
+    )
+    keep_empty_format_file = (
+        connectors_directory
+        / SmartLeads.model.subtype
+        / "mappings"
+        / "format"
+        / KEEP_EMPTY_FOLDER
+    )
+    action_documentation = (
+        connectors_directory
+        / SmartLeads.model.subtype
+        / "docs"
+        / "{}.md".format(SmartLeads.model.actions[0].name.value)
+    )
+
+    assert readme.exists() is False
+    assert notebooks_directory.exists() is False
+    assert keep_empty_notebooks_file.exists() is False
+    assert format_mappings_directory.exists() is False
+    assert keep_empty_format_file.exists() is False
+    assert action_documentation.exists() is False
+
+    connectors = [SmartLeads]
+
+    parameterized_name = "third-party"
+    with main_import_name_as(parameterized_name):
+        # Should fail because by default add_connectors adds names to
+        # hrflow_connectors default import name
+        with pytest.raises(ModuleNotFoundError):
+            with patched_subprocess():
+                with added_connectors([("SmartLeads", SmartLeads)]):
+                    generate_docs(
+                        connectors=connectors,
+                        target_connectors=ALL_TARGET_CONNECTORS,
+                        connectors_directory=connectors_directory,
+                    )
+
+        with patched_subprocess():
+            with added_connectors(
+                [("SmartLeads", SmartLeads)], parameterized_name, create_module=True
+            ):
+                generate_docs(
+                    connectors=connectors,
+                    target_connectors=ALL_TARGET_CONNECTORS,
+                    connectors_directory=connectors_directory,
+                )
 
     assert readme.exists() is True
     assert notebooks_directory.exists() is True
@@ -261,7 +327,7 @@ def test_documentation_adds_keep_empty_notebooks_file_if_folder_is_empty(
 
     connectors = [SmartLeads]
     with patched_subprocess():
-        with added_connectors(("SmartLeads", SmartLeads)):
+        with added_connectors([("SmartLeads", SmartLeads)]):
             generate_docs(
                 connectors=connectors,
                 target_connectors=ALL_TARGET_CONNECTORS,
@@ -303,7 +369,7 @@ def test_documentation_does_not_add_keep_empty_notebooks_file_if_folder_has_othe
 
     connectors = [SmartLeads]
     with patched_subprocess():
-        with added_connectors(("SmartLeads", SmartLeads)):
+        with added_connectors([("SmartLeads", SmartLeads)]):
             generate_docs(
                 connectors=connectors,
                 target_connectors=ALL_TARGET_CONNECTORS,
@@ -347,7 +413,7 @@ def test_documentation_removes_keep_empty_notebooks_file_if_folder_has_other_fil
 
     connectors = [SmartLeads]
     with patched_subprocess():
-        with added_connectors(("SmartLeads", SmartLeads)):
+        with added_connectors([("SmartLeads", SmartLeads)]):
             generate_docs(
                 connectors=connectors,
                 target_connectors=ALL_TARGET_CONNECTORS,
@@ -390,7 +456,7 @@ def test_documentation_adds_keep_empty_format_file_if_folder_is_empty(
 
     connectors = [SmartLeads]
     with patched_subprocess():
-        with added_connectors(("SmartLeads", SmartLeads)):
+        with added_connectors([("SmartLeads", SmartLeads)]):
             generate_docs(
                 connectors=connectors,
                 target_connectors=ALL_TARGET_CONNECTORS,
@@ -423,7 +489,7 @@ def test_documentation_does_not_add_keep_empty_format_file_if_folder_has_other_f
 
     connectors = [SmartLeads]
     with patched_subprocess():
-        with added_connectors(("SmartLeads", SmartLeads)):
+        with added_connectors([("SmartLeads", SmartLeads)]):
             generate_docs(
                 connectors=connectors,
                 target_connectors=ALL_TARGET_CONNECTORS,
@@ -460,7 +526,7 @@ def test_documentation_removes_keep_empty_format_file_if_folder_has_other_files(
 
     connectors = [SmartLeads]
     with patched_subprocess():
-        with added_connectors(("SmartLeads", SmartLeads)):
+        with added_connectors([("SmartLeads", SmartLeads)]):
             generate_docs(
                 connectors=connectors,
                 target_connectors=ALL_TARGET_CONNECTORS,
@@ -557,7 +623,7 @@ def test_documentation_fails_if_connector_misconfigured(connectors_directory):
     with pytest.raises(AmbiguousConnectorImportName):
         with patched_subprocess():
             with added_connectors(
-                ("SmartLeads", SmartLeads), ("Duplicated", SmartLeads)
+                [("SmartLeads", SmartLeads), ("Duplicated", SmartLeads)]
             ):
                 generate_docs(
                     connectors=connectors, connectors_directory=connectors_directory
@@ -573,9 +639,9 @@ def test_documentation_fails_if_connector_misconfigured(connectors_directory):
 
 def test_documentation_fails_if_actions_section_not_found(connectors_directory):
     readme = connectors_directory / SmartLeads.model.subtype / "README.md"
-    with added_connectors(("SmartLeads", SmartLeads)):
+    with added_connectors([("SmartLeads", SmartLeads)]):
         with patched_subprocess():
-            with added_connectors(("SmartLeads", SmartLeads)):
+            with added_connectors([("SmartLeads", SmartLeads)]):
                 generate_docs(
                     connectors=[SmartLeads],
                     target_connectors=ALL_TARGET_CONNECTORS,
@@ -590,7 +656,7 @@ def test_documentation_fails_if_actions_section_not_found(connectors_directory):
 
         with pytest.raises(InvalidConnectorReadmeFormat):
             with patched_subprocess():
-                with added_connectors(("SmartLeads", SmartLeads)):
+                with added_connectors([("SmartLeads", SmartLeads)]):
                     generate_docs(
                         connectors=[SmartLeads],
                         connectors_directory=connectors_directory,
@@ -623,7 +689,7 @@ def test_main_readme_update_at_expected_value(root_readme, connectors_directory)
 
     connectors = [SmartLeads]
     with patched_subprocess(stdout=stdout):
-        with added_connectors(("SmartLeads", SmartLeads)):
+        with added_connectors([("SmartLeads", SmartLeads)]):
             generate_docs(
                 connectors=connectors,
                 target_connectors=ALL_TARGET_CONNECTORS,
@@ -689,7 +755,7 @@ def test_ignored_path_are_not_taken_into_account_for_main_readme_updated_at(
     connectors = [SmartLeads]
 
     with patched_subprocess(stdout=base_stdout + "\n" + should_be_ignored):
-        with added_connectors(("SmartLeads", SmartLeads)):
+        with added_connectors([("SmartLeads", SmartLeads)]):
             generate_docs(
                 connectors=connectors,
                 target_connectors=ALL_TARGET_CONNECTORS,
@@ -708,7 +774,7 @@ def test_ignored_path_are_not_taken_into_account_for_main_readme_updated_at(
     with patched_subprocess(
         stdout=base_stdout + greater_than_max_of_dates_with_regular_file
     ):
-        with added_connectors(("SmartLeads", SmartLeads)):
+        with added_connectors([("SmartLeads", SmartLeads)]):
             generate_docs(
                 connectors=connectors,
                 target_connectors=ALL_TARGET_CONNECTORS,
@@ -741,7 +807,7 @@ def test_documentation_with_remote_code_links(connectors_directory):
         ),
     ):
         with patched_subprocess():
-            with added_connectors(("SmartLeads", SmartLeads)):
+            with added_connectors([("SmartLeads", SmartLeads)]):
                 generate_docs(
                     connectors=connectors,
                     target_connectors=ALL_TARGET_CONNECTORS,
@@ -764,7 +830,7 @@ def test_documentation_with_remote_code_links(connectors_directory):
         ),
     ):
         with patched_subprocess():
-            with added_connectors(("SmartLeads", SmartLeads)):
+            with added_connectors([("SmartLeads", SmartLeads)]):
                 generate_docs(
                     connectors=connectors,
                     target_connectors=ALL_TARGET_CONNECTORS,
@@ -816,7 +882,7 @@ def test_documentation_connector_directory_not_found(caplog, connectors_director
 
     connectors = [NameMismatchSmartLeads]
     with patched_subprocess():
-        with added_connectors(("NameMismatchSmartLeads", NameMismatchSmartLeads)):
+        with added_connectors([("NameMismatchSmartLeads", NameMismatchSmartLeads)]):
             generate_docs(
                 connectors=connectors,
                 target_connectors=ALL_TARGET_CONNECTORS,
@@ -836,7 +902,7 @@ def test_documentation_fails_if_subprocess_has_stderr(connectors_directory):
     stderr = "FATAL ERROR"
     with patched_subprocess(stderr=stderr):
         with pytest.raises(Exception) as excinfo:
-            with added_connectors(("SmartLeads", SmartLeads)):
+            with added_connectors([("SmartLeads", SmartLeads)]):
                 generate_docs(
                     connectors=[SmartLeads],
                     target_connectors=ALL_TARGET_CONNECTORS,

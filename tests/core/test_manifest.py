@@ -15,7 +15,7 @@ from hrflow_connectors.core.connector import (
     ConnectorImportNameNotFound,
 )
 from tests.core.test_connector import SmartLeadsF
-from tests.core.utils import added_connectors
+from tests.core.utils import added_connectors, main_import_name_as
 
 
 @pytest.fixture
@@ -31,8 +31,27 @@ def manifest_directory():
 
 def test_connector_manifest(test_connectors_directory):
     SmartLeads = SmartLeadsF()
-    with added_connectors(("SmartLeads", SmartLeads)):
+    with added_connectors([("SmartLeads", SmartLeads)]):
         SmartLeads.manifest(test_connectors_directory)
+
+
+def test_connector_manifest_works_with_parameterized_main_module_name(
+    test_connectors_directory,
+):
+    parameterized_name = "third-party"
+
+    SmartLeads = SmartLeadsF()
+    with main_import_name_as(parameterized_name):
+        # Should fail because by default add_connectors adds names to
+        # hrflow_connectors default import name
+        with pytest.raises(ModuleNotFoundError):
+            with added_connectors([("SmartLeads", SmartLeads)]):
+                SmartLeads.manifest(test_connectors_directory)
+
+        with added_connectors(
+            [("SmartLeads", SmartLeads)], parameterized_name, create_module=True
+        ):
+            SmartLeads.manifest(test_connectors_directory)
 
 
 def test_hrflow_connectors_manifest(manifest_directory, test_connectors_directory):
@@ -52,7 +71,7 @@ def test_hrflow_connectors_manifest(manifest_directory, test_connectors_director
         dict(name="WrongConnector", type=None, subtype="wrongconnector"),
     ]
     with added_connectors(
-        ("SmartLeads", connector),
+        [("SmartLeads", connector)],
     ):
         hrflow_connectors_manifest(
             connectors=[connector],
@@ -74,7 +93,7 @@ def test_connector_manifest_fails_if_cannot_find_import_name(test_connectors_dir
 def test_connector_manifest_fails_if_connector_misconfigured(test_connectors_directory):
     SmartLeads = SmartLeadsF()
     with pytest.raises(AmbiguousConnectorImportName):
-        with added_connectors(("SmartLeads", SmartLeads), ("Duplicated", SmartLeads)):
+        with added_connectors([("SmartLeads", SmartLeads), ("Duplicated", SmartLeads)]):
             SmartLeads.manifest(test_connectors_directory)
 
 
@@ -83,7 +102,7 @@ def test_manifest_connector_directory_not_found(test_connectors_directory):
     SmartLeads.model.name = "SmartLeadsX"
     SmartLeads.model.subtype = "smartleadsx"
     with pytest.raises(ValueError) as excinfo:
-        with added_connectors(("SmartLeads", SmartLeads)):
+        with added_connectors([("SmartLeads", SmartLeads)]):
             SmartLeads.manifest(test_connectors_directory)
 
     assert "No directory found for connector SmartLeadsX" in excinfo.value.args[0]
@@ -95,7 +114,7 @@ def test_manifest_logo_is_missing(test_connectors_directory):
     LocalUsers.model.name = "LocalUsers"
     LocalUsers.model.subtype = "localusers"
     with pytest.raises(ValueError) as excinfo:
-        with added_connectors(("LocalUsers", LocalUsers)):
+        with added_connectors([("LocalUsers", LocalUsers)]):
             LocalUsers.manifest(test_connectors_directory)
 
     assert "Missing logo for connector LocalUsers" in excinfo.value.args[0]
@@ -109,7 +128,7 @@ def test_manifest_more_than_one_logo(test_connectors_directory):
         prefix="logo.",
     ):
         with pytest.raises(ValueError) as excinfo:
-            with added_connectors(("SmartLeads", SmartLeads)):
+            with added_connectors([("SmartLeads", SmartLeads)]):
                 SmartLeads.manifest(test_connectors_directory)
 
     assert "Found multiple logos for connector SmartLeads" in excinfo.value.args[0]
@@ -128,7 +147,7 @@ def test_manifest_logo_above_size_limit(test_connectors_directory):
         LocalUsers.model.name = "LocalUsers"
         LocalUsers.model.subtype = "localusers"
         with pytest.raises(ValueError) as excinfo:
-            with added_connectors(("LocalUsers", LocalUsers)):
+            with added_connectors([("LocalUsers", LocalUsers)]):
                 LocalUsers.manifest(test_connectors_directory)
 
     assert (
@@ -149,7 +168,7 @@ def test_manifest_logo_not_valid_image(test_connectors_directory):
         LocalUsers.model.name = "LocalUsers"
         LocalUsers.model.subtype = "localusers"
         with pytest.raises(ValueError) as excinfo:
-            with added_connectors(("LocalUsers", LocalUsers)):
+            with added_connectors([("LocalUsers", LocalUsers)]):
                 LocalUsers.manifest(test_connectors_directory)
 
     assert "Logo file for connector LocalUsers" in excinfo.value.args[0]
@@ -188,7 +207,7 @@ def test_manifest_logo_bad_dimension(test_connectors_directory, shape):
         LocalUsers = SmartLeadsF()
         LocalUsers.model.subtype = "localusers"
         with pytest.raises(ValueError) as excinfo:
-            with added_connectors(("LocalUsers", LocalUsers)):
+            with added_connectors([("LocalUsers", LocalUsers)]):
                 LocalUsers.manifest(test_connectors_directory)
 
     assert "Bad logo dimensions" in excinfo.value.args[0]
@@ -206,7 +225,7 @@ def test_manifest_includes_jsonmap_when_file_exists(test_connectors_directory):
         jsonmap_content = {"key": "value"}
         jsonmap_file.write_text(json.dumps(jsonmap_content))
 
-    with added_connectors(("SmartLeads", connector)):
+    with added_connectors([("SmartLeads", connector)]):
         manifest = connector.manifest(connectors_directory=test_connectors_directory)
 
     for action_manifest in manifest["actions"]:
@@ -224,7 +243,7 @@ def test_manifest_includes_empty_jsonmap_when_file_missing(test_connectors_direc
 
     format_mappings_directory.mkdir(parents=True, exist_ok=True)
 
-    with added_connectors(("SmartLeads", connector)):
+    with added_connectors([("SmartLeads", connector)]):
         manifest = connector.manifest(connectors_directory=test_connectors_directory)
 
     for action_manifest in manifest["actions"]:
