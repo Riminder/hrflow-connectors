@@ -7,7 +7,7 @@ from hrflow import Hrflow
 from pydantic import Field
 
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowJob
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse_v2 import (
     DataType,
     FieldType,
     ParametersModel,
@@ -32,7 +32,7 @@ class JobParsingException(Exception):
         self.client_response = client_response
 
 
-class CreateJobParameters(ParametersModel):
+class AuthParameters(ParametersModel):
     api_secret: str = Field(
         ...,
         description="X-API-KEY used to access HrFlow.ai API",
@@ -44,13 +44,11 @@ class CreateJobParameters(ParametersModel):
         description="X-USER-EMAIL used to access HrFlow.ai API",
         field_type=FieldType.Auth,
     )
+
+
+class CreateJobParameters(ParametersModel):
     board_key: str = Field(
         ..., description="HrFlow.ai board key", field_type=FieldType.QueryParam
-    )
-    update_content: bool = Field(
-        False,
-        description="When enabled jobs already present in the board are updated",
-        field_type=FieldType.Other,
     )
     enrich_with_parsing: bool = Field(
         False,
@@ -60,24 +58,8 @@ class CreateJobParameters(ParametersModel):
 
 
 class UpdateJobParameters(ParametersModel):
-    api_secret: str = Field(
-        ...,
-        description="X-API-KEY used to access HrFlow.ai API",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    api_user: str = Field(
-        ...,
-        description="X-USER-EMAIL used to access HrFlow.ai API",
-        field_type=FieldType.Auth,
-    )
     board_key: str = Field(
         ..., description="HrFlow.ai board key", field_type=FieldType.QueryParam
-    )
-    update_content: bool = Field(
-        False,
-        description="When enabled jobs already present in the board are updated",
-        field_type=FieldType.Other,
     )
     enrich_with_parsing: bool = Field(
         False,
@@ -87,52 +69,8 @@ class UpdateJobParameters(ParametersModel):
 
 
 class ArchiveJobParameters(ParametersModel):
-    api_secret: str = Field(
-        ...,
-        description="X-API-KEY used to access HrFlow.ai API",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    api_user: str = Field(
-        ...,
-        description="X-USER-EMAIL used to access HrFlow.ai API",
-        field_type=FieldType.Auth,
-    )
     board_key: str = Field(
         ..., description="HrFlow.ai board key", field_type=FieldType.QueryParam
-    )
-
-
-# FIXME: deprecated
-class WriteJobParameters(ParametersModel):
-    api_secret: str = Field(
-        ...,
-        description="X-API-KEY used to access HrFlow.ai API",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    api_user: str = Field(
-        ...,
-        description="X-USER-EMAIL used to access HrFlow.ai API",
-        field_type=FieldType.Auth,
-    )
-    board_key: str = Field(
-        ..., description="HrFlow.ai board key", field_type=FieldType.QueryParam
-    )
-    sync: bool = Field(
-        True,
-        description="When enabled only pushed jobs will remain in the board",
-        field_type=FieldType.Other,
-    )
-    update_content: bool = Field(
-        False,
-        description="When enabled jobs already present in the board are updated",
-        field_type=FieldType.Other,
-    )
-    enrich_with_parsing: bool = Field(
-        False,
-        description="When enabled jobs are enriched with HrFlow.ai parsing",
-        field_type=FieldType.Other,
     )
 
 
@@ -211,14 +149,17 @@ def enrich_job_with_parsing(hrflow_client: Hrflow, job: t.Dict) -> None:
 
 
 def create(
-    adapter: LoggerAdapter, parameters: CreateJobParameters, jobs: t.Iterable[t.Dict]
+    adapter: LoggerAdapter,
+    auth_parameters: AuthParameters,
+    action_parameters: CreateJobParameters,
+    jobs: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
     failed_jobs = []
     hrflow_client = Hrflow(
-        api_secret=parameters.api_secret, api_user=parameters.api_user
+        api_secret=auth_parameters.api_secret, api_user=auth_parameters.api_user
     )
     for job in jobs:
-        if parameters.enrich_with_parsing:
+        if action_parameters.enrich_with_parsing:
             adapter.info("Starting parsing for job without reference")
             try:
                 enrich_job_with_parsing(hrflow_client, job)
@@ -230,12 +171,12 @@ def create(
                 failed_jobs.append(job)
                 continue
         response = hrflow_client.job.storing.add_json(
-            board_key=parameters.board_key, job_json=job
+            board_key=action_parameters.board_key, job_json=job
         )
         if response["code"] >= 400:
             adapter.error(
                 "Failed to index job with no reference board_key={} response={}".format(
-                    parameters.board_key, response
+                    action_parameters.board_key, response
                 )
             )
             failed_jobs.append(job)
@@ -243,14 +184,17 @@ def create(
 
 
 def update(
-    adapter: LoggerAdapter, parameters: UpdateJobParameters, jobs: t.Iterable[t.Dict]
+    adapter: LoggerAdapter,
+    auth_parameters: AuthParameters,
+    action_parameters: UpdateJobParameters,
+    jobs: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
     failed_jobs = []
     hrflow_client = Hrflow(
-        api_secret=parameters.api_secret, api_user=parameters.api_user
+        api_secret=auth_parameters.api_secret, api_user=auth_parameters.api_user
     )
     for job in jobs:
-        if parameters.enrich_with_parsing:
+        if action_parameters.enrich_with_parsing:
             adapter.info("Starting parsing for job without reference")
             try:
                 enrich_job_with_parsing(hrflow_client, job)
@@ -262,12 +206,12 @@ def update(
                 failed_jobs.append(job)
                 continue
         response = hrflow_client.job.storing.add_json(
-            board_key=parameters.board_key, job_json=job
+            board_key=action_parameters.board_key, job_json=job
         )
         if response["code"] >= 400:
             adapter.error(
                 "Failed to index job with no reference board_key={} response={}".format(
-                    parameters.board_key, response
+                    action_parameters.board_key, response
                 )
             )
             failed_jobs.append(job)
@@ -285,7 +229,19 @@ HrFlowJobWarehouse = Warehouse(
     name="HrFlow.ai Jobs",
     data_schema=HrFlowJob,
     data_type=DataType.job,
-    create=WarehouseWriteAction(parameters=CreateJobParameters, function=create),
-    update=WarehouseWriteAction(parameters=UpdateJobParameters, function=update),
-    archive=WarehouseWriteAction(parameters=ArchiveJobParameters, function=archive),
+    create=WarehouseWriteAction(
+        auth_parameters=AuthParameters,
+        action_parameters=CreateJobParameters,
+        function=create,
+    ),
+    update=WarehouseWriteAction(
+        auth_parameters=AuthParameters,
+        action_parameters=UpdateJobParameters,
+        function=update,
+    ),
+    archive=WarehouseWriteAction(
+        auth_parameters=AuthParameters,
+        action_parameters=ArchiveJobParameters,
+        function=archive,
+    ),
 )

@@ -5,8 +5,18 @@ import requests
 
 from hrflow_connectors.connectors.bullhorn.schemas import BullhornProfile
 from hrflow_connectors.connectors.bullhorn.utils import date_format
+from hrflow_connectors.connectors.bullhorn.warehouse import BullhornJobWarehouse
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
-from hrflow_connectors.core.connector_v2 import Connector, ConnectorType  # noqa
+from hrflow_connectors.connectors.hrflow.warehouse_v2 import HrFlowJobWarehouse
+from hrflow_connectors.core.connector_v2 import (  # noqa
+    ActionMode,
+    ActionType,
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    ConnectorType,
+    WorkflowType,
+)
 
 
 def to_int(elm: t.Any) -> int:
@@ -387,79 +397,80 @@ def format_application(data: HrFlowProfile) -> t.Dict:
 DESCRIPTION = "Transform Your Business with Bullhorn Staffing and Recruitment Software"
 
 # FIXME: this is not working
-# Bullhorn = Connector(
-#     name="Bullhorn",
-#     type=ConnectorType.ATS,
-#     subtype="bullhorn",
-#     description=DESCRIPTION,
-#     url="https://www.bullhorn.com/",
-#     actions=[
-#         ConnectorAction(
-#             name="create_profiles_in_bullhorn",
-#             trigger_type=WorkflowType.catch,
-#             description=(
-#                 "Writes a profile from Hrflow.ai Source to Bullhorn via the API"
-#             ),
-#             parameters=BaseActionParameters.with_defaults(
-#                 "WriteProfileActionParameters", format=format_profile
-#             ),
-#             origin=HrFlowProfileWarehouse,
-#             target=BullhornProfileWarehouse,
-#             action_type=ActionType.outbound,
-#         ),
-#         ConnectorAction(
-#             name="create_jobs_in_hrflow",
-#             trigger_type=WorkflowType.pull,
-#             description=(
-#                 "Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board"
-#             ),
-#             parameters=BaseActionParameters.with_defaults(
-#                 "ReadJobsActionParameters", format=format_job
-#             ),
-#             origin=BullhornJobWarehouse,
-#             target=HrFlowJobWarehouse,
-#             action_type=ActionType.inbound,
-#         ),
-#         ConnectorAction(
-#             name="create_profiles_from_attachments_in_hrflow",
-#             trigger_type=WorkflowType.pull,
-#             description=(
-#                 "retrieves profiles attachments from Bullhorn and Parses them"
-#                 " and sends them to Hrflow.ai source"
-#             ),
-#             parameters=BaseActionParameters.with_defaults(
-#                 "ReadProfileActionParameters", format=profile_format_parsing
-#             ),
-#             origin=BullhornProfileParsingWarehouse,
-#             target=HrFlowProfileParsingWarehouse,
-#             action_type=ActionType.inbound,
-#         ),
-#         ConnectorAction(
-#             name="create_profiles_in_hrflow",
-#             trigger_type=WorkflowType.pull,
-#             description=(
-#                 "Retrieves profiles from Bullhorn and writes them to Hrflow.ai source"
-#             ),
-#             parameters=BaseActionParameters.with_defaults(
-#                 "ReadProfileActionParameters", format=profile_format
-#             ),
-#             origin=BullhornProfileWarehouse,
-#             target=HrFlowProfileWarehouse,
-#             action_type=ActionType.inbound,
-#         ),
-#         ConnectorAction(
-#             name="update_applications_in_bullhorn",
-#             trigger_type=WorkflowType.catch,
-#             description=(
-#                 "Retrieves profiles from Hrflow.ai and writes their applications"
-#                 " to the Bullhorn source"
-#             ),
-#             parameters=BaseActionParameters.with_defaults(
-#                 "WriteProfileActionParameters", format=format_application
-#             ),
-#             origin=HrFlowProfileWarehouse,
-#             target=BullhornApplicationWarehouse,
-#             action_type=ActionType.outbound,
-#         ),
-#     ],
-# )
+Bullhorn = Connector(
+    name="Bullhorn",
+    type=ConnectorType.ATS,
+    subtype="bullhorn",
+    description=DESCRIPTION,
+    url="https://www.bullhorn.com/",
+    actions=[
+        # ConnectorAction(
+        #     name="create_profiles_in_bullhorn",
+        #     trigger_type=WorkflowType.catch,
+        #     description=(
+        #         "Writes a profile from Hrflow.ai Source to Bullhorn via the API"
+        #     ),
+        #     parameters=BaseActionParameters.with_defaults(
+        #         "WriteProfileActionParameters", format=format_profile
+        #     ),
+        #     origin=HrFlowProfileWarehouse,
+        #     target=BullhornProfileWarehouse,
+        #     action_type=ActionType.outbound,
+        # ),
+        ConnectorAction(
+            name="create_jobs_in_hrflow",
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board"
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadJobsActionParameters", format=format_job
+            ),
+            origin=BullhornJobWarehouse,
+            target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
+            action_mode=ActionMode.create,
+        ),
+        # ConnectorAction(
+        #     name="create_profiles_from_attachments_in_hrflow",
+        #     trigger_type=WorkflowType.pull,
+        #     description=(
+        #         "retrieves profiles attachments from Bullhorn and Parses them"
+        #         " and sends them to Hrflow.ai source"
+        #     ),
+        #     parameters=BaseActionParameters.with_defaults(
+        #         "ReadProfileActionParameters", format=profile_format_parsing
+        #     ),
+        #     origin=BullhornProfileParsingWarehouse,
+        #     target=HrFlowProfileParsingWarehouse,
+        #     action_type=ActionType.inbound,
+        # ),
+        # ConnectorAction(
+        #     name="create_profiles_in_hrflow",
+        #     trigger_type=WorkflowType.pull,
+        #     description=(
+        #         "Retrieves profiles from Bullhorn and writes them to Hrflow.ai source"
+        #     ),
+        #     parameters=BaseActionParameters.with_defaults(
+        #         "ReadProfileActionParameters", format=profile_format
+        #     ),
+        #     origin=BullhornProfileWarehouse,
+        #     target=HrFlowProfileWarehouse,
+        #     action_type=ActionType.inbound,
+        # ),
+        # ConnectorAction(
+        #     name="update_applications_in_bullhorn",
+        #     trigger_type=WorkflowType.catch,
+        #     description=(
+        #         "Retrieves profiles from Hrflow.ai and writes their applications"
+        #         " to the Bullhorn source"
+        #     ),
+        #     parameters=BaseActionParameters.with_defaults(
+        #         "WriteProfileActionParameters", format=format_application
+        #     ),
+        #     origin=HrFlowProfileWarehouse,
+        #     target=BullhornApplicationWarehouse,
+        #     action_type=ActionType.outbound,
+        # ),
+    ],
+)

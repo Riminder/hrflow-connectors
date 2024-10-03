@@ -54,7 +54,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-Lever.pull_job_list(
+Lever.ActionName.pull_job_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],

@@ -44,7 +44,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-TalentSoft.applicant_new(
+TalentSoft.ActionName.applicant_new(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],

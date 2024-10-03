@@ -110,9 +110,16 @@ class ParametersModel(BaseModel, metaclass=ParametersMeta):
 
 class WarehouseReadAction(BaseModel):
     endpoints: t.List[ActionEndpoints] = Field(default_factory=list)
-    parameters: t.Type[ParametersModel]
+    auth_parameters: t.Type[ParametersModel]
+    action_parameters: t.Type[ParametersModel]
     function: t.Callable[
-        [LoggerAdapter, ParametersModel, t.Optional[ReadMode], t.Optional[str]],
+        [
+            LoggerAdapter,
+            ParametersModel,
+            ParametersModel,
+            t.Optional[ReadMode],
+            t.Optional[str],
+        ],
         t.Iterable[t.Dict],
     ]
     item_to_read_from: t.Optional[t.Callable[[t.Dict], str]] = None
@@ -135,9 +142,11 @@ class WarehouseReadAction(BaseModel):
 
 class WarehouseWriteAction(BaseModel):
     endpoints: t.List[ActionEndpoints] = Field(default_factory=list)
-    parameters: t.Type[ParametersModel]
+    auth_parameters: t.Type[ParametersModel]
+    action_parameters: t.Type[ParametersModel]
     function: t.Callable[
-        [LoggerAdapter, ParametersModel, t.Iterable[t.Dict]], t.List[t.Dict]
+        [LoggerAdapter, ParametersModel, ParametersModel, t.Iterable[t.Dict]],
+        t.List[t.Dict],
     ]
 
     def __call__(self, *args, **kwargs) -> t.List[t.Dict]:
@@ -192,15 +201,15 @@ class Warehouse(BaseModel):
     def __with_fixed_parameters(self, action_type: ActionType, **tofix) -> "Warehouse":
         action_to_fix = getattr(self, action_type.name)
         fixed = dict()
-        original_fields = action_to_fix.parameters.__fields__
+        original_fields = action_to_fix.action_parameters.__fields__
         for field, value in tofix.items():
             if field not in original_fields:
                 raise FieldNotFoundError(
                     "The field you are trying to fix '{}' is not part of the available"
-                    " parameters {}".format(field, list(original_fields.keys()))
+                    " action_parameters {}".format(field, list(original_fields.keys()))
                 )
             try:
-                action_to_fix.parameters(**{field: value})
+                action_to_fix.action_parameters(**{field: value})
             except ValidationError as e:
                 errors = e.errors()
                 field_error = next(
@@ -213,7 +222,7 @@ class Warehouse(BaseModel):
                             value, field, field_error
                         )
                     )
-            original = action_to_fix.parameters.__fields__[field]
+            original = action_to_fix.action_parameters.__fields__[field]
             fixed[field] = (
                 original.type_,
                 Field(
@@ -225,7 +234,7 @@ class Warehouse(BaseModel):
             )
         with_fixed_parameters = create_model(
             "Fixed{}Parameters".format(action_type.name.capitalize()),
-            __base__=action_to_fix.parameters,
+            __base__=action_to_fix.action_parameters,
             **fixed,
         )
         if action_type is ActionType.read:
@@ -235,7 +244,8 @@ class Warehouse(BaseModel):
                 data_type=self.data_type,
                 read=WarehouseReadAction(
                     endpoints=self.read.endpoints,
-                    parameters=with_fixed_parameters,
+                    auth_parameters=self.read.auth_parameters,
+                    action_parameters=with_fixed_parameters,
                     function=self.read.function,
                 ),
                 create=self.create,
@@ -250,7 +260,8 @@ class Warehouse(BaseModel):
                 read=self.read,
                 create=WarehouseWriteAction(
                     endpoints=self.create.endpoints,
-                    parameters=with_fixed_parameters,
+                    auth_parameters=self.create.auth_parameters,
+                    action_parameters=with_fixed_parameters,
                     function=self.create.function,
                 ),
                 update=self.update,
@@ -265,7 +276,8 @@ class Warehouse(BaseModel):
                 create=self.create,
                 update=WarehouseWriteAction(
                     endpoints=self.update.endpoints,
-                    parameters=with_fixed_parameters,
+                    auth_parameters=self.update.auth_parameters,
+                    action_parameters=with_fixed_parameters,
                     function=self.update.function,
                 ),
                 archive=self.archive,
@@ -280,7 +292,8 @@ class Warehouse(BaseModel):
                 update=self.update,
                 archive=WarehouseWriteAction(
                     endpoints=self.archive.endpoints,
-                    parameters=with_fixed_parameters,
+                    auth_parameters=self.archive.auth_parameters,
+                    action_parameters=with_fixed_parameters,
                     function=self.archive.function,
                 ),
             )

@@ -344,19 +344,40 @@ def generate_docs(
             if not action_docs_directory.is_dir():
                 action_docs_directory.mkdir()
             for action in model.actions:
-                action_name = action.name.value
+                # FIXME: action name should be str right away
+                if isinstance(action.name, str):
+                    action_name = action.name
+                else:
+                    action_name = action.name.value
                 action_fields = get_template_fields(
                     fields=action.parameters.__fields__.values(),
                     documentation_path=action_docs_directory,
                 )
-                origin_fields = get_template_fields(
-                    fields=action.origin.read.parameters.__fields__.values(),
-                    documentation_path=action_docs_directory,
-                )
-                target_fields = get_template_fields(
-                    fields=action.target.write.parameters.__fields__.values(),
-                    documentation_path=action_docs_directory,
-                )
+                # FIXME: update old connectors to fix behavior here
+                if getattr(action.origin.read, "parameters", None) is not None:
+                    origin_fields = get_template_fields(
+                        fields=action.origin.read.parameters.__fields__.values(),
+                        documentation_path=action_docs_directory,
+                    )
+                else:
+                    # FIXME: auth parameters missing
+                    origin_fields = get_template_fields(
+                        fields=action.origin.read.action_parameters.__fields__.values(),
+                        documentation_path=action_docs_directory,
+                    )
+                # FIXME: handle remaining write action: update, archive
+                if getattr(action.target, "write", None) is not None:
+                    target_fields = get_template_fields(
+                        fields=action.target.write.parameters.__fields__.values(),
+                        documentation_path=action_docs_directory,
+                    )
+                    target_endpoints = action.target.write.endpoints
+                else:
+                    target_fields = get_template_fields(
+                        fields=action.target.create.action_parameters.__fields__.values(),
+                        documentation_path=action_docs_directory,
+                    )
+                    target_endpoints = action.target.create.endpoints
                 action_documentation_content = Templates.get_template(
                     "action_readme.md.j2"
                 ).render(
@@ -370,7 +391,7 @@ def generate_docs(
                     origin_endpoints=action.origin.read.endpoints,
                     target_name=action.target.name,
                     target_fields=target_fields,
-                    target_endpoints=action.target.write.endpoints,
+                    target_endpoints=target_endpoints,
                 )
                 action_documentation_content = py_37_38_compat_patch(
                     action_documentation_content
