@@ -52,6 +52,7 @@ This new connector will enable:
 
 | Action | Description |
 | ------- | ----------- |
+| [**Create jobs in hrflow**](docs/.md) | Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board |
 
 
 </p>|

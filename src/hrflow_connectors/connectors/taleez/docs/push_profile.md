@@ -42,7 +42,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-Taleez.push_profile(
+Taleez.ActionName.push_profile(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
