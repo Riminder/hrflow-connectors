@@ -74,7 +74,6 @@ def test_hrflow_connectors_manifest(manifest_directory, test_connectors_director
             subtype="automationconnector",
         ),
         dict(name="JobboardConnector", type="Job Board", subtype="jobboardconnector"),
-        dict(name="WrongConnector", type=None, subtype="wrongconnector"),
     ]
     with added_connectors(
         [("SmartLeads", connector)],

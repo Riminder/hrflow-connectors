@@ -1299,7 +1299,7 @@ def hrflow_connectors_manifest(
             else:
                 manifest_connector = dict(
                     name=connector["name"],
-                    type=connector["type"],
+                    type=connector["type"].lower().replace(" ", ""),
                     subtype=connector["subtype"],
                     logo=compute_logo_path(
                         name=connector["name"],
