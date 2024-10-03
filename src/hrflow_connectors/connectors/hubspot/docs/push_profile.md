@@ -44,7 +44,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-Hubspot.ActionName.push_profile(
+Hubspot.push_profile(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],

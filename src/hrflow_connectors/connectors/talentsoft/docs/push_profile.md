@@ -44,7 +44,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-TalentSoft.ActionName.push_profile(
+TalentSoft.push_profile(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
