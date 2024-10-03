@@ -563,15 +563,18 @@ class ConnectorAction(BaseModel):
     def workflow_code(self, import_name: str, workflow_type: WorkflowType) -> str:
         if self.action_mode == ActionMode.create:
             target_parameters = [
-                parameter for parameter in self.target.create.parameters.__fields__
+                parameter
+                for parameter in self.target.create.action_parameters.__fields__
             ]
         elif self.action_mode == ActionMode.update:
             target_parameters = [
-                parameter for parameter in self.target.update.parameters.__fields__
+                parameter
+                for parameter in self.target.update.action_parameters.__fields__
             ]
         else:
             target_parameters = [
-                parameter for parameter in self.target.archive.parameters.__fields__
+                parameter
+                for parameter in self.target.archive.action_parameters.__fields__
             ]
         return Templates.get_template("workflow.py.j2").render(
             format_placeholder=self.WORKFLOW_FORMAT_PLACEHOLDER,
@@ -581,10 +584,10 @@ class ConnectorAction(BaseModel):
             origin_settings_prefix=self.ORIGIN_SETTINGS_PREFIX,
             target_settings_prefix=self.TARGET_SETTINGS_PREFIX,
             import_name=import_name,
-            action_name=self.name.value,
+            action_name=self.name,
             type=workflow_type.name,
             origin_parameters=[
-                parameter for parameter in self.origin.read.parameters.__fields__
+                parameter for parameter in self.origin.read.action_parameters.__fields__
             ],
             target_parameters=target_parameters,
         )
@@ -1181,30 +1184,44 @@ class Connector:
             format_placeholder = action.WORKFLOW_FORMAT_PLACEHOLDER
             logics_placeholder = action.WORKFLOW_LOGICS_PLACEHOLDER
             event_parser_placeholder = action.WORKFLOW_EVENT_PARSER_PLACEHOLDER
+            # FIXME: action name will be a string once all connectors updated
+            if isinstance(action.name, str):
+                action_name = action.name
+            else:
+                action_name = action.name.value
             jsonmap_path = (
                 connectors_directory
                 / model.subtype
                 / "mappings"
                 / "format"
-                / "{}.json".format(action.name.value)
+                / "{}.json".format(action_name)
             )
             try:
                 jsonmap = json.loads(jsonmap_path.read_text())
             except FileNotFoundError:
                 jsonmap = {}
 
+            # FIXME: this is a workaround since all connectors are not updated
+            if getattr(action.origin.read, "parameters", None) is not None:
+                origin_parameters = action.origin.read.parameters.schema()
+            else:
+                origin_parameters = action.origin.read.action_parameters.schema()
+            if getattr(action.target, "write", None) is not None:
+                target_parameters = action.target.write.parameters.schema()
+            else:
+                target_parameters = action.target.create.action_parameters.schema()
             action_manifest = dict(
-                name=action.name.value,
+                name=action_name,
                 action_type=action.action_type.value,
                 action_parameters=copy.deepcopy(action.parameters.schema()),
                 data_type=action.data_type,
                 trigger_type=action.trigger_type.value,
                 origin=action.origin.name,
-                origin_parameters=action.origin.read.parameters.schema(),
+                origin_parameters=origin_parameters,
                 origin_data_schema=action.origin.data_schema.schema(),
                 supports_incremental=action.origin.supports_incremental,
                 target=action.target.name,
-                target_parameters=action.target.write.parameters.schema(),
+                target_parameters=target_parameters,
                 target_data_schema=action.target.data_schema.schema(),
                 jsonmap=jsonmap,
                 workflow_code=action.workflow_code(
