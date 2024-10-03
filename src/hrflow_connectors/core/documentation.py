@@ -345,10 +345,10 @@ def generate_docs(
                 action_docs_directory.mkdir()
             for action in model.actions:
                 # FIXME: action name should be str right away
-                if isinstance(action.name, str):
-                    action_name = action.name
-                else:
+                if isinstance(action.name, enum.Enum):
                     action_name = action.name.value
+                else:
+                    action_name = action.name
                 action_fields = get_template_fields(
                     fields=action.parameters.__fields__.values(),
                     documentation_path=action_docs_directory,

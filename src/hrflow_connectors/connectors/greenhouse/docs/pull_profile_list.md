@@ -47,7 +47,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-Greenhouse.ActionName.pull_profile_list(
+Greenhouse.pull_profile_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],

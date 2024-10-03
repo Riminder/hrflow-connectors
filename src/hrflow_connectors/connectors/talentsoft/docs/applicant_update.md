@@ -45,7 +45,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-TalentSoft.ActionName.applicant_update(
+TalentSoft.applicant_update(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],

@@ -414,25 +414,6 @@ class WorkflowType(str, enum.Enum):
     pull = "schedule"
 
 
-# class ActionName(str, enum.Enum):
-#     pull_application_list = "pull_application_list"
-#     pull_job_list = "pull_job_list"
-#     pull_profile_list = "pull_profile_list"
-#     pull_resume_attachment_list = "pull_resume_attachment_list"
-#     push_profile = "push_profile"
-#     push_job = "push_job"
-#     push_profile_list = "push_profile_list"
-#     push_job_list = "push_job_list"
-#     push_score_list = "push_score_list"
-#     catch_profile = "catch_profile"
-#     catch_job = "catch_job"
-#     push_application = "push_application"
-#     # TalentSoft actions
-#     applicant_new = "applicant_new"
-#     applicant_resume_update = "applicant_resume_update"
-#     applicant_update = "applicant_update"
-
-
 class ActionType(str, enum.Enum):
     """
     ActionType is used to distinguish between inbound and outbound actions.
@@ -538,45 +519,42 @@ class ConnectorAction(BaseModel):
             raise ValueError("Target warehouse is not archivable")
         return target
 
-    # @validator("name", pre=False)
-    # def name_is_coherent_with_trigger_type(cls, v, values, **kwargs):
-    #     if (
-    #         v
-    #         in [
-    #             ActionName.pull_application_list,
-    #             ActionName.pull_job_list,
-    #             ActionName.pull_profile_list,
-    #         ]
-    #         and values["trigger_type"] != WorkflowType.pull
-    #     ):
-    #         raise ValueError(
-    #             "`pull_application_list`, `pull_job_list` and `pull_profile_list`"
-    #             " are only available for"
-    #             " trigger_type={}".format(WorkflowType.pull)
-    #         )
-    #     return v
-
     @property
     def data_type(self) -> str:
         return self.origin.data_type.name
 
     def workflow_code(self, import_name: str, workflow_type: WorkflowType) -> str:
-        if self.action_mode == ActionMode.create:
-            target_parameters = [
-                parameter
-                for parameter in self.target.create.action_parameters.__fields__
+        if self.action_type == ActionType.inbound:
+            connector_auth_parameters = [
+                parameter for parameter in self.origin.read.auth_parameters.__fields__
             ]
-        elif self.action_mode == ActionMode.update:
-            target_parameters = [
+            hrflow_auth_parameters = [
                 parameter
-                for parameter in self.target.update.action_parameters.__fields__
+                for parameter in getattr(
+                    self.target, self.action_mode.value, []
+                ).auth_parameters.__fields__
             ]
         else:
-            target_parameters = [
+            connector_auth_parameters = [
                 parameter
-                for parameter in self.target.archive.action_parameters.__fields__
+                for parameter in getattr(
+                    self.target, self.action_mode.value, []
+                ).auth_parameters.__fields__
             ]
-        return Templates.get_template("workflow.py.j2").render(
+            hrflow_auth_parameters = [
+                parameter for parameter in self.origin.read.auth_parameters.__fields__
+            ]
+
+        push_parameters = [
+            parameter
+            for parameter in getattr(
+                self.target, self.action_mode.value
+            ).action_parameters.__fields__
+        ]
+        pull_parameters = [
+            parameter for parameter in self.origin.read.action_parameters.__fields__
+        ]
+        return Templates.get_template("workflow_v2.py.j2").render(
             format_placeholder=self.WORKFLOW_FORMAT_PLACEHOLDER,
             logics_placeholder=self.WORKFLOW_LOGICS_PLACEHOLDER,
             event_parser_placeholder=self.WORKFLOW_EVENT_PARSER_PLACEHOLDER,
@@ -586,19 +564,16 @@ class ConnectorAction(BaseModel):
             import_name=import_name,
             action_name=self.name,
             type=workflow_type.name,
-            origin_parameters=[
-                parameter for parameter in self.origin.read.action_parameters.__fields__
-            ],
-            target_parameters=target_parameters,
+            connector_auth_parameters=connector_auth_parameters,
+            hrflow_auth_parameters=hrflow_auth_parameters,
+            pull_parameters=pull_parameters,
+            push_parameters=push_parameters,
         )
 
     def run(
         self,
         connector_name: str,
         workflow_id: str,
-        # action_parameters: t.Dict,
-        # origin_parameters: t.Dict,
-        # target_parameters: t.Dict,
         connector_auth: t.Dict,
         hrflow_auth: t.Dict,
         pull_parameters: t.Dict,
@@ -989,7 +964,6 @@ class ConnectorAction(BaseModel):
 
 
 class ParametersOverride(BaseModel):
-    # name: ActionName
     name: str
     format: t.Optional[FormatFunctionType] = None
     event_parser: t.Optional[EventParserFunctionType] = None
@@ -1200,29 +1174,48 @@ class Connector:
                 jsonmap = json.loads(jsonmap_path.read_text())
             except FileNotFoundError:
                 jsonmap = {}
-
-            # FIXME: this is a workaround since all connectors are not updated
-            if getattr(action.origin.read, "parameters", None) is not None:
-                origin_parameters = action.origin.read.parameters.schema()
+            if action.action_type == ActionType.inbound:
+                connector_auth_parameters = [
+                    parameter
+                    for parameter in action.origin.read.auth_parameters.__fields__
+                ]
+                hrflow_auth_parameters = [
+                    parameter
+                    for parameter in getattr(
+                        action.target, action.action_mode.value, []
+                    ).auth_parameters.__fields__
+                ]
             else:
-                origin_parameters = action.origin.read.action_parameters.schema()
-            if getattr(action.target, "write", None) is not None:
-                target_parameters = action.target.write.parameters.schema()
-            else:
-                target_parameters = action.target.create.action_parameters.schema()
+                connector_auth_parameters = [
+                    parameter
+                    for parameter in getattr(
+                        action.target, action.action_mode.value, []
+                    ).auth_parameters.__fields__
+                ]
+                hrflow_auth_parameters = [
+                    parameter
+                    for parameter in action.origin.read.auth_parameters.__fields__
+                ]
+            pull_parameters = action.origin.read.action_parameters.schema()
+            push_parameters = getattr(
+                action.target, action.action_mode.value
+            ).action_parameters.schema()
             action_manifest = dict(
                 name=action_name,
                 action_type=action.action_type.value,
+                action_mode=action.action_mode.value,
                 action_parameters=copy.deepcopy(action.parameters.schema()),
+                connector_auth_parameters=connector_auth_parameters,
+                hrflow_auth_parameters=hrflow_auth_parameters,
                 data_type=action.data_type,
                 trigger_type=action.trigger_type.value,
                 origin=action.origin.name,
-                origin_parameters=origin_parameters,
                 origin_data_schema=action.origin.data_schema.schema(),
                 supports_incremental=action.origin.supports_incremental,
+                pull_parameters=pull_parameters,
                 target=action.target.name,
-                target_parameters=target_parameters,
                 target_data_schema=action.target.data_schema.schema(),
+                push_parameters=push_parameters,
                 jsonmap=jsonmap,
                 workflow_code=action.workflow_code(
                     import_name=import_name, workflow_type=action.trigger_type

@@ -41,7 +41,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-Carrevolutis.ActionName.catch_profile(
+Carrevolutis.catch_profile(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],

@@ -50,7 +50,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-DigitalRecruiters.ActionName.push_profile(
+DigitalRecruiters.push_profile(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
