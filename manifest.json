@@ -1853,16 +1853,66 @@
               }
             }
           },
-          "connector_auth_parameters": [
-            "client_id",
-            "client_secret",
-            "password",
-            "username"
-          ],
-          "hrflow_auth_parameters": [
-            "api_secret",
-            "api_user"
-          ],
+          "connector_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "title": "Client Id",
+                "description": "Client identifier for Bullhorn",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Client secret identifier for Bullhorn",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "password": {
+                "title": "Password",
+                "description": "Password for Bullhorn login",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "username": {
+                "title": "Username",
+                "description": "Username for Bullhorn login",
+                "field_type": "Auth",
+                "type": "string"
+              }
+            },
+            "required": [
+              "client_id",
+              "client_secret",
+              "password",
+              "username"
+            ],
+            "additionalProperties": false
+          },
+          "hrflow_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "X-API-KEY used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "X-USER-EMAIL used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user"
+            ],
+            "additionalProperties": false
+          },
           "data_type": "job",
           "trigger_type": "schedule",
           "origin": "Bullhorn Jobs",

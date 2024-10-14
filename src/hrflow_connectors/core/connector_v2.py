@@ -152,6 +152,7 @@ DEFAULT_PUSH_JOB_ACTION_MANIFEST = {
     "workflow_code_workflow_id_settings_key": "__workflow_id",
 }
 
+ACTION_MODE_MAPPING = {'create': 'create', 'update': 'update', 'archive': 'archive'}
 
 class ConnectorActionAdapter(logging.LoggerAdapter):
     def process(self, msg: str, kwargs: t.Dict) -> t.Tuple[str, t.Dict]:
@@ -1175,27 +1176,11 @@ class Connector:
             except FileNotFoundError:
                 jsonmap = {}
             if action.action_type == ActionType.inbound:
-                connector_auth_parameters = [
-                    parameter
-                    for parameter in action.origin.read.auth_parameters.__fields__
-                ]
-                hrflow_auth_parameters = [
-                    parameter
-                    for parameter in getattr(
-                        action.target, action.action_mode.value, []
-                    ).auth_parameters.__fields__
-                ]
+                connector_auth_parameters = action.origin.read.auth_parameters.schema()
+                hrflow_auth_parameters = getattr(action.target, ACTION_MODE_MAPPING[action.action_mode]).auth_parameters.schema()
             else:
-                connector_auth_parameters = [
-                    parameter
-                    for parameter in getattr(
-                        action.target, action.action_mode.value, []
-                    ).auth_parameters.__fields__
-                ]
-                hrflow_auth_parameters = [
-                    parameter
-                    for parameter in action.origin.read.auth_parameters.__fields__
-                ]
+                connector_auth_parameters =  getattr(action.target, ACTION_MODE_MAPPING[action.action_mode]).auth_parameters.schema()
+                hrflow_auth_parameters = action.origin.read.auth_parameters.schema()
             pull_parameters = action.origin.read.action_parameters.schema()
             push_parameters = getattr(
                 action.target, action.action_mode.value
