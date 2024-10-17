@@ -26,8 +26,8 @@ Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `api_secret` :red_circle: | `str` | None | X-API-KEY used to access HrFlow.ai API |
-| `api_user` :red_circle: | `str` | None | X-USER-EMAIL used to access HrFlow.ai API |
+| `api_secret` :red_circle: | `str` | None | API Key used to access HrFlow.ai API |
+| `api_user` :red_circle: | `str` | None | User email used to access HrFlow.ai API |
 
 ## Pull Parameters
 

@@ -110,8 +110,8 @@ class ParametersModel(BaseModel, metaclass=ParametersMeta):
 
 class WarehouseReadAction(BaseModel):
     endpoints: t.List[ActionEndpoints] = Field(default_factory=list)
-    auth_parameters: t.Type[ParametersModel]
-    action_parameters: t.Type[ParametersModel]
+    auth_parameters: t.Optional[t.Type[ParametersModel]]
+    action_parameters: t.Optional[t.Type[ParametersModel]]
     function: t.Callable[
         [
             LoggerAdapter,
@@ -142,8 +142,8 @@ class WarehouseReadAction(BaseModel):
 
 class WarehouseWriteAction(BaseModel):
     endpoints: t.List[ActionEndpoints] = Field(default_factory=list)
-    auth_parameters: t.Type[ParametersModel]
-    action_parameters: t.Type[ParametersModel]
+    auth_parameters: t.Optional[t.Type[ParametersModel]]
+    action_parameters: t.Optional[t.Type[ParametersModel]]
     function: t.Callable[
         [LoggerAdapter, ParametersModel, ParametersModel, t.Iterable[t.Dict]],
         t.List[t.Dict],

@@ -35,13 +35,13 @@ class JobParsingException(Exception):
 class AuthParameters(ParametersModel):
     api_secret: str = Field(
         ...,
-        description="X-API-KEY used to access HrFlow.ai API",
+        description="API Key used to access HrFlow.ai API",
         repr=False,
         field_type=FieldType.Auth,
     )
     api_user: str = Field(
         ...,
-        description="X-USER-EMAIL used to access HrFlow.ai API",
+        description="User email used to access HrFlow.ai API",
         field_type=FieldType.Auth,
     )
 
