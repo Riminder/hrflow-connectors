@@ -16,6 +16,9 @@ from hrflow_connectors.core.warehouse import (  # noqa
     ParametersModel,
     ReadMode,
     Warehouse,
+)
+
+from hrflow_connectors.core.warehouse_v2 import (
     WarehouseReadAction,
     WarehouseWriteAction,
 )

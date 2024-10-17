@@ -1,11 +1,12 @@
 import json
 import typing as t
 from datetime import datetime
+from enum import Enum
 from io import BytesIO
 from logging import LoggerAdapter
 
 import requests
-from pydantic import Field
+from pydantic import Field, validator
 
 from hrflow_connectors.connectors.bullhorn.schemas import BullhornJob
 from hrflow_connectors.connectors.bullhorn.utils.authentication import auth
@@ -73,27 +74,148 @@ class AuthParameters(ParametersModel):
 #     )
 
 
+class Operator(str, Enum):
+    EQUAL = "="
+    IN = "IN"
+    NOT_IN = "NOT IN"
+
+
+class String(ParametersModel):
+    __root__: str = Field(..., title="string", repr=False, field_type=FieldType.Other)
+
+
+class Boolean(ParametersModel):
+    __root__: bool = Field(..., title="boolean", repr=False, field_type=FieldType.Other)
+
+
+class Integer(ParametersModel):
+    __root__: int = Field(..., title="integer", repr=False, field_type=FieldType.Other)
+
+
+class Array(ParametersModel):
+    __root__: t.List[str] = Field(
+        ..., title="array", repr=False, field_type=FieldType.Other
+    )
+
+
+class Condition(ParametersModel):
+    field: str = Field(
+        ...,
+        description="The field to be queried",
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
+    operator: Operator = Field(
+        ...,
+        description="The operator used for the condition",
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
+    value: t.Union[String, Boolean, Integer, Array] = Field(
+        ...,
+        description="The value for the condition",
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
+
+    def to_query_string(self) -> str:
+        if isinstance(self.value, list):
+            if self.operator == Operator.IN:
+                value_str = " OR ".join([f'"{v}"' for v in self.value])
+                return f"{self.field}:({value_str})"
+            elif self.operator == Operator.NOT_IN:
+                value_str = " OR ".join([f'"{v}"' for v in self.value])
+                return f"-{self.field}:({value_str})"
+            else:
+                raise ValueError(
+                    f"Operator {self.operator} is not valid for list values."
+                )
+
+        if self.operator == Operator.EQUAL:
+            return (  # For boolean and integer values like isOpen:true
+                f"{self.field}:{self.value}"
+            )
+
+        raise ValueError(f"Unsupported operator: {self.operator}")
+
+
+class LogicalOperator(str, Enum):
+    AND = "AND"
+    OR = "OR"
+
+
+class Query(ParametersModel):
+    conditions: t.List[Condition] = Field(
+        ...,
+        description="List of conditions to be combined using AND or OR",
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
+    operator: t.Optional[LogicalOperator] = Field(
+        None,
+        description=(
+            "Logical operator to combine conditions (optional if there's only one"
+            " condition)"
+        ),
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
+
+    @validator("conditions")
+    def validate_conditions(cls, v):
+        if len(v) < 1:
+            raise ValueError("At least one condition must be provided.")
+        return v
+
+    @validator("operator", always=True)
+    def validate_operator(cls, v, values):
+        if len(values["conditions"]) > 1 and v is None:
+            raise ValueError(
+                "Operator is required when there is more than one condition."
+            )
+        return v
+
+    def to_query_string(self) -> str:
+        if len(self.conditions) == 1:
+            return self.conditions[0].to_query_string()
+
+        condition_strings = [
+            condition.to_query_string() for condition in self.conditions
+        ]
+        return f" {self.operator} ".join(condition_strings)
+
+
 class ReadJobsParameters(ParametersModel):
-    last_modified_date: str = Field(
+    last_modified_date: datetime = Field(
         ...,
-        description="Last Modified Date in timestamp",
+        description="The modification date from which you want to pull jobs",
         repr=False,
-        field_type=FieldType.Auth,
+        field_type=FieldType.QueryParam,
     )
 
-    fields: str = Field(
+    fields: t.List[str] = Field(
         ...,
-        description="Fields to be retrieved from Bullhorn",
+        description="List of job fields to be retrieved from Bullhorn",
         repr=False,
-        field_type=FieldType.Auth,
+        field_type=FieldType.QueryParam,
     )
 
-    query: str = Field(
+    query: t.Union[String, Query] = Field(
         ...,
-        description="the query parameters",
+        description=(
+            "A query string or a Query object with conditions combined using AND or OR"
+        ),
         repr=False,
-        field_type=FieldType.Auth,
+        field_type=FieldType.QueryParam,
     )
+
+    @validator("query")
+    def validate_query(cls, v):
+        if isinstance(v, Query):
+            return v.to_query_string()
+        elif isinstance(v, str):
+            return v  # If it's a string, return as-is
+        raise ValueError("Query must be a string or a Query object.")
 
 
 # class ReadProfileParameters(BaseParameters):
@@ -384,6 +506,14 @@ def read_jobs(
         auth_parameters.client_id,
         auth_parameters.client_secret,
     )
+    fields_str = ""
+    if action_parameters.fields:
+        fields_str = ", ".join(action_parameters.fields)
+
+    query_str = ""
+    if action_parameters.query:
+        query_str = action_parameters.query.to_query_string()
+
     if read_mode is ReadMode.sync:
         if action_parameters.last_modified_date is None:
             raise Exception("last_modified_date cannot be None in ReadMode.sync")
@@ -408,8 +538,7 @@ def read_jobs(
                 )
         else:
             last_modified_date = action_parameters.last_modified_date
-
-    last_modified_date_filter = transform_timestamp(last_modified_date)
+    last_modified_date_filter = transform_iso(last_modified_date)
     if not last_modified_date_filter:
         raise Exception(
             "error while applying a transformation date on last modified date to"
@@ -419,13 +548,13 @@ def read_jobs(
     while True:
         try:
             query = (
-                f"{action_parameters.query} AND"
+                f"{query_str} AND"
                 f" dateLastModified:[{last_modified_date_filter}%20TO%20*]"
             )
             jobs_url = (
                 authentication["restUrl"]
                 + f"search/JobOrder?query={query}&fields="
-                + action_parameters.fields
+                + fields_str
                 + "&sort=dateLastModified,id"
                 + "&BhRestToken="
                 + authentication["BhRestToken"]
@@ -649,20 +778,33 @@ def read_jobs(
 #             break
 
 
-def transform_timestamp(timestamp: t.Optional[t.Union[float, int]]) -> t.Optional[str]:
+def transform_iso(iso_date: t.Optional[t.Union[str, datetime]]) -> t.Optional[str]:
+    if iso_date is None:
+        return None
+
+    if isinstance(iso_date, str):
+        dt = datetime.fromisoformat(iso_date.replace("Z", "+00:00"))
+    elif isinstance(iso_date, datetime):
+        dt = iso_date
+    else:
+        raise TypeError(f"Expected str or datetime, got {type(iso_date)}")
+
+    # Return the date formatted in the desired format
+    return dt.strftime("%Y%m%d%H%M%S")
+
+
+def transform_timestamp_read_from(
+    timestamp: t.Optional[t.Union[float, int]]
+) -> t.Optional[str]:
     if timestamp is None:
         return None
-    # Convert the Unix timestamp (in milliseconds) to a datetime object
-    dt = datetime.utcfromtimestamp(int(timestamp) / 1000)
-    # Format the datetime object to something like 20221215121030
-    transformed_date = dt.strftime("%Y%m%d%H%M%S")
-    return transformed_date
+    transformed_date = datetime.utcfromtimestamp(int(timestamp) / 1000)
+    return transformed_date.isoformat()
 
 
-def item_to_read_from(item: t.Dict) -> str:
-    return json.dumps(
-        dict(last_modified_date=item["dateLastModified"], last_id=item["id"])
-    )
+def item_to_read_from_job(item: t.Dict) -> str:
+    last_modified_date = transform_timestamp_read_from(item["dateLastModified"])
+    return json.dumps(dict(last_modified_date=last_modified_date, last_id=item["id"]))
 
 
 # # TODO: missing update action
