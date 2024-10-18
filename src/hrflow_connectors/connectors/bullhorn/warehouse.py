@@ -74,118 +74,42 @@ class AuthParameters(ParametersModel):
 #     )
 
 
-class Operator(str, Enum):
-    EQUAL = "="
-    IN = "IN"
-    NOT_IN = "NOT IN"
-
-
-class String(ParametersModel):
-    __root__: str = Field(..., title="string", repr=False, field_type=FieldType.Other)
-
-
-class Boolean(ParametersModel):
-    __root__: bool = Field(..., title="boolean", repr=False, field_type=FieldType.Other)
-
-
-class Integer(ParametersModel):
-    __root__: int = Field(..., title="integer", repr=False, field_type=FieldType.Other)
-
-
-class Array(ParametersModel):
-    __root__: t.List[str] = Field(
-        ..., title="array", repr=False, field_type=FieldType.Other
-    )
-
-
-class Condition(ParametersModel):
-    field: str = Field(
-        ...,
-        description="The field to be queried",
-        repr=False,
-        field_type=FieldType.QueryParam,
-    )
-    operator: Operator = Field(
-        ...,
-        description="The operator used for the condition",
-        repr=False,
-        field_type=FieldType.QueryParam,
-    )
-    value: t.Union[String, Boolean, Integer, Array] = Field(
-        ...,
-        description="The value for the condition",
+class BaseJobsParameters(ParametersModel):
+    fields: str = Field(
+        "address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate",
+        description="List of job fields to be retrieved from Bullhorn",
         repr=False,
         field_type=FieldType.QueryParam,
     )
 
-    def to_query_string(self) -> str:
-        if isinstance(self.value, list):
-            if self.operator == Operator.IN:
-                value_str = " OR ".join([f'"{v}"' for v in self.value])
-                return f"{self.field}:({value_str})"
-            elif self.operator == Operator.NOT_IN:
-                value_str = " OR ".join([f'"{v}"' for v in self.value])
-                return f"-{self.field}:({value_str})"
-            else:
-                raise ValueError(
-                    f"Operator {self.operator} is not valid for list values."
-                )
-
-        if self.operator == Operator.EQUAL:
-            return (  # For boolean and integer values like isOpen:true
-                f"{self.field}:{self.value}"
-            )
-
-        raise ValueError(f"Unsupported operator: {self.operator}")
-
-
-class LogicalOperator(str, Enum):
-    AND = "AND"
-    OR = "OR"
-
-
-class Query(ParametersModel):
-    conditions: t.List[Condition] = Field(
-        ...,
-        description="List of conditions to be combined using AND or OR",
+    limit: int = Field(
+        0,
+        description="Number of items to pull",
         repr=False,
         field_type=FieldType.QueryParam,
     )
-    operator: t.Optional[LogicalOperator] = Field(
-        None,
+
+
+class CreateJobsParameters(BaseJobsParameters):
+    created_date: datetime = Field(
+        ...,
+        description="The creation date from which you want to pull jobs",
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
+
+    query: str = Field(
+        "isDeleted:0 AND isOpen:true",
         description=(
-            "Logical operator to combine conditions (optional if there's only one"
-            " condition)"
+            "This query will restrict the results retrieved from Bullhorn based on the"
+            " specified conditions"
         ),
         repr=False,
         field_type=FieldType.QueryParam,
     )
 
-    @validator("conditions")
-    def validate_conditions(cls, v):
-        if len(v) < 1:
-            raise ValueError("At least one condition must be provided.")
-        return v
 
-    @validator("operator", always=True)
-    def validate_operator(cls, v, values):
-        if len(values["conditions"]) > 1 and v is None:
-            raise ValueError(
-                "Operator is required when there is more than one condition."
-            )
-        return v
-
-    def to_query_string(self) -> str:
-        if len(self.conditions) == 1:
-            return self.conditions[0].to_query_string()
-
-        condition_strings = [
-            condition.to_query_string() for condition in self.conditions
-        ]
-        return f" {self.operator} ".join(condition_strings)
-
-
-class ReadJobsParameters(ParametersModel):
+class UpdateJobsParameters(BaseJobsParameters):
     last_modified_date: datetime = Field(
         ...,
         description="The modification date from which you want to pull jobs",
@@ -193,29 +117,40 @@ class ReadJobsParameters(ParametersModel):
         field_type=FieldType.QueryParam,
     )
 
-    fields: t.List[str] = Field(
-        ...,
-        description="List of job fields to be retrieved from Bullhorn",
-        repr=False,
-        field_type=FieldType.QueryParam,
-    )
 
-    query: t.Union[String, Query] = Field(
+class ArchiveJobsParameters(ParametersModel):
+    last_modified_date: datetime = Field(
         ...,
         description=(
-            "A query string or a Query object with conditions combined using AND or OR"
+            "The modification date from which you want to pull jobs and archive them"
         ),
         repr=False,
         field_type=FieldType.QueryParam,
     )
 
-    @validator("query")
-    def validate_query(cls, v):
-        if isinstance(v, Query):
-            return v.to_query_string()
-        elif isinstance(v, str):
-            return v  # If it's a string, return as-is
-        raise ValueError("Query must be a string or a Query object.")
+    query: str = Field(
+        "isDeleted:0 AND isOpen:true",
+        description=(
+            "This query will restrict the results retrieved from Bullhorn based on the"
+            " specified conditions"
+        ),
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
+
+    fields: str = Field(
+        "id",
+        description="Field to be used as reference for archive",
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
+
+    limit: int = Field(
+        0,
+        description="Number of items to pull",
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
 
 
 # class ReadProfileParameters(BaseParameters):
@@ -489,126 +424,145 @@ def handle_response(response, adapter):
 #     return failed_profiles
 
 
-def read_jobs(
-    adapter: LoggerAdapter,
-    auth_parameters: AuthParameters,
-    action_parameters: ReadJobsParameters,
-    read_mode: t.Optional[ReadMode] = None,
-    read_from: t.Optional[str] = None,
-) -> t.Iterable[t.Dict]:
-    start = 0
-    auth_retries = 0
-    total_returned = 0
-    should_break = False
-    authentication = auth(
-        auth_parameters.username,
-        auth_parameters.password,
-        auth_parameters.client_id,
-        auth_parameters.client_secret,
-    )
-    fields_str = ""
-    if action_parameters.fields:
-        fields_str = ", ".join(action_parameters.fields)
+def generic_job_pulling(
+    action: str,
+) -> t.Callable[
+    [
+        LoggerAdapter,
+        AuthParameters,
+        t.Union[CreateJobsParameters, UpdateJobsParameters],
+        t.Optional[ReadMode],
+        t.Optional[str],
+    ],
+    t.Iterable[t.Dict],
+]:
+    def _pull_items(
+        adapter: LoggerAdapter,
+        auth_parameters: AuthParameters,
+        action_parameters: t.Union[CreateJobsParameters, UpdateJobsParameters],
+        read_mode: t.Optional[ReadMode] = None,
+        read_from: t.Optional[str] = None,
+    ) -> t.Iterable[t.Dict]:
+        start, auth_retries, total_returned = 0, 0, 0
+        should_break = False
 
-    query_str = ""
-    if action_parameters.query:
-        query_str = action_parameters.query.to_query_string()
-
-    if read_mode is ReadMode.sync:
-        if action_parameters.last_modified_date is None:
-            raise Exception("last_modified_date cannot be None in ReadMode.sync")
-        last_modified_date = action_parameters.last_modified_date
-    else:
-        if action_parameters.last_modified_date is not None:
-            adapter.warning(
-                "last_modified_date is ignored in ReadMode.incremental, using"
-                " read_from instead"
-            )
-        if read_from:
-            try:
-                read_from = json.loads(read_from)
-                last_modified_date = read_from["last_modified_date"]
-                last_id = read_from["last_id"]
-            except json.JSONDecodeError as e:
-                raise Exception(f"Failed to JSON parse read_from={read_from} error={e}")
-            except KeyError as e:
-                raise Exception(
-                    "Failed to find expected key in"
-                    f" read_from={read_from} error={repr(e)}"
-                )
-        else:
-            last_modified_date = action_parameters.last_modified_date
-    last_modified_date_filter = transform_iso(last_modified_date)
-    if not last_modified_date_filter:
-        raise Exception(
-            "error while applying a transformation date on last modified date to"
-            " perform filtering"
+        authentication = auth(
+            auth_parameters.username,
+            auth_parameters.password,
+            auth_parameters.client_id,
+            auth_parameters.client_secret,
         )
 
-    while True:
-        try:
-            query = (
-                f"{query_str} AND"
-                f" dateLastModified:[{last_modified_date_filter}%20TO%20*]"
-            )
-            jobs_url = (
-                authentication["restUrl"]
-                + f"search/JobOrder?query={query}&fields="
-                + fields_str
-                + "&sort=dateLastModified,id"
-                + "&BhRestToken="
-                + authentication["BhRestToken"]
-                + "&start="
-                + str(start)
-            )
+        if action == "create":
+            date_field = "created_date"
+            bullhorn_date_field = "dateAdded"
+        else:
+            date_field = "last_modified_date"
+            bullhorn_date_field = "dateLastModified"
 
-            response = requests.get(url=jobs_url, params=params, headers=headers)
-
-            response = response.json()
-            start = response["start"] + response["count"]
-            data = response["data"]
-            for job in data:
-                if parameters.count and total_returned >= parameters.count:
-                    should_break = True
-                    break
-                if (
-                    read_mode is ReadMode.incremental
-                    and job["dateLastModified"] == last_modified_date
-                    and job["id"] <= last_id
-                ):
-                    adapter.info("job with id <= last_id")
-                    continue
-                yield job
-                total_returned += 1
-            if should_break:
-                break
-            if start >= response["total"]:
-                break
-
-        except requests.HTTPError as e:
-            if e.response.status_code == 401:
-                adapter.info(
-                    "Received 401 error. Retrying authentication to continue fetching"
-                    " jobs."
-                )
-                if auth_retries > 2:
-                    raise Exception(
-                        f" retries the authentication {auth_retries}"
-                        " will stop the execution"
-                    )
-
-                authentication = auth(
-                    auth_parameters.username,
-                    auth_parameters.password,
-                    auth_parameters.client_id,
-                    auth_parameters.client_secret,
-                    refresh_token=authentication["refresh_token"],
-                )
-                auth_retries += 1
-                continue
+        last_id = ""
+        if read_mode is ReadMode.sync:
+            date_value = getattr(action_parameters, date_field)
+            if date_value is None:
+                raise Exception(f"{date_field} cannot be None in ReadMode.sync")
+            last_id = None
+        else:
+            if read_from:
+                try:
+                    read_data = json.loads(read_from)
+                    date_value = read_data[date_field]
+                    last_id = read_data["last_id"]
+                except (json.JSONDecodeError, KeyError) as e:
+                    raise Exception(f"Error parsing read_from: {e}")
             else:
-                adapter.error("Failed to fetch jobs from Bullhorn.")
-                raise e
+                date_value = getattr(action_parameters, date_field)
+                last_id = None
+
+        date_filter = transform_iso(date_value)
+        if not date_filter:
+            raise Exception(f"Error applying transformation on {date_field}")
+
+        # Construct the query
+        query = f"{bullhorn_date_field}:[{date_filter} TO *]"
+        if action in ("create", "archive") and action_parameters.query:
+            query = f"{action_parameters.query} AND {query}"
+        # Fetch and process jobs
+        while True:
+            try:
+                jobs_url = f"{authentication['restUrl']}search/JobOrder"
+                params = {
+                    "query": query,
+                    "fields": action_parameters.fields,
+                    "sort": f"{bullhorn_date_field},id",
+                    "start": str(start),
+                }
+                if action_parameters.limit:
+                    params["count"] = action_parameters.limit
+
+                headers = {"BhRestToken": authentication["BhRestToken"]}
+                response = requests.get(url=jobs_url, params=params, headers=headers)
+                if response.status_code // 100 != 2:
+                    adapter.error(
+                        "Failed to pull jobs from Bullhorn"
+                        f" status_code={response.status_code} response={response.text}"
+                    )
+                    raise Exception("Failed to pull jobs from Bullhorn")
+
+                response = response.json()
+                start = response["start"] + response["count"]
+                data = response["data"]
+
+                for job in data:
+                    if (
+                        action_parameters.limit
+                        and total_returned >= action_parameters.limit
+                    ):
+                        should_break = True
+                        break
+
+                    if (
+                        action == "create"
+                        and job.get("dateAdded") != job.get("dateLastModified")
+                    ) or (
+                        action == "update"
+                        and job.get("dateAdded") == job.get("dateLastModified")
+                    ):
+                        continue
+
+                    if (
+                        last_id
+                        and job[bullhorn_date_field] == date_value
+                        and job["id"] <= last_id
+                    ):
+                        adapter.info("Skipping job with id <= last_id")
+                        continue
+                    yield job
+                    total_returned += 1
+
+                if should_break:
+                    break
+
+                if start >= response["total"]:
+                    break
+
+            except requests.HTTPError as e:
+                if e.response.status_code == 401:
+                    adapter.info("Received 401 error. Retrying authentication.")
+                    if auth_retries > 2:
+                        raise Exception(f"Max auth retries exceeded")
+                    authentication = auth(
+                        auth_parameters.username,
+                        auth_parameters.password,
+                        auth_parameters.client_id,
+                        auth_parameters.client_secret,
+                        refresh_token=authentication["refresh_token"],
+                    )
+                    auth_retries += 1
+                else:
+                    adapter.error("Failed to fetch jobs from Bullhorn.")
+                    raise e
+
+    return _pull_items
 
 
 # def read_profiles_parsing(
@@ -802,7 +756,12 @@ def transform_timestamp_read_from(
     return transformed_date.isoformat()
 
 
-def item_to_read_from_job(item: t.Dict) -> str:
+def item_to_read_from_job_create(item: t.Dict) -> str:
+    created_date = transform_timestamp_read_from(item["dateAdded"])
+    return json.dumps(dict(created_date=created_date, last_id=item["id"]))
+
+
+def item_to_read_from_job_update(item: t.Dict) -> str:
     last_modified_date = transform_timestamp_read_from(item["dateLastModified"])
     return json.dumps(dict(last_modified_date=last_modified_date, last_id=item["id"]))
 
@@ -841,15 +800,41 @@ def item_to_read_from_job(item: t.Dict) -> str:
 #     ),
 # )
 
-BullhornJobWarehouse = Warehouse(
-    name="Bullhorn Jobs",
+BullhornCreateJobWarehouse = Warehouse(
+    name="Bullhorn Create Jobs",
     data_schema=BullhornJob,
     data_type=DataType.job,
     read=WarehouseReadAction(
         auth_parameters=AuthParameters,
-        action_parameters=ReadJobsParameters,
-        function=read_jobs,
+        action_parameters=CreateJobsParameters,
+        function=generic_job_pulling(action="create"),
         supports_incremental=True,
-        item_to_read_from=item_to_read_from,
+        item_to_read_from=item_to_read_from_job_create,
+    ),
+)
+
+BullhornUpdateJobWarehouse = Warehouse(
+    name="Bullhorn Update Jobs",
+    data_schema=BullhornJob,
+    data_type=DataType.job,
+    read=WarehouseReadAction(
+        auth_parameters=AuthParameters,
+        action_parameters=UpdateJobsParameters,
+        function=generic_job_pulling(action="update"),
+        supports_incremental=True,
+        item_to_read_from=item_to_read_from_job_update,
+    ),
+)
+
+BullhornArchiveJobWarehouse = Warehouse(
+    name="Bullhorn Archive Jobs",
+    data_schema=BullhornJob,
+    data_type=DataType.job,
+    read=WarehouseReadAction(
+        auth_parameters=AuthParameters,
+        action_parameters=ArchiveJobsParameters,
+        function=generic_job_pulling(action="archive"),
+        supports_incremental=True,
+        item_to_read_from=item_to_read_from_job_update,
     ),
 )

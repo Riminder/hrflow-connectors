@@ -58,12 +58,12 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Beetween** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Breezy HR** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Broadbean** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
-| [**Bullhorn**](./src/hrflow_connectors/connectors/bullhorn/README.md) | ATS | :white_check_mark: | *26/01/2022* | *03/10/2024* | :x: | :x: | :x: |  |  |
+| [**Bullhorn**](./src/hrflow_connectors/connectors/bullhorn/README.md) | ATS | :white_check_mark: | *26/01/2022* | *17/10/2024* | :x: | :x: | :x: |  |  |
 | **CATS** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Carerix** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Cegid (Meta4)** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Ceipal** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
-| [**Ceridian**](./src/hrflow_connectors/connectors/ceridian/README.md) | HCM | :white_check_mark: | *19/01/2022* | *05/09/2024* | :x: | :white_check_mark: | :x: |  |  |
+| **Ceridian** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **ClayHR** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **ClockWork** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Comeet** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
@@ -80,7 +80,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Flatchr** | ATS | :hourglass_flowing_sand: |  |  | :x: | :x: | :x: |  |  |
 | **Fountain** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Freshteam** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
-| [**Greenhouse**](./src/hrflow_connectors/connectors/greenhouse/README.md) | ATS | :white_check_mark: | *19/01/2022* | *05/09/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
+| **Greenhouse** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **GuideCom** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **HR Cloud** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **HR Office** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
@@ -89,7 +89,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Haufe Umantis** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Heyrecruit** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Homerun** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
-| [**Hubspot**](./src/hrflow_connectors/connectors/hubspot/README.md) | CRM | :white_check_mark: | *27/10/2022* | *05/09/2024* | :white_check_mark: | :x: | :white_check_mark: |  |  |
+| **Hubspot** | CRM | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **InRecruiting** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Indeed** | Job board | :dart: |  |  |  |  |  |  |  |
 | **Infinite BrassRing** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
@@ -103,7 +103,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Jobvite** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Jobylon** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Lano** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
-| [**Lever**](./src/hrflow_connectors/connectors/lever/README.md) | ATS | :white_check_mark: | *18/08/2023* | *05/09/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
+| **Lever** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Lucca** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Mailchimp** | Automation | :dart: |  |  |  |  |  |  | :x: |
 | **Microsoft Dynamics** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
@@ -124,33 +124,33 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **RECRU** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Radancy** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **ReachMee** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
-| [**Recruitee**](./src/hrflow_connectors/connectors/recruitee/README.md) | ATS | :white_check_mark: | *30/10/2022* | *05/09/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
+| **Recruitee** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Recruiterflow** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Recruitive** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **SAP Successfactors** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Sage HR** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
-| [**Salesforce**](./src/hrflow_connectors/connectors/salesforce/README.md) | CRM | :white_check_mark: | *03/08/2023* | *05/09/2024* | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |  |
-| [**SmartRecruiters**](./src/hrflow_connectors/connectors/smartrecruiters/README.md) | ATS | :white_check_mark: | *21/03/2022* | *05/09/2024* | :x: | :white_check_mark: | :white_check_mark: |  |  |
+| **Salesforce** | CRM | :dart: |  |  | :x: | :x: | :x: |  |  |
+| **SmartRecruiters** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Softgarden** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **TRAFFIT** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
-| [**Taleez**](./src/hrflow_connectors/connectors/taleez/README.md) | ATS | :white_check_mark: | *19/01/2022* | *05/09/2024* | :x: | :white_check_mark: | :white_check_mark: |  |  |
+| **Taleez** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Talent Clue** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **TalentAdore** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **TalentLyft** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **TalentReef** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Talentlink** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Talentsoft** | HCM | :dart: |  |  | :x: | :x: | :x: |  |  |
-| [**Teamtailor**](./src/hrflow_connectors/connectors/teamtailor/README.md) | ATS | :white_check_mark: | *06/10/2022* | *05/09/2024* | :x: | :white_check_mark: | :white_check_mark: |  |  |
+| **Teamtailor** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Tellent** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Trakstar** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Tribepad** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Twilio** | Automation | :dart: |  |  |  |  |  |  | :x: |
 | **UKG Ready Recruiting** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Ubeeo** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
-| [**Waalaxy**](./src/hrflow_connectors/connectors/waalaxy/README.md) | Automation | :white_check_mark: | *18/11/2022* | *05/09/2024* |  |  |  |  | :white_check_mark: |
+| **Waalaxy** | Automation | :dart: |  |  |  |  |  |  | :x: |
 | **Welcome To The Jungle** | Job Board/ATS | :dart: |  |  |  |  |  |  |  |
 | **Welcome to the Jungle Solutions ATS** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
-| [**Workable**](./src/hrflow_connectors/connectors/workable/README.md) | HCM | :white_check_mark: | *27/09/2022* | *05/09/2024* | :x: | :white_check_mark: | :white_check_mark: |  |  |
+| **Workable** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Workday** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **Zoho Recruit** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
 | **concludis** | ATS | :dart: |  |  | :x: | :x: | :x: |  |  |
@@ -168,10 +168,10 @@ We invite developers to join us in our mission to bring AI and data integration 
 | Name                                                                                                                                      | Type                 | Available         | Release date   | Last update     | Pull profile list action | Pull job list action | Push profile action | Push job action | Catch profile action |
 |-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|---------------------|-----------------|-------------------------|----------------------|----------------------|
 | **APEC** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
-| [**Adzuna**](./src/hrflow_connectors/connectors/adzuna/README.md) | Job Board | :white_check_mark: | *08/09/2022* | *05/09/2024* |  | :white_check_mark: |  | :x: | :x: |
+| **Adzuna** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Agefiph** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Cadreemploi** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
-| [**Carrevolutis**](./src/hrflow_connectors/connectors/carrevolutis/README.md) | Job Board | :white_check_mark: | *20/03/2024* | *05/09/2024* |  | :x: |  | :x: | :white_check_mark: |
+| **Carrevolutis** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Cornerjob** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Distrijob** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Engagement Jeunes** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
@@ -184,7 +184,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Inzojob** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **JobTeaser** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Jobijoba** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
-| [**Jobology**](./src/hrflow_connectors/connectors/jobology/README.md) | Job Board | :white_check_mark: | *21/12/2022* | *05/09/2024* |  | :x: |  | :x: | :white_check_mark: |
+| **Jobology** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Jobrapido** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Jobtransport** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Jobvitae** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
@@ -194,7 +194,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | **Leboncoin** | Job Board | :hourglass_flowing_sand: |  |  |  | :x: |  | :x: | :x: |
 | **LesJeudis** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **LinkedIn** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
-| [**Meteojob**](./src/hrflow_connectors/connectors/meteojob/README.md) | Job Board | :white_check_mark: | *15/02/2024* | *05/09/2024* |  | :x: |  | :x: | :white_check_mark: |
+| **Meteojob** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Neuvoo** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Optioncarriere** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |
 | **Pole Emploi** | Job Board | :dart: |  |  |  | :x: |  | :x: | :x: |

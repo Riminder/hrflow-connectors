@@ -1122,7 +1122,7 @@
           },
           "data_type": "job",
           "trigger_type": "schedule",
-          "origin": "Bullhorn Jobs",
+          "origin": "Bullhorn Create Jobs",
           "origin_data_schema": {
             "title": "BullhornJob",
             "type": "object",
@@ -1136,167 +1136,42 @@
           },
           "supports_incremental": true,
           "pull_parameters": {
-            "title": "ReadJobsParameters",
+            "title": "CreateJobsParameters",
             "type": "object",
             "properties": {
-              "last_modified_date": {
-                "title": "Last Modified Date",
-                "description": "The modification date from which you want to pull jobs",
+              "fields": {
+                "title": "Fields",
+                "description": "List of job fields to be retrieved from Bullhorn",
+                "default": "address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "limit": {
+                "title": "Limit",
+                "description": "Number of items to pull",
+                "default": 0,
+                "field_type": "Query Param",
+                "type": "integer"
+              },
+              "created_date": {
+                "title": "Created Date",
+                "description": "The creation date from which you want to pull jobs",
                 "field_type": "Query Param",
                 "type": "string",
                 "format": "date-time"
               },
-              "fields": {
-                "title": "Fields",
-                "description": "List of job fields to be retrieved from Bullhorn",
-                "field_type": "Query Param",
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
               "query": {
                 "title": "Query",
-                "description": "A query string or a Query object with conditions combined using AND or OR",
+                "description": "This query will restrict the results retrieved from Bullhorn based on the specified conditions",
+                "default": "isDeleted:0 AND isOpen:true",
                 "field_type": "Query Param",
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/String"
-                  },
-                  {
-                    "$ref": "#/definitions/Query"
-                  }
-                ]
+                "type": "string"
               }
             },
             "required": [
-              "last_modified_date",
-              "fields",
-              "query"
+              "created_date"
             ],
-            "additionalProperties": false,
-            "definitions": {
-              "String": {
-                "title": "String",
-                "field_type": "Other",
-                "type": "string",
-                "additionalProperties": false
-              },
-              "Operator": {
-                "title": "Operator",
-                "description": "An enumeration.",
-                "enum": [
-                  "=",
-                  "IN",
-                  "NOT IN"
-                ],
-                "type": "string"
-              },
-              "Boolean": {
-                "title": "Boolean",
-                "field_type": "Other",
-                "type": "boolean",
-                "additionalProperties": false
-              },
-              "Integer": {
-                "title": "Integer",
-                "field_type": "Other",
-                "type": "integer",
-                "additionalProperties": false
-              },
-              "Array": {
-                "title": "Array",
-                "field_type": "Other",
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "additionalProperties": false
-              },
-              "Condition": {
-                "title": "Condition",
-                "type": "object",
-                "properties": {
-                  "field": {
-                    "title": "Field",
-                    "description": "The field to be queried",
-                    "field_type": "Query Param",
-                    "type": "string"
-                  },
-                  "operator": {
-                    "description": "The operator used for the condition",
-                    "field_type": "Query Param",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/Operator"
-                      }
-                    ]
-                  },
-                  "value": {
-                    "title": "Value",
-                    "description": "The value for the condition",
-                    "field_type": "Query Param",
-                    "anyOf": [
-                      {
-                        "$ref": "#/definitions/String"
-                      },
-                      {
-                        "$ref": "#/definitions/Boolean"
-                      },
-                      {
-                        "$ref": "#/definitions/Integer"
-                      },
-                      {
-                        "$ref": "#/definitions/Array"
-                      }
-                    ]
-                  }
-                },
-                "required": [
-                  "field",
-                  "operator",
-                  "value"
-                ],
-                "additionalProperties": false
-              },
-              "LogicalOperator": {
-                "title": "LogicalOperator",
-                "description": "An enumeration.",
-                "enum": [
-                  "AND",
-                  "OR"
-                ],
-                "type": "string"
-              },
-              "Query": {
-                "title": "Query",
-                "type": "object",
-                "properties": {
-                  "conditions": {
-                    "title": "Conditions",
-                    "description": "List of conditions to be combined using AND or OR",
-                    "field_type": "Query Param",
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/definitions/Condition"
-                    }
-                  },
-                  "operator": {
-                    "description": "Logical operator to combine conditions (optional if there's only one condition)",
-                    "field_type": "Query Param",
-                    "allOf": [
-                      {
-                        "$ref": "#/definitions/LogicalOperator"
-                      }
-                    ]
-                  }
-                },
-                "required": [
-                  "conditions"
-                ],
-                "additionalProperties": false
-              }
-            }
+            "additionalProperties": false
           },
           "target": "HrFlow.ai Jobs",
           "target_data_schema": {
@@ -1600,7 +1475,914 @@
             "additionalProperties": false
           },
           "jsonmap": {},
-          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Bullhorn\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.create_jobs_in_hrflow(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ['client_id', 'client_secret', 'password', 'username']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            connector_auth[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    hrflow_auth = dict()\n    for parameter in ['api_secret', 'api_user']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            hrflow_auth[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    pull_parameters = dict()\n    for parameter in ['last_modified_date', 'fields', 'query']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            pull_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    push_parameters = dict()\n    for parameter in ['board_key', 'enrich_with_parsing']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            push_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    return Bullhorn.create_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        format=lambda x: x,\n        logics=[],\n        persist=True\n    )",
+          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Bullhorn\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.create_jobs_in_hrflow(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ['client_id', 'client_secret', 'password', 'username']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            connector_auth[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    hrflow_auth = dict()\n    for parameter in ['api_secret', 'api_user']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            hrflow_auth[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    pull_parameters = dict()\n    for parameter in ['fields', 'limit', 'created_date', 'query']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            pull_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    push_parameters = dict()\n    for parameter in ['board_key', 'enrich_with_parsing']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            push_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    return Bullhorn.create_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        format=lambda x: x,\n        logics=[],\n        persist=True\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "update_jobs_in_hrflow",
+          "action_type": "inbound",
+          "action_mode": "update",
+          "action_parameters": {
+            "title": "ReadJobsActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "additionalProperties": false,
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "connector_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "title": "Client Id",
+                "description": "Client identifier for Bullhorn",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Client secret identifier for Bullhorn",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "password": {
+                "title": "Password",
+                "description": "Password for Bullhorn login",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "username": {
+                "title": "Username",
+                "description": "Username for Bullhorn login",
+                "field_type": "Auth",
+                "type": "string"
+              }
+            },
+            "required": [
+              "client_id",
+              "client_secret",
+              "password",
+              "username"
+            ],
+            "additionalProperties": false
+          },
+          "hrflow_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "API Key used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "User email used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user"
+            ],
+            "additionalProperties": false
+          },
+          "data_type": "job",
+          "trigger_type": "schedule",
+          "origin": "Bullhorn Update Jobs",
+          "origin_data_schema": {
+            "title": "BullhornJob",
+            "type": "object",
+            "properties": {
+              "id": {
+                "title": "Id",
+                "Description": "Unique identifier for this entity",
+                "type": "integer"
+              }
+            }
+          },
+          "supports_incremental": true,
+          "pull_parameters": {
+            "title": "UpdateJobsParameters",
+            "type": "object",
+            "properties": {
+              "fields": {
+                "title": "Fields",
+                "description": "List of job fields to be retrieved from Bullhorn",
+                "default": "address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "limit": {
+                "title": "Limit",
+                "description": "Number of items to pull",
+                "default": 0,
+                "field_type": "Query Param",
+                "type": "integer"
+              },
+              "last_modified_date": {
+                "title": "Last Modified Date",
+                "description": "The modification date from which you want to pull jobs",
+                "field_type": "Query Param",
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "last_modified_date"
+            ],
+            "additionalProperties": false
+          },
+          "target": "HrFlow.ai Jobs",
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Job.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Job.",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "title": "Location",
+                "description": "Job location object.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Location"
+                  }
+                ]
+              },
+              "sections": {
+                "title": "Sections",
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Section"
+                }
+              },
+              "url": {
+                "title": "Url",
+                "description": "Job post original URL.",
+                "type": "string"
+              },
+              "summary": {
+                "title": "Summary",
+                "description": "Brief summary of the Job.",
+                "type": "string"
+              },
+              "archieved_at": {
+                "title": "Archieved At",
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "type": "string"
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "t.List of skills of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "t.List of spoken languages of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "t.List of certifications of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "t.List of courses of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "t.List of tasks of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "t.List of tags of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "t.List of metadatas of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "ranges_float": {
+                "title": "Ranges Float",
+                "description": "t.List of ranges of floats",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesFloat"
+                }
+              },
+              "ranges_date": {
+                "title": "Ranges Date",
+                "description": "t.List of ranges of dates",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesDate"
+                }
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value. Example: 500.",
+                    "type": "number"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value. Example: 100.",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "description": "Unit of the value. Example: euros.",
+                    "type": "string"
+                  }
+                }
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "type": "string"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "push_parameters": {
+            "title": "UpdateJobParameters",
+            "type": "object",
+            "properties": {
+              "board_key": {
+                "title": "Board Key",
+                "description": "HrFlow.ai board key",
+                "field_type": "Query Param",
+                "type": "string"
+              }
+            },
+            "required": [
+              "board_key"
+            ],
+            "additionalProperties": false
+          },
+          "jsonmap": {},
+          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Bullhorn\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.update_jobs_in_hrflow(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ['client_id', 'client_secret', 'password', 'username']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            connector_auth[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    hrflow_auth = dict()\n    for parameter in ['api_secret', 'api_user']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            hrflow_auth[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    pull_parameters = dict()\n    for parameter in ['fields', 'limit', 'last_modified_date']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            pull_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    push_parameters = dict()\n    for parameter in ['board_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            push_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    return Bullhorn.update_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        format=lambda x: x,\n        logics=[],\n        persist=True\n    )",
+          "workflow_code_format_placeholder": "# << format_placeholder >>",
+          "workflow_code_logics_placeholder": "# << logics_placeholder >>",
+          "workflow_code_workflow_id_settings_key": "__workflow_id",
+          "workflow_code_origin_settings_prefix": "origin_",
+          "workflow_code_target_settings_prefix": "target_"
+        },
+        {
+          "name": "archive_jobs_in_hrflow",
+          "action_type": "inbound",
+          "action_mode": "archive",
+          "action_parameters": {
+            "title": "ReadJobsActionParameters",
+            "type": "object",
+            "properties": {
+              "read_mode": {
+                "description": "If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read.",
+                "default": "sync",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ReadMode"
+                  }
+                ]
+              },
+              "logics": {
+                "title": "logics",
+                "description": "List of logic functions. Each function should have the following signature typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]. The final list should be exposed in a variable named 'logics'.",
+                "template": "\nimport typing as t\n\ndef logic_1(item: t.Dict) -> t.Union[t.Dict, None]:\n    return None\n\ndef logic_2(item: t.Dict) -> t.Uniont[t.Dict, None]:\n    return None\n\nlogics = [logic_1, logic_2]\n",
+                "type": "code_editor"
+              },
+              "format": {
+                "title": "format",
+                "description": "Formatting function. You should expose a function named 'format' with following signature typing.Callable[[typing.Dict], typing.Dict]",
+                "template": "\nimport typing as t\n\ndef format(item: t.Dict) -> t.Dict:\n    return item\n",
+                "type": "code_editor"
+              }
+            },
+            "additionalProperties": false,
+            "definitions": {
+              "ReadMode": {
+                "title": "ReadMode",
+                "description": "An enumeration.",
+                "enum": [
+                  "sync",
+                  "incremental"
+                ]
+              }
+            }
+          },
+          "connector_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "title": "Client Id",
+                "description": "Client identifier for Bullhorn",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "client_secret": {
+                "title": "Client Secret",
+                "description": "Client secret identifier for Bullhorn",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "password": {
+                "title": "Password",
+                "description": "Password for Bullhorn login",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "username": {
+                "title": "Username",
+                "description": "Username for Bullhorn login",
+                "field_type": "Auth",
+                "type": "string"
+              }
+            },
+            "required": [
+              "client_id",
+              "client_secret",
+              "password",
+              "username"
+            ],
+            "additionalProperties": false
+          },
+          "hrflow_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "title": "Api Secret",
+                "description": "API Key used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              },
+              "api_user": {
+                "title": "Api User",
+                "description": "User email used to access HrFlow.ai API",
+                "field_type": "Auth",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user"
+            ],
+            "additionalProperties": false
+          },
+          "data_type": "job",
+          "trigger_type": "schedule",
+          "origin": "Bullhorn Archive Jobs",
+          "origin_data_schema": {
+            "title": "BullhornJob",
+            "type": "object",
+            "properties": {
+              "id": {
+                "title": "Id",
+                "Description": "Unique identifier for this entity",
+                "type": "integer"
+              }
+            }
+          },
+          "supports_incremental": true,
+          "pull_parameters": {
+            "title": "ArchiveJobsParameters",
+            "type": "object",
+            "properties": {
+              "last_modified_date": {
+                "title": "Last Modified Date",
+                "description": "The modification date from which you want to pull jobs and archive them",
+                "field_type": "Query Param",
+                "type": "string",
+                "format": "date-time"
+              },
+              "query": {
+                "title": "Query",
+                "description": "This query will restrict the results retrieved from Bullhorn based on the specified conditions",
+                "default": "isDeleted:0 AND isOpen:true",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "fields": {
+                "title": "Fields",
+                "description": "Field to be used as reference for archive",
+                "default": "id",
+                "field_type": "Query Param",
+                "type": "string"
+              },
+              "limit": {
+                "title": "Limit",
+                "description": "Number of items to pull",
+                "default": 0,
+                "field_type": "Query Param",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "last_modified_date"
+            ],
+            "additionalProperties": false
+          },
+          "target": "HrFlow.ai Jobs",
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "title": "Key",
+                "description": "Identification key of the Job.",
+                "type": "string"
+              },
+              "reference": {
+                "title": "Reference",
+                "description": "Custom identifier of the Job.",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "title": "Location",
+                "description": "Job location object.",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Location"
+                  }
+                ]
+              },
+              "sections": {
+                "title": "Sections",
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Section"
+                }
+              },
+              "url": {
+                "title": "Url",
+                "description": "Job post original URL.",
+                "type": "string"
+              },
+              "summary": {
+                "title": "Summary",
+                "description": "Brief summary of the Job.",
+                "type": "string"
+              },
+              "archieved_at": {
+                "title": "Archieved At",
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "type": "string"
+              },
+              "updated_at": {
+                "title": "Updated At",
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "type": "string"
+              },
+              "created_at": {
+                "title": "Created At",
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "type": "string"
+              },
+              "skills": {
+                "title": "Skills",
+                "description": "t.List of skills of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Skill"
+                }
+              },
+              "languages": {
+                "title": "Languages",
+                "description": "t.List of spoken languages of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "certifications": {
+                "title": "Certifications",
+                "description": "t.List of certifications of the Job.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "courses": {
+                "title": "Courses",
+                "description": "t.List of courses of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tasks": {
+                "title": "Tasks",
+                "description": "t.List of tasks of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "tags": {
+                "title": "Tags",
+                "description": "t.List of tags of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "metadatas": {
+                "title": "Metadatas",
+                "description": "t.List of metadatas of the Job",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeneralEntitySchema"
+                }
+              },
+              "ranges_float": {
+                "title": "Ranges Float",
+                "description": "t.List of ranges of floats",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesFloat"
+                }
+              },
+              "ranges_date": {
+                "title": "Ranges Date",
+                "description": "t.List of ranges of dates",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/RangesDate"
+                }
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "definitions": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "title": "Text",
+                    "description": "Location text address.",
+                    "type": "string"
+                  },
+                  "lat": {
+                    "title": "Lat",
+                    "description": "Geocentric latitude of the Location.",
+                    "type": "number"
+                  },
+                  "lng": {
+                    "title": "Lng",
+                    "description": "Geocentric longitude of the Location.",
+                    "type": "number"
+                  }
+                }
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "type": "string"
+                  },
+                  "title": {
+                    "title": "Title",
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "type": "string"
+                  }
+                }
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "title": "Type",
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ],
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the skill",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "Value associated to the Object's name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value. Example: 500.",
+                    "type": "number"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value. Example: 100.",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "description": "Unit of the value. Example: euros.",
+                    "type": "string"
+                  }
+                }
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "type": "string"
+                  },
+                  "value_min": {
+                    "title": "Value Min",
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "type": "string"
+                  },
+                  "value_max": {
+                    "title": "Value Max",
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "push_parameters": {
+            "title": "ArchiveJobParameters",
+            "type": "object",
+            "properties": {
+              "board_key": {
+                "title": "Board Key",
+                "description": "HrFlow.ai board key",
+                "field_type": "Query Param",
+                "type": "string"
+              }
+            },
+            "required": [
+              "board_key"
+            ],
+            "additionalProperties": false
+          },
+          "jsonmap": {},
+          "workflow_code": "import typing as t\n\nfrom hrflow_connectors import Bullhorn\nfrom hrflow_connectors.core.connector import ActionInitError, Reason\n\nORIGIN_SETTINGS_PREFIX = \"origin_\"\nTARGET_SETTINGS_PREFIX = \"target_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n\ndef workflow(\n        \n        settings: t.Dict\n    ) -> None:\n    actions_parameters = dict()\n    try:\n        format\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"format\"] = format\n\n    try:\n        logics\n    except NameError:\n        pass\n    else:\n        actions_parameters[\"logics\"] = logics\n\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.archive_jobs_in_hrflow(\n            workflow_id=\"\",\n            action_parameters=dict(),\n            origin_parameters=dict(),\n            target_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ['client_id', 'client_secret', 'password', 'username']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            connector_auth[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    hrflow_auth = dict()\n    for parameter in ['api_secret', 'api_user']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            hrflow_auth[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    pull_parameters = dict()\n    for parameter in ['last_modified_date', 'query', 'fields', 'limit']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            pull_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    push_parameters = dict()\n    for parameter in ['board_key']:\n        if \"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter) in settings:\n            push_parameters[parameter] = settings[\"{}{}\".format(ORIGIN_SETTINGS_PREFIX, parameter)]\n        \n\n    return Bullhorn.archive_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        format=lambda x: x,\n        logics=[],\n        persist=True\n    )",
           "workflow_code_format_placeholder": "# << format_placeholder >>",
           "workflow_code_logics_placeholder": "# << logics_placeholder >>",
           "workflow_code_workflow_id_settings_key": "__workflow_id",

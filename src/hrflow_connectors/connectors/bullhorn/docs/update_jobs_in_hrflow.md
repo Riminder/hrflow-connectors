@@ -1,7 +1,7 @@
-# Create jobs in hrflow
-`Bullhorn Create Jobs` :arrow_right: `HrFlow.ai Jobs`
+# Update jobs in hrflow
+`Bullhorn Update Jobs` :arrow_right: `HrFlow.ai Jobs`
 
-Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board
+Pull jobs from Bullhorn and update them to Hrflow.ai Board
 
 
 
@@ -35,15 +35,13 @@ Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board
 | ----- | ---- | ------- | ----------- |
 | `fields`  | `str` | address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate | List of job fields to be retrieved from Bullhorn |
 | `limit`  | `int` | 0 | Number of items to pull |
-| `created_date` :red_circle: | `<class 'datetime.datetime'>` | None | The creation date from which you want to pull jobs |
-| `query`  | `str` | isDeleted:0 AND isOpen:true | This query will restrict the results retrieved from Bullhorn based on the specified conditions |
+| `last_modified_date` :red_circle: | `<class 'datetime.datetime'>` | None | The modification date from which you want to pull jobs |
 
 ## Push Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `board_key` :red_circle: | `str` | None | HrFlow.ai board key |
-| `enrich_with_parsing`  | `bool` | False | When enabled jobs are enriched with HrFlow.ai parsing |
 
 :red_circle: : *required*
 
@@ -58,7 +56,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-Bullhorn.create_jobs_in_hrflow(
+Bullhorn.update_jobs_in_hrflow(
     workflow_id="some_string_identifier",
     connector_auth=dict(
         client_id="your_client_id",
@@ -73,12 +71,10 @@ Bullhorn.create_jobs_in_hrflow(
     pull_parameters=dict(
         fields="address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate",
         limit=0,
-        created_date=***,
-        query="isDeleted:0 AND isOpen:true",
+        last_modified_date=***,
     ),
     push_parameters=dict(
         board_key="your_board_key",
-        enrich_with_parsing=False,
     ),
     format=lambda *args, **kwargs: None # Put your code logic here,
     logics=[],

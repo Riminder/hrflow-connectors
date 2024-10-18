@@ -1,11 +1,10 @@
 import base64
 import typing as t
-
 import requests
 
 from hrflow_connectors.connectors.bullhorn.schemas import BullhornProfile
 from hrflow_connectors.connectors.bullhorn.utils import date_format
-from hrflow_connectors.connectors.bullhorn.warehouse import BullhornJobWarehouse
+from hrflow_connectors.connectors.bullhorn.warehouse import BullhornCreateJobWarehouse, BullhornUpdateJobWarehouse, BullhornArchiveJobWarehouse
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
 from hrflow_connectors.connectors.hrflow.warehouse_v2 import HrFlowJobWarehouse
 from hrflow_connectors.core.connector_v2 import (  # noqa
@@ -252,6 +251,9 @@ def format_job(data: t.Dict) -> t.Dict:
 
     return hrflow_job
 
+def format_job_to_be_archived(data):
+    reference = next(iter(data), "id")
+    return {"reference": str(data[reference])}
 
 def profile_format_parsing(data: BullhornProfile) -> t.Dict:
     profile = {}
@@ -426,11 +428,39 @@ Bullhorn = Connector(
             parameters=BaseActionParameters.with_defaults(
                 "ReadJobsActionParameters", format=format_job
             ),
-            origin=BullhornJobWarehouse,
+            origin=BullhornCreateJobWarehouse,
             target=HrFlowJobWarehouse,
             action_type=ActionType.inbound,
             action_mode=ActionMode.create,
         ),
+        ConnectorAction(
+            name="update_jobs_in_hrflow",
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Pull jobs from Bullhorn and update them to Hrflow.ai Board"
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadJobsActionParameters", format=format_job
+            ),
+            origin=BullhornUpdateJobWarehouse,
+            target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
+            action_mode=ActionMode.update,
+        ),
+        ConnectorAction(
+            name="archive_jobs_in_hrflow",
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Pull jobs from Bullhorn and archive them from Hrflow.ai Board"
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadJobsActionParameters", format=format_job_to_be_archived
+            ),
+            origin=BullhornArchiveJobWarehouse,
+            target=HrFlowJobWarehouse,
+            action_type=ActionType.inbound,
+            action_mode=ActionMode.archive,
+        )
         # ConnectorAction(
         #     name="create_profiles_from_attachments_in_hrflow",
         #     trigger_type=WorkflowType.pull,
