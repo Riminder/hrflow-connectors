@@ -35,8 +35,8 @@ Pull jobs from Bullhorn and archive them from Hrflow.ai Board
 | ----- | ---- | ------- | ----------- |
 | `last_modified_date` :red_circle: | `<class 'datetime.datetime'>` | None | The modification date from which you want to pull jobs and archive them |
 | `query`  | `str` | isDeleted:0 AND isOpen:true | This query will restrict the results retrieved from Bullhorn based on the specified conditions |
-| `fields`  | `str` | id | Field to be used as reference for archive |
-| `limit`  | `int` | 0 | Number of items to pull |
+| `fields`  | `str` | id | Field to be used as reference for archiving |
+| `limit`  | `int` | None | Number of items to pull, ignored if not provided. |
 
 ## Push Parameters
 

@@ -24,7 +24,7 @@ LABEL_TO_JOB_FIELD = dict(
     course="courses",
     interest="interests",
 )
-SKILL_LABEL_TO_TYPE = dict(Skill=None, skill_hard="hard", skill_soft="soft")
+SKILL_LABEL_TO_BTYPE = dict(Skill=None, skill_hard="hard", skill_soft="soft")
 
 
 class JobParsingException(Exception):
@@ -189,8 +189,8 @@ def update(
         api_secret=auth_parameters.api_secret, api_user=auth_parameters.api_user
     )
     for job in jobs:
-        job_reference = job["reference"]
-        job_key = job["key"]
+        job_reference = job.get("reference")
+        job_key = job.get("key")
         if job_reference is None and job_key is None:
             adapter.error(
                 "can't update job without reference or key"
@@ -201,6 +201,13 @@ def update(
             board_key=action_parameters.board_key,job_json=job
         )
         if response["code"] >= 400:
+            if "Unable to find object: job" in response["message"]:
+                adapter.error(
+                    "Failed to update job with reference={} board_key={} response={}".format(
+                    job["reference"], action_parameters.board_key, response
+                    )
+                )
+                continue
             adapter.error(
                 "Failed to update job with reference={} board_key={} response={}".format(
                    job["reference"], action_parameters.board_key, response
@@ -222,7 +229,7 @@ def archive(
         api_secret=auth_parameters.api_secret, api_user=auth_parameters.api_user
     )
     for job in jobs:
-        job_reference = job["reference"]
+        job_reference = job.get("reference")
 
         if not job_reference:
             adapter.error("can't archive job without reference")
@@ -230,6 +237,13 @@ def archive(
             continue
         response = hrflow_client.job.storing.archive(board_key=action_parameters.board_key,reference=job_reference)
         if response["code"] >= 400:
+            if "Unable to find object: job" in response["message"]:
+                adapter.error(
+                    "Failed to archive job with reference={} board_key={} response={}".format(
+                    job["reference"], action_parameters.board_key, response
+                    )
+                )
+                continue
             adapter.error(
                 "Failed to archive job with reference={} board_key={} response={}".format(
                     job_reference, action_parameters.board_key, response
