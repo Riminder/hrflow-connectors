@@ -13,7 +13,6 @@ from jinja2 import Template
 from pydantic import BaseModel
 from pydantic.fields import ModelField
 
-from hrflow_connectors.core import ActionName
 from hrflow_connectors.core.connector import (
     MAIN_IMPORT_NAME,
     Connector,
@@ -28,22 +27,6 @@ ALL_TARGET_CONNECTORS_LIST_PATH = (
 )
 with open(ALL_TARGET_CONNECTORS_LIST_PATH, "r") as f:
     ALL_TARGET_CONNECTORS = json.load(f)
-
-
-DONE_MARKUP = ":white_check_mark:"
-KO_MARKUP = ":x:"
-TARGET_MARKUP = ":dart:"
-IN_PROGRESS_MARKUP = ":hourglass_flowing_sand:"
-
-
-ROOT_README_TRACKED_ACTIONS = {
-    ActionName.pull_job_list,
-    ActionName.pull_profile_list,
-    ActionName.push_profile,
-    ActionName.push_job,
-    ActionName.catch_profile,
-}
-
 
 ACTIONS_SECTIONS_REGEXP = (
     r"# 🔌 Connector Actions.+?\|\s*Action\s*\|\s*Description\s*\|.+?\|\s+?<\/p>"
@@ -214,9 +197,6 @@ def update_root_readme(
     connectors_table = ""
     jobboards_table = ""
     for connector in all_connectors:
-        actions_status = {
-            action_name: "" for action_name in ROOT_README_TRACKED_ACTIONS
-        }
         if connector["object"] is None:
             readme_link = "./{base_connector_path}/{connector}".format(
                 base_connector_path=BASE_CONNECTOR_PATH.get().strip("/"),
@@ -260,10 +240,6 @@ def update_root_readme(
                     key=lambda d: datetime.fromisoformat(d.replace("Z", "+00:00")),
                 ).replace("Z", "+00:00")
             )
-
-            for action in model.actions:
-                if action.name in ROOT_README_TRACKED_ACTIONS:
-                    actions_status[action.name] = DONE_MARKUP
 
             updated_listing = line_pattern.format(
                 name=model.name,
