@@ -1,12 +1,21 @@
 import base64
 import typing as t
+
 import requests
 
 from hrflow_connectors.connectors.bullhorn.schemas import BullhornProfile
 from hrflow_connectors.connectors.bullhorn.utils import date_format
-from hrflow_connectors.connectors.bullhorn.warehouse import BullhornCreateJobWarehouse, BullhornUpdateJobWarehouse, BullhornArchiveJobWarehouse
+from hrflow_connectors.connectors.bullhorn.warehouse import (
+    BullhornArchiveJobWarehouse,
+    BullhornCreateJobWarehouse,
+    BullhornProfileWarehouse,
+    BullhornUpdateJobWarehouse,
+)
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
-from hrflow_connectors.connectors.hrflow.warehouse_v2 import HrFlowJobWarehouse
+from hrflow_connectors.connectors.hrflow.warehouse_v2 import (
+    HrFlowJobWarehouse,
+    HrFlowProfileParsingWarehouse,
+)
 from hrflow_connectors.core.connector_v2 import (  # noqa
     ActionMode,
     ActionType,
@@ -251,30 +260,10 @@ def format_job(data: t.Dict) -> t.Dict:
 
     return hrflow_job
 
+
 def format_job_to_be_archived(data):
     reference = next(iter(data), "id")
     return {"reference": str(data[reference])}
-
-def profile_format_parsing(data: BullhornProfile) -> t.Dict:
-    profile = {}
-
-    # Tags
-    tags = []
-    tags.append({"name": "dateAvailable", "value": data.get("dateAvailable")})
-    tags.append({"name": "status", "value": data.get("status")})
-    tags.append({"name": "employeeType", "value": data.get("employeeType")})
-    tags.append(
-        {"name": "activePlacements", "value": data.get("activePlacements").get("total")}
-    )
-
-    profile["reference"] = str(data.get("id"))
-    profile["tags"] = tags
-    profile["metadatas"] = []
-    profile["created_at"] = None
-
-    profile["resume"] = {"raw": data["cvFile"], "content_type": "application/pdf"}
-
-    return profile
 
 
 def profile_format(data: BullhornProfile) -> t.Dict:
@@ -323,6 +312,8 @@ def profile_format(data: BullhornProfile) -> t.Dict:
 
     # Education
     hrflow_education = []
+    if data.get("educations") is None:
+        data["educations"] = []
     for education in data["educations"]:
         location = {"text": education["city"], "lng": None, "lat": None}
         school = education["school"]
@@ -343,6 +334,8 @@ def profile_format(data: BullhornProfile) -> t.Dict:
         hrflow_education.append(object_education)
 
     hrflow_experience = []
+    if data.get("workHistories") is None:
+        data["workHistories"] = []
     for experience in data["workHistories"]:
         location = {"text": "", "lng": None, "lat": None}
         company = experience["companyName"]
@@ -363,13 +356,16 @@ def profile_format(data: BullhornProfile) -> t.Dict:
         hrflow_experience.append(object_experience)
 
     profile = {
+        "reference": str(data.get("id")),
         "info": info,
         "skills": hrflow_skills,
         "experiences": hrflow_experience,
-        "tags": tags,
         "educations": hrflow_education,
+        "created_at": None,
+        "tags": tags,
+        "metadatas": [],
+        "resume": {"raw": data["cvFile"], "content_type": "application/pdf"},
     }
-    profile["reference"] = str(data.get("id"))
 
     return profile
 
@@ -436,9 +432,7 @@ Bullhorn = Connector(
         ConnectorAction(
             name="update_jobs_in_hrflow",
             trigger_type=WorkflowType.pull,
-            description=(
-                "Pull jobs from Bullhorn and update them to Hrflow.ai Board"
-            ),
+            description="Pull jobs from Bullhorn and update them to Hrflow.ai Board",
             parameters=BaseActionParameters.with_defaults(
                 "ReadJobsActionParameters", format=format_job
             ),
@@ -450,9 +444,7 @@ Bullhorn = Connector(
         ConnectorAction(
             name="archive_jobs_in_hrflow",
             trigger_type=WorkflowType.pull,
-            description=(
-                "Pull jobs from Bullhorn and archive them from Hrflow.ai Board"
-            ),
+            description="Pull jobs from Bullhorn and archive them from Hrflow.ai Board",
             parameters=BaseActionParameters.with_defaults(
                 "ReadJobsActionParameters", format=format_job_to_be_archived
             ),
@@ -460,7 +452,7 @@ Bullhorn = Connector(
             target=HrFlowJobWarehouse,
             action_type=ActionType.inbound,
             action_mode=ActionMode.archive,
-        )
+        ),
         # ConnectorAction(
         #     name="create_profiles_from_attachments_in_hrflow",
         #     trigger_type=WorkflowType.pull,
@@ -475,19 +467,19 @@ Bullhorn = Connector(
         #     target=HrFlowProfileParsingWarehouse,
         #     action_type=ActionType.inbound,
         # ),
-        # ConnectorAction(
-        #     name="create_profiles_in_hrflow",
-        #     trigger_type=WorkflowType.pull,
-        #     description=(
-        #         "Retrieves profiles from Bullhorn and writes them to Hrflow.ai source"
-        #     ),
-        #     parameters=BaseActionParameters.with_defaults(
-        #         "ReadProfileActionParameters", format=profile_format
-        #     ),
-        #     origin=BullhornProfileWarehouse,
-        #     target=HrFlowProfileWarehouse,
-        #     action_type=ActionType.inbound,
-        # ),
+        ConnectorAction(
+            name="create_profiles_in_hrflow",
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves profiles from Bullhorn and writes them to Hrflow.ai source"
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadProfileActionParameters", format=profile_format
+            ),
+            origin=BullhornProfileWarehouse,
+            target=HrFlowProfileParsingWarehouse,
+            action_type=ActionType.inbound,
+        ),
         # ConnectorAction(
         #     name="update_applications_in_bullhorn",
         #     trigger_type=WorkflowType.catch,
