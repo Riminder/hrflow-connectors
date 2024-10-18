@@ -208,10 +208,8 @@ def update_root_readme(
     )
 
     line_pattern = (
-        "| **{name}** | {type} | {status} |"
-        " {release_date} | {updated_at} | {pull_profile_list_status} |"
-        " {pull_job_list_status} | {push_profile_status} | {push_job_status} |"
-        " {catch_profile_status} |"
+        "| [**{name}**]({readme_link}) | {type} | {status} |"
+        " {release_date} | {updated_at} |"
     )
     connectors_table = ""
     jobboards_table = ""
@@ -219,31 +217,20 @@ def update_root_readme(
         actions_status = {
             action_name: "" for action_name in ROOT_README_TRACKED_ACTIONS
         }
-        if connector["type"] in ["ATS", "HCM", "CRM"]:
-            actions_status[ActionName.pull_job_list] = KO_MARKUP
-            actions_status[ActionName.pull_profile_list] = KO_MARKUP
-            actions_status[ActionName.push_profile] = KO_MARKUP
-        elif connector["type"] == "Automation":
-            actions_status[ActionName.catch_profile] = KO_MARKUP
-        elif connector["type"] == "Job Board":
-            actions_status[ActionName.pull_job_list] = KO_MARKUP
-            actions_status[ActionName.push_job] = KO_MARKUP
-            actions_status[ActionName.catch_profile] = KO_MARKUP
+        # TODO: fix status here
 
         if connector["object"] is None:
+            readme_link = "./{base_connector_path}/{connector}/README.md".format(
+                base_connector_path=BASE_CONNECTOR_PATH.get().strip("/"),
+                connector=connector["subtype"],
+            )
             updated_listing = line_pattern.format(
                 name=connector["name"],
+                readme_link=readme_link,
                 type=connector["type"],
-                status=(
-                    IN_PROGRESS_MARKUP if connector["in_progress"] else TARGET_MARKUP
-                ),
+                status="Premium",
                 release_date="",
                 updated_at="",
-                pull_profile_list_status=actions_status[ActionName.pull_profile_list],
-                pull_job_list_status=actions_status[ActionName.pull_job_list],
-                push_profile_status=actions_status[ActionName.push_profile],
-                push_job_status=actions_status[ActionName.push_job],
-                catch_profile_status=actions_status[ActionName.catch_profile],
             )
         else:
             model = connector["object"].model
@@ -260,7 +247,7 @@ def update_root_readme(
             if result.stderr:
                 raise Exception(
                     "Subprocess run for Git update dates failed for connector {} with"
-                    " errors {}".format(model.name.lower(), result.stderr)
+                    " errors {}".format(model.subtype, result.stderr)
                 )
             filtered = [
                 line.split(" ")[0]
@@ -280,26 +267,16 @@ def update_root_readme(
                 if action.name in ROOT_README_TRACKED_ACTIONS:
                     actions_status[action.name] = DONE_MARKUP
 
-            updated_listing = (
-                "| [**{name}**]({readme_link}) | {type} | {status} |"
-                " {release_date} | {updated_at} | {pull_profile_list_status} |"
-                " {pull_job_list_status} | {push_profile_status} | {push_job_status} |"
-                " {catch_profile_status} |"
-            ).format(
+            updated_listing = line_pattern.format(
                 name=model.name,
                 readme_link="./{base_connector_path}/{connector}/README.md".format(
                     base_connector_path=BASE_CONNECTOR_PATH.get().strip("/"),
-                    connector=model.name.lower().replace(" ", ""),
+                    connector=model.subtype,
                 ),
                 type=model.type.value,
-                status=IN_PROGRESS_MARKUP if connector["in_progress"] else DONE_MARKUP,
+                status="Open source",
                 release_date=f'*{connector["release_date"]}*',
                 updated_at=f'*{updated_at.strftime("%d/%m/%Y")}*',
-                pull_profile_list_status=actions_status[ActionName.pull_profile_list],
-                pull_job_list_status=actions_status[ActionName.pull_job_list],
-                push_profile_status=actions_status[ActionName.push_profile],
-                push_job_status=actions_status[ActionName.push_job],
-                catch_profile_status=actions_status[ActionName.catch_profile],
             )
         if connector["type"] == "Job Board":
             jobboards_table += updated_listing + "\n"
