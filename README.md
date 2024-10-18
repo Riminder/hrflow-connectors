@@ -159,10 +159,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**iCIMS**](./src/hrflow_connectors/connectors/icims) | ATS | Premium |  |  |
 | [**rexx systems**](./src/hrflow_connectors/connectors/rexx) | ATS | Premium |  |  |
 
-- :white_check_mark: : Done
-- :hourglass: : Work in progress
-- 🎯 : Backlog
-
 # 🤝 List of Connectors (Job Boards)
 
 | Name                                                                                                                                      | Type                 | Status             | Release date   | Last update     |
@@ -204,10 +200,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Wizbii**](./src/hrflow_connectors/connectors/wizbii) | Job Board | Premium |  |  |
 | [**freework**](./src/hrflow_connectors/connectors/freework) | Job Board | Premium |  |  |
 
-- :white_check_mark: : Done
-- :hourglass: : Work in progress
-- 🎯 : Backlog
-
 # 🪄 Quickstart
 
 ## What I can do?
@@ -226,7 +218,7 @@ The features offered by this package:
 - **Synchronize an entire data** stream with a ready-to-use solution
 - **Synchronize only certain data** in a stream meeting a condition defined by you : [`logics`](DOCUMENTATION.md#logics)
 - **Format the data as you wish** or use the default formatting that we propose adapted to each connector : [`format`](DOCUMENTATION.md#format)
-- **Leverage the provider *HrFlow.ai's ** Job and Profile Warehouse* with a many available options like [`hydrate_with_parsing`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L42) or [`update_content`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L39)
+- **Leverage the provider *HrFlow.ai's* Job and Profile Warehouse** with a many available options like [`hydrate_with_parsing`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L42) or [`update_content`](src/hrflow_connectors/connectors/hrflow/warehouse.py#L39)
 
 ## ❓ How to use a connector ?
 
