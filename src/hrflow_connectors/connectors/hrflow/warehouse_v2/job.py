@@ -61,11 +61,6 @@ class UpdateJobParameters(ParametersModel):
     board_key: str = Field(
         ..., description="HrFlow.ai board key", field_type=FieldType.QueryParam
     )
-    enrich_with_parsing: bool = Field(
-        False,
-        description="When enabled jobs are enriched with HrFlow.ai parsing",
-        field_type=FieldType.Other,
-    )
 
 
 class ArchiveJobParameters(ParametersModel):
@@ -175,8 +170,8 @@ def create(
         )
         if response["code"] >= 400:
             adapter.error(
-                "Failed to index job with no reference board_key={} response={}".format(
-                    action_parameters.board_key, response
+                "Failed to index job with reference={} board_key={} response={}".format(
+                    job['reference'],action_parameters.board_key, response
                 )
             )
             failed_jobs.append(job)
@@ -194,35 +189,55 @@ def update(
         api_secret=auth_parameters.api_secret, api_user=auth_parameters.api_user
     )
     for job in jobs:
-        if action_parameters.enrich_with_parsing:
-            adapter.info("Starting parsing for job without reference")
-            try:
-                enrich_job_with_parsing(hrflow_client, job)
-                adapter.info("Parsing finished")
-            except JobParsingException as e:
-                adapter.error(
-                    "Failed to parse job response={}".format(e.client_response)
-                )
-                failed_jobs.append(job)
-                continue
-        response = hrflow_client.job.storing.add_json(
-            board_key=action_parameters.board_key, job_json=job
+        job_reference = job["reference"]
+        job_key = job["key"]
+        if job_reference is None and job_key is None:
+            adapter.error(
+                "can't update job without reference or key"
+            )
+            failed_jobs.append(job)
+
+        response = hrflow_client.job.storing.edit(
+            board_key=action_parameters.board_key,job_json=job
         )
         if response["code"] >= 400:
             adapter.error(
-                "Failed to index job with no reference board_key={} response={}".format(
-                    action_parameters.board_key, response
+                "Failed to update job with reference={} board_key={} response={}".format(
+                   job["reference"], action_parameters.board_key, response
                 )
             )
             failed_jobs.append(job)
+        
     return failed_jobs
 
 
-# TODO: implement archive
 def archive(
-    adapter: LoggerAdapter, parameters: ArchiveJobParameters, jobs: t.Iterable[t.Dict]
-):
-    return []
+    adapter: LoggerAdapter,
+    auth_parameters: AuthParameters,
+    action_parameters: UpdateJobParameters,
+    jobs: t.Iterable[t.Dict],
+) -> t.List[t.Dict]:
+    failed_jobs = []
+    hrflow_client = Hrflow(
+        api_secret=auth_parameters.api_secret, api_user=auth_parameters.api_user
+    )
+    for job in jobs:
+        job_reference = job["reference"]
+
+        if not job_reference:
+            adapter.error("can't archive job without reference")
+            failed_jobs.append(job)
+            continue
+        response = hrflow_client.job.storing.archive(board_key=action_parameters.board_key,reference=job_reference)
+        if response["code"] >= 400:
+            adapter.error(
+                "Failed to archive job with reference={} board_key={} response={}".format(
+                    job_reference, action_parameters.board_key, response
+                )
+            )
+            failed_jobs.append(job)
+        
+    return failed_jobs
 
 
 HrFlowJobWarehouse = Warehouse(
