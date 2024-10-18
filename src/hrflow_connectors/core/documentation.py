@@ -217,10 +217,8 @@ def update_root_readme(
         actions_status = {
             action_name: "" for action_name in ROOT_README_TRACKED_ACTIONS
         }
-        # TODO: fix status here
-
         if connector["object"] is None:
-            readme_link = "./{base_connector_path}/{connector}/README.md".format(
+            readme_link = "./{base_connector_path}/{connector}".format(
                 base_connector_path=BASE_CONNECTOR_PATH.get().strip("/"),
                 connector=connector["subtype"],
             )
