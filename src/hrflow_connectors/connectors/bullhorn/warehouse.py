@@ -77,14 +77,15 @@ class AuthParameters(ParametersModel):
 class BaseJobsParameters(ParametersModel):
     fields: str = Field(
         "address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate",
+        min_length=2,
         description="List of job fields to be retrieved from Bullhorn",
         repr=False,
         field_type=FieldType.QueryParam,
     )
 
-    limit: int = Field(
-        0,
-        description="Number of items to pull",
+    limit: t.Optional[int] = Field(
+        None,
+        description="Number of items to pull; ignored if not provided.",
         repr=False,
         field_type=FieldType.QueryParam,
     )
@@ -140,14 +141,14 @@ class ArchiveJobsParameters(ParametersModel):
 
     fields: str = Field(
         "id",
-        description="Field to be used as reference for archive",
+        description="Field to be used as reference for archiving",
         repr=False,
         field_type=FieldType.QueryParam,
     )
 
     limit: int = Field(
-        0,
-        description="Number of items to pull",
+        None,
+        description="Number of items to pull, ignored if not provided.",
         repr=False,
         field_type=FieldType.QueryParam,
     )

@@ -1143,13 +1143,13 @@
                 "title": "Fields",
                 "description": "List of job fields to be retrieved from Bullhorn",
                 "default": "address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate",
+                "minLength": 2,
                 "field_type": "Query Param",
                 "type": "string"
               },
               "limit": {
                 "title": "Limit",
-                "description": "Number of items to pull",
-                "default": 0,
+                "description": "Number of items to pull; ignored if not provided.",
                 "field_type": "Query Param",
                 "type": "integer"
               },
@@ -1607,13 +1607,13 @@
                 "title": "Fields",
                 "description": "List of job fields to be retrieved from Bullhorn",
                 "default": "address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate",
+                "minLength": 2,
                 "field_type": "Query Param",
                 "type": "string"
               },
               "limit": {
                 "title": "Limit",
-                "description": "Number of items to pull",
-                "default": 0,
+                "description": "Number of items to pull; ignored if not provided.",
                 "field_type": "Query Param",
                 "type": "integer"
               },
@@ -2069,15 +2069,14 @@
               },
               "fields": {
                 "title": "Fields",
-                "description": "Field to be used as reference for archive",
+                "description": "Field to be used as reference for archiving",
                 "default": "id",
                 "field_type": "Query Param",
                 "type": "string"
               },
               "limit": {
                 "title": "Limit",
-                "description": "Number of items to pull",
-                "default": 0,
+                "description": "Number of items to pull, ignored if not provided.",
                 "field_type": "Query Param",
                 "type": "integer"
               }
