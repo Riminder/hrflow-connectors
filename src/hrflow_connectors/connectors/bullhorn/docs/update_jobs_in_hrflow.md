@@ -10,7 +10,7 @@ Pull jobs from Bullhorn and update them to Hrflow.ai Board
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L189) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L200) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Connector Auth Parameters
@@ -33,8 +33,8 @@ Pull jobs from Bullhorn and update them to Hrflow.ai Board
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
+| `limit`  | `int` | None | Number of items to pull, ignored if not provided. |
 | `fields`  | `<class 'hrflow_connectors.core.warehouse_v2.ConstrainedStrValue'>` | address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate | List of job fields to be retrieved from Bullhorn |
-| `limit`  | `int` | None | Number of items to pull; ignored if not provided. |
 | `last_modified_date` :red_circle: | `<class 'datetime.datetime'>` | None | The modification date from which you want to pull jobs |
 
 ## Push Parameters
@@ -69,8 +69,8 @@ Bullhorn.update_jobs_in_hrflow(
         api_user="your_api_user",
     ),
     pull_parameters=dict(
-        fields="address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate",
         limit=0,
+        fields="address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate",
         last_modified_date=***,
     ),
     push_parameters=dict(

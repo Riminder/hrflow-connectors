@@ -8,13 +8,15 @@ from hrflow_connectors.connectors.bullhorn.utils import date_format
 from hrflow_connectors.connectors.bullhorn.warehouse import (
     BullhornArchiveJobWarehouse,
     BullhornCreateJobWarehouse,
-    BullhornProfileWarehouse,
     BullhornUpdateJobWarehouse,
+    BullhornCreateProfileWarehouse,
+    BullhornUpdateProfileWarehouse,
+    BullhornArchiveProfileWarehouse
 )
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
 from hrflow_connectors.connectors.hrflow.warehouse_v2 import (
     HrFlowJobWarehouse,
-    HrFlowProfileParsingWarehouse,
+    HrFlowProfileWarehouse,
 )
 from hrflow_connectors.core.connector_v2 import (  # noqa
     ActionMode,
@@ -261,9 +263,13 @@ def format_job(data: t.Dict) -> t.Dict:
     return hrflow_job
 
 
-def format_job_to_be_archived(data):
-    reference = next(iter(data), "id")
-    return {"reference": str(data[reference])}
+def format_item_to_be_archived(item):
+    if not isinstance(item, dict) or item is None:
+        return {"reference": None} 
+
+    reference = next(iter(item.keys()), "id")
+    return {"reference": str(item[reference])}
+
 
 
 def profile_format(data: BullhornProfile) -> t.Dict:
@@ -446,7 +452,7 @@ Bullhorn = Connector(
             trigger_type=WorkflowType.pull,
             description="Pull jobs from Bullhorn and archive them from Hrflow.ai Board",
             parameters=BaseActionParameters.with_defaults(
-                "ReadJobsActionParameters", format=format_job_to_be_archived
+                "ReadJobsActionParameters", format=format_item_to_be_archived
             ),
             origin=BullhornArchiveJobWarehouse,
             target=HrFlowJobWarehouse,
@@ -471,28 +477,43 @@ Bullhorn = Connector(
             name="create_profiles_in_hrflow",
             trigger_type=WorkflowType.pull,
             description=(
-                "Retrieves profiles from Bullhorn and writes them to Hrflow.ai source"
+                "Retrieves profiles from Bullhorn and create them in an Hrflow.ai source"
             ),
             parameters=BaseActionParameters.with_defaults(
                 "ReadProfileActionParameters", format=profile_format
             ),
-            origin=BullhornProfileWarehouse,
-            target=HrFlowProfileParsingWarehouse,
+            origin=BullhornCreateProfileWarehouse,
+            target=HrFlowProfileWarehouse,
             action_type=ActionType.inbound,
+            action_mode=ActionMode.create,
         ),
-        # ConnectorAction(
-        #     name="update_applications_in_bullhorn",
-        #     trigger_type=WorkflowType.catch,
-        #     description=(
-        #         "Retrieves profiles from Hrflow.ai and writes their applications"
-        #         " to the Bullhorn source"
-        #     ),
-        #     parameters=BaseActionParameters.with_defaults(
-        #         "WriteProfileActionParameters", format=format_application
-        #     ),
-        #     origin=HrFlowProfileWarehouse,
-        #     target=BullhornApplicationWarehouse,
-        #     action_type=ActionType.outbound,
-        # ),
+        ConnectorAction(
+            name="update_profiles_in_hrflow",
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves profiles from Bullhorn and update them in Hrflow.ai source"
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadProfileActionParameters", format=profile_format
+            ),
+            origin=BullhornUpdateProfileWarehouse,
+            target=HrFlowProfileWarehouse,
+            action_type=ActionType.inbound,
+            action_mode=ActionMode.update,
+        ),
+        ConnectorAction(
+            name="archive_profiles_in_hrflow",
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves profiles from Bullhorn and archive them in Hrflow.ai source"
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadProfileActionParameters", format=format_item_to_be_archived
+            ),
+            origin=BullhornArchiveProfileWarehouse,
+            target=HrFlowProfileWarehouse,
+            action_type=ActionType.inbound,
+            action_mode=ActionMode.archive,
+        ),
     ],
 )

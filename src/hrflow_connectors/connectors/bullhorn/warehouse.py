@@ -72,19 +72,30 @@ class AuthParameters(ParametersModel):
 #         field_type=FieldType.Auth,
 #     )
 
-
-class BaseJobsParameters(ParametersModel):
-    fields: str = Field(
-        "address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate",
-        min_length=2,
-        description="List of job fields to be retrieved from Bullhorn",
+# Define a base parameters model for common fields
+class BaseParameters(ParametersModel):
+    limit: t.Optional[int] = Field(
+        None,
+        description="Number of items to pull, ignored if not provided.",
         repr=False,
         field_type=FieldType.QueryParam,
     )
 
-    limit: t.Optional[int] = Field(
-        None,
-        description="Number of items to pull; ignored if not provided.",
+
+# Define a base class for job parameters that includes common fields
+class BaseJobsParameters(BaseParameters):
+    fields: str = Field(
+        "address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,"
+        "clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,"
+        "customText11,customText12,customText13,customText2,customText3,customText4,"
+        "customText5,customText6,customText7,customText8,customText9,customTextBlock1,"
+        "customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,"
+        "dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,"
+        "feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,"
+        "numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,"
+        "startDate,status,title,type,willRelocate",
+        min_length=2,
+        description="List of job fields to be retrieved from Bullhorn",
         repr=False,
         field_type=FieldType.QueryParam,
     )
@@ -100,10 +111,7 @@ class CreateJobsParameters(BaseJobsParameters):
 
     query: str = Field(
         "isDeleted:0 AND isOpen:true",
-        description=(
-            "This query will restrict the results retrieved from Bullhorn based on the"
-            " specified conditions"
-        ),
+        description="This query will restrict the results retrieved from Bullhorn based on the specified conditions",
         repr=False,
         field_type=FieldType.QueryParam,
     )
@@ -118,22 +126,18 @@ class UpdateJobsParameters(BaseJobsParameters):
     )
 
 
-class ArchiveJobsParameters(ParametersModel):
+# ArchiveJobsParameters can reuse the BaseParameters to avoid repeating limit
+class ArchiveJobsParameters(BaseParameters):
     last_modified_date: datetime = Field(
         ...,
-        description=(
-            "The modification date from which you want to pull jobs and archive them"
-        ),
+        description="The modification date from which you want to pull jobs and archive them",
         repr=False,
         field_type=FieldType.QueryParam,
     )
 
     query: str = Field(
         "isDeleted:0 AND isOpen:true",
-        description=(
-            "This query will restrict the results retrieved from Bullhorn based on the"
-            " specified conditions"
-        ),
+        description="This query will restrict the results retrieved from Bullhorn based on the specified conditions",
         repr=False,
         field_type=FieldType.QueryParam,
     )
@@ -145,47 +149,85 @@ class ArchiveJobsParameters(ParametersModel):
         field_type=FieldType.QueryParam,
     )
 
-    limit: int = Field(
-        None,
-        description="Number of items to pull, ignored if not provided.",
+
+# BaseProfilesParameters to manage common fields for profiles
+class BaseProfilesParameters(BaseParameters):
+    fields: str = Field(
+        "address,businessSectors,categories,companyName,customInt4,customInt5,"
+        "customInt6,customText1,customText10,customText11,customText12,customText13,"
+        "customText14,customText15,customText16,customText18,customText23,customText24,"
+        "customText25,customText4,customText5,customText6,customText9,dateAdded,dateAvailable,"
+        "dateAvailableEnd,dateLastModified,dateOfBirth,dayRate,dayRateLow,degreeList,"
+        "desiredLocations,description,disability,educations,email,email2,employmentPreference,ethnicity,"
+        "experience,firstName,id,lastName,mobile,name,namePrefix,occupation,owner,phone,"
+        "primarySkills,secondaryOwners,secondarySkills,salary,salaryLow,skillSet,source,"
+        "specialties,status,userDateAdded,veteran,willRelocate,workHistories,workPhone",
+        min_length=2,
+        description="List of profile fields to be retrieved from Bullhorn",
         repr=False,
         field_type=FieldType.QueryParam,
     )
 
 
-class ReadProfileParameters(ParametersModel):
-    last_modified_date: str = Field(
+class CreateProfilsParameters(BaseProfilesParameters):
+    created_date: datetime = Field(
         ...,
-        description="Last Modified Date in timestamp",
+        description="The creation date from which you want to pull profiles",
         repr=False,
-        field_type=FieldType.Auth,
-    )
-
-    fields: str = Field(
-        ...,
-        description="Fields to be retrieved from Bullhorn",
-        repr=False,
-        field_type=FieldType.Auth,
+        field_type=FieldType.QueryParam,
     )
 
     query: str = Field(
-        (
-            'isDeleted:0 AND NOT status:"Do Not Use" AND NOT status:"Left Company" AND'
-            ' NOT status:"Not in Europe" AND NOT status:"Archive" AND NOT'
-            ' status:"Placed by Us"'
-        ),
-        description=(
-            "This query will restrict the results retrieved from Bullhorn based on the"
-            " specified conditions"
-        ),
+        "isDeleted:0",
+        description="This query will restrict the results retrieved from Bullhorn based on the specified conditions",
         repr=False,
         field_type=FieldType.QueryParam,
     )
-    limit: int = Field(
-        ...,
-        description="Number of items to be returned",
+
+    parse_resume: bool = Field(
+        False,
+        description="If True, resumes will be retrieved and parsed along with the profile data",
         repr=False,
-        field_type=FieldType.Auth,
+        field_type=FieldType.QueryParam,
+    )
+
+
+class UpdateProfilsParameters(BaseProfilesParameters):
+    last_modified_date: datetime = Field(
+        ...,
+        description="The modification date from which you want to pull profiles",
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
+
+    parse_resume: bool = Field(
+        False,
+        description="If True, resumes will be retrieved and parsed along with the profile data",
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
+
+
+class ArchiveProfilsParameters(BaseParameters):
+    last_modified_date: datetime = Field(
+        ...,
+        description="The modification date from which you want to pull profiles",
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
+
+    query: str = Field(
+        "isDeleted:0",
+        description="This query will restrict the results retrieved from Bullhorn based on the specified conditions",
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
+
+    fields: str = Field(
+        "id",
+        description="Field to be used as reference for archiving",
+        repr=False,
+        field_type=FieldType.QueryParam,
     )
 
 
@@ -597,213 +639,222 @@ def generic_job_pulling(
     return _pull_items
 
 
-def read_profiles(
-    adapter: LoggerAdapter,
-    auth_parameters: AuthParameters,
-    action_parameters: ReadProfileParameters,
-    read_mode: t.Optional[ReadMode] = None,
-    read_from: t.Optional[str] = None,
-) -> t.Iterable[t.Dict]:
-    authentication = auth(
-        auth_parameters.username,
-        auth_parameters.password,
-        auth_parameters.client_id,
-        auth_parameters.client_secret,
-    )
-    start = 0
-    auth_retries = 0
-    total_returned = 0
-    should_break = False
-    last_id = None
-    if read_mode is ReadMode.sync:
-        if action_parameters.last_modified_date is None:
-            raise Exception("last_modified_date cannot be None in ReadMode.sync")
-        last_modified_date = action_parameters.last_modified_date
-    else:
-        if action_parameters.last_modified_date is not None:
-            adapter.warning(
-                "last_modified_date is ignored in ReadMode.incremental, using"
-                " read_from instead"
-            )
-        if read_from:
-            try:
-                read_from = json.loads(read_from)
-                last_modified_date = read_from["last_modified_date"]
-                last_id = read_from["last_id"]
-            except json.JSONDecodeError as e:
-                raise Exception(f"Failed to JSON parse read_from={read_from} error={e}")
-            except KeyError as e:
-                raise Exception(
-                    "Failed to find expected key in"
-                    f" read_from={read_from} error={repr(e)}"
-                )
-        else:
-            last_modified_date = action_parameters.last_modified_date
+def generic_profile_pulling(
+    action: str,
+) -> t.Callable[
+    [LoggerAdapter, AuthParameters, t.Union[CreateJobsParameters, UpdateJobsParameters], t.Optional[ReadMode], t.Optional[str]],
+    t.Iterable[t.Dict],
+]:
+    def __pull_items(
+        adapter: LoggerAdapter,
+        auth_parameters: AuthParameters,
+        action_parameters: CreateProfilsParameters,
+        read_mode: t.Optional[ReadMode] = None,
+        read_from: t.Optional[str] = None,
+    ) -> t.Iterable[t.Dict]:
+        authentication = auth(
+            auth_parameters.username,
+            auth_parameters.password,
+            auth_parameters.client_id,
+            auth_parameters.client_secret,
+        )
+        start, auth_retries, total_returned = 0, 0, 0
+        should_break = False
 
-    last_modified_date_filter = transform_timestamp_read_from(last_modified_date)
-    if not last_modified_date_filter:
-        raise Exception(
-            "Error while applying a transformation date on last modified date to"
-            " perform filtering"
+        authentication = auth(
+            auth_parameters.username,
+            auth_parameters.password,
+            auth_parameters.client_id,
+            auth_parameters.client_secret,
         )
 
-    while True:
-        try:
-            query = (
-                f"{action_parameters.query} AND "
-                f"dateLastModified:[{last_modified_date_filter} TO *]"
-            )
+        if action == "create":
+            date_field = "created_date"
+            bullhorn_date_field = "dateAdded"
+        else:
+            date_field = "last_modified_date"
+            bullhorn_date_field = "dateLastModified"
 
-            profiles_url = f"{authentication['restUrl']}search/Candidate"
-            params = {
-                "query": query,
-                "fields": action_parameters.fields,
-                "sort": "dateLastModified,id",
-                "start": str(start),
-            }
+        last_id = ""
+        if read_mode is ReadMode.sync:
+            date_value = getattr(action_parameters, date_field)
+            if date_value is None:
+                raise Exception(f"{date_field} cannot be None in ReadMode.sync")
+            last_id = None
+        else:
+            if read_from:
+                try:
+                    read_data = json.loads(read_from)
+                    date_value = read_data[date_field]
+                    last_id = read_data["last_id"]
+                except (json.JSONDecodeError, KeyError) as e:
+                    raise Exception(f"Error parsing read_from: {e}")
+            else:
+                date_value = getattr(action_parameters, date_field)
+                last_id = None
 
-            if action_parameters.limit:
-                params["count"] = action_parameters.limit
+        date_filter = transform_iso(date_value)
+        if not date_filter:
+            raise Exception(f"Error applying transformation on {date_field}")
 
-            headers = {"BhRestToken": authentication["BhRestToken"]}
+        # Construct the query
+        query = f"{bullhorn_date_field}:[{date_filter} TO *]"
+        if action in ("create","archive") and action_parameters.query :
+            query = f"{action_parameters.query} AND {query}"
 
-            response = requests.get(url=profiles_url, params=params, headers=headers)
-            if response.status_code // 100 != 2:
-                adapter.error(
-                    "Failed to pull profiles from Bullhorn"
-                    f" status_code={response.status_code} response={response.text}"
-                )
-                raise Exception("Failed to pull profiles from Bullhorn")
-            response = response.json()
+        while True:
+            try:
+                profiles_url = f"{authentication['restUrl']}search/Candidate"
+                params = {
+                    "query": query,
+                    "fields": action_parameters.fields,
+                    "sort": f"{bullhorn_date_field},id",
+                    "start": str(start),
+                }
 
-            start = response["start"] + response["count"]
-            total = response["total"]
-            data = response["data"]
+                if action_parameters.limit:
+                    params["count"] = action_parameters.limit
 
-            for profile in data:
-                if (
-                    action_parameters.limit
-                    and total_returned >= action_parameters.limit
-                ):
-                    should_break = True
-                    break
-                if (
-                    read_mode is ReadMode.incremental
-                    and profile["dateLastModified"] == last_modified_date
-                    and profile["id"] <= last_id
-                ):
-                    adapter.info("Profile with id <= last_id")
-                    continue
-
-                # Get profile cv
-                profile["cvFile"] = None
-                url_files = (
-                    authentication["restUrl"]
-                    + "entityFiles/Candidate/"
-                    + str(profile["id"])
-                )
                 headers = {"BhRestToken": authentication["BhRestToken"]}
-                response = requests.get(url=url_files, headers=headers)
+
+                response = requests.get(url=profiles_url, params=params, headers=headers)
+                if response.status_code // 100 != 2:
+                    adapter.error(
+                        "Failed to pull profiles from Bullhorn"
+                        f" status_code={response.status_code} response={response.text}"
+                    )
+                    raise Exception("Failed to pull profiles from Bullhorn")
                 response = response.json()
 
-                last_cv = None
-                curr_entity = None
-                if len(response["EntityFiles"]) > 0:
-                    for entity_file in response["EntityFiles"]:
-                        if entity_file["type"] == "Resume":
-                            if not curr_entity:
-                                curr_entity = entity_file
-                                last_cv = entity_file["id"]
-                            elif curr_entity["dateAdded"] < entity_file["dateAdded"]:
-                                curr_entity = entity_file
-                                last_cv = entity_file["id"]
+                start = response["start"] + response["count"]
+                total = response["total"]
+                data = response["data"]
 
-                if last_cv is not None:
-                    url_cv = (
-                        authentication["restUrl"]
-                        + "/file/Candidate/"
-                        + str(profile["id"])
-                        + "/"
-                        + str(last_cv)
-                        + "/raw"
-                    )
-                    response = requests.get(url=url_cv, headers=headers)
+                for profile in data:
+                    if action_parameters.limit and total_returned >= action_parameters.limit:
+                        should_break = True
+                        break
+                    
+                    if (action == "create" and profile.get("dateAdded") != profile.get("dateLastModified")) or \
+                        (action == "update" and profile.get("dateAdded") == profile.get("dateLastModified")): 
+                        continue
 
-                    file = response.content
-                    profile_file = BytesIO(file)
-                    profile["cvFile"] = profile_file
 
-                if "educations" in action_parameters.fields:
-                    # Enrich profile education
-                    education_ids = []
-                    educations = []
-                    for ed in profile["educations"]["data"]:
-                        education_ids.append(ed["id"])
-                    for id in education_ids:
-                        education_url = (
+                    if last_id and profile.get(bullhorn_date_field) == date_value and profile.get("id") <= last_id:
+                        adapter.info("Skipping profile with id <= last_id")
+                        continue
+                    if action_parameters.parse_resume:
+                        profile["cvFile"] = None
+                        url_files = (
                             authentication["restUrl"]
-                            + "entity/CandidateEducation/"
-                            + str(id)
-                            + "?fields=*"
+                            + "entityFiles/Candidate/"
+                            + str(profile["id"])
                         )
-                        response = requests.get(url=education_url, headers=headers)
+                        headers = {"BhRestToken": authentication["BhRestToken"]}
+                        response = requests.get(url=url_files, headers=headers)
                         response = response.json()
-                        educations.append(response["data"])
 
-                    profile["educations"] = educations
+                        last_cv = None
+                        curr_entity = None
+                        file_name = None
+                        if len(response["EntityFiles"]) > 0:
+                            for entity_file in response["EntityFiles"]:
+                                if entity_file["type"] == "Resume":
+                                    if not curr_entity:
+                                        curr_entity = entity_file
+                                        last_cv = entity_file["id"]
+                                        file_name = entity_file["name"]
+                                    elif curr_entity["dateAdded"] < entity_file["dateAdded"]:
+                                        curr_entity = entity_file
+                                        last_cv = entity_file["id"]
+                                        file_name = entity_file["name"]
 
-                if "workHistories" in action_parameters.fields:
-                    # Enrich profile work history
-                    work_history_ids = []
-                    work_histories = []
-                    for work_history in profile["workHistories"]["data"]:
-                        work_history_ids.append(work_history["id"])
-                    for id in work_history_ids:
-                        work_history_url = (
-                            authentication["restUrl"]
-                            + "entity/CandidateWorkHistory/"
-                            + str(id)
-                            + "?fields=*"
-                        )
-                        response = requests.get(url=work_history_url, headers=headers)
-                        response = response.json()
-                        work_histories.append(response["data"])
+                        if last_cv is not None:
+                            url_cv = (
+                                authentication["restUrl"]
+                                + "/file/Candidate/"
+                                + str(profile["id"])
+                                + "/"
+                                + str(last_cv)
+                                + "/raw"
+                            )
+                            response = requests.get(url=url_cv, headers=headers)
 
-                    profile["workHistories"] = work_histories
+                            file = response.content
+                            profile_file = BytesIO(file)
+                            profile["cvFile"] = profile_file
+                            profile["fileName"] = file_name
 
-                total_returned += 1
-                yield profile
+                    if "educations" in action_parameters.fields:
+                        education_ids = []
+                        educations = []
+                        for ed in profile["educations"]["data"]:
+                            education_ids.append(ed["id"])
+                        for id in education_ids:
+                            education_url = (
+                                authentication["restUrl"]
+                                + "entity/CandidateEducation/"
+                                + str(id)
+                                + "?fields='city,school,startDate,endDate,degree,certification,comments'"
+                            )
+                            response = requests.get(url=education_url, headers=headers)
+                            response = response.json()
+                            educations.append(response["data"])
 
-            if should_break:
-                break
+                        profile["educations"] = educations
 
-            if start >= total:
-                break
+                    if "workHistories" in action_parameters.fields:
+                        work_history_ids = []
+                        work_histories = []
+                        for work_history in profile["workHistories"]["data"]:
+                            work_history_ids.append(work_history["id"])
+                        for id in work_history_ids:
+                            work_history_url = (
+                                authentication["restUrl"]
+                                + "entity/CandidateWorkHistory/"
+                                + str(id)
+                                + "?fields='title,comments,startDate,endDate,companyName'"
+                            )
+                            response = requests.get(url=work_history_url, headers=headers)
+                            response = response.json()
+                            work_histories.append(response["data"])
 
-        except requests.HTTPError as e:
-            if e.response.status_code == 401:
-                adapter.info(
-                    "Received 401 error. Retrying authentication to continue fetching"
-                    " profiles."
-                )
-                if auth_retries > 2:
-                    raise Exception(
-                        f"Retries exceeded for authentication ({auth_retries})."
-                        " Stopping execution."
+                        profile["workHistories"] = work_histories
+
+                    total_returned += 1
+                    yield profile
+
+                if should_break:
+                    break
+
+                if start >= total:
+                    break
+
+            except requests.HTTPError as e:
+                if e.response.status_code == 401:
+                    adapter.info(
+                        "Received 401 error. Retrying authentication to continue fetching"
+                        " profiles."
                     )
+                    if auth_retries > 2:
+                        raise Exception(
+                            f"Retries exceeded for authentication ({auth_retries})."
+                            " Stopping execution."
+                        )
 
-                authentication = auth(
-                    action_parameters.username,
-                    action_parameters.password,
-                    action_parameters.client_id,
-                    action_parameters.client_secret,
-                    refresh_token=authentication["refresh_token"],
-                )
-                auth_retries += 1
-                continue
-            else:
-                adapter.error("Failed to fetch profiles from Bullhorn.")
-                raise e
+                    authentication = auth(
+                        auth_parameters.username,
+                        auth_parameters.password,
+                        auth_parameters.client_id,
+                        auth_parameters.client_secret,
+                        refresh_token=authentication["refresh_token"],
+                    )
+                    auth_retries += 1
+                    continue
+                else:
+                    adapter.error("Failed to fetch profiles from Bullhorn.")
+                    raise e
+    return __pull_items
 
 
 def transform_iso(iso_date: t.Optional[t.Union[str, datetime]]) -> t.Optional[str]:
@@ -830,25 +881,52 @@ def transform_timestamp_read_from(
     return transformed_date.isoformat()
 
 
-def item_to_read_from_job_create(item: t.Dict) -> str:
+def item_to_read_from_create(item: t.Dict) -> str:
     created_date = transform_timestamp_read_from(item["dateAdded"])
     return json.dumps(dict(created_date=created_date, last_id=item["id"]))
 
     return json.dumps(dict(created_date=created_date, last_id=item["id"]))
 
 
-def item_to_read_from_job_update(item: t.Dict) -> str:
+def item_to_read_from_update_or_archive(item: t.Dict) -> str:
     last_modified_date = transform_timestamp_read_from(item["dateLastModified"])
     return json.dumps(dict(last_modified_date=last_modified_date, last_id=item["id"]))
 
 
-# TODO: missing update, archive and create action
-BullhornProfileWarehouse = Warehouse(
-    name="Bullhorn Profiles",
+BullhornCreateProfileWarehouse = Warehouse(
+    name="Bullhorn Create Profils",
     data_schema=BullhornProfile,
-    data_type=DataType.profile,
+    data_type=DataType.job,
     read=WarehouseReadAction(
-        parameters=ReadProfileParameters, function=read_profiles, endpoints=[]
+        auth_parameters=AuthParameters,
+        action_parameters=CreateProfilsParameters,
+        function=generic_profile_pulling(action="create"),
+        supports_incremental=True,
+        item_to_read_from=item_to_read_from_create,
+    ),
+)
+BullhornUpdateProfileWarehouse = Warehouse(
+    name="Bullhorn Update Profils",
+    data_schema=BullhornProfile,
+    data_type=DataType.job,
+    read=WarehouseReadAction(
+        auth_parameters=AuthParameters,
+        action_parameters=UpdateProfilsParameters,
+        function=generic_profile_pulling(action="update"),
+        supports_incremental=True,
+        item_to_read_from=item_to_read_from_update_or_archive,
+    ),
+)
+BullhornArchiveProfileWarehouse = Warehouse(
+    name="Bullhorn Archive Profils",
+    data_schema=BullhornProfile,
+    data_type=DataType.job,
+    read=WarehouseReadAction(
+        auth_parameters=AuthParameters,
+        action_parameters=ArchiveProfilsParameters,
+        function=generic_profile_pulling(action="archive"),
+        supports_incremental=True,
+        item_to_read_from=item_to_read_from_update_or_archive,
     ),
 )
 
@@ -873,7 +951,7 @@ BullhornCreateJobWarehouse = Warehouse(
         action_parameters=CreateJobsParameters,
         function=generic_job_pulling(action="create"),
         supports_incremental=True,
-        item_to_read_from=item_to_read_from_job_create,
+        item_to_read_from=item_to_read_from_create,
     ),
 )
 
@@ -886,7 +964,7 @@ BullhornUpdateJobWarehouse = Warehouse(
         action_parameters=UpdateJobsParameters,
         function=generic_job_pulling(action="update"),
         supports_incremental=True,
-        item_to_read_from=item_to_read_from_job_update,
+        item_to_read_from=item_to_read_from_update_or_archive,
     ),
 )
 
@@ -899,6 +977,6 @@ BullhornArchiveJobWarehouse = Warehouse(
         action_parameters=ArchiveJobsParameters,
         function=generic_job_pulling(action="archive"),
         supports_incremental=True,
-        item_to_read_from=item_to_read_from_job_update,
+        item_to_read_from=item_to_read_from_update_or_archive,
     ),
 )
