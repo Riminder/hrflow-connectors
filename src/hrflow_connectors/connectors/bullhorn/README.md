@@ -55,6 +55,9 @@ This new connector will enable:
 | [**Create jobs in hrflow**](docs/.md) | Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board |
 | [**Update jobs in hrflow**](docs/.md) | Pull jobs from Bullhorn and update them to Hrflow.ai Board |
 | [**Archive jobs in hrflow**](docs/.md) | Pull jobs from Bullhorn and archive them from Hrflow.ai Board |
+| [**Create profiles in hrflow**](docs/.md) | Retrieves profiles from Bullhorn and create them in an Hrflow.ai source |
+| [**Update profiles in hrflow**](docs/.md) | Retrieves profiles from Bullhorn and update them in Hrflow.ai source |
+| [**Archive profiles in hrflow**](docs/.md) | Retrieves profiles from Bullhorn and archive them in Hrflow.ai source |
 
 
 </p>|

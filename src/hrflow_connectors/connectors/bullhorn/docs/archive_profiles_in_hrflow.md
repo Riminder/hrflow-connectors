@@ -1,7 +1,7 @@
-# Archive jobs in hrflow
-`Bullhorn Archive Jobs` :arrow_right: `HrFlow.ai Jobs`
+# Archive profiles in hrflow
+`Bullhorn Archive Profils` :arrow_right: `HrFlow.ai Profiles`
 
-Pull jobs from Bullhorn and archive them from Hrflow.ai Board
+Retrieves profiles from Bullhorn and archive them in Hrflow.ai source
 
 
 
@@ -26,23 +26,23 @@ Pull jobs from Bullhorn and archive them from Hrflow.ai Board
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `api_secret` :red_circle: | `str` | None | API Key used to access HrFlow.ai API |
-| `api_user` :red_circle: | `str` | None | User email used to access HrFlow.ai API |
+| `api_secret` :red_circle: | `str` | None | X-API-KEY used to access HrFlow.ai API |
+| `api_user` :red_circle: | `str` | None | X-USER-EMAIL used to access HrFlow.ai API |
 
 ## Pull Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `limit`  | `int` | None | Number of items to pull, ignored if not provided. |
-| `last_modified_date` :red_circle: | `<class 'datetime.datetime'>` | None | The modification date from which you want to pull jobs and archive them |
-| `query`  | `str` | isDeleted:0 AND isOpen:true | This query will restrict the results retrieved from Bullhorn based on the specified conditions |
+| `last_modified_date` :red_circle: | `<class 'datetime.datetime'>` | None | The modification date from which you want to pull profiles |
+| `query`  | `str` | isDeleted:0 | This query will restrict the results retrieved from Bullhorn based on the specified conditions |
 | `fields`  | `str` | id | Field to be used as reference for archiving |
 
 ## Push Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `board_key` :red_circle: | `str` | None | HrFlow.ai board key |
+| `source_key` :red_circle: | `str` | None | HrFlow.ai source key |
 
 :red_circle: : *required*
 
@@ -57,7 +57,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-Bullhorn.archive_jobs_in_hrflow(
+Bullhorn.archive_profiles_in_hrflow(
     workflow_id="some_string_identifier",
     connector_auth=dict(
         client_id="your_client_id",
@@ -72,11 +72,11 @@ Bullhorn.archive_jobs_in_hrflow(
     pull_parameters=dict(
         limit=0,
         last_modified_date=***,
-        query="isDeleted:0 AND isOpen:true",
+        query="isDeleted:0",
         fields="id",
     ),
     push_parameters=dict(
-        board_key="your_board_key",
+        source_key="your_source_key",
     ),
     format=lambda *args, **kwargs: None # Put your code logic here,
     logics=[],
