@@ -24,7 +24,7 @@ LABEL_TO_JOB_FIELD = dict(
     course="courses",
     interest="interests",
 )
-SKILL_LABEL_TO_BTYPE = dict(Skill=None, skill_hard="hard", skill_soft="soft")
+SKILL_LABEL_TO_TYPE = dict(Skill=None, skill_hard="hard", skill_soft="soft")
 
 
 class JobParsingException(Exception):
@@ -171,7 +171,7 @@ def create(
         if response["code"] >= 400:
             adapter.error(
                 "Failed to index job with reference={} board_key={} response={}".format(
-                    job['reference'],action_parameters.board_key, response
+                    job["reference"], action_parameters.board_key, response
                 )
             )
             failed_jobs.append(job)
@@ -192,29 +192,25 @@ def update(
         job_reference = job.get("reference")
         job_key = job.get("key")
         if job_reference is None and job_key is None:
-            adapter.error(
-                "can't update job without reference or key"
-            )
+            adapter.error("can't update job without reference or key")
             failed_jobs.append(job)
 
         response = hrflow_client.job.storing.edit(
-            board_key=action_parameters.board_key,job_json=job
+            board_key=action_parameters.board_key, job_json=job
         )
         if response["code"] >= 400:
             if "Unable to find object: job" in response["message"]:
                 adapter.error(
-                    "Failed to update job with reference={} board_key={} response={}".format(
-                    job["reference"], action_parameters.board_key, response
-                    )
+                    "Failed to update job with reference={} board_key={} response={}"
+                    .format(job["reference"], action_parameters.board_key, response)
                 )
                 continue
             adapter.error(
-                "Failed to update job with reference={} board_key={} response={}".format(
-                   job["reference"], action_parameters.board_key, response
-                )
+                "Failed to update job with reference={} board_key={} response={}"
+                .format(job["reference"], action_parameters.board_key, response)
             )
             failed_jobs.append(job)
-        
+
     return failed_jobs
 
 
@@ -235,22 +231,22 @@ def archive(
             adapter.error("can't archive job without reference")
             failed_jobs.append(job)
             continue
-        response = hrflow_client.job.storing.archive(board_key=action_parameters.board_key,reference=job_reference)
+        response = hrflow_client.job.storing.archive(
+            board_key=action_parameters.board_key, reference=job_reference
+        )
         if response["code"] >= 400:
             if "Unable to find object: job" in response["message"]:
                 adapter.error(
-                    "Failed to archive job with reference={} board_key={} response={}".format(
-                    job["reference"], action_parameters.board_key, response
-                    )
+                    "Failed to archive job with reference={} board_key={} response={}"
+                    .format(job["reference"], action_parameters.board_key, response)
                 )
                 continue
             adapter.error(
-                "Failed to archive job with reference={} board_key={} response={}".format(
-                    job_reference, action_parameters.board_key, response
-                )
+                "Failed to archive job with reference={} board_key={} response={}"
+                .format(job_reference, action_parameters.board_key, response)
             )
             failed_jobs.append(job)
-        
+
     return failed_jobs
 
 

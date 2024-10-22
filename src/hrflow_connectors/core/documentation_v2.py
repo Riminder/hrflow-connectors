@@ -58,7 +58,8 @@ USE_REMOTE_REV: ContextVar[t.Optional[str]] = ContextVar("USE_REMOTE_REV", defau
 BASE_CONNECTOR_PATH: ContextVar[t.Optional[str]] = ContextVar(
     "BASE_CONNECTOR_PATH", default="src/hrflow_connectors/connectors/"
 )
-ACTION_MODE_MAPPING = {'create': 'create', 'update': 'update', 'archive': 'archive'}
+ACTION_MODE_MAPPING = {"create": "create", "update": "update", "archive": "archive"}
+
 
 class InvalidConnectorReadmeFormat(Exception):
     pass
@@ -396,13 +397,17 @@ def generate_docs(
                         documentation_path=action_docs_directory,
                     )
                     hrflow_auth_parameters = get_template_fields(
-                        fields=getattr(action.target, ACTION_MODE_MAPPING[action.action_mode]).auth_parameters.__fields__.values(),
+                        fields=getattr(
+                            action.target, ACTION_MODE_MAPPING[action.action_mode]
+                        ).auth_parameters.__fields__.values(),
                         documentation_path=action_docs_directory,
                     )
 
                 else:
-                    connector_auth_parameters =  get_template_fields(
-                        fields=getattr(action.target, ACTION_MODE_MAPPING[action.action_mode]).auth_parameters.__fields__.values(),
+                    connector_auth_parameters = get_template_fields(
+                        fields=getattr(
+                            action.target, ACTION_MODE_MAPPING[action.action_mode]
+                        ).auth_parameters.__fields__.values(),
                         documentation_path=action_docs_directory,
                     )
                     hrflow_auth_parameters = get_template_fields(
@@ -414,7 +419,9 @@ def generate_docs(
                     documentation_path=action_docs_directory,
                 )
                 push_parameters = get_template_fields(
-                    fields = getattr(action.target, action.action_mode.value).action_parameters.__fields__.values(),
+                    fields=getattr(
+                        action.target, action.action_mode.value
+                    ).action_parameters.__fields__.values(),
                     documentation_path=action_docs_directory,
                 )
 
@@ -435,7 +442,9 @@ def generate_docs(
                     push_parameters=push_parameters,
                     origin_endpoints=action.origin.read.endpoints,
                     target_name=action.target.name,
-                    target_endpoints=getattr(action.target, ACTION_MODE_MAPPING[action.action_mode]).endpoints,
+                    target_endpoints=getattr(
+                        action.target, ACTION_MODE_MAPPING[action.action_mode]
+                    ).endpoints,
                 )
                 action_documentation_content = py_37_38_compat_patch(
                     action_documentation_content

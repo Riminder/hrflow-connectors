@@ -566,7 +566,7 @@ def generic_job_pulling(
     [
         LoggerAdapter,
         AuthParameters,
-        t.Union[CreateJobsParameters, UpdateJobsParameters],
+        t.Union[CreateJobsParameters, UpdateJobsParameters, ArchiveJobsParameters],
         t.Optional[ReadMode],
         t.Optional[str],
     ],
