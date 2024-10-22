@@ -497,12 +497,6 @@ class ConnectorAction(BaseModel):
             raise ValueError("Origin warehouse is not readable")
         return origin
 
-    # @validator("target", pre=False)
-    # def target_is_writable(cls, target):
-    #     if target.is_writable is False:
-    #         raise ValueError("Target warehouse is not writable")
-    #     return target
-
     @validator("target", pre=False)
     def target_is_creatable(cls, target, values):
         action_mode = values.get("action_mode")
@@ -515,7 +509,7 @@ class ConnectorAction(BaseModel):
     def target_is_updatable(cls, target, values):
         action_mode = values.get("action_mode")
         if action_mode == ActionMode.update:
-            if target.is_update is False:
+            if target.is_updatable is False:
                 raise ValueError("Target warehouse is not updatable")
         return target
 
@@ -523,7 +517,7 @@ class ConnectorAction(BaseModel):
     def target_is_archivable(cls, target, values):
         action_mode = values.get("action_mode")
         if action_mode == ActionMode.archive:
-            if target.is_archive is False:
+            if target.is_archivable is False:
                 raise ValueError("Target warehouse is not archivable")
         return target
 

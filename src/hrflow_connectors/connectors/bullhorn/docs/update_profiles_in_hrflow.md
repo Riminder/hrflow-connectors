@@ -43,8 +43,7 @@ Retrieves profiles from Bullhorn and update them in Hrflow.ai source
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `source_key` :red_circle: | `str` | None | HrFlow.ai source key |
-| `edit`  | `bool` | False | When enabled the profile must exist in the source |
-| `only_edit_fields` :red_circle: | `typing.List[str]` | None | List of attributes to use for the edit operation e.g. ['tags', 'metadatas'] |
+| `only_edit_fields`  | `typing.List[str]` | None | List of attributes to use for the edit operation e.g. ['tags', 'metadatas'] |
 
 :red_circle: : *required*
 
@@ -79,7 +78,6 @@ Bullhorn.update_profiles_in_hrflow(
     ),
     push_parameters=dict(
         source_key="your_source_key",
-        edit=False,
         only_edit_fields=***,
     ),
     format=lambda *args, **kwargs: None # Put your code logic here,
