@@ -504,21 +504,27 @@ class ConnectorAction(BaseModel):
     #     return target
 
     @validator("target", pre=False)
-    def target_is_creatable(cls, target):
-        if target.is_creatable is False:
-            raise ValueError("Target warehouse is not creatable")
+    def target_is_creatable(cls, target, values):
+        action_mode = values.get("action_mode")
+        if action_mode == ActionMode.create:
+            if target.is_creatable is False:
+                raise ValueError("Target warehouse is not creatable")
         return target
 
     @validator("target", pre=False)
-    def target_is_updatable(cls, target):
-        if target.is_update is False:
-            raise ValueError("Target warehouse is not updatable")
+    def target_is_updatable(cls, target, values):
+        action_mode = values.get("action_mode")
+        if action_mode == ActionMode.update:
+            if target.is_update is False:
+                raise ValueError("Target warehouse is not updatable")
         return target
 
     @validator("target", pre=False)
-    def target_is_archivable(cls, target):
-        if target.is_archive is False:
-            raise ValueError("Target warehouse is not archivable")
+    def target_is_archivable(cls, target, values):
+        action_mode = values.get("action_mode")
+        if action_mode == ActionMode.archive:
+            if target.is_archive is False:
+                raise ValueError("Target warehouse is not archivable")
         return target
 
     @property

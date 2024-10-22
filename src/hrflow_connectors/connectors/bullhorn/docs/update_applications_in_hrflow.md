@@ -1,7 +1,7 @@
-# Archive profiles in hrflow
-`Bullhorn Archive Profils` :arrow_right: `HrFlow.ai Profiles`
+# Update applications in hrflow
+`HrFlow.ai Profiles` :arrow_right: `Bullhorn Applications`
 
-Retrieves profiles from Bullhorn and archive them in Hrflow.ai source
+Retrieves profiles from Hrflow.ai and writes their applications on the Bullhorn source
 
 
 
@@ -10,7 +10,7 @@ Retrieves profiles from Bullhorn and archive them in Hrflow.ai source
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_item_to_be_archived`](../connector.py#L267) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_application`](../connector.py#L380) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Connector Auth Parameters
@@ -33,16 +33,16 @@ Retrieves profiles from Bullhorn and archive them in Hrflow.ai source
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `limit`  | `int` | None | Number of items to pull, ignored if not provided. |
-| `last_modified_date` :red_circle: | `<class 'datetime.datetime'>` | None | The modification date from which you want to pull profiles |
-| `query`  | `str` | isDeleted:0 | This query will restrict the results retrieved from Bullhorn based on the specified conditions |
-| `fields`  | `str` | id | Field to be used as reference for archiving |
+| `source_key` :red_circle: | `str` | None | HrFlow.ai source key |
+| `profile_key` :red_circle: | `str` | None | HrFlow.ai profile key |
 
 ## Push Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `source_key` :red_circle: | `str` | None | HrFlow.ai source key |
+| `job_id` :red_circle: | `str` | None | id for the job in Bullhorn |
+| `status_when_created` :red_circle: | `str` | None | The status of the application when created in Bullhorn |
+| `source`  | `str` | None | The source of the application to be created in Bullhorn |
 
 :red_circle: : *required*
 
@@ -57,7 +57,7 @@ from hrflow_connectors.core import ReadMode
 logging.basicConfig(level=logging.INFO)
 
 
-Bullhorn.archive_profiles_in_hrflow(
+Bullhorn.update_applications_in_hrflow(
     workflow_id="some_string_identifier",
     connector_auth=dict(
         client_id="your_client_id",
@@ -70,13 +70,13 @@ Bullhorn.archive_profiles_in_hrflow(
         api_user="your_api_user",
     ),
     pull_parameters=dict(
-        limit=0,
-        last_modified_date=***,
-        query="isDeleted:0",
-        fields="id",
+        source_key="your_source_key",
+        profile_key="your_profile_key",
     ),
     push_parameters=dict(
-        source_key="your_source_key",
+        job_id="your_job_id",
+        status_when_created="your_status_when_created",
+        source="your_source",
     ),
     format=lambda *args, **kwargs: None # Put your code logic here,
     logics=[],

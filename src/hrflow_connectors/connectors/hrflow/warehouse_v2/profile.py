@@ -12,6 +12,7 @@ from hrflow_connectors.core.warehouse_v2 import (
     DataType,
     FieldType,
     ParametersModel,
+    ReadMode,
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
@@ -82,6 +83,8 @@ def read(
     adapter: LoggerAdapter,
     auth_parameters: AuthParameters,
     action_parameters: ReadProfileParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
 ) -> t.List[t.Dict]:
     hrflow_client = Hrflow(
         api_secret=auth_parameters.api_secret, api_user=auth_parameters.api_user
@@ -287,7 +290,7 @@ HrFlowProfileWarehouse = Warehouse(
     data_schema=HrFlowProfile,
     data_type=DataType.profile,
     read=WarehouseReadAction(
-        parameters=ReadProfileParameters,
+        auth_parameters=AuthParameters,
         action_parameters=ReadProfileParameters,
         function=read,
     ),

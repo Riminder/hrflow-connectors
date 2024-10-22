@@ -58,6 +58,7 @@ This new connector will enable:
 | [**Create profiles in hrflow**](docs/.md) | Retrieves profiles from Bullhorn and create them in an Hrflow.ai source |
 | [**Update profiles in hrflow**](docs/.md) | Retrieves profiles from Bullhorn and update them in Hrflow.ai source |
 | [**Archive profiles in hrflow**](docs/.md) | Retrieves profiles from Bullhorn and archive them in Hrflow.ai source |
+| [**Update applications in hrflow**](docs/.md) | Retrieves profiles from Hrflow.ai and writes their applications on the Bullhorn source |
 
 
 </p>|

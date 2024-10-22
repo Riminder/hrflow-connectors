@@ -179,11 +179,11 @@ class Warehouse(BaseModel):
         return self.read is not None
 
     @property
-    def is_update(self):
+    def is_updatable(self):
         return self.update is not None
 
     @property
-    def is_archive(self):
+    def is_archivable(self):
         return self.archive is not None
 
     def with_fixed_create_parameters(self, **tofix) -> "Warehouse":
