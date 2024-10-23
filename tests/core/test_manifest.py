@@ -6,13 +6,13 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from hrflow_connectors import hrflow_connectors_manifest
 from hrflow_connectors.core.connector import (
     MAX_LOGO_PIXEL,
     MAX_LOGO_SIZE_BYTES,
     MIN_LOGO_PIXEL,
     AmbiguousConnectorImportName,
     ConnectorImportNameNotFound,
+    hrflow_connectors_manifest,
 )
 from tests.core.test_connector import SmartLeadsF
 from tests.core.utils import added_connectors, main_import_name_as

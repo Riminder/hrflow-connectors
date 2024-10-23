@@ -17,7 +17,7 @@ from hrflow_connectors.core.warehouse import (  # noqa
     ReadMode,
     Warehouse,
 )
-from hrflow_connectors.core.warehouse_v2 import (
+from hrflow_connectors.core.warehouse_v2 import (  # noqa
     WarehouseReadAction,
     WarehouseWriteAction,
 )
