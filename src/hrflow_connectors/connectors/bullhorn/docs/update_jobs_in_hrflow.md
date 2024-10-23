@@ -72,12 +72,12 @@ Bullhorn.update_jobs_in_hrflow(
         limit=0,
         fields="address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate",
         last_modified_date=***,
+        read_mode=ReadMode.sync,
     ),
     push_parameters=dict(
         board_key="your_board_key",
     ),
     format=lambda *args, **kwargs: None # Put your code logic here,
     logics=[],
-    read_mode=ReadMode.sync
 )
 ```

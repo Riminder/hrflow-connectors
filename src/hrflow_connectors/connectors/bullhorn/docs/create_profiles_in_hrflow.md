@@ -35,8 +35,8 @@ Retrieves profiles from Bullhorn and create them in an Hrflow.ai source
 | ----- | ---- | ------- | ----------- |
 | `limit`  | `int` | None | Number of items to pull, ignored if not provided. |
 | `fields`  | `<class 'hrflow_connectors.core.warehouse_v2.ConstrainedStrValue'>` | address,businessSectors,categories,companyName,customInt4,customInt5,customInt6,customText1,customText10,customText11,customText12,customText13,customText14,customText15,customText16,customText18,customText23,customText24,customText25,customText4,customText5,customText6,customText9,dateAdded,dateAvailable,dateAvailableEnd,dateLastModified,dateOfBirth,dayRate,dayRateLow,degreeList,desiredLocations,description,disability,educations,email,email2,employmentPreference,ethnicity,experience,firstName,id,lastName,mobile,name,namePrefix,occupation,owner,phone,primarySkills,secondaryOwners,secondarySkills,salary,salaryLow,skillSet,source,specialties,status,userDateAdded,veteran,willRelocate,workHistories,workPhone | List of profile fields to be retrieved from Bullhorn |
-| `created_date` :red_circle: | `<class 'datetime.datetime'>` | None | The creation date from which you want to pull profiles |
 | `query`  | `str` | isDeleted:0 | This query will restrict the results retrieved from Bullhorn based on the specified conditions |
+| `created_date` :red_circle: | `<class 'datetime.datetime'>` | None | The creation date from which you want to pull profiles |
 | `parse_resume`  | `bool` | False | If True, resumes will be retrieved and parsed along with the profile data |
 
 ## Push Parameters
@@ -73,15 +73,15 @@ Bullhorn.create_profiles_in_hrflow(
     pull_parameters=dict(
         limit=0,
         fields="address,businessSectors,categories,companyName,customInt4,customInt5,customInt6,customText1,customText10,customText11,customText12,customText13,customText14,customText15,customText16,customText18,customText23,customText24,customText25,customText4,customText5,customText6,customText9,dateAdded,dateAvailable,dateAvailableEnd,dateLastModified,dateOfBirth,dayRate,dayRateLow,degreeList,desiredLocations,description,disability,educations,email,email2,employmentPreference,ethnicity,experience,firstName,id,lastName,mobile,name,namePrefix,occupation,owner,phone,primarySkills,secondaryOwners,secondarySkills,salary,salaryLow,skillSet,source,specialties,status,userDateAdded,veteran,willRelocate,workHistories,workPhone",
-        created_date=***,
         query="isDeleted:0",
+        created_date=***,
         parse_resume=False,
+        read_mode=ReadMode.sync,
     ),
     push_parameters=dict(
         source_key="your_source_key",
     ),
     format=lambda *args, **kwargs: None # Put your code logic here,
     logics=[],
-    read_mode=ReadMode.sync
 )
 ```

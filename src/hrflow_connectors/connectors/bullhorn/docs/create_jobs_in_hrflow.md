@@ -75,6 +75,7 @@ Bullhorn.create_jobs_in_hrflow(
         fields="address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,type,willRelocate",
         created_date=***,
         query="isDeleted:0 AND isOpen:true",
+        read_mode=ReadMode.sync,
     ),
     push_parameters=dict(
         board_key="your_board_key",
@@ -82,6 +83,5 @@ Bullhorn.create_jobs_in_hrflow(
     ),
     format=lambda *args, **kwargs: None # Put your code logic here,
     logics=[],
-    read_mode=ReadMode.sync
 )
 ```

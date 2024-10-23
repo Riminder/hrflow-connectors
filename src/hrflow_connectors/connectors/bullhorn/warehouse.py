@@ -6,7 +6,7 @@ from io import BytesIO
 from logging import LoggerAdapter
 
 import requests
-from pydantic import Field, validator
+from pydantic import Field
 
 from hrflow_connectors.connectors.bullhorn.schemas import BullhornJob, BullhornProfile
 from hrflow_connectors.connectors.bullhorn.utils.authentication import auth
@@ -183,15 +183,6 @@ class BaseProfilesParameters(BaseParameters):
         field_type=FieldType.QueryParam,
     )
 
-
-class CreateProfilsParameters(BaseProfilesParameters):
-    created_date: datetime = Field(
-        ...,
-        description="The creation date from which you want to pull profiles",
-        repr=False,
-        field_type=FieldType.QueryParam,
-    )
-
     query: str = Field(
         "isDeleted:0",
         description=(
@@ -202,6 +193,14 @@ class CreateProfilsParameters(BaseProfilesParameters):
         field_type=FieldType.QueryParam,
     )
 
+
+class CreateProfilsParameters(BaseProfilesParameters):
+    created_date: datetime = Field(
+        ...,
+        description="The creation date from which you want to pull profiles",
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
     parse_resume: bool = Field(
         False,
         description=(
@@ -735,7 +734,6 @@ def generic_profile_pulling(
             auth_parameters.client_id,
             auth_parameters.client_secret,
         )
-
         if action == "create":
             date_field = "created_date"
             bullhorn_date_field = "dateAdded"
@@ -767,7 +765,7 @@ def generic_profile_pulling(
 
         # Construct the query
         query = f"{bullhorn_date_field}:[{date_filter} TO *]"
-        if action in ("create", "archive") and action_parameters.query:
+        if action_parameters.query:
             query = f"{action_parameters.query} AND {query}"
 
         while True:
@@ -824,6 +822,11 @@ def generic_profile_pulling(
                     ):
                         adapter.info("Skipping profile with id <= last_id")
                         continue
+
+                    if action == "archive":
+                        yield profile
+                        continue
+
                     if action_parameters.parse_resume:
                         profile["cvFile"] = None
                         url_files = (
@@ -863,7 +866,6 @@ def generic_profile_pulling(
                                 + "/raw"
                             )
                             response = requests.get(url=url_cv, headers=headers)
-
                             file = response.content
                             profile_file = BytesIO(file)
                             profile["cvFile"] = profile_file

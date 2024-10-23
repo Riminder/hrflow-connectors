@@ -74,12 +74,12 @@ Bullhorn.archive_profiles_in_hrflow(
         last_modified_date=***,
         query="isDeleted:0",
         fields="id",
+        read_mode=ReadMode.sync,
     ),
     push_parameters=dict(
         source_key="your_source_key",
     ),
     format=lambda *args, **kwargs: None # Put your code logic here,
     logics=[],
-    read_mode=ReadMode.sync
 )
 ```

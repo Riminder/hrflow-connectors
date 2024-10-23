@@ -90,6 +90,7 @@ logging.basicConfig(level=logging.INFO)
         {%- for field in pull_parameters %}
         {{ field.name }}={{ field.example }},
         {%- endfor %}
+        read_mode={{ read_mode.example }},
     ),
     push_parameters=dict(
         {%- for field in push_parameters %}
@@ -98,6 +99,5 @@ logging.basicConfig(level=logging.INFO)
     ),
     format={{ format.example }},
     logics={{ logics.example }},
-    read_mode={{ read_mode.example }}
 )
 ```

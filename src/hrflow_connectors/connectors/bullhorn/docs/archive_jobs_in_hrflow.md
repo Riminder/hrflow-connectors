@@ -74,12 +74,12 @@ Bullhorn.archive_jobs_in_hrflow(
         last_modified_date=***,
         query="isDeleted:0 AND isOpen:true",
         fields="id",
+        read_mode=ReadMode.sync,
     ),
     push_parameters=dict(
         board_key="your_board_key",
     ),
     format=lambda *args, **kwargs: None # Put your code logic here,
     logics=[],
-    read_mode=ReadMode.sync
 )
 ```

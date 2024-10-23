@@ -72,6 +72,7 @@ Bullhorn.update_applications_in_hrflow(
     pull_parameters=dict(
         source_key="your_source_key",
         profile_key="your_profile_key",
+        read_mode=ReadMode.sync,
     ),
     push_parameters=dict(
         job_id="your_job_id",
@@ -80,6 +81,5 @@ Bullhorn.update_applications_in_hrflow(
     ),
     format=lambda *args, **kwargs: None # Put your code logic here,
     logics=[],
-    read_mode=ReadMode.sync
 )
 ```

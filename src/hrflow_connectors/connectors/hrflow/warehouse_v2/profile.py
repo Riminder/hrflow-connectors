@@ -4,9 +4,7 @@ from logging import LoggerAdapter
 from hrflow import Hrflow
 from pydantic import Field
 
-from hrflow_connectors.connectors.hrflow.schemas import (
-    HrFlowProfile,
-)
+from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
 from hrflow_connectors.core.warehouse_v2 import (
     DataType,
     FieldType,
@@ -146,6 +144,8 @@ def hydrate_profile(profile_parsed: dict, profile_json: dict) -> dict:
         "languages",
         "certifications",
         "interests",
+        "tags",
+        "metadatas",
     ]
     for item in items_to_merge:
         profile_enriched = merge_item(profile_enriched, profile_json, item)
@@ -179,70 +179,65 @@ def create(
     )
     source_response = hrflow_client.source.get(key=action_parameters.source_key)
 
+    if source_response["code"] != 200:
+        adapter.warning(
+            "Failed to get source with"
+            f" key={action_parameters.source_key} response={source_response}"
+        )
+        return failed
+
     for profile in profiles:
         if hrflow_client.profile.storing.get(
             source_key=action_parameters.source_key,
             reference=profile["reference"],
         ).get("data"):
             adapter.info(
-                "Can't create Profile with reference={} already exists".format(
-                    profile["reference"]
-                )
+                f"Can't create Profile with reference={profile['reference']} already"
+                " exists"
             )
             continue
 
         if profile.get("resume") is None:
-            adapter.info(
-                "profile with reference {} has no resume".format(profile["reference"])
-            )
+            adapter.info(f"Profile with reference {profile['reference']} has no resume")
             response = hrflow_client.profile.storing.add_json(
                 source_key=action_parameters.source_key, profile_json=profile
             )
-            if response["code"] // 100 != 2:
-                adapter.error("Failed to add profile with response={}".format(response))
-                failed.append(profile)
-            continue
-
-        parsing_response = hrflow_client.profile.parsing.add_file(
-            source_key=action_parameters.source_key,
-            profile_file=profile["resume"]["raw"],
-            profile_content_type=profile["resume"]["content_type"],
-            reference=profile["reference"],
-            tags=profile["tags"],
-            metadatas=profile["metadatas"],
-            created_at=profile["created_at"],
-        )
-        if parsing_response["code"] not in [202, 201]:  # 202: Accepted, 201: Created
-            adapter.error(
-                "Failed to parse profile with reference={} response={}".format(
-                    profile["reference"], parsing_response
-                )
-            )
-            failed.append(profile)
-            continue
-
-        if source_response["code"] != 200:
-            adapter.warning(
-                "Failed to get source with key={} response={}, won't be able to"
-                " update profile parsed with profile json".format(
-                    action_parameters.source_key, source_response
-                )
-            )
-        elif source_response["data"]["sync_parsing"] is True:
-            current_profile = parsing_response["data"]["profile"]
-            profile_result = hydrate_profile(current_profile, profile)
-            edit_response = hrflow_client.profile.storing.edit(
+        else:
+            parsing_response = hrflow_client.profile.parsing.add_file(
                 source_key=action_parameters.source_key,
-                key=profile_result["key"],
-                profile_json=profile_result,
+                profile_file=profile["resume"]["raw"],
+                profile_content_type=profile["resume"]["content_type"],
+                profile_file_name=profile["resume"]["file_name"],
+                reference=profile["reference"],
+                tags=profile.get("tags", []),
+                metadatas=profile.get("metadatas", {}),
+                created_at=profile.get("created_at"),
             )
-            if edit_response["code"] != 200:
-                adapter.warning(
-                    "Failed to update profile after parsing, reference={}"
-                    " response={}".format(profile["reference"], edit_response)
+
+            if parsing_response["code"] not in [202, 201]:
+                adapter.error(
+                    "Failed to parse profile with"
+                    f" reference={profile['reference']} response={parsing_response}"
                 )
                 failed.append(profile)
                 continue
+
+            if source_response["data"].get("sync_parsing"):
+                current_profile = parsing_response["data"]["profile"]
+                profile_result = hydrate_profile(current_profile, profile)
+                response = hrflow_client.profile.storing.edit(
+                    source_key=action_parameters.source_key,
+                    key=profile_result["key"],
+                    profile_json=profile_result,
+                )
+
+        if response["code"] // 100 != 2:
+            adapter.error(
+                "Failed to process profile with"
+                f" reference={profile['reference']} response={response}"
+            )
+            failed.append(profile)
+
     return failed
 
 
@@ -257,46 +252,30 @@ def update(
         api_secret=auth_parameters.api_secret, api_user=auth_parameters.api_user
     )
     source_response = hrflow_client.source.get(key=action_parameters.source_key)
+
     for profile in profiles:
         current_profile = hrflow_client.profile.storing.get(
             source_key=action_parameters.source_key,
             reference=profile["reference"],
         ).get("data")
+
         if not current_profile:
             adapter.warning(
-                "Profile with reference={} not found"
-                " in source. Failing for profile...".format(profile["reference"])
+                f"Profile with reference={profile['reference']} not found in source."
+                " Failing for profile..."
             )
             failed.append(profile)
             continue
-        if action_parameters.only_edit_fields:
-            edit = {
-                field: profile.get(field)
-                for field in action_parameters.only_edit_fields
-            }
-        else:
-            edit = profile
+
+        edit = (
+            {field: profile.get(field) for field in action_parameters.only_edit_fields}
+            if action_parameters.only_edit_fields
+            else profile
+        )
         profile_to_edit = {**current_profile, **edit}
 
-        if profile.get("resume") is None:
-            response = hrflow_client.profile.storing.edit(
-                source_key=action_parameters.source_key,
-                key=current_profile["key"],
-                profile_json=profile_to_edit,
-            )
-            if response["code"] != 200:
-                adapter.error(
-                    "Failed to edit profile with reference={} key={}"
-                    " response={}".format(
-                        profile_to_edit["key"],
-                        profile_to_edit["reference"],
-                        response,
-                    )
-                )
-                failed.append(profile)
-        else:
-            attachment = current_profile["attachments"][0]
-            if profile.get("resume")["updated_at"] > attachment["updated_at"]:
+        if profile.get("resume"):
+            if not current_profile.get("attachments"):
                 parsing_response = hrflow_client.profile.parsing.add_file(
                     source_key=action_parameters.source_key,
                     profile_file=profile["resume"]["raw"],
@@ -307,36 +286,31 @@ def update(
                     created_at=profile["created_at"],
                 )
 
-                if parsing_response["code"] not in [
-                    202,
-                    201,
-                ]:  # 202: Accepted, 201: Created
+                if parsing_response["code"] not in [201, 202]:
                     adapter.error(
-                        "Failed to parse profile with reference={} response={}".format(
-                            profile["reference"], parsing_response
-                        )
+                        "Failed to parse profile with"
+                        f" reference={profile['reference']} response={parsing_response}"
                     )
                     failed.append(profile)
                     continue
 
-                elif source_response["data"]["sync_parsing"] is True:
+                if source_response["data"].get("sync_parsing") is True:
                     parsing_result = parsing_response["data"]["profile"]
-                    profile_result = hydrate_profile(parsing_result, profile_to_edit)
+                    profile_to_edit = hydrate_profile(parsing_result, profile_to_edit)
 
-                    edit_response = hrflow_client.profile.storing.edit(
-                        source_key=action_parameters.source_key,
-                        key=profile_result["key"],
-                        profile_json=profile_result,
-                    )
-                    if edit_response["code"] != 200:
-                        adapter.warning(
-                            "Failed to update profile after parsing,"
-                            " reference={} response={}".format(
-                                profile["reference"], edit_response
-                            )
-                        )
-                        failed.append(profile)
-                        continue
+        response = hrflow_client.profile.storing.edit(
+            source_key=action_parameters.source_key,
+            key=current_profile["key"],
+            profile_json=profile_to_edit,
+        )
+
+        if response["code"] != 200:
+            adapter.error(
+                "Failed to edit profile with"
+                f" reference={profile_to_edit['reference']} key={profile_to_edit['key']} response={response}"
+            )
+            failed.append(profile)
+
     return failed
 
 
