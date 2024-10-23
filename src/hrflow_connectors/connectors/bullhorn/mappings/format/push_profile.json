@@ -1,0 +1,31 @@
+{
+  "create_profile_body": {
+    "id": "?.reference",
+    "address": {
+      "address1": ".info?.location?.text",
+      "address2": null,
+      "city": ".info?.location?.fields?.city",
+      "state": ".info?.location?.fields?.country",
+      "zip": ".info?.location?.fields?.postcode"
+    },
+    "certifications": null,
+    "name": ".info?.full_name",
+    "firstName": ".info?.first_name",
+    "lastName": ".info?.last_name",
+    "email": ".info?.email",
+    "mobile": ".info?.phone",
+    "experience": "?.experiences_duration != null ?? .experiences_duration | $int : 0",
+    "skillSet": ".skills != null ?? .skills | $join(',') : null"
+  },
+  "enrich_profile_education": "?.educations |$map({ id: '0', candidate: { id: null }, school: ?.school, degree: ?.title, comments: ?.description, city: .location?.text, startDate: .date_start != null ?? .date_start | $timestamp : null, endDate: .date_end != null ?? .date_end  | $timestamp : null })",
+  "enrich_profile_experience": "?.experiences | $map({ id: '0', candidate: { id: null }, companyName: ?.company, title: ?.title, comments: ?.description, startDate: .date_start != null ?? .date_start | $timestamp : null, endDate: .date_end != null ?? .date_end  | $timestamp : null })",
+  "enrich_profile_attachment": {
+    "externalID": "'portfolio'",
+    "fileContent": ".attachments?.[0].public_url | $webhook(GET, ., {}, {}, {}, .content) | $b64encode",
+    "fileType": "'SAMPLE'",
+    "name": ".file_name",
+    "description": "'Resume file for candidate.'",
+    "type": "'cover'",
+    "content_type": "'text/plain'"
+  }
+}

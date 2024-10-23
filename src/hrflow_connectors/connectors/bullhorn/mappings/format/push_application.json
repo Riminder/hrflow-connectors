@@ -1,0 +1,23 @@
+{
+  "firstName": "?.info?.first_name",
+  "lastName": "?.info?.last_name",
+  "name": "?.info?.full_name",
+  "address": {
+    "address1": ".info?.location?.text",
+    "address2": null,
+    "city": ".info?.location?.fields?.city",
+    "state": ".info?.location?.fields?.country",
+    "zip": ".info?.location?.fields?.postcode"
+  },
+  "email": "?.info?.email",
+  "mobile": "?.info?.phone",
+  "attachment": {
+    "externalID": "'portfolio'",
+    "fileContent": ".attachments?.[0].public_url | $webhook(GET, ., {}, {}, {}, .content) | $b64encode",
+    "fileType": "'SAMPLE'",
+    "name": ".file_name",
+    "description": "'Resume file for candidate.'",
+    "type": "'RESUME'",
+    "format": "'PDF'"
+  }
+}
