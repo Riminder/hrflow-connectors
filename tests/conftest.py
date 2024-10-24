@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from hrflow_connectors import __CONNECTORS__
+from hrflow_connectors import __CONNECTORS__V1__ as __CONNECTORS__
 from tests.test_connector import parameterize_connector_action_tests
 from tests.test_warehouse import parameterize_read_warehouse_tests
 

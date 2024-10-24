@@ -1177,7 +1177,7 @@ def hrflow_connectors_manifest(
                     connector_type = connector["type"].upper().replace(" ", "")
                 manifest_connector = dict(
                     name=connector["name"],
-                    type=connector["type"].lower().replace(" ", ""),
+                    type=connector_type,
                     subtype=connector["subtype"],
                     logo=compute_logo_path(
                         name=connector["name"],

@@ -26,12 +26,6 @@ with open(ALL_TARGET_CONNECTORS_LIST_PATH, "r") as f:
     ALL_TARGET_CONNECTORS = json.load(f)
 
 
-DONE_MARKUP = ":white_check_mark:"
-KO_MARKUP = ":x:"
-TARGET_MARKUP = ":dart:"
-IN_PROGRESS_MARKUP = ":hourglass_flowing_sand:"
-
-
 ROOT_README_TRACKED_ACTIONS = {
     ActionName.pull_job_list,
     ActionName.pull_profile_list,
@@ -58,6 +52,9 @@ USE_REMOTE_REV: ContextVar[t.Optional[str]] = ContextVar("USE_REMOTE_REV", defau
 BASE_CONNECTOR_PATH: ContextVar[t.Optional[str]] = ContextVar(
     "BASE_CONNECTOR_PATH", default="src/hrflow_connectors/connectors/"
 )
+PREMIUM_STATUS = ":lock: Premium"
+PREMIUM_README_LINK = "https://forms.gle/pokoE9pAjSVSFtCe7"
+OPENSOURCE_STATUS = ":book: Open source"
 ACTION_MODE_MAPPING = {"create": "create", "update": "update", "archive": "archive"}
 
 
@@ -201,47 +198,31 @@ def update_root_readme(
             }
             for connector in target_connectors
         ],
-        key=lambda c: c["name"],
+        key=lambda c: c["name"].lower(),
     )
 
     line_pattern = (
-        "| **{name}** | {type} | {status} |"
-        " {release_date} | {updated_at} | {pull_profile_list_status} |"
-        " {pull_job_list_status} | {push_profile_status} | {push_job_status} |"
-        " {catch_profile_status} |"
+        "| [**{name}**]({readme_link}) | {type} | {status} |"
+        " {release_date} | {updated_at} |"
     )
-    connectors_table = ""
-    jobboards_table = ""
+    opensource_connectors_table = ""
+    opensource_jobboards_table = ""
+    premium_connectors_table = ""
+    premium_jobboards_table = ""
     for connector in all_connectors:
-        actions_status = {
-            action_name: "" for action_name in ROOT_README_TRACKED_ACTIONS
-        }
-        if connector["type"] in ["ATS", "HCM", "CRM"]:
-            actions_status[ActionName.pull_job_list] = KO_MARKUP
-            actions_status[ActionName.pull_profile_list] = KO_MARKUP
-            actions_status[ActionName.push_profile] = KO_MARKUP
-        elif connector["type"] == "Automation":
-            actions_status[ActionName.catch_profile] = KO_MARKUP
-        elif connector["type"] == "Job Board":
-            actions_status[ActionName.pull_job_list] = KO_MARKUP
-            actions_status[ActionName.push_job] = KO_MARKUP
-            actions_status[ActionName.catch_profile] = KO_MARKUP
-
         if connector["object"] is None:
             updated_listing = line_pattern.format(
                 name=connector["name"],
+                readme_link=PREMIUM_README_LINK,
                 type=connector["type"],
-                status=(
-                    IN_PROGRESS_MARKUP if connector["in_progress"] else TARGET_MARKUP
-                ),
+                status=PREMIUM_STATUS,
                 release_date="",
                 updated_at="",
-                pull_profile_list_status=actions_status[ActionName.pull_profile_list],
-                pull_job_list_status=actions_status[ActionName.pull_job_list],
-                push_profile_status=actions_status[ActionName.push_profile],
-                push_job_status=actions_status[ActionName.push_job],
-                catch_profile_status=actions_status[ActionName.catch_profile],
             )
+            if connector["type"] == "Job Board":
+                premium_jobboards_table += updated_listing + "\n"
+            else:
+                premium_connectors_table += updated_listing + "\n"
         else:
             model = connector["object"].model
             result = subprocess.run(
@@ -257,7 +238,7 @@ def update_root_readme(
             if result.stderr:
                 raise Exception(
                     "Subprocess run for Git update dates failed for connector {} with"
-                    " errors {}".format(model.name.lower(), result.stderr)
+                    " errors {}".format(model.subtype, result.stderr)
                 )
             filtered = [
                 line.split(" ")[0]
@@ -273,40 +254,29 @@ def update_root_readme(
                 ).replace("Z", "+00:00")
             )
 
-            for action in model.actions:
-                if action.name in ROOT_README_TRACKED_ACTIONS:
-                    actions_status[action.name] = DONE_MARKUP
-
-            updated_listing = (
-                "| [**{name}**]({readme_link}) | {type} | {status} |"
-                " {release_date} | {updated_at} | {pull_profile_list_status} |"
-                " {pull_job_list_status} | {push_profile_status} | {push_job_status} |"
-                " {catch_profile_status} |"
-            ).format(
+            updated_listing = line_pattern.format(
                 name=model.name,
                 readme_link="./{base_connector_path}/{connector}/README.md".format(
                     base_connector_path=BASE_CONNECTOR_PATH.get().strip("/"),
-                    connector=model.name.lower().replace(" ", ""),
+                    connector=model.subtype,
                 ),
                 type=model.type.value,
-                status=IN_PROGRESS_MARKUP if connector["in_progress"] else DONE_MARKUP,
+                status=OPENSOURCE_STATUS,
                 release_date=f'*{connector["release_date"]}*',
                 updated_at=f'*{updated_at.strftime("%d/%m/%Y")}*',
-                pull_profile_list_status=actions_status[ActionName.pull_profile_list],
-                pull_job_list_status=actions_status[ActionName.pull_job_list],
-                push_profile_status=actions_status[ActionName.push_profile],
-                push_job_status=actions_status[ActionName.push_job],
-                catch_profile_status=actions_status[ActionName.catch_profile],
             )
-        if connector["type"] == "Job Board":
-            jobboards_table += updated_listing + "\n"
-        else:
-            connectors_table += updated_listing + "\n"
+
+            if connector["type"] == "Job Board":
+                opensource_jobboards_table += updated_listing + "\n"
+            else:
+                opensource_connectors_table += updated_listing + "\n"
 
     readme = root / "README.md"
     readme_content = root_template.render(
-        connectors_table=connectors_table.strip("\n"),
-        jobboards_table=jobboards_table.strip("\n"),
+        opensource_connectors_table=opensource_connectors_table.strip("\n"),
+        opensource_jobboards_table=opensource_jobboards_table.strip("\n"),
+        premium_connectors_table=premium_connectors_table.strip("\n"),
+        premium_jobboards_table=premium_jobboards_table.strip("\n"),
     )
     readme_content = py_37_38_compat_patch(readme_content)
     readme.write_bytes(readme_content.encode())
