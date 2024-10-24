@@ -45,9 +45,9 @@ USE_REMOTE_REV: ContextVar[t.Optional[str]] = ContextVar("USE_REMOTE_REV", defau
 BASE_CONNECTOR_PATH: ContextVar[t.Optional[str]] = ContextVar(
     "BASE_CONNECTOR_PATH", default="src/hrflow_connectors/connectors/"
 )
-PREMIUM_STATUS = ":lock:"
+PREMIUM_STATUS = ":lock: Premium"
 PREMIUM_README_LINK = "https://forms.gle/pokoE9pAjSVSFtCe7"
-OPENSOURCE_STATUS = ":desktop_computer:"
+OPENSOURCE_STATUS = ":book: Open source"
 
 
 class InvalidConnectorReadmeFormat(Exception):
