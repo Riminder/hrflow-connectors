@@ -319,7 +319,7 @@ DESCRIPTION = (
 )
 
 DigitalRecruiters = Connector(
-    name="DigitalRecruiters",
+    name="Digitalrecruiters",
     type=ConnectorType.ATS,
     subtype="digitalrecruiters",
     description=DESCRIPTION,

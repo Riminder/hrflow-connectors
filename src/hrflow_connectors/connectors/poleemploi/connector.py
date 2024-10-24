@@ -100,7 +100,7 @@ DESCRIPTION = (
 )
 
 PoleEmploi = Connector(
-    name="PoleEmploi",
+    name="Pole Emploi",
     type=ConnectorType.JobBoard,
     subtype="poleemploi",
     description=DESCRIPTION,

@@ -267,7 +267,7 @@ def format_candidate(breezy_profile: BreezyProfileModel) -> HrFlowProfile:
 
 
 BreezyHR = Connector(
-    name="BreezyHR",
+    name="Breezy HR",
     type=ConnectorType.ATS,
     subtype="breezyhr",
     description=(
