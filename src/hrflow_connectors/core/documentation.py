@@ -46,6 +46,7 @@ BASE_CONNECTOR_PATH: ContextVar[t.Optional[str]] = ContextVar(
     "BASE_CONNECTOR_PATH", default="src/hrflow_connectors/connectors/"
 )
 PREMIUM_STATUS = ":lock:"
+PREMIUM_README_LINK = "https://forms.gle/pokoE9pAjSVSFtCe7"
 OPENSOURCE_STATUS = ":desktop_computer:"
 
 
@@ -202,7 +203,7 @@ def update_root_readme(
         if connector["object"] is None:
             updated_listing = line_pattern.format(
                 name=connector["name"],
-                readme_link="https://forms.gle/pokoE9pAjSVSFtCe7",
+                readme_link=PREMIUM_README_LINK,
                 type=connector["type"],
                 status=PREMIUM_STATUS,
                 release_date="",
