@@ -56,9 +56,9 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**BITE**](./src/hrflow_connectors/connectors/bite) | ATS | Premium |  |  |
 | [**BambooHR**](./src/hrflow_connectors/connectors/bamboohr) | ATS | Premium |  |  |
 | [**Beetween**](./src/hrflow_connectors/connectors/beetween) | ATS | Premium |  |  |
-| [**Breezy HR**](./src/hrflow_connectors/connectors/breezyhr) | ATS | Premium |  |  |
+| [**Breezy HR**](./src/hrflow_connectors/connectors/breezyhr/README.md) | ATS | Open source | *19/01/2022* | *24/10/2024* |
 | [**Broadbean**](./src/hrflow_connectors/connectors/broadbean) | ATS | Premium |  |  |
-| [**Bullhorn**](./src/hrflow_connectors/connectors/bullhorn/README.md) | ATS | Open source | *26/01/2022* | *23/10/2024* |
+| [**Bullhorn**](./src/hrflow_connectors/connectors/bullhorn/README.md) | ATS | Open source | *26/01/2022* | *24/10/2024* |
 | [**CATS**](./src/hrflow_connectors/connectors/cats) | ATS | Premium |  |  |
 | [**Carerix**](./src/hrflow_connectors/connectors/carerix) | ATS | Premium |  |  |
 | [**Cegid (Meta4)**](./src/hrflow_connectors/connectors/meta4) | ATS | Premium |  |  |
@@ -71,7 +71,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Cornerstone OnDemand**](./src/hrflow_connectors/connectors/cornerstoneondemand) | ATS | Premium |  |  |
 | [**Cornerstone TalentLink**](./src/hrflow_connectors/connectors/cornerstonetalentlink) | ATS | Premium |  |  |
 | [**Crosstalent**](./src/hrflow_connectors/connectors/crosstalent) | ATS | Premium |  |  |
-| [**Digitalrecruiters**](./src/hrflow_connectors/connectors/digitalrecruiters) | ATS | Premium |  |  |
+| [**Digitalrecruiters**](./src/hrflow_connectors/connectors/digitalrecruiters/README.md) | ATS | Open source | *17/08/2023* | *24/10/2024* |
 | [**EOLIA Software**](./src/hrflow_connectors/connectors/eolia) | ATS | Premium |  |  |
 | [**EngageATS**](./src/hrflow_connectors/connectors/engageats) | ATS | Premium |  |  |
 | [**Eploy**](./src/hrflow_connectors/connectors/eploy) | ATS | Premium |  |  |
@@ -103,7 +103,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Jobvite**](./src/hrflow_connectors/connectors/jobvite) | ATS | Premium |  |  |
 | [**Jobylon**](./src/hrflow_connectors/connectors/jobylon) | ATS | Premium |  |  |
 | [**Lano**](./src/hrflow_connectors/connectors/lano) | ATS | Premium |  |  |
-| [**Lever**](./src/hrflow_connectors/connectors/lever/README.md) | ATS | Open source | *18/08/2023* | *23/10/2024* |
+| [**Lever**](./src/hrflow_connectors/connectors/lever/README.md) | ATS | Open source | *18/08/2023* | *24/10/2024* |
 | [**Lucca**](./src/hrflow_connectors/connectors/lucca) | HCM | Premium |  |  |
 | [**Mailchimp**](./src/hrflow_connectors/connectors/mailchimp) | Automation | Premium |  |  |
 | [**Microsoft Dynamics**](./src/hrflow_connectors/connectors/microsoftdynamics) | HCM | Premium |  |  |
@@ -124,22 +124,22 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**RECRU**](./src/hrflow_connectors/connectors/recruhr) | ATS | Premium |  |  |
 | [**Radancy**](./src/hrflow_connectors/connectors/radancy) | HCM | Premium |  |  |
 | [**ReachMee**](./src/hrflow_connectors/connectors/reachmee) | ATS | Premium |  |  |
-| [**Recruitee**](./src/hrflow_connectors/connectors/recruitee/README.md) | ATS | Open source | *30/10/2022* | *23/10/2024* |
+| [**Recruitee**](./src/hrflow_connectors/connectors/recruitee/README.md) | ATS | Open source | *30/10/2022* | *24/10/2024* |
 | [**Recruiterflow**](./src/hrflow_connectors/connectors/recruiterflow) | ATS | Premium |  |  |
 | [**Recruitive**](./src/hrflow_connectors/connectors/recruitive) | ATS | Premium |  |  |
-| [**SAP Successfactors**](./src/hrflow_connectors/connectors/sapsuccessfactors) | HCM | Premium |  |  |
+| [**SAP SuccessFactors**](./src/hrflow_connectors/connectors/sapsuccessfactors/README.md) | ATS | Open source | *19/01/2022* | *24/10/2024* |
 | [**Sage HR**](./src/hrflow_connectors/connectors/sagehr) | ATS | Premium |  |  |
 | [**Salesforce**](./src/hrflow_connectors/connectors/salesforce/README.md) | CRM | Open source | *03/08/2023* | *05/09/2024* |
 | [**SmartRecruiters**](./src/hrflow_connectors/connectors/smartrecruiters/README.md) | ATS | Open source | *21/03/2022* | *05/09/2024* |
 | [**Softgarden**](./src/hrflow_connectors/connectors/softgarden) | ATS | Premium |  |  |
 | [**TRAFFIT**](./src/hrflow_connectors/connectors/traffit) | ATS | Premium |  |  |
-| [**Taleez**](./src/hrflow_connectors/connectors/taleez/README.md) | ATS | Open source | *19/01/2022* | *23/10/2024* |
+| [**Taleez**](./src/hrflow_connectors/connectors/taleez/README.md) | ATS | Open source | *19/01/2022* | *24/10/2024* |
 | [**Talent Clue**](./src/hrflow_connectors/connectors/talentclue) | ATS | Premium |  |  |
 | [**TalentAdore**](./src/hrflow_connectors/connectors/talentadore) | ATS | Premium |  |  |
 | [**TalentLyft**](./src/hrflow_connectors/connectors/talentlyft) | ATS | Premium |  |  |
 | [**TalentReef**](./src/hrflow_connectors/connectors/talentreef) | ATS | Premium |  |  |
+| [**TalentSoft**](./src/hrflow_connectors/connectors/talentsoft/README.md) | HCM | Open source | *19/04/2022* | *24/10/2024* |
 | [**Talentlink**](./src/hrflow_connectors/connectors/talentlink) | ATS | Premium |  |  |
-| [**Talentsoft**](./src/hrflow_connectors/connectors/talentsoft) | HCM | Premium |  |  |
 | [**Teamtailor**](./src/hrflow_connectors/connectors/teamtailor/README.md) | ATS | Open source | *06/10/2022* | *05/09/2024* |
 | [**Tellent**](./src/hrflow_connectors/connectors/tellent) | ATS | Premium |  |  |
 | [**Trakstar**](./src/hrflow_connectors/connectors/trakstar) | ATS | Premium |  |  |
@@ -193,7 +193,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Meteojob**](./src/hrflow_connectors/connectors/meteojob/README.md) | Job Board | Open source | *15/02/2024* | *05/09/2024* |
 | [**Neuvoo**](./src/hrflow_connectors/connectors/neuvoo) | Job Board | Premium |  |  |
 | [**Optioncarriere**](./src/hrflow_connectors/connectors/optioncarriere) | Job Board | Premium |  |  |
-| [**Pole Emploi**](./src/hrflow_connectors/connectors/poleemploi) | Job Board | Premium |  |  |
+| [**Pole Emploi**](./src/hrflow_connectors/connectors/poleemploi/README.md) | Job Board | Open source | *15/07/2022* | *24/10/2024* |
 | [**Staffme**](./src/hrflow_connectors/connectors/staffme) | Job Board | Premium |  |  |
 | [**Staffsante**](./src/hrflow_connectors/connectors/staffsante) | Job Board | Premium |  |  |
 | [**Tekkit**](./src/hrflow_connectors/connectors/tekkit) | Job Board | Premium |  |  |
