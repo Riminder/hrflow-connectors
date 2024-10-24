@@ -43,7 +43,42 @@ We invite developers to join us in our mission to bring AI and data integration 
 
 📃 **More instructions are available in the Documentation section below**
 
-# 🤝 List of Connectors (ATS/CRM/HCM)
+# :book: Open Source Connectors
+
+## 🤝 List of ATS, CRM and HCM
+
+| Name                                                                                                                                      | Type                 | Status             | Release date   | Last update     |
+|-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|
+| [**Breezy HR**](./src/hrflow_connectors/connectors/breezyhr/README.md) | ATS | :book: Open source | *19/01/2022* | *24/10/2024* |
+| [**Bullhorn**](./src/hrflow_connectors/connectors/bullhorn/README.md) | ATS | :book: Open source | *26/01/2022* | *23/10/2024* |
+| [**Ceridian**](./src/hrflow_connectors/connectors/ceridian/README.md) | HCM | :book: Open source | *19/01/2022* | *05/09/2024* |
+| [**Digitalrecruiters**](./src/hrflow_connectors/connectors/digitalrecruiters/README.md) | ATS | :book: Open source | *17/08/2023* | *24/10/2024* |
+| [**Greenhouse**](./src/hrflow_connectors/connectors/greenhouse/README.md) | ATS | :book: Open source | *19/01/2022* | *05/09/2024* |
+| [**Hubspot**](./src/hrflow_connectors/connectors/hubspot/README.md) | CRM | :book: Open source | *27/10/2022* | *05/09/2024* |
+| [**Lever**](./src/hrflow_connectors/connectors/lever/README.md) | ATS | :book: Open source | *18/08/2023* | *23/10/2024* |
+| [**Recruitee**](./src/hrflow_connectors/connectors/recruitee/README.md) | ATS | :book: Open source | *30/10/2022* | *23/10/2024* |
+| [**Salesforce**](./src/hrflow_connectors/connectors/salesforce/README.md) | CRM | :book: Open source | *03/08/2023* | *05/09/2024* |
+| [**SAP SuccessFactors**](./src/hrflow_connectors/connectors/sapsuccessfactors/README.md) | ATS | :book: Open source | *19/01/2022* | *23/10/2024* |
+| [**SmartRecruiters**](./src/hrflow_connectors/connectors/smartrecruiters/README.md) | ATS | :book: Open source | *21/03/2022* | *05/09/2024* |
+| [**Taleez**](./src/hrflow_connectors/connectors/taleez/README.md) | ATS | :book: Open source | *19/01/2022* | *23/10/2024* |
+| [**TalentSoft**](./src/hrflow_connectors/connectors/talentsoft/README.md) | HCM | :book: Open source | *19/04/2022* | *23/10/2024* |
+| [**Teamtailor**](./src/hrflow_connectors/connectors/teamtailor/README.md) | ATS | :book: Open source | *06/10/2022* | *05/09/2024* |
+| [**Waalaxy**](./src/hrflow_connectors/connectors/waalaxy/README.md) | Automation | :book: Open source | *18/11/2022* | *05/09/2024* |
+| [**Workable**](./src/hrflow_connectors/connectors/workable/README.md) | HCM | :book: Open source | *27/09/2022* | *05/09/2024* |
+
+## 🤝 List of Job Boards
+
+| Name                                                                                                                                      | Type                 | Status             | Release date   | Last update     |
+|-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|
+| [**Adzuna**](./src/hrflow_connectors/connectors/adzuna/README.md) | Job Board | :book: Open source | *08/09/2022* | *05/09/2024* |
+| [**Carrevolutis**](./src/hrflow_connectors/connectors/carrevolutis/README.md) | Job Board | :book: Open source | *20/03/2024* | *05/09/2024* |
+| [**Jobology**](./src/hrflow_connectors/connectors/jobology/README.md) | Job Board | :book: Open source | *21/12/2022* | *05/09/2024* |
+| [**Meteojob**](./src/hrflow_connectors/connectors/meteojob/README.md) | Job Board | :book: Open source | *15/02/2024* | *05/09/2024* |
+| [**Pole Emploi**](./src/hrflow_connectors/connectors/poleemploi/README.md) | Job Board | :book: Open source | *15/07/2022* | *24/10/2024* |
+
+# :lock: Premium Connectors
+
+## 🤝 List of ATS, CRM and HCM
 
 | Name                                                                                                                                      | Type                 | Status             | Release date   | Last update     |
 |-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|
@@ -56,14 +91,11 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**BambooHR**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Beetween**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**BITE**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Breezy HR**](./src/hrflow_connectors/connectors/breezyhr/README.md) | ATS | :book: Open source | *19/01/2022* | *24/10/2024* |
 | [**Broadbean**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Bullhorn**](./src/hrflow_connectors/connectors/bullhorn/README.md) | ATS | :book: Open source | *26/01/2022* | *23/10/2024* |
 | [**Carerix**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**CATS**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Cegid (Meta4)**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Ceipal**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Ceridian**](./src/hrflow_connectors/connectors/ceridian/README.md) | HCM | :book: Open source | *19/01/2022* | *05/09/2024* |
 | [**ClayHR**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**ClockWork**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Comeet**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
@@ -73,7 +105,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Cornerstone TalentLink**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Crosstalent**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**d.vinci**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Digitalrecruiters**](./src/hrflow_connectors/connectors/digitalrecruiters/README.md) | ATS | :book: Open source | *17/08/2023* | *24/10/2024* |
 | [**EngageATS**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**EOLIA Software**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Eploy**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
@@ -83,7 +114,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Flatchr**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Fountain**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Freshteam**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Greenhouse**](./src/hrflow_connectors/connectors/greenhouse/README.md) | ATS | :book: Open source | *19/01/2022* | *05/09/2024* |
 | [**GuideCom**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Harbour ATS**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Haufe Umantis**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
@@ -92,7 +122,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**HR Cloud**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**HR Office**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**HRworks**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Hubspot**](./src/hrflow_connectors/connectors/hubspot/README.md) | CRM | :book: Open source | *27/10/2022* | *05/09/2024* |
 | [**iCIMS**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Infinite BrassRing**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**InRecruiting**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
@@ -106,7 +135,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Jobylon**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**JOIN**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Lano**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Lever**](./src/hrflow_connectors/connectors/lever/README.md) | ATS | :book: Open source | *18/08/2023* | *23/10/2024* |
 | [**Lucca**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |
 | [**Mailchimp**](https://forms.gle/pokoE9pAjSVSFtCe7) | Automation | :lock: Premium |  |  |
 | [**Microsoft Dynamics**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |
@@ -126,23 +154,16 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Radancy**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |
 | [**ReachMee**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**RECRU**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Recruitee**](./src/hrflow_connectors/connectors/recruitee/README.md) | ATS | :book: Open source | *30/10/2022* | *23/10/2024* |
 | [**Recruiterflow**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Recruitive**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**rexx systems**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Sage HR**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Salesforce**](./src/hrflow_connectors/connectors/salesforce/README.md) | CRM | :book: Open source | *03/08/2023* | *05/09/2024* |
-| [**SAP SuccessFactors**](./src/hrflow_connectors/connectors/sapsuccessfactors/README.md) | ATS | :book: Open source | *19/01/2022* | *23/10/2024* |
-| [**SmartRecruiters**](./src/hrflow_connectors/connectors/smartrecruiters/README.md) | ATS | :book: Open source | *21/03/2022* | *05/09/2024* |
 | [**Softgarden**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Taleez**](./src/hrflow_connectors/connectors/taleez/README.md) | ATS | :book: Open source | *19/01/2022* | *23/10/2024* |
 | [**Talent Clue**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**TalentAdore**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Talentlink**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**TalentLyft**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**TalentReef**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**TalentSoft**](./src/hrflow_connectors/connectors/talentsoft/README.md) | HCM | :book: Open source | *19/04/2022* | *23/10/2024* |
-| [**Teamtailor**](./src/hrflow_connectors/connectors/teamtailor/README.md) | ATS | :book: Open source | *06/10/2022* | *05/09/2024* |
 | [**Tellent**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**TRAFFIT**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Trakstar**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
@@ -150,20 +171,16 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Twilio**](https://forms.gle/pokoE9pAjSVSFtCe7) | Automation | :lock: Premium |  |  |
 | [**Ubeeo**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**UKG Ready Recruiting**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Waalaxy**](./src/hrflow_connectors/connectors/waalaxy/README.md) | Automation | :book: Open source | *18/11/2022* | *05/09/2024* |
-| [**Workable**](./src/hrflow_connectors/connectors/workable/README.md) | HCM | :book: Open source | *27/09/2022* | *05/09/2024* |
 | [**Workday**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Zoho Recruit**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 
-# 🤝 List of Connectors (Job Boards)
+## 🤝 List of Job Boards
 
 | Name                                                                                                                                      | Type                 | Status             | Release date   | Last update     |
 |-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|
-| [**Adzuna**](./src/hrflow_connectors/connectors/adzuna/README.md) | Job Board | :book: Open source | *08/09/2022* | *05/09/2024* |
 | [**Agefiph**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**APEC**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Cadreemploi**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Carrevolutis**](./src/hrflow_connectors/connectors/carrevolutis/README.md) | Job Board | :book: Open source | *20/03/2024* | *05/09/2024* |
 | [**Cornerjob**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Distrijob**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Engagement Jeunes**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
@@ -177,7 +194,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Indeed**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Inzojob**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Jobijoba**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Jobology**](./src/hrflow_connectors/connectors/jobology/README.md) | Job Board | :book: Open source | *21/12/2022* | *05/09/2024* |
 | [**Jobrapido**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**JobTeaser**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Jobtransport**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
@@ -188,11 +204,9 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Leboncoin**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**LesJeudis**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**LinkedIn**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Meteojob**](./src/hrflow_connectors/connectors/meteojob/README.md) | Job Board | :book: Open source | *15/02/2024* | *05/09/2024* |
 | [**Monster**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Neuvoo**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Optioncarriere**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Pole Emploi**](./src/hrflow_connectors/connectors/poleemploi/README.md) | Job Board | :book: Open source | *15/07/2022* | *24/10/2024* |
 | [**Staffme**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Staffsante**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Tekkit**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |

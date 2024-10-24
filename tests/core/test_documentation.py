@@ -83,9 +83,9 @@ ALL_TARGET_CONNECTORS = [
         in_progress="",
     ),
     dict(
-        name="SmartLeads Job Board",
+        name="SmartLeadsJobs",
         type="Job Board",
-        subtype="smartleadsjobboard",
+        subtype="smartleadsjobs",
         release_date="31/09/2021",
         in_progress="",
     ),
@@ -100,6 +100,25 @@ SmartLeads = Connector(
     actions=[
         ConnectorAction(
             name=ActionName.pull_profile_list,
+            action_type=ActionType.inbound,
+            trigger_type=WorkflowType.pull,
+            description="Test action",
+            parameters=BaseActionParameters,
+            origin=UsersWarehouse,
+            target=LeadsWarehouse,
+        ),
+    ],
+)
+
+SmartLeadsJobs = Connector(
+    name="SmartLeadsJobs",
+    type=ConnectorType.JobBoard,
+    subtype="smartleadsjobs",
+    description=DESCRIPTION,
+    url="https://www.smartleadsjobs.test/",
+    actions=[
+        ConnectorAction(
+            name=ActionName.pull_job_list,
             action_type=ActionType.inbound,
             trigger_type=WorkflowType.pull,
             description="Test action",
@@ -226,9 +245,14 @@ def test_documentation(connectors_directory):
     assert keep_empty_format_file.exists() is False
     assert action_documentation.exists() is False
 
-    connectors = [SmartLeads]
+    connectors = [SmartLeads, SmartLeadsJobs]
     with patched_subprocess():
-        with added_connectors([("SmartLeads", SmartLeads)]):
+        with added_connectors(
+            [
+                ("SmartLeads", SmartLeads),
+                ("SmartLeadsJobs", SmartLeadsJobs),
+            ]
+        ):
             generate_docs(
                 connectors=connectors,
                 target_connectors=ALL_TARGET_CONNECTORS,

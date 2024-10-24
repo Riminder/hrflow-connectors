@@ -197,8 +197,10 @@ def update_root_readme(
         "| [**{name}**]({readme_link}) | {type} | {status} |"
         " {release_date} | {updated_at} |"
     )
-    connectors_table = ""
-    jobboards_table = ""
+    opensource_connectors_table = ""
+    opensource_jobboards_table = ""
+    premium_connectors_table = ""
+    premium_jobboards_table = ""
     for connector in all_connectors:
         if connector["object"] is None:
             updated_listing = line_pattern.format(
@@ -209,6 +211,10 @@ def update_root_readme(
                 release_date="",
                 updated_at="",
             )
+            if connector["type"] == "Job Board":
+                premium_jobboards_table += updated_listing + "\n"
+            else:
+                premium_connectors_table += updated_listing + "\n"
         else:
             model = connector["object"].model
             result = subprocess.run(
@@ -251,15 +257,18 @@ def update_root_readme(
                 release_date=f'*{connector["release_date"]}*',
                 updated_at=f'*{updated_at.strftime("%d/%m/%Y")}*',
             )
-        if connector["type"] == "Job Board":
-            jobboards_table += updated_listing + "\n"
-        else:
-            connectors_table += updated_listing + "\n"
+
+            if connector["type"] == "Job Board":
+                opensource_jobboards_table += updated_listing + "\n"
+            else:
+                opensource_connectors_table += updated_listing + "\n"
 
     readme = root / "README.md"
     readme_content = root_template.render(
-        connectors_table=connectors_table.strip("\n"),
-        jobboards_table=jobboards_table.strip("\n"),
+        opensource_connectors_table=opensource_connectors_table.strip("\n"),
+        opensource_jobboards_table=opensource_jobboards_table.strip("\n"),
+        premium_connectors_table=premium_connectors_table.strip("\n"),
+        premium_jobboards_table=premium_jobboards_table.strip("\n"),
     )
     readme_content = py_37_38_compat_patch(readme_content)
     readme.write_bytes(readme_content.encode())
