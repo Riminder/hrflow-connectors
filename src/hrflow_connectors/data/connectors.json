@@ -435,7 +435,7 @@
   },
   {
     "name": "Indeed",
-    "type": "Job board",
+    "type": "Job Board",
     "subtype": "indeed",
     "status": "premium",
     "release_date": ""
@@ -652,7 +652,7 @@
   },
   {
     "name": "Monster",
-    "type": "Job board",
+    "type": "Job Board",
     "subtype": "monster",
     "status": "opensource",
     "release_date": "23/11/2022"
@@ -988,15 +988,8 @@
   },
   {
     "name": "Welcome To The Jungle",
-    "type": "Job Board/ATS",
+    "type": "Job Board",
     "subtype": "welcometothejungle",
-    "status": "premium",
-    "release_date": ""
-  },
-  {
-    "name": "Welcome to the Jungle Solutions ATS",
-    "type": "ATS",
-    "subtype": "welcometothejungleats",
     "status": "premium",
     "release_date": ""
   },
