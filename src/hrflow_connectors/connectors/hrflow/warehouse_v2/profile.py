@@ -12,6 +12,7 @@ from hrflow_connectors.core.warehouse_v2 import (
     ReadMode,
     Warehouse,
     WarehouseReadAction,
+    WarehouseType,
     WarehouseWriteAction,
 )
 
@@ -355,15 +356,34 @@ def archive(
     return failed
 
 
-HrFlowProfileWarehouse = Warehouse(
-    name="HrFlow.ai Profiles",
+HrFlowReadProfileWarehouse = Warehouse(
+    name="HrFlow.ai Read Profiles",
+    type=WarehouseType.outbound,
     data_schema=HrFlowProfile,
     data_type=DataType.profile,
-    read=WarehouseReadAction(
+    create=WarehouseReadAction(
         auth_parameters=AuthParameters,
         action_parameters=ReadProfileParameters,
         function=read,
     ),
+    update=WarehouseReadAction(
+        auth_parameters=AuthParameters,
+        action_parameters=ReadProfileParameters,
+        function=read,
+    ),
+    archive=WarehouseReadAction(
+        auth_parameters=AuthParameters,
+        action_parameters=ReadProfileParameters,
+        function=read,
+    ),
+)
+
+
+HrFlowWriteProfileWarehouse = Warehouse(
+    name="HrFlow.ai Write Profiles",
+    type=WarehouseType.inbound,
+    data_schema=HrFlowProfile,
+    data_type=DataType.profile,
     create=WarehouseWriteAction(
         auth_parameters=AuthParameters,
         action_parameters=CreateProfileParameters,

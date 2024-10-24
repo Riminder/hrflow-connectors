@@ -1,6 +1,7 @@
 from hrflow_connectors.connectors.hrflow.warehouse_v2.job import (  # noqa
-    HrFlowJobWarehouse,
+    HrFlowWriteJobWarehouse,
 )
 from hrflow_connectors.connectors.hrflow.warehouse_v2.profile import (  # noqa
-    HrFlowProfileWarehouse,
+    HrFlowReadProfileWarehouse,
+    HrFlowWriteProfileWarehouse,
 )

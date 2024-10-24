@@ -17,6 +17,7 @@ from hrflow_connectors.core.warehouse_v2 import (
     ReadMode,
     Warehouse,
     WarehouseReadAction,
+    WarehouseType,
     WarehouseWriteAction,
 )
 
@@ -46,10 +47,6 @@ class AuthParameters(ParametersModel):
         repr=False,
         field_type=FieldType.Auth,
     )
-
-
-# class WriteProfilesParameters(BaseParameters):
-#     pass
 
 
 class WriteApplicationsParameters(ParametersModel):
@@ -194,7 +191,7 @@ class BaseProfilesParameters(BaseParameters):
     )
 
 
-class CreateProfilsParameters(BaseProfilesParameters):
+class CreateProfilesParameters(BaseProfilesParameters):
     created_date: datetime = Field(
         ...,
         description="The creation date from which you want to pull profiles",
@@ -211,7 +208,7 @@ class CreateProfilsParameters(BaseProfilesParameters):
     )
 
 
-class UpdateProfilsParameters(BaseProfilesParameters):
+class UpdateProfilesParameters(BaseProfilesParameters):
     last_modified_date: datetime = Field(
         ...,
         description="The modification date from which you want to pull profiles",
@@ -229,7 +226,7 @@ class UpdateProfilsParameters(BaseProfilesParameters):
     )
 
 
-class ArchiveProfilsParameters(BaseParameters):
+class ArchiveProfilesParameters(BaseParameters):
     last_modified_date: datetime = Field(
         ...,
         description="The modification date from which you want to pull profiles",
@@ -253,82 +250,6 @@ class ArchiveProfilsParameters(BaseParameters):
         repr=False,
         field_type=FieldType.QueryParam,
     )
-
-
-# def create_profiles(
-#     adapter: LoggerAdapter,
-#     parameters: WriteProfilesParameters,
-#     profiles: t.Iterable[t.Dict],
-# ) -> t.List[t.Dict]:
-#     adapter.info("Pushing {} profiles".format(len(profiles)))
-#     failed_profiles = []
-#     authentication = auth(
-#         parameters.username,
-#         parameters.password,
-#         parameters.client_id,
-#         parameters.client_secret,
-#     )
-
-#     for profile in profiles:
-#         # Split profile in four parts: Body, Education, Experience and Attachements
-#         profile_body_dict = profile
-#         create_profile_body = profile_body_dict["create_profile_body"]
-#         enrich_profile_education = profile_body_dict["enrich_profile_education"]
-#         enrich_profile_experience = profile_body_dict["enrich_profile_experience"]
-#         enrich_profile_attachment = profile_body_dict["enrich_profile_attachment"]
-
-#         rest_url = authentication["restUrl"]
-#         params = {"BhRestToken": authentication["BhRestToken"]}
-
-#         candidate_url = rest_url + "entity/Candidate"
-#         response = requests.put(
-#             url=candidate_url, json=create_profile_body, params=params
-#         )
-
-#         # Unable to push profile
-#         if response.status_code // 100 != 2:
-#             adapter.error(
-#                 "Failed to push profile from to Bullhorn"
-#                 " status_code={} response={}".format(
-#                     response.status_code, response.text
-#                 )
-#             )
-#             failed_profiles.append(profile)
-#             continue
-
-#         candidate_id = response.json()
-#         candidate_id = str(candidate_id["changedEntityId"])
-
-#         # Enrich profile education
-#         for education in enrich_profile_education:
-#             education["candidate"]["id"] = candidate_id
-#             education_url = rest_url + "entity/CandidateEducation"
-#             response = requests.put(
-#                 url=education_url,
-#                 json=education,
-#                 params=params
-#             )
-
-#         # Enrich profile experience
-#         for experience in enrich_profile_experience:
-#             experience["candidate"]["id"] = candidate_id
-#             experience_url = rest_url + "entity/CandidateWorkHistory"
-#             response = requests.put(
-#                 url=experience_url,
-#                 json=experience,
-#                 params=params
-#             )
-
-#         # Enrich profile attachements
-#         for attachment in enrich_profile_attachment:
-#             attachment_url = rest_url + "file/Candidate/" + str(candidate_id)
-#             response = requests.put(
-#                 url=attachment_url,
-#                 json=attachment,
-#                 params=params
-#             )
-
-#     return failed_profiles
 
 
 def make_request(method, url, params, auth_parameters, adapter, json=None):
@@ -715,7 +636,7 @@ def generic_profile_pulling(
     def __pull_items(
         adapter: LoggerAdapter,
         auth_parameters: AuthParameters,
-        action_parameters: CreateProfilsParameters,
+        action_parameters: CreateProfilesParameters,
         read_mode: t.Optional[ReadMode] = None,
         read_from: t.Optional[str] = None,
     ) -> t.Iterable[t.Dict]:
@@ -982,37 +903,28 @@ def item_to_read_from_update_or_archive(item: t.Dict) -> str:
     return json.dumps(dict(last_modified_date=last_modified_date, last_id=item["id"]))
 
 
-BullhornCreateProfileWarehouse = Warehouse(
-    name="Bullhorn Create Profils",
+BullhornReadProfileWarehouse = Warehouse(
+    name="Bullhorn Read Profiles",
+    type=WarehouseType.outbound,
     data_schema=BullhornProfile,
     data_type=DataType.job,
-    read=WarehouseReadAction(
+    create=WarehouseReadAction(
         auth_parameters=AuthParameters,
-        action_parameters=CreateProfilsParameters,
+        action_parameters=CreateProfilesParameters,
         function=generic_profile_pulling(action="create"),
         supports_incremental=True,
         item_to_read_from=item_to_read_from_create,
     ),
-)
-BullhornUpdateProfileWarehouse = Warehouse(
-    name="Bullhorn Update Profils",
-    data_schema=BullhornProfile,
-    data_type=DataType.job,
-    read=WarehouseReadAction(
+    update=WarehouseReadAction(
         auth_parameters=AuthParameters,
-        action_parameters=UpdateProfilsParameters,
+        action_parameters=UpdateProfilesParameters,
         function=generic_profile_pulling(action="update"),
         supports_incremental=True,
         item_to_read_from=item_to_read_from_update_or_archive,
     ),
-)
-BullhornArchiveProfileWarehouse = Warehouse(
-    name="Bullhorn Archive Profils",
-    data_schema=BullhornProfile,
-    data_type=DataType.job,
-    read=WarehouseReadAction(
+    archive=WarehouseReadAction(
         auth_parameters=AuthParameters,
-        action_parameters=ArchiveProfilsParameters,
+        action_parameters=ArchiveProfilesParameters,
         function=generic_profile_pulling(action="archive"),
         supports_incremental=True,
         item_to_read_from=item_to_read_from_update_or_archive,
@@ -1020,37 +932,26 @@ BullhornArchiveProfileWarehouse = Warehouse(
 )
 
 
-BullhornCreateJobWarehouse = Warehouse(
-    name="Bullhorn Create Jobs",
+BullhornReadJobWarehouse = Warehouse(
+    name="Bullhorn Read Jobs",
+    type=WarehouseType.outbound,
     data_schema=BullhornJob,
     data_type=DataType.job,
-    read=WarehouseReadAction(
+    create=WarehouseReadAction(
         auth_parameters=AuthParameters,
         action_parameters=CreateJobsParameters,
         function=generic_job_pulling(action="create"),
         supports_incremental=True,
         item_to_read_from=item_to_read_from_create,
     ),
-)
-
-BullhornUpdateJobWarehouse = Warehouse(
-    name="Bullhorn Update Jobs",
-    data_schema=BullhornJob,
-    data_type=DataType.job,
-    read=WarehouseReadAction(
+    update=WarehouseReadAction(
         auth_parameters=AuthParameters,
         action_parameters=UpdateJobsParameters,
         function=generic_job_pulling(action="update"),
         supports_incremental=True,
         item_to_read_from=item_to_read_from_update_or_archive,
     ),
-)
-
-BullhornArchiveJobWarehouse = Warehouse(
-    name="Bullhorn Archive Jobs",
-    data_schema=BullhornJob,
-    data_type=DataType.job,
-    read=WarehouseReadAction(
+    archive=WarehouseReadAction(
         auth_parameters=AuthParameters,
         action_parameters=ArchiveJobsParameters,
         function=generic_job_pulling(action="archive"),
@@ -1059,8 +960,10 @@ BullhornArchiveJobWarehouse = Warehouse(
     ),
 )
 
-BullhornApplicationWarehouse = Warehouse(
-    name="Bullhorn Applications",
+
+BullhornWriteApplicationWarehouse = Warehouse(
+    name="Bullhorn Write Applications",
+    type=WarehouseType.inbound,
     data_schema=BullhornProfile,
     data_type=DataType.profile,
     update=WarehouseWriteAction(

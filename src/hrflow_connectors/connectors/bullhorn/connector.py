@@ -6,18 +6,15 @@ import requests
 from hrflow_connectors.connectors.bullhorn.schemas import BullhornProfile
 from hrflow_connectors.connectors.bullhorn.utils import date_format
 from hrflow_connectors.connectors.bullhorn.warehouse import (
-    BullhornApplicationWarehouse,
-    BullhornArchiveJobWarehouse,
-    BullhornArchiveProfileWarehouse,
-    BullhornCreateJobWarehouse,
-    BullhornCreateProfileWarehouse,
-    BullhornUpdateJobWarehouse,
-    BullhornUpdateProfileWarehouse,
+    BullhornReadJobWarehouse,
+    BullhornReadProfileWarehouse,
+    BullhornWriteApplicationWarehouse,
 )
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile
 from hrflow_connectors.connectors.hrflow.warehouse_v2 import (
-    HrFlowJobWarehouse,
-    HrFlowProfileWarehouse,
+    HrFlowReadProfileWarehouse,
+    HrFlowWriteJobWarehouse,
+    HrFlowWriteProfileWarehouse,
 )
 from hrflow_connectors.core.connector_v2 import (  # noqa
     ActionMode,
@@ -433,8 +430,8 @@ Bullhorn = Connector(
             parameters=BaseActionParameters.with_defaults(
                 "ReadJobsActionParameters", format=format_job
             ),
-            origin=BullhornCreateJobWarehouse,
-            target=HrFlowJobWarehouse,
+            origin=BullhornReadJobWarehouse,
+            target=HrFlowWriteJobWarehouse,
             action_type=ActionType.inbound,
             action_mode=ActionMode.create,
         ),
@@ -445,8 +442,8 @@ Bullhorn = Connector(
             parameters=BaseActionParameters.with_defaults(
                 "ReadJobsActionParameters", format=format_job
             ),
-            origin=BullhornUpdateJobWarehouse,
-            target=HrFlowJobWarehouse,
+            origin=BullhornReadJobWarehouse,
+            target=HrFlowWriteJobWarehouse,
             action_type=ActionType.inbound,
             action_mode=ActionMode.update,
         ),
@@ -457,25 +454,11 @@ Bullhorn = Connector(
             parameters=BaseActionParameters.with_defaults(
                 "ReadJobsActionParameters", format=format_item_to_be_archived
             ),
-            origin=BullhornArchiveJobWarehouse,
-            target=HrFlowJobWarehouse,
+            origin=BullhornReadJobWarehouse,
+            target=HrFlowWriteJobWarehouse,
             action_type=ActionType.inbound,
             action_mode=ActionMode.archive,
         ),
-        # ConnectorAction(
-        #     name="create_profiles_from_attachments_in_hrflow",
-        #     trigger_type=WorkflowType.pull,
-        #     description=(
-        #         "retrieves profiles attachments from Bullhorn and Parses them"
-        #         " and sends them to Hrflow.ai source"
-        #     ),
-        #     parameters=BaseActionParameters.with_defaults(
-        #         "ReadProfileActionParameters", format=profile_format_parsing
-        #     ),
-        #     origin=BullhornProfileParsingWarehouse,
-        #     target=HrFlowProfileParsingWarehouse,
-        #     action_type=ActionType.inbound,
-        # ),
         ConnectorAction(
             name="create_profiles_in_hrflow",
             trigger_type=WorkflowType.pull,
@@ -486,8 +469,8 @@ Bullhorn = Connector(
             parameters=BaseActionParameters.with_defaults(
                 "ReadProfileActionParameters", format=profile_format
             ),
-            origin=BullhornCreateProfileWarehouse,
-            target=HrFlowProfileWarehouse,
+            origin=BullhornReadProfileWarehouse,
+            target=HrFlowWriteProfileWarehouse,
             action_type=ActionType.inbound,
             action_mode=ActionMode.create,
         ),
@@ -500,8 +483,8 @@ Bullhorn = Connector(
             parameters=BaseActionParameters.with_defaults(
                 "ReadProfileActionParameters", format=profile_format
             ),
-            origin=BullhornUpdateProfileWarehouse,
-            target=HrFlowProfileWarehouse,
+            origin=BullhornReadProfileWarehouse,
+            target=HrFlowWriteProfileWarehouse,
             action_type=ActionType.inbound,
             action_mode=ActionMode.update,
         ),
@@ -514,8 +497,8 @@ Bullhorn = Connector(
             parameters=BaseActionParameters.with_defaults(
                 "ReadProfileActionParameters", format=format_item_to_be_archived
             ),
-            origin=BullhornArchiveProfileWarehouse,
-            target=HrFlowProfileWarehouse,
+            origin=BullhornReadProfileWarehouse,
+            target=HrFlowWriteProfileWarehouse,
             action_type=ActionType.inbound,
             action_mode=ActionMode.archive,
         ),
@@ -529,8 +512,8 @@ Bullhorn = Connector(
             parameters=BaseActionParameters.with_defaults(
                 "WriteApplicationActionParameters", format=format_application
             ),
-            origin=HrFlowProfileWarehouse,
-            target=BullhornApplicationWarehouse,
+            origin=HrFlowReadProfileWarehouse,
+            target=BullhornWriteApplicationWarehouse,
             action_type=ActionType.outbound,
             action_mode=ActionMode.update,
         ),

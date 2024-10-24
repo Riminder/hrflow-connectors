@@ -40,6 +40,11 @@ class ActionType(enum.Enum):
     archive = enum.auto()
 
 
+class WarehouseType(str, enum.Enum):
+    inbound = "inbound"
+    outbound = "outbound"
+
+
 class ReadMode(enum.Enum):
     sync = "sync"
     incremental = "incremental"
@@ -155,6 +160,7 @@ class WarehouseWriteAction(BaseModel):
 
 class Warehouse(BaseModel):
     name: str
+    type: WarehouseType
     data_type: DataType
     data_schema: t.Type[BaseModel] = Field(default_factory=lambda: BaseModel)
     create: t.Optional[WarehouseWriteAction]

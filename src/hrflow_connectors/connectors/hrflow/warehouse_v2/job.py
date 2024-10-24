@@ -12,6 +12,7 @@ from hrflow_connectors.core.warehouse_v2 import (
     FieldType,
     ParametersModel,
     Warehouse,
+    WarehouseType,
     WarehouseWriteAction,
 )
 
@@ -250,8 +251,9 @@ def archive(
     return failed_jobs
 
 
-HrFlowJobWarehouse = Warehouse(
-    name="HrFlow.ai Jobs",
+HrFlowWriteJobWarehouse = Warehouse(
+    name="HrFlow.ai Write Jobs",
+    type=WarehouseType.inbound,
     data_schema=HrFlowJob,
     data_type=DataType.job,
     create=WarehouseWriteAction(
