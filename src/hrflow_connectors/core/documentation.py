@@ -45,6 +45,9 @@ USE_REMOTE_REV: ContextVar[t.Optional[str]] = ContextVar("USE_REMOTE_REV", defau
 BASE_CONNECTOR_PATH: ContextVar[t.Optional[str]] = ContextVar(
     "BASE_CONNECTOR_PATH", default="src/hrflow_connectors/connectors/"
 )
+PREMIUM_STATUS = ":lock:"
+PREMIUM_README_LINK = "https://forms.gle/pokoE9pAjSVSFtCe7"
+OPENSOURCE_STATUS = ":desktop_computer:"
 
 
 class InvalidConnectorReadmeFormat(Exception):
@@ -187,7 +190,7 @@ def update_root_readme(
             }
             for connector in target_connectors
         ],
-        key=lambda c: c["name"],
+        key=lambda c: c["name"].lower(),
     )
 
     line_pattern = (
@@ -198,15 +201,11 @@ def update_root_readme(
     jobboards_table = ""
     for connector in all_connectors:
         if connector["object"] is None:
-            readme_link = "./{base_connector_path}/{connector}".format(
-                base_connector_path=BASE_CONNECTOR_PATH.get().strip("/"),
-                connector=connector["subtype"],
-            )
             updated_listing = line_pattern.format(
                 name=connector["name"],
-                readme_link=readme_link,
+                readme_link=PREMIUM_README_LINK,
                 type=connector["type"],
-                status="Premium",
+                status=PREMIUM_STATUS,
                 release_date="",
                 updated_at="",
             )
@@ -248,7 +247,7 @@ def update_root_readme(
                     connector=model.subtype,
                 ),
                 type=model.type.value,
-                status="Open source",
+                status=OPENSOURCE_STATUS,
                 release_date=f'*{connector["release_date"]}*',
                 updated_at=f'*{updated_at.strftime("%d/%m/%Y")}*',
             )

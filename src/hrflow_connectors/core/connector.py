@@ -61,7 +61,7 @@ DEFAULT_PULL_JOB_LIST_ACTION_MANIFEST = {
     "target": "HrFlow.ai Jobs",
     "target_data_schema": {},
     "target_parameters": {},
-    "trigger_type": "",
+    "trigger_type": "schedule",
     "workflow_code": "",
     "workflow_code_format_placeholder": "# << format_placeholder >>",
     "workflow_code_logics_placeholder": "# << logics_placeholder >>",
@@ -1041,10 +1041,9 @@ class Connector:
     def manifest(self, connectors_directory: Path) -> t.Dict:
         import_name = get_import_name(self)
         model = self.model
-        # FIXME: model.type.value is not lowered and without spaces
         manifest = dict(
             name=model.name,
-            type=model.type.value.lower().replace(" ", ""),
+            type=model.type.value.upper().replace(" ", ""),
             subtype=model.subtype,
             logo=model.logo(connectors_directory=connectors_directory),
             actions=[],
@@ -1140,7 +1139,7 @@ def hrflow_connectors_manifest(
             }
             for connector in target_connectors
         ],
-        key=lambda c: c["name"],
+        key=lambda c: c["name"].lower(),
     )
 
     with warnings.catch_warnings():
@@ -1159,9 +1158,11 @@ def hrflow_connectors_manifest(
                     connectors_directory=connectors_directory
                 )
             else:
+                if connector["type"] is not None:
+                    connector_type = connector["type"].upper().replace(" ", "")
                 manifest_connector = dict(
                     name=connector["name"],
-                    type=connector["type"],
+                    type=connector_type,
                     subtype=connector["subtype"],
                     logo=compute_logo_path(
                         name=connector["name"],
