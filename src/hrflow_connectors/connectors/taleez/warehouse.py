@@ -10,7 +10,7 @@ import requests
 from pydantic import Field
 
 from hrflow_connectors.connectors.taleez.schemas import Candidate, Job
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
     ActionEndpoints,
     DataType,
     FieldType,

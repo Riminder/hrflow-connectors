@@ -9,7 +9,7 @@ from hrflow_connectors.connectors.digitalrecruiters.schema import (
     DigitalRecruitersReadProfile,
     DigitalRecruitersWriteProfile,
 )
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
     ActionEndpoints,
     DataType,
     FieldType,

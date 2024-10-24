@@ -7,7 +7,7 @@ from hrflow import Hrflow
 from pydantic import Field
 
 from hrflow_connectors.connectors.hrflow.schemas import HrFlowJob
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
     DataType,
     FieldType,
     ParametersModel,

@@ -10,7 +10,7 @@ import requests
 import typing_extensions as te
 from pydantic import Field, PositiveInt
 
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
     DataType,
     FieldType,
     ParametersModel,

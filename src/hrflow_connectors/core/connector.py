@@ -6,6 +6,7 @@ import importlib
 import inspect
 import json
 import logging
+import os
 import time
 import typing as t
 import uuid
@@ -1129,6 +1130,7 @@ def hrflow_connectors_manifest(
     target_connectors: t.List[t.Dict] = ALL_TARGET_CONNECTORS,
     directory_path: str = ".",
     connectors_directory: Path = CONNECTORS_DIRECTORY,
+    exclude_connectors: t.List[str] = None,  # New argument
 ) -> None:
     connector_by_name = {connector.model.name: connector for connector in connectors}
     all_connectors = sorted(
@@ -1142,17 +1144,30 @@ def hrflow_connectors_manifest(
         key=lambda c: c["name"].lower(),
     )
 
+    exclude_connectors = exclude_connectors or []
+
     with warnings.catch_warnings():
         warnings.filterwarnings(
             action="ignore",
             message="Callable (_logics|format|event_parser) was excluded",
             category=UserWarning,
         )
-        manifest = dict(
-            name="HrFlow.ai Connectors",
-            connectors=[],
-        )
+
+        manifest_file = "{}/manifest.json".format(directory_path)
+        if os.path.exists(manifest_file):
+            with open(manifest_file, "r") as f:
+                manifest = json.load(f)
+        else:
+            manifest = dict(name="HrFlow.ai Connectors", connectors=[])
+
+        # Mapping to track connectors by name to avoid duplicates
+        existing_connectors_by_name = {c["name"]: c for c in manifest["connectors"]}
+
         for connector in all_connectors:
+            # Skip if the connector is in the exclude list
+            if connector["name"] in exclude_connectors:
+                continue
+
             if connector["object"] is not None:
                 manifest_connector = connector["object"].manifest(
                     connectors_directory=connectors_directory
@@ -1186,7 +1201,12 @@ def hrflow_connectors_manifest(
                         DEFAULT_PUSH_JOB_ACTION_MANIFEST,
                         DEFAULT_CATCH_PROFILE_ACTION_MANIFEST,
                     ]
-            if manifest_connector.get("actions") is not None:
-                manifest["connectors"].append(manifest_connector)
+
+            # Update or add the connector in the existing connectors list
+            existing_connectors_by_name[manifest_connector["name"]] = manifest_connector
+
+        # Update the manifest with the new list of connectors (no duplicates)
+        manifest["connectors"] = list(existing_connectors_by_name.values())
+
     with open("{}/manifest.json".format(directory_path), "w") as f:
         f.write(json.dumps(manifest, indent=2))

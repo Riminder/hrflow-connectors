@@ -5,15 +5,15 @@ import requests
 from pydantic import Field
 
 from hrflow_connectors.connectors.workable.schemas import WorkableJobModel
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
     DataType,
     FieldType,
     ParametersModel,
     ReadMode,
     Warehouse,
     WarehouseReadAction,
+    WarehouseWriteAction,
 )
-from hrflow_connectors.core.warehouse import WarehouseWriteAction
 
 
 class WorkableReadParameters(ParametersModel):

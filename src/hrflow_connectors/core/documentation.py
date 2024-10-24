@@ -282,9 +282,16 @@ def generate_docs(
     target_connectors: t.List[t.Dict] = ALL_TARGET_CONNECTORS,
     connectors_directory: Path = CONNECTORS_DIRECTORY,
     root_template: Template = Templates.get_template("root_readme.md.j2"),
+    exclude_connectors: t.List[str] = None,  # New argument
 ) -> None:
+    exclude_connectors = exclude_connectors or []
+
     update_root_readme(
-        connectors=connectors,
+        connectors=[
+            connector
+            for connector in connectors
+            if connector.model.name not in exclude_connectors
+        ],
         target_connectors=target_connectors,
         root=connectors_directory.parent.parent.parent,
         root_template=root_template,

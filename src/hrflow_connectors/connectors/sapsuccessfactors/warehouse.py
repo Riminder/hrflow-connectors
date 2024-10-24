@@ -9,7 +9,7 @@ from hrflow_connectors.connectors.sapsuccessfactors.schemas import (
     SapCandidateModel,
     SAPSuccessFactorsJob,
 )
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
     DataType,
     FieldType,
     ParametersModel,
