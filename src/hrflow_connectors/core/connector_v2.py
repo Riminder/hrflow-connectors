@@ -1258,7 +1258,7 @@ def hrflow_connectors_manifest(
     target_connectors: t.List[t.Dict] = ALL_TARGET_CONNECTORS,
     directory_path: str = ".",
     connectors_directory: Path = CONNECTORS_DIRECTORY,
-    only_connectors: t.List[str] = [],  # New argument
+    exclude_connectors: t.List[str] = [],  # New argument
 ) -> None:
     connector_by_name = {connector.model.name: connector for connector in connectors}
     all_connectors = sorted(
@@ -1268,7 +1268,7 @@ def hrflow_connectors_manifest(
                 "object": connector_by_name.get(connector["name"]),
             }
             for connector in target_connectors
-            if connector["name"] in only_connectors
+            if connector["name"] not in exclude_connectors
         ],
         key=lambda c: c["name"].lower(),
     )
