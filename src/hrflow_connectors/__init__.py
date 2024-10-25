@@ -21,31 +21,33 @@ from hrflow_connectors.connectors.waalaxy import Waalaxy
 from hrflow_connectors.connectors.workable import Workable
 from hrflow_connectors.core import backend
 from hrflow_connectors.core.connector import hrflow_connectors_manifest  # noqa
-from hrflow_connectors.core.connector_v2 import hrflow_connectors_manifest_v2  # noqa
+from hrflow_connectors.core.connector_v2 import (  # noqa
+    hrflow_connectors_manifest as hrflow_connectors_manifest_v2,
+)
 from hrflow_connectors.core.documentation import generate_docs  # noqa
 from hrflow_connectors.core.documentation_v2 import generate_docs_v2  # noqa
 
 __CONNECTORS__V1__ = [
-    SmartRecruiters,
-    TalentSoft,
-    PoleEmploi,
     Adzuna,
-    Recruitee,
-    Workable,
     BreezyHR,
-    SAPSuccessFactors,
+    Carrevolutis,
     Ceridian,
+    DigitalRecruiters,
     Greenhouse,
+    Hubspot,
+    Jobology,
+    Lever,
+    Meteojob,
+    PoleEmploi,
+    Recruitee,
+    Salesforce,
+    SAPSuccessFactors,
+    SmartRecruiters,
+    Taleez,
+    TalentSoft,
     Teamtailor,
     Waalaxy,
-    Hubspot,
-    Taleez,
-    Lever,
-    Salesforce,
-    DigitalRecruiters,
-    Jobology,
-    Meteojob,
-    Carrevolutis,
+    Workable,
 ]
 
 __CONNECTORS__V2__ = [

@@ -1130,7 +1130,7 @@ def hrflow_connectors_manifest(
     target_connectors: t.List[t.Dict] = ALL_TARGET_CONNECTORS,
     directory_path: str = ".",
     connectors_directory: Path = CONNECTORS_DIRECTORY,
-    exclude_connectors: t.List[str] = None,  # New argument
+    exclude_connectors: t.List[str] = [],  # New argument
 ) -> None:
     connector_by_name = {connector.model.name: connector for connector in connectors}
     all_connectors = sorted(
@@ -1140,11 +1140,10 @@ def hrflow_connectors_manifest(
                 "object": connector_by_name.get(connector["name"]),
             }
             for connector in target_connectors
+            if connector["name"] not in exclude_connectors
         ],
         key=lambda c: c["name"].lower(),
     )
-
-    exclude_connectors = exclude_connectors or []
 
     with warnings.catch_warnings():
         warnings.filterwarnings(
@@ -1164,10 +1163,6 @@ def hrflow_connectors_manifest(
         existing_connectors_by_name = {c["name"]: c for c in manifest["connectors"]}
 
         for connector in all_connectors:
-            # Skip if the connector is in the exclude list
-            if connector["name"] in exclude_connectors:
-                continue
-
             if connector["object"] is not None:
                 manifest_connector = connector["object"].manifest(
                     connectors_directory=connectors_directory

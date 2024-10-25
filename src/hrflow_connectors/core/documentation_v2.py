@@ -55,7 +55,6 @@ BASE_CONNECTOR_PATH: ContextVar[t.Optional[str]] = ContextVar(
 PREMIUM_STATUS = ":lock: Premium"
 PREMIUM_README_LINK = "https://forms.gle/pokoE9pAjSVSFtCe7"
 OPENSOURCE_STATUS = ":book: Open source"
-ACTION_MODE_MAPPING = {"create": "create", "update": "update", "archive": "archive"}
 
 
 class InvalidConnectorReadmeFormat(Exception):
@@ -188,6 +187,10 @@ def update_root_readme(
     target_connectors: t.List[t.Dict],
     root: Path,
     root_template: Template,
+    opensource_connectors: t.List[str],
+    opensource_jobboards: t.List[str],
+    premium_connectors: t.List[str],
+    premium_jobboards: t.List[str],
 ) -> t.Dict:
     connector_by_name = {connector.model.name: connector for connector in connectors}
     all_connectors = sorted(
@@ -198,17 +201,13 @@ def update_root_readme(
             }
             for connector in target_connectors
         ],
-        key=lambda c: c["name"].lower(),
+        key=lambda c: c["subtype"],
     )
 
     line_pattern = (
         "| [**{name}**]({readme_link}) | {type} | {status} |"
         " {release_date} | {updated_at} |"
     )
-    opensource_connectors_table = ""
-    opensource_jobboards_table = ""
-    premium_connectors_table = ""
-    premium_jobboards_table = ""
     for connector in all_connectors:
         if connector["object"] is None:
             updated_listing = line_pattern.format(
@@ -220,9 +219,9 @@ def update_root_readme(
                 updated_at="",
             )
             if connector["type"] == "Job Board":
-                premium_jobboards_table += updated_listing + "\n"
+                premium_jobboards.append(updated_listing)
             else:
-                premium_connectors_table += updated_listing + "\n"
+                premium_connectors.append(updated_listing)
         else:
             model = connector["object"].model
             result = subprocess.run(
@@ -267,16 +266,19 @@ def update_root_readme(
             )
 
             if connector["type"] == "Job Board":
-                opensource_jobboards_table += updated_listing + "\n"
+                opensource_jobboards.append(updated_listing)
             else:
-                opensource_connectors_table += updated_listing + "\n"
-
+                opensource_connectors.append(updated_listing)
+    opensource_connectors = sorted(opensource_connectors, key=lambda c: c.lower())
+    opensource_jobboards = sorted(opensource_jobboards, key=lambda c: c.lower())
+    premium_connectors = sorted(premium_connectors, key=lambda c: c.lower())
+    premium_jobboards = sorted(premium_jobboards, key=lambda c: c.lower())
     readme = root / "README.md"
     readme_content = root_template.render(
-        opensource_connectors_table=opensource_connectors_table.strip("\n"),
-        opensource_jobboards_table=opensource_jobboards_table.strip("\n"),
-        premium_connectors_table=premium_connectors_table.strip("\n"),
-        premium_jobboards_table=premium_jobboards_table.strip("\n"),
+        opensource_connectors_table="\n".join(opensource_connectors),
+        opensource_jobboards_table="\n".join(opensource_jobboards),
+        premium_connectors_table="\n".join(premium_connectors),
+        premium_jobboards_table="\n".join(premium_jobboards),
     )
     readme_content = py_37_38_compat_patch(readme_content)
     readme.write_bytes(readme_content.encode())
@@ -290,19 +292,29 @@ def generate_docs_v2(
     target_connectors: t.List[t.Dict] = ALL_TARGET_CONNECTORS,
     connectors_directory: Path = CONNECTORS_DIRECTORY,
     root_template: Template = Templates.get_template("root_readme.md.j2"),
-    exclude_connectors: t.List[str] = None,  # New argument
+    only_connectors: t.List[str] = [],  # New argument
+    opensource_connectors: t.List[str] = [],
+    opensource_jobboards: t.List[str] = [],
+    premium_connectors: t.List[str] = [],
+    premium_jobboards: t.List[str] = [],
 ) -> None:
-    exclude_connectors = exclude_connectors or []
-
     update_root_readme(
         connectors=[
             connector
             for connector in connectors
-            if connector.model.name not in exclude_connectors
+            if connector.model.name in only_connectors
         ],
-        target_connectors=target_connectors,
+        target_connectors=[
+            connector
+            for connector in target_connectors
+            if connector["name"] in only_connectors
+        ],
         root=connectors_directory.parent.parent.parent,
         root_template=root_template,
+        opensource_connectors=opensource_connectors,
+        opensource_jobboards=opensource_jobboards,
+        premium_connectors=premium_connectors,
+        premium_jobboards=premium_jobboards,
     )
     for connector in connectors:
         model = connector.model
@@ -368,37 +380,37 @@ def generate_docs_v2(
                     fields=action.parameters.__fields__.values(),
                     documentation_path=action_docs_directory,
                 )
+                origin_warehouse_action = getattr(
+                    action.origin, action.action_mode.value
+                )
+                target_warehouse_action = getattr(
+                    action.target, action.action_mode.value
+                )
                 if action.action_type == "inbound":
                     connector_auth_parameters = get_template_fields(
-                        fields=action.origin.read.auth_parameters.__fields__.values(),
+                        fields=origin_warehouse_action.auth_parameters.__fields__.values(),
                         documentation_path=action_docs_directory,
                     )
                     hrflow_auth_parameters = get_template_fields(
-                        fields=getattr(
-                            action.target, ACTION_MODE_MAPPING[action.action_mode]
-                        ).auth_parameters.__fields__.values(),
+                        fields=target_warehouse_action.auth_parameters.__fields__.values(),
                         documentation_path=action_docs_directory,
                     )
 
                 else:
                     connector_auth_parameters = get_template_fields(
-                        fields=getattr(
-                            action.target, ACTION_MODE_MAPPING[action.action_mode]
-                        ).auth_parameters.__fields__.values(),
+                        fields=target_warehouse_action.auth_parameters.__fields__.values(),
                         documentation_path=action_docs_directory,
                     )
                     hrflow_auth_parameters = get_template_fields(
-                        fields=action.origin.read.auth_parameters.__fields__.values(),
+                        fields=origin_warehouse_action.auth_parameters.__fields__.values(),
                         documentation_path=action_docs_directory,
                     )
                 pull_parameters = get_template_fields(
-                    fields=action.origin.read.action_parameters.__fields__.values(),
+                    fields=origin_warehouse_action.action_parameters.__fields__.values(),
                     documentation_path=action_docs_directory,
                 )
                 push_parameters = get_template_fields(
-                    fields=getattr(
-                        action.target, action.action_mode.value
-                    ).action_parameters.__fields__.values(),
+                    fields=target_warehouse_action.action_parameters.__fields__.values(),
                     documentation_path=action_docs_directory,
                 )
 
@@ -417,11 +429,9 @@ def generate_docs_v2(
                     hrflow_auth_parameters=hrflow_auth_parameters,
                     pull_parameters=pull_parameters,
                     push_parameters=push_parameters,
-                    origin_endpoints=action.origin.read.endpoints,
+                    origin_endpoints=origin_warehouse_action.endpoints,
                     target_name=action.target.name,
-                    target_endpoints=getattr(
-                        action.target, ACTION_MODE_MAPPING[action.action_mode]
-                    ).endpoints,
+                    target_endpoints=target_warehouse_action.endpoints,
                 )
                 action_documentation_content = py_37_38_compat_patch(
                     action_documentation_content

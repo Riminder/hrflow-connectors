@@ -1,5 +1,5 @@
 # Update applications in hrflow
-`HrFlow.ai Profiles` :arrow_right: `Bullhorn Applications`
+`HrFlow.ai Read Profiles` :arrow_right: `Bullhorn Write Applications`
 
 Retrieves profiles from Hrflow.ai and writes their applications on the Bullhorn source
 
@@ -10,7 +10,7 @@ Retrieves profiles from Hrflow.ai and writes their applications on the Bullhorn 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_application`](../connector.py#L379) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_application`](../connector.py#L376) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Connector Auth Parameters

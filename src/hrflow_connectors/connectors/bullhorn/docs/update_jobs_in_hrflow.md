@@ -1,5 +1,5 @@
 # Update jobs in hrflow
-`Bullhorn Update Jobs` :arrow_right: `HrFlow.ai Jobs`
+`Bullhorn Read Jobs` :arrow_right: `HrFlow.ai Write Jobs`
 
 Pull jobs from Bullhorn and update them to Hrflow.ai Board
 
@@ -10,7 +10,7 @@ Pull jobs from Bullhorn and update them to Hrflow.ai Board
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L201) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_job`](../connector.py#L198) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Connector Auth Parameters

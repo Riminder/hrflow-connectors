@@ -1,5 +1,5 @@
 # Create profiles in hrflow
-`Bullhorn Create Profils` :arrow_right: `HrFlow.ai Profiles`
+`Bullhorn Read Profiles` :arrow_right: `HrFlow.ai Write Profiles`
 
 Retrieves profiles from Bullhorn and create them in an Hrflow.ai source
 
@@ -10,7 +10,7 @@ Retrieves profiles from Bullhorn and create them in an Hrflow.ai source
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`profile_format`](../connector.py#L275) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`profile_format`](../connector.py#L272) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Connector Auth Parameters

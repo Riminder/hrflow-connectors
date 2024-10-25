@@ -35,9 +35,14 @@ class DataType(enum.Enum):
 
 class ActionType(enum.Enum):
     create = enum.auto()
-    read = enum.auto()
     update = enum.auto()
     archive = enum.auto()
+
+
+class ActionMode(str, enum.Enum):
+    create = "create"
+    update = "update"
+    archive = "archive"
 
 
 class WarehouseType(str, enum.Enum):
@@ -163,14 +168,75 @@ class Warehouse(BaseModel):
     type: WarehouseType
     data_type: DataType
     data_schema: t.Type[BaseModel] = Field(default_factory=lambda: BaseModel)
-    create: t.Optional[WarehouseWriteAction]
-    read: t.Optional[WarehouseReadAction]
-    update: t.Optional[WarehouseWriteAction]
-    archive: t.Optional[WarehouseWriteAction]
+    create: t.Optional[t.Union[WarehouseReadAction, WarehouseWriteAction]]
+    update: t.Optional[t.Union[WarehouseReadAction, WarehouseWriteAction]]
+    archive: t.Optional[t.Union[WarehouseReadAction, WarehouseWriteAction]]
 
-    @property
-    def supports_incremental(self):
-        return self.read.supports_incremental
+    @root_validator(pre=True)
+    def validate_action_type(cls, values):
+        warehouse_type = values.get("type")
+
+        create_action = values.get("create")
+        update_action = values.get("update")
+        archive_action = values.get("archive")
+
+        if warehouse_type == WarehouseType.inbound:
+            if (
+                not isinstance(create_action, WarehouseWriteAction)
+                and create_action is not None
+            ):
+                raise ValueError(
+                    "For 'inbound' type, 'create' must be an instance of"
+                    " WarehouseWriteAction"
+                )
+            if (
+                not isinstance(update_action, WarehouseWriteAction)
+                and update_action is not None
+            ):
+                raise ValueError(
+                    "For 'inbound' type, 'update' must be an instance of"
+                    " WarehouseWriteAction"
+                )
+            if (
+                not isinstance(archive_action, WarehouseWriteAction)
+                and archive_action is not None
+            ):
+                raise ValueError(
+                    "For 'inbound' type, 'archive' must be an instance of"
+                    " WarehouseWriteAction"
+                )
+
+        elif warehouse_type == WarehouseType.outbound:
+            if (
+                not isinstance(create_action, WarehouseReadAction)
+                and create_action is not None
+            ):
+                raise ValueError(
+                    "For 'outbound' type, 'create' must be an instance of"
+                    " WarehouseReadAction"
+                )
+            if (
+                not isinstance(update_action, WarehouseReadAction)
+                and update_action is not None
+            ):
+                raise ValueError(
+                    "For 'outbound' type, 'update' must be an instance of"
+                    " WarehouseReadAction"
+                )
+            if (
+                not isinstance(archive_action, WarehouseReadAction)
+                and archive_action is not None
+            ):
+                raise ValueError(
+                    "For 'outbound' type, 'archive' must be an instance of"
+                    " WarehouseReadAction"
+                )
+
+        return values
+
+    def supports_incremental(self, action_mode: ActionMode) -> bool:
+        action = getattr(self, action_mode.value)
+        return action.supports_incremental
 
     # FIXME: distinguish create, update, archive
     def item_to_read_from(self, *args, **kwargs):
@@ -179,10 +245,6 @@ class Warehouse(BaseModel):
     @property
     def is_creatable(self):
         return self.create is not None
-
-    @property
-    def is_readable(self):
-        return self.read is not None
 
     @property
     def is_updatable(self):
@@ -243,22 +305,7 @@ class Warehouse(BaseModel):
             __base__=action_to_fix.action_parameters,
             **fixed,
         )
-        if action_type is ActionType.read:
-            return Warehouse(
-                name=self.name,
-                data_schema=self.data_schema,
-                data_type=self.data_type,
-                read=WarehouseReadAction(
-                    endpoints=self.read.endpoints,
-                    auth_parameters=self.read.auth_parameters,
-                    action_parameters=with_fixed_parameters,
-                    function=self.read.function,
-                ),
-                create=self.create,
-                update=self.update,
-                archive=self.archive,
-            )
-        elif action_type is ActionType.create:
+        if action_type is ActionType.create:
             return Warehouse(
                 name=self.name,
                 data_schema=self.data_schema,

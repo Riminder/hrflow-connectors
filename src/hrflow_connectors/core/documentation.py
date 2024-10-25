@@ -180,7 +180,7 @@ def update_root_readme(
     target_connectors: t.List[t.Dict],
     root: Path,
     root_template: Template,
-) -> t.Dict:
+) -> t.Tuple[t.List[str], t.List[str], t.List[str], t.List[str]]:
     connector_by_name = {connector.model.name: connector for connector in connectors}
     all_connectors = sorted(
         [
@@ -197,10 +197,10 @@ def update_root_readme(
         "| [**{name}**]({readme_link}) | {type} | {status} |"
         " {release_date} | {updated_at} |"
     )
-    opensource_connectors_table = ""
-    opensource_jobboards_table = ""
-    premium_connectors_table = ""
-    premium_jobboards_table = ""
+    opensource_connectors = []
+    opensource_jobboards = []
+    premium_connectors = []
+    premium_jobboards = []
     for connector in all_connectors:
         if connector["object"] is None:
             updated_listing = line_pattern.format(
@@ -212,9 +212,9 @@ def update_root_readme(
                 updated_at="",
             )
             if connector["type"] == "Job Board":
-                premium_jobboards_table += updated_listing + "\n"
+                premium_jobboards.append(updated_listing)
             else:
-                premium_connectors_table += updated_listing + "\n"
+                premium_connectors.append(updated_listing)
         else:
             model = connector["object"].model
             result = subprocess.run(
@@ -259,19 +259,27 @@ def update_root_readme(
             )
 
             if connector["type"] == "Job Board":
-                opensource_jobboards_table += updated_listing + "\n"
+                opensource_jobboards.append(updated_listing)
             else:
-                opensource_connectors_table += updated_listing + "\n"
+                opensource_connectors.append(updated_listing)
 
     readme = root / "README.md"
     readme_content = root_template.render(
-        opensource_connectors_table=opensource_connectors_table.strip("\n"),
-        opensource_jobboards_table=opensource_jobboards_table.strip("\n"),
-        premium_connectors_table=premium_connectors_table.strip("\n"),
-        premium_jobboards_table=premium_jobboards_table.strip("\n"),
+        opensource_connectors_table="\n".join(opensource_connectors),
+        opensource_jobboards_table="\n".join(opensource_jobboards),
+        premium_connectors_table="\n".join(premium_connectors),
+        premium_jobboards_table="\n".join(premium_jobboards),
     )
     readme_content = py_37_38_compat_patch(readme_content)
     readme.write_bytes(readme_content.encode())
+
+    output = (
+        opensource_connectors,
+        opensource_jobboards,
+        premium_connectors,
+        premium_jobboards,
+    )
+    return output
 
 
 KEEP_EMPTY_FOLDER = ".gitkeep"
@@ -282,17 +290,19 @@ def generate_docs(
     target_connectors: t.List[t.Dict] = ALL_TARGET_CONNECTORS,
     connectors_directory: Path = CONNECTORS_DIRECTORY,
     root_template: Template = Templates.get_template("root_readme.md.j2"),
-    exclude_connectors: t.List[str] = None,  # New argument
-) -> None:
-    exclude_connectors = exclude_connectors or []
-
-    update_root_readme(
+    exclude_connectors: t.List[str] = [],  # New argument
+) -> t.Tuple[t.List[str], t.List[str], t.List[str], t.List[str]]:
+    output_root_readme = update_root_readme(
         connectors=[
             connector
             for connector in connectors
             if connector.model.name not in exclude_connectors
         ],
-        target_connectors=target_connectors,
+        target_connectors=[
+            connector
+            for connector in target_connectors
+            if connector["name"] not in exclude_connectors
+        ],
         root=connectors_directory.parent.parent.parent,
         root_template=root_template,
     )
@@ -390,3 +400,4 @@ def generate_docs(
                     action_name
                 )
                 action_documentation.write_bytes(action_documentation_content.encode())
+    return output_root_readme

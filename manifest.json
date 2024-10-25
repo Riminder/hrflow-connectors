@@ -3713,7 +3713,7 @@
           },
           "data_type": "job",
           "trigger_type": "schedule",
-          "origin": "Bullhorn Create Jobs",
+          "origin": "Bullhorn Read Jobs",
           "origin_data_schema": {
             "title": "BullhornJob",
             "type": "object",
@@ -3764,7 +3764,7 @@
             ],
             "additionalProperties": false
           },
-          "target": "HrFlow.ai Jobs",
+          "target": "HrFlow.ai Write Jobs",
           "target_data_schema": {
             "title": "HrFlowJob",
             "type": "object",
@@ -4177,7 +4177,7 @@
           },
           "data_type": "job",
           "trigger_type": "schedule",
-          "origin": "Bullhorn Update Jobs",
+          "origin": "Bullhorn Read Jobs",
           "origin_data_schema": {
             "title": "BullhornJob",
             "type": "object",
@@ -4221,7 +4221,7 @@
             ],
             "additionalProperties": false
           },
-          "target": "HrFlow.ai Jobs",
+          "target": "HrFlow.ai Write Jobs",
           "target_data_schema": {
             "title": "HrFlowJob",
             "type": "object",
@@ -4627,7 +4627,7 @@
           },
           "data_type": "job",
           "trigger_type": "schedule",
-          "origin": "Bullhorn Archive Jobs",
+          "origin": "Bullhorn Read Jobs",
           "origin_data_schema": {
             "title": "BullhornJob",
             "type": "object",
@@ -4677,7 +4677,7 @@
             ],
             "additionalProperties": false
           },
-          "target": "HrFlow.ai Jobs",
+          "target": "HrFlow.ai Write Jobs",
           "target_data_schema": {
             "title": "HrFlowJob",
             "type": "object",
@@ -5083,7 +5083,7 @@
           },
           "data_type": "job",
           "trigger_type": "schedule",
-          "origin": "Bullhorn Create Profils",
+          "origin": "Bullhorn Read Profiles",
           "origin_data_schema": {
             "title": "BullhornProfile",
             "type": "object",
@@ -5178,7 +5178,7 @@
           },
           "supports_incremental": true,
           "pull_parameters": {
-            "title": "CreateProfilsParameters",
+            "title": "CreateProfilesParameters",
             "type": "object",
             "properties": {
               "limit": {
@@ -5222,7 +5222,7 @@
             ],
             "additionalProperties": false
           },
-          "target": "HrFlow.ai Profiles",
+          "target": "HrFlow.ai Write Profiles",
           "target_data_schema": {
             "title": "HrFlowProfile",
             "type": "object",
@@ -5880,7 +5880,7 @@
           },
           "data_type": "job",
           "trigger_type": "schedule",
-          "origin": "Bullhorn Update Profils",
+          "origin": "Bullhorn Read Profiles",
           "origin_data_schema": {
             "title": "BullhornProfile",
             "type": "object",
@@ -5975,7 +5975,7 @@
           },
           "supports_incremental": true,
           "pull_parameters": {
-            "title": "UpdateProfilsParameters",
+            "title": "UpdateProfilesParameters",
             "type": "object",
             "properties": {
               "limit": {
@@ -6019,7 +6019,7 @@
             ],
             "additionalProperties": false
           },
-          "target": "HrFlow.ai Profiles",
+          "target": "HrFlow.ai Write Profiles",
           "target_data_schema": {
             "title": "HrFlowProfile",
             "type": "object",
@@ -6686,7 +6686,7 @@
           },
           "data_type": "job",
           "trigger_type": "schedule",
-          "origin": "Bullhorn Archive Profils",
+          "origin": "Bullhorn Read Profiles",
           "origin_data_schema": {
             "title": "BullhornProfile",
             "type": "object",
@@ -6781,7 +6781,7 @@
           },
           "supports_incremental": true,
           "pull_parameters": {
-            "title": "ArchiveProfilsParameters",
+            "title": "ArchiveProfilesParameters",
             "type": "object",
             "properties": {
               "limit": {
@@ -6817,7 +6817,7 @@
             ],
             "additionalProperties": false
           },
-          "target": "HrFlow.ai Profiles",
+          "target": "HrFlow.ai Write Profiles",
           "target_data_schema": {
             "title": "HrFlowProfile",
             "type": "object",
@@ -7481,7 +7481,7 @@
           },
           "data_type": "profile",
           "trigger_type": "hook",
-          "origin": "HrFlow.ai Profiles",
+          "origin": "HrFlow.ai Read Profiles",
           "origin_data_schema": {
             "title": "HrFlowProfile",
             "type": "object",
@@ -8035,7 +8035,7 @@
             ],
             "additionalProperties": false
           },
-          "target": "Bullhorn Applications",
+          "target": "Bullhorn Write Applications",
           "target_data_schema": {
             "title": "BullhornProfile",
             "type": "object",

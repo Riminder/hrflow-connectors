@@ -26,7 +26,7 @@ from pydantic import (
 
 from hrflow_connectors.core import backend
 from hrflow_connectors.core.templates import Templates
-from hrflow_connectors.core.warehouse_v2 import ReadMode, Warehouse
+from hrflow_connectors.core.warehouse_v2 import ActionMode, ReadMode, Warehouse
 
 HRFLOW_CONNECTORS_RAW_GITHUB_CONTENT_BASE = (
     "https://raw.githubusercontent.com/Riminder/hrflow-connectors"
@@ -152,8 +152,6 @@ DEFAULT_PUSH_JOB_ACTION_MANIFEST = {
     "workflow_code_target_settings_prefix": "target_",
     "workflow_code_workflow_id_settings_key": "__workflow_id",
 }
-
-ACTION_MODE_MAPPING = {"create": "create", "update": "update", "archive": "archive"}
 
 
 class ConnectorActionAdapter(logging.LoggerAdapter):
@@ -430,12 +428,6 @@ class ActionType(str, enum.Enum):
     outbound = "outbound"
 
 
-class ActionMode(str, enum.Enum):
-    create = "create"
-    update = "update"
-    archive = "archive"
-
-
 class ConnectorAction(BaseModel):
     WORKFLOW_FORMAT_PLACEHOLDER = "# << format_placeholder >>"
     WORKFLOW_LOGICS_PLACEHOLDER = "# << logics_placeholder >>"
@@ -447,6 +439,8 @@ class ConnectorAction(BaseModel):
     name: str
     description: str
     parameters: t.Type[BaseModel]
+    action_type: ActionType
+    action_mode: ActionMode
     origin: Warehouse
     target: Warehouse
     callback: t.Optional[
@@ -462,8 +456,6 @@ class ConnectorAction(BaseModel):
             None,
         ]
     ] = None
-    action_type: ActionType
-    action_mode: ActionMode
 
     @classmethod
     def based_on(
@@ -493,33 +485,35 @@ class ConnectorAction(BaseModel):
         )
 
     @validator("origin", pre=False)
-    def origin_is_readable(cls, origin):
-        if origin.is_readable is False:
-            raise ValueError("Origin warehouse is not readable")
+    def origin_is_readable(cls, origin, values):
+        action_mode = values.get("action_mode")
+        if action_mode == ActionMode.create:
+            if origin.is_creatable is False:
+                raise ValueError("Origin warehouse is not readable for creation")
+        elif action_mode == ActionMode.update:
+            if origin.is_updatable is False:
+                raise ValueError("Origin warehouse is not readable for update")
+        elif action_mode == ActionMode.archive:
+            if origin.is_archivable is False:
+                raise ValueError("Origin warehouse is not readable for archiving")
+        else:
+            raise ValueError("Unhandled action_mode")
         return origin
 
     @validator("target", pre=False)
-    def target_is_creatable(cls, target, values):
+    def target_is_writable(cls, target, values):
         action_mode = values.get("action_mode")
         if action_mode == ActionMode.create:
             if target.is_creatable is False:
-                raise ValueError("Target warehouse is not creatable")
-        return target
-
-    @validator("target", pre=False)
-    def target_is_updatable(cls, target, values):
-        action_mode = values.get("action_mode")
-        if action_mode == ActionMode.update:
+                raise ValueError("Target warehouse is not writable for creation")
+        elif action_mode == ActionMode.update:
             if target.is_updatable is False:
-                raise ValueError("Target warehouse is not updatable")
-        return target
-
-    @validator("target", pre=False)
-    def target_is_archivable(cls, target, values):
-        action_mode = values.get("action_mode")
-        if action_mode == ActionMode.archive:
+                raise ValueError("Target warehouse is not writable for update")
+        elif action_mode == ActionMode.archive:
             if target.is_archivable is False:
-                raise ValueError("Target warehouse is not archivable")
+                raise ValueError("Target warehouse is not writable for archiving")
+        else:
+            raise ValueError("Unhandled action_mode")
         return target
 
     @property
@@ -527,35 +521,34 @@ class ConnectorAction(BaseModel):
         return self.origin.data_type.name
 
     def workflow_code(self, import_name: str, workflow_type: WorkflowType) -> str:
+        origin_warehouse_action = getattr(self.origin, self.action_mode.value)
+        target_warehouse_action = getattr(self.target, self.action_mode.value)
         if self.action_type == ActionType.inbound:
             connector_auth_parameters = [
-                parameter for parameter in self.origin.read.auth_parameters.__fields__
+                parameter
+                for parameter in origin_warehouse_action.auth_parameters.__fields__
             ]
             hrflow_auth_parameters = [
                 parameter
-                for parameter in getattr(
-                    self.target, self.action_mode.value, []
-                ).auth_parameters.__fields__
+                for parameter in target_warehouse_action.auth_parameters.__fields__
             ]
         else:
             connector_auth_parameters = [
                 parameter
-                for parameter in getattr(
-                    self.target, self.action_mode.value, []
-                ).auth_parameters.__fields__
+                for parameter in target_warehouse_action.auth_parameters.__fields__
             ]
             hrflow_auth_parameters = [
-                parameter for parameter in self.origin.read.auth_parameters.__fields__
+                parameter
+                for parameter in origin_warehouse_action.auth_parameters.__fields__
             ]
 
         push_parameters = [
             parameter
-            for parameter in getattr(
-                self.target, self.action_mode.value
-            ).action_parameters.__fields__
+            for parameter in target_warehouse_action.action_parameters.__fields__
         ]
         pull_parameters = [
-            parameter for parameter in self.origin.read.action_parameters.__fields__
+            parameter
+            for parameter in origin_warehouse_action.action_parameters.__fields__
         ]
         return Templates.get_template("workflow_v2.py.j2").render(
             format_placeholder=self.WORKFLOW_FORMAT_PLACEHOLDER,
@@ -1176,20 +1169,25 @@ class Connector:
                 jsonmap = json.loads(jsonmap_path.read_text())
             except FileNotFoundError:
                 jsonmap = {}
+
+            origin_warehouse_action = getattr(action.origin, action.action_mode.value)
+            target_warehouse_action = getattr(action.target, action.action_mode.value)
             if action.action_type == ActionType.inbound:
-                connector_auth_parameters = action.origin.read.auth_parameters.schema()
-                hrflow_auth_parameters = getattr(
-                    action.target, ACTION_MODE_MAPPING[action.action_mode]
-                ).auth_parameters.schema()
+                connector_auth_parameters = (
+                    origin_warehouse_action.auth_parameters.schema()
+                )
+                hrflow_auth_parameters = (
+                    target_warehouse_action.auth_parameters.schema()
+                )
             else:
-                connector_auth_parameters = getattr(
-                    action.target, ACTION_MODE_MAPPING[action.action_mode]
-                ).auth_parameters.schema()
-                hrflow_auth_parameters = action.origin.read.auth_parameters.schema()
-            pull_parameters = action.origin.read.action_parameters.schema()
-            push_parameters = getattr(
-                action.target, action.action_mode.value
-            ).action_parameters.schema()
+                connector_auth_parameters = (
+                    target_warehouse_action.auth_parameters.schema()
+                )
+                hrflow_auth_parameters = (
+                    origin_warehouse_action.auth_parameters.schema()
+                )
+            pull_parameters = origin_warehouse_action.action_parameters.schema()
+            push_parameters = target_warehouse_action.action_parameters.schema()
             action_manifest = dict(
                 name=action_name,
                 action_type=action.action_type.value,
@@ -1201,7 +1199,9 @@ class Connector:
                 trigger_type=action.trigger_type.value,
                 origin=action.origin.name,
                 origin_data_schema=action.origin.data_schema.schema(),
-                supports_incremental=action.origin.supports_incremental,
+                supports_incremental=action.origin.supports_incremental(
+                    action_mode=action.action_mode
+                ),
                 pull_parameters=pull_parameters,
                 target=action.target.name,
                 target_data_schema=action.target.data_schema.schema(),
@@ -1253,12 +1253,12 @@ def get_import_name(connector: Connector) -> str:
     return members[0][0]
 
 
-def hrflow_connectors_manifest_v2(
+def hrflow_connectors_manifest(
     connectors: t.List[Connector],
     target_connectors: t.List[t.Dict] = ALL_TARGET_CONNECTORS,
     directory_path: str = ".",
     connectors_directory: Path = CONNECTORS_DIRECTORY,
-    exclude_connectors: t.List[str] = None,  # New argument
+    only_connectors: t.List[str] = [],  # New argument
 ) -> None:
     connector_by_name = {connector.model.name: connector for connector in connectors}
     all_connectors = sorted(
@@ -1268,11 +1268,10 @@ def hrflow_connectors_manifest_v2(
                 "object": connector_by_name.get(connector["name"]),
             }
             for connector in target_connectors
+            if connector["name"] in only_connectors
         ],
         key=lambda c: c["name"].lower(),
     )
-
-    exclude_connectors = exclude_connectors or []
 
     with warnings.catch_warnings():
         warnings.filterwarnings(
@@ -1290,12 +1289,7 @@ def hrflow_connectors_manifest_v2(
 
         # Mapping to track connectors by name to avoid duplicates
         existing_connectors_by_name = {c["name"]: c for c in manifest["connectors"]}
-
         for connector in all_connectors:
-            # Skip if the connector is in the exclude list
-            if connector["name"] in exclude_connectors:
-                continue
-
             if connector["object"] is not None:
                 manifest_connector = connector["object"].manifest(
                     connectors_directory=connectors_directory
