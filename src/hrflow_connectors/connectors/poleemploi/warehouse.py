@@ -11,7 +11,8 @@ from hrflow_connectors.connectors.poleemploi.schemas import (
     PoleEmploiJobOffer,
     validate_date,
 )
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
+    ActionEndpoints,
     DataType,
     FieldType,
     ParametersModel,
@@ -19,7 +20,6 @@ from hrflow_connectors.core import (
     Warehouse,
     WarehouseReadAction,
 )
-from hrflow_connectors.core.warehouse import ActionEndpoints
 
 POLEEMPLOI_JOBS_SEARCH_ENDPOINT = (
     "https://api.emploi-store.fr/partenaire/offresdemploi/v2/offres/search"

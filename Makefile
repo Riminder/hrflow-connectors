@@ -3,10 +3,10 @@ DIR := $(PWD)
 default: manifest
 
 manifest:
-	poetry run python -c 'from hrflow_connectors import __CONNECTORS__, hrflow_connectors_manifest as m; m(connectors=__CONNECTORS__, directory_path="$(DIR)")'
+	poetry run python -c 'from hrflow_connectors import __CONNECTORS__V1__, __CONNECTORS__V2__, hrflow_connectors_manifest as m1, hrflow_connectors_manifest_v2 as m2; m1(connectors=__CONNECTORS__V1__, exclude_connectors=[c.model.name for c in __CONNECTORS__V2__], directory_path="$(DIR)"); m2(connectors=__CONNECTORS__V2__, directory_path="$(DIR)", only_connectors=[c.model.name for c in __CONNECTORS__V2__])'
 
 docs:
-	poetry run python -c 'from hrflow_connectors import __CONNECTORS__, generate_docs as m; m(connectors=__CONNECTORS__)'
+	poetry run python -c 'from hrflow_connectors import __CONNECTORS__V1__, __CONNECTORS__V2__, generate_docs as d1, generate_docs_v2 as d2; opensource_connectors, opensource_jobboards, premium_connectors, premium_jobboards = d1(connectors=__CONNECTORS__V1__, exclude_connectors=[c.model.name for c in __CONNECTORS__V2__]); d2(connectors=__CONNECTORS__V2__, only_connectors=[c.model.name for c in __CONNECTORS__V2__], opensource_connectors=opensource_connectors, opensource_jobboards=opensource_jobboards, premium_connectors=premium_connectors, premium_jobboards=premium_jobboards)'
 
 init-hooks:
 	git lfs update --force

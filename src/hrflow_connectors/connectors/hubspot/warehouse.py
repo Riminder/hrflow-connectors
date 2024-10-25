@@ -6,7 +6,7 @@ import requests
 from pydantic import BaseModel, Field
 
 from hrflow_connectors.connectors.hubspot.schemas import ContactObject
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
     DataType,
     FieldType,
     ParametersModel,

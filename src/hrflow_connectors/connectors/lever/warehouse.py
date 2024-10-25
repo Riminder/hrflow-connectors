@@ -7,7 +7,7 @@ from pydantic import Field
 from typing_extensions import Literal
 
 from hrflow_connectors.connectors.lever.schemas import LeverJob, LeverProfile
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
     ActionEndpoints,
     DataType,
     FieldType,

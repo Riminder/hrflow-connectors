@@ -4,7 +4,7 @@ from logging import LoggerAdapter
 
 from pydantic import BaseModel, Field
 
-from hrflow_connectors.core.warehouse import (
+from hrflow_connectors.core.warehouse_v2 import (
     ActionEndpoints,
     DataType,
     FieldType,
@@ -58,6 +58,11 @@ def add_user():
     )
     USERS_DB.append(new_user)
     return new_user
+
+
+class AuthParameters(ParametersModel):
+    api_secret: str = Field(..., repr=False, field_type=FieldType.Auth)
+    api_user: str = Field(..., field_type=FieldType.Auth)
 
 
 class ReadUsersParameters(ParametersModel):
@@ -123,7 +128,8 @@ UsersIncrementalWarehouse = Warehouse(
     data_schema=User,
     data_type=DataType.other,
     read=WarehouseReadAction(
-        parameters=ReadUsersParameters,
+        auth_parameters=AuthParameters,
+        action_parameters=ReadUsersParameters,
         function=read,
         endpoints=[GET_USERS],
         supports_incremental=True,
@@ -137,7 +143,8 @@ FailingUsersWarehouse = Warehouse(
     data_schema=User,
     data_type=DataType.other,
     read=WarehouseReadAction(
-        parameters=ReadUsersParameters,
+        auth_parameters=AuthParameters,
+        action_parameters=ReadUsersParameters,
         function=read_with_failures,
         endpoints=[GET_USERS],
     ),
@@ -148,7 +155,8 @@ BadUsersWarehouse = Warehouse(
     data_schema=User,
     data_type=DataType.other,
     read=WarehouseReadAction(
-        parameters=ReadUsersParameters,
+        auth_parameters=AuthParameters,
+        action_parameters=ReadUsersParameters,
         function=lambda *args, **kwargs: 10 / 0,
         endpoints=[GET_USERS],
     ),

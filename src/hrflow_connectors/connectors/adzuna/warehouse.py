@@ -6,7 +6,8 @@ import requests
 from pydantic import Field
 
 from hrflow_connectors.connectors.adzuna.schemas import AdzunaJob
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
+    ActionEndpoints,
     DataType,
     FieldType,
     ParametersModel,
@@ -14,7 +15,6 @@ from hrflow_connectors.core import (
     Warehouse,
     WarehouseReadAction,
 )
-from hrflow_connectors.core.warehouse import ActionEndpoints
 
 ADZUNA_ENDPOINT = "http://api.adzuna.com/v1/api"
 SEARCH_JOBS_ENDPOINT = ActionEndpoints(

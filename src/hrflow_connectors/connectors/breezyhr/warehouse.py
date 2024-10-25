@@ -5,7 +5,7 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field
 
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
     DataType,
     FieldType,
     ParametersModel,

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import copy
 import enum
-import importlib
 import inspect
 import json
 import logging
@@ -12,7 +11,6 @@ import typing as t
 import uuid
 import warnings
 from collections import Counter
-from contextvars import ContextVar
 from datetime import datetime
 from functools import partial
 from pathlib import Path
@@ -28,11 +26,8 @@ from pydantic import (
 
 from hrflow_connectors.core import backend
 from hrflow_connectors.core.templates import Templates
-from hrflow_connectors.core.warehouse import ReadMode, Warehouse
+from hrflow_connectors.core.warehouse_v2 import ActionMode, ReadMode, Warehouse
 
-MAIN_IMPORT_NAME: ContextVar[str] = ContextVar(
-    "MAIN_IMPORT_NAME", default="hrflow_connectors"
-)
 HRFLOW_CONNECTORS_RAW_GITHUB_CONTENT_BASE = (
     "https://raw.githubusercontent.com/Riminder/hrflow-connectors"
 )
@@ -420,25 +415,6 @@ class WorkflowType(str, enum.Enum):
     pull = "schedule"
 
 
-class ActionName(str, enum.Enum):
-    pull_application_list = "pull_application_list"
-    pull_job_list = "pull_job_list"
-    pull_profile_list = "pull_profile_list"
-    pull_resume_attachment_list = "pull_resume_attachment_list"
-    push_profile = "push_profile"
-    push_job = "push_job"
-    push_profile_list = "push_profile_list"
-    push_job_list = "push_job_list"
-    push_score_list = "push_score_list"
-    catch_profile = "catch_profile"
-    catch_job = "catch_job"
-    push_application = "push_application"
-    # TalentSoft actions
-    applicant_new = "applicant_new"
-    applicant_resume_update = "applicant_resume_update"
-    applicant_update = "applicant_update"
-
-
 class ActionType(str, enum.Enum):
     """
     ActionType is used to distinguish between inbound and outbound actions.
@@ -460,15 +436,26 @@ class ConnectorAction(BaseModel):
     TARGET_SETTINGS_PREFIX = "target_"
     WORKFLOW_ID_SETTINGS_KEY = "__workflow_id"
     trigger_type: WorkflowType
-    name: ActionName
+    name: str
     description: str
     parameters: t.Type[BaseModel]
+    action_type: ActionType
+    action_mode: ActionMode
     origin: Warehouse
     target: Warehouse
     callback: t.Optional[
-        t.Callable[[BaseModel, BaseModel, t.Counter[Event], t.List[t.Dict]], None]
+        t.Callable[
+            [
+                BaseModel,
+                BaseModel,
+                BaseModel,
+                BaseModel,
+                t.Counter[Event],
+                t.List[t.Dict],
+            ],
+            None,
+        ]
     ] = None
-    action_type: ActionType
 
     @classmethod
     def based_on(
@@ -494,69 +481,102 @@ class ConnectorAction(BaseModel):
             target=base.target,
             callback=base.callback,
             action_type=base.action_type,
+            action_mode=base.action_mode,
         )
 
     @validator("origin", pre=False)
-    def origin_is_readable(cls, origin):
-        if origin.is_readable is False:
-            raise ValueError("Origin warehouse is not readable")
+    def origin_is_readable(cls, origin, values):
+        action_mode = values.get("action_mode")
+        if action_mode == ActionMode.create:
+            if origin.is_creatable is False:
+                raise ValueError("Origin warehouse is not readable for creation")
+        elif action_mode == ActionMode.update:
+            if origin.is_updatable is False:
+                raise ValueError("Origin warehouse is not readable for update")
+        elif action_mode == ActionMode.archive:
+            if origin.is_archivable is False:
+                raise ValueError("Origin warehouse is not readable for archiving")
+        else:
+            raise ValueError("Unhandled action_mode")
         return origin
 
     @validator("target", pre=False)
-    def target_is_writable(cls, target):
-        if target.is_writable is False:
-            raise ValueError("Target warehouse is not writable")
+    def target_is_writable(cls, target, values):
+        action_mode = values.get("action_mode")
+        if action_mode == ActionMode.create:
+            if target.is_creatable is False:
+                raise ValueError("Target warehouse is not writable for creation")
+        elif action_mode == ActionMode.update:
+            if target.is_updatable is False:
+                raise ValueError("Target warehouse is not writable for update")
+        elif action_mode == ActionMode.archive:
+            if target.is_archivable is False:
+                raise ValueError("Target warehouse is not writable for archiving")
+        else:
+            raise ValueError("Unhandled action_mode")
         return target
-
-    @validator("name", pre=False)
-    def name_is_coherent_with_trigger_type(cls, v, values, **kwargs):
-        if (
-            v
-            in [
-                ActionName.pull_application_list,
-                ActionName.pull_job_list,
-                ActionName.pull_profile_list,
-            ]
-            and values["trigger_type"] != WorkflowType.pull
-        ):
-            raise ValueError(
-                "`pull_application_list`, `pull_job_list` and `pull_profile_list`"
-                " are only available for"
-                " trigger_type={}".format(WorkflowType.pull)
-            )
-        return v
 
     @property
     def data_type(self) -> str:
         return self.origin.data_type.name
 
     def workflow_code(self, import_name: str, workflow_type: WorkflowType) -> str:
-        return Templates.get_template("workflow.py.j2").render(
+        origin_warehouse_action = getattr(self.origin, self.action_mode.value)
+        target_warehouse_action = getattr(self.target, self.action_mode.value)
+        if self.action_type == ActionType.inbound:
+            connector_auth_parameters = [
+                parameter
+                for parameter in origin_warehouse_action.auth_parameters.__fields__
+            ]
+            hrflow_auth_parameters = [
+                parameter
+                for parameter in target_warehouse_action.auth_parameters.__fields__
+            ]
+        else:
+            connector_auth_parameters = [
+                parameter
+                for parameter in target_warehouse_action.auth_parameters.__fields__
+            ]
+            hrflow_auth_parameters = [
+                parameter
+                for parameter in origin_warehouse_action.auth_parameters.__fields__
+            ]
+
+        push_parameters = [
+            parameter
+            for parameter in target_warehouse_action.action_parameters.__fields__
+        ]
+        pull_parameters = [
+            parameter
+            for parameter in origin_warehouse_action.action_parameters.__fields__
+        ]
+        return Templates.get_template("workflow_v2.py.j2").render(
             format_placeholder=self.WORKFLOW_FORMAT_PLACEHOLDER,
             logics_placeholder=self.WORKFLOW_LOGICS_PLACEHOLDER,
             event_parser_placeholder=self.WORKFLOW_EVENT_PARSER_PLACEHOLDER,
             workflow_id_settings_key=self.WORKFLOW_ID_SETTINGS_KEY,
             origin_settings_prefix=self.ORIGIN_SETTINGS_PREFIX,
             target_settings_prefix=self.TARGET_SETTINGS_PREFIX,
-            main_module=MAIN_IMPORT_NAME.get(),
             import_name=import_name,
-            action_name=self.name.value,
+            action_name=self.name,
             type=workflow_type.name,
-            origin_parameters=[
-                parameter for parameter in self.origin.read.parameters.__fields__
-            ],
-            target_parameters=[
-                parameter for parameter in self.target.write.parameters.__fields__
-            ],
+            connector_auth_parameters=connector_auth_parameters,
+            hrflow_auth_parameters=hrflow_auth_parameters,
+            pull_parameters=pull_parameters,
+            push_parameters=push_parameters,
         )
 
     def run(
         self,
         connector_name: str,
         workflow_id: str,
-        action_parameters: t.Dict,
-        origin_parameters: t.Dict,
-        target_parameters: t.Dict,
+        connector_auth: t.Dict,
+        hrflow_auth: t.Dict,
+        pull_parameters: t.Dict,
+        push_parameters: t.Dict,
+        format: t.Optional[t.Callable] = None,
+        logics: t.List[t.Callable] = [],
+        persist: bool = True,
         init_error: t.Optional[ActionInitError] = None,
     ) -> RunResult:
         action_id = uuid.uuid4()
@@ -586,6 +606,20 @@ class ConnectorAction(BaseModel):
             )
 
         adapter.info("Starting Action")
+        action_parameters = dict(
+            logics=logics,
+            format=format,
+            event_parser=pull_parameters.pop("event_parser", None),
+            read_mode=pull_parameters.pop("read_mode", None),
+        )
+        origin_action_parameters = pull_parameters
+        target_action_parameters = push_parameters
+        if self.action_type == ActionType.inbound:
+            origin_auth = connector_auth
+            target_auth = hrflow_auth
+        else:
+            origin_auth = hrflow_auth
+            target_auth = connector_auth
         try:
             parameters = self.parameters(**action_parameters)
         except ValidationError as e:
@@ -595,7 +629,10 @@ class ConnectorAction(BaseModel):
             return RunResult(status=Status.fatal, reason=Reason.bad_action_parameters)
 
         try:
-            origin_parameters = self.origin.read.parameters(**origin_parameters)
+            origin_auth_parameters = self.origin.read.auth_parameters(**origin_auth)
+            origin_action_parameters = self.origin.read.action_parameters(
+                **origin_action_parameters
+            )
         except ValidationError as e:
             adapter.warning(
                 "Failed to parse origin_parameters with errors={}".format(e.errors())
@@ -603,7 +640,27 @@ class ConnectorAction(BaseModel):
             return RunResult(status=Status.fatal, reason=Reason.bad_origin_parameters)
 
         try:
-            target_parameters = self.target.write.parameters(**target_parameters)
+            if self.action_mode == ActionMode.create:
+                target_auth_parameters = self.target.create.auth_parameters(
+                    **target_auth
+                )
+                target_action_parameters = self.target.create.action_parameters(
+                    **target_action_parameters
+                )
+            elif self.action_mode == ActionMode.update:
+                target_auth_parameters = self.target.update.auth_parameters(
+                    **target_auth
+                )
+                target_action_parameters = self.target.update.action_parameters(
+                    **target_action_parameters
+                )
+            elif self.action_mode == ActionMode.archive:
+                target_auth_parameters = self.target.archive.auth_parameters(
+                    **target_auth
+                )
+                target_action_parameters = self.target.archive.action_parameters(
+                    **target_action_parameters
+                )
         except ValidationError as e:
             adapter.warning(
                 "Failed to parse target_parameters with errors={}".format(e.errors())
@@ -647,12 +704,13 @@ class ConnectorAction(BaseModel):
 
         read_started_at = time.time()
         adapter.info(
-            "Starting to read from warehouse={} with mode={} read_from={} parameters={}"
-            .format(
+            "Starting to read from warehouse={} with mode={} read_from={}"
+            " auth_parameters={} action_parameters={}".format(
                 self.origin.name,
                 parameters.read_mode,
                 read_from,
-                origin_parameters,
+                origin_auth_parameters,
+                origin_action_parameters,
             )
         )
         origin_adapter = ConnectorActionAdapter(
@@ -669,7 +727,8 @@ class ConnectorAction(BaseModel):
         try:
             for item in self.origin.read(
                 origin_adapter,
-                origin_parameters,
+                origin_auth_parameters,
+                origin_action_parameters,
                 read_mode=parameters.read_mode,
                 read_from=read_from,
             ):
@@ -678,8 +737,12 @@ class ConnectorAction(BaseModel):
         except Exception as e:
             events[Event.read_failure] += 1
             adapter.exception(
-                "Failed to read from warehouse={} with parameters={} error={}".format(
-                    self.origin.name, origin_parameters, repr(e)
+                "Failed to read from warehouse={} with auth_parameters={}"
+                " action_parameters={} error={}".format(
+                    self.origin.name,
+                    origin_auth_parameters,
+                    origin_action_parameters,
+                    repr(e),
                 )
             )
         if len(origin_items) == 0:
@@ -709,9 +772,13 @@ class ConnectorAction(BaseModel):
             except Exception as e:
                 events[Event.item_to_read_from_failure] += 1
                 adapter.exception(
-                    "Failed to get read_from from warehouse={} with parameters={}"
-                    " item={} error={}".format(
-                        self.origin.name, origin_parameters, last_item, repr(e)
+                    "Failed to get read_from from warehouse={} with auth_parameters={}"
+                    " action_parameters={} item={} error={}".format(
+                        self.origin.name,
+                        origin_auth_parameters,
+                        origin_action_parameters,
+                        last_item,
+                        repr(e),
                     )
                 )
                 return RunResult(
@@ -794,8 +861,13 @@ class ConnectorAction(BaseModel):
 
         write_started_at = time.time()
         adapter.info(
-            "Starting to write to warehouse={} with parameters={} n_items={}".format(
-                self.target.name, target_parameters, len(items_to_write)
+            "Starting to {} to warehouse={} with auth_parameters={}"
+            " action_parameters={} n_items={}".format(
+                self.action_mode.value,
+                self.target.name,
+                target_auth_parameters,
+                target_action_parameters,
+                len(items_to_write),
             )
         )
         target_adapter = ConnectorActionAdapter(
@@ -804,19 +876,41 @@ class ConnectorAction(BaseModel):
                 log_tags=adapter.extra["log_tags"]
                 + [
                     dict(name="warehouse", value=self.target.name),
-                    dict(name="action", value="write"),
+                    dict(name="action", value=self.action_mode.value),
                 ]
             ),
         )
         try:
-            failed_items = self.target.write(
-                target_adapter, target_parameters, items_to_write
-            )
+            if self.action_mode == ActionMode.create:
+                failed_items = self.target.create(
+                    target_adapter,
+                    target_auth_parameters,
+                    target_action_parameters,
+                    items_to_write,
+                )
+            elif self.action_mode == ActionMode.update:
+                failed_items = self.target.update(
+                    target_adapter,
+                    target_auth_parameters,
+                    target_action_parameters,
+                    items_to_write,
+                )
+            else:
+                failed_items = self.target.archive(
+                    target_adapter,
+                    target_auth_parameters,
+                    target_action_parameters,
+                    items_to_write,
+                )
             events[Event.write_failure] += len(failed_items)
         except Exception as e:
             adapter.exception(
-                "Failed to write to warehouse={} with parameters={} error={}".format(
-                    self.target.name, target_parameters, repr(e)
+                "Failed to write to warehouse={} with auth_parameters={}"
+                " action_parameters={} error={}".format(
+                    self.target.name,
+                    target_auth_parameters,
+                    target_action_parameters,
+                    repr(e),
                 )
             )
             events[Event.write_failure] += len(items_to_write)
@@ -827,7 +921,8 @@ class ConnectorAction(BaseModel):
             )
         write_finished_at = time.time()
         adapter.info(
-            "Finished writing in {} to warehouse={} success={} failures={}".format(
+            "Finished {} in {} to warehouse={} success={} failures={}".format(
+                self.action_mode.value,
                 write_finished_at - write_started_at,
                 self.target.name,
                 len(items_to_write) - events[Event.write_failure],
@@ -839,7 +934,12 @@ class ConnectorAction(BaseModel):
             adapter.info("Calling callback function")
             try:
                 self.callback(
-                    origin_parameters, target_parameters, events, items_to_write
+                    origin_auth_parameters,
+                    origin_action_parameters,
+                    target_auth_parameters,
+                    target_action_parameters,
+                    events,
+                    items_to_write,
                 )
             except Exception as e:
                 events[Event.callback_failure] += 1
@@ -860,7 +960,7 @@ class ConnectorAction(BaseModel):
 
 
 class ParametersOverride(BaseModel):
-    name: ActionName
+    name: str
     format: t.Optional[FormatFunctionType] = None
     event_parser: t.Optional[EventParserFunctionType] = None
 
@@ -972,7 +1072,7 @@ class Connector:
         self.model = ConnectorModel(*args, **kwargs)
         for action in self.model.actions:
             with_connector_name = partial(action.run, connector_name=self.model.name)
-            setattr(self, action.name.value, with_connector_name)
+            setattr(self, action.name, with_connector_name)
 
     @classmethod
     def based_on(
@@ -1053,31 +1153,59 @@ class Connector:
             format_placeholder = action.WORKFLOW_FORMAT_PLACEHOLDER
             logics_placeholder = action.WORKFLOW_LOGICS_PLACEHOLDER
             event_parser_placeholder = action.WORKFLOW_EVENT_PARSER_PLACEHOLDER
+            # FIXME: action name will be a string once all connectors updated
+            if isinstance(action.name, str):
+                action_name = action.name
+            else:
+                action_name = action.name.value
             jsonmap_path = (
                 connectors_directory
                 / model.subtype
                 / "mappings"
                 / "format"
-                / "{}.json".format(action.name.value)
+                / "{}.json".format(action_name)
             )
             try:
                 jsonmap = json.loads(jsonmap_path.read_text())
             except FileNotFoundError:
                 jsonmap = {}
 
+            origin_warehouse_action = getattr(action.origin, action.action_mode.value)
+            target_warehouse_action = getattr(action.target, action.action_mode.value)
+            if action.action_type == ActionType.inbound:
+                connector_auth_parameters = (
+                    origin_warehouse_action.auth_parameters.schema()
+                )
+                hrflow_auth_parameters = (
+                    target_warehouse_action.auth_parameters.schema()
+                )
+            else:
+                connector_auth_parameters = (
+                    target_warehouse_action.auth_parameters.schema()
+                )
+                hrflow_auth_parameters = (
+                    origin_warehouse_action.auth_parameters.schema()
+                )
+            pull_parameters = origin_warehouse_action.action_parameters.schema()
+            push_parameters = target_warehouse_action.action_parameters.schema()
             action_manifest = dict(
-                name=action.name.value,
+                name=action_name,
                 action_type=action.action_type.value,
+                action_mode=action.action_mode.value,
                 action_parameters=copy.deepcopy(action.parameters.schema()),
+                connector_auth_parameters=connector_auth_parameters,
+                hrflow_auth_parameters=hrflow_auth_parameters,
                 data_type=action.data_type,
                 trigger_type=action.trigger_type.value,
                 origin=action.origin.name,
-                origin_parameters=action.origin.read.parameters.schema(),
                 origin_data_schema=action.origin.data_schema.schema(),
-                supports_incremental=action.origin.supports_incremental,
+                supports_incremental=action.origin.supports_incremental(
+                    action_mode=action.action_mode
+                ),
+                pull_parameters=pull_parameters,
                 target=action.target.name,
-                target_parameters=action.target.write.parameters.schema(),
                 target_data_schema=action.target.data_schema.schema(),
+                push_parameters=push_parameters,
                 jsonmap=jsonmap,
                 workflow_code=action.workflow_code(
                     import_name=import_name, workflow_type=action.trigger_type
@@ -1106,20 +1234,20 @@ class AmbiguousConnectorImportName(Exception):
 
 
 def get_import_name(connector: Connector) -> str:
-    main_module = importlib.import_module(MAIN_IMPORT_NAME.get())
+    import hrflow_connectors
 
-    members = inspect.getmembers(main_module, lambda s: s is connector)
+    members = inspect.getmembers(hrflow_connectors, lambda s: s is connector)
     if len(members) == 0:
         raise ConnectorImportNameNotFound(
             "Failed to find import name for"
-            f" Connector(name={connector.model.name})={connector}\nNo match found for"
+            f" Connector(name={connector.model.name})={connector}\nNot match found for"
             " below members"
-            f" {[symbol for symbol, _ in inspect.getmembers(main_module)]}"
+            f" {[symbol for symbol, _ in inspect.getmembers(hrflow_connectors)]}"
         )
     if len(members) > 1:
         raise AmbiguousConnectorImportName(
             "Found multiple import names for"
-            f" Connector(name={connector.model.name})={connector}\n"
+            f" Connector(name={connector.model.name})={connector}={connector}\n"
             f" {[symbol for symbol, _ in members]}"
         )
     return members[0][0]
@@ -1130,7 +1258,7 @@ def hrflow_connectors_manifest(
     target_connectors: t.List[t.Dict] = ALL_TARGET_CONNECTORS,
     directory_path: str = ".",
     connectors_directory: Path = CONNECTORS_DIRECTORY,
-    exclude_connectors: t.List[str] = [],  # New argument
+    only_connectors: t.List[str] = [],  # New argument
 ) -> None:
     connector_by_name = {connector.model.name: connector for connector in connectors}
     all_connectors = sorted(
@@ -1140,7 +1268,7 @@ def hrflow_connectors_manifest(
                 "object": connector_by_name.get(connector["name"]),
             }
             for connector in target_connectors
-            if connector["name"] not in exclude_connectors
+            if connector["name"] in only_connectors
         ],
         key=lambda c: c["name"].lower(),
     )
@@ -1161,7 +1289,6 @@ def hrflow_connectors_manifest(
 
         # Mapping to track connectors by name to avoid duplicates
         existing_connectors_by_name = {c["name"]: c for c in manifest["connectors"]}
-
         for connector in all_connectors:
             if connector["object"] is not None:
                 manifest_connector = connector["object"].manifest(

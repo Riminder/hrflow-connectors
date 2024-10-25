@@ -50,30 +50,30 @@ We invite developers to join us in our mission to bring AI and data integration 
 | Name                                                                                                                                      | Type                 | Status             | Release date   | Last update     |
 |-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|
 | [**Breezy HR**](./src/hrflow_connectors/connectors/breezyhr/README.md) | ATS | :book: Open source | *19/01/2022* | *24/10/2024* |
-| [**Bullhorn**](./src/hrflow_connectors/connectors/bullhorn/README.md) | ATS | :book: Open source | *26/01/2022* | *23/10/2024* |
-| [**Ceridian**](./src/hrflow_connectors/connectors/ceridian/README.md) | HCM | :book: Open source | *19/01/2022* | *05/09/2024* |
+| [**Bullhorn**](./src/hrflow_connectors/connectors/bullhorn/README.md) | ATS | :book: Open source | *26/01/2022* | *25/10/2024* |
+| [**Ceridian**](./src/hrflow_connectors/connectors/ceridian/README.md) | HCM | :book: Open source | *19/01/2022* | *24/10/2024* |
 | [**Digitalrecruiters**](./src/hrflow_connectors/connectors/digitalrecruiters/README.md) | ATS | :book: Open source | *17/08/2023* | *24/10/2024* |
-| [**Greenhouse**](./src/hrflow_connectors/connectors/greenhouse/README.md) | ATS | :book: Open source | *19/01/2022* | *05/09/2024* |
-| [**Hubspot**](./src/hrflow_connectors/connectors/hubspot/README.md) | CRM | :book: Open source | *27/10/2022* | *05/09/2024* |
-| [**Lever**](./src/hrflow_connectors/connectors/lever/README.md) | ATS | :book: Open source | *18/08/2023* | *23/10/2024* |
-| [**Recruitee**](./src/hrflow_connectors/connectors/recruitee/README.md) | ATS | :book: Open source | *30/10/2022* | *23/10/2024* |
-| [**Salesforce**](./src/hrflow_connectors/connectors/salesforce/README.md) | CRM | :book: Open source | *03/08/2023* | *05/09/2024* |
-| [**SAP SuccessFactors**](./src/hrflow_connectors/connectors/sapsuccessfactors/README.md) | ATS | :book: Open source | *19/01/2022* | *23/10/2024* |
-| [**SmartRecruiters**](./src/hrflow_connectors/connectors/smartrecruiters/README.md) | ATS | :book: Open source | *21/03/2022* | *05/09/2024* |
-| [**Taleez**](./src/hrflow_connectors/connectors/taleez/README.md) | ATS | :book: Open source | *19/01/2022* | *23/10/2024* |
-| [**TalentSoft**](./src/hrflow_connectors/connectors/talentsoft/README.md) | HCM | :book: Open source | *19/04/2022* | *23/10/2024* |
-| [**Teamtailor**](./src/hrflow_connectors/connectors/teamtailor/README.md) | ATS | :book: Open source | *06/10/2022* | *05/09/2024* |
-| [**Waalaxy**](./src/hrflow_connectors/connectors/waalaxy/README.md) | Automation | :book: Open source | *18/11/2022* | *05/09/2024* |
-| [**Workable**](./src/hrflow_connectors/connectors/workable/README.md) | HCM | :book: Open source | *27/09/2022* | *05/09/2024* |
+| [**Greenhouse**](./src/hrflow_connectors/connectors/greenhouse/README.md) | ATS | :book: Open source | *19/01/2022* | *24/10/2024* |
+| [**Hubspot**](./src/hrflow_connectors/connectors/hubspot/README.md) | CRM | :book: Open source | *27/10/2022* | *24/10/2024* |
+| [**Lever**](./src/hrflow_connectors/connectors/lever/README.md) | ATS | :book: Open source | *18/08/2023* | *24/10/2024* |
+| [**Recruitee**](./src/hrflow_connectors/connectors/recruitee/README.md) | ATS | :book: Open source | *30/10/2022* | *24/10/2024* |
+| [**Salesforce**](./src/hrflow_connectors/connectors/salesforce/README.md) | CRM | :book: Open source | *03/08/2023* | *24/10/2024* |
+| [**SAP SuccessFactors**](./src/hrflow_connectors/connectors/sapsuccessfactors/README.md) | ATS | :book: Open source | *19/01/2022* | *24/10/2024* |
+| [**SmartRecruiters**](./src/hrflow_connectors/connectors/smartrecruiters/README.md) | ATS | :book: Open source | *21/03/2022* | *24/10/2024* |
+| [**Taleez**](./src/hrflow_connectors/connectors/taleez/README.md) | ATS | :book: Open source | *19/01/2022* | *24/10/2024* |
+| [**TalentSoft**](./src/hrflow_connectors/connectors/talentsoft/README.md) | HCM | :book: Open source | *19/04/2022* | *24/10/2024* |
+| [**Teamtailor**](./src/hrflow_connectors/connectors/teamtailor/README.md) | ATS | :book: Open source | *06/10/2022* | *24/10/2024* |
+| [**Waalaxy**](./src/hrflow_connectors/connectors/waalaxy/README.md) | Automation | :book: Open source | *18/11/2022* | *24/10/2024* |
+| [**Workable**](./src/hrflow_connectors/connectors/workable/README.md) | HCM | :book: Open source | *27/09/2022* | *24/10/2024* |
 
 ## 🤝 List of Job Boards
 
 | Name                                                                                                                                      | Type                 | Status             | Release date   | Last update     |
 |-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|
-| [**Adzuna**](./src/hrflow_connectors/connectors/adzuna/README.md) | Job Board | :book: Open source | *08/09/2022* | *05/09/2024* |
-| [**Carrevolutis**](./src/hrflow_connectors/connectors/carrevolutis/README.md) | Job Board | :book: Open source | *20/03/2024* | *05/09/2024* |
-| [**Jobology**](./src/hrflow_connectors/connectors/jobology/README.md) | Job Board | :book: Open source | *21/12/2022* | *05/09/2024* |
-| [**Meteojob**](./src/hrflow_connectors/connectors/meteojob/README.md) | Job Board | :book: Open source | *15/02/2024* | *05/09/2024* |
+| [**Adzuna**](./src/hrflow_connectors/connectors/adzuna/README.md) | Job Board | :book: Open source | *08/09/2022* | *24/10/2024* |
+| [**Carrevolutis**](./src/hrflow_connectors/connectors/carrevolutis/README.md) | Job Board | :book: Open source | *20/03/2024* | *24/10/2024* |
+| [**Jobology**](./src/hrflow_connectors/connectors/jobology/README.md) | Job Board | :book: Open source | *21/12/2022* | *24/10/2024* |
+| [**Meteojob**](./src/hrflow_connectors/connectors/meteojob/README.md) | Job Board | :book: Open source | *15/02/2024* | *24/10/2024* |
 | [**Pole Emploi**](./src/hrflow_connectors/connectors/poleemploi/README.md) | Job Board | :book: Open source | *15/07/2022* | *24/10/2024* |
 
 # :lock: Premium Connectors
@@ -141,14 +141,14 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Mysolution**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Occupop**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Onlyfy**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Oracle**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |
 | [**Oracle Fusion - Recruiting Cloud**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Oracle Recruiting Cloud**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Oracle Taleo**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
+| [**Oracle**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |
 | [**OTYS**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**P&I Loga**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Personio**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |
 | [**Personio Recruiting**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
+| [**Personio**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |
 | [**Pinpoint**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Polymer**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Radancy**](https://forms.gle/pokoE9pAjSVSFtCe7) | HCM | :lock: Premium |  |  |

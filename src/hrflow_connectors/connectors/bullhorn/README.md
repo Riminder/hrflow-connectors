@@ -52,11 +52,13 @@ This new connector will enable:
 
 | Action | Description |
 | ------- | ----------- |
-| [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source to Bullhorn via the API |
-| [**Pull job list**](docs/pull_job_list.md) | Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board |
-| [**Pull resume attachment list**](docs/pull_resume_attachment_list.md) | retrieves profiles attachments from Bullhorn and Parses them and sends them to Hrflow.ai source |
-| [**Pull profile list**](docs/pull_profile_list.md) | Retrieves profiles from Bullhorn and writes them to Hrflow.ai source |
-| [**Push application**](docs/push_application.md) | Retrieves profiles from Hrflow.ai and writes their applications to the Bullhorn source |
+| [**Create jobs in hrflow**](docs/.md) | Retrieves jobs from Bullhorn and writes them to Hrflow.ai Board |
+| [**Update jobs in hrflow**](docs/.md) | Pull jobs from Bullhorn and update them to Hrflow.ai Board |
+| [**Archive jobs in hrflow**](docs/.md) | Pull jobs from Bullhorn and archive them from Hrflow.ai Board |
+| [**Create profiles in hrflow**](docs/.md) | Retrieves profiles from Bullhorn and create them in an Hrflow.ai source |
+| [**Update profiles in hrflow**](docs/.md) | Retrieves profiles from Bullhorn and update them in Hrflow.ai source |
+| [**Archive profiles in hrflow**](docs/.md) | Retrieves profiles from Bullhorn and archive them in Hrflow.ai source |
+| [**Update applications in hrflow**](docs/.md) | Retrieves profiles from Hrflow.ai and writes their applications on the Bullhorn source |
 
 
 </p>|

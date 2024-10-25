@@ -9,7 +9,6 @@ from unittest import mock
 
 import pytest
 
-from hrflow_connectors import generate_docs
 from hrflow_connectors.core import (
     ActionName,
     ActionType,
@@ -27,6 +26,7 @@ from hrflow_connectors.core.documentation import (
     KEEP_EMPTY_FOLDER,
     USE_REMOTE_REV,
     InvalidConnectorReadmeFormat,
+    generate_docs,
 )
 from tests.core.src.hrflow_connectors.connectors.localusers.warehouse import (
     UsersWarehouse,

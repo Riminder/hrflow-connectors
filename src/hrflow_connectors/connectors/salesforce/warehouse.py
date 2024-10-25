@@ -11,7 +11,7 @@ from hrflow_connectors.connectors.salesforce.schemas import (
     SalesforceHrFlowJob,
     SalesforceHrFlowProfile,
 )
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
     DataType,
     FieldType,
     ParametersModel,

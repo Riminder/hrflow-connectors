@@ -9,7 +9,7 @@ from hrflow_connectors.connectors.smartrecruiters.schemas import (
     SmartRecruitersJob,
     SmartRecruitersProfile,
 )
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
     ActionEndpoints,
     DataType,
     FieldType,

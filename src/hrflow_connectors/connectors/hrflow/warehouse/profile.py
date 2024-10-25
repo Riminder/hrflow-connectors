@@ -8,7 +8,7 @@ from hrflow_connectors.connectors.hrflow.schemas import (
     HrFlowProfile,
     HrFlowProfileParsing,
 )
-from hrflow_connectors.core import (
+from hrflow_connectors.core.warehouse import (
     DataType,
     FieldType,
     ParametersModel,
