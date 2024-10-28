@@ -257,9 +257,6 @@ class Warehouse(BaseModel):
     def with_fixed_create_parameters(self, **tofix) -> "Warehouse":
         return self.__with_fixed_parameters(action_type=ActionType.create, **tofix)
 
-    def with_fixed_read_parameters(self, **tofix) -> "Warehouse":
-        return self.__with_fixed_parameters(action_type=ActionType.read, **tofix)
-
     def with_fixed_update_parameters(self, **tofix) -> "Warehouse":
         return self.__with_fixed_parameters(action_type=ActionType.update, **tofix)
 
@@ -308,9 +305,9 @@ class Warehouse(BaseModel):
         if action_type is ActionType.create:
             return Warehouse(
                 name=self.name,
+                type=self.type,
                 data_schema=self.data_schema,
                 data_type=self.data_type,
-                read=self.read,
                 create=WarehouseWriteAction(
                     endpoints=self.create.endpoints,
                     auth_parameters=self.create.auth_parameters,
@@ -323,9 +320,9 @@ class Warehouse(BaseModel):
         elif action_type is ActionType.update:
             return Warehouse(
                 name=self.name,
+                type=self.type,
                 data_schema=self.data_schema,
                 data_type=self.data_type,
-                read=self.read,
                 create=self.create,
                 update=WarehouseWriteAction(
                     endpoints=self.update.endpoints,
@@ -338,9 +335,9 @@ class Warehouse(BaseModel):
         elif action_type is ActionType.archive:
             return Warehouse(
                 name=self.name,
+                type=self.type,
                 data_schema=self.data_schema,
                 data_type=self.data_type,
-                read=self.read,
                 create=self.create,
                 update=self.update,
                 archive=WarehouseWriteAction(

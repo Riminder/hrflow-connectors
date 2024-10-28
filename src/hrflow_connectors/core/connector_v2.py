@@ -570,13 +570,13 @@ class ConnectorAction(BaseModel):
         self,
         connector_name: str,
         workflow_id: str,
-        connector_auth: t.Dict,
-        hrflow_auth: t.Dict,
+        connector_auth_parameters: t.Dict,
+        hrflow_auth_parameters: t.Dict,
         pull_parameters: t.Dict,
         push_parameters: t.Dict,
         format: t.Optional[t.Callable] = None,
         logics: t.List[t.Callable] = [],
-        persist: bool = True,
+        persist: bool = True,  # Not used for now (Behaviour to be defined)
         init_error: t.Optional[ActionInitError] = None,
     ) -> RunResult:
         action_id = uuid.uuid4()
@@ -612,14 +612,16 @@ class ConnectorAction(BaseModel):
             event_parser=pull_parameters.pop("event_parser", None),
             read_mode=pull_parameters.pop("read_mode", None),
         )
+        origin_warehouse_action = getattr(self.origin, self.action_mode.value)
+        target_warehouse_action = getattr(self.target, self.action_mode.value)
         origin_action_parameters = pull_parameters
         target_action_parameters = push_parameters
         if self.action_type == ActionType.inbound:
-            origin_auth = connector_auth
-            target_auth = hrflow_auth
+            origin_auth = connector_auth_parameters
+            target_auth = hrflow_auth_parameters
         else:
-            origin_auth = hrflow_auth
-            target_auth = connector_auth
+            origin_auth = hrflow_auth_parameters
+            target_auth = connector_auth_parameters
         try:
             parameters = self.parameters(**action_parameters)
         except ValidationError as e:
@@ -629,8 +631,10 @@ class ConnectorAction(BaseModel):
             return RunResult(status=Status.fatal, reason=Reason.bad_action_parameters)
 
         try:
-            origin_auth_parameters = self.origin.read.auth_parameters(**origin_auth)
-            origin_action_parameters = self.origin.read.action_parameters(
+            origin_auth_parameters = origin_warehouse_action.auth_parameters(
+                **origin_auth
+            )
+            origin_action_parameters = origin_warehouse_action.action_parameters(
                 **origin_action_parameters
             )
         except ValidationError as e:
@@ -640,27 +644,12 @@ class ConnectorAction(BaseModel):
             return RunResult(status=Status.fatal, reason=Reason.bad_origin_parameters)
 
         try:
-            if self.action_mode == ActionMode.create:
-                target_auth_parameters = self.target.create.auth_parameters(
-                    **target_auth
-                )
-                target_action_parameters = self.target.create.action_parameters(
-                    **target_action_parameters
-                )
-            elif self.action_mode == ActionMode.update:
-                target_auth_parameters = self.target.update.auth_parameters(
-                    **target_auth
-                )
-                target_action_parameters = self.target.update.action_parameters(
-                    **target_action_parameters
-                )
-            elif self.action_mode == ActionMode.archive:
-                target_auth_parameters = self.target.archive.auth_parameters(
-                    **target_auth
-                )
-                target_action_parameters = self.target.archive.action_parameters(
-                    **target_action_parameters
-                )
+            target_auth_parameters = target_warehouse_action.auth_parameters(
+                **target_auth
+            )
+            target_action_parameters = target_warehouse_action.action_parameters(
+                **target_action_parameters
+            )
         except ValidationError as e:
             adapter.warning(
                 "Failed to parse target_parameters with errors={}".format(e.errors())
@@ -668,7 +657,7 @@ class ConnectorAction(BaseModel):
             return RunResult(status=Status.fatal, reason=Reason.bad_target_parameters)
 
         if parameters.read_mode is ReadMode.incremental:
-            if self.origin.supports_incremental is False:
+            if self.origin.supports_incremental(self.action_mode) is False:
                 adapter.warning(
                     "Origin warehouse {} does not support '{}' read mode".format(
                         self.origin.name, ReadMode.incremental.value
@@ -719,13 +708,13 @@ class ConnectorAction(BaseModel):
                 log_tags=adapter.extra["log_tags"]
                 + [
                     dict(name="warehouse", value=self.origin.name),
-                    dict(name="action", value="read"),
+                    dict(name="action", value="{}".format(self.action_mode.value)),
                 ]
             ),
         )
         origin_items = []
         try:
-            for item in self.origin.read(
+            for item in origin_warehouse_action(
                 origin_adapter,
                 origin_auth_parameters,
                 origin_action_parameters,
@@ -749,6 +738,11 @@ class ConnectorAction(BaseModel):
             if events[Event.read_failure] > 0:
                 adapter.warning(
                     "No items fetched from origin warehoue. Aborting action after"
+                    " read_failure"
+                )
+            else:
+                adapter.warning(
+                    "No items fetched from origin warehouse. Aborting action with no"
                     " read_failure"
                 )
             return RunResult.from_events(events)

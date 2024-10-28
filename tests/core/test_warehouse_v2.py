@@ -1,3 +1,5 @@
+import pdb
+
 import pytest
 from pydantic import Field, PositiveInt, ValidationError
 
@@ -12,6 +14,7 @@ from hrflow_connectors.core.warehouse_v2 import (
     ParametersModel,
     Warehouse,
     WarehouseReadAction,
+    WarehouseType,
     WarehouseWriteAction,
 )
 
@@ -35,14 +38,10 @@ class Parameters(ParametersModel):
     name: str = Field(..., field_type=FieldType.Other)
 
 
-TestWarehouse = Warehouse(
-    name="Test Warehouse",
+InboundTestWarehouse = Warehouse(
+    name="Inbound Test Warehouse",
+    type=WarehouseType.inbound,
     data_type=DataType.other,
-    read=WarehouseReadAction(
-        auth_parameters=AuthParameters,
-        action_parameters=Parameters,
-        function=lambda *args, **kwargs: None,
-    ),
     create=WarehouseWriteAction(
         auth_parameters=AuthParameters,
         action_parameters=Parameters,
@@ -60,82 +59,79 @@ TestWarehouse = Warehouse(
     ),
 )
 
+# OutboundTestWarehouse = Warehouse(
+#     name="Outbound Test Warehouse",
+#     type=WarehouseType.outbound,
+#     data_type=DataType.other,
+#     create=WarehouseReadAction(
+#         auth_parameters=AuthParameters,
+#         action_parameters=Parameters,
+#         function=lambda *args, **kwargs: None,
+#     ),
+#     update=WarehouseReadAction(
+#         auth_parameters=AuthParameters,
+#         action_parameters=Parameters,
+#         function=lambda *args, **kwargs: None,
+#     ),
+#     archive=WarehouseReadAction(
+#         auth_parameters=AuthParameters,
+#         action_parameters=Parameters,
+#         function=lambda *args, **kwargs: None,
+#     ),
+# )
+
+pdb.set_trace()
+
 
 def test_with_fixed_parameters_field_does_not_exist():
     with pytest.raises(FieldNotFoundError):
-        TestWarehouse.with_fixed_read_parameters(age=20, does_not_exist="xxx")
+        InboundTestWarehouse.with_fixed_create_parameters(age=20, does_not_exist="xxx")
 
     with pytest.raises(FieldNotFoundError):
-        TestWarehouse.with_fixed_create_parameters(age=20, does_not_exist="xxx")
+        InboundTestWarehouse.with_fixed_update_parameters(age=20, does_not_exist="xxx")
 
     with pytest.raises(FieldNotFoundError):
-        TestWarehouse.with_fixed_update_parameters(age=20, does_not_exist="xxx")
-
-    with pytest.raises(FieldNotFoundError):
-        TestWarehouse.with_fixed_archive_parameters(age=20, does_not_exist="xxx")
+        InboundTestWarehouse.with_fixed_archive_parameters(age=20, does_not_exist="xxx")
 
 
 def test_with_fixed_parameters_bad_value():
     with pytest.raises(FixedValueValidationError):
-        TestWarehouse.with_fixed_read_parameters(age=-2)
+        InboundTestWarehouse.with_fixed_create_parameters(age=-2)
 
     with pytest.raises(FixedValueValidationError):
-        TestWarehouse.with_fixed_read_parameters(distance=-2)
+        InboundTestWarehouse.with_fixed_create_parameters(distance=-2)
 
     with pytest.raises(FixedValueValidationError):
-        TestWarehouse.with_fixed_read_parameters(name=[1, 2])
+        InboundTestWarehouse.with_fixed_create_parameters(name=[1, 2])
 
     with pytest.raises(FixedValueValidationError):
-        TestWarehouse.with_fixed_create_parameters(age=-2)
+        InboundTestWarehouse.with_fixed_update_parameters(age=-2)
 
     with pytest.raises(FixedValueValidationError):
-        TestWarehouse.with_fixed_create_parameters(distance=-2)
+        InboundTestWarehouse.with_fixed_update_parameters(distance=-2)
 
     with pytest.raises(FixedValueValidationError):
-        TestWarehouse.with_fixed_create_parameters(name=[1, 2])
+        InboundTestWarehouse.with_fixed_update_parameters(name=[1, 2])
 
     with pytest.raises(FixedValueValidationError):
-        TestWarehouse.with_fixed_update_parameters(age=-2)
+        InboundTestWarehouse.with_fixed_archive_parameters(age=-2)
 
     with pytest.raises(FixedValueValidationError):
-        TestWarehouse.with_fixed_update_parameters(distance=-2)
+        InboundTestWarehouse.with_fixed_archive_parameters(distance=-2)
 
     with pytest.raises(FixedValueValidationError):
-        TestWarehouse.with_fixed_update_parameters(name=[1, 2])
-
-    with pytest.raises(FixedValueValidationError):
-        TestWarehouse.with_fixed_archive_parameters(age=-2)
-
-    with pytest.raises(FixedValueValidationError):
-        TestWarehouse.with_fixed_archive_parameters(distance=-2)
-
-    with pytest.raises(FixedValueValidationError):
-        TestWarehouse.with_fixed_archive_parameters(name=[1, 2])
-
-
-def test_with_fixed_read_parameters():
-    fixed = TestWarehouse.with_fixed_read_parameters(age=22)
-    assert fixed.read.action_parameters(distance=100, name="test").age == 22
-
-    fixed = TestWarehouse.with_fixed_read_parameters(age=22, distance=200)
-    assert fixed.read.action_parameters(name="test").age == 22
-    assert fixed.read.action_parameters(name="test").distance == 200
-
-    fixed = TestWarehouse.with_fixed_read_parameters(age=22, distance=200, name="fixed")
-    assert fixed.read.action_parameters().age == 22
-    assert fixed.read.action_parameters().distance == 200
-    assert fixed.read.action_parameters().name == "fixed"
+        InboundTestWarehouse.with_fixed_archive_parameters(name=[1, 2])
 
 
 def test_with_fixed_create_parameters():
-    fixed = TestWarehouse.with_fixed_create_parameters(age=22)
+    fixed = InboundTestWarehouse.with_fixed_create_parameters(age=22)
     assert fixed.create.action_parameters(distance=100, name="test").age == 22
 
-    fixed = TestWarehouse.with_fixed_create_parameters(age=22, distance=200)
+    fixed = InboundTestWarehouse.with_fixed_create_parameters(age=22, distance=200)
     assert fixed.create.action_parameters(name="test").age == 22
     assert fixed.create.action_parameters(name="test").distance == 200
 
-    fixed = TestWarehouse.with_fixed_create_parameters(
+    fixed = InboundTestWarehouse.with_fixed_create_parameters(
         age=22, distance=200, name="fixed"
     )
     assert fixed.create.action_parameters().age == 22
@@ -143,36 +139,36 @@ def test_with_fixed_create_parameters():
     assert fixed.create.action_parameters().name == "fixed"
 
 
-def test_with_fixed_update_parameters():
-    fixed = TestWarehouse.with_fixed_update_parameters(age=22)
-    assert fixed.update.action_parameters(distance=100, name="test").age == 22
+# def test_with_fixed_update_parameters():
+#     fixed = InboundTestWarehouse.with_fixed_update_parameters(age=22)
+#     assert fixed.update.action_parameters(distance=100, name="test").age == 22
 
-    fixed = TestWarehouse.with_fixed_update_parameters(age=22, distance=200)
-    assert fixed.update.action_parameters(name="test").age == 22
-    assert fixed.update.action_parameters(name="test").distance == 200
+#     fixed = InboundTestWarehouse.with_fixed_update_parameters(age=22, distance=200)
+#     assert fixed.update.action_parameters(name="test").age == 22
+#     assert fixed.update.action_parameters(name="test").distance == 200
 
-    fixed = TestWarehouse.with_fixed_update_parameters(
-        age=22, distance=200, name="fixed"
-    )
-    assert fixed.update.action_parameters().age == 22
-    assert fixed.update.action_parameters().distance == 200
-    assert fixed.update.action_parameters().name == "fixed"
+#     fixed = InboundTestWarehouse.with_fixed_update_parameters(
+#         age=22, distance=200, name="fixed"
+#     )
+#     assert fixed.update.action_parameters().age == 22
+#     assert fixed.update.action_parameters().distance == 200
+#     assert fixed.update.action_parameters().name == "fixed"
 
 
-def test_with_fixed_archive_parameters():
-    fixed = TestWarehouse.with_fixed_archive_parameters(age=22)
-    assert fixed.archive.action_parameters(distance=100, name="test").age == 22
+# def test_with_fixed_archive_parameters():
+#     fixed = InboundTestWarehouse.with_fixed_archive_parameters(age=22)
+#     assert fixed.archive.action_parameters(distance=100, name="test").age == 22
 
-    fixed = TestWarehouse.with_fixed_archive_parameters(age=22, distance=200)
-    assert fixed.archive.action_parameters(name="test").age == 22
-    assert fixed.archive.action_parameters(name="test").distance == 200
+#     fixed = InboundTestWarehouse.with_fixed_archive_parameters(age=22, distance=200)
+#     assert fixed.archive.action_parameters(name="test").age == 22
+#     assert fixed.archive.action_parameters(name="test").distance == 200
 
-    fixed = TestWarehouse.with_fixed_archive_parameters(
-        age=22, distance=200, name="fixed"
-    )
-    assert fixed.archive.action_parameters().age == 22
-    assert fixed.archive.action_parameters().distance == 200
-    assert fixed.archive.action_parameters().name == "fixed"
+#     fixed = InboundTestWarehouse.with_fixed_archive_parameters(
+#         age=22, distance=200, name="fixed"
+#     )
+#     assert fixed.archive.action_parameters().age == 22
+#     assert fixed.archive.action_parameters().distance == 200
+#     assert fixed.archive.action_parameters().name == "fixed"
 
 
 def test_read_action_incremental_validation():

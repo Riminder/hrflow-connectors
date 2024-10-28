@@ -49,25 +49,22 @@ class AuthParameters(ParametersModel):
     )
 
 
-class WriteApplicationsParameters(ParametersModel):
+class CreateApplicationsParameters(ParametersModel):
     job_id: str = Field(
         ...,
         description="id for the job in Bullhorn",
-        repr=False,
         field_type=FieldType.Auth,
     )
     # maybe should be optional
     status_when_created: str = Field(
         ...,
         description="The status of the application when created in Bullhorn",
-        repr=False,
         field_type=FieldType.Auth,
     )
     # maybe should not be a parameterx
     source: str = Field(
         None,
         description="The source of the application to be created in Bullhorn",
-        repr=False,
         field_type=FieldType.Auth,
     )
 
@@ -321,7 +318,7 @@ def upload_attachment(
 def update_application(
     adapter: LoggerAdapter,
     auth_parameters: AuthParameters,
-    action_parameters: WriteApplicationsParameters,
+    action_parameters: CreateApplicationsParameters,
     profiles: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
     failed_profiles = []
@@ -578,7 +575,8 @@ def generic_job_pulling(
 
                     if (
                         action == "create"
-                        and job.get("dateAdded") != job.get("dateLastModified")
+                        and job.get("dateAdded")
+                        != job.get("dateLastModified")  # to verify
                     ) or (
                         action == "update"
                         and job.get("dateAdded") == job.get("dateLastModified")
@@ -968,7 +966,7 @@ BullhornWriteApplicationWarehouse = Warehouse(
     data_type=DataType.profile,
     update=WarehouseWriteAction(
         auth_parameters=AuthParameters,
-        action_parameters=WriteApplicationsParameters,
+        action_parameters=CreateApplicationsParameters,
         function=update_application,
         endpoints=[],
     ),
