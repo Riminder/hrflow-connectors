@@ -6,6 +6,7 @@ import inspect
 import json
 import logging
 import os
+import pdb
 import time
 import typing as t
 import uuid
@@ -606,13 +607,17 @@ class ConnectorAction(BaseModel):
             )
 
         adapter.info("Starting Action")
-        action_parameters = dict(
-            logics=logics,
-            event_parser=pull_parameters.pop("event_parser", None),
-            read_mode=pull_parameters.pop("read_mode", None),
-        )
+        action_parameters = dict(logics=logics)
+
         if format:
             action_parameters["format"] = format
+
+        if "event_parser" in pull_parameters:
+            action_parameters["event_parser"] = pull_parameters.pop("event_parser")
+
+        if "read_mode" in pull_parameters:
+            action_parameters["read_mode"] = pull_parameters.pop("read_mode")
+
         origin_warehouse_action = getattr(self.origin, self.action_mode.value)
         target_warehouse_action = getattr(self.target, self.action_mode.value)
         origin_action_parameters = pull_parameters
@@ -643,7 +648,7 @@ class ConnectorAction(BaseModel):
                 "Failed to parse origin_parameters with errors={}".format(e.errors())
             )
             return RunResult(status=Status.fatal, reason=Reason.bad_origin_parameters)
-
+        # pdb.set_trace()
         try:
             target_auth_parameters = target_warehouse_action.auth_parameters(
                 **target_auth
@@ -714,6 +719,7 @@ class ConnectorAction(BaseModel):
             ),
         )
         origin_items = []
+        pdb.set_trace()
         try:
             for item in origin_warehouse_action(
                 origin_adapter,
@@ -1057,7 +1063,7 @@ class ConnectorModel(BaseModel):
     def action_by_name(self, action_name: str) -> t.Optional[ConnectorAction]:
         if "__actions_by_name" not in self.__dict__:
             self.__dict__["__actions_by_name"] = {
-                action.name.value: action for action in self.actions
+                action.name: action for action in self.actions
             }
         return self.__dict__["__actions_by_name"].get(action_name)
 

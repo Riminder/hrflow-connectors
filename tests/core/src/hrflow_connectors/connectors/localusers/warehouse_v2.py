@@ -12,6 +12,7 @@ from hrflow_connectors.core.warehouse_v2 import (
     ReadMode,
     Warehouse,
     WarehouseReadAction,
+    WarehouseType,
 )
 
 GET_USERS = ActionEndpoints(
@@ -61,8 +62,8 @@ def add_user():
 
 
 class AuthParameters(ParametersModel):
-    api_secret: str = Field(..., repr=False, field_type=FieldType.Auth)
-    api_user: str = Field(..., field_type=FieldType.Auth)
+    api_secret: str = Field(None, repr=False, field_type=FieldType.Auth)
+    api_user: str = Field(None, field_type=FieldType.Auth)
 
 
 class ReadUsersParameters(ParametersModel):
@@ -71,39 +72,40 @@ class ReadUsersParameters(ParametersModel):
 
 def read(
     adapter: LoggerAdapter,
-    parameters: ReadUsersParameters,
+    auth_parameters: AuthParameters,
+    action_parameters: ReadUsersParameters,
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-    if parameters.gender is None:
+    if action_parameters.gender is None:
         adapter.info("Returning all users")
         if read_mode is ReadMode.incremental and read_from is not None:
             return [item for item in USERS_DB if item["id"] > int(read_from)]
         return USERS_DB[:]
 
-    adapter.info("Returning {} users".format(parameters.gender))
+    adapter.info("Returning {} users".format(action_parameters.gender))
     if read_mode is ReadMode.incremental and read_from is not None:
         return [
             item
             for item in USERS_DB
-            if item["gender"] is parameters.gender and item["id"] > read_from
+            if item["gender"] is action_parameters.gender and item["id"] > read_from
         ]
-    return [item for item in USERS_DB if item["gender"] is parameters.gender]
+    return [item for item in USERS_DB if item["gender"] is action_parameters.gender]
 
 
 def read_with_failures(
     adapter: LoggerAdapter,
-    parameters: ReadUsersParameters,
+    action_parameters: ReadUsersParameters,
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-    if parameters.gender is None:
+    if action_parameters.gender is None:
         adapter.info("Returning all users")
         users_to_return = USERS_DB[:]
     else:
-        adapter.info("Returning {} users".format(parameters.gender))
+        adapter.info("Returning {} users".format(action_parameters.gender))
         users_to_return = [
-            item for item in USERS_DB if item["gender"] is parameters.gender
+            item for item in USERS_DB if item["gender"] is action_parameters.gender
         ]
     for i, user in enumerate(users_to_return):
         if i == FAIL_AT:
@@ -113,10 +115,12 @@ def read_with_failures(
 
 UsersWarehouse = Warehouse(
     name="Test Users",
+    type=WarehouseType.outbound,
     data_schema=User,
     data_type=DataType.other,
-    read=WarehouseReadAction(
-        parameters=ReadUsersParameters,
+    create=WarehouseReadAction(
+        auth_parameters=AuthParameters,
+        action_parameters=ReadUsersParameters,
         function=read,
         endpoints=[GET_USERS],
     ),
@@ -125,9 +129,10 @@ UsersWarehouse = Warehouse(
 
 UsersIncrementalWarehouse = Warehouse(
     name="Test Users",
+    type=WarehouseType.outbound,
     data_schema=User,
     data_type=DataType.other,
-    read=WarehouseReadAction(
+    create=WarehouseReadAction(
         auth_parameters=AuthParameters,
         action_parameters=ReadUsersParameters,
         function=read,
@@ -140,9 +145,10 @@ UsersIncrementalWarehouse = Warehouse(
 
 FailingUsersWarehouse = Warehouse(
     name="Test Users",
+    type=WarehouseType.outbound,
     data_schema=User,
     data_type=DataType.other,
-    read=WarehouseReadAction(
+    create=WarehouseReadAction(
         auth_parameters=AuthParameters,
         action_parameters=ReadUsersParameters,
         function=read_with_failures,
@@ -152,9 +158,10 @@ FailingUsersWarehouse = Warehouse(
 
 BadUsersWarehouse = Warehouse(
     name="Bad Test Users",
+    type=WarehouseType.outbound,
     data_schema=User,
     data_type=DataType.other,
-    read=WarehouseReadAction(
+    create=WarehouseReadAction(
         auth_parameters=AuthParameters,
         action_parameters=ReadUsersParameters,
         function=lambda *args, **kwargs: 10 / 0,

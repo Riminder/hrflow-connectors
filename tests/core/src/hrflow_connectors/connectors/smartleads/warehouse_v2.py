@@ -4,12 +4,13 @@ from logging import LoggerAdapter
 
 from pydantic import BaseModel, ConstrainedStr, Field
 
-from hrflow_connectors.core.warehouse import (
+from hrflow_connectors.core.warehouse_v2 import (
     ActionEndpoints,
     DataType,
     FieldType,
     ParametersModel,
     Warehouse,
+    WarehouseType,
     WarehouseWriteAction,
 )
 
@@ -63,9 +64,10 @@ def write_with_failures(
 
 LeadsWarehouse = Warehouse(
     name="Test Leads",
+    type=WarehouseType.inbound,
     data_schema=Lead,
     data_type=DataType.other,
-    write=WarehouseWriteAction(
+    create=WarehouseWriteAction(
         parameters=WriteLeadsParameters,
         function=write,
         endpoints=[POST_LEADS],
@@ -75,9 +77,10 @@ LeadsWarehouse = Warehouse(
 
 FailingLeadsWarehouse = Warehouse(
     name="Test Leads",
+    type=WarehouseType.inbound,
     data_schema=Lead,
     data_type=DataType.other,
-    write=WarehouseWriteAction(
+    create=WarehouseWriteAction(
         parameters=WriteLeadsParameters,
         function=write_with_failures,
         endpoints=[POST_LEADS],
@@ -86,9 +89,10 @@ FailingLeadsWarehouse = Warehouse(
 
 BadLeadsWarehouse = Warehouse(
     name="Bad Test Leads",
+    type=WarehouseType.inbound,
     data_schema=Lead,
     data_type=DataType.other,
-    write=WarehouseWriteAction(
+    create=WarehouseWriteAction(
         parameters=WriteLeadsParameters,
         function=lambda *args, **kwargs: 10 / 0,
         endpoints=[POST_LEADS],

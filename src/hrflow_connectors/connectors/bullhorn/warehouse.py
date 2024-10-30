@@ -91,10 +91,19 @@ class BaseJobsParameters(BaseParameters):
             "dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,"
             "feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,"
             "numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,"
-            "startDate,status,title,type,willRelocate"
+            "startDate,status,title,type,willRelocate,owner"
         ),
         min_length=2,
         description="List of job fields to be retrieved from Bullhorn",
+        repr=False,
+        field_type=FieldType.QueryParam,
+    )
+    query: str = Field(
+        "isDeleted:0 AND isOpen:true",
+        description=(
+            "This query will restrict the results retrieved from Bullhorn based on the"
+            " specified conditions"
+        ),
         repr=False,
         field_type=FieldType.QueryParam,
     )
@@ -104,16 +113,6 @@ class CreateJobsParameters(BaseJobsParameters):
     created_date: datetime = Field(
         ...,
         description="The creation date from which you want to pull jobs",
-        repr=False,
-        field_type=FieldType.QueryParam,
-    )
-
-    query: str = Field(
-        "isDeleted:0 AND isOpen:true",
-        description=(
-            "This query will restrict the results retrieved from Bullhorn based on the"
-            " specified conditions"
-        ),
         repr=False,
         field_type=FieldType.QueryParam,
     )
@@ -477,6 +476,8 @@ def update_application(
     return failed_profiles
 
 
+# TODO: create not returning anything because of the date comparison
+# TODO: limit not taken into account for archive
 def generic_job_pulling(
     action: str,
 ) -> t.Callable[
@@ -537,7 +538,7 @@ def generic_job_pulling(
 
         # Construct the query
         query = f"{bullhorn_date_field}:[{date_filter} TO *]"
-        if action in ("create", "archive") and action_parameters.query:
+        if action_parameters.query:
             query = f"{action_parameters.query} AND {query}"
         # Fetch and process jobs
         while True:
@@ -619,6 +620,8 @@ def generic_job_pulling(
     return _pull_items
 
 
+# TODO: create not returning anything because of the date comparison
+# TODO: limit not taken into account for archive
 def generic_profile_pulling(
     action: str,
 ) -> t.Callable[
