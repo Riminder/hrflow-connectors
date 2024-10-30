@@ -608,10 +608,11 @@ class ConnectorAction(BaseModel):
         adapter.info("Starting Action")
         action_parameters = dict(
             logics=logics,
-            format=format,
             event_parser=pull_parameters.pop("event_parser", None),
             read_mode=pull_parameters.pop("read_mode", None),
         )
+        if format:
+            action_parameters["format"] = format
         origin_warehouse_action = getattr(self.origin, self.action_mode.value)
         target_warehouse_action = getattr(self.target, self.action_mode.value)
         origin_action_parameters = pull_parameters
