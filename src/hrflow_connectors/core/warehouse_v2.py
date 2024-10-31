@@ -133,7 +133,9 @@ class WarehouseReadAction(BaseModel):
         t.Iterable[t.Dict],
     ]
     item_to_read_from: t.Optional[t.Callable[[t.Dict], str]] = None
-    supports_incremental: bool = False
+    supports_incremental: bool
+    # FIXME: supports_incremental: default=False can be implicitly set in pydantic v2
+    # (with the introduction of Discriminated Unions in Warehouse class)
 
     def __call__(self, *args, **kwargs) -> t.Iterable[t.Dict]:
         return self.function(*args, **kwargs)

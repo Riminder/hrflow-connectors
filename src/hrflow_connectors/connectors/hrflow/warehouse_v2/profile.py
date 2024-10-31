@@ -360,16 +360,19 @@ HrFlowReadProfileWarehouse = Warehouse(
         auth_parameters=AuthParameters,
         action_parameters=ReadProfileParameters,
         function=read,
+        supports_incremental=False,
     ),
     update=WarehouseReadAction(
         auth_parameters=AuthParameters,
         action_parameters=ReadProfileParameters,
         function=read,
+        supports_incremental=False,
     ),
     archive=WarehouseReadAction(
         auth_parameters=AuthParameters,
         action_parameters=ReadProfileParameters,
         function=read,
+        supports_incremental=False,
     ),
 )
 
