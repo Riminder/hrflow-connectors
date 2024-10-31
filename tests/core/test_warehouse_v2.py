@@ -135,20 +135,20 @@ def test_with_fixed_create_parameters():
     assert fixed.create.action_parameters().name == "fixed"
 
 
-# def test_with_fixed_update_parameters():
-#     fixed = InboundTestWarehouse.with_fixed_update_parameters(age=22)
-#     assert fixed.update.action_parameters(distance=100, name="test").age == 22
+def test_with_fixed_update_parameters():
+    fixed = InboundTestWarehouse.with_fixed_update_parameters(age=22)
+    assert fixed.update.action_parameters(distance=100, name="test").age == 22
 
-#     fixed = InboundTestWarehouse.with_fixed_update_parameters(age=22, distance=200)
-#     assert fixed.update.action_parameters(name="test").age == 22
-#     assert fixed.update.action_parameters(name="test").distance == 200
+    fixed = InboundTestWarehouse.with_fixed_update_parameters(age=22, distance=200)
+    assert fixed.update.action_parameters(name="test").age == 22
+    assert fixed.update.action_parameters(name="test").distance == 200
 
-#     fixed = InboundTestWarehouse.with_fixed_update_parameters(
-#         age=22, distance=200, name="fixed"
-#     )
-#     assert fixed.update.action_parameters().age == 22
-#     assert fixed.update.action_parameters().distance == 200
-#     assert fixed.update.action_parameters().name == "fixed"
+    fixed = InboundTestWarehouse.with_fixed_update_parameters(
+        age=22, distance=200, name="fixed"
+    )
+    assert fixed.update.action_parameters().age == 22
+    assert fixed.update.action_parameters().distance == 200
+    assert fixed.update.action_parameters().name == "fixed"
 
 
 # def test_with_fixed_archive_parameters():

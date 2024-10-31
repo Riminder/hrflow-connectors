@@ -29,6 +29,11 @@ class Lead(BaseModel):
     email: str
 
 
+class AuthParameters(ParametersModel):
+    api_secret: str = Field(None, repr=False, field_type=FieldType.Auth)
+    api_user: str = Field(None, field_type=FieldType.Auth)
+
+
 class WriteLeadsParameters(ParametersModel):
     campaign_id: str = Field(..., field_type=FieldType.Other)
     dummy_int: t.Optional[int] = Field(None, field_type=FieldType.Other)
@@ -68,7 +73,8 @@ LeadsWarehouse = Warehouse(
     data_schema=Lead,
     data_type=DataType.other,
     create=WarehouseWriteAction(
-        parameters=WriteLeadsParameters,
+        auth_parameters=AuthParameters,
+        action_parameters=WriteLeadsParameters,
         function=write,
         endpoints=[POST_LEADS],
     ),
@@ -81,7 +87,8 @@ FailingLeadsWarehouse = Warehouse(
     data_schema=Lead,
     data_type=DataType.other,
     create=WarehouseWriteAction(
-        parameters=WriteLeadsParameters,
+        auth_parameters=AuthParameters,
+        action_parameters=WriteLeadsParameters,
         function=write_with_failures,
         endpoints=[POST_LEADS],
     ),
@@ -93,7 +100,8 @@ BadLeadsWarehouse = Warehouse(
     data_schema=Lead,
     data_type=DataType.other,
     create=WarehouseWriteAction(
-        parameters=WriteLeadsParameters,
+        auth_parameters=AuthParameters,
+        action_parameters=WriteLeadsParameters,
         function=lambda *args, **kwargs: 10 / 0,
         endpoints=[POST_LEADS],
     ),

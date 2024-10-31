@@ -123,6 +123,7 @@ UsersWarehouse = Warehouse(
         action_parameters=ReadUsersParameters,
         function=read,
         endpoints=[GET_USERS],
+        supports_incremental=False,
     ),
 )
 
@@ -153,6 +154,7 @@ FailingUsersWarehouse = Warehouse(
         action_parameters=ReadUsersParameters,
         function=read_with_failures,
         endpoints=[GET_USERS],
+        supports_incremental=False,
     ),
 )
 
@@ -166,5 +168,6 @@ BadUsersWarehouse = Warehouse(
         action_parameters=ReadUsersParameters,
         function=lambda *args, **kwargs: 10 / 0,
         endpoints=[GET_USERS],
+        supports_incremental=False,
     ),
 )
