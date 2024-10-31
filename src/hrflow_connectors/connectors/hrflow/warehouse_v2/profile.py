@@ -66,12 +66,6 @@ class ArchiveProfileParameters(ParametersModel):
     )
 
 
-class CreateProfileParsingParameters(ParametersModel):
-    source_key: str = Field(
-        ..., description="HrFlow.ai source key", field_type=FieldType.Other
-    )
-
-
 def read(
     adapter: LoggerAdapter,
     auth_parameters: AuthParameters,
@@ -171,7 +165,7 @@ def hydrate_profile(profile_parsed: dict, profile_json: dict) -> dict:
 def create(
     adapter: LoggerAdapter,
     auth_parameters: AuthParameters,
-    action_parameters: CreateProfileParsingParameters,
+    action_parameters: CreateProfileParameters,
     profiles: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
     failed = []
@@ -198,7 +192,7 @@ def create(
             )
             continue
 
-        if profile.get("resume") is None:
+        if profile.get("resume", {}).get("raw") is None:
             adapter.info(f"Profile with reference {profile['reference']} has no resume")
             response = hrflow_client.profile.storing.add_json(
                 source_key=action_parameters.source_key, profile_json=profile
@@ -208,7 +202,7 @@ def create(
                 source_key=action_parameters.source_key,
                 profile_file=profile["resume"]["raw"],
                 profile_content_type=profile["resume"]["content_type"],
-                profile_file_name=profile["resume"]["file_name"],
+                profile_file_name=profile["resume"].get("file_name"),
                 reference=profile["reference"],
                 tags=profile.get("tags", []),
                 metadatas=profile.get("metadatas", {}),
@@ -308,7 +302,8 @@ def update(
         if response["code"] != 200:
             adapter.error(
                 "Failed to edit profile with"
-                f" reference={profile_to_edit['reference']} key={profile_to_edit['key']} response={response}"
+                f" reference={profile_to_edit['reference']}"
+                f" key={profile_to_edit['key']} response={response}"
             )
             failed.append(profile)
 

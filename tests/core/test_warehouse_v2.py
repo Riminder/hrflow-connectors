@@ -1,5 +1,3 @@
-import pdb
-
 import pytest
 from pydantic import Field, PositiveInt, ValidationError
 
@@ -79,8 +77,6 @@ InboundTestWarehouse = Warehouse(
 #         function=lambda *args, **kwargs: None,
 #     ),
 # )
-
-# pdb.set_trace()
 
 
 def test_with_fixed_parameters_field_does_not_exist():

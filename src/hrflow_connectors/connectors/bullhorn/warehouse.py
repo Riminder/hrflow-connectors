@@ -83,15 +83,17 @@ class BaseParameters(ParametersModel):
 class BaseJobsParameters(BaseParameters):
     fields: str = Field(
         (
-            "address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,"
-            "clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,"
-            "customText11,customText12,customText13,customText2,customText3,customText4,"
-            "customText5,customText6,customText7,customText8,customText9,customTextBlock1,"
-            "customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,"
-            "dateEnd,degreeList,description,durationWeeks,educationDegree,employmentType,"
-            "feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,"
-            "numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,"
-            "startDate,status,title,type,willRelocate,owner"
+            "address,assignedUsers,businessSectors,categories,clientBillRate,"
+            "clientContact,clientCorporation,costCenter,customInt1,customInt2,"
+            "customText1,customText10,customText11,customText12,customText13,"
+            "customText2,customText3,customText4,customText5,customText6,"
+            "customText7,customText8,customText9,customTextBlock1,customTextBlock2,"
+            "customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,"
+            "degreeList,description,durationWeeks,educationDegree,employmentType,"
+            "feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,"
+            "markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,"
+            "skillList,source,specialties,startDate,status,title,type,willRelocate,"
+            "owner"
         ),
         min_length=2,
         description="List of job fields to be retrieved from Bullhorn",
@@ -161,14 +163,17 @@ class BaseProfilesParameters(BaseParameters):
     fields: str = Field(
         (
             "address,businessSectors,categories,companyName,customInt4,customInt5,"
-            "customInt6,customText1,customText10,customText11,customText12,customText13,"
-            "customText14,customText15,customText16,customText18,customText23,customText24,"
-            "customText25,customText4,customText5,customText6,customText9,dateAdded,dateAvailable,"
-            "dateAvailableEnd,dateLastModified,dateOfBirth,dayRate,dayRateLow,degreeList,"
-            "desiredLocations,description,disability,educations,email,email2,employmentPreference,ethnicity,"
-            "experience,firstName,id,lastName,mobile,name,namePrefix,occupation,owner,phone,"
-            "primarySkills,secondaryOwners,secondarySkills,salary,salaryLow,skillSet,source,"
-            "specialties,status,userDateAdded,veteran,willRelocate,workHistories,workPhone"
+            "customInt6,customText1,customText10,customText11,customText12,"
+            "customText13,customText14,customText15,customText16,customText18,"
+            "customText23,customText24,customText25,customText4,customText5,"
+            "customText6,customText9,dateAdded,dateAvailable,dateAvailableEnd,"
+            "dateLastModified,dateOfBirth,dayRate,dayRateLow,degreeList,"
+            "desiredLocations,description,disability,educations,email,email2,"
+            "employmentPreference,ethnicity,experience,firstName,id,lastName,"
+            "mobile,name,namePrefix,occupation,owner,phone,primarySkills,"
+            "secondaryOwners,secondarySkills,salary,salaryLow,skillSet,"
+            "source,specialties,status,userDateAdded,veteran,willRelocate,"
+            "workHistories,workPhone"
         ),
         min_length=2,
         description="List of profile fields to be retrieved from Bullhorn",
@@ -340,7 +345,10 @@ def update_application(
             rest_url,
             bh_rest_token,
             f"(email:{email} OR email2:{email}) AND isDeleted:0",
-            "id,isDeleted,dateAdded,status,source,email,firstName,lastName,name,mobile,address",
+            (
+                "id,isDeleted,dateAdded,status,source,email,firstName,"
+                "lastName,name,mobile,address"
+            ),
             adapter,
             auth_parameters,
         )
@@ -476,8 +484,6 @@ def update_application(
     return failed_profiles
 
 
-# TODO: create not returning anything because of the date comparison
-# TODO: limit not taken into account for archive
 def generic_job_pulling(
     action: str,
 ) -> t.Callable[
@@ -576,8 +582,10 @@ def generic_job_pulling(
 
                     if (
                         action == "create"
-                        and job.get("dateAdded")
-                        != job.get("dateLastModified")  # to verify
+                        and transform_timestamp_read_from(job.get("dateAdded"))[:19]
+                        != transform_timestamp_read_from(job.get("dateLastModified"))[
+                            :19
+                        ]  # ignore microsecond difference created by Bullhorn
                     ) or (
                         action == "update"
                         and job.get("dateAdded") == job.get("dateLastModified")
@@ -604,7 +612,7 @@ def generic_job_pulling(
                 if e.response.status_code == 401:
                     adapter.info("Received 401 error. Retrying authentication.")
                     if auth_retries > 2:
-                        raise Exception(f"Max auth retries exceeded")
+                        raise Exception("Max auth retries exceeded")
                     authentication = auth(
                         auth_parameters.username,
                         auth_parameters.password,
@@ -620,15 +628,17 @@ def generic_job_pulling(
     return _pull_items
 
 
-# TODO: create not returning anything because of the date comparison
-# TODO: limit not taken into account for archive
 def generic_profile_pulling(
     action: str,
 ) -> t.Callable[
     [
         LoggerAdapter,
         AuthParameters,
-        t.Union[CreateJobsParameters, UpdateJobsParameters],
+        t.Union[
+            CreateProfilesParameters,
+            UpdateProfilesParameters,
+            ArchiveProfilesParameters,
+        ],
         t.Optional[ReadMode],
         t.Optional[str],
     ],
@@ -730,7 +740,12 @@ def generic_profile_pulling(
 
                     if (
                         action == "create"
-                        and profile.get("dateAdded") != profile.get("dateLastModified")
+                        and transform_timestamp_read_from(profile.get("dateAdded"))[:19]
+                        != transform_timestamp_read_from(
+                            profile.get("dateLastModified")
+                        )[
+                            :19
+                        ]  # ignore microsecond difference created by Bullhorn
                     ) or (
                         action == "update"
                         and profile.get("dateAdded") == profile.get("dateLastModified")
@@ -747,6 +762,7 @@ def generic_profile_pulling(
 
                     if action == "archive":
                         yield profile
+                        total_returned += 1
                         continue
 
                     if action_parameters.parse_resume:
@@ -800,11 +816,11 @@ def generic_profile_pulling(
                             education_ids.append(ed["id"])
                         for id in education_ids:
                             education_url = (
-                                authentication["restUrl"]
-                                + "entity/CandidateEducation/"
-                                + str(id)
-                                + "?fields='city,school,startDate,endDate,degree,certification,comments'"
+                                f"{authentication['restUrl']}entity/CandidateEducation"
+                                f"/{str(id)}?fields='city,school,startDate,endDate,"
+                                "degree,certification,comments'"
                             )
+
                             response = requests.get(url=education_url, headers=headers)
                             response = response.json()
                             educations.append(response["data"])
@@ -818,10 +834,9 @@ def generic_profile_pulling(
                             work_history_ids.append(work_history["id"])
                         for id in work_history_ids:
                             work_history_url = (
-                                authentication["restUrl"]
-                                + "entity/CandidateWorkHistory/"
-                                + str(id)
-                                + "?fields='title,comments,startDate,endDate,companyName'"
+                                f"{authentication['restUrl']}entity/"
+                                f"CandidateWorkHistory/{str(id)}"
+                                "?fields='title,comments,startDate,endDate,companyName'"
                             )
                             response = requests.get(
                                 url=work_history_url, headers=headers

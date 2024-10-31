@@ -6,7 +6,6 @@ import inspect
 import json
 import logging
 import os
-import pdb
 import time
 import typing as t
 import uuid
@@ -648,7 +647,6 @@ class ConnectorAction(BaseModel):
                 "Failed to parse origin_parameters with errors={}".format(e.errors())
             )
             return RunResult(status=Status.fatal, reason=Reason.bad_origin_parameters)
-        # pdb.set_trace()
         try:
             target_auth_parameters = target_warehouse_action.auth_parameters(
                 **target_auth
@@ -719,7 +717,6 @@ class ConnectorAction(BaseModel):
             ),
         )
         origin_items = []
-        pdb.set_trace()
         try:
             for item in origin_warehouse_action(
                 origin_adapter,
