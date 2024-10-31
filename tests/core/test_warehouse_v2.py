@@ -57,27 +57,6 @@ InboundTestWarehouse = Warehouse(
     ),
 )
 
-# OutboundTestWarehouse = Warehouse(
-#     name="Outbound Test Warehouse",
-#     type=WarehouseType.outbound,
-#     data_type=DataType.other,
-#     create=WarehouseReadAction(
-#         auth_parameters=AuthParameters,
-#         action_parameters=Parameters,
-#         function=lambda *args, **kwargs: None,
-#     ),
-#     update=WarehouseReadAction(
-#         auth_parameters=AuthParameters,
-#         action_parameters=Parameters,
-#         function=lambda *args, **kwargs: None,
-#     ),
-#     archive=WarehouseReadAction(
-#         auth_parameters=AuthParameters,
-#         action_parameters=Parameters,
-#         function=lambda *args, **kwargs: None,
-#     ),
-# )
-
 
 def test_with_fixed_parameters_field_does_not_exist():
     with pytest.raises(FieldNotFoundError):
@@ -151,20 +130,20 @@ def test_with_fixed_update_parameters():
     assert fixed.update.action_parameters().name == "fixed"
 
 
-# def test_with_fixed_archive_parameters():
-#     fixed = InboundTestWarehouse.with_fixed_archive_parameters(age=22)
-#     assert fixed.archive.action_parameters(distance=100, name="test").age == 22
+def test_with_fixed_archive_parameters():
+    fixed = InboundTestWarehouse.with_fixed_archive_parameters(age=22)
+    assert fixed.archive.action_parameters(distance=100, name="test").age == 22
 
-#     fixed = InboundTestWarehouse.with_fixed_archive_parameters(age=22, distance=200)
-#     assert fixed.archive.action_parameters(name="test").age == 22
-#     assert fixed.archive.action_parameters(name="test").distance == 200
+    fixed = InboundTestWarehouse.with_fixed_archive_parameters(age=22, distance=200)
+    assert fixed.archive.action_parameters(name="test").age == 22
+    assert fixed.archive.action_parameters(name="test").distance == 200
 
-#     fixed = InboundTestWarehouse.with_fixed_archive_parameters(
-#         age=22, distance=200, name="fixed"
-#     )
-#     assert fixed.archive.action_parameters().age == 22
-#     assert fixed.archive.action_parameters().distance == 200
-#     assert fixed.archive.action_parameters().name == "fixed"
+    fixed = InboundTestWarehouse.with_fixed_archive_parameters(
+        age=22, distance=200, name="fixed"
+    )
+    assert fixed.archive.action_parameters().age == 22
+    assert fixed.archive.action_parameters().distance == 200
+    assert fixed.archive.action_parameters().name == "fixed"
 
 
 def test_read_action_incremental_validation():
@@ -198,3 +177,108 @@ def test_field_type_validation():
 def test_all_auth_parameters_have_right_field_type():
     for field in AuthParameters.__fields__.values():
         assert field.field_info.extra["field_type"] == FieldType.Auth
+
+
+def test_action_type_validation():
+    with pytest.raises(ValueError) as excinfo:
+        Warehouse(
+            name="Test Warehouse",
+            type=WarehouseType.inbound,
+            data_type=DataType.other,
+            create=WarehouseReadAction(
+                auth_parameters=AuthParameters,
+                action_parameters=Parameters,
+                function=lambda *args, **kwargs: None,
+                supports_incremental=False,
+            ),
+        )
+
+    assert (
+        "For 'inbound' type, 'create' must be an instance of WarehouseWriteAction"
+        in excinfo.value.errors()[0]["msg"]
+    )
+    with pytest.raises(ValueError) as excinfo:
+        Warehouse(
+            name="Test Warehouse",
+            type=WarehouseType.inbound,
+            data_type=DataType.other,
+            update=WarehouseReadAction(
+                auth_parameters=AuthParameters,
+                action_parameters=Parameters,
+                function=lambda *args, **kwargs: None,
+                supports_incremental=False,
+            ),
+        )
+
+    assert (
+        "For 'inbound' type, 'update' must be an instance of WarehouseWriteAction"
+        in excinfo.value.errors()[0]["msg"]
+    )
+    with pytest.raises(ValueError) as excinfo:
+        Warehouse(
+            name="Test Warehouse",
+            type=WarehouseType.inbound,
+            data_type=DataType.other,
+            archive=WarehouseReadAction(
+                auth_parameters=AuthParameters,
+                action_parameters=Parameters,
+                function=lambda *args, **kwargs: None,
+                supports_incremental=False,
+            ),
+        )
+
+    assert (
+        "For 'inbound' type, 'archive' must be an instance of WarehouseWriteAction"
+        in excinfo.value.errors()[0]["msg"]
+    )
+    with pytest.raises(ValueError) as excinfo:
+        Warehouse(
+            name="Test Warehouse",
+            type=WarehouseType.outbound,
+            data_type=DataType.other,
+            create=WarehouseWriteAction(
+                auth_parameters=AuthParameters,
+                action_parameters=Parameters,
+                function=lambda *args, **kwargs: None,
+                supports_incremental=False,
+            ),
+        )
+
+    assert (
+        "For 'outbound' type, 'create' must be an instance of WarehouseReadAction"
+        in excinfo.value.errors()[0]["msg"]
+    )
+    with pytest.raises(ValueError) as excinfo:
+        Warehouse(
+            name="Test Warehouse",
+            type=WarehouseType.outbound,
+            data_type=DataType.other,
+            update=WarehouseWriteAction(
+                auth_parameters=AuthParameters,
+                action_parameters=Parameters,
+                function=lambda *args, **kwargs: None,
+                supports_incremental=False,
+            ),
+        )
+
+    assert (
+        "For 'outbound' type, 'update' must be an instance of WarehouseReadAction"
+        in excinfo.value.errors()[0]["msg"]
+    )
+    with pytest.raises(ValueError) as excinfo:
+        Warehouse(
+            name="Test Warehouse",
+            type=WarehouseType.outbound,
+            data_type=DataType.other,
+            archive=WarehouseWriteAction(
+                auth_parameters=AuthParameters,
+                action_parameters=Parameters,
+                function=lambda *args, **kwargs: None,
+                supports_incremental=False,
+            ),
+        )
+
+    assert (
+        "For 'outbound' type, 'archive' must be an instance of WarehouseReadAction"
+        in excinfo.value.errors()[0]["msg"]
+    )
