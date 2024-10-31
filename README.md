@@ -49,7 +49,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 
 | Name                                                                                                                                      | Type                 | Status             | Release date   | Last update     |
 |-------------------------------------------------------------------------------------------------------------------------------------------|----------------------|--------------------|----------------|-----------------|
-| [**Breezy HR**](./src/hrflow_connectors/connectors/breezyhr/README.md) | ATS | :book: Open source | *19/01/2022* | *24/10/2024* |
+| [**Breezy HR**](./src/hrflow_connectors/connectors/breezyhr/README.md) | ATS | :book: Open source | *19/01/2022* | *31/10/2024* |
 | [**Bullhorn**](./src/hrflow_connectors/connectors/bullhorn/README.md) | ATS | :book: Open source | *26/01/2022* | *23/10/2024* |
 | [**Ceridian**](./src/hrflow_connectors/connectors/ceridian/README.md) | HCM | :book: Open source | *19/01/2022* | *05/09/2024* |
 | [**Digitalrecruiters**](./src/hrflow_connectors/connectors/digitalrecruiters/README.md) | ATS | :book: Open source | *17/08/2023* | *24/10/2024* |
