@@ -95,6 +95,7 @@ def read(
 
 def read_with_failures(
     adapter: LoggerAdapter,
+    auth_parameters: AuthParameters,
     action_parameters: ReadUsersParameters,
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
@@ -149,7 +150,7 @@ FailingUsersWarehouse = Warehouse(
     type=WarehouseType.outbound,
     data_schema=User,
     data_type=DataType.other,
-    create=WarehouseReadAction(
+    update=WarehouseReadAction(
         auth_parameters=AuthParameters,
         action_parameters=ReadUsersParameters,
         function=read_with_failures,

@@ -911,8 +911,6 @@ def item_to_read_from_create(item: t.Dict) -> str:
     created_date = transform_timestamp_read_from(item["dateAdded"])
     return json.dumps(dict(created_date=created_date, last_id=item["id"]))
 
-    return json.dumps(dict(created_date=created_date, last_id=item["id"]))
-
 
 def item_to_read_from_update_or_archive(item: t.Dict) -> str:
     last_modified_date = transform_timestamp_read_from(item["dateLastModified"])

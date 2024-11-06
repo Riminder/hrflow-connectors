@@ -46,23 +46,25 @@ class WriteLeadsParameters(ParametersModel):
 
 def write(
     adapter: LoggerAdapter,
-    parameters: WriteLeadsParameters,
+    auth_parameters: AuthParameters,
+    action_parameters: WriteLeadsParameters,
     items: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
     adapter.info("Pushing leads to DB")
-    LEADS_DB.setdefault(parameters.campaign_id, []).extend(items)
+    LEADS_DB.setdefault(action_parameters.campaign_id, []).extend(items)
     adapter.info("Finished writing leads to DB")
     return []
 
 
 def write_with_failures(
     adapter: LoggerAdapter,
-    parameters: WriteLeadsParameters,
+    auth_parameters: AuthParameters,
+    action_parameters: WriteLeadsParameters,
     items: t.Iterable[t.Dict],
 ) -> t.List[t.Dict]:
     adapter.info("Pushing leads to DB")
     items = list(items)
-    LEADS_DB.setdefault(parameters.campaign_id, []).extend(items[:-2])
+    LEADS_DB.setdefault(action_parameters.campaign_id, []).extend(items[:-2])
     adapter.info("Finished writing leads to DB")
     return items[-2:]
 
@@ -80,13 +82,12 @@ LeadsWarehouse = Warehouse(
     ),
 )
 
-
 FailingLeadsWarehouse = Warehouse(
     name="Test Leads",
     type=WarehouseType.inbound,
     data_schema=Lead,
     data_type=DataType.other,
-    create=WarehouseWriteAction(
+    update=WarehouseWriteAction(
         auth_parameters=AuthParameters,
         action_parameters=WriteLeadsParameters,
         function=write_with_failures,

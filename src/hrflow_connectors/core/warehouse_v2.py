@@ -240,9 +240,14 @@ class Warehouse(BaseModel):
         action = getattr(self, action_mode.value)
         return action.supports_incremental
 
-    # FIXME: distinguish create, update, archive
-    def item_to_read_from(self, *args, **kwargs):
-        return self.read.item_to_read_from(*args, **kwargs)
+    def item_to_read_from(
+        self,
+        action_mode,
+        *args,
+        **kwargs,
+    ):
+        action = getattr(self, action_mode.value)
+        return action.item_to_read_from(*args, **kwargs)
 
     @property
     def is_creatable(self):

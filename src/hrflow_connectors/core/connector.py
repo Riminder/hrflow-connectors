@@ -1154,6 +1154,7 @@ def hrflow_connectors_manifest(
 
         manifest_file = "{}/manifest.json".format(directory_path)
         if os.path.exists(manifest_file):
+            # here for 100% coverage
             with open(manifest_file, "r") as f:
                 manifest = json.load(f)
         else:
