@@ -21,6 +21,13 @@
     "release_date": ""
   },
   {
+    "name": "AD-MEN",
+    "type": "CRM",
+    "subtype": "admen",
+    "status": "premium",
+    "release_date": "06/11/2024"
+  },
+  {
     "name": "Adzuna",
     "type": "Job Board",
     "subtype": "adzuna",

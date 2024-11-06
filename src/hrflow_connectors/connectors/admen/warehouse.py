@@ -16,7 +16,7 @@ from smbprotocol.open import (
 from smbprotocol.session import Session
 from smbprotocol.tree import TreeConnect
 
-from hrflow_connectors.connectors.admen.schemas import AdmenJob, AdmenProfile
+from hrflow_connectors.connectors.admen.schemas import AdmenMission, AdmenProfile
 from hrflow_connectors.connectors.admen.utils.mysql_utils import (
     connect_to_database,
     insert_object,
@@ -33,12 +33,10 @@ from hrflow_connectors.core import (
 )
 
 
-class ReadJobsParameters(ParametersModel):
-    # Database connection details
+class DatabaseConnectionParameters(ParametersModel):
     db_host: str = Field(
         ...,
         description="The hostname of the database server",
-        repr=False,
         field_type=FieldType.Auth,
     )
     db_port: int = Field(
@@ -50,13 +48,11 @@ class ReadJobsParameters(ParametersModel):
     db_name: str = Field(
         ...,
         description="The name of the database",
-        repr=False,
         field_type=FieldType.Auth,
     )
     db_user: str = Field(
         ...,
         description="The username to connect to the database",
-        repr=False,
         field_type=FieldType.Auth,
     )
     db_password: str = Field(
@@ -67,54 +63,24 @@ class ReadJobsParameters(ParametersModel):
     )
 
 
-class ReadProfilesParameters(ParametersModel):
-    # Database connection details
-    db_host: str = Field(
-        ...,
-        description="The hostname of the database server",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    db_port: int = Field(
-        ...,
-        description="The port of the database server",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    db_name: str = Field(
-        ...,
-        description="The name of the database",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    db_user: str = Field(
-        ...,
-        description="The username to connect to the database",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    db_password: str = Field(
-        ...,
-        description="The password to connect to the database",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
+class ReadJobsParameters(DatabaseConnectionParameters):
+    pass
+
+
+class ReadProfilesParameters(DatabaseConnectionParameters):
     share_server: str = Field(
         ...,
         description="The hostname of the network share server",
-        repr=False,
         field_type=FieldType.Auth,
     )
     share_name: str = Field(
         ...,
         description="The name of the network share",
-        repr=False,
         field_type=FieldType.Auth,
     )
     share_username: str = Field(
         ...,
         description="The username to connect to the network share",
-        repr=False,
         field_type=FieldType.Auth,
     )
     share_password: str = Field(
@@ -127,43 +93,12 @@ class ReadProfilesParameters(ParametersModel):
     share_domain: str = Field(
         ...,
         description="The domain to connect to the network share",
-        repr=False,
         field_type=FieldType.Auth,
     )
 
 
-class WriteProfilesParameters(ParametersModel):
-    # Database connection details
-    db_host: str = Field(
-        ...,
-        description="The hostname of the database server",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    db_port: int = Field(
-        ...,
-        description="The port of the database server",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    db_name: str = Field(
-        ...,
-        description="The name of the database",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    db_user: str = Field(
-        ...,
-        description="The username to connect to the database",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
-    db_password: str = Field(
-        ...,
-        description="The password to connect to the database",
-        repr=False,
-        field_type=FieldType.Auth,
-    )
+class WriteProfilesParameters(DatabaseConnectionParameters):
+    pass
 
 
 def read_jobs(
@@ -191,7 +126,7 @@ def read_jobs(
         connection.close()
 
 
-def fetch_and_save_document(tree, file_path):
+def fetch_and_save_document(adapter, tree, file_path):
     try:
         # Open the document and read its content
         document = Open(tree, file_path)
@@ -213,7 +148,7 @@ def fetch_and_save_document(tree, file_path):
         return {"raw": file_data, "content_type": "pdf"}
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        adapter.error(f"An error occurred while fetching the document: {e}")
         return None
 
 
@@ -273,16 +208,18 @@ def read_profiles(
 
                 smb_connected = True
             except Exception as e:
-                print(f"An error occurred while connecting to SMB: {e}")
+                adapter.error(f"An error occurred while connecting to SMB: {e}")
                 retries += 1
                 if retries < max_retries:
-                    print(
-                        f"Retrying SMB connection in {retry_delay} seconds... ({retries}/{max_retries})"
+                    adapter.error(
+                        f"Retrying SMB connection in {retry_delay} seconds..."
+                        f" ({retries}/{max_retries})"
                     )
                     time.sleep(retry_delay)
                 else:
-                    print(
-                        "Max retries for SMB connection reached. Will not fetch documents."
+                    adapter.error(
+                        "Max retries for SMB connection reached. Will not fetch"
+                        " documents."
                     )
 
         for profile in profiles:
@@ -303,6 +240,7 @@ def read_profiles(
             document = query_database(connection, documents_query)
             if document and smb_connected:
                 resume = fetch_and_save_document(
+                    adapter,
                     smb_tree,
                     document[0]["PATHNAME"].replace("/", "\\"),
                 )
@@ -345,15 +283,15 @@ def write_profiles(
             try:
                 insert_object(connection, profiles_table, profile)
             except Exception as e:
-                failed_profiles.append(profile)
                 adapter.error(f"Failed to insert profile into the database: {e}")
+                failed_profiles.append(profile)
         connection.close()
     return failed_profiles
 
 
 AdmenJobWarehouse = Warehouse(
     name="AD-MEN Jobs",
-    data_schema=AdmenJob,
+    data_schema=AdmenMission,
     data_type=DataType.job,
     read=WarehouseReadAction(
         parameters=ReadJobsParameters,

@@ -41,9 +41,15 @@ def get_job_location(admen_job: t.Dict) -> t.Dict:
 
 def get_job_sections(
     admen_job: t.Dict,
-) -> t.List[t.Dict]:  # TODO: improve section names, titles and descriptions
+) -> t.List[t.Dict]:
     sections = []
-    for section_name in ["DESC_MISSION", "DESC_CUSTOMER", "HTML"]:
+    for section_name in [
+        "DESC_MISSION",
+        "DESC_CUSTOMER",
+        "HTML",
+        "POSTIT",
+        "COMMENTAIRE",
+    ]:
         section = admen_job[section_name]
         if section:
             sections.append(
@@ -105,14 +111,12 @@ def get_job_tags(admen_job: t.Dict) -> t.List[str]:
 
 def format_job(
     admen_job: t.Dict,
-) -> (
-    t.Dict
-):  # TODO: add created_at and culture, benefits, responsibilities, requirements, interviews,
+) -> t.Dict:
     job = dict(
         name=admen_job["LIBELLE"],
         reference=str(admen_job["ID_MISSION"]),
-        # created_at = ,
-        # updated_at = admen_mission['DATE_MAJ'].strftime('%Y-%m-%d'),
+        created_at=admen_job["DATE_DEB_RECHERCHE"].strftime("%Y-%m-%d"),
+        updated_at=admen_job["DATE_MAJ"].strftime("%Y-%m-%d"),
         location=get_job_location(admen_job),
         url=admen_job["URL"],
         summary=admen_job["DESC_MISSION"],
@@ -132,9 +136,11 @@ def format_hrflow_profile_to_admen(
         PRENOM=hrflow_profile_info["first_name"],
         EMAIL_PERSO=hrflow_profile_info["email"],
         TEL_MOBILE=hrflow_profile_info["phone"],
-        DATE_NAISSANCE=datetime.strptime(
-            hrflow_profile_info["date_birth"], "%Y-%m-%d"
-        ),  # TODO: handle if date_birth is empty
+        DATE_NAISSANCE=(
+            datetime.strptime(hrflow_profile_info["date_birth"], "%Y-%m-%d")
+            if hrflow_profile_info["date_birth"]
+            else None
+        ),
         ADRESSE=hrflow_profile_info["location"]["text"],
         VILLE=hrflow_profile_info["location"]["fields"]["city"],
         CODE_POSTAL=hrflow_profile_info["location"]["fields"]["postcode"],
@@ -272,8 +278,9 @@ Misez sur AD-Men, le Logiciel N°1 des Cabinets de Recrutement.
 """
 
 ADMEN = Connector(
-    name="Admen",
-    type=ConnectorType.ATS,
+    name="AD-MEN",
+    type=ConnectorType.CRM,
+    subtype="admen",
     description=DESCRIPTION,
     url="https://www.ad-rh.com/",
     actions=[
@@ -299,7 +306,7 @@ ADMEN = Connector(
                 "and send them to a ***Hrflow.ai Source***."
             ),
             parameters=BaseActionParameters.with_defaults(
-                "ReadProfilesActionParameters", format=format_hrflow_profile_to_admen
+                "ReadProfilesActionParameters", format=format_admen_profile_to_hrflow
             ),
             origin=AdmenProfileWarehouse,
             target=HrFlowProfileParsingWarehouse,
@@ -313,7 +320,7 @@ ADMEN = Connector(
                 " server"
             ),
             parameters=BaseActionParameters.with_defaults(
-                "WriteProfileActionParameters", format=format_admen_profile_to_hrflow
+                "WriteProfileActionParameters", format=format_hrflow_profile_to_admen
             ),
             origin=HrFlowProfileWarehouse,
             target=AdmenProfileWarehouse,

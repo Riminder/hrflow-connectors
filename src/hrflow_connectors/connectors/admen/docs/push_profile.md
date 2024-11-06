@@ -10,7 +10,7 @@ Writes a profile from Hrflow.ai Source to the ***AD-MEN*** database server
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_admen_profile_to_hrflow`](../connector.py#L235) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_admen_profile_to_hrflow`](../connector.py#L239) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
@@ -38,14 +38,14 @@ Writes a profile from Hrflow.ai Source to the ***AD-MEN*** database server
 
 ```python
 import logging
-from hrflow_connectors import Admen
+from hrflow_connectors import ADMEN
 from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
-Admen.push_profile(
+ADMEN.push_profile(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],

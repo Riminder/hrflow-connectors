@@ -10,7 +10,7 @@ Retrieves profiles from the ***AD-MEN*** database serverand send them to a ***Hr
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_hrflow_profile_to_admen`](../connector.py#L127) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_hrflow_profile_to_admen`](../connector.py#L129) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
@@ -27,8 +27,6 @@ Retrieves profiles from the ***AD-MEN*** database serverand send them to a ***Hr
 | `share_username` :red_circle: | `str` | None | The username to connect to the network share |
 | `share_password` :red_circle: | `str` | None | The password to connect to the network share |
 | `share_domain` :red_circle: | `str` | None | The domain to connect to the network share |
-| `limit`  | `int` | 100 | The number of profiles to retrieve |
-| `offset`  | `int` | 0 | The offset to start retrieving profiles |
 
 ## Destination Parameters
 
@@ -45,14 +43,14 @@ Retrieves profiles from the ***AD-MEN*** database serverand send them to a ***Hr
 
 ```python
 import logging
-from hrflow_connectors import Admen
+from hrflow_connectors import ADMEN
 from hrflow_connectors.core import ReadMode
 
 
 logging.basicConfig(level=logging.INFO)
 
 
-Admen.pull_profile_list(
+ADMEN.pull_profile_list(
     workflow_id="some_string_identifier",
     action_parameters=dict(
         logics=[],
@@ -70,8 +68,6 @@ Admen.pull_profile_list(
         share_username="your_share_username",
         share_password="your_share_password",
         share_domain="your_share_domain",
-        limit=100,
-        offset=0,
     ),
     target_parameters=dict(
         api_secret="your_api_secret",

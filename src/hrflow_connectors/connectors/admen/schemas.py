@@ -1,7 +1,5 @@
 from pydantic import BaseModel
 
-# TODO: Remove unused fields
-
 
 # Table : MISSION
 class AdmenMission(BaseModel):
