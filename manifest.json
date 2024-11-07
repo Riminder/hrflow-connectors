@@ -5,7 +5,7 @@
       "name": "Abacus Umantis",
       "type": "ATS",
       "subtype": "abacusumantis",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/abacusumantis/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/abacusumantis/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -77,7 +77,7 @@
       "name": "ADP Workforce Now",
       "type": "HCM",
       "subtype": "adpworkforcenow",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/adpworkforcenow/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/adpworkforcenow/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -149,7 +149,7 @@
       "name": "Adzuna",
       "type": "JOBBOARD",
       "subtype": "adzuna",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/adzuna/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/adzuna/logo.png",
       "actions": [
         {
           "name": "pull_job_list",
@@ -1015,7 +1015,7 @@
       "name": "AFAS Software",
       "type": "ATS",
       "subtype": "afas",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/afas/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/afas/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -1087,7 +1087,7 @@
       "name": "Agefiph",
       "type": "JOBBOARD",
       "subtype": "agefiph",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/agefiph/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/agefiph/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -1160,7 +1160,7 @@
       "name": "APEC",
       "type": "JOBBOARD",
       "subtype": "apec",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/apec/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/apec/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -1233,7 +1233,7 @@
       "name": "Applicantstack",
       "type": "ATS",
       "subtype": "applicantstack",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/applicantstack/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/applicantstack/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -1305,7 +1305,7 @@
       "name": "Ashby",
       "type": "ATS",
       "subtype": "ashby",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/ashby/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/ashby/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -1377,7 +1377,7 @@
       "name": "Avature",
       "type": "ATS",
       "subtype": "avature",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/avature/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/avature/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -1449,7 +1449,7 @@
       "name": "BambooHR",
       "type": "ATS",
       "subtype": "bamboohr",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/bamboohr/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/bamboohr/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -1521,7 +1521,7 @@
       "name": "Beetween",
       "type": "ATS",
       "subtype": "beetween",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/beetween/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/beetween/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -1593,7 +1593,7 @@
       "name": "BITE",
       "type": "ATS",
       "subtype": "bite",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/bite/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/bite/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -1665,7 +1665,7 @@
       "name": "Breezy HR",
       "type": "ATS",
       "subtype": "breezyhr",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/breezyhr/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/breezyhr/logo.jpg",
       "actions": [
         {
           "name": "pull_job_list",
@@ -3535,7 +3535,7 @@
       "name": "Broadbean",
       "type": "ATS",
       "subtype": "broadbean",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/broadbean/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/broadbean/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -3607,7 +3607,7 @@
       "name": "Bullhorn",
       "type": "ATS",
       "subtype": "bullhorn",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/bullhorn/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/bullhorn/logo.jpeg",
       "actions": [
         {
           "name": "push_profile",
@@ -6887,7 +6887,7 @@
       "name": "Cadreemploi",
       "type": "JOBBOARD",
       "subtype": "cadreemploi",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/cadreemploi/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/cadreemploi/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -6960,7 +6960,7 @@
       "name": "Carerix",
       "type": "ATS",
       "subtype": "carerix",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/carerix/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/carerix/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -7032,7 +7032,7 @@
       "name": "Carrevolutis",
       "type": "JOBBOARD",
       "subtype": "carrevolutis",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/carrevolutis/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/carrevolutis/logo.jpeg",
       "actions": [
         {
           "name": "catch_profile",
@@ -7295,7 +7295,7 @@
       "name": "CATS",
       "type": "ATS",
       "subtype": "cats",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/cats/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/cats/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -7367,7 +7367,7 @@
       "name": "Cegid (Meta4)",
       "type": "ATS",
       "subtype": "meta4",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/meta4/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/meta4/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -7439,7 +7439,7 @@
       "name": "Ceipal",
       "type": "ATS",
       "subtype": "ceipal",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/ceipal/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/ceipal/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -7511,7 +7511,7 @@
       "name": "Ceridian",
       "type": "HCM",
       "subtype": "ceridian",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/ceridian/logo.webp",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/ceridian/logo.webp",
       "actions": [
         {
           "name": "pull_job_list",
@@ -8077,7 +8077,7 @@
       "name": "ClayHR",
       "type": "ATS",
       "subtype": "clayhr",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/clayhr/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/clayhr/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -8149,7 +8149,7 @@
       "name": "ClockWork",
       "type": "ATS",
       "subtype": "clockwork",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/clockwork/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/clockwork/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -8221,7 +8221,7 @@
       "name": "Comeet",
       "type": "ATS",
       "subtype": "comeet",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/comeet/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/comeet/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -8293,7 +8293,7 @@
       "name": "concludis",
       "type": "ATS",
       "subtype": "concludis",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/concludis/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/concludis/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -8365,7 +8365,7 @@
       "name": "Connexys By Bullhorn",
       "type": "ATS",
       "subtype": "connexys",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/connexys/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/connexys/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -8437,7 +8437,7 @@
       "name": "Cornerjob",
       "type": "JOBBOARD",
       "subtype": "cornerjob",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/cornerjob/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/cornerjob/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -8510,7 +8510,7 @@
       "name": "Cornerstone OnDemand",
       "type": "ATS",
       "subtype": "cornerstoneondemand",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/cornerstoneondemand/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/cornerstoneondemand/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -8582,7 +8582,7 @@
       "name": "Cornerstone TalentLink",
       "type": "ATS",
       "subtype": "cornerstonetalentlink",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/cornerstonetalentlink/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/cornerstonetalentlink/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -8654,7 +8654,7 @@
       "name": "Crosstalent",
       "type": "ATS",
       "subtype": "crosstalent",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/crosstalent/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/crosstalent/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -8726,7 +8726,7 @@
       "name": "d.vinci",
       "type": "ATS",
       "subtype": "dvinci",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/dvinci/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/dvinci/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -8798,7 +8798,7 @@
       "name": "Digitalrecruiters",
       "type": "ATS",
       "subtype": "digitalrecruiters",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/digitalrecruiters/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/digitalrecruiters/logo.png",
       "actions": [
         {
           "name": "pull_job_list",
@@ -10993,7 +10993,7 @@
       "name": "Distrijob",
       "type": "JOBBOARD",
       "subtype": "distrijob",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/distrijob/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/distrijob/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -11066,7 +11066,7 @@
       "name": "EngageATS",
       "type": "ATS",
       "subtype": "engageats",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/engageats/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/engageats/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -11138,7 +11138,7 @@
       "name": "Engagement Jeunes",
       "type": "JOBBOARD",
       "subtype": "engagementjeunes",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/engagementjeunes/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/engagementjeunes/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -11211,7 +11211,7 @@
       "name": "EOLIA Software",
       "type": "ATS",
       "subtype": "eolia",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/eolia/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/eolia/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -11283,7 +11283,7 @@
       "name": "Eploy",
       "type": "ATS",
       "subtype": "eploy",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/eploy/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/eploy/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -11355,7 +11355,7 @@
       "name": "eRecruiter",
       "type": "ATS",
       "subtype": "erecruiter",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/erecruiter/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/erecruiter/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -11427,7 +11427,7 @@
       "name": "Factorial",
       "type": "ATS",
       "subtype": "factorial",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/factorial/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/factorial/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -11499,7 +11499,7 @@
       "name": "FashionJobs",
       "type": "JOBBOARD",
       "subtype": "fashionjobs",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/fashionjobs/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/fashionjobs/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -11572,7 +11572,7 @@
       "name": "Fieldglass SAP",
       "type": "ATS",
       "subtype": "fieldglasssap",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/fieldglasssap/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/fieldglasssap/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -11644,7 +11644,7 @@
       "name": "Figaro Classifieds",
       "type": "JOBBOARD",
       "subtype": "figaroclassifieds",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/figaroclassifieds/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/figaroclassifieds/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -11717,7 +11717,7 @@
       "name": "Flatchr",
       "type": "ATS",
       "subtype": "flatchr",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/flatchr/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/flatchr/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -11789,7 +11789,7 @@
       "name": "Fountain",
       "type": "ATS",
       "subtype": "fountain",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/fountain/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/fountain/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -11861,7 +11861,7 @@
       "name": "freework",
       "type": "JOBBOARD",
       "subtype": "freework",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/freework/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/freework/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -11934,7 +11934,7 @@
       "name": "Freshteam",
       "type": "ATS",
       "subtype": "freshteam",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/freshteam/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/freshteam/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -12006,7 +12006,7 @@
       "name": "Glassdoor",
       "type": "JOBBOARD",
       "subtype": "glassdoor",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/glassdoor/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/glassdoor/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -12079,7 +12079,7 @@
       "name": "GoldenBees",
       "type": "JOBBOARD",
       "subtype": "goldenbees",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/goldenbees/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/goldenbees/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -12152,7 +12152,7 @@
       "name": "Greenhouse",
       "type": "ATS",
       "subtype": "greenhouse",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/greenhouse/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/greenhouse/logo.jpeg",
       "actions": [
         {
           "name": "pull_job_list",
@@ -14711,7 +14711,7 @@
       "name": "GuideCom",
       "type": "ATS",
       "subtype": "guidecom",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/guidecom/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/guidecom/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -14783,7 +14783,7 @@
       "name": "Handicap-Job",
       "type": "JOBBOARD",
       "subtype": "handicapjob",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/handicapjob/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/handicapjob/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -14856,7 +14856,7 @@
       "name": "Harbour ATS",
       "type": "ATS",
       "subtype": "harbourats",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/harbourats/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/harbourats/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -14928,7 +14928,7 @@
       "name": "Haufe Umantis",
       "type": "ATS",
       "subtype": "umantis",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/umantis/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/umantis/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -15000,7 +15000,7 @@
       "name": "HelloWork",
       "type": "JOBBOARD",
       "subtype": "hellowork",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/hellowork/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/hellowork/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -15073,7 +15073,7 @@
       "name": "Heyrecruit",
       "type": "ATS",
       "subtype": "heyrecruit",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/heyrecruit/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/heyrecruit/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -15145,7 +15145,7 @@
       "name": "Homerun",
       "type": "ATS",
       "subtype": "homerun",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/homerun/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/homerun/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -15217,7 +15217,7 @@
       "name": "HR Cloud",
       "type": "ATS",
       "subtype": "hrcloud",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/hrcloud/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/hrcloud/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -15289,7 +15289,7 @@
       "name": "HR Office",
       "type": "ATS",
       "subtype": "hroffice",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/hroffice/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/hroffice/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -15361,7 +15361,7 @@
       "name": "HRworks",
       "type": "ATS",
       "subtype": "hrworks",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/hrworks/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/hrworks/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -15433,7 +15433,7 @@
       "name": "Hubspot",
       "type": "CRM",
       "subtype": "hubspot",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/hubspot/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/hubspot/logo.jpeg",
       "actions": [
         {
           "name": "push_profile",
@@ -17055,7 +17055,7 @@
       "name": "iCIMS",
       "type": "ATS",
       "subtype": "icims",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/icims/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/icims/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -17127,7 +17127,7 @@
       "name": "Indeed",
       "type": "JOBBOARD",
       "subtype": "indeed",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/indeed/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/indeed/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -17200,7 +17200,7 @@
       "name": "Infinite BrassRing",
       "type": "ATS",
       "subtype": "infinitebrassring",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/infinitebrassring/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/infinitebrassring/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -17272,7 +17272,7 @@
       "name": "InRecruiting",
       "type": "ATS",
       "subtype": "inrecruiting",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/inrecruiting/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/inrecruiting/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -17344,7 +17344,7 @@
       "name": "Inzojob",
       "type": "JOBBOARD",
       "subtype": "inzojob",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/inzojob/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/inzojob/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -17417,7 +17417,7 @@
       "name": "JazzHR",
       "type": "ATS",
       "subtype": "jazzhr",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jazzhr/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jazzhr/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -17489,7 +17489,7 @@
       "name": "JobAdder",
       "type": "ATS",
       "subtype": "jobadder",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobadder/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jobadder/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -17561,7 +17561,7 @@
       "name": "Jobaffinity",
       "type": "ATS",
       "subtype": "jobaffinity",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobaffinity/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jobaffinity/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -17633,7 +17633,7 @@
       "name": "JobDiva",
       "type": "ATS",
       "subtype": "jobdiva",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobdiva/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jobdiva/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -17705,7 +17705,7 @@
       "name": "Jobijoba",
       "type": "JOBBOARD",
       "subtype": "jobijoba",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobijoba/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jobijoba/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -17778,7 +17778,7 @@
       "name": "Jobology",
       "type": "JOBBOARD",
       "subtype": "jobology",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobology/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jobology/logo.jpeg",
       "actions": [
         {
           "name": "catch_profile",
@@ -18041,7 +18041,7 @@
       "name": "Jobrapido",
       "type": "JOBBOARD",
       "subtype": "jobrapido",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobrapido/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jobrapido/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -18114,7 +18114,7 @@
       "name": "JobScore",
       "type": "ATS",
       "subtype": "jobscore",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobscore/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jobscore/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -18186,7 +18186,7 @@
       "name": "Jobsoid",
       "type": "ATS",
       "subtype": "jobsoid",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobsoid/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jobsoid/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -18258,7 +18258,7 @@
       "name": "JobTeaser",
       "type": "JOBBOARD",
       "subtype": "jobteaser",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobteaser/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jobteaser/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -18331,7 +18331,7 @@
       "name": "Jobtransport",
       "type": "JOBBOARD",
       "subtype": "jobtransport",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobtransport/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jobtransport/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -18404,7 +18404,7 @@
       "name": "Jobvitae",
       "type": "JOBBOARD",
       "subtype": "jobvitae",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobvitae/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jobvitae/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -18477,7 +18477,7 @@
       "name": "Jobvite",
       "type": "ATS",
       "subtype": "jobvite",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobvite/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jobvite/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -18549,7 +18549,7 @@
       "name": "Jobylon",
       "type": "ATS",
       "subtype": "jobylon",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jobylon/logo.webp",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jobylon/logo.webp",
       "actions": [
         {
           "action_parameters": {},
@@ -18621,7 +18621,7 @@
       "name": "JOIN",
       "type": "ATS",
       "subtype": "join",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/join/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/join/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -18693,7 +18693,7 @@
       "name": "Jooble",
       "type": "JOBBOARD",
       "subtype": "jooble",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/jooble/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/jooble/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -18766,7 +18766,7 @@
       "name": "Keljob",
       "type": "JOBBOARD",
       "subtype": "keljob",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/keljob/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/keljob/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -18839,7 +18839,7 @@
       "name": "Lano",
       "type": "ATS",
       "subtype": "lano",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/lano/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/lano/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -18911,7 +18911,7 @@
       "name": "Laponi",
       "type": "JOBBOARD",
       "subtype": "laponi",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/laponi/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/laponi/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -18984,7 +18984,7 @@
       "name": "Leboncoin",
       "type": "JOBBOARD",
       "subtype": "leboncoin",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/leboncoin/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/leboncoin/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -19057,7 +19057,7 @@
       "name": "LesJeudis",
       "type": "JOBBOARD",
       "subtype": "lesjeudis",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/lesjeudis/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/lesjeudis/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -19130,7 +19130,7 @@
       "name": "Lever",
       "type": "ATS",
       "subtype": "lever",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/lever/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/lever/logo.jpeg",
       "actions": [
         {
           "name": "pull_job_list",
@@ -21319,7 +21319,7 @@
       "name": "LinkedIn",
       "type": "JOBBOARD",
       "subtype": "linkedin",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/linkedin/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/linkedin/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -21392,7 +21392,7 @@
       "name": "Lucca",
       "type": "HCM",
       "subtype": "lucca",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/lucca/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/lucca/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -21464,7 +21464,7 @@
       "name": "Mailchimp",
       "type": "AUTOMATION",
       "subtype": "mailchimp",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/mailchimp/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/mailchimp/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -21494,7 +21494,7 @@
       "name": "Meteojob",
       "type": "JOBBOARD",
       "subtype": "meteojob",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/meteojob/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/meteojob/logo.jpeg",
       "actions": [
         {
           "name": "catch_profile",
@@ -21757,7 +21757,7 @@
       "name": "Microsoft Dynamics",
       "type": "HCM",
       "subtype": "microsoftdynamics",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/microsoftdynamics/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/microsoftdynamics/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -21829,7 +21829,7 @@
       "name": "Monster",
       "type": "JOBBOARD",
       "subtype": "monster",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/monster/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/monster/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -21902,7 +21902,7 @@
       "name": "Mysolution",
       "type": "ATS",
       "subtype": "mysolution",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/mysolution/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/mysolution/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -21974,7 +21974,7 @@
       "name": "Neuvoo",
       "type": "JOBBOARD",
       "subtype": "neuvoo",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/neuvoo/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/neuvoo/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -22047,7 +22047,7 @@
       "name": "Occupop",
       "type": "ATS",
       "subtype": "occupop",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/occupop/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/occupop/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -22119,7 +22119,7 @@
       "name": "Onlyfy",
       "type": "ATS",
       "subtype": "onlyfy",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/onlyfy/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/onlyfy/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -22191,7 +22191,7 @@
       "name": "Optioncarriere",
       "type": "JOBBOARD",
       "subtype": "optioncarriere",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/optioncarriere/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/optioncarriere/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -22264,7 +22264,7 @@
       "name": "Oracle",
       "type": "HCM",
       "subtype": "oracle",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/oracle/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/oracle/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -22336,7 +22336,7 @@
       "name": "Oracle Fusion - Recruiting Cloud",
       "type": "ATS",
       "subtype": "oraclefusion",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/oraclefusion/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/oraclefusion/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -22408,7 +22408,7 @@
       "name": "Oracle Recruiting Cloud",
       "type": "ATS",
       "subtype": "oraclerecruiting",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/oraclerecruiting/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/oraclerecruiting/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -22480,7 +22480,7 @@
       "name": "Oracle Taleo",
       "type": "ATS",
       "subtype": "oracletaleo",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/oracletaleo/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/oracletaleo/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -22552,7 +22552,7 @@
       "name": "OTYS",
       "type": "ATS",
       "subtype": "otys",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/otys/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/otys/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -22624,7 +22624,7 @@
       "name": "P&I Loga",
       "type": "ATS",
       "subtype": "piloga",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/piloga/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/piloga/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -22696,7 +22696,7 @@
       "name": "Personio",
       "type": "HCM",
       "subtype": "personio",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/personio/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/personio/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -22768,7 +22768,7 @@
       "name": "Personio Recruiting",
       "type": "ATS",
       "subtype": "personiorecruiting",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/personiorecruiting/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/personiorecruiting/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -22840,7 +22840,7 @@
       "name": "Pinpoint",
       "type": "ATS",
       "subtype": "pinpoint",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/pinpoint/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/pinpoint/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -22912,7 +22912,7 @@
       "name": "Pole Emploi",
       "type": "JOBBOARD",
       "subtype": "poleemploi",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/poleemploi/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/poleemploi/logo.jpg",
       "actions": [
         {
           "name": "pull_job_list",
@@ -24306,7 +24306,7 @@
       "name": "Polymer",
       "type": "ATS",
       "subtype": "polymer",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/polymer/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/polymer/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -24378,7 +24378,7 @@
       "name": "Radancy",
       "type": "HCM",
       "subtype": "radancy",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/radancy/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/radancy/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -24450,7 +24450,7 @@
       "name": "ReachMee",
       "type": "ATS",
       "subtype": "reachmee",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/reachmee/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/reachmee/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -24522,7 +24522,7 @@
       "name": "RECRU",
       "type": "ATS",
       "subtype": "recruhr",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/recruhr/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/recruhr/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -24594,7 +24594,7 @@
       "name": "Recruitee",
       "type": "ATS",
       "subtype": "recruitee",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/recruitee/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/recruitee/logo.png",
       "actions": [
         {
           "name": "push_profile",
@@ -26780,7 +26780,7 @@
       "name": "Recruiterflow",
       "type": "ATS",
       "subtype": "recruiterflow",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/recruiterflow/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/recruiterflow/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -26852,7 +26852,7 @@
       "name": "Recruitive",
       "type": "ATS",
       "subtype": "recruitive",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/recruitive/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/recruitive/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -26924,7 +26924,7 @@
       "name": "rexx systems",
       "type": "ATS",
       "subtype": "rexx",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/rexx/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/rexx/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -26996,7 +26996,7 @@
       "name": "Sage HR",
       "type": "ATS",
       "subtype": "sagehr",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/sagehr/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/sagehr/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -27068,7 +27068,7 @@
       "name": "Salesforce",
       "type": "CRM",
       "subtype": "salesforce",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/salesforce/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/salesforce/logo.jpeg",
       "actions": [
         {
           "name": "pull_profile_list",
@@ -30558,7 +30558,7 @@
       "name": "SAP SuccessFactors",
       "type": "ATS",
       "subtype": "sapsuccessfactors",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/sapsuccessfactors/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/sapsuccessfactors/logo.jpeg",
       "actions": [
         {
           "name": "pull_job_list",
@@ -32374,7 +32374,7 @@
       "name": "SmartRecruiters",
       "type": "ATS",
       "subtype": "smartrecruiters",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/smartrecruiters/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/smartrecruiters/logo.png",
       "actions": [
         {
           "name": "pull_job_list",
@@ -34170,7 +34170,7 @@
       "name": "Softgarden",
       "type": "ATS",
       "subtype": "softgarden",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/softgarden/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/softgarden/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -34242,7 +34242,7 @@
       "name": "Staffme",
       "type": "JOBBOARD",
       "subtype": "staffme",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/staffme/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/staffme/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -34315,7 +34315,7 @@
       "name": "Staffsante",
       "type": "JOBBOARD",
       "subtype": "staffsante",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/staffsante/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/staffsante/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -34388,7 +34388,7 @@
       "name": "Taleez",
       "type": "ATS",
       "subtype": "taleez",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/taleez/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/taleez/logo.png",
       "actions": [
         {
           "name": "push_profile",
@@ -35744,7 +35744,7 @@
       "name": "Talent Clue",
       "type": "ATS",
       "subtype": "talentclue",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/talentclue/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/talentclue/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -35816,7 +35816,7 @@
       "name": "TalentAdore",
       "type": "ATS",
       "subtype": "talentadore",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/talentadore/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/talentadore/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -35888,7 +35888,7 @@
       "name": "Talentlink",
       "type": "ATS",
       "subtype": "talentlink",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/talentlink/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/talentlink/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -35960,7 +35960,7 @@
       "name": "TalentLyft",
       "type": "ATS",
       "subtype": "talentlyft",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/talentlyft/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/talentlyft/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -36032,7 +36032,7 @@
       "name": "TalentReef",
       "type": "ATS",
       "subtype": "talentreef",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/talentreef/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/talentreef/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -36104,7 +36104,7 @@
       "name": "TalentSoft",
       "type": "HCM",
       "subtype": "talentsoft",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/talentsoft/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/talentsoft/logo.jpeg",
       "actions": [
         {
           "name": "applicant_new",
@@ -38732,7 +38732,7 @@
       "name": "Teamtailor",
       "type": "ATS",
       "subtype": "teamtailor",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/teamtailor/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/teamtailor/logo.png",
       "actions": [
         {
           "name": "pull_job_list",
@@ -40069,7 +40069,7 @@
       "name": "Tekkit",
       "type": "JOBBOARD",
       "subtype": "tekkit",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/tekkit/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/tekkit/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -40142,7 +40142,7 @@
       "name": "Tellent",
       "type": "ATS",
       "subtype": "tellent",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/tellent/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/tellent/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -40214,7 +40214,7 @@
       "name": "TRAFFIT",
       "type": "ATS",
       "subtype": "traffit",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/traffit/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/traffit/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -40286,7 +40286,7 @@
       "name": "Trakstar",
       "type": "ATS",
       "subtype": "trakstar",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/trakstar/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/trakstar/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -40358,7 +40358,7 @@
       "name": "Tribepad",
       "type": "ATS",
       "subtype": "tribepad",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/tribepad/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/tribepad/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -40430,7 +40430,7 @@
       "name": "Twilio",
       "type": "AUTOMATION",
       "subtype": "twilio",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/twilio/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/twilio/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -40460,7 +40460,7 @@
       "name": "Ubeeo",
       "type": "ATS",
       "subtype": "ubeeo",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/ubeeo/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/ubeeo/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -40532,7 +40532,7 @@
       "name": "UKG Ready Recruiting",
       "type": "ATS",
       "subtype": "ukgreadyrecruiting",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/ukgreadyrecruiting/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/ukgreadyrecruiting/logo.jpeg",
       "actions": [
         {
           "action_parameters": {},
@@ -40604,7 +40604,7 @@
       "name": "Waalaxy",
       "type": "AUTOMATION",
       "subtype": "waalaxy",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/waalaxy/logo.webp",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/waalaxy/logo.webp",
       "actions": [
         {
           "name": "catch_profile",
@@ -41325,7 +41325,7 @@
       "name": "Welcome To The Jungle",
       "type": "JOBBOARD",
       "subtype": "welcometothejungle",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/welcometothejungle/logo.jpg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/welcometothejungle/logo.jpg",
       "actions": [
         {
           "action_parameters": {},
@@ -41398,7 +41398,7 @@
       "name": "Wizbii",
       "type": "JOBBOARD",
       "subtype": "wizbii",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/wizbii/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/wizbii/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -41471,7 +41471,7 @@
       "name": "Workable",
       "type": "HCM",
       "subtype": "workable",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/workable/logo.jpeg",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/workable/logo.jpeg",
       "actions": [
         {
           "name": "pull_job_list",
@@ -42633,7 +42633,7 @@
       "name": "Workday",
       "type": "ATS",
       "subtype": "workday",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/workday/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/workday/logo.png",
       "actions": [
         {
           "action_parameters": {},
@@ -42705,7 +42705,7 @@
       "name": "Zoho Recruit",
       "type": "ATS",
       "subtype": "zohorecruit",
-      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/connectors/zohorecruit/logo.png",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v1/connectors/zohorecruit/logo.png",
       "actions": [
         {
           "action_parameters": {},

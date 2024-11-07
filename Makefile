@@ -27,7 +27,7 @@ pytest-core:
 	HRFLOW_CONNECTORS_STORE_ENABLED="1" HRFLOW_CONNECTORS_LOCALJSON_DIR="/tmp/" poetry run pytest
 
 pytest:
-	HRFLOW_CONNECTORS_STORE_ENABLED="1" HRFLOW_CONNECTORS_LOCALJSON_DIR="/tmp/" poetry run pytest --allconnectors
+	HRFLOW_CONNECTORS_STORE_ENABLED="1" HRFLOW_CONNECTORS_LOCALJSON_DIR="/tmp/" poetry run pytest --allconnectors-v1 --allconnectors-v2
 
 ipython:
 	poetry run ipython

@@ -1,0 +1,1170 @@
+[
+  {
+    "name": "Abacus Umantis",
+    "type": "ATS",
+    "subtype": "abacusumantis",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Figaro Classifieds",
+    "type": "Job Board",
+    "subtype": "figaroclassifieds",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "ADP Workforce Now",
+    "type": "HCM",
+    "subtype": "adpworkforcenow",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Adzuna",
+    "type": "Job Board",
+    "subtype": "adzuna",
+    "status": "opensource",
+    "release_date": "08/09/2022",
+    "pre_v2_updated_at": "05/09/2024"
+  },
+  {
+    "name": "AFAS Software",
+    "type": "ATS",
+    "subtype": "afas",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Agefiph",
+    "type": "Job Board",
+    "subtype": "agefiph",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "APEC",
+    "type": "Job Board",
+    "subtype": "apec",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Applicantstack",
+    "type": "ATS",
+    "subtype": "applicantstack",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Ashby",
+    "type": "ATS",
+    "subtype": "ashby",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Avature",
+    "type": "ATS",
+    "subtype": "avature",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "BambooHR",
+    "type": "ATS",
+    "subtype": "bamboohr",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Beetween",
+    "type": "ATS",
+    "subtype": "beetween",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "BITE",
+    "type": "ATS",
+    "subtype": "bite",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "ClayHR",
+    "type": "ATS",
+    "subtype": "clayhr",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Breezy HR",
+    "type": "ATS",
+    "subtype": "breezyhr",
+    "status": "opensource",
+    "release_date": "19/01/2022",
+    "pre_v2_updated_at": "31/10/2024"
+  },
+  {
+    "name": "Broadbean",
+    "type": "ATS",
+    "subtype": "broadbean",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Bullhorn",
+    "type": "ATS",
+    "subtype": "bullhorn",
+    "status": "opensource",
+    "release_date": "26/01/2022",
+    "pre_v2_updated_at": "23/10/2024"
+  },
+  {
+    "name": "Cadreemploi",
+    "type": "Job Board",
+    "subtype": "cadreemploi",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Carerix",
+    "type": "ATS",
+    "subtype": "carerix",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Carrevolutis",
+    "type": "Job Board",
+    "subtype": "carrevolutis",
+    "status": "opensource",
+    "release_date": "20/03/2024",
+    "pre_v2_updated_at": "05/09/2024"
+  },
+  {
+    "name": "CATS",
+    "type": "ATS",
+    "subtype": "cats",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Cegid (Meta4)",
+    "type": "ATS",
+    "subtype": "meta4",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Ceipal",
+    "type": "ATS",
+    "subtype": "ceipal",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Ceridian",
+    "type": "HCM",
+    "subtype": "ceridian",
+    "status": "opensource",
+    "release_date": "19/01/2022",
+    "pre_v2_updated_at": "05/09/2024"
+  },
+  {
+    "name": "ClockWork",
+    "type": "ATS",
+    "subtype": "clockwork",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Comeet",
+    "type": "ATS",
+    "subtype": "comeet",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "concludis",
+    "type": "ATS",
+    "subtype": "concludis",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Connexys By Bullhorn",
+    "type": "ATS",
+    "subtype": "connexys",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Cornerjob",
+    "type": "Job Board",
+    "subtype": "cornerjob",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Cornerstone OnDemand",
+    "type": "ATS",
+    "subtype": "cornerstoneondemand",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Cornerstone TalentLink",
+    "type": "ATS",
+    "subtype": "cornerstonetalentlink",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Crosstalent",
+    "type": "ATS",
+    "subtype": "crosstalent",
+    "status": "opensource",
+    "release_date": "19/01/2022",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "d.vinci",
+    "type": "ATS",
+    "subtype": "dvinci",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Digitalrecruiters",
+    "type": "ATS",
+    "subtype": "digitalrecruiters",
+    "status": "opensource",
+    "release_date": "17/08/2023",
+    "pre_v2_updated_at": "24/10/2024"
+  },
+  {
+    "name": "Distrijob",
+    "type": "Job Board",
+    "subtype": "distrijob",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "EngageATS",
+    "type": "ATS",
+    "subtype": "engageats",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Engagement Jeunes",
+    "type": "Job Board",
+    "subtype": "engagementjeunes",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "EOLIA Software",
+    "type": "ATS",
+    "subtype": "eolia",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Eploy",
+    "type": "ATS",
+    "subtype": "eploy",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "eRecruiter",
+    "type": "ATS",
+    "subtype": "erecruiter",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Factorial",
+    "type": "ATS",
+    "subtype": "factorial",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "FashionJobs",
+    "type": "Job Board",
+    "subtype": "fashionjobs",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Fieldglass SAP",
+    "type": "ATS",
+    "subtype": "fieldglasssap",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Flatchr",
+    "type": "ATS",
+    "subtype": "flatchr",
+    "status": "opensource",
+    "release_date": "21/04/2022",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Fountain",
+    "type": "ATS",
+    "subtype": "fountain",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "freework",
+    "type": "Job Board",
+    "subtype": "freework",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Freshteam",
+    "type": "ATS",
+    "subtype": "freshteam",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Glassdoor",
+    "type": "Job Board",
+    "subtype": "glassdoor",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "GoldenBees",
+    "type": "Job Board",
+    "subtype": "goldenbees",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Greenhouse",
+    "type": "ATS",
+    "subtype": "greenhouse",
+    "status": "opensource",
+    "release_date": "19/01/2022",
+    "pre_v2_updated_at": "05/09/2024"
+  },
+  {
+    "name": "GuideCom",
+    "type": "ATS",
+    "subtype": "guidecom",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Handicap-Job",
+    "type": "Job Board",
+    "subtype": "handicapjob",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Harbour ATS",
+    "type": "ATS",
+    "subtype": "harbourats",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Haufe Umantis",
+    "type": "ATS",
+    "subtype": "umantis",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "HelloWork",
+    "type": "Job Board",
+    "subtype": "hellowork",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Heyrecruit",
+    "type": "ATS",
+    "subtype": "heyrecruit",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Homerun",
+    "type": "ATS",
+    "subtype": "homerun",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "HR Cloud",
+    "type": "ATS",
+    "subtype": "hrcloud",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "HR Office",
+    "type": "ATS",
+    "subtype": "hroffice",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "HRworks",
+    "type": "ATS",
+    "subtype": "hrworks",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Hubspot",
+    "type": "CRM",
+    "subtype": "hubspot",
+    "status": "opensource",
+    "release_date": "27/10/2022",
+    "pre_v2_updated_at": "05/09/2024"
+  },
+  {
+    "name": "iCIMS",
+    "type": "ATS",
+    "subtype": "icims",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Indeed",
+    "type": "Job Board",
+    "subtype": "indeed",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Infinite BrassRing",
+    "type": "ATS",
+    "subtype": "infinitebrassring",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "InRecruiting",
+    "type": "ATS",
+    "subtype": "inrecruiting",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Inzojob",
+    "type": "Job Board",
+    "subtype": "inzojob",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "JazzHR",
+    "type": "ATS",
+    "subtype": "jazzhr",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "JobAdder",
+    "type": "ATS",
+    "subtype": "jobadder",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Jobaffinity",
+    "type": "ATS",
+    "subtype": "jobaffinity",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "JobDiva",
+    "type": "ATS",
+    "subtype": "jobdiva",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Jobijoba",
+    "type": "Job Board",
+    "subtype": "jobijoba",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Jobology",
+    "type": "Job Board",
+    "subtype": "jobology",
+    "status": "opensource",
+    "release_date": "21/12/2022",
+    "pre_v2_updated_at": "05/09/2024"
+  },
+  {
+    "name": "Jobrapido",
+    "type": "Job Board",
+    "subtype": "jobrapido",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "JobScore",
+    "type": "ATS",
+    "subtype": "jobscore",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Jobsoid",
+    "type": "ATS",
+    "subtype": "jobsoid",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "JobTeaser",
+    "type": "Job Board",
+    "subtype": "jobteaser",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Jobtransport",
+    "type": "Job Board",
+    "subtype": "jobtransport",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Jobvitae",
+    "type": "Job Board",
+    "subtype": "jobvitae",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Jobvite",
+    "type": "ATS",
+    "subtype": "jobvite",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Jobylon",
+    "type": "ATS",
+    "subtype": "jobylon",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "JOIN",
+    "type": "ATS",
+    "subtype": "join",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Jooble",
+    "type": "Job Board",
+    "subtype": "jooble",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Keljob",
+    "type": "Job Board",
+    "subtype": "keljob",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Lano",
+    "type": "ATS",
+    "subtype": "lano",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Laponi",
+    "type": "Job Board",
+    "subtype": "laponi",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Leboncoin",
+    "type": "Job Board",
+    "subtype": "leboncoin",
+    "status": "opensource",
+    "release_date": "13/07/2022",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "LesJeudis",
+    "type": "Job Board",
+    "subtype": "lesjeudis",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Lever",
+    "type": "ATS",
+    "subtype": "lever",
+    "status": "opensource",
+    "release_date": "18/08/2023",
+    "pre_v2_updated_at": "23/10/2024"
+  },
+  {
+    "name": "LinkedIn",
+    "type": "Job Board",
+    "subtype": "linkedin",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Lucca",
+    "type": "HCM",
+    "subtype": "lucca",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Mailchimp",
+    "type": "Automation",
+    "subtype": "mailchimp",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Meteojob",
+    "type": "Job Board",
+    "subtype": "meteojob",
+    "status": "opensource",
+    "release_date": "15/02/2024",
+    "pre_v2_updated_at": "05/09/2024"
+  },
+  {
+    "name": "Microsoft Dynamics",
+    "type": "HCM",
+    "subtype": "microsoftdynamics",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Monster",
+    "type": "Job Board",
+    "subtype": "monster",
+    "status": "opensource",
+    "release_date": "23/11/2022",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Mysolution",
+    "type": "ATS",
+    "subtype": "mysolution",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Neuvoo",
+    "type": "Job Board",
+    "subtype": "neuvoo",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Occupop",
+    "type": "ATS",
+    "subtype": "occupop",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Onlyfy",
+    "type": "ATS",
+    "subtype": "onlyfy",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Optioncarriere",
+    "type": "Job Board",
+    "subtype": "optioncarriere",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Oracle",
+    "type": "HCM",
+    "subtype": "oracle",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Oracle Fusion - Recruiting Cloud",
+    "type": "ATS",
+    "subtype": "oraclefusion",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Oracle Recruiting Cloud",
+    "type": "ATS",
+    "subtype": "oraclerecruiting",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Oracle Taleo",
+    "type": "ATS",
+    "subtype": "oracletaleo",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "OTYS",
+    "type": "ATS",
+    "subtype": "otys",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "P&I Loga",
+    "type": "ATS",
+    "subtype": "piloga",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Personio",
+    "type": "HCM",
+    "subtype": "personio",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Personio Recruiting",
+    "type": "ATS",
+    "subtype": "personiorecruiting",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Pinpoint",
+    "type": "ATS",
+    "subtype": "pinpoint",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Pole Emploi",
+    "type": "Job Board",
+    "subtype": "poleemploi",
+    "status": "opensource",
+    "release_date": "15/07/2022",
+    "pre_v2_updated_at": "24/10/2024"
+  },
+  {
+    "name": "Polymer",
+    "type": "ATS",
+    "subtype": "polymer",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Radancy",
+    "type": "HCM",
+    "subtype": "radancy",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "ReachMee",
+    "type": "ATS",
+    "subtype": "reachmee",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "RECRU",
+    "type": "ATS",
+    "subtype": "recruhr",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Recruitee",
+    "type": "ATS",
+    "subtype": "recruitee",
+    "status": "opensource",
+    "release_date": "30/10/2022",
+    "pre_v2_updated_at": "23/10/2024"
+  },
+  {
+    "name": "Recruiterflow",
+    "type": "ATS",
+    "subtype": "recruiterflow",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Recruitive",
+    "type": "ATS",
+    "subtype": "recruitive",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "rexx systems",
+    "type": "ATS",
+    "subtype": "rexx",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Sage HR",
+    "type": "ATS",
+    "subtype": "sagehr",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Salesforce",
+    "type": "CRM",
+    "subtype": "salesforce",
+    "status": "opensource",
+    "release_date": "03/08/2023",
+    "pre_v2_updated_at": "05/09/2024"
+  },
+  {
+    "name": "SAP SuccessFactors",
+    "type": "HCM",
+    "subtype": "sapsuccessfactors",
+    "status": "opensource",
+    "release_date": "19/01/2022",
+    "pre_v2_updated_at": "23/10/2024"
+  },
+  {
+    "name": "SmartRecruiters",
+    "type": "ATS",
+    "subtype": "smartrecruiters",
+    "status": "opensource",
+    "release_date": "21/03/2022",
+    "pre_v2_updated_at": "05/09/2024"
+  },
+  {
+    "name": "Softgarden",
+    "type": "ATS",
+    "subtype": "softgarden",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Staffme",
+    "type": "Job Board",
+    "subtype": "staffme",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Staffsante",
+    "type": "Job Board",
+    "subtype": "staffsante",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Taleez",
+    "type": "ATS",
+    "subtype": "taleez",
+    "status": "opensource",
+    "release_date": "19/01/2022",
+    "pre_v2_updated_at": "23/10/2024"
+  },
+  {
+    "name": "Talent Clue",
+    "type": "ATS",
+    "subtype": "talentclue",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "TalentAdore",
+    "type": "ATS",
+    "subtype": "talentadore",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Talentlink",
+    "type": "ATS",
+    "subtype": "talentlink",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "TalentLyft",
+    "type": "ATS",
+    "subtype": "talentlyft",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "TalentReef",
+    "type": "ATS",
+    "subtype": "talentreef",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "TalentSoft",
+    "type": "HCM",
+    "subtype": "talentsoft",
+    "status": "opensource",
+    "release_date": "19/04/2022",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Teamtailor",
+    "type": "ATS",
+    "subtype": "teamtailor",
+    "status": "opensource",
+    "release_date": "06/10/2022",
+    "pre_v2_updated_at": "05/09/2024"
+  },
+  {
+    "name": "Tekkit",
+    "type": "Job Board",
+    "subtype": "tekkit",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Tellent",
+    "type": "ATS",
+    "subtype": "tellent",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "TRAFFIT",
+    "type": "ATS",
+    "subtype": "traffit",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Trakstar",
+    "type": "ATS",
+    "subtype": "trakstar",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Tribepad",
+    "type": "ATS",
+    "subtype": "tribepad",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Twilio",
+    "type": "Automation",
+    "subtype": "twilio",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Ubeeo",
+    "type": "ATS",
+    "subtype": "ubeeo",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "UKG Ready Recruiting",
+    "type": "ATS",
+    "subtype": "ukgreadyrecruiting",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Waalaxy",
+    "type": "Automation",
+    "subtype": "waalaxy",
+    "status": "opensource",
+    "release_date": "18/11/2022",
+    "pre_v2_updated_at": "05/09/2024"
+  },
+  {
+    "name": "Welcome To The Jungle",
+    "type": "Job Board",
+    "subtype": "welcometothejungle",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Wizbii",
+    "type": "Job Board",
+    "subtype": "wizbii",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Workable",
+    "type": "ATS",
+    "subtype": "workable",
+    "status": "opensource",
+    "release_date": "27/09/2022",
+    "pre_v2_updated_at": "05/09/2024"
+  },
+  {
+    "name": "Workday",
+    "type": "ATS",
+    "subtype": "workday",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
+    "name": "Zoho Recruit",
+    "type": "ATS",
+    "subtype": "zohorecruit",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  }
+]
