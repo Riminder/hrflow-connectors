@@ -1,5 +1,4 @@
 import os
-import typing as t
 from unittest import mock
 
 try:
@@ -13,8 +12,11 @@ except ModuleNotFoundError:
 
 import pytest
 from pydantic import BaseModel
+from msgspec import Struct
 
 from hrflow_connectors.core import backend
+from hrflow_connectors.core.backend import localjson, s3
+from hrflow_connectors.core.backend.common import StoreNotInitializedError
 from tests.conftest import random_workflow_id
 
 
@@ -26,23 +28,28 @@ def backend_restore():
 
 @pytest.fixture
 def s3_restore():
+    assert (S3_STORE_TEST_BUCKET := os.environ.get("S3_STORE_TEST_BUCKET")) is not None
+
     yield
+
     boto3.resource(
         "s3",
         region_name=os.environ.get("S3_STORE_TEST_AWS_REGION"),
         aws_access_key_id=os.environ.get("S3_STORE_TEST_AWS_ACCESS_KEY_ID"),
         aws_secret_access_key=os.environ.get("S3_STORE_TEST_AWS_SECRET_ACCESS_KEY"),
-    ).Bucket(os.environ.get("S3_STORE_TEST_BUCKET")).objects.delete()
+    ).Bucket(S3_STORE_TEST_BUCKET).objects.delete()
 
 
 @pytest.fixture
 def s3_resource():
+    assert (S3_STORE_TEST_BUCKET := os.environ.get("S3_STORE_TEST_BUCKET")) is not None
+
     return boto3.resource(
         "s3",
         region_name=os.environ.get("S3_STORE_TEST_AWS_REGION"),
         aws_access_key_id=os.environ.get("S3_STORE_TEST_AWS_ACCESS_KEY_ID"),
         aws_secret_access_key=os.environ.get("S3_STORE_TEST_AWS_SECRET_ACCESS_KEY"),
-    ).Bucket(os.environ.get("S3_STORE_TEST_BUCKET"))
+    ).Bucket(S3_STORE_TEST_BUCKET)
 
 
 def test_store_disabled(backend_restore):
@@ -51,7 +58,6 @@ def test_store_disabled(backend_restore):
             os.environ, {backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: v}
         ):
             backend.configure_store()
-            assert backend.is_configured is False
             assert backend.store is None
 
 
@@ -68,10 +74,29 @@ def test_bad_store_name(backend_restore):
         assert "not a valid store" in excinfo.value.args[0]
 
 
-class TestModel(BaseModel):
+class PydanticModel(BaseModel):
     key1: str
     key2: int
-    key3: t.Dict
+    key3: dict
+
+
+class MsgSpecModel(Struct):
+    key1: str
+    key2: int
+    key3: dict
+
+
+@pytest.mark.parametrize("Model", [PydanticModel, MsgSpecModel])
+def test_using_store_before_init_fails(Model, backend_restore):
+    localjson.LocalJsonStore.state = None
+
+    with pytest.raises(StoreNotInitializedError):
+        localjson.LocalJsonStore.save(
+            "some_key", Model(key1="xxx", key2=3, key3=dict(test=True))
+        )
+
+    with pytest.raises(StoreNotInitializedError):
+        localjson.LocalJsonStore.load("some_key", parse_as=Model)
 
 
 def test_localjson_store_bad_configuration(backend_restore):
@@ -92,7 +117,7 @@ def test_localjson_store_bad_configuration(backend_restore):
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
             backend.STORE_NAME_ENVIRONMENT_VARIABLE: "localjson",
-            backend.LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE: "./ubuntu",
+            localjson.DIRECTORY_ENVIRONMENT_VARIABLE: "./ubuntu",
         },
     ):
         with pytest.raises(Exception) as excinfo:
@@ -104,9 +129,7 @@ def test_localjson_store_bad_configuration(backend_restore):
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
             backend.STORE_NAME_ENVIRONMENT_VARIABLE: "localjson",
-            backend.LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE: (
-                "/home/userDoesNotExist/work"
-            ),
+            localjson.DIRECTORY_ENVIRONMENT_VARIABLE: ("/home/userDoesNotExist/work"),
         },
     ):
         with pytest.raises(Exception) as excinfo:
@@ -114,23 +137,26 @@ def test_localjson_store_bad_configuration(backend_restore):
         assert "does not exist" in excinfo.value.args[0]
 
 
-def test_localjson_store(backend_restore, tmp_path):
+@pytest.mark.parametrize("Model", [PydanticModel, MsgSpecModel])
+def test_localjson_store(Model, backend_restore, tmp_path):
     key = random_workflow_id()
-    data = TestModel(key1="xxx", key2=3, key3=dict(test=True))
+    data = Model(key1="xxx", key2=3, key3=dict(test=True))
 
     with mock.patch.dict(
         os.environ,
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
             backend.STORE_NAME_ENVIRONMENT_VARIABLE: "localjson",
-            backend.LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE: str(tmp_path),
+            localjson.DIRECTORY_ENVIRONMENT_VARIABLE: str(tmp_path),
         },
     ):
         backend.configure_store()
 
-        assert backend.store.load(key, TestModel) is None
+        assert backend.store is not None
+
+        assert backend.store.load(key, Model) is None
         backend.store.save(key, data)
-        assert backend.store.load(key, TestModel) == data
+        assert backend.store.load(key, Model) == data
 
     with mock.patch.dict(
         os.environ,
@@ -146,23 +172,23 @@ def test_localjson_store(backend_restore, tmp_path):
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
             backend.STORE_NAME_ENVIRONMENT_VARIABLE: "localjson",
-            backend.LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE: str(tmp_path),
+            localjson.DIRECTORY_ENVIRONMENT_VARIABLE: str(tmp_path),
         },
     ):
         backend.configure_store()
 
-        assert backend.store.load(key, TestModel) == data
+        assert backend.store.load(key, Model) == data
 
 
 def test_localjson_store_corrupted_file(backend_restore, tmp_path):
-    corrupted_store = tmp_path / backend.LocalJsonStore.STORE_FILENAME
+    corrupted_store = tmp_path / localjson.STORE_FILENAME
     corrupted_store.write_bytes(0xFF.to_bytes(4, "big"))
     with mock.patch.dict(
         os.environ,
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
             backend.STORE_NAME_ENVIRONMENT_VARIABLE: "localjson",
-            backend.LocalJsonStore.DIRECTORY_ENVIRONMENT_VARIABLE: str(tmp_path),
+            localjson.DIRECTORY_ENVIRONMENT_VARIABLE: str(tmp_path),
         },
     ):
         with pytest.raises(Exception) as excinfo:
@@ -179,12 +205,167 @@ def test_s3_store_bad_configuration(backend_restore, s3_restore):
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
             backend.STORE_NAME_ENVIRONMENT_VARIABLE: "s3",
+            s3.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get("S3_STORE_TEST_BUCKET"),
         },
         clear=True,
     ):
         with pytest.raises(Exception) as excinfo:
             backend.configure_store()
-        assert "Missing environment variable" in excinfo.value.args[0]
+        assert (
+            f"Missing environment variable {s3.AWS_REGION_ENVIRONMENT_VARIABLE}"
+            in excinfo.value.args[0]
+        )
+
+    with mock.patch.dict(
+        os.environ,
+        {
+            backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
+            backend.STORE_NAME_ENVIRONMENT_VARIABLE: "s3",
+            s3.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_REGION"
+            ),
+        },
+        clear=True,
+    ):
+        with pytest.raises(Exception) as excinfo:
+            backend.configure_store()
+        assert (
+            f"Missing environment variable {s3.BUCKET_ENVIRONMENT_VARIABLE}"
+            in excinfo.value.args[0]
+        )
+
+
+@pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
+def test_s3_writing_pydantic_model_is_tested_on_init(backend_restore, s3_restore):
+    def failing_if_pydantic(state, key, instance):
+        if isinstance(instance, BaseModel):
+            raise Exception("Fail for pydantic only")
+
+    with mock.patch.dict(
+        os.environ,
+        {
+            backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
+            backend.STORE_NAME_ENVIRONMENT_VARIABLE: "s3",
+            s3.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get("S3_STORE_TEST_BUCKET"),
+            s3.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_REGION"
+            ),
+            s3.AWS_ACCESS_KEY_ID_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_ACCESS_KEY_ID"
+            ),
+            s3.AWS_SECRET_ACCESS_KEY_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_SECRET_ACCESS_KEY"
+            ),
+        },
+        clear=True,
+    ):
+        with mock.patch.object(s3, "save", new=failing_if_pydantic):
+            with pytest.raises(Exception) as excinfo:
+                s3.S3Store.init()
+        assert "Failed to check writing to S3" in excinfo.value.args[0]
+        assert "Fail for pydantic only" in excinfo.value.args[0]
+
+
+@pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
+def test_s3_writing_msgspec_model_is_tested_on_init(backend_restore, s3_restore):
+    def failing_if_msgspec(state, key, instance):
+        if isinstance(instance, Struct):
+            raise Exception("Fail for msgspec only")
+
+    equal_to_loaded = mock.MagicMock()
+    equal_to_loaded.__eq__.return_value = True
+    with mock.patch.dict(
+        os.environ,
+        {
+            backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
+            backend.STORE_NAME_ENVIRONMENT_VARIABLE: "s3",
+            s3.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get("S3_STORE_TEST_BUCKET"),
+            s3.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_REGION"
+            ),
+            s3.AWS_ACCESS_KEY_ID_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_ACCESS_KEY_ID"
+            ),
+            s3.AWS_SECRET_ACCESS_KEY_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_SECRET_ACCESS_KEY"
+            ),
+        },
+        clear=True,
+    ):
+        with mock.patch.object(s3, "save", new=failing_if_msgspec), mock.patch.object(
+            s3, "load", new=lambda *args, **kwargs: equal_to_loaded
+        ):
+            with pytest.raises(Exception) as excinfo:
+                s3.S3Store.init()
+        assert "Failed to check writing to S3" in excinfo.value.args[0]
+        assert "Fail for msgspec only" in excinfo.value.args[0]
+
+
+@pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
+def test_s3_reading_pydantic_model_is_tested_on_init(backend_restore, s3_restore):
+    def failing_if_pydantic(state, key, parse_as):
+        if issubclass(parse_as, BaseModel):
+            raise Exception("Fail for pydantic only")
+
+    with mock.patch.dict(
+        os.environ,
+        {
+            backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
+            backend.STORE_NAME_ENVIRONMENT_VARIABLE: "s3",
+            s3.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get("S3_STORE_TEST_BUCKET"),
+            s3.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_REGION"
+            ),
+            s3.AWS_ACCESS_KEY_ID_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_ACCESS_KEY_ID"
+            ),
+            s3.AWS_SECRET_ACCESS_KEY_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_SECRET_ACCESS_KEY"
+            ),
+        },
+        clear=True,
+    ):
+        with mock.patch.object(s3, "load", new=failing_if_pydantic):
+            with pytest.raises(Exception) as excinfo:
+                s3.S3Store.init()
+        assert "Failed to check reading from S3" in excinfo.value.args[0]
+        assert "Fail for pydantic only" in excinfo.value.args[0]
+
+
+@pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
+def test_s3_reading_msgspec_model_is_tested_on_init(backend_restore, s3_restore):
+    equal_to_loaded = mock.MagicMock()
+    equal_to_loaded.__eq__.return_value = True
+
+    def failing_if_msgspec(state, key, parse_as):
+        if issubclass(parse_as, Struct):
+            raise Exception("Fail for msgspec only")
+        return equal_to_loaded
+
+    with mock.patch.dict(
+        os.environ,
+        {
+            backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
+            backend.STORE_NAME_ENVIRONMENT_VARIABLE: "s3",
+            s3.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get("S3_STORE_TEST_BUCKET"),
+            s3.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_REGION"
+            ),
+            s3.AWS_ACCESS_KEY_ID_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_ACCESS_KEY_ID"
+            ),
+            s3.AWS_SECRET_ACCESS_KEY_ENVIRONMENT_VARIABLE: os.environ.get(
+                "S3_STORE_TEST_AWS_SECRET_ACCESS_KEY"
+            ),
+        },
+        clear=True,
+    ):
+        with mock.patch.object(s3, "load", new=failing_if_msgspec):
+            with pytest.raises(Exception) as excinfo:
+                s3.S3Store.init()
+
+        assert "Failed to check reading from S3" in excinfo.value.args[0]
+        assert "Fail for msgspec only" in excinfo.value.args[0]
 
 
 @pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
@@ -194,16 +375,14 @@ def test_s3_store_no_write_permission(backend_restore, s3_restore):
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
             backend.STORE_NAME_ENVIRONMENT_VARIABLE: "s3",
-            backend.S3Store.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get(
-                "S3_STORE_TEST_BUCKET"
-            ),
-            backend.S3Store.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
+            s3.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get("S3_STORE_TEST_BUCKET"),
+            s3.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
                 "S3_STORE_TEST_AWS_REGION"
             ),
-            backend.S3Store.AWS_ACCESS_KEY_ID_ENVIRONMENT_VARIABLE: os.environ.get(
+            s3.AWS_ACCESS_KEY_ID_ENVIRONMENT_VARIABLE: os.environ.get(
                 "S3_STORE_TEST_READ_ONLY_AWS_ACCESS_KEY_ID"
             ),
-            backend.S3Store.AWS_SECRET_ACCESS_KEY_ENVIRONMENT_VARIABLE: os.environ.get(
+            s3.AWS_SECRET_ACCESS_KEY_ENVIRONMENT_VARIABLE: os.environ.get(
                 "S3_STORE_TEST_READ_ONLY_AWS_SECRET_ACCESS_KEY"
             ),
         },
@@ -221,16 +400,14 @@ def test_s3_store_no_read_permission(backend_restore, s3_restore):
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
             backend.STORE_NAME_ENVIRONMENT_VARIABLE: "s3",
-            backend.S3Store.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get(
-                "S3_STORE_TEST_BUCKET"
-            ),
-            backend.S3Store.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
+            s3.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get("S3_STORE_TEST_BUCKET"),
+            s3.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
                 "S3_STORE_TEST_AWS_REGION"
             ),
-            backend.S3Store.AWS_ACCESS_KEY_ID_ENVIRONMENT_VARIABLE: os.environ.get(
+            s3.AWS_ACCESS_KEY_ID_ENVIRONMENT_VARIABLE: os.environ.get(
                 "S3_STORE_TEST_WRITE_ONLY_AWS_ACCESS_KEY_ID"
             ),
-            backend.S3Store.AWS_SECRET_ACCESS_KEY_ENVIRONMENT_VARIABLE: os.environ.get(
+            s3.AWS_SECRET_ACCESS_KEY_ENVIRONMENT_VARIABLE: os.environ.get(
                 "S3_STORE_TEST_WRITE_ONLY_AWS_SECRET_ACCESS_KEY"
             ),
         },
@@ -241,51 +418,51 @@ def test_s3_store_no_read_permission(backend_restore, s3_restore):
         assert "Failed to check reading from S3" in excinfo.value.args[0]
 
 
+@pytest.mark.parametrize("Model", [PydanticModel, MsgSpecModel])
 @pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
-def test_s3_store(backend_restore, s3_restore):
+def test_s3_store(Model, backend_restore, s3_restore):
     key = random_workflow_id()
-    data = TestModel(key1="xxx", key2=3, key3=dict(test=True))
+    data = Model(key1="xxx", key2=3, key3=dict(test=True))
 
     with mock.patch.dict(
         os.environ,
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
             backend.STORE_NAME_ENVIRONMENT_VARIABLE: "s3",
-            backend.S3Store.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get(
-                "S3_STORE_TEST_BUCKET"
-            ),
-            backend.S3Store.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
+            s3.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get("S3_STORE_TEST_BUCKET"),
+            s3.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
                 "S3_STORE_TEST_AWS_REGION"
             ),
-            backend.S3Store.AWS_ACCESS_KEY_ID_ENVIRONMENT_VARIABLE: os.environ.get(
+            s3.AWS_ACCESS_KEY_ID_ENVIRONMENT_VARIABLE: os.environ.get(
                 "S3_STORE_TEST_AWS_ACCESS_KEY_ID"
             ),
-            backend.S3Store.AWS_SECRET_ACCESS_KEY_ENVIRONMENT_VARIABLE: os.environ.get(
+            s3.AWS_SECRET_ACCESS_KEY_ENVIRONMENT_VARIABLE: os.environ.get(
                 "S3_STORE_TEST_AWS_SECRET_ACCESS_KEY"
             ),
         },
     ):
         backend.configure_store()
 
-        assert backend.store.load(key, TestModel) is None
+        assert backend.store is not None
+
+        assert backend.store.load(key, Model) is None
         backend.store.save(key, data)
-        assert backend.store.load(key, TestModel) == data
+        assert backend.store.load(key, Model) == data
 
 
 @pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
-def test_s3_store_implicit_credentials(backend_restore, s3_restore):
+@pytest.mark.parametrize("Model", [PydanticModel, MsgSpecModel])
+def test_s3_store_implicit_credentials(Model, backend_restore, s3_restore):
     key = "xxx_TestS3Store"
-    data = TestModel(key1="xxx", key2=3, key3=dict(test=True))
+    data = Model(key1="xxx", key2=3, key3=dict(test=True))
 
     with mock.patch.dict(
         os.environ,
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
             backend.STORE_NAME_ENVIRONMENT_VARIABLE: "s3",
-            backend.S3Store.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get(
-                "S3_STORE_TEST_BUCKET"
-            ),
-            backend.S3Store.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
+            s3.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get("S3_STORE_TEST_BUCKET"),
+            s3.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
                 "S3_STORE_TEST_AWS_REGION"
             ),
             "AWS_ACCESS_KEY_ID": os.environ.get("S3_STORE_TEST_AWS_ACCESS_KEY_ID"),
@@ -296,15 +473,18 @@ def test_s3_store_implicit_credentials(backend_restore, s3_restore):
     ):
         backend.configure_store()
 
-        assert backend.store.load(key, TestModel) is None
+        assert backend.store is not None
+
+        assert backend.store.load(key, Model) is None
         backend.store.save(key, data)
-        assert backend.store.load(key, TestModel) == data
+        assert backend.store.load(key, Model) == data
 
 
 @pytest.mark.skipif(skip_s3_tests, reason="s3 extra not activated")
-def test_s3_store_prefix_working(backend_restore, s3_restore, s3_resource):
+@pytest.mark.parametrize("Model", [PydanticModel, MsgSpecModel])
+def test_s3_store_prefix_working(Model, backend_restore, s3_restore, s3_resource):
     key = random_workflow_id()
-    data = TestModel(key1="xxx", key2=3, key3=dict(test=True))
+    data = Model(key1="xxx", key2=3, key3=dict(test=True))
     prefix = "pytest"
 
     with mock.patch.dict(
@@ -312,26 +492,26 @@ def test_s3_store_prefix_working(backend_restore, s3_restore, s3_resource):
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
             backend.STORE_NAME_ENVIRONMENT_VARIABLE: "s3",
-            backend.S3Store.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get(
-                "S3_STORE_TEST_BUCKET"
-            ),
-            backend.S3Store.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
+            s3.BUCKET_ENVIRONMENT_VARIABLE: os.environ.get("S3_STORE_TEST_BUCKET"),
+            s3.AWS_REGION_ENVIRONMENT_VARIABLE: os.environ.get(
                 "S3_STORE_TEST_AWS_REGION"
             ),
-            backend.S3Store.AWS_ACCESS_KEY_ID_ENVIRONMENT_VARIABLE: os.environ.get(
+            s3.AWS_ACCESS_KEY_ID_ENVIRONMENT_VARIABLE: os.environ.get(
                 "S3_STORE_TEST_AWS_ACCESS_KEY_ID"
             ),
-            backend.S3Store.AWS_SECRET_ACCESS_KEY_ENVIRONMENT_VARIABLE: os.environ.get(
+            s3.AWS_SECRET_ACCESS_KEY_ENVIRONMENT_VARIABLE: os.environ.get(
                 "S3_STORE_TEST_AWS_SECRET_ACCESS_KEY"
             ),
-            backend.S3Store.PREFIX_ENVIRONMENT_VARIABLE: prefix,
+            s3.PREFIX_ENVIRONMENT_VARIABLE: prefix,
         },
     ):
         backend.configure_store()
 
-        assert backend.store.load(key, TestModel) is None
+        assert backend.store is not None
+
+        assert backend.store.load(key, Model) is None
         backend.store.save(key, data)
-        assert backend.store.load(key, TestModel) == data
+        assert backend.store.load(key, Model) == data
 
     objects_in_bucket = 0
     expected_objects_in_bucket = 2

@@ -617,7 +617,7 @@ class ConnectorAction(BaseModel):
                     reason=Reason.origin_does_not_support_incremental,
                 )
 
-            if backend.is_configured is False:
+            if backend.store is None:
                 adapter.warning(
                     "For '{}' read_mode backend must be configured".format(
                         ReadMode.incremental.value
@@ -844,7 +844,7 @@ class ConnectorAction(BaseModel):
 
         results = RunResult.from_events(events)
         results.read_from = next_read_from
-        if backend.is_configured:
+        if backend.store is not None:
             adapter.info("Saving run results in {} backend".format(backend.store.name))
             backend.store.save(key=workflow_id, data=results)
 

@@ -855,7 +855,7 @@ def test_connector_incremental_backend_not_configured():
     campaign_id = "camp_xxx1"
     assert len(LEADS_DB[campaign_id]) == 0
 
-    with mock.patch.object(backend, "is_configured", new=False):
+    with mock.patch.object(backend, "store", new=None):
         with mock.patch.object(
             SmartLeads.model.actions[0].origin.read, "supports_incremental", new=True
         ):
@@ -1010,7 +1010,7 @@ def test_read_from_is_persisted_after_failure():
     )
 
     # Backend not configured
-    with mock.patch.object(backend, "is_configured", new=False):
+    with mock.patch.object(backend, "store", new=None):
         result = SmartLeads.push_profile_list(
             workflow_id=workflow_id,
             action_parameters=dict(read_mode=ReadMode.incremental),
