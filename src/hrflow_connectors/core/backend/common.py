@@ -1,7 +1,25 @@
 import typing as t
+from collections import Counter
+from enum import Enum
 
-from pydantic import BaseModel
 from msgspec import Struct
+from pydantic import BaseModel
+
+
+# This decoder add support for Counter[AnyEnum] which is a
+# specialized dict used in RunResult
+# See https://jcristharif.com/msgspec/extending.html#mapping-to-from-native-types
+def msgspec_dec_hook(type: type, obj: t.Any) -> t.Any:
+    if (
+        t.get_origin(type) is Counter
+        and len(t.get_args(type)) == 1
+        and issubclass((EnumModel := t.get_args(type)[0]), Enum)
+    ):
+        return Counter({EnumModel(key): value for key, value in obj.items()})
+    else:
+        raise NotImplementedError(
+            f"Objects of type {type} are not supported"
+        )  # pragma: nocover
 
 
 class StoreNotInitializedError(Exception):

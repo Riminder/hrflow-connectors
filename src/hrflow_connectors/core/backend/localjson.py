@@ -2,10 +2,10 @@ import os
 import typing as t
 from pathlib import Path
 
+from msgspec import DecodeError, Struct, convert, json
 from pydantic import BaseModel
-from msgspec import Struct, json, DecodeError, convert
 
-from hrflow_connectors.core.backend.common import BackendStore
+from hrflow_connectors.core.backend.common import BackendStore, msgspec_dec_hook
 
 DIRECTORY_ENVIRONMENT_VARIABLE: t.Final = "HRFLOW_CONNECTORS_LOCALJSON_DIR"
 STORE_FILENAME: t.Final = "store.json"
@@ -64,7 +64,9 @@ def load(
     if key in store["data"]:
         if issubclass(parse_as, BaseModel):
             return parse_as.parse_raw(store["data"][key])
-        return convert(json.decode(store["data"][key]), parse_as)
+        return convert(
+            json.decode(store["data"][key]), parse_as, dec_hook=msgspec_dec_hook
+        )
     return None
 
 

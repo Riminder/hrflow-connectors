@@ -5,11 +5,10 @@ from io import BytesIO
 
 import boto3
 import boto3.session
+from msgspec import Struct, convert, defstruct, json
 from pydantic import BaseModel, create_model
-from msgspec import Struct, convert, json, defstruct
 
-from hrflow_connectors.core.backend.common import BackendStore
-
+from hrflow_connectors.core.backend.common import BackendStore, msgspec_dec_hook
 
 logger = logging.getLogger(__name__)
 
@@ -164,7 +163,7 @@ def load(
             raise e
         if issubclass(parse_as, BaseModel):
             return parse_as.parse_raw(raw.getvalue().decode())
-        return convert(json.decode(raw.getvalue()), parse_as)
+        return convert(json.decode(raw.getvalue()), parse_as, dec_hook=msgspec_dec_hook)
 
 
 S3Store = BackendStore(name=NAME, get_state=get_state, saver=save, loader=load)
