@@ -87,22 +87,35 @@ class ActionInitError(Struct):
 
 
 class RunResult(Struct):
+    incremental: bool
     status: Status
     reason: Reason = Reason.none
     events: t.Counter[Event] = field(default_factory=Event.empty_counter)
     incremental_token: t.Optional[str] = None
 
     @classmethod
-    def from_events(cls, events: t.Counter[Event]) -> "RunResult":
+    def from_events(
+        cls,
+        events: t.Counter[Event],
+        incremental: bool,
+        incremental_token: t.Optional[str] = None,
+    ) -> "RunResult":
         read_success = events[Event.read_success]
         read_failures = events[Event.read_failure]
         if read_success == 0 and read_failures == 0:
-            return cls(status=Status.success, events=events)
+            return cls(
+                status=Status.success,
+                events=events,
+                incremental=incremental,
+                incremental_token=incremental_token,
+            )
         elif read_success == 0 and read_failures > 0:
             return cls(
                 status=Status.fatal,
                 reason=Reason.read_failure,
                 events=events,
+                incremental=incremental,
+                incremental_token=incremental_token,
             )
 
         logics_failures = events[Event.logics_failure]
@@ -111,6 +124,8 @@ class RunResult(Struct):
                 status=Status.fatal,
                 reason=Reason.logics_failure,
                 events=events,
+                incremental=incremental,
+                incremental_token=incremental_token,
             )
 
         logics_discard = events[Event.logics_discard]
@@ -120,6 +135,8 @@ class RunResult(Struct):
                 status=Status.fatal,
                 reason=Reason.format_failure,
                 events=events,
+                incremental=incremental,
+                incremental_token=incremental_token,
             )
 
         write_failure = events[Event.write_failure]
@@ -131,6 +148,8 @@ class RunResult(Struct):
                 status=Status.fatal,
                 reason=Reason.write_failure,
                 events=events,
+                incremental=incremental,
+                incremental_token=incremental_token,
             )
 
         has_failures = any(
@@ -144,8 +163,18 @@ class RunResult(Struct):
             ]
         )
         if has_failures:
-            return cls(status=Status.success_with_failures, events=events)
-        return cls(status=Status.success, events=events)
+            return cls(
+                status=Status.success_with_failures,
+                events=events,
+                incremental=incremental,
+                incremental_token=incremental_token,
+            )
+        return cls(
+            status=Status.success,
+            events=events,
+            incremental=incremental,
+            incremental_token=incremental_token,
+        )
 
 
 class Metadata(Struct):
@@ -212,20 +241,21 @@ def run(
             )
         )
         return RunResult(
-            status=Status.fatal,
-            reason=init_error.reason,
+            status=Status.fatal, reason=init_error.reason, incremental=incremental
         )
 
     if origin.read is None:
         return RunResult(
             status=Status.fatal,
             reason=Reason.origin_is_not_readable,
+            incremental=incremental,
         )
 
     if target.write is None:
         return RunResult(
             status=Status.fatal,
             reason=Reason.target_is_not_writable,
+            incremental=incremental,
         )
 
     origin_parameters_schema = origin.parameters(operation="read", mode=mode)
@@ -233,6 +263,7 @@ def run(
         return RunResult(
             status=Status.fatal,
             reason=Reason.mode_not_supported_by_origin,
+            incremental=incremental,
         )
 
     target_parameters_schema = target.parameters(operation="write", mode=mode)
@@ -240,6 +271,7 @@ def run(
         return RunResult(
             status=Status.fatal,
             reason=Reason.mode_not_supported_by_target,
+            incremental=incremental,
         )
 
     adapter.info("Starting Action")
@@ -247,7 +279,11 @@ def run(
         parsed_origin_auth_parameters = serialize(origin_auth, origin_auth_schema)
     except ValidationError as e:
         adapter.warning(f"Failed to parse origin_auth with errors={e}")
-        return RunResult(status=Status.fatal, reason=Reason.bad_origin_parameters)
+        return RunResult(
+            status=Status.fatal,
+            reason=Reason.bad_origin_parameters,
+            incremental=incremental,
+        )
 
     try:
         parsed_origin_parameters = serialize(
@@ -255,13 +291,21 @@ def run(
         )
     except ValidationError as e:
         adapter.warning(f"Failed to parse origin_parameters with errors={e}")
-        return RunResult(status=Status.fatal, reason=Reason.bad_origin_parameters)
+        return RunResult(
+            status=Status.fatal,
+            reason=Reason.bad_origin_parameters,
+            incremental=incremental,
+        )
 
     try:
         parsed_target_auth_parameters = serialize(target_auth, target_auth_schema)
     except ValidationError as e:
         adapter.warning(f"Failed to parse target_auth with errors={e}")
-        return RunResult(status=Status.fatal, reason=Reason.bad_target_parameters)
+        return RunResult(
+            status=Status.fatal,
+            reason=Reason.bad_target_parameters,
+            incremental=incremental,
+        )
 
     try:
         parsed_target_parameters = serialize(
@@ -269,7 +313,11 @@ def run(
         )
     except ValidationError as e:
         adapter.warning(f"Failed to parse target_parameters with errors={e}")
-        return RunResult(status=Status.fatal, reason=Reason.bad_target_parameters)
+        return RunResult(
+            status=Status.fatal,
+            reason=Reason.bad_target_parameters,
+            incremental=incremental,
+        )
 
     incremental_token = None
     if incremental:
@@ -280,6 +328,7 @@ def run(
             return RunResult(
                 status=Status.fatal,
                 reason=Reason.origin_does_not_support_incremental,
+                incremental=incremental,
             )
 
         if backend.store is None:
@@ -287,6 +336,7 @@ def run(
             return RunResult(
                 status=Status.fatal,
                 reason=Reason.backend_not_configured,
+                incremental=incremental,
             )
 
         adapter.info("Reading in incremental mode: fetching last token")
@@ -325,9 +375,9 @@ def run(
                 "No items fetched from origin warehoue. Aborting action after"
                 " read_failure"
             )
-        result = RunResult.from_events(events)
-        result.incremental_token = incremental_token
-        return result
+        return RunResult.from_events(
+            events, incremental=incremental, incremental_token=incremental_token
+        )
 
     read_finished_at = time.time()
     adapter.info(
@@ -357,6 +407,8 @@ def run(
                 status=Status.fatal,
                 reason=Reason.getting_incremental_token_failure,
                 events=events,
+                incremental=incremental,
+                incremental_token=incremental_token,
             )
 
     if logics is None or len(logics) == 0:
@@ -392,7 +444,11 @@ def run(
                 "Logics failed for all items. Review supplied logic functions."
                 " Aborting action."
             )
-            return RunResult.from_events(events)
+            return RunResult.from_events(
+                events,
+                incremental=incremental,
+                incremental_token=incremental_token,
+            )
         adapter.info(
             f"Finished applying logic functions: "
             f"success={len(selected_items)} discarded={events[Event.logics_discard]}"
@@ -424,13 +480,19 @@ def run(
                 "Formatting failed for all items. Review supplied format function."
                 " Aborting action."
             )
-            return RunResult.from_events(events)
+            return RunResult.from_events(
+                events,
+                incremental=incremental,
+                incremental_token=incremental_token,
+            )
 
     if persist is False:
         adapter.info(
             f"Running in dry mode with persist={persist}: Ending execution after read, format and logics"
         )
-        return RunResult.from_events(events)
+        return RunResult.from_events(
+            events, incremental=incremental, incremental_token=incremental_token
+        )
 
     write_started_at = time.time()
     adapter.info(
@@ -454,6 +516,8 @@ def run(
             status=Status.fatal,
             reason=Reason.write_failure,
             events=events,
+            incremental=incremental,
+            incremental_token=incremental_token,
         )
     write_finished_at = time.time()
     adapter.info(
@@ -478,8 +542,9 @@ def run(
         finally:
             events[Event.callback_executed] += 1
 
-    results = RunResult.from_events(events)
-    results.incremental_token = next_incremental_token
+    results = RunResult.from_events(
+        events, incremental=incremental, incremental_token=next_incremental_token
+    )
     if backend.store is not None:
         adapter.info(f"Saving run results in {backend.store.name} backend")
         backend.store.save(key=workflow_id, data=results)

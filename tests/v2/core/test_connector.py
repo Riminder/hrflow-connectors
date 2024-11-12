@@ -1,19 +1,10 @@
-import random
-import string
-import typing as t
 from unittest import mock
 
 import pytest
 
 from hrflow_connectors.core import backend
 from hrflow_connectors.v2.core.common import Direction, Entity, Mode
-from hrflow_connectors.v2.core.connector import (
-    Connector,
-    ConnectorType,
-    Flow,
-    InvalidFlow,
-    PublicActionInterface,
-)
+from hrflow_connectors.v2.core.connector import Flow, InvalidFlow, NoLambdaEventParser
 from hrflow_connectors.v2.core.run import (
     ActionInitError,
     Event,
@@ -21,157 +12,33 @@ from hrflow_connectors.v2.core.run import (
     RunResult,
     Status,
 )
-from tests.v2.core.src.hrflow_connectors.connectors.smartleads.aisles.candidates import (
-    CANDIDATES_DB,
+from tests.v2.core.conftest import (
+    SmartLeadsProto,
+    TypedSmartLeads,
+    smartleads_lead_to_hrflow_job,
 )
 from tests.v2.core.src.hrflow_connectors.connectors.smartleads.aisles.leads import (
     LEADS_DB,
     LeadsAisle,
 )
-from tests.v2.core.src.hrflow_connectors.connectors.smartleads.warehouse import (
-    SmartLeadsWarehouse,
-)
-from tests.v2.core.src.hrflow_connectors.core.hrflow_mini.aisles.applications import (
-    APPLICATIONS_DB,
-)
 from tests.v2.core.src.hrflow_connectors.core.hrflow_mini.aisles.jobs import (
-    JOBS_DB,
     JobsAisle,
 )
-from tests.v2.core.src.hrflow_connectors.core.hrflow_mini.warehouse import (
-    HrFlowMiniWarehouse,
-)
+from tests.v2.core.utils import random_workflow_id
 
 
-def random_workflow_id() -> str:
-    return "".join([random.choice(string.ascii_letters) for _ in range(10)])
+def test_flow_event_parser_cannot_be_lambda():
+    with pytest.raises(NoLambdaEventParser):
+        Flow(Mode.create, Entity.job, Direction.inbound, event_parser=lambda body: body)
 
+    my_lambda = lambda body: body  # noqa: E731
+    with pytest.raises(NoLambdaEventParser):
+        Flow(Mode.create, Entity.job, Direction.inbound, event_parser=my_lambda)
 
-@pytest.fixture(scope="function", autouse=True)
-def reset_dbs():
-    JOBS_DB.reset()
-    LEADS_DB.reset()
-    CANDIDATES_DB.reset()
-    APPLICATIONS_DB.reset()
+    def regular_def_function(body: dict):
+        return body
 
-    yield
-
-
-class SmartLeadsProto(t.Protocol):
-    def __call__(
-        self,
-        name: t.Optional[str] = None,
-        subtype: t.Optional[str] = None,
-        description: t.Optional[str] = None,
-        url: t.Optional[str] = None,
-        type: t.Optional[ConnectorType] = None,
-        flows: t.Optional[tuple[Flow, ...]] = None,
-    ) -> Connector: ...
-
-
-@pytest.fixture
-def SmartsLeadsF() -> SmartLeadsProto:
-    def _SmartsLeadsF(
-        name: t.Optional[str] = None,
-        subtype: t.Optional[str] = None,
-        description: t.Optional[str] = None,
-        url: t.Optional[str] = None,
-        type: t.Optional[ConnectorType] = None,
-        flows: t.Optional[tuple[Flow, ...]] = None,
-    ):
-        with mock.patch(
-            "hrflow_connectors.v2.core.connector.HrFlowWarehouse",
-            HrFlowMiniWarehouse,
-        ):
-            return Connector(
-                name=name or "SmartLeads",
-                subtype=subtype or "smartleads",
-                description=description or "Welcome to SmartLeads",
-                url=url or "https://smartleads.co",
-                type=type or ConnectorType.ATS,
-                warehouse=SmartLeadsWarehouse,
-                flows=flows or tuple(),
-            )
-
-    return _SmartsLeadsF
-
-
-class TypedSmartLeads(Connector):
-    create_jobs_in_hrflow: PublicActionInterface
-    update_jobs_in_hrflow: PublicActionInterface
-    archive_jobs_in_hrflow: PublicActionInterface
-    create_jobs_in_smartleads: PublicActionInterface
-    update_jobs_in_smartleads: PublicActionInterface
-    archive_jobs_in_smartleads: PublicActionInterface
-
-
-def hrflow_job_to_smartleads_lead(hrflow: dict):
-    lead = dict(
-        id=sum([ord(char) for char in hrflow["key"]]),
-        category="from_hrflow",
-        designation=hrflow["name"],
-        city=hrflow["location"]["city"],
-        remote_allowed=hrflow["remote"],
-    )
-    return lead
-
-
-def smartleads_lead_to_hrflow_job(lead: dict):
-    hrflow = dict(
-        key=str(lead["id"]),
-        reference=f"smartleads::{lead['id']}",
-        name=lead["designation"],
-        location=dict(city=lead["city"]),
-        remote=lead["remote_allowed"],
-    )
-    return hrflow
-
-
-@pytest.fixture
-def SmartLeads(SmartsLeadsF: SmartLeadsProto) -> TypedSmartLeads:
-    return t.cast(
-        TypedSmartLeads,
-        SmartsLeadsF(
-            flows=(
-                Flow(
-                    Mode.create,
-                    Entity.job,
-                    Direction.inbound,
-                    format=smartleads_lead_to_hrflow_job,
-                ),
-                Flow(
-                    Mode.update,
-                    Entity.job,
-                    Direction.inbound,
-                    format=smartleads_lead_to_hrflow_job,
-                ),
-                Flow(
-                    Mode.archive,
-                    Entity.job,
-                    Direction.inbound,
-                    format=smartleads_lead_to_hrflow_job,
-                ),
-                Flow(
-                    Mode.create,
-                    Entity.job,
-                    Direction.outbound,
-                    format=hrflow_job_to_smartleads_lead,
-                ),
-                Flow(
-                    Mode.update,
-                    Entity.job,
-                    Direction.outbound,
-                    format=hrflow_job_to_smartleads_lead,
-                ),
-                Flow(
-                    Mode.archive,
-                    Entity.job,
-                    Direction.outbound,
-                    format=hrflow_job_to_smartleads_lead,
-                ),
-            )
-        ),
-    )
+    Flow(Mode.create, Entity.job, Direction.inbound, event_parser=regular_def_function)
 
 
 @pytest.mark.parametrize(
@@ -238,12 +105,12 @@ def SmartLeads(SmartsLeadsF: SmartLeadsProto) -> TypedSmartLeads:
     ],
 )
 def test_connector_actions_are_set(
-    SmartsLeadsF: SmartLeadsProto,
+    SmartLeadsF: SmartLeadsProto,
     flows: tuple[Flow, ...],
     expected_actions: list[str],
     should_not_be_present: list[str],
 ):
-    SmartLeads = SmartsLeadsF(flows=flows)
+    SmartLeads = SmartLeadsF(flows=flows)
 
     for action in expected_actions:
         assert callable(getattr(SmartLeads, action)) is True
@@ -290,10 +157,10 @@ def test_connector_actions_are_set(
     ],
 )
 def test_invalid_flow_is_raised(
-    SmartsLeadsF: SmartLeadsProto, flows: tuple[Flow, ...], error_message: str
+    SmartLeadsF: SmartLeadsProto, flows: tuple[Flow, ...], error_message: str
 ):
     with pytest.raises(InvalidFlow) as excinfo:
-        SmartsLeadsF(flows=flows)
+        SmartLeadsF(flows=flows)
 
     assert error_message in excinfo.value.args[0]
 
@@ -377,6 +244,7 @@ def test_actions(
     assert result.events[Event.callback_executed] == 0
     assert result.events[Event.getting_incremental_token_failure] == 0
 
+    assert result.incremental is False
     assert result.incremental_token is None
 
 
@@ -1151,8 +1019,8 @@ def test_works_as_expected_with_persist_is_false(
     mocked_write.assert_not_called()
 
 
-def test_action_works_even_with_no_default_format(SmartsLeadsF: SmartLeadsProto):
-    SmartLeads = SmartsLeadsF(
+def test_action_works_even_with_no_default_format(SmartLeadsF: SmartLeadsProto):
+    SmartLeads = SmartLeadsF(
         flows=(
             Flow(
                 Mode.create,
@@ -1220,6 +1088,7 @@ def test_incremental_works_as_expected(
     persisted = backend.store.load(key=workflow_id, parse_as=RunResult)
     assert persisted is not None
     assert persisted.incremental_token == str(last_id)
+    assert persisted.incremental is True
 
     assert isinstance(result, RunResult)
     assert result.status is Status.success
@@ -1227,6 +1096,7 @@ def test_incremental_works_as_expected(
 
     assert result.events[Event.read_success] == len(LEADS_DB)
     assert result.incremental_token == str(last_id)
+    assert result.incremental is True
 
     # Rerun without changing the db should yield no reads
     result = SmartLeads.create_jobs_in_hrflow(
@@ -1247,6 +1117,7 @@ def test_incremental_works_as_expected(
     assert result.reason is Reason.none
 
     assert result.events[Event.read_success] == 0
+    assert result.incremental is True
     assert result.incremental_token == str(last_id)
 
     # Add new leads with id greated than
@@ -1299,6 +1170,7 @@ def test_incremental_works_as_expected(
     assert result.reason is Reason.none
 
     assert result.events[Event.read_success] == new_last_id - last_id
+    assert result.incremental is True
     assert result.incremental_token == str(new_last_id)
 
     # Once again expecting no read
@@ -1320,6 +1192,7 @@ def test_incremental_works_as_expected(
     assert result.reason is Reason.none
 
     assert result.events[Event.read_success] == 0
+    assert result.incremental is True
     assert result.incremental_token == str(new_last_id)
 
 
@@ -1363,6 +1236,7 @@ def test_incremental_token_not_persisted_after_fatal_failure(
     assert result.reason is Reason.none
 
     assert result.events[Event.read_success] == len(LEADS_DB)
+    assert result.incremental is True
     assert result.incremental_token == str(last_id)
 
     # Rerun without changing the db should yield no reads
@@ -1384,6 +1258,7 @@ def test_incremental_token_not_persisted_after_fatal_failure(
     assert result.reason is Reason.none
 
     assert result.events[Event.read_success] == 0
+    assert result.incremental is True
     assert result.incremental_token == str(last_id)
 
     # Add new leads with id greated than
@@ -1436,6 +1311,7 @@ def test_incremental_token_not_persisted_after_fatal_failure(
     assert result.reason is Reason.none
 
     assert result.events[Event.read_success] == new_last_id - last_id
+    assert result.incremental is True
     assert result.incremental_token == str(new_last_id)
 
     # Once again expecting no read
@@ -1457,4 +1333,5 @@ def test_incremental_token_not_persisted_after_fatal_failure(
     assert result.reason is Reason.none
 
     assert result.events[Event.read_success] == 0
+    assert result.incremental is True
     assert result.incremental_token == str(new_last_id)

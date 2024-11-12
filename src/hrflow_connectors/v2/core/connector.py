@@ -19,6 +19,17 @@ from hrflow_connectors.v2.core.warehouse import Aisle, Warehouse
 default_logger = getLogger(__name__)
 
 
+def is_lambda(fn: t.Callable):
+    return fn.__name__ == (lambda: None).__name__
+
+
+EventParserT = t.Callable[[dict], dict]
+
+
+class NoLambdaEventParser(Exception):
+    pass
+
+
 @dataclass
 class Flow:
     mode: Mode
@@ -28,6 +39,14 @@ class Flow:
     format: t.Optional[FormatT] = None
     logics: t.Optional[LogicsT] = None
     callback: t.Optional[CallbackT] = None
+    event_parser: t.Optional[EventParserT] = None
+
+    def __post_init__(self):
+        if self.event_parser is not None and is_lambda(self.event_parser):
+            raise NoLambdaEventParser(
+                "event_parser if supplied should not be a lambda "
+                "function: Please use a regular 'def' function"
+            )
 
     def default_name(self, connector_subtype: str):
         return f"{self.mode.value}_{self.entity.name}s_in_{'hrflow' if self.direction is Direction.inbound else connector_subtype}"
@@ -152,7 +171,7 @@ def make_action(
             init_error=init_error,
             format=format if format is not None else flow.format,
             logics=logics if logics is not None else flow.logics,
-            callback=callback or flow.callback,
+            callback=callback if callback is not None else flow.callback,
             persist=persist,
             **run_kw,
         )

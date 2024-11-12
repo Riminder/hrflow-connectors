@@ -1,16 +1,19 @@
-from hrflow_connectors.v2.core.msgspec_pydantic_compat import serialize, ValidationError
 import pytest
-
+from msgspec import Meta, Struct
+from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
-from pydantic import BaseModel, Field
-from msgspec import Struct, Meta
+from hrflow_connectors.v2.core.msgspec_pydantic_compat import (
+    ValidationError,
+    fields,
+    serialize,
+)
 
 
 class PydanticModel(BaseModel):
     name: str
-    age: int = 10
     limit: int = Field(..., lt=100)
+    age: int = 10
 
 
 class MsgSpecModel(Struct):
@@ -51,3 +54,10 @@ def test_serialize_pydantic_bad_data(data: dict):
 def test_serialize_msgspec_bad_data(data: dict):
     with pytest.raises(ValidationError):
         serialize(data, MsgSpecModel)
+
+
+def test_fields_working_as_expected():
+    expecting = ("name", "limit", "age")
+
+    assert fields(PydanticModel) == expecting
+    assert fields(MsgSpecModel) == expecting
