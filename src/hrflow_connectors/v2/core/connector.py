@@ -1,10 +1,14 @@
+import json
 import typing as t
 from dataclasses import dataclass, field
 from enum import Enum
 from logging import getLogger
+from pathlib import Path
 
+from hrflow_connectors.v2.core import templating
 from hrflow_connectors.v2.core.common import Direction, Entity, Mode, Schema
-from hrflow_connectors.v2.core.hrflow import HrFlowWarehouse as HrFlowWarehouse
+from hrflow_connectors.v2.core.hrflow import HrFlowWarehouse
+from hrflow_connectors.v2.core.msgspec_pydantic_compat import json_schema
 from hrflow_connectors.v2.core.run import (
     ActionInitError,
     CallbackT,
@@ -14,6 +18,7 @@ from hrflow_connectors.v2.core.run import (
     RunResult,
     run,
 )
+from hrflow_connectors.v2.core.utils import CONNECTORS_DIRECTORY, compute_logo_path
 from hrflow_connectors.v2.core.warehouse import Aisle, Warehouse
 
 default_logger = getLogger(__name__)
@@ -203,6 +208,25 @@ class Connector:
                     f"Invalid flow {flow}: Entity={flow.entity} not supported by HrFlow warehouse"
                 )
 
+            if flow.direction is Direction.inbound:
+                if connector_aisle.parameters("read", flow.mode) is None:
+                    raise InvalidFlow(
+                        f"Invalid flow {flow}: {self.name} warehouse is not readable in mode={flow.mode} for Entity={flow.entity}"
+                    )
+                if hrflow_aisle.parameters("write", flow.mode) is None:
+                    raise InvalidFlow(
+                        f"Invalid flow {flow}: HrFlow warehouse is not writable in mode={flow.mode} for Entity={flow.entity}"
+                    )
+            else:
+                if hrflow_aisle.parameters("read", flow.mode) is None:
+                    raise InvalidFlow(
+                        f"Invalid flow {flow}: HrFlow warehouse is not readable in mode={flow.mode} for Entity={flow.entity}"
+                    )
+                if connector_aisle.parameters("write", flow.mode) is None:
+                    raise InvalidFlow(
+                        f"Invalid flow {flow}: {self.name} warehouse is not writable in mode={flow.mode} for Entity={flow.entity}"
+                    )
+
             setattr(
                 self,
                 flow.name(self.subtype),
@@ -215,3 +239,118 @@ class Connector:
                     connector_auth_schema=self.warehouse.auth,
                 ),
             )
+
+    def manifest(self, connectors_directory: Path = CONNECTORS_DIRECTORY) -> dict:
+        actions = []
+        manifest = dict(
+            name=self.name,
+            type=self.type.value.upper().replace(" ", ""),
+            subtype=self.subtype,
+            logo=compute_logo_path(
+                name=self.name,
+                subtype=self.subtype,
+                connectors_directory=connectors_directory,
+            ),
+            actions=actions,
+        )
+
+        for flow in self.flows:
+            hrflow_aisle = HrFlowWarehouse.get_aisle(flow.entity)
+            connector_aisle = self.warehouse.get_aisle(flow.entity)
+
+            # This is already validated in Connector.__post_init__
+            assert hrflow_aisle is not None
+            assert connector_aisle is not None
+
+            jsonmap_path = (
+                connectors_directory
+                / self.subtype
+                / "mappings"
+                / "format"
+                / "{}.json".format(flow.name(self.subtype))
+            )
+            try:
+                jsonmap = json.loads(jsonmap_path.read_text())
+            except FileNotFoundError:
+                jsonmap = {}
+
+            if flow.direction is Direction.inbound:
+                origin_aisle = connector_aisle
+                target_aisle = hrflow_aisle
+            else:
+                origin_aisle = hrflow_aisle
+                target_aisle = connector_aisle
+
+            pull_parameters = origin_aisle.parameters("read", flow.mode)
+            push_parameters = target_aisle.parameters("write", flow.mode)
+
+            # This is already validated in Connector.__post_init__
+            assert origin_aisle.read is not None
+            assert pull_parameters is not None
+            assert push_parameters is not None
+
+            action_manifest = dict(
+                name=flow.name(self.subtype),
+                data_type=flow.entity.value,
+                direction=flow.direction.value,
+                mode=flow.mode.value,
+                connector_auth_parameters=json_schema(self.warehouse.auth),
+                hrflow_auth_parameters=json_schema(HrFlowWarehouse.auth),
+                origin=self.name if flow.direction is Direction.inbound else "HrFlow",
+                origin_data_schema=json_schema(origin_aisle.schema),
+                supports_incremental=origin_aisle.read.supports_incremental,
+                pull_parameters=json_schema(pull_parameters),
+                target="HrFlow" if flow.direction is Direction.inbound else self.name,
+                target_data_schema=json_schema(target_aisle.schema),
+                push_parameters=json_schema(push_parameters),
+                jsonmap=jsonmap,
+                workflow=dict(
+                    catch_template=templating.workflow(
+                        connector=self, flow=flow, integration="catch"
+                    ),
+                    pull_template=templating.workflow(
+                        connector=self, flow=flow, integration="pull"
+                    ),
+                    settings_keys=dict(
+                        workflow_id=templating.WORKFLOW_ID_SETTINGS_KEY,
+                        incremental=templating.INCREMENTAL_SETTINGS_KEY,
+                        connector_auth_prefix=templating.WORKFLOW_CONNECTOR_AUTH_SETTINGS_PREFIX,
+                        hrflow_auth_prefix=templating.WORKFLOW_HRFLOW_AUTH_SETTINGS_PREFIX,
+                        pull_parameters_prefix=templating.WORKFLOW_PULL_PARAMETERS_SETTINGS_PREFIX,
+                        push_parameters_prefix=templating.WORKFLOW_PUSH_PARAMETERS_SETTINGS_PREFIX,
+                    ),
+                    placeholders=dict(
+                        logics=templating.WORKFLOW_LOGICS_PLACEHOLDER,
+                        format=templating.WORKFLOW_FORMAT_PLACEHOLDER,
+                        callback=templating.WORKFLOW_CALLBACK_PLACEHOLDER,
+                        event_parser=templating.WORKFLOW_EVENT_PARSER_PLACEHOLDER,
+                    ),
+                    expected=dict(
+                        activate_incremental=templating.WORKFLOW_ACTIVATE_INCREMENTAL,
+                        logics_functions_name=templating.WORKFLOW_LOGICS_FUNCTIONS_NAME,
+                        format_functions_name=templating.WORKFLOW_FORMAT_FUNCTION_NAME,
+                        callback_functions_name=templating.WORKFLOW_CALLBACK_FUNCTION_NAME,
+                        event_parser_function_name=templating.WORKFLOW_USER_EVENT_PARSER_FUNCTION_NAME,
+                    ),
+                ),
+            )
+            actions.append(action_manifest)
+
+        return manifest
+
+
+def hrflow_connectors_manifest(
+    connectors: t.Iterable[Connector],
+    directory_path: str = ".",
+    connectors_directory: Path = CONNECTORS_DIRECTORY,
+) -> None:
+    manifest = dict(
+        name="HrFlow.ai Connectors",
+        connectors=[
+            connector.manifest(connectors_directory=connectors_directory)
+            for connector in connectors
+        ],
+    )
+
+    with open("{}/manifest.json".format(directory_path), "w") as f:
+        f.write(json.dumps(manifest, indent=2))

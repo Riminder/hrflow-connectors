@@ -182,8 +182,7 @@ class Aisle:
     def parameters(self, operation: t.Literal["read", "write"], mode: Mode):
         if operation == "read" and self.read is not None:
             return self.read.criterias.parameters(mode)
-
-        if self.write is not None:
+        elif operation == "write" and self.write is not None:
             return self.write.criterias.parameters(mode)
 
 

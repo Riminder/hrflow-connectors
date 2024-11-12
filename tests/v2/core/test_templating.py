@@ -21,9 +21,6 @@ from tests.v2.core.src.hrflow_connectors.core.hrflow_mini.aisles.jobs import (
     JOBS_DB,
     JobsAisle,
 )
-from tests.v2.core.src.hrflow_connectors.core.hrflow_mini.warehouse import (
-    HrFlowMiniWarehouse,
-)
 from tests.v2.core.utils import random_workflow_id
 
 
@@ -86,11 +83,7 @@ def test_pull_workflow_code_works_as_expected_no_configuration(
     globals_with_smartleads: dict,
     get_settings: GetSettings,
 ):
-    with mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ):
-        workflow_code = templating.workflow(SmartLeads, flow, "pull")
+    workflow_code = templating.workflow(SmartLeads, flow, "pull")
 
     script = f"""
 import json
@@ -128,11 +121,7 @@ def test_catch_workflow_code_works_as_expected_no_configuration(
     globals_with_smartleads: dict,
     get_settings: GetSettings,
 ):
-    with mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ):
-        workflow_code = templating.workflow(SmartLeads, flow, "catch")
+    workflow_code = templating.workflow(SmartLeads, flow, "catch")
 
     script = f"""
 import json
@@ -163,11 +152,7 @@ def test_logics_placeholder_working_as_expected(
 ):
     flow = Flow(Mode.create, Entity.job, Direction.inbound)
 
-    with mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ):
-        workflow_code = templating.workflow(SmartLeads, flow, "pull")
+    workflow_code = templating.workflow(SmartLeads, flow, "pull")
 
     logics_code = """
 import random
@@ -226,11 +211,7 @@ def test_format_placeholder_working_as_expected(
 ):
     flow = Flow(Mode.create, Entity.job, Direction.inbound)
 
-    with mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ):
-        workflow_code = templating.workflow(SmartLeads, flow, "pull")
+    workflow_code = templating.workflow(SmartLeads, flow, "pull")
 
     logics_code = f"""
 FORMAT_EXECUTION_COUNT = 0
@@ -276,11 +257,7 @@ def test_callback_placeholder_working_as_expected(
 ):
     flow = Flow(Mode.create, Entity.job, Direction.inbound)
 
-    with mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ):
-        workflow_code = templating.workflow(SmartLeads, flow, "pull")
+    workflow_code = templating.workflow(SmartLeads, flow, "pull")
 
     callback_code = """
 CALLBACK_EXECUTED = False
@@ -332,11 +309,7 @@ def test_default_event_parser_is_working_as_expected(
 
     flow = Flow(Mode.create, Entity.job, Direction.inbound, event_parser=xxx_yyy_zzz)
 
-    with mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ):
-        workflow_code = templating.workflow(SmartLeads, flow, "catch")
+    workflow_code = templating.workflow(SmartLeads, flow, "catch")
 
     script = f"""
 import json
@@ -382,11 +355,7 @@ def test_user_supplied_event_parser_is_working_as_expected(
 
     flow = Flow(Mode.create, Entity.job, Direction.inbound, event_parser=xxx_yyy_zzz)
 
-    with mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ):
-        workflow_code = templating.workflow(SmartLeads, flow, "catch")
+    workflow_code = templating.workflow(SmartLeads, flow, "catch")
 
     event_parser_code = f"""
 USER_EVENT_PARSER_EXECUTED = False
@@ -436,11 +405,7 @@ def test_request_is_used_for_parameters_in_catch_mode(
 ):
     flow = Flow(Mode.create, Entity.job, Direction.inbound)
 
-    with mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ):
-        workflow_code = templating.workflow(SmartLeads, flow, "catch")
+    workflow_code = templating.workflow(SmartLeads, flow, "catch")
 
     # First execution to check that if fails since settings is empty this time
     script = f"""
@@ -489,11 +454,7 @@ def test_default_parsed_event_return_is_used_for_parameters_in_catch_mode(
 
     flow = Flow(Mode.create, Entity.job, Direction.inbound, event_parser=xxx_yyy_zzz)
 
-    with mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ):
-        workflow_code = templating.workflow(SmartLeads, flow, "catch")
+    workflow_code = templating.workflow(SmartLeads, flow, "catch")
 
     script = f"""
 import json
@@ -526,11 +487,7 @@ def test_parsed_event_return_is_used_for_parameters_in_catch_mode(
 
     flow = Flow(Mode.create, Entity.job, Direction.inbound, event_parser=xxx_yyy_zzz)
 
-    with mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ):
-        workflow_code = templating.workflow(SmartLeads, flow, "catch")
+    workflow_code = templating.workflow(SmartLeads, flow, "catch")
 
     event_parser_code = f"""
 import json
@@ -567,11 +524,7 @@ def test_missing_workflow_id_fails_as_expected(
 ):
     flow = Flow(Mode.create, Entity.job, Direction.inbound)
 
-    with mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ):
-        workflow_code = templating.workflow(SmartLeads, flow, "pull")
+    workflow_code = templating.workflow(SmartLeads, flow, "pull")
 
     script = f"""
 import json
@@ -604,11 +557,7 @@ def test_incremental_works_as_expected(
 ):
     flow = Flow(Mode.create, Entity.job, Direction.inbound)
 
-    with mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ):
-        workflow_code = templating.workflow(SmartLeads, flow, "pull")
+    workflow_code = templating.workflow(SmartLeads, flow, "pull")
 
     script = f"""
 import json
@@ -641,11 +590,7 @@ def test_incremental_not_activated_if_different_from_expected_token(
 ):
     flow = Flow(Mode.create, Entity.job, Direction.inbound)
 
-    with mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ):
-        workflow_code = templating.workflow(SmartLeads, flow, "pull")
+    workflow_code = templating.workflow(SmartLeads, flow, "pull")
 
     script = f"""
 import json

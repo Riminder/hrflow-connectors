@@ -6,6 +6,7 @@ from typing_extensions import Annotated
 from hrflow_connectors.v2.core.msgspec_pydantic_compat import (
     ValidationError,
     fields,
+    json_schema,
     serialize,
 )
 
@@ -61,3 +62,12 @@ def test_fields_working_as_expected():
 
     assert fields(PydanticModel) == expecting
     assert fields(MsgSpecModel) == expecting
+
+
+def test_json_schema_working_as_expected():
+    assert isinstance(json_schema(MsgSpecModel, unwrap=True), dict)
+    assert isinstance(json_schema(MsgSpecModel, unwrap=False), dict)
+    assert isinstance(json_schema(MsgSpecModel), dict)
+    assert isinstance(json_schema(PydanticModel), dict)
+
+    assert json_schema(MsgSpecModel) == json_schema(MsgSpecModel, unwrap=True)

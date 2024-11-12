@@ -31,6 +31,9 @@ WORKFLOW_EVENT_PARSER_PLACEHOLDER = "# << event_parser_placeholder >>"
 
 WORKFLOW_DEFAULT_EVENT_PARSER_FUNCTION_NAME = "default_event_parser"
 WORKFLOW_USER_EVENT_PARSER_FUNCTION_NAME = "event_parser"
+WORKFLOW_LOGICS_FUNCTIONS_NAME = "logics"
+WORKFLOW_FORMAT_FUNCTION_NAME = "format"
+WORKFLOW_CALLBACK_FUNCTION_NAME = "callback"
 
 
 def workflow(
@@ -41,8 +44,8 @@ def workflow(
     connector_aisle = connector.warehouse.get_aisle(flow.entity)
     hrflow_aisle = HrFlowWarehouse.get_aisle(flow.entity)
 
-    # This is only called with a properly validated connector
-    # for which below must be true
+    # This is only called with a properly validated
+    # connector for which below must be true
     assert connector_aisle is not None
     assert hrflow_aisle is not None
 
@@ -53,6 +56,8 @@ def workflow(
         origin_parameters = hrflow_aisle.parameters("read", flow.mode)
         target_parameters = connector_aisle.parameters("write", flow.mode)
 
+    # This is only called with a properly validated
+    # connector for which below must be true
     assert origin_parameters is not None
     assert target_parameters is not None
 
@@ -77,8 +82,11 @@ def workflow(
         pull_parameters_settings_prefix=WORKFLOW_PULL_PARAMETERS_SETTINGS_PREFIX,
         push_parameters_settings_prefix=WORKFLOW_PUSH_PARAMETERS_SETTINGS_PREFIX,
         logics_placeholder=WORKFLOW_LOGICS_PLACEHOLDER,
+        logics_functions_name=WORKFLOW_LOGICS_FUNCTIONS_NAME,
         format_placeholder=WORKFLOW_FORMAT_PLACEHOLDER,
+        format_function_name=WORKFLOW_FORMAT_FUNCTION_NAME,
         callback_placeholder=WORKFLOW_CALLBACK_PLACEHOLDER,
+        callback_function_name=WORKFLOW_CALLBACK_FUNCTION_NAME,
         event_parser_placeholder=WORKFLOW_EVENT_PARSER_PLACEHOLDER,
         default_event_parser=default_event_parser,
         user_event_parser_function_name=WORKFLOW_USER_EVENT_PARSER_FUNCTION_NAME,

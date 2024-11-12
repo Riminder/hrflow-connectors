@@ -1,6 +1,6 @@
 import typing as t
 
-from msgspec import Struct, convert
+from msgspec import Struct, convert, json
 from msgspec import ValidationError as MsgSpecValidationError
 from pydantic import BaseModel
 from pydantic import ValidationError as PydanticValidationError
@@ -34,3 +34,14 @@ def fields(schema: Schema) -> tuple[str, ...]:
     if issubclass(schema, BaseModel):
         return tuple(schema.__fields__)
     return schema.__struct_fields__
+
+
+def json_schema(schema: Schema, unwrap: bool = True) -> dict:
+    if issubclass(schema, BaseModel):
+        return schema.schema()
+
+    wrapped = json.schema(schema)
+    if unwrap:
+        path = wrapped["$ref"].rsplit("/", 1)[-1]
+        return wrapped["$defs"][path]
+    return wrapped

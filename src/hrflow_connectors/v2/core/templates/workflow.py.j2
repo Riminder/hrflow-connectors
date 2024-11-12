@@ -109,8 +109,8 @@ def workflow(
         hrflow_auth=hrflow_auth,
         pull_parameters=pull_parameters,
         push_parameters=push_parameters,
-        format=globals().get("format"),
-        logics=globals().get("logics"),
-        callback=globals().get("callback"),
+        logics=globals().get("{{ logics_functions_name }}"),
+        format=globals().get("{{ format_function_name }}"),
+        callback=globals().get("{{ callback_function_name }}"),
         incremental=incremental == "{{ activate_incremental_token }}",
     )

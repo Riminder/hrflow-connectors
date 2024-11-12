@@ -4,7 +4,11 @@ import pytest
 
 from hrflow_connectors.core import backend
 from hrflow_connectors.v2.core.common import Direction, Entity, Mode
-from hrflow_connectors.v2.core.connector import Flow, InvalidFlow, NoLambdaEventParser
+from hrflow_connectors.v2.core.connector import (
+    Flow,
+    InvalidFlow,
+    NoLambdaEventParser,
+)
 from hrflow_connectors.v2.core.run import (
     ActionInitError,
     Event,
@@ -163,6 +167,82 @@ def test_invalid_flow_is_raised(
         SmartLeadsF(flows=flows)
 
     assert error_message in excinfo.value.args[0]
+
+
+def test_connector_with_invalid_flow_fails_as_expected(SmartLeadsF: SmartLeadsProto):
+    assert LeadsAisle.read is not None
+    assert LeadsAisle.write is not None
+
+    assert JobsAisle.read is not None
+    assert JobsAisle.write is not None
+
+    with pytest.raises(InvalidFlow) as excinfo:
+        with mock.patch.object(LeadsAisle, "read", None):
+            SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.inbound),))
+    assert (
+        f"SmartLeads warehouse is not readable in mode={Mode.create} for Entity={Entity.job}"
+        in excinfo.value.args[0]
+    )
+
+    with pytest.raises(InvalidFlow) as excinfo:
+        with mock.patch.object(LeadsAisle.read.criterias, "create", None):
+            SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.inbound),))
+    assert (
+        f"SmartLeads warehouse is not readable in mode={Mode.create} for Entity={Entity.job}"
+        in excinfo.value.args[0]
+    )
+
+    with pytest.raises(InvalidFlow) as excinfo:
+        with mock.patch.object(JobsAisle, "write", None):
+            SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.inbound),))
+    assert (
+        f"HrFlow warehouse is not writable in mode={Mode.create} for Entity={Entity.job}"
+        in excinfo.value.args[0]
+    )
+
+    with pytest.raises(InvalidFlow) as excinfo:
+        with mock.patch.object(JobsAisle.write.criterias, "create", None):
+            SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.inbound),))
+    assert (
+        f"HrFlow warehouse is not writable in mode={Mode.create} for Entity={Entity.job}"
+        in excinfo.value.args[0]
+    )
+
+    with pytest.raises(InvalidFlow) as excinfo:
+        with mock.patch.object(JobsAisle, "read", None):
+            SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.outbound),))
+
+    assert (
+        f"HrFlow warehouse is not readable in mode={Mode.create} for Entity={Entity.job}"
+        in excinfo.value.args[0]
+    )
+
+    with pytest.raises(InvalidFlow) as excinfo:
+        with mock.patch.object(JobsAisle.read.criterias, "create", None):
+            SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.outbound),))
+
+    assert (
+        f"HrFlow warehouse is not readable in mode={Mode.create} for Entity={Entity.job}"
+        in excinfo.value.args[0]
+    )
+
+    with pytest.raises(InvalidFlow) as excinfo:
+        with mock.patch.object(LeadsAisle, "write", None):
+            SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.outbound),))
+
+    assert (
+        f"SmartLeads warehouse is not writable in mode={Mode.create} for Entity={Entity.job}"
+        in excinfo.value.args[0]
+    )
+
+    with pytest.raises(InvalidFlow) as excinfo:
+        with mock.patch.object(LeadsAisle.write.criterias, "create", None):
+            SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.outbound),))
+
+    assert (
+        f"SmartLeads warehouse is not writable in mode={Mode.create} for Entity={Entity.job}"
+        in excinfo.value.args[0]
+    )
 
 
 @pytest.mark.parametrize(

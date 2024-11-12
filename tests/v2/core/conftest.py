@@ -1,6 +1,7 @@
 import random
 import string
 import typing as t
+from pathlib import Path
 from unittest import mock
 
 import pytest
@@ -36,6 +37,11 @@ def random_workflow_id() -> str:
     return "".join([random.choice(string.ascii_letters) for _ in range(10)])
 
 
+@pytest.fixture
+def connectors_directory() -> Path:
+    return Path(__file__).parent / "src" / "hrflow_connectors" / "connectors"
+
+
 @pytest.fixture(scope="function", autouse=True)
 def reset_dbs():
     JOBS_DB.reset()
@@ -59,18 +65,22 @@ class SmartLeadsProto(t.Protocol):
 
 
 @pytest.fixture
-def SmartLeadsF() -> SmartLeadsProto:
-    def _SmartLeadsF(
-        name: t.Optional[str] = None,
-        subtype: t.Optional[str] = None,
-        description: t.Optional[str] = None,
-        url: t.Optional[str] = None,
-        type: t.Optional[ConnectorType] = None,
-        flows: t.Optional[tuple[Flow, ...]] = None,
+def SmartLeadsF() -> t.Iterator[SmartLeadsProto]:
+    with mock.patch(
+        "hrflow_connectors.v2.core.connector.HrFlowWarehouse",
+        HrFlowMiniWarehouse,
+    ), mock.patch(
+        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
+        HrFlowMiniWarehouse,
     ):
-        with mock.patch(
-            "hrflow_connectors.v2.core.connector.HrFlowWarehouse",
-            HrFlowMiniWarehouse,
+
+        def _SmartLeadsF(
+            name: t.Optional[str] = None,
+            subtype: t.Optional[str] = None,
+            description: t.Optional[str] = None,
+            url: t.Optional[str] = None,
+            type: t.Optional[ConnectorType] = None,
+            flows: t.Optional[tuple[Flow, ...]] = None,
         ):
             return Connector(
                 name=name or "SmartLeads",
@@ -82,7 +92,7 @@ def SmartLeadsF() -> SmartLeadsProto:
                 flows=flows or tuple(),
             )
 
-    return _SmartLeadsF
+        yield _SmartLeadsF
 
 
 class TypedSmartLeads(Connector):

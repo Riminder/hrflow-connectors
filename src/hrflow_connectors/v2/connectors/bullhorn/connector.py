@@ -5,8 +5,8 @@ import requests
 
 from hrflow_connectors.v2.connectors.bullhorn.utils import date_format
 from hrflow_connectors.v2.connectors.bullhorn.warehouse import BullhornWarehouse
-from hrflow_connectors.v2.core.connector import Connector, Flow, ConnectorType
-from hrflow_connectors.v2.core.common import Direction, Mode, Entity
+from hrflow_connectors.v2.core.common import Direction, Entity, Mode
+from hrflow_connectors.v2.core.connector import Connector, ConnectorType, Flow
 
 
 def to_int(elm: t.Any) -> int:
@@ -389,7 +389,6 @@ Bullhorn = Connector(
     url="https://www.bullhorn.com/",
     warehouse=BullhornWarehouse,
     flows=(
-        Flow(Mode.create, Entity.profile, Direction.outbound, format=format_profile),
         Flow(Mode.create, Entity.job, Direction.inbound, format=format_job),
         Flow(Mode.update, Entity.job, Direction.inbound, format=format_job),
         Flow(
@@ -405,12 +404,6 @@ Bullhorn = Connector(
             Entity.profile,
             Direction.inbound,
             format=format_item_to_be_archived,
-        ),
-        Flow(
-            Mode.update,
-            Entity.application,
-            Direction.inbound,
-            format=format_application,
         ),
     ),
 )
