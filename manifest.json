@@ -38,7 +38,8 @@
               "client_secret",
               "password",
               "username"
-            ]
+            ],
+            "$defs": {}
           },
           "hrflow_auth_parameters": {
             "title": "AuthParameters",
@@ -56,7 +57,8 @@
             "required": [
               "api_secret",
               "api_user"
-            ]
+            ],
+            "$defs": {}
           },
           "origin": "Bullhorn",
           "origin_data_schema": {
@@ -76,7 +78,8 @@
                 "default": null
               }
             },
-            "required": []
+            "required": [],
+            "$defs": {}
           },
           "supports_incremental": false,
           "pull_parameters": {
@@ -113,7 +116,8 @@
             },
             "required": [
               "created_date"
-            ]
+            ],
+            "$defs": {}
           },
           "target": "HrFlow",
           "target_data_schema": {
@@ -359,7 +363,263 @@
               "name",
               "location",
               "sections"
-            ]
+            ],
+            "$defs": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "description": "Location text address.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lat": {
+                    "description": "Geocentric latitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lng": {
+                    "description": "Geocentric longitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "fields": {
+                    "description": "other location attributes like country, country_code etc",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ]
+                  },
+                  "value": {
+                    "description": "Value associated to the skill",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Value associated to the Object's name",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value. Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value. Example: 100.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "unit": {
+                    "description": "Unit of the value. Example: euros.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              }
+            }
           },
           "push_parameters": {
             "title": "CreateCriterias",
@@ -377,7 +637,8 @@
             },
             "required": [
               "board_key"
-            ]
+            ],
+            "$defs": {}
           },
           "jsonmap": {},
           "workflow": {
@@ -437,7 +698,8 @@
               "client_secret",
               "password",
               "username"
-            ]
+            ],
+            "$defs": {}
           },
           "hrflow_auth_parameters": {
             "title": "AuthParameters",
@@ -455,7 +717,8 @@
             "required": [
               "api_secret",
               "api_user"
-            ]
+            ],
+            "$defs": {}
           },
           "origin": "Bullhorn",
           "origin_data_schema": {
@@ -475,7 +738,8 @@
                 "default": null
               }
             },
-            "required": []
+            "required": [],
+            "$defs": {}
           },
           "supports_incremental": false,
           "pull_parameters": {
@@ -512,7 +776,8 @@
             },
             "required": [
               "last_modified_date"
-            ]
+            ],
+            "$defs": {}
           },
           "target": "HrFlow",
           "target_data_schema": {
@@ -758,7 +1023,263 @@
               "name",
               "location",
               "sections"
-            ]
+            ],
+            "$defs": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "description": "Location text address.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lat": {
+                    "description": "Geocentric latitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lng": {
+                    "description": "Geocentric longitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "fields": {
+                    "description": "other location attributes like country, country_code etc",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ]
+                  },
+                  "value": {
+                    "description": "Value associated to the skill",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Value associated to the Object's name",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value. Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value. Example: 100.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "unit": {
+                    "description": "Unit of the value. Example: euros.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              }
+            }
           },
           "push_parameters": {
             "title": "UpdateCriterias",
@@ -771,7 +1292,8 @@
             },
             "required": [
               "board_key"
-            ]
+            ],
+            "$defs": {}
           },
           "jsonmap": {},
           "workflow": {
@@ -831,7 +1353,8 @@
               "client_secret",
               "password",
               "username"
-            ]
+            ],
+            "$defs": {}
           },
           "hrflow_auth_parameters": {
             "title": "AuthParameters",
@@ -849,7 +1372,8 @@
             "required": [
               "api_secret",
               "api_user"
-            ]
+            ],
+            "$defs": {}
           },
           "origin": "Bullhorn",
           "origin_data_schema": {
@@ -869,7 +1393,8 @@
                 "default": null
               }
             },
-            "required": []
+            "required": [],
+            "$defs": {}
           },
           "supports_incremental": false,
           "pull_parameters": {
@@ -906,7 +1431,8 @@
             },
             "required": [
               "last_modified_date"
-            ]
+            ],
+            "$defs": {}
           },
           "target": "HrFlow",
           "target_data_schema": {
@@ -1152,7 +1678,263 @@
               "name",
               "location",
               "sections"
-            ]
+            ],
+            "$defs": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "description": "Location text address.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lat": {
+                    "description": "Geocentric latitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lng": {
+                    "description": "Geocentric longitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "fields": {
+                    "description": "other location attributes like country, country_code etc",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ]
+                  },
+                  "value": {
+                    "description": "Value associated to the skill",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Value associated to the Object's name",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value. Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value. Example: 100.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "unit": {
+                    "description": "Unit of the value. Example: euros.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              }
+            }
           },
           "push_parameters": {
             "title": "UpdateCriterias",
@@ -1165,7 +1947,8 @@
             },
             "required": [
               "board_key"
-            ]
+            ],
+            "$defs": {}
           },
           "jsonmap": {},
           "workflow": {
@@ -1225,7 +2008,8 @@
               "client_secret",
               "password",
               "username"
-            ]
+            ],
+            "$defs": {}
           },
           "hrflow_auth_parameters": {
             "title": "AuthParameters",
@@ -1243,7 +2027,8 @@
             "required": [
               "api_secret",
               "api_user"
-            ]
+            ],
+            "$defs": {}
           },
           "origin": "Bullhorn",
           "origin_data_schema": {
@@ -1375,7 +2160,64 @@
                 "default": null
               }
             },
-            "required": []
+            "required": [],
+            "$defs": {
+              "BullhornAddress": {
+                "title": "BullhornAddress",
+                "type": "object",
+                "properties": {
+                  "address1": {
+                    "description": "Adress of the profile",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "city": {
+                    "description": "City of the profile",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "state": {
+                    "description": "Country code of the profile",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "zip": {
+                    "description": "Postal code of the profile",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              }
+            }
           },
           "supports_incremental": false,
           "pull_parameters": {
@@ -1417,7 +2259,8 @@
             },
             "required": [
               "created_date"
-            ]
+            ],
+            "$defs": {}
           },
           "target": "HrFlow",
           "target_data_schema": {
@@ -1681,7 +2524,671 @@
               "text",
               "experiences_duration",
               "educations_duration"
-            ]
+            ],
+            "$defs": {
+              "ProfileInfo": {
+                "title": "ProfileInfo",
+                "type": "object",
+                "properties": {
+                  "full_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "first_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "last_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "email": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "phone": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "date_birth": {
+                    "description": "Profile date of birth",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "location": {
+                    "description": "Profile location object",
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/$defs/Location"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "urls": {
+                    "description": "Profile social networks and URLs",
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/InfoUrl"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "picture": {
+                    "description": "Profile picture url",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "gender": {
+                    "description": "Profile gender",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "summary": {
+                    "description": "Profile summary text",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "full_name",
+                  "first_name",
+                  "last_name",
+                  "email",
+                  "phone"
+                ]
+              },
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "description": "Location text address.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lat": {
+                    "description": "Geocentric latitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lng": {
+                    "description": "Geocentric longitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "fields": {
+                    "description": "other location attributes like country, country_code etc",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "InfoUrl": {
+                "title": "InfoUrl",
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "facebook",
+                      "from_resume",
+                      "github",
+                      "linkedin",
+                      "twitter"
+                    ]
+                  },
+                  "url": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "url"
+                ]
+              },
+              "Experience": {
+                "title": "Experience",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "description": "Identification key of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "company": {
+                    "description": "Company name of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "logo": {
+                    "description": "Logo of the Company",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Title of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Description of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "location": {
+                    "description": "Location object of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/$defs/Location"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_start": {
+                    "description": "Start date of the experience. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_end": {
+                    "description": "End date of the experience. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "skills": {
+                    "description": "List of skills of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/Skill"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "certifications": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "courses": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tasks": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "certifications",
+                  "courses",
+                  "tasks"
+                ]
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ]
+                  },
+                  "value": {
+                    "description": "Value associated to the skill",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Value associated to the Object's name",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "Education": {
+                "title": "Education",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "description": "Identification key of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "school": {
+                    "description": "School name of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "logo": {
+                    "description": "Logo of the School",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Title of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Description of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "location": {
+                    "description": "Location object of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/$defs/Location"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_start": {
+                    "description": "Start date of the Education. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_end": {
+                    "description": "End date of the Education. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "skills": {
+                    "description": "List of skills of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/Skill"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "certifications": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "courses": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tasks": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "certifications",
+                  "courses",
+                  "tasks"
+                ]
+              },
+              "Label": {
+                "title": "Label",
+                "type": "object",
+                "properties": {
+                  "board_key": {
+                    "description": "Identification key of the Board containing the target Job.",
+                    "type": "string"
+                  },
+                  "job_key": {
+                    "description": "Identification key of the Job.",
+                    "type": "string"
+                  },
+                  "job_reference": {
+                    "description": "Custom identifier of the Job.",
+                    "type": "string"
+                  },
+                  "stage": {
+                    "description": "Stage associated to the Profile following the action of a recruiter (yes, no, later).",
+                    "enum": [
+                      "later",
+                      "no",
+                      "yes"
+                    ]
+                  },
+                  "date_stage": {
+                    "description": "Date of the stage edit action. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "rating": {
+                    "description": "Rating associated to the Profile following the action of a recruiter (from 1 to 5).",
+                    "anyOf": [
+                      {
+                        "enum": [
+                          1,
+                          2,
+                          3,
+                          4,
+                          5
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "date_rating": {
+                    "description": "Date of the rating action. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "board_key",
+                  "job_key",
+                  "job_reference",
+                  "stage",
+                  "date_stage",
+                  "rating",
+                  "date_rating"
+                ]
+              }
+            }
           },
           "push_parameters": {
             "title": "CreateCriterias",
@@ -1694,7 +3201,8 @@
             },
             "required": [
               "source_key"
-            ]
+            ],
+            "$defs": {}
           },
           "jsonmap": {},
           "workflow": {
@@ -1754,7 +3262,8 @@
               "client_secret",
               "password",
               "username"
-            ]
+            ],
+            "$defs": {}
           },
           "hrflow_auth_parameters": {
             "title": "AuthParameters",
@@ -1772,7 +3281,8 @@
             "required": [
               "api_secret",
               "api_user"
-            ]
+            ],
+            "$defs": {}
           },
           "origin": "Bullhorn",
           "origin_data_schema": {
@@ -1904,7 +3414,64 @@
                 "default": null
               }
             },
-            "required": []
+            "required": [],
+            "$defs": {
+              "BullhornAddress": {
+                "title": "BullhornAddress",
+                "type": "object",
+                "properties": {
+                  "address1": {
+                    "description": "Adress of the profile",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "city": {
+                    "description": "City of the profile",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "state": {
+                    "description": "Country code of the profile",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "zip": {
+                    "description": "Postal code of the profile",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              }
+            }
           },
           "supports_incremental": false,
           "pull_parameters": {
@@ -1946,7 +3513,8 @@
             },
             "required": [
               "last_modified_date"
-            ]
+            ],
+            "$defs": {}
           },
           "target": "HrFlow",
           "target_data_schema": {
@@ -2210,7 +3778,671 @@
               "text",
               "experiences_duration",
               "educations_duration"
-            ]
+            ],
+            "$defs": {
+              "ProfileInfo": {
+                "title": "ProfileInfo",
+                "type": "object",
+                "properties": {
+                  "full_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "first_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "last_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "email": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "phone": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "date_birth": {
+                    "description": "Profile date of birth",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "location": {
+                    "description": "Profile location object",
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/$defs/Location"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "urls": {
+                    "description": "Profile social networks and URLs",
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/InfoUrl"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "picture": {
+                    "description": "Profile picture url",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "gender": {
+                    "description": "Profile gender",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "summary": {
+                    "description": "Profile summary text",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "full_name",
+                  "first_name",
+                  "last_name",
+                  "email",
+                  "phone"
+                ]
+              },
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "description": "Location text address.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lat": {
+                    "description": "Geocentric latitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lng": {
+                    "description": "Geocentric longitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "fields": {
+                    "description": "other location attributes like country, country_code etc",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "InfoUrl": {
+                "title": "InfoUrl",
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "facebook",
+                      "from_resume",
+                      "github",
+                      "linkedin",
+                      "twitter"
+                    ]
+                  },
+                  "url": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "url"
+                ]
+              },
+              "Experience": {
+                "title": "Experience",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "description": "Identification key of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "company": {
+                    "description": "Company name of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "logo": {
+                    "description": "Logo of the Company",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Title of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Description of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "location": {
+                    "description": "Location object of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/$defs/Location"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_start": {
+                    "description": "Start date of the experience. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_end": {
+                    "description": "End date of the experience. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "skills": {
+                    "description": "List of skills of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/Skill"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "certifications": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "courses": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tasks": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "certifications",
+                  "courses",
+                  "tasks"
+                ]
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ]
+                  },
+                  "value": {
+                    "description": "Value associated to the skill",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Value associated to the Object's name",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "Education": {
+                "title": "Education",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "description": "Identification key of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "school": {
+                    "description": "School name of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "logo": {
+                    "description": "Logo of the School",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Title of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Description of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "location": {
+                    "description": "Location object of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/$defs/Location"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_start": {
+                    "description": "Start date of the Education. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_end": {
+                    "description": "End date of the Education. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "skills": {
+                    "description": "List of skills of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/Skill"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "certifications": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "courses": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tasks": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "certifications",
+                  "courses",
+                  "tasks"
+                ]
+              },
+              "Label": {
+                "title": "Label",
+                "type": "object",
+                "properties": {
+                  "board_key": {
+                    "description": "Identification key of the Board containing the target Job.",
+                    "type": "string"
+                  },
+                  "job_key": {
+                    "description": "Identification key of the Job.",
+                    "type": "string"
+                  },
+                  "job_reference": {
+                    "description": "Custom identifier of the Job.",
+                    "type": "string"
+                  },
+                  "stage": {
+                    "description": "Stage associated to the Profile following the action of a recruiter (yes, no, later).",
+                    "enum": [
+                      "later",
+                      "no",
+                      "yes"
+                    ]
+                  },
+                  "date_stage": {
+                    "description": "Date of the stage edit action. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "rating": {
+                    "description": "Rating associated to the Profile following the action of a recruiter (from 1 to 5).",
+                    "anyOf": [
+                      {
+                        "enum": [
+                          1,
+                          2,
+                          3,
+                          4,
+                          5
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "date_rating": {
+                    "description": "Date of the rating action. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "board_key",
+                  "job_key",
+                  "job_reference",
+                  "stage",
+                  "date_stage",
+                  "rating",
+                  "date_rating"
+                ]
+              }
+            }
           },
           "push_parameters": {
             "title": "UpdateCriterias",
@@ -2238,7 +4470,8 @@
             },
             "required": [
               "source_key"
-            ]
+            ],
+            "$defs": {}
           },
           "jsonmap": {},
           "workflow": {
@@ -2298,7 +4531,8 @@
               "client_secret",
               "password",
               "username"
-            ]
+            ],
+            "$defs": {}
           },
           "hrflow_auth_parameters": {
             "title": "AuthParameters",
@@ -2316,7 +4550,8 @@
             "required": [
               "api_secret",
               "api_user"
-            ]
+            ],
+            "$defs": {}
           },
           "origin": "Bullhorn",
           "origin_data_schema": {
@@ -2448,7 +4683,64 @@
                 "default": null
               }
             },
-            "required": []
+            "required": [],
+            "$defs": {
+              "BullhornAddress": {
+                "title": "BullhornAddress",
+                "type": "object",
+                "properties": {
+                  "address1": {
+                    "description": "Adress of the profile",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "city": {
+                    "description": "City of the profile",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "state": {
+                    "description": "Country code of the profile",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "zip": {
+                    "description": "Postal code of the profile",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              }
+            }
           },
           "supports_incremental": false,
           "pull_parameters": {
@@ -2484,7 +4776,8 @@
             },
             "required": [
               "last_modified_date"
-            ]
+            ],
+            "$defs": {}
           },
           "target": "HrFlow",
           "target_data_schema": {
@@ -2748,7 +5041,671 @@
               "text",
               "experiences_duration",
               "educations_duration"
-            ]
+            ],
+            "$defs": {
+              "ProfileInfo": {
+                "title": "ProfileInfo",
+                "type": "object",
+                "properties": {
+                  "full_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "first_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "last_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "email": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "phone": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "date_birth": {
+                    "description": "Profile date of birth",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "location": {
+                    "description": "Profile location object",
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/$defs/Location"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "urls": {
+                    "description": "Profile social networks and URLs",
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/InfoUrl"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "picture": {
+                    "description": "Profile picture url",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "gender": {
+                    "description": "Profile gender",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "summary": {
+                    "description": "Profile summary text",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "full_name",
+                  "first_name",
+                  "last_name",
+                  "email",
+                  "phone"
+                ]
+              },
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "description": "Location text address.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lat": {
+                    "description": "Geocentric latitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lng": {
+                    "description": "Geocentric longitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "fields": {
+                    "description": "other location attributes like country, country_code etc",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "InfoUrl": {
+                "title": "InfoUrl",
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "facebook",
+                      "from_resume",
+                      "github",
+                      "linkedin",
+                      "twitter"
+                    ]
+                  },
+                  "url": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "url"
+                ]
+              },
+              "Experience": {
+                "title": "Experience",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "description": "Identification key of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "company": {
+                    "description": "Company name of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "logo": {
+                    "description": "Logo of the Company",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Title of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Description of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "location": {
+                    "description": "Location object of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/$defs/Location"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_start": {
+                    "description": "Start date of the experience. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_end": {
+                    "description": "End date of the experience. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "skills": {
+                    "description": "List of skills of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/Skill"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "certifications": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "courses": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tasks": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "certifications",
+                  "courses",
+                  "tasks"
+                ]
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ]
+                  },
+                  "value": {
+                    "description": "Value associated to the skill",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Value associated to the Object's name",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "Education": {
+                "title": "Education",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "description": "Identification key of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "school": {
+                    "description": "School name of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "logo": {
+                    "description": "Logo of the School",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Title of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Description of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "location": {
+                    "description": "Location object of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/$defs/Location"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_start": {
+                    "description": "Start date of the Education. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_end": {
+                    "description": "End date of the Education. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "skills": {
+                    "description": "List of skills of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/Skill"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "certifications": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "courses": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tasks": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "certifications",
+                  "courses",
+                  "tasks"
+                ]
+              },
+              "Label": {
+                "title": "Label",
+                "type": "object",
+                "properties": {
+                  "board_key": {
+                    "description": "Identification key of the Board containing the target Job.",
+                    "type": "string"
+                  },
+                  "job_key": {
+                    "description": "Identification key of the Job.",
+                    "type": "string"
+                  },
+                  "job_reference": {
+                    "description": "Custom identifier of the Job.",
+                    "type": "string"
+                  },
+                  "stage": {
+                    "description": "Stage associated to the Profile following the action of a recruiter (yes, no, later).",
+                    "enum": [
+                      "later",
+                      "no",
+                      "yes"
+                    ]
+                  },
+                  "date_stage": {
+                    "description": "Date of the stage edit action. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "rating": {
+                    "description": "Rating associated to the Profile following the action of a recruiter (from 1 to 5).",
+                    "anyOf": [
+                      {
+                        "enum": [
+                          1,
+                          2,
+                          3,
+                          4,
+                          5
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "date_rating": {
+                    "description": "Date of the rating action. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "board_key",
+                  "job_key",
+                  "job_reference",
+                  "stage",
+                  "date_stage",
+                  "rating",
+                  "date_rating"
+                ]
+              }
+            }
           },
           "push_parameters": {
             "title": "ArchiveCriterias",
@@ -2761,7 +5718,8 @@
             },
             "required": [
               "source_key"
-            ]
+            ],
+            "$defs": {}
           },
           "jsonmap": {},
           "workflow": {

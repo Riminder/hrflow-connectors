@@ -42,6 +42,7 @@ def json_schema(schema: Schema, unwrap: bool = True) -> dict:
 
     wrapped = json.schema(schema)
     if unwrap:
-        path = wrapped["$ref"].rsplit("/", 1)[-1]
-        return wrapped["$defs"][path]
+        path = wrapped.pop("$ref").rsplit("/", 1)[-1]
+        unwrapped = wrapped["$defs"].pop(path)
+        return {**unwrapped, "$defs": wrapped["$defs"]}
     return wrapped
