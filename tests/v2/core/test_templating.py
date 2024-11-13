@@ -11,7 +11,11 @@ from hrflow_connectors.v2.core import templating
 from hrflow_connectors.v2.core.common import Direction, Entity, Mode
 from hrflow_connectors.v2.core.connector import Flow, WorkflowManifest
 from hrflow_connectors.v2.core.run import Event, Reason, RunResult, Status
-from tests.v2.core.conftest import TypedSmartLeads, smartleads_lead_to_hrflow_job
+from tests.v2.core.conftest import (
+    SmartLeadsProto,
+    TypedSmartLeads,
+    smartleads_lead_to_hrflow_job,
+)
 from tests.v2.core.src.hrflow_connectors.connectors.smartleads.aisles.leads import (
     LEADS_DB,
     LeadsAisle,
@@ -673,3 +677,47 @@ run_result = workflow(settings=SETTINGS)
     assert result.status is Status.success
     assert result.reason is Reason.none
     assert result.incremental is False
+
+
+def test_connector_readme_does_not_fail(SmartLeads: TypedSmartLeads):
+    connector_readme = templating.connector_readme(SmartLeads)
+
+    assert connector_readme is not None
+    assert isinstance(connector_readme, str)
+    assert len(connector_readme) > 10
+
+
+def test_connector_readme_with_current_content_does_not_fail(
+    SmartLeads: TypedSmartLeads,
+):
+    connector_readme = templating.connector_readme(
+        SmartLeads, current_content=templating.connector_readme(SmartLeads)
+    )
+
+    assert connector_readme is not None
+    assert isinstance(connector_readme, str)
+    assert len(connector_readme) > 10
+
+
+def test_connector_readme_with_current_content_fails_for_invalid_content(
+    SmartLeads: TypedSmartLeads,
+):
+    with pytest.raises(templating.InvalidConnectorReadmeContent):
+        templating.connector_readme(
+            SmartLeads,
+            current_content="""
+This is not a valid connector readme
+""",
+        )
+
+
+def test_connector_action_does_not_fail(SmartLeads: TypedSmartLeads):
+    for flow in SmartLeads.flows:
+        with added_connectors(
+            [("SmartLeads", SmartLeads)],
+        ):
+            action_readme = templating.connector_action(SmartLeads, flow=flow)
+
+        assert action_readme is not None
+        assert isinstance(action_readme, str)
+        assert len(action_readme) > 10

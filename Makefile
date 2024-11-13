@@ -6,7 +6,7 @@ manifest:
 	poetry run python -c 'from hrflow_connectors.v2 import __CONNECTORS__, hrflow_connectors_manifest as m; m(connectors=__CONNECTORS__, directory_path="$(DIR)")'
 
 docs:
-	poetry run python -c 'from hrflow_connectors import __CONNECTORS__, generate_docs as m; m(connectors=__CONNECTORS__)'
+	poetry run python -c 'from hrflow_connectors import __CONNECTORS__ as __CONNECTORS__V1, generate_docs as docs_v1; from hrflow_connectors.v2 import __CONNECTORS__ as __CONNECTORS__V2, hrflow_connectors_docs as docs_v2; docs_v1(connectors=__CONNECTORS__V1); docs_v2(connectors=__CONNECTORS__V2)'
 
 init-hooks:
 	git lfs update --force

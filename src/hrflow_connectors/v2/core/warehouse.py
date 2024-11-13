@@ -114,6 +114,21 @@ class Criterias:
             return self.archive
 
 
+@dataclass
+class Endpoinsts:
+    create: t.Optional[Endpoint] = None
+    update: t.Optional[Endpoint] = None
+    archive: t.Optional[Endpoint] = None
+
+    def for_mode(self, mode: Mode):
+        if mode is Mode.create:
+            return self.create
+        if mode is Mode.update:
+            return self.update
+        if mode is Mode.archive:
+            return self.archive
+
+
 OperationT = t.TypeVar("OperationT", Read, Write)
 
 
@@ -121,7 +136,7 @@ OperationT = t.TypeVar("OperationT", Read, Write)
 class Operation(t.Generic[OperationT]):
     function: OperationT
     criterias: Criterias
-    endpoints: list[Endpoint] = field(default_factory=list)
+    endpoints: Endpoinsts = field(default_factory=Endpoinsts)
 
 
 @dataclass

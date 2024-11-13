@@ -59,6 +59,26 @@ class Flow:
     def name(self, connector_subtype: str):
         return self.override_name or self.default_name(connector_subtype)
 
+    def description(self, connector_name: str) -> str:
+        mode: Mode = self.mode
+        if mode is Mode.create:
+            state = "created"
+        elif mode is Mode.update:
+            state = "updated"
+        elif mode is Mode.archive:
+            state = "archived"
+
+        if self.direction is Direction.inbound:
+            origin = connector_name
+            target = "HrFlow"
+        else:
+            origin = "HrFlow"
+            target = connector_name
+
+        return (
+            f"Send **{state}** '{self.entity.value}(s)' _from_ {origin} _to_ {target}"
+        )
+
 
 class ConnectorType(Enum):
     ATS = "ATS"
