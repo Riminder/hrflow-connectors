@@ -1,3 +1,6 @@
+import datetime
+import decimal
+
 from pydantic import BaseModel
 
 
@@ -10,15 +13,15 @@ class AdmenMission(BaseModel):
     LIBELLE: str
     NB_RECRUT: int
     DESC_MISSION: str
-    DATE_PROPOSITION: str
-    MONTANT: float
+    DATE_PROPOSITION: datetime.date
+    MONTANT: decimal.Decimal
     ETAT: int
     TYPE_MISSION: int
-    DATE_ACCORD_CLIENT: str
-    DATE_PRESENTATION: str
-    DATE_SIGNATURE: str
-    DATE_ENTREE_FONCT: str
-    SALAIRE_ENTREE: float
+    DATE_ACCORD_CLIENT: datetime.date
+    DATE_PRESENTATION: datetime.date
+    DATE_SIGNATURE: datetime.date
+    DATE_ENTREE_FONCT: datetime.date
+    SALAIRE_ENTREE: decimal.Decimal
     COMMENTAIRE: str
     FRAIS: float
     REGLE_FACT: int
@@ -31,32 +34,32 @@ class AdmenMission(BaseModel):
     LIBRE3: str
     LIBRE4: str
     ID_CONSULTANT_2: int
-    FACT1: float
-    FACT2: float
-    FACT3: float
-    FACT4: float
-    FACT5: float
-    FACT6: float
-    DATE_FACT1: str
-    DATE_FACT2: str
-    DATE_FACT3: str
-    DATE_FACT4: str
-    DATE_FACT5: str
-    DATE_FACT6: str
+    FACT1: decimal.Decimal
+    FACT2: decimal.Decimal
+    FACT3: decimal.Decimal
+    FACT4: decimal.Decimal
+    FACT5: decimal.Decimal
+    FACT6: decimal.Decimal
+    DATE_FACT1: datetime.date
+    DATE_FACT2: datetime.date
+    DATE_FACT3: datetime.date
+    DATE_FACT4: datetime.date
+    DATE_FACT5: datetime.date
+    DATE_FACT6: datetime.date
     ID_PERS1: int
     ID_PERS2: int
     ID_PERS3: int
     ID_PERS4: int
-    SALAIRE_DEMANDE: float
+    SALAIRE_DEMANDE: decimal.Decimal
     SECTEUR: str
     FONCTION: str
     REMPLACEMENT: int
-    DATE_DEB_RECHERCHE: str
+    DATE_DEB_RECHERCHE: datetime.date
     INTERROMPUE: int
-    DATE_INTERROMPUE: str
+    DATE_INTERROMPUE: datetime.date
     COMMENT_INTERROMPUE: str
     REPRISE: int
-    DATE_REPRISE: str
+    DATE_REPRISE: datetime.date
     COMMENT_REPRISE: str
     PUBLIEE: int
     TYPECONTRAT: str
@@ -66,9 +69,9 @@ class AdmenMission(BaseModel):
     FONCTIONWEB: str
     HTML: str
     SOFT_DELETED: int
-    DATE_DELETED: str
+    DATE_DELETED: datetime.date
     ID_PERDEL: int
-    DATE_SAISIE: str
+    DATE_SAISIE: datetime.date
     COLOR: int
     LIST1: str
     LIST2: str
@@ -81,13 +84,13 @@ class AdmenMission(BaseModel):
     ID_CREATOR: int
     CCCREATOR: str
     CTCREATOR: str
-    COMBIN: str
+    COMBIN: bytes
     COMBGCOLOR: float
     CITY: str
-    SALARYMIN: float
-    SALARYMAX: float
+    SALARYMIN: decimal.Decimal
+    SALARYMAX: decimal.Decimal
     PERIOD: str
-    ALLOTMENT: float
+    ALLOTMENT: decimal.Decimal
     ANONYMOUS: int
     ID_CONSULTANT_3: int
     ZIP: str
@@ -107,7 +110,7 @@ class AdmenMission(BaseModel):
     PERCENTFACT2: int
     PERCENTFACT3: int
     CONFIDENTIAL: int
-    CONTRACTAMOUNT: float
+    CONTRACTAMOUNT: decimal.Decimal
     DISTRIBUTIONWITHMARGE: int
     SHOWEMAILASSI: int
     URL: str
@@ -277,13 +280,13 @@ class AdmenCandidature(BaseModel):
 # Table : EXPERIENCES_PROFESSIONNELLES
 class AdmenProfessionalExperience(BaseModel):
     ID_PERSONNE: int
-    DATE_EXP: str
+    DATE_EXP: datetime.date
     RAISON_SOCIALE: str
     NB_SUPLEANTS: int
     COMMENTAIRES: str
     TECHNIQUE: int
     POSTE_OCCUPE: str
-    DATE_FIN: str
+    DATE_FIN: datetime.date
     SECTEUR: str
     EN_COURS: int
     CA_GERE: int
@@ -320,13 +323,13 @@ class AdmenProfile(BaseModel):
     FAX_BUREAU: str
     FAX_PERSO: str
     POSTE_OCCUPE: str
-    DATE_NAISSANCE: str
+    DATE_NAISSANCE: datetime.date
     CHASSE: int
     PROFIL_CANDIDAT: int
     DEJA_CANDIDAT: int
     DEJA_RENCONTRE: int
     CV: int
-    DATE_CV: str
+    DATE_CV: datetime.date
     MOBILITE: int
     EMAIL_PERSO: str
     MOBILITE_TXT: str
@@ -355,9 +358,9 @@ class AdmenProfile(BaseModel):
     TEL3_CONFIDENTIEL: int
     TEL4_CONFIDENTIEL: int
     GRAPHOLOGIE: int
-    DATE_CREATION: str
-    DATE_MAJ: str
-    DATE_DEPUIS: str
+    DATE_CREATION: datetime.date
+    DATE_MAJ: datetime.datetime
+    DATE_DEPUIS: datetime.date
     NATIONALITE: str
     SALAIRE: int
     LIB_SOCIETE: str
@@ -384,13 +387,13 @@ class AdmenProfile(BaseModel):
     PUBLIE: int
     ANNEE_SALAIRE: int
     ORIGINE: str
-    DATE_MAJ_MANU: str
+    DATE_MAJ_MANU: datetime.datetime
     TEL_PERSO2: str
     TEL_PERSO3: str
     MOBILE_PRO: str
     EN_COURS: int
     SOFT_DELETED: int
-    DATE_DELETED: str
+    DATE_DELETED: datetime.date
     ID_PERDEL: int
     COLOR: int
     LASTACTION: str
@@ -418,7 +421,7 @@ class AdmenProfile(BaseModel):
     COMBIN: str
     COMBGCOLOR: float
     ID_PERSONNE_WEB: int
-    LASTDATEACTION: str
+    LASTDATEACTION: datetime.date
     LASTLIBACTION: str
     VALIDATED: int
     ASSISTANTMAIL: str
@@ -436,7 +439,7 @@ class AdmenProfile(BaseModel):
     INDEXED: int
     CAC_USER: str
     CAC_PWD: str
-    CAC_DATE_END: str
+    CAC_DATE_END: datetime.date
     EXPECTEDSALARYMIN: int
     EXPECTEDSALARYMAX: int
     EMAILINGCONTACT: int
@@ -448,8 +451,8 @@ class AdmenProfile(BaseModel):
     GENDER: str
     ID_ISO_CURRENCY: str
     RGPD_VALIDATED: int
-    RGPD_VALIDATEDDATE: str
-    RGPD_ASKEDDATE: str
+    RGPD_VALIDATEDDATE: datetime.date
+    RGPD_ASKEDDATE: datetime.date
     RGPD_DISABLED: int
     Libre5: str
     Libre6: str

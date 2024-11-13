@@ -276,12 +276,22 @@ def write_profiles(
     if connection:
         # Table name
         profiles_table = "PERSONNES"
+        experiences_table = "EXPERIENCES_PROFESSIONNELLES"
         # Insert profiles into the database
         for profile in profiles:
+            profile_experiences = profile.pop("experiences", [])
             if not profile.get("scsync_modified"):
                 profile["scsync_modified"] = 0
             try:
-                insert_object(connection, profiles_table, profile)
+                inserted_id = insert_object(
+                    adapter, connection, profiles_table, profile
+                )
+                if inserted_id:
+                    for experience in profile_experiences:
+                        experience["ID_PERSONNE"] = inserted_id
+                        insert_object(
+                            adapter, connection, experiences_table, experience
+                        )
             except Exception as e:
                 adapter.error(f"Failed to insert profile into the database: {e}")
                 failed_profiles.append(profile)

@@ -126,6 +126,40 @@ def format_job(
     return job
 
 
+def get_url(type: str, urls: t.List[t.Dict]) -> str:
+    return next(
+        (url["url"] for url in urls if url["type"] == type),
+        None,
+    )
+
+
+def format_hrflow_experiences_to_admen(hrflow_experiences: t.List) -> t.List[t.Dict]:
+    experiences = []
+    for hrflow_experience in hrflow_experiences:
+        experience = dict(
+            INTITULE_POSTE=hrflow_experience.get("title"),
+            RAISON_SOCIALE=hrflow_experience.get("company"),
+            POSTE_OCCUPE=hrflow_experience.get("title"),
+            DEPARTMENT=hrflow_experience["location"].get("text"),
+            DATE_EXP=(
+                datetime.strptime(
+                    hrflow_experience["date_start"][:10], "%Y-%m-%d"
+                ).date()
+                if hrflow_experience["date_start"]
+                else None
+            ),
+            DATE_FIN=(
+                datetime.strptime(hrflow_experience["date_end"][:10], "%Y-%m-%d").date()
+                if hrflow_experience["date_end"]
+                else None
+            ),
+            COMMENTAIRES=hrflow_experience.get("description"),
+            EN_COURS=1 if not hrflow_experience["date_end"] else 0,
+        )
+        experiences.append(experience)
+    return experiences
+
+
 def format_hrflow_profile_to_admen(
     hrflow_profile: t.Dict,
 ) -> t.Dict:  # TODO: expand this function
@@ -137,15 +171,27 @@ def format_hrflow_profile_to_admen(
         EMAIL_PERSO=hrflow_profile_info["email"],
         TEL_MOBILE=hrflow_profile_info["phone"],
         DATE_NAISSANCE=(
-            datetime.strptime(hrflow_profile_info["date_birth"], "%Y-%m-%d")
+            datetime.strptime(
+                hrflow_profile_info["date_birth"], "%Y-%m-%dT%H:%M:%S%z"
+            ).date()
             if hrflow_profile_info["date_birth"]
             else None
         ),
+        DATE_CREATION=datetime.strptime(
+            hrflow_profile["created_at"][:10], "%Y-%m-%d"
+        ).date(),
+        DATE_MAJ=datetime.strptime(hrflow_profile["updated_at"], "%Y-%m-%dT%H:%M:%S%z"),
         ADRESSE=hrflow_profile_info["location"]["text"],
         VILLE=hrflow_profile_info["location"]["fields"]["city"],
         CODE_POSTAL=hrflow_profile_info["location"]["fields"]["postcode"],
         AREA=hrflow_profile_info["location"]["fields"]["state"],
         PAYS=hrflow_profile_info["location"]["fields"]["country"],
+        LINKEDINPUBLICPROFIL=get_url("linkedin", hrflow_profile_info["urls"]),
+        VIADEOPUBLICPROFIL=get_url("viadeo", hrflow_profile_info["urls"]),
+        TWITTERPAGE=get_url("twitter", hrflow_profile_info["urls"]),
+        FACEBOOKPAGE=get_url("facebook", hrflow_profile_info["urls"]),
+        experiences=format_hrflow_experiences_to_admen(hrflow_profile["experiences"]),
+        scsync_modified=0,
     )
     return admen_profile
 
