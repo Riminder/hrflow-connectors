@@ -621,10 +621,6 @@ ZohoRecruitJobWarehouse = Warehouse(
         parameters=ReadParameters,
         function=generic_read("JobOpenings"),
     ),
-    write=WarehouseWriteAction(
-        parameters=WriteParameters,
-        function=generic_write("JobOpenings"),
-    ),
 )
 ZohoRecruitCandidatesWarehouse = Warehouse(
     name="Zoho Candidates",

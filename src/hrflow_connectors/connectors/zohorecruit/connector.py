@@ -262,22 +262,6 @@ def format_hrflow_profile_to_zoho(profile: dict) -> Candidate:
     return zoho_candidate
 
 
-def format_hrflow_job_to_zoho(job: dict) -> JobOpening:
-    zoho_job = dict(
-        Job_Opening_Name=job["name"],
-        Job_Description=job["summary"],
-        Created_Time=job["created_at"],
-        Modified_Time=job["updated_at"],
-        Required_Skills=get_skills(job["skills"]),
-        City=job["location"]["fields"].get("city", None),
-        State=job["location"]["fields"].get("state", None),
-        Country=job["location"]["fields"].get("country", None),
-        Zip_Code=job["location"]["fields"].get("postcode", None),
-        Client_Name=job["tags"].get("ClientName", None) or "HrFlow.ai Integration",
-    )
-    return zoho_job
-
-
 DESCRIPTION = (
     "Zoho Recruit offers a powerful ATS and CRM in a single recruitment platform. With"
     " scalability, customization, and remote hiring tools, Recruit has everything your"
@@ -308,7 +292,7 @@ ZohoRecruit = Connector(
         ),
         ConnectorAction(
             name=ActionName.push_profile_list,
-            trigger_type=WorkflowType.pull,
+            trigger_type=WorkflowType.catch,
             description="Pushs Profiles from HrFlow to Zoho Recruit",
             parameters=BaseActionParameters.with_defaults(
                 "PushProfileActionParameters", format=format_hrflow_profile_to_zoho
@@ -330,16 +314,5 @@ ZohoRecruit = Connector(
             target=HrFlowJobWarehouse,
             action_type=ActionType.inbound,
         ),
-        # ConnectorAction(
-        #     name=ActionName.push_job_list,
-        #     trigger_type=WorkflowType.pull,
-        #     description="Pushs Jobs from HrFlow to a Zoho Recruit",
-        #     parameters=BaseActionParameters.with_defaults(
-        #         "PushJobActionParameters", format=format_hrflow_job_to_zoho
-        #     ),
-        #     origin=HrFlowJobWarehouse,
-        #     target=ZohoRecruitJobWarehouse,
-        #     action_type=ActionType.outbound,
-        # ),
     ],
 )
