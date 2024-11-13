@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import inspect
 import typing as t
+from dataclasses import dataclass
 
 from hrflow_connectors.v2.core.common import Direction
 from hrflow_connectors.v2.core.context import MAIN_IMPORT_NAME
@@ -14,26 +15,27 @@ if t.TYPE_CHECKING:
     from hrflow_connectors.v2.core.connector import Connector, Flow  # pragma: nocover
 
 
-WORKFLOW_ID_SETTINGS_KEY = "__workflow_id"
-INCREMENTAL_SETTINGS_KEY = "__incremental"
+@dataclass(frozen=True)
+class WORKFLOW:
+    WORKFLOW_ID_SETTINGS_KEY = "__workflow_id"
+    INCREMENTAL_SETTINGS_KEY = "__incremental"
 
-WORKFLOW_ACTIVATE_INCREMENTAL = "enable"
+    CONNECTOR_AUTH_SETTINGS_PREFIX = "connector_auth_"
+    HRFLOW_AUTH_SETTINGS_PREFIX = "hrflow_auth_"
+    PULL_PARAMETERS_SETTINGS_PREFIX = "pull_parameters_"
+    PUSH_PARAMETERS_SETTINGS_PREFIX = "push_parameters_"
 
-WORKFLOW_CONNECTOR_AUTH_SETTINGS_PREFIX = "connector_auth_"
-WORKFLOW_HRFLOW_AUTH_SETTINGS_PREFIX = "hrflow_auth_"
-WORKFLOW_PULL_PARAMETERS_SETTINGS_PREFIX = "pull_parameters_"
-WORKFLOW_PUSH_PARAMETERS_SETTINGS_PREFIX = "push_parameters_"
+    LOGICS_PLACEHOLDER = "# << logics_placeholder >>"
+    FORMAT_PLACEHOLDER = "# << format_placeholder >>"
+    CALLBACK_PLACEHOLDER = "# << callback_placeholder >>"
+    EVENT_PARSER_PLACEHOLDER = "# << event_parser_placeholder >>"
 
-WORKFLOW_LOGICS_PLACEHOLDER = "# << logics_placeholder >>"
-WORKFLOW_FORMAT_PLACEHOLDER = "# << format_placeholder >>"
-WORKFLOW_CALLBACK_PLACEHOLDER = "# << callback_placeholder >>"
-WORKFLOW_EVENT_PARSER_PLACEHOLDER = "# << event_parser_placeholder >>"
-
-WORKFLOW_DEFAULT_EVENT_PARSER_FUNCTION_NAME = "default_event_parser"
-WORKFLOW_USER_EVENT_PARSER_FUNCTION_NAME = "event_parser"
-WORKFLOW_LOGICS_FUNCTIONS_NAME = "logics"
-WORKFLOW_FORMAT_FUNCTION_NAME = "format"
-WORKFLOW_CALLBACK_FUNCTION_NAME = "callback"
+    ACTIVATE_INCREMENTAL = "enable"
+    DEFAULT_EVENT_PARSER_FUNCTION_NAME = "default_event_parser"
+    USER_EVENT_PARSER_FUNCTION_NAME = "event_parser"
+    LOGICS_FUNCTIONS_NAME = "logics"
+    FORMAT_FUNCTION_NAME = "format"
+    CALLBACK_FUNCTION_NAME = "callback"
 
 
 def workflow(
@@ -64,33 +66,33 @@ def workflow(
     default_event_parser = ""
     if flow.event_parser is not None:
         default_event_parser = inspect.getsource(flow.event_parser).replace(
-            flow.event_parser.__name__, WORKFLOW_DEFAULT_EVENT_PARSER_FUNCTION_NAME
+            flow.event_parser.__name__, WORKFLOW.DEFAULT_EVENT_PARSER_FUNCTION_NAME
         )
         default_event_parser = reindent_function_source(
             default_event_parser,
-            function_name=WORKFLOW_DEFAULT_EVENT_PARSER_FUNCTION_NAME,
+            function_name=WORKFLOW.DEFAULT_EVENT_PARSER_FUNCTION_NAME,
         )
 
     return Templates.get_template("workflow.py.j2").render(
         main_module=MAIN_IMPORT_NAME.get(),
         import_name=get_import_name(connector),
-        workflow_id_settings_key=WORKFLOW_ID_SETTINGS_KEY,
-        incremental_settings_key=INCREMENTAL_SETTINGS_KEY,
-        activate_incremental_token=WORKFLOW_ACTIVATE_INCREMENTAL,
-        connector_auth_settings_prefix=WORKFLOW_CONNECTOR_AUTH_SETTINGS_PREFIX,
-        hrflow_auth_settings_prefix=WORKFLOW_HRFLOW_AUTH_SETTINGS_PREFIX,
-        pull_parameters_settings_prefix=WORKFLOW_PULL_PARAMETERS_SETTINGS_PREFIX,
-        push_parameters_settings_prefix=WORKFLOW_PUSH_PARAMETERS_SETTINGS_PREFIX,
-        logics_placeholder=WORKFLOW_LOGICS_PLACEHOLDER,
-        logics_functions_name=WORKFLOW_LOGICS_FUNCTIONS_NAME,
-        format_placeholder=WORKFLOW_FORMAT_PLACEHOLDER,
-        format_function_name=WORKFLOW_FORMAT_FUNCTION_NAME,
-        callback_placeholder=WORKFLOW_CALLBACK_PLACEHOLDER,
-        callback_function_name=WORKFLOW_CALLBACK_FUNCTION_NAME,
-        event_parser_placeholder=WORKFLOW_EVENT_PARSER_PLACEHOLDER,
+        workflow_id_settings_key=WORKFLOW.WORKFLOW_ID_SETTINGS_KEY,
+        incremental_settings_key=WORKFLOW.INCREMENTAL_SETTINGS_KEY,
+        activate_incremental_token=WORKFLOW.ACTIVATE_INCREMENTAL,
+        connector_auth_settings_prefix=WORKFLOW.CONNECTOR_AUTH_SETTINGS_PREFIX,
+        hrflow_auth_settings_prefix=WORKFLOW.HRFLOW_AUTH_SETTINGS_PREFIX,
+        pull_parameters_settings_prefix=WORKFLOW.PULL_PARAMETERS_SETTINGS_PREFIX,
+        push_parameters_settings_prefix=WORKFLOW.PUSH_PARAMETERS_SETTINGS_PREFIX,
+        logics_placeholder=WORKFLOW.LOGICS_PLACEHOLDER,
+        logics_functions_name=WORKFLOW.LOGICS_FUNCTIONS_NAME,
+        format_placeholder=WORKFLOW.FORMAT_PLACEHOLDER,
+        format_function_name=WORKFLOW.FORMAT_FUNCTION_NAME,
+        callback_placeholder=WORKFLOW.CALLBACK_PLACEHOLDER,
+        callback_function_name=WORKFLOW.CALLBACK_FUNCTION_NAME,
+        event_parser_placeholder=WORKFLOW.EVENT_PARSER_PLACEHOLDER,
         default_event_parser=default_event_parser,
-        user_event_parser_function_name=WORKFLOW_USER_EVENT_PARSER_FUNCTION_NAME,
-        default_event_parser_function_name=WORKFLOW_DEFAULT_EVENT_PARSER_FUNCTION_NAME,
+        user_event_parser_function_name=WORKFLOW.USER_EVENT_PARSER_FUNCTION_NAME,
+        default_event_parser_function_name=WORKFLOW.DEFAULT_EVENT_PARSER_FUNCTION_NAME,
         action_name=flow.name(connector.subtype),
         type=integration,
         connector_auth=fields(connector.warehouse.auth),

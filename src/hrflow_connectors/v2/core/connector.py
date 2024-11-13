@@ -5,7 +5,6 @@ from enum import Enum
 from logging import getLogger
 from pathlib import Path
 
-from hrflow_connectors.v2.core import templating
 from hrflow_connectors.v2.core.common import Direction, Entity, Mode, Schema
 from hrflow_connectors.v2.core.hrflow import HrFlowWarehouse
 from hrflow_connectors.v2.core.msgspec_pydantic_compat import json_schema
@@ -18,6 +17,7 @@ from hrflow_connectors.v2.core.run import (
     RunResult,
     run,
 )
+from hrflow_connectors.v2.core.templating import WORKFLOW, workflow
 from hrflow_connectors.v2.core.utils import CONNECTORS_DIRECTORY, compute_logo_path
 from hrflow_connectors.v2.core.warehouse import Aisle, Warehouse
 
@@ -184,6 +184,40 @@ def make_action(
     return action
 
 
+class WorkflowManifest(t.TypedDict):
+    catch_template: str
+    pull_template: str
+    settings_keys: dict[str, str]
+    placeholders: dict[str, str]
+    expected: dict[str, str]
+
+
+class ActionManifest(t.TypedDict):
+    name: str
+    data_type: str
+    direction: t.Literal["inbound", "outbound"]
+    mode: t.Literal["create", "update", "archive"]
+    connector_auth_parameters: dict
+    hrflow_auth_parameters: dict
+    origin: str
+    origin_data_schema: dict
+    supports_incremental: bool
+    pull_parameters: dict
+    target: str
+    target_data_schema: dict
+    push_parameters: dict
+    jsonmap: dict
+    workflow: WorkflowManifest
+
+
+class Manifest(t.TypedDict):
+    name: str
+    type: str
+    subtype: str
+    logo: str
+    actions: list[ActionManifest]
+
+
 @dataclass
 class Connector:
     name: str
@@ -240,9 +274,9 @@ class Connector:
                 ),
             )
 
-    def manifest(self, connectors_directory: Path = CONNECTORS_DIRECTORY) -> dict:
-        actions = []
-        manifest = dict(
+    def manifest(self, connectors_directory: Path = CONNECTORS_DIRECTORY) -> Manifest:
+        actions: list[ActionManifest] = []
+        manifest = Manifest(
             name=self.name,
             type=self.type.value.upper().replace(" ", ""),
             subtype=self.subtype,
@@ -289,7 +323,7 @@ class Connector:
             assert pull_parameters is not None
             assert push_parameters is not None
 
-            action_manifest = dict(
+            action_manifest = ActionManifest(
                 name=flow.name(self.subtype),
                 data_type=flow.entity.value,
                 direction=flow.direction.value,
@@ -304,33 +338,33 @@ class Connector:
                 target_data_schema=json_schema(target_aisle.schema),
                 push_parameters=json_schema(push_parameters),
                 jsonmap=jsonmap,
-                workflow=dict(
-                    catch_template=templating.workflow(
+                workflow=WorkflowManifest(
+                    catch_template=workflow(
                         connector=self, flow=flow, integration="catch"
                     ),
-                    pull_template=templating.workflow(
+                    pull_template=workflow(
                         connector=self, flow=flow, integration="pull"
                     ),
                     settings_keys=dict(
-                        workflow_id=templating.WORKFLOW_ID_SETTINGS_KEY,
-                        incremental=templating.INCREMENTAL_SETTINGS_KEY,
-                        connector_auth_prefix=templating.WORKFLOW_CONNECTOR_AUTH_SETTINGS_PREFIX,
-                        hrflow_auth_prefix=templating.WORKFLOW_HRFLOW_AUTH_SETTINGS_PREFIX,
-                        pull_parameters_prefix=templating.WORKFLOW_PULL_PARAMETERS_SETTINGS_PREFIX,
-                        push_parameters_prefix=templating.WORKFLOW_PUSH_PARAMETERS_SETTINGS_PREFIX,
+                        workflow_id=WORKFLOW.WORKFLOW_ID_SETTINGS_KEY,
+                        incremental=WORKFLOW.INCREMENTAL_SETTINGS_KEY,
+                        connector_auth_prefix=WORKFLOW.CONNECTOR_AUTH_SETTINGS_PREFIX,
+                        hrflow_auth_prefix=WORKFLOW.HRFLOW_AUTH_SETTINGS_PREFIX,
+                        pull_parameters_prefix=WORKFLOW.PULL_PARAMETERS_SETTINGS_PREFIX,
+                        push_parameters_prefix=WORKFLOW.PUSH_PARAMETERS_SETTINGS_PREFIX,
                     ),
                     placeholders=dict(
-                        logics=templating.WORKFLOW_LOGICS_PLACEHOLDER,
-                        format=templating.WORKFLOW_FORMAT_PLACEHOLDER,
-                        callback=templating.WORKFLOW_CALLBACK_PLACEHOLDER,
-                        event_parser=templating.WORKFLOW_EVENT_PARSER_PLACEHOLDER,
+                        logics=WORKFLOW.LOGICS_PLACEHOLDER,
+                        format=WORKFLOW.FORMAT_PLACEHOLDER,
+                        callback=WORKFLOW.CALLBACK_PLACEHOLDER,
+                        event_parser=WORKFLOW.EVENT_PARSER_PLACEHOLDER,
                     ),
                     expected=dict(
-                        activate_incremental=templating.WORKFLOW_ACTIVATE_INCREMENTAL,
-                        logics_functions_name=templating.WORKFLOW_LOGICS_FUNCTIONS_NAME,
-                        format_functions_name=templating.WORKFLOW_FORMAT_FUNCTION_NAME,
-                        callback_functions_name=templating.WORKFLOW_CALLBACK_FUNCTION_NAME,
-                        event_parser_function_name=templating.WORKFLOW_USER_EVENT_PARSER_FUNCTION_NAME,
+                        activate_incremental=WORKFLOW.ACTIVATE_INCREMENTAL,
+                        logics_functions_name=WORKFLOW.LOGICS_FUNCTIONS_NAME,
+                        format_functions_name=WORKFLOW.FORMAT_FUNCTION_NAME,
+                        callback_functions_name=WORKFLOW.CALLBACK_FUNCTION_NAME,
+                        event_parser_function_name=WORKFLOW.USER_EVENT_PARSER_FUNCTION_NAME,
                     ),
                 ),
             )
