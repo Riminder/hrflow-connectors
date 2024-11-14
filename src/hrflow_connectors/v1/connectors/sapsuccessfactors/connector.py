@@ -3,6 +3,15 @@ import re
 import typing as t
 from typing import Any, Dict
 
+from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    ConnectorType,
+    WorkflowType,
+)
 from hrflow_connectors.v1.connectors.hrflow.schemas import HrFlowProfile
 from hrflow_connectors.v1.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
@@ -12,15 +21,6 @@ from hrflow_connectors.v1.connectors.hrflow.warehouse import (
 from hrflow_connectors.v1.connectors.sapsuccessfactors.warehouse import (
     SAPJobWarehouse,
     SAPProfileWarehouse,
-)
-from hrflow_connectors.core import (
-    ActionName,
-    ActionType,
-    BaseActionParameters,
-    Connector,
-    ConnectorAction,
-    ConnectorType,
-    WorkflowType,
 )
 
 from .schemas import SAPSuccessFactorsJob

@@ -1,6 +1,15 @@
 import re
 import typing as t
 
+from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    ConnectorType,
+    WorkflowType,
+)
 from hrflow_connectors.v1.connectors.hrflow.schemas import HrFlowProfile
 from hrflow_connectors.v1.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
@@ -10,15 +19,6 @@ from hrflow_connectors.v1.connectors.teamtailor.schema import TeamtailorJob
 from hrflow_connectors.v1.connectors.teamtailor.warehouse import (
     TeamtailorJobWarehouse,
     TeamtailorProfileWarehouse,
-)
-from hrflow_connectors.core import (
-    ActionName,
-    ActionType,
-    BaseActionParameters,
-    Connector,
-    ConnectorAction,
-    ConnectorType,
-    WorkflowType,
 )
 
 

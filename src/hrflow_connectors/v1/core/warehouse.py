@@ -68,14 +68,18 @@ FIELD_TYPE_EXAMPLE = """
 """
 INVALID_FIELD_ERROR_MSG = """Field '{{}}' in {{}} should have proper annotation using pydantic.Field.
     {}
-""".format(FIELD_TYPE_EXAMPLE)
+""".format(
+    FIELD_TYPE_EXAMPLE
+)
 NO_FIELD_TYPE_ERROR_MSG = """Field '{{}}' in {{}} is missing 'field_type' declaration.
     {}
 """.format(FIELD_TYPE_EXAMPLE)
 BAD_FIELD_TYPE_ERROR_MSG = """'field_type' for field '{{}}' in {{}} should be defined using
     `hrflow_connectors.core.FieldType`.
     {}
-""".format(FIELD_TYPE_EXAMPLE)
+""".format(
+    FIELD_TYPE_EXAMPLE
+)
 
 
 class ParametersMeta(ModelMetaclass):

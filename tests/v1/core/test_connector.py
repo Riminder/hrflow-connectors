@@ -139,11 +139,10 @@ def test_action_pull_profile_list_only_with_trigger_type_pull():
 
     errors = excinfo.value.errors()
     assert errors[0]["loc"] == ("name",)
-    assert (
-        errors[0]["msg"]
-        == "`pull_application_list`, `pull_job_list` and `pull_profile_list` are only available for trigger_type={}".format(  # noqa: E501
-            WorkflowType.pull
-        )
+    assert errors[0][
+        "msg"
+    ] == "`pull_application_list`, `pull_job_list` and `pull_profile_list` are only available for trigger_type={}".format(  # noqa: E501
+        WorkflowType.pull
     )
 
 
@@ -170,11 +169,10 @@ def test_action_pull_job_list_only_with_trigger_type_pull():
 
     errors = excinfo.value.errors()
     assert errors[0]["loc"] == ("name",)
-    assert (
-        errors[0]["msg"]
-        == "`pull_application_list`, `pull_job_list` and `pull_profile_list` are only available for trigger_type={}".format(  # noqa: E501
-            WorkflowType.pull
-        )
+    assert errors[0][
+        "msg"
+    ] == "`pull_application_list`, `pull_job_list` and `pull_profile_list` are only available for trigger_type={}".format(  # noqa: E501
+        WorkflowType.pull
     )
 
 
@@ -201,11 +199,10 @@ def test_action_pull_application_list_only_with_trigger_type_pull():
 
     errors = excinfo.value.errors()
     assert errors[0]["loc"] == ("name",)
-    assert (
-        errors[0]["msg"]
-        == "`pull_application_list`, `pull_job_list` and `pull_profile_list` are only available for trigger_type={}".format(  # noqa: E501
-            WorkflowType.pull
-        )
+    assert errors[0][
+        "msg"
+    ] == "`pull_application_list`, `pull_job_list` and `pull_profile_list` are only available for trigger_type={}".format(  # noqa: E501
+        WorkflowType.pull
     )
 
 

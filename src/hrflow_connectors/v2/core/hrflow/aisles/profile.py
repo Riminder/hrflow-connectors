@@ -2,19 +2,19 @@ import typing as t
 from logging import LoggerAdapter
 
 from hrflow import Hrflow
-from msgspec import Struct, Meta
+from msgspec import Meta, Struct
 from typing_extensions import Annotated
 
+from hrflow_connectors.v2.core.common import Entity
+from hrflow_connectors.v2.core.hrflow.aisles.common import AuthParameters
+from hrflow_connectors.v2.core.hrflow.schemas import HrFlowProfile
 from hrflow_connectors.v2.core.warehouse import (
     Aisle,
-    WriteOperation,
-    ReadOperation,
-    merge,
     Criterias,
+    ReadOperation,
+    WriteOperation,
+    merge,
 )
-from hrflow_connectors.v2.core.common import Entity
-from hrflow_connectors.v2.core.hrflow.schemas import HrFlowProfile
-from hrflow_connectors.v2.core.hrflow.aisles.common import AuthParameters
 
 
 class ReadAllModesCriterias(Struct):

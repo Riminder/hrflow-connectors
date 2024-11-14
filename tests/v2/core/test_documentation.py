@@ -4,9 +4,7 @@ from pathlib import Path
 import pytest
 
 from hrflow_connectors.v2.core.common import Direction, Entity, Mode
-from hrflow_connectors.v2.core.connector import (
-    Flow,
-)
+from hrflow_connectors.v2.core.connector import Flow
 from hrflow_connectors.v2.core.documentation import (
     KEEP_EMPTY_FOLDER,
     hrflow_connectors_docs,

@@ -2,16 +2,15 @@ import html
 import re
 import typing as t
 from logging import LoggerAdapter
-from typing_extensions import Annotated
 
 from hrflow import Hrflow
-from msgspec import Struct, Meta
+from msgspec import Meta, Struct
+from typing_extensions import Annotated
 
-from hrflow_connectors.v2.core.warehouse import Aisle, WriteOperation, merge, Criterias
 from hrflow_connectors.v2.core.common import Entity
-from hrflow_connectors.v2.core.hrflow.schemas import HrFlowJob
 from hrflow_connectors.v2.core.hrflow.aisles.common import AuthParameters
-
+from hrflow_connectors.v2.core.hrflow.schemas import HrFlowJob
+from hrflow_connectors.v2.core.warehouse import Aisle, Criterias, WriteOperation, merge
 
 LIST_JOBS_LIMIT = 30
 
@@ -185,15 +184,13 @@ def update(
         if response["code"] >= 400:
             if "Unable to find object: job" in response["message"]:
                 adapter.error(
-                    "Failed to update job with reference={} board_key={} response={}".format(
-                        job["reference"], parameters.board_key, response
-                    )
+                    "Failed to update job with reference={} board_key={} response={}"
+                    .format(job["reference"], parameters.board_key, response)
                 )
                 continue
             adapter.error(
-                "Failed to update job with reference={} board_key={} response={}".format(
-                    job["reference"], parameters.board_key, response
-                )
+                "Failed to update job with reference={} board_key={} response={}"
+                .format(job["reference"], parameters.board_key, response)
             )
             failed_jobs.append(job)
 
@@ -223,15 +220,13 @@ def archive(
         if response["code"] >= 400:
             if "Unable to find object: job" in response["message"]:
                 adapter.error(
-                    "Failed to archive job with reference={} board_key={} response={}".format(
-                        job["reference"], parameters.board_key, response
-                    )
+                    "Failed to archive job with reference={} board_key={} response={}"
+                    .format(job["reference"], parameters.board_key, response)
                 )
                 continue
             adapter.error(
-                "Failed to archive job with reference={} board_key={} response={}".format(
-                    job_reference, parameters.board_key, response
-                )
+                "Failed to archive job with reference={} board_key={} response={}"
+                .format(job_reference, parameters.board_key, response)
             )
             failed_jobs.append(job)
 

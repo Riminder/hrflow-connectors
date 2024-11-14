@@ -69,8 +69,8 @@ def secrets(connector_name: str, connector_subtype: str, connectors_directory: P
             connector_secrets = json.loads(connector_secrets_file.read_text())
         except json.JSONDecodeError as e:
             raise InvalidJSONException(
-                "Failed to JSON decode secrets file for connector {} "
-                "with error {}".format(connector_name, e)
+                "Failed to JSON decode secrets file for connector {} with error {}"
+                .format(connector_name, e)
             )
     else:
         connector_secrets = dict()

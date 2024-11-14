@@ -11,8 +11,8 @@ except ModuleNotFoundError:
     skip_s3_tests = True
 
 import pytest
-from pydantic import BaseModel
 from msgspec import Struct
+from pydantic import BaseModel
 
 from hrflow_connectors.core import backend
 from hrflow_connectors.core.backend import localjson, s3
@@ -129,7 +129,7 @@ def test_localjson_store_bad_configuration(backend_restore):
         {
             backend.ENABLE_STORE_ENVIRONMENT_VARIABLE: "1",
             backend.STORE_NAME_ENVIRONMENT_VARIABLE: "localjson",
-            localjson.DIRECTORY_ENVIRONMENT_VARIABLE: ("/home/userDoesNotExist/work"),
+            localjson.DIRECTORY_ENVIRONMENT_VARIABLE: "/home/userDoesNotExist/work",
         },
     ):
         with pytest.raises(Exception) as excinfo:

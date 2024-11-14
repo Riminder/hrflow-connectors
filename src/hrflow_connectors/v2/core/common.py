@@ -1,8 +1,8 @@
 import typing as t
 from enum import Enum
 
-from pydantic import BaseModel
 from msgspec import Struct
+from pydantic import BaseModel
 
 Schema = t.Union[type[BaseModel], type[Struct]]
 Parameters = t.Union[Struct, BaseModel]

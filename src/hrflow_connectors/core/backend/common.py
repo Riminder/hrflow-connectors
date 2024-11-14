@@ -32,7 +32,8 @@ InternalStateT = t.TypeVar("InternalStateT", contravariant=True)
 class SaveP(t.Protocol[InternalStateT]):
     def __call__(
         self, state: InternalStateT, key: str, data: t.Union[BaseModel, Struct]
-    ) -> None: ...
+    ) -> None:
+        ...  # pragma: nocover
 
 
 class LoadP(t.Protocol[InternalStateT]):
@@ -41,7 +42,8 @@ class LoadP(t.Protocol[InternalStateT]):
         state: InternalStateT,
         key: str,
         parse_as: t.Union[type[BaseModel], type[Struct]],
-    ) -> t.Union[BaseModel, Struct, None]: ...
+    ) -> t.Union[BaseModel, Struct, None]:
+        ...  # pragma: nocover
 
 
 class BackendStore(Struct, t.Generic[InternalStateT]):
@@ -62,13 +64,17 @@ class BackendStore(Struct, t.Generic[InternalStateT]):
     ParseAsT = t.TypeVar("ParseAsT", bound=t.Union[BaseModel, Struct])
 
     @t.overload
-    def load(self, key: str, parse_as: type[ParseAsT]) -> t.Optional[ParseAsT]: ...
+    def load(self, key: str, parse_as: type[ParseAsT]) -> t.Optional[ParseAsT]:
+        ...  # pragma: nocover
+
     @t.overload
     def load(
         self,
         key: str,
         parse_as: t.Union[type[BaseModel], type[Struct]],
-    ) -> t.Union[BaseModel, Struct, None]: ...
+    ) -> t.Union[BaseModel, Struct, None]:
+        ...  # pragma: nocover
+
     def load(
         self,
         key: str,

@@ -1,5 +1,14 @@
 import re
 
+from hrflow_connectors.core.connector import (
+    ActionName,
+    ActionType,
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    ConnectorType,
+    WorkflowType,
+)
 from hrflow_connectors.v1.connectors.breezyhr.utils.datetime_converter import (
     from_str_to_datetime,
 )
@@ -13,15 +22,6 @@ from hrflow_connectors.v1.connectors.breezyhr.warehouse import (
 from hrflow_connectors.v1.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
     HrFlowProfileWarehouse,
-)
-from hrflow_connectors.core.connector import (
-    ActionName,
-    ActionType,
-    BaseActionParameters,
-    Connector,
-    ConnectorAction,
-    ConnectorType,
-    WorkflowType,
 )
 
 from ..hrflow.schemas import HrFlowJob, HrFlowProfile

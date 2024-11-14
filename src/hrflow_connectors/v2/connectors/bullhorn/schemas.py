@@ -1,7 +1,7 @@
 from typing import Any, Optional
-from typing_extensions import Annotated
 
-from msgspec import Struct, Meta
+from msgspec import Meta, Struct
+from typing_extensions import Annotated
 
 
 class BullhornAddress(Struct):
@@ -27,8 +27,8 @@ class BullhornProfile(Struct):
         Optional[str],
         Meta(
             description=(
-                "Candidate’s full name. If setting firstname or lastname, you must also set"
-                " this field; it does not populate automatically"
+                "Candidate’s full name. If setting firstname or lastname, you must also"
+                " set this field; it does not populate automatically"
             ),
         ),
     ] = None
@@ -74,8 +74,9 @@ class BullhornAttachmentEnrichment(Struct, kw_only=True):
         Optional[str],
         Meta(
             description=(
-                "File name. If a file extension is included as part of the name and the "
-                "fileExtension field is not set, the file extension in the name is used."
+                "File name. If a file extension is included as part of the name and the"
+                " fileExtension field is not set, the file extension in the name is"
+                " used."
             ),
         ),
     ] = None
@@ -140,7 +141,9 @@ class BullhornEducationEnrichment(Struct, kw_only=True):
     school: Annotated[
         Optional[Optional[str]],
         Meta(
-            description="Name of the educational institute where this education took place"
+            description=(
+                "Name of the educational institute where this education took place"
+            )
         ),
     ] = None
     degree: Annotated[

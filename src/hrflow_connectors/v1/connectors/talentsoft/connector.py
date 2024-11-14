@@ -4,6 +4,16 @@ from datetime import datetime
 import requests
 from pydantic import BaseModel
 
+from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    ConnectorType,
+    Event,
+    WorkflowType,
+)
 from hrflow_connectors.v1.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
     HrFlowProfileParsingWarehouse,
@@ -19,16 +29,6 @@ from hrflow_connectors.v1.connectors.talentsoft.warehouse import (
     TalentSoftJobsWarehouse,
     TalentSoftProfilesWarehouse,
     get_talentsoft_auth_token,
-)
-from hrflow_connectors.core import (
-    ActionName,
-    ActionType,
-    BaseActionParameters,
-    Connector,
-    ConnectorAction,
-    ConnectorType,
-    Event,
-    WorkflowType,
 )
 
 

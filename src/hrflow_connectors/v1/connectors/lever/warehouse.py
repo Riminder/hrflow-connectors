@@ -6,7 +6,6 @@ import requests
 from pydantic import Field
 from typing_extensions import Literal
 
-from hrflow_connectors.v1.connectors.lever.schemas import LeverJob, LeverProfile
 from hrflow_connectors.core import (
     ActionEndpoints,
     DataType,
@@ -17,6 +16,7 @@ from hrflow_connectors.core import (
     WarehouseReadAction,
     WarehouseWriteAction,
 )
+from hrflow_connectors.v1.connectors.lever.schemas import LeverJob, LeverProfile
 
 LEVER_AUTH_ENDPOINT = "https://{auth_domain}.auth0.com"
 LEVER_REDIRECT_URI = "https://marketplace-partners.hrflow.ai/partner/lever/login"

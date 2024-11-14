@@ -197,7 +197,8 @@ class CallbackT(t.Protocol):
         target_parameters: Parameters,
         events: Counter[Event],
         items: list[dict],
-    ) -> None: ...
+    ) -> None:
+        ...  # pragma: nocover
 
 
 def run(
@@ -323,7 +324,8 @@ def run(
     if incremental:
         if origin.read.supports_incremental is False:
             adapter.warning(
-                f"Origin warehouse {metadata.origin_name} does not support incremetal reading"
+                f"Origin warehouse {metadata.origin_name} does not support incremetal"
+                " reading"
             )
             return RunResult(
                 status=Status.fatal,
@@ -381,7 +383,8 @@ def run(
 
     read_finished_at = time.time()
     adapter.info(
-        f"Finished reading in {read_finished_at - read_started_at} from warehouse={metadata.origin_name}"
+        f"Finished reading in {read_finished_at - read_started_at} from"
+        f" warehouse={metadata.origin_name}"
         f" n_items={len(origin_items)} read_failure={events[Event.read_failure]}"
     )
 
@@ -419,7 +422,7 @@ def run(
         selected_items = origin_items
     else:
         adapter.info(
-            f"Starting to apply logic functions: "
+            "Starting to apply logic functions: "
             f"n_items={len(origin_items)} before applying logics"
         )
         selected_items = []
@@ -450,7 +453,7 @@ def run(
                 incremental_token=incremental_token,
             )
         adapter.info(
-            f"Finished applying logic functions: "
+            "Finished applying logic functions: "
             f"success={len(selected_items)} discarded={events[Event.logics_discard]}"
             f" failures={events[Event.logics_failure]}"
         )
@@ -460,7 +463,8 @@ def run(
         formatted_items = selected_items
     else:
         adapter.info(
-            f"Starting to format origin items using {'default' if metadata.using_default_format else 'user defined'} function"
+            "Starting to format origin items using"
+            f" {'default' if metadata.using_default_format else 'user defined'} function"
         )
         formatted_items = []
         for item in selected_items:
@@ -469,10 +473,13 @@ def run(
             except Exception as e:
                 events[Event.format_failure] += 1
                 adapter.exception(
-                    f"Failed to format origin item using {'default' if metadata.using_default_format else 'user defined'} function error={repr(e)}"
+                    "Failed to format origin item using"
+                    f" {'default' if metadata.using_default_format else 'user defined'}"
+                    f" function error={repr(e)}"
                 )
         adapter.info(
-            f"Finished formatting origin items success={len(formatted_items)} failures={events[Event.format_failure]}"
+            "Finished formatting origin items"
+            f" success={len(formatted_items)} failures={events[Event.format_failure]}"
         )
 
         if len(formatted_items) == 0:
@@ -488,7 +495,8 @@ def run(
 
     if persist is False:
         adapter.info(
-            f"Running in dry mode with persist={persist}: Ending execution after read, format and logics"
+            f"Running in dry mode with persist={persist}: Ending execution after read,"
+            " format and logics"
         )
         return RunResult.from_events(
             events, incremental=incremental, incremental_token=incremental_token
@@ -496,7 +504,8 @@ def run(
 
     write_started_at = time.time()
     adapter.info(
-        f"Starting to write to warehouse={metadata.target_name} with n_items={len(formatted_items)}"
+        f"Starting to write to warehouse={metadata.target_name} with"
+        f" n_items={len(formatted_items)}"
     )
     try:
         failed_items = target.write(

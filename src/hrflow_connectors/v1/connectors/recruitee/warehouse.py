@@ -5,10 +5,6 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field
 
-from hrflow_connectors.v1.connectors.recruitee.schemas import (
-    RecruiteeJob,
-    RecruiteeProfile,
-)
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -17,6 +13,10 @@ from hrflow_connectors.core import (
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
+)
+from hrflow_connectors.v1.connectors.recruitee.schemas import (
+    RecruiteeJob,
+    RecruiteeProfile,
 )
 
 
@@ -306,7 +306,8 @@ def write_candidates(
         )
         if response.status_code // 100 != 2:
             adapter.error(
-                "Failed to add candidate to Recruitee status_code={} response={}".format(
+                "Failed to add candidate to Recruitee status_code={} response={}"
+                .format(
                     response.status_code,
                     response.text,
                 )
@@ -383,7 +384,8 @@ def write_jobs(
         )
         if response.status_code // 100 != 2:
             adapter.error(
-                "Failed to add job offers to Recruitee status_code={} response={}".format(
+                "Failed to add job offers to Recruitee status_code={} response={}"
+                .format(
                     response.status_code,
                     response.text,
                 )

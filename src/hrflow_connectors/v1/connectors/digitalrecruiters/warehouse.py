@@ -4,11 +4,6 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field, HttpUrl
 
-from hrflow_connectors.v1.connectors.digitalrecruiters.schema import (
-    DigitalRecruitersJob,
-    DigitalRecruitersReadProfile,
-    DigitalRecruitersWriteProfile,
-)
 from hrflow_connectors.core import (
     ActionEndpoints,
     DataType,
@@ -18,6 +13,11 @@ from hrflow_connectors.core import (
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
+)
+from hrflow_connectors.v1.connectors.digitalrecruiters.schema import (
+    DigitalRecruitersJob,
+    DigitalRecruitersReadProfile,
+    DigitalRecruitersWriteProfile,
 )
 
 DIGITAL_RECRUITERS_JOBS_ENDPOINT = "{url_environnement}/export/job-ads/{token}"

@@ -288,8 +288,8 @@ def read_jobs(
         )
         if not response.ok:
             raise Exception(
-                "Failed to fetch jobs with params={} from TalentSoft with"
-                " error={}".format(params, response.text)
+                "Failed to fetch jobs with params={} from TalentSoft with error={}"
+                .format(params, response.text)
             )
         if response.headers.get("Content-Length") == 0 or not response.content:
             if params["offset"] == 0:

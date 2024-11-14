@@ -6,7 +6,6 @@ from logging import LoggerAdapter
 from hrflow import Hrflow
 from pydantic import Field
 
-from hrflow_connectors.v1.connectors.hrflow.schemas import HrFlowJob
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -14,6 +13,7 @@ from hrflow_connectors.core import (
     Warehouse,
     WarehouseWriteAction,
 )
+from hrflow_connectors.v1.connectors.hrflow.schemas import HrFlowJob
 
 LIST_JOBS_LIMIT = 30
 
@@ -202,8 +202,8 @@ def write(
             )
             if response["code"] >= 400:
                 adapter.error(
-                    "Failed to index job with no reference "
-                    "board_key={} response={}".format(parameters.board_key, response)
+                    "Failed to index job with no reference board_key={} response={}"
+                    .format(parameters.board_key, response)
                 )
                 failed_jobs.append(job)
             continue
@@ -244,19 +244,15 @@ def write(
                 )
                 if response["code"] >= 400:
                     adapter.error(
-                        "Failed to edit job board_key={} "
-                        "reference={} response={}".format(
-                            parameters.board_key, reference, response
-                        )
+                        "Failed to edit job board_key={} reference={} response={}"
+                        .format(parameters.board_key, reference, response)
                     )
                     failed_jobs.append(job)
                     continue
         else:
             adapter.error(
-                "Failed to get job from board board_key={} "
-                "reference={} response={}".format(
-                    parameters.board_key, reference, response
-                )
+                "Failed to get job from board board_key={} reference={} response={}"
+                .format(parameters.board_key, reference, response)
             )
             failed_jobs.append(job)
             continue

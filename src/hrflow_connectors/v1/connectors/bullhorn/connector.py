@@ -3,6 +3,15 @@ import typing as t
 
 import requests
 
+from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    ConnectorType,
+    WorkflowType,
+)
 from hrflow_connectors.v1.connectors.bullhorn.schemas import BullhornProfile
 from hrflow_connectors.v1.connectors.bullhorn.utils import date_format
 from hrflow_connectors.v1.connectors.bullhorn.warehouse import (
@@ -16,15 +25,6 @@ from hrflow_connectors.v1.connectors.hrflow.warehouse.job import HrFlowJobWareho
 from hrflow_connectors.v1.connectors.hrflow.warehouse.profile import (
     HrFlowProfileParsingWarehouse,
     HrFlowProfileWarehouse,
-)
-from hrflow_connectors.core import (
-    ActionName,
-    ActionType,
-    BaseActionParameters,
-    Connector,
-    ConnectorAction,
-    ConnectorType,
-    WorkflowType,
 )
 
 

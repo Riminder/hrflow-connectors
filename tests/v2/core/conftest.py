@@ -25,9 +25,7 @@ from tests.v2.core.src.hrflow_connectors.connectors.smartleads.warehouse import 
 from tests.v2.core.src.hrflow_connectors.core.hrflow_mini.aisles.applications import (
     APPLICATIONS_DB,
 )
-from tests.v2.core.src.hrflow_connectors.core.hrflow_mini.aisles.jobs import (
-    JOBS_DB,
-)
+from tests.v2.core.src.hrflow_connectors.core.hrflow_mini.aisles.jobs import JOBS_DB
 from tests.v2.core.src.hrflow_connectors.core.hrflow_mini.warehouse import (
     HrFlowMiniWarehouse,
 )
@@ -61,7 +59,8 @@ class SmartLeadsProto(t.Protocol):
         url: t.Optional[str] = None,
         type: t.Optional[ConnectorType] = None,
         flows: t.Optional[tuple[Flow, ...]] = None,
-    ) -> Connector: ...
+    ) -> Connector:
+        ...
 
 
 @pytest.fixture

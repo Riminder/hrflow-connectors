@@ -1,7 +1,5 @@
 import typing as t
 
-from hrflow_connectors.v1.connectors.hrflow.warehouse import HrFlowJobWarehouse
-from hrflow_connectors.v1.connectors.poleemploi.warehouse import PoleEmploiJobWarehouse
 from hrflow_connectors.core import (
     ActionName,
     ActionType,
@@ -11,6 +9,8 @@ from hrflow_connectors.core import (
     ConnectorType,
     WorkflowType,
 )
+from hrflow_connectors.v1.connectors.hrflow.warehouse import HrFlowJobWarehouse
+from hrflow_connectors.v1.connectors.poleemploi.warehouse import PoleEmploiJobWarehouse
 
 
 def get_job_location(pole_emploi_location: t.Union[t.Dict, None]) -> t.Dict:

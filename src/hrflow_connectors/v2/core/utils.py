@@ -125,4 +125,4 @@ def compute_logo_path(
                 max=MAX_LOGO_PIXEL,
             )
         )
-    return f"{HRFLOW_CONNECTORS_RAW_GITHUB_CONTENT_BASE}/master/{logo.relative_to(ROOT_DIRECTORY)}"
+    return f"{HRFLOW_CONNECTORS_RAW_GITHUB_CONTENT_BASE}/master/{logo.relative_to(ROOT_DIRECTORY)}"  # noqa E501

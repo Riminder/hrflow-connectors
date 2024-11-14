@@ -5,12 +5,7 @@ from logging import LoggerAdapter
 from msgspec import Struct, ValidationError, convert
 
 from hrflow_connectors.v2.core.common import Entity
-from hrflow_connectors.v2.core.warehouse import (
-    Aisle,
-    Criterias,
-    WriteOperation,
-    merge,
-)
+from hrflow_connectors.v2.core.warehouse import Aisle, Criterias, WriteOperation, merge
 from tests.v2.utils import DB
 
 from ..schemas import Candidate

@@ -85,8 +85,8 @@ class RangesFloat(BaseModel):
     name: t.Optional[str] = Field(
         None,
         description=(
-            "Identification name of a Range of floats attached "
-            "to the Job. Example: salary"
+            "Identification name of a Range of floats attached to the Job. Example:"
+            " salary"
         ),
     )
     value_min: t.Optional[float] = Field(None, description="Min value. Example: 500.")

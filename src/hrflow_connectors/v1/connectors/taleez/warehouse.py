@@ -9,7 +9,6 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field
 
-from hrflow_connectors.v1.connectors.taleez.schemas import Candidate, Job
 from hrflow_connectors.core import (
     ActionEndpoints,
     DataType,
@@ -20,6 +19,7 @@ from hrflow_connectors.core import (
     WarehouseReadAction,
     WarehouseWriteAction,
 )
+from hrflow_connectors.v1.connectors.taleez.schemas import Candidate, Job
 
 POST_CANDIDATE_ENDPOINT = "https://api.taleez.com/0/candidates"
 TALEEZ_JOBS_ENDPOINT = "https://api.taleez.com/0/jobs"
@@ -74,10 +74,8 @@ def read(
 
     if response.status_code // 100 != 2:
         adapter.error(
-            "Failed to pull jobs from Taleez params={}"
-            " status_code={} response={}".format(
-                params, response.status_code, response.text
-            )
+            "Failed to pull jobs from Taleez params={} status_code={} response={}"
+            .format(params, response.status_code, response.text)
         )
         raise Exception("Failed to pull jobs from Taleez")
 

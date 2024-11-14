@@ -1,7 +1,5 @@
 import typing as t
 
-from hrflow_connectors.v1.connectors.hrflow.warehouse import HrFlowProfileWarehouse
-from hrflow_connectors.v1.connectors.waalaxy.warehouse import WaalaxyProfilesWarehouse
 from hrflow_connectors.core import (
     ActionName,
     ActionType,
@@ -11,6 +9,8 @@ from hrflow_connectors.core import (
     ConnectorType,
     WorkflowType,
 )
+from hrflow_connectors.v1.connectors.hrflow.warehouse import HrFlowProfileWarehouse
+from hrflow_connectors.v1.connectors.waalaxy.warehouse import WaalaxyProfilesWarehouse
 
 
 def format_waalaxy_profile(waalaxy_profile: t.Dict) -> t.Dict:

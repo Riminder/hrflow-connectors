@@ -1,14 +1,5 @@
 import typing as t
 
-from hrflow_connectors.v1.connectors.greenhouse.warehouse import (
-    GreenhouseJobWarehouse,
-    GreenhouseProfileWarehouse,
-)
-from hrflow_connectors.v1.connectors.hrflow.warehouse import (
-    HrFlowJobWarehouse,
-    HrFlowProfileWarehouse,
-)
-from hrflow_connectors.v1.connectors.hrflow.warehouse.job import remove_html_tags
 from hrflow_connectors.core import (
     ActionName,
     ActionType,
@@ -18,6 +9,15 @@ from hrflow_connectors.core import (
     ConnectorType,
     WorkflowType,
 )
+from hrflow_connectors.v1.connectors.greenhouse.warehouse import (
+    GreenhouseJobWarehouse,
+    GreenhouseProfileWarehouse,
+)
+from hrflow_connectors.v1.connectors.hrflow.warehouse import (
+    HrFlowJobWarehouse,
+    HrFlowProfileWarehouse,
+)
+from hrflow_connectors.v1.connectors.hrflow.warehouse.job import remove_html_tags
 
 APPLICATION_TAG = "application_boardKey_jobReference"
 

@@ -2,6 +2,15 @@ import re
 import typing as t
 from datetime import datetime
 
+from hrflow_connectors.core import (
+    ActionName,
+    ActionType,
+    BaseActionParameters,
+    Connector,
+    ConnectorAction,
+    ConnectorType,
+    WorkflowType,
+)
 from hrflow_connectors.v1.connectors.digitalrecruiters.warehouse import (
     DigitalRecruitersJobWarehouse,
     DigitalRecruitersReadProfilesWarehouse,
@@ -11,15 +20,6 @@ from hrflow_connectors.v1.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
     HrFlowProfileParsingWarehouse,
     HrFlowProfileWarehouse,
-)
-from hrflow_connectors.core import (
-    ActionName,
-    ActionType,
-    BaseActionParameters,
-    Connector,
-    ConnectorAction,
-    ConnectorType,
-    WorkflowType,
 )
 
 

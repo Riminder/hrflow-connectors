@@ -1,3 +1,4 @@
+from hrflow_connectors.core import backend
 from hrflow_connectors.v1.connectors.adzuna.connector import Adzuna
 from hrflow_connectors.v1.connectors.breezyhr import BreezyHR
 from hrflow_connectors.v1.connectors.bullhorn import Bullhorn
@@ -19,7 +20,6 @@ from hrflow_connectors.v1.connectors.talentsoft import TalentSoft
 from hrflow_connectors.v1.connectors.teamtailor import Teamtailor
 from hrflow_connectors.v1.connectors.waalaxy import Waalaxy
 from hrflow_connectors.v1.connectors.workable import Workable
-from hrflow_connectors.core import backend
 from hrflow_connectors.v1.core.connector import hrflow_connectors_manifest  # noqa
 from hrflow_connectors.v1.core.documentation import generate_docs  # noqa
 

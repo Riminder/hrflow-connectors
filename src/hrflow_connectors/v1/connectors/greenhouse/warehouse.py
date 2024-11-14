@@ -5,10 +5,6 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field
 
-from hrflow_connectors.v1.connectors.greenhouse.schemas import (
-    GreenhouseJobModel,
-    GreenhouseProfileModel,
-)
 from hrflow_connectors.core import (
     ActionEndpoints,
     DataType,
@@ -19,12 +15,16 @@ from hrflow_connectors.core import (
     WarehouseReadAction,
     WarehouseWriteAction,
 )
+from hrflow_connectors.v1.connectors.greenhouse.schemas import (
+    GreenhouseJobModel,
+    GreenhouseProfileModel,
+)
 
 GET_JOB_ENDPOINT = ActionEndpoints(
     name="Get job",
     description=(
-        "Endpoint to get the content of a job with a given id."
-        " The request method is `GET`"
+        "Endpoint to get the content of a job with a given id. The request method is"
+        " `GET`"
     ),
     url="https://developers.greenhouse.io/harvest.html?shell#get-retrieve-job",
 )
@@ -190,8 +190,8 @@ def write(
         )
         if response.status_code // 100 != 2:
             adapter.error(
-                "Failed to push profile to Greenhouse"
-                " status_code={} response={}".format(
+                "Failed to push profile to Greenhouse status_code={} response={}"
+                .format(
                     response.status_code,
                     response.text,
                 )

@@ -4,8 +4,9 @@ import typing as t
 from dataclasses import dataclass
 from functools import reduce
 
-from msgspec import Struct, convert, json
+from msgspec import Struct
 from msgspec import ValidationError as MsgSpecValidationError
+from msgspec import convert, json
 from pydantic import BaseModel
 from pydantic import ValidationError as PydanticValidationError
 
@@ -19,9 +20,15 @@ class ValidationError(Exception):
 
 
 @t.overload
-def serialize(obj: dict, schema: type[T]) -> T: ...
+def serialize(obj: dict, schema: type[T]) -> T:
+    ...  # pragma: nocover
+
+
 @t.overload
-def serialize(obj: dict, schema: Schema) -> Parameters: ...
+def serialize(obj: dict, schema: Schema) -> Parameters:
+    ...  # pragma: nocover
+
+
 def serialize(obj: dict, schema: Schema) -> Parameters:
     if issubclass(schema, BaseModel):
         try:

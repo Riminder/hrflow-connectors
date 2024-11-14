@@ -5,7 +5,6 @@ from typing import List
 import requests
 from pydantic import BaseModel, Field
 
-from hrflow_connectors.v1.connectors.hubspot.schemas import ContactObject
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -15,6 +14,7 @@ from hrflow_connectors.core import (
     WarehouseReadAction,
     WarehouseWriteAction,
 )
+from hrflow_connectors.v1.connectors.hubspot.schemas import ContactObject
 
 BASE_URL = "https://api.hubapi.com/crm/v3"
 CONTACTS_ENDPOINT = "{}/objects/contacts".format(BASE_URL)
@@ -202,7 +202,8 @@ def write(
                 )
                 if deal_response.status_code // 100 != 2:
                     adapter.error(
-                        "Failed to add profile to Hubspot status_code={} response={}".format(
+                        "Failed to add profile to Hubspot status_code={} response={}"
+                        .format(
                             deal_response.status_code,
                             deal_response.text,
                         )

@@ -89,8 +89,12 @@ def get_settings(get_workflow_manifest: GetWorkflowManifest) -> GetSettings:
 
         common: dict = {
             workflow_manifest["settings_keys"]["workflow_id"]: random_workflow_id(),
-            f"{workflow_manifest['settings_keys']['connector_auth_prefix']}smart_tag": "smart::tag::smart",
-            f"{workflow_manifest['settings_keys']['hrflow_auth_prefix']}api_key": "hrflow::hrflower::hrflow",
+            f"{workflow_manifest['settings_keys']['connector_auth_prefix']}smart_tag": (
+                "smart::tag::smart"
+            ),
+            f"{workflow_manifest['settings_keys']['hrflow_auth_prefix']}api_key": (
+                "hrflow::hrflower::hrflow"
+            ),
         }
         if flow.direction is Direction.inbound:
             common[
@@ -104,7 +108,8 @@ def get_settings(get_workflow_manifest: GetWorkflowManifest) -> GetSettings:
                 f"{workflow_manifest['settings_keys']['pull_parameters_prefix']}city"
             ] = "Casablanca"
             common[
-                f"{workflow_manifest['settings_keys']['push_parameters_prefix']}force_candidate_count_zero"
+                f"{workflow_manifest['settings_keys']['push_parameters_prefix']}"
+                "force_candidate_count_zero"
             ] = True
         return common
 
@@ -211,7 +216,7 @@ def logics(item: dict) -> dict:
 
     if random.random() > .5 or LOGICS_DISCARD_COUNT == 0:
         LOGICS_DISCARD_COUNT += 1
-        return 
+        return
 
     return item
 
@@ -429,7 +434,7 @@ DEFAULT_EVENT_PARSER_EXECUTED = False
 {workflow_code.replace(workflow_manifest["placeholders"]["event_parser"], event_parser_code)}
 
 run_result = workflow(_request=dict(secret="very::secret"), settings=SETTINGS)
-"""
+"""  # noqa : E501
 
     exec(script, globals_with_smartleads)
 
@@ -466,7 +471,7 @@ import json
 {workflow_code}
 
 run_result = workflow(_request=dict(), settings=dict({workflow_manifest["settings_keys"]["workflow_id"]}="{random_workflow_id()}"))
-"""
+"""  # noqa : E501
 
     exec(script, globals_with_smartleads)
 
@@ -483,7 +488,7 @@ import json
 {workflow_code}
 
 run_result = workflow(_request=json.loads('{json.dumps(get_settings(flow))}'), settings=dict({workflow_manifest["settings_keys"]["workflow_id"]}="{random_workflow_id()}"))
-"""
+"""  # noqa : E501
 
     exec(script, globals_with_smartleads)
 
@@ -518,7 +523,7 @@ COMING_FROM_DEFAULT_EVENT_PARSER = json.loads('{json.dumps(get_settings(flow))}'
 {workflow_code}
 
 run_result = workflow(_request=dict(), settings=dict({workflow_manifest["settings_keys"]["workflow_id"]}="{random_workflow_id()}"))
-"""
+"""  # noqa : E501
 
     exec(script, globals_with_smartleads)
 
@@ -560,7 +565,7 @@ def {workflow_manifest["expected"]["event_parser_function_name"]}(body: dict) ->
 {workflow_code.replace(workflow_manifest["placeholders"]["event_parser"], event_parser_code)}
 
 run_result = workflow(_request=dict(), settings=dict({workflow_manifest["settings_keys"]["workflow_id"]}="{random_workflow_id()}"))
-"""
+"""  # noqa : E501
 
     exec(script, globals_with_smartleads)
 
@@ -631,7 +636,7 @@ DEFAULT_EVENT_PARSER_EXECUTED = False
 {workflow_code}
 
 run_result = workflow(settings=SETTINGS)
-"""
+"""  # noqa : E501
 
     exec(script, globals_with_smartleads)
 
@@ -667,7 +672,7 @@ DEFAULT_EVENT_PARSER_EXECUTED = False
 {workflow_code}
 
 run_result = workflow(settings=SETTINGS)
-"""
+"""  # noqa : E501
 
     exec(script, globals_with_smartleads)
 

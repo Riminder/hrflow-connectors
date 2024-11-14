@@ -1,8 +1,8 @@
 import json
 import shutil
 import tempfile
-from unittest import mock
 from pathlib import Path
+from unittest import mock
 
 import pytest
 from PIL import Image

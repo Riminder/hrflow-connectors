@@ -1,5 +1,5 @@
+from msgspec import Meta, Struct
 from typing_extensions import Annotated
-from msgspec import Struct, Meta
 
 
 class AuthParameters(Struct):

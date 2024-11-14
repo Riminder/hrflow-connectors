@@ -4,10 +4,10 @@ import typing as t
 from datetime import datetime
 from io import BytesIO
 from logging import LoggerAdapter
-from typing_extensions import Annotated
 
 import requests
-from msgspec import Struct, Meta
+from msgspec import Meta, Struct
+from typing_extensions import Annotated
 
 from hrflow_connectors.v2.connectors.bullhorn.schemas import (
     BullhornJob,
@@ -17,10 +17,10 @@ from hrflow_connectors.v2.connectors.bullhorn.utils.authentication import auth
 from hrflow_connectors.v2.core.common import Entity, Mode
 from hrflow_connectors.v2.core.warehouse import (
     Aisle,
-    WriteOperation,
-    ReadOperation,
-    merge,
     Criterias,
+    ReadOperation,
+    WriteOperation,
+    merge,
 )
 
 
@@ -107,8 +107,8 @@ class BaseJobsParameters(BaseParameters, kw_only=True):
         str,
         Meta(
             description=(
-                "This query will restrict the results retrieved from Bullhorn based on the"
-                " specified conditions"
+                "This query will restrict the results retrieved from Bullhorn based on"
+                " the specified conditions"
             ),
         ),
     ] = "isDeleted:0 AND isOpen:true"
@@ -137,7 +137,8 @@ class ReadArchivedJobsCriterias(BaseParameters, kw_only=True):
         datetime,
         Meta(
             description=(
-                "The modification date from which you want to pull jobs and archive them"
+                "The modification date from which you want to pull jobs and archive"
+                " them"
             ),
         ),
     ]
@@ -145,8 +146,8 @@ class ReadArchivedJobsCriterias(BaseParameters, kw_only=True):
         str,
         Meta(
             description=(
-                "This query will restrict the results retrieved from Bullhorn based on the"
-                " specified conditions"
+                "This query will restrict the results retrieved from Bullhorn based on"
+                " the specified conditions"
             ),
         ),
     ] = "isDeleted:0 AND isOpen:true"
@@ -183,8 +184,8 @@ class BaseProfilesParameters(BaseParameters):
         str,
         Meta(
             description=(
-                "This query will restrict the results retrieved from Bullhorn based on the"
-                " specified conditions"
+                "This query will restrict the results retrieved from Bullhorn based on"
+                " the specified conditions"
             ),
         ),
     ] = "isDeleted:0"
@@ -201,7 +202,8 @@ class ReadCreatedProfilesCriterias(BaseProfilesParameters, kw_only=True):
         bool,
         Meta(
             description=(
-                "If True, resumes will be retrieved and parsed along with the profile data"
+                "If True, resumes will be retrieved and parsed along with the profile"
+                " data"
             ),
         ),
     ] = False
@@ -218,7 +220,8 @@ class ReadUpdatedProfilesCriterias(BaseProfilesParameters, kw_only=True):
         bool,
         Meta(
             description=(
-                "If True, resumes will be retrieved and parsed along with the profile data"
+                "If True, resumes will be retrieved and parsed along with the profile"
+                " data"
             ),
         ),
     ] = False
@@ -235,8 +238,8 @@ class ReadArchivedProfilesCriterias(BaseParameters, kw_only=True):
         str,
         Meta(
             description=(
-                "This query will restrict the results retrieved from Bullhorn based on the"
-                " specified conditions"
+                "This query will restrict the results retrieved from Bullhorn based on"
+                " the specified conditions"
             ),
         ),
     ] = "isDeleted:0"
@@ -379,10 +382,12 @@ def update_application(
 
             profile.update(
                 {
-                    "firstName": candidate_data.get("firstName")
-                    or profile.get("firstName"),
-                    "lastName": candidate_data.get("lastName")
-                    or profile.get("lastName"),
+                    "firstName": candidate_data.get("firstName") or profile.get(
+                        "firstName"
+                    ),
+                    "lastName": candidate_data.get("lastName") or profile.get(
+                        "lastName"
+                    ),
                     "name": candidate_data.get("name") or profile.get("name"),
                     "address": candidate_data.get("address") or profile.get("address"),
                     "mobile": candidate_data.get("mobile") or profile.get("mobile"),
@@ -726,7 +731,9 @@ def generic_profile_pulling(
                         and transform_timestamp_read_from(profile.get("dateAdded"))[:19]
                         != transform_timestamp_read_from(
                             profile.get("dateLastModified")
-                        )[:19]  # ignore microsecond difference created by Bullhorn
+                        )[
+                            :19
+                        ]  # ignore microsecond difference created by Bullhorn
                     ) or (
                         action is Mode.update
                         and profile.get("dateAdded") == profile.get("dateLastModified")

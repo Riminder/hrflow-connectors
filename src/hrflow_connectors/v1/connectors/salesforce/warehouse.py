@@ -7,10 +7,6 @@ from pydantic import Field
 from simple_salesforce import Salesforce, SalesforceError
 from simple_salesforce.bulk import SFBulkType
 
-from hrflow_connectors.v1.connectors.salesforce.schemas import (
-    SalesforceHrFlowJob,
-    SalesforceHrFlowProfile,
-)
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -19,6 +15,10 @@ from hrflow_connectors.core import (
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
+)
+from hrflow_connectors.v1.connectors.salesforce.schemas import (
+    SalesforceHrFlowJob,
+    SalesforceHrFlowProfile,
 )
 
 DEFAULT_LIMIT_PROFILES = 100

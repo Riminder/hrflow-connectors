@@ -37,7 +37,7 @@ def my_func(*args, **kwargs):
         print(i)
         if i % 2 == 0:
             print("Even")
-    return 
+    return
 """,
         """
     def my_func(*args, **kwargs):
@@ -45,7 +45,7 @@ def my_func(*args, **kwargs):
             print(i)
             if i % 2 == 0:
                 print("Even")
-        return 
+        return
 """,
         """
         def my_func(*args, **kwargs):
@@ -53,7 +53,7 @@ def my_func(*args, **kwargs):
                 print(i)
                 if i % 2 == 0:
                     print("Even")
-            return 
+            return
 """,
         """
 \t\tdef my_func(*args, **kwargs):
@@ -61,21 +61,18 @@ def my_func(*args, **kwargs):
 \t\t        print(i)
 \t\t        if i % 2 == 0:
 \t\t            print("Even")
-\t\t    return 
+\t\t    return
 """,
     ],
 )
 def test_reindent_function_source_works_as_expected(source: str):
-    assert (
-        reindent_function_source(source, "my_func")
-        == """
+    assert reindent_function_source(source, "my_func") == """
 def my_func(*args, **kwargs):
     for i in range(10):
         print(i)
         if i % 2 == 0:
             print("Even")
-    return """
-    )
+    return"""
 
 
 def test_reindent_function_source_fails_if_source_has_no_def():

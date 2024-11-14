@@ -1,9 +1,5 @@
 import typing as t
 
-from hrflow_connectors.v1.connectors.hrflow.warehouse.profile import (
-    HrFlowProfileWarehouse,
-)
-from hrflow_connectors.v1.connectors.hubspot.warehouse import HubspotContactWarehouse
 from hrflow_connectors.core import (
     ActionName,
     ActionType,
@@ -13,6 +9,10 @@ from hrflow_connectors.core import (
     ConnectorType,
     WorkflowType,
 )
+from hrflow_connectors.v1.connectors.hrflow.warehouse.profile import (
+    HrFlowProfileWarehouse,
+)
+from hrflow_connectors.v1.connectors.hubspot.warehouse import HubspotContactWarehouse
 
 
 def format_hrflow_profile(hrflow_profile: t.Dict) -> t.Dict:

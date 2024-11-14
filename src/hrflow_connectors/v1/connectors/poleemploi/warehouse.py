@@ -5,12 +5,6 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field, validator
 
-from hrflow_connectors.v1.connectors.poleemploi.schemas import (
-    ExperienceRequirement,
-    OfferOriginTag,
-    PoleEmploiJobOffer,
-    validate_date,
-)
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -20,6 +14,12 @@ from hrflow_connectors.core import (
     WarehouseReadAction,
 )
 from hrflow_connectors.core.warehouse import ActionEndpoints
+from hrflow_connectors.v1.connectors.poleemploi.schemas import (
+    ExperienceRequirement,
+    OfferOriginTag,
+    PoleEmploiJobOffer,
+    validate_date,
+)
 
 POLEEMPLOI_JOBS_SEARCH_ENDPOINT = (
     "https://api.emploi-store.fr/partenaire/offresdemploi/v2/offres/search"

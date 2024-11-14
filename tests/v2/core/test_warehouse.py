@@ -1,19 +1,19 @@
-from hrflow_connectors.v2.core.common import Mode, Entity, Schema
-from hrflow_connectors.v2.core.warehouse import (
-    merge,
-    ModeIsNotSupported,
-    Aisle,
-    ReadOperation,
-    WriteOperation,
-    Criterias,
-    Warehouse,
-)
 import typing as t
+from unittest.mock import MagicMock
 
 import pytest
-
 from msgspec import Struct
-from unittest.mock import MagicMock
+
+from hrflow_connectors.v2.core.common import Entity, Mode, Schema
+from hrflow_connectors.v2.core.warehouse import (
+    Aisle,
+    Criterias,
+    ModeIsNotSupported,
+    ReadOperation,
+    Warehouse,
+    WriteOperation,
+    merge,
+)
 
 
 @pytest.mark.parametrize("running_with_mode", list(Mode))
@@ -117,7 +117,7 @@ def test_get_aisle_parameters_return_none():
 
 
 def test_wareshouse_get_aisle():
-    # See https://docs.python.org/3.9/library/unittest.mock.html?highlight=magicmock#mock-names-and-the-name-attribute
+    # See https://docs.python.org/3.9/library/unittest.mock.html?highlight=magicmock#mock-names-and-the-name-attribute # noqa E501
     # for why MagicMock(name=Entity.job) doesn't work
     JobAisle = MagicMock()
     JobAisle.name = Entity.job

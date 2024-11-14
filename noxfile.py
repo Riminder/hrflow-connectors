@@ -147,8 +147,8 @@ def generate_doc_digest() -> t.Tuple[dict, dict]:
     from collections import defaultdict
     from unittest import mock
 
-    from hrflow_connectors.v1 import __CONNECTORS__, generate_docs
     from hrflow_connectors.core import documentation
+    from hrflow_connectors.v1 import __CONNECTORS__, generate_docs
 
     doc_digest = defaultdict(lambda: defaultdict(dict))
     doc_content = defaultdict(lambda: defaultdict(dict))

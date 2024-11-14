@@ -1,14 +1,6 @@
 import json
 import re
 
-from hrflow_connectors.v1.connectors.hrflow.warehouse import (
-    HrFlowJobWarehouse,
-    HrFlowProfileWarehouse,
-)
-from hrflow_connectors.v1.connectors.workable.warehouse import (
-    WorkableJobWarehouse,
-    WorkableProfileWarehouse,
-)
 from hrflow_connectors.core.connector import (
     ActionName,
     ActionType,
@@ -17,6 +9,14 @@ from hrflow_connectors.core.connector import (
     ConnectorAction,
     ConnectorType,
     WorkflowType,
+)
+from hrflow_connectors.v1.connectors.hrflow.warehouse import (
+    HrFlowJobWarehouse,
+    HrFlowProfileWarehouse,
+)
+from hrflow_connectors.v1.connectors.workable.warehouse import (
+    WorkableJobWarehouse,
+    WorkableProfileWarehouse,
 )
 
 from ..hrflow.schemas import HrFlowJob, HrFlowProfile

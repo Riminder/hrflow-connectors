@@ -156,40 +156,49 @@ class CONNECTOR_ACTION:
         workflow_id: Annotated[
             str,
             Meta(
-                description="A stable identifier used for persisting in incremental mode"
+                description=(
+                    "A stable identifier used for persisting in incremental mode"
+                )
             ),
         ]
         logics: Annotated[
             t.Optional[LogicsT],
             Meta(
-                description="A list of functions called in sequence with each"
-                " item pulled from the origin. Each function might either "
-                "return it's argument or None to discard the item. Any item"
-                " discarded is eventually not pushed to the target",
+                description=(
+                    "A list of functions called in sequence with each"
+                    " item pulled from the origin. Each function might either "
+                    "return it's argument or None to discard the item. Any item"
+                    " discarded is eventually not pushed to the target"
+                ),
                 extra_json_schema=dict(),
             ),
         ]
         format: Annotated[
             t.Optional[FormatT],
             Meta(
-                description="A formatting function to apply on items "
-                "pulled before the push",
+                description=(
+                    "A formatting function to apply on items pulled before the push"
+                ),
                 extra_json_schema=dict(),
             ),
         ] = None
         callback: Annotated[
             t.Optional[CallbackT],
             Meta(
-                description="Registers a callback function to be called at the "
-                "of a successful execution",
+                description=(
+                    "Registers a callback function to be called at the "
+                    "of a successful execution"
+                ),
                 extra_json_schema=dict(),
             ),
         ] = None
         persist: Annotated[
             bool,
             Meta(
-                description="When False has the effect of running "
-                "in dry mode. Items are pulled but not pushed to the target"
+                description=(
+                    "When False has the effect of running "
+                    "in dry mode. Items are pulled but not pushed to the target"
+                )
             ),
         ] = True
         incremental: Annotated[

@@ -4,7 +4,6 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field
 
-from hrflow_connectors.v1.connectors.ceridian.schemas import CeridianDayforceJobModel
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -13,6 +12,7 @@ from hrflow_connectors.core import (
     Warehouse,
     WarehouseReadAction,
 )
+from hrflow_connectors.v1.connectors.ceridian.schemas import CeridianDayforceJobModel
 
 
 class ReadJobsParameters(ParametersModel):
@@ -84,10 +84,8 @@ def read(
     )
     if response.status_code // 100 != 2:
         adapter.error(
-            "Failed to pull jobs from Ceridian params={}"
-            " status_code={} response={}".format(
-                params, response.status_code, response.text
-            )
+            "Failed to pull jobs from Ceridian params={} status_code={} response={}"
+            .format(params, response.status_code, response.text)
         )
         raise Exception("Failed to pull jobs from Ceridian")
     response = response.json()

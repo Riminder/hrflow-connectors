@@ -4,14 +4,6 @@ import json
 import typing as t
 from datetime import datetime
 
-from hrflow_connectors.v1.connectors.hrflow.warehouse import (
-    HrFlowJobWarehouse,
-    HrFlowProfileWarehouse,
-)
-from hrflow_connectors.v1.connectors.taleez.warehouse import (
-    TaleezJobWarehouse,
-    TaleezProfilesWarehouse,
-)
 from hrflow_connectors.core import (
     ActionName,
     ActionType,
@@ -22,6 +14,14 @@ from hrflow_connectors.core import (
     WorkflowType,
 )
 from hrflow_connectors.core.warehouse import ActionEndpoints
+from hrflow_connectors.v1.connectors.hrflow.warehouse import (
+    HrFlowJobWarehouse,
+    HrFlowProfileWarehouse,
+)
+from hrflow_connectors.v1.connectors.taleez.warehouse import (
+    TaleezJobWarehouse,
+    TaleezProfilesWarehouse,
+)
 
 # TODO: These are examples custom properties
 # --> Should be added as parameters to configure for each customer

@@ -4,11 +4,7 @@ import pytest
 
 from hrflow_connectors.core import backend
 from hrflow_connectors.v2.core.common import Direction, Entity, Mode
-from hrflow_connectors.v2.core.connector import (
-    Flow,
-    InvalidFlow,
-    NoLambdaEventParser,
-)
+from hrflow_connectors.v2.core.connector import Flow, InvalidFlow, NoLambdaEventParser
 from hrflow_connectors.v2.core.run import (
     ActionInitError,
     Event,
@@ -25,9 +21,7 @@ from tests.v2.core.src.hrflow_connectors.connectors.smartleads.aisles.leads impo
     LEADS_DB,
     LeadsAisle,
 )
-from tests.v2.core.src.hrflow_connectors.core.hrflow_mini.aisles.jobs import (
-    JobsAisle,
-)
+from tests.v2.core.src.hrflow_connectors.core.hrflow_mini.aisles.jobs import JobsAisle
 from tests.v2.core.utils import random_workflow_id
 
 
@@ -180,7 +174,8 @@ def test_connector_with_invalid_flow_fails_as_expected(SmartLeadsF: SmartLeadsPr
         with mock.patch.object(LeadsAisle, "read", None):
             SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.inbound),))
     assert (
-        f"SmartLeads warehouse is not readable in mode={Mode.create} for Entity={Entity.job}"
+        f"SmartLeads warehouse is not readable in mode={Mode.create} for"
+        f" Entity={Entity.job}"
         in excinfo.value.args[0]
     )
 
@@ -188,7 +183,8 @@ def test_connector_with_invalid_flow_fails_as_expected(SmartLeadsF: SmartLeadsPr
         with mock.patch.object(LeadsAisle.read.criterias, "create", None):
             SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.inbound),))
     assert (
-        f"SmartLeads warehouse is not readable in mode={Mode.create} for Entity={Entity.job}"
+        f"SmartLeads warehouse is not readable in mode={Mode.create} for"
+        f" Entity={Entity.job}"
         in excinfo.value.args[0]
     )
 
@@ -196,7 +192,8 @@ def test_connector_with_invalid_flow_fails_as_expected(SmartLeadsF: SmartLeadsPr
         with mock.patch.object(JobsAisle, "write", None):
             SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.inbound),))
     assert (
-        f"HrFlow warehouse is not writable in mode={Mode.create} for Entity={Entity.job}"
+        f"HrFlow warehouse is not writable in mode={Mode.create} for"
+        f" Entity={Entity.job}"
         in excinfo.value.args[0]
     )
 
@@ -204,7 +201,8 @@ def test_connector_with_invalid_flow_fails_as_expected(SmartLeadsF: SmartLeadsPr
         with mock.patch.object(JobsAisle.write.criterias, "create", None):
             SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.inbound),))
     assert (
-        f"HrFlow warehouse is not writable in mode={Mode.create} for Entity={Entity.job}"
+        f"HrFlow warehouse is not writable in mode={Mode.create} for"
+        f" Entity={Entity.job}"
         in excinfo.value.args[0]
     )
 
@@ -213,7 +211,8 @@ def test_connector_with_invalid_flow_fails_as_expected(SmartLeadsF: SmartLeadsPr
             SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.outbound),))
 
     assert (
-        f"HrFlow warehouse is not readable in mode={Mode.create} for Entity={Entity.job}"
+        f"HrFlow warehouse is not readable in mode={Mode.create} for"
+        f" Entity={Entity.job}"
         in excinfo.value.args[0]
     )
 
@@ -222,7 +221,8 @@ def test_connector_with_invalid_flow_fails_as_expected(SmartLeadsF: SmartLeadsPr
             SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.outbound),))
 
     assert (
-        f"HrFlow warehouse is not readable in mode={Mode.create} for Entity={Entity.job}"
+        f"HrFlow warehouse is not readable in mode={Mode.create} for"
+        f" Entity={Entity.job}"
         in excinfo.value.args[0]
     )
 
@@ -231,7 +231,8 @@ def test_connector_with_invalid_flow_fails_as_expected(SmartLeadsF: SmartLeadsPr
             SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.outbound),))
 
     assert (
-        f"SmartLeads warehouse is not writable in mode={Mode.create} for Entity={Entity.job}"
+        f"SmartLeads warehouse is not writable in mode={Mode.create} for"
+        f" Entity={Entity.job}"
         in excinfo.value.args[0]
     )
 
@@ -240,7 +241,8 @@ def test_connector_with_invalid_flow_fails_as_expected(SmartLeadsF: SmartLeadsPr
             SmartLeadsF(flows=(Flow(Mode.create, Entity.job, Direction.outbound),))
 
     assert (
-        f"SmartLeads warehouse is not writable in mode={Mode.create} for Entity={Entity.job}"
+        f"SmartLeads warehouse is not writable in mode={Mode.create} for"
+        f" Entity={Entity.job}"
         in excinfo.value.args[0]
     )
 

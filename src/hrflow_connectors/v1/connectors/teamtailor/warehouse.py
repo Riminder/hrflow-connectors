@@ -6,10 +6,6 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field
 
-from hrflow_connectors.v1.connectors.teamtailor.schema import (
-    TeamtailorCandidateAttribute,
-    TeamtailorJob,
-)
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -18,6 +14,10 @@ from hrflow_connectors.core import (
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
+)
+from hrflow_connectors.v1.connectors.teamtailor.schema import (
+    TeamtailorCandidateAttribute,
+    TeamtailorJob,
 )
 
 GET_ALL_JOBS_ENDPOINT = "https://api.teamtailor.com/v1/jobs"
@@ -198,8 +198,8 @@ def write(
 
         if response.status_code // 100 != 2:
             adapter.error(
-                "Failed to push profile to Teamtailor, "
-                " status_code={} response={}".format(
+                "Failed to push profile to Teamtailor,  status_code={} response={}"
+                .format(
                     response.status_code,
                     response.text,
                 )

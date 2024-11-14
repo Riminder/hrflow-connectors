@@ -15,7 +15,8 @@ class SpecificRead(t.Protocol):
         parameters: t.Any,
         incremental: bool,
         incremental_token: t.Optional[str],
-    ) -> t.Iterable[dict]: ...
+    ) -> t.Iterable[dict]:
+        ...  # pragma: nocover
 
 
 class Read(t.Protocol):
@@ -28,7 +29,8 @@ class Read(t.Protocol):
         parameters: t.Any,
         incremental: bool,
         incremental_token: t.Optional[str],
-    ) -> t.Iterable[dict]: ...
+    ) -> t.Iterable[dict]:
+        ...  # pragma: nocover
 
 
 class SpecificWrite(t.Protocol):
@@ -38,7 +40,8 @@ class SpecificWrite(t.Protocol):
         auth_parameters: t.Any,
         parameters: t.Any,
         items: t.Iterable[dict],
-    ) -> list[dict]: ...
+    ) -> list[dict]:
+        ...  # pragma: nocover
 
 
 class Write(t.Protocol):
@@ -50,7 +53,8 @@ class Write(t.Protocol):
         auth_parameters: t.Any,
         parameters: t.Any,
         items: t.Iterable[dict],
-    ) -> list[dict]: ...
+    ) -> list[dict]:
+        ...  # pragma: nocover
 
 
 class ModeIsNotSupported(Exception):
@@ -63,14 +67,20 @@ def merge(
     create: t.Optional[SpecificRead] = None,
     update: t.Optional[SpecificRead] = None,
     archive: t.Optional[SpecificRead] = None,
-) -> Read: ...
+) -> Read:
+    ...  # pragma: nocover
+
+
 @t.overload
 def merge(
     *,
     create: t.Optional[SpecificWrite] = None,
     update: t.Optional[SpecificWrite] = None,
     archive: t.Optional[SpecificWrite] = None,
-) -> Write: ...
+) -> Write:
+    ...  # pragma: nocover
+
+
 def merge(
     *,
     create: t.Optional[t.Callable[..., t.Any]] = None,

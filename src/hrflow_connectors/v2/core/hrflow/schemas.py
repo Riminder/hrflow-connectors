@@ -1,8 +1,7 @@
 import typing as t
 
+from msgspec import Meta, Struct, field
 from typing_extensions import Annotated
-
-from msgspec import Struct, Meta, field
 
 
 class Location(Struct):
@@ -47,8 +46,8 @@ class Label(Struct):
         t.Literal["yes", "no", "later"],
         Meta(
             description=(
-                "Stage associated to the Profile following the action of a recruiter (yes,"
-                " no, later)."
+                "Stage associated to the Profile following the action of a recruiter"
+                " (yes, no, later)."
             )
         ),
     ]
@@ -60,8 +59,8 @@ class Label(Struct):
         t.Optional[t.Literal[1, 2, 3, 4, 5]],
         Meta(
             description=(
-                "Rating associated to the Profile following the action of a recruiter (from"
-                " 1 to 5)."
+                "Rating associated to the Profile following the action of a recruiter"
+                " (from 1 to 5)."
             )
         ),
     ]

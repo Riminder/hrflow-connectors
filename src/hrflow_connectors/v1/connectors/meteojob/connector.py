@@ -1,9 +1,5 @@
 import typing as t
 
-from hrflow_connectors.v1.connectors.hrflow.warehouse import (
-    HrFlowProfileParsingWarehouse,
-)
-from hrflow_connectors.v1.connectors.meteojob.warehouse import MeteojobProfilesWarehouse
 from hrflow_connectors.core import (
     ActionName,
     ActionType,
@@ -13,6 +9,10 @@ from hrflow_connectors.core import (
     ConnectorType,
     WorkflowType,
 )
+from hrflow_connectors.v1.connectors.hrflow.warehouse import (
+    HrFlowProfileParsingWarehouse,
+)
+from hrflow_connectors.v1.connectors.meteojob.warehouse import MeteojobProfilesWarehouse
 
 
 def rename_profile_fields(meteojob_profile: t.Dict) -> t.Dict:

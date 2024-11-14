@@ -1,11 +1,5 @@
 import typing as t
 
-from hrflow_connectors.v1.connectors.carrevolutis.warehouse import (
-    CarrevolutisProfilesWarehouse,
-)
-from hrflow_connectors.v1.connectors.hrflow.warehouse import (
-    HrFlowProfileParsingWarehouse,
-)
 from hrflow_connectors.core import (
     ActionName,
     ActionType,
@@ -14,6 +8,12 @@ from hrflow_connectors.core import (
     ConnectorAction,
     ConnectorType,
     WorkflowType,
+)
+from hrflow_connectors.v1.connectors.carrevolutis.warehouse import (
+    CarrevolutisProfilesWarehouse,
+)
+from hrflow_connectors.v1.connectors.hrflow.warehouse import (
+    HrFlowProfileParsingWarehouse,
 )
 
 

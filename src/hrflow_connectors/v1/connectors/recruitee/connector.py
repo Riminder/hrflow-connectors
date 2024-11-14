@@ -1,13 +1,5 @@
 import typing as t
 
-from hrflow_connectors.v1.connectors.hrflow.warehouse import (
-    HrFlowJobWarehouse,
-    HrFlowProfileWarehouse,
-)
-from hrflow_connectors.v1.connectors.recruitee.warehouse import (
-    RecruiteeJobWarehouse,
-    RecruiteeProfileWarehouse,
-)
 from hrflow_connectors.core import (
     ActionName,
     ActionType,
@@ -16,6 +8,14 @@ from hrflow_connectors.core import (
     ConnectorAction,
     ConnectorType,
     WorkflowType,
+)
+from hrflow_connectors.v1.connectors.hrflow.warehouse import (
+    HrFlowJobWarehouse,
+    HrFlowProfileWarehouse,
+)
+from hrflow_connectors.v1.connectors.recruitee.warehouse import (
+    RecruiteeJobWarehouse,
+    RecruiteeProfileWarehouse,
 )
 
 

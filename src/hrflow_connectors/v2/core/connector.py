@@ -54,7 +54,10 @@ class Flow:
             )
 
     def default_name(self, connector_subtype: str):
-        return f"{self.mode.value}_{self.entity.name}s_in_{'hrflow' if self.direction is Direction.inbound else connector_subtype}"
+        return (
+            f"{self.mode.value}_{self.entity.name}s"
+            f"_in_{'hrflow' if self.direction is Direction.inbound else connector_subtype}"  # noqa E501
+        )
 
     def name(self, connector_subtype: str):
         return self.override_name or self.default_name(connector_subtype)
@@ -123,7 +126,8 @@ class PublicActionInterface(t.Protocol):
         callback: t.Optional[CallbackT] = None,
         persist: bool = True,
         incremental: bool = False,
-    ) -> RunResult: ...
+    ) -> RunResult:
+        ...  # pragma: nocover
 
 
 def make_action(
@@ -253,32 +257,38 @@ class Connector:
             connector_aisle = self.warehouse.get_aisle(flow.entity)
             if connector_aisle is None:
                 raise InvalidFlow(
-                    f"Invalid flow {flow}: Entity={flow.entity} not supported by {self.name} warehouse"
+                    f"Invalid flow {flow}: Entity={flow.entity} not supported by"
+                    f" {self.name} warehouse"
                 )
 
             hrflow_aisle = HrFlowWarehouse.get_aisle(flow.entity)
             if hrflow_aisle is None:
                 raise InvalidFlow(
-                    f"Invalid flow {flow}: Entity={flow.entity} not supported by HrFlow warehouse"
+                    f"Invalid flow {flow}: Entity={flow.entity} not supported by HrFlow"
+                    " warehouse"
                 )
 
             if flow.direction is Direction.inbound:
                 if connector_aisle.parameters("read", flow.mode) is None:
                     raise InvalidFlow(
-                        f"Invalid flow {flow}: {self.name} warehouse is not readable in mode={flow.mode} for Entity={flow.entity}"
+                        f"Invalid flow {flow}: {self.name} warehouse is not readable in"
+                        f" mode={flow.mode} for Entity={flow.entity}"
                     )
                 if hrflow_aisle.parameters("write", flow.mode) is None:
                     raise InvalidFlow(
-                        f"Invalid flow {flow}: HrFlow warehouse is not writable in mode={flow.mode} for Entity={flow.entity}"
+                        f"Invalid flow {flow}: HrFlow warehouse is not writable in"
+                        f" mode={flow.mode} for Entity={flow.entity}"
                     )
             else:
                 if hrflow_aisle.parameters("read", flow.mode) is None:
                     raise InvalidFlow(
-                        f"Invalid flow {flow}: HrFlow warehouse is not readable in mode={flow.mode} for Entity={flow.entity}"
+                        f"Invalid flow {flow}: HrFlow warehouse is not readable in"
+                        f" mode={flow.mode} for Entity={flow.entity}"
                     )
                 if connector_aisle.parameters("write", flow.mode) is None:
                     raise InvalidFlow(
-                        f"Invalid flow {flow}: {self.name} warehouse is not writable in mode={flow.mode} for Entity={flow.entity}"
+                        f"Invalid flow {flow}: {self.name} warehouse is not writable in"
+                        f" mode={flow.mode} for Entity={flow.entity}"
                     )
 
             setattr(
@@ -384,7 +394,7 @@ class Connector:
                         logics_functions_name=WORKFLOW.LOGICS_FUNCTIONS_NAME,
                         format_functions_name=WORKFLOW.FORMAT_FUNCTION_NAME,
                         callback_functions_name=WORKFLOW.CALLBACK_FUNCTION_NAME,
-                        event_parser_function_name=WORKFLOW.USER_EVENT_PARSER_FUNCTION_NAME,
+                        event_parser_function_name=WORKFLOW.USER_EVENT_PARSER_FUNCTION_NAME,  # noqa E501
                     ),
                 ),
             )

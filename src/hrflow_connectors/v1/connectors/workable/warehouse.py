@@ -4,7 +4,6 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field
 
-from hrflow_connectors.v1.connectors.workable.schemas import WorkableJobModel
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -14,6 +13,7 @@ from hrflow_connectors.core import (
     WarehouseReadAction,
     WarehouseWriteAction,
 )
+from hrflow_connectors.v1.connectors.workable.schemas import WorkableJobModel
 
 
 class WorkableReadParameters(ParametersModel):

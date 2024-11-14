@@ -4,12 +4,7 @@ from logging import LoggerAdapter
 from msgspec import Struct
 
 from hrflow_connectors.v2.core.common import Entity
-from hrflow_connectors.v2.core.warehouse import (
-    Aisle,
-    Criterias,
-    ReadOperation,
-    merge,
-)
+from hrflow_connectors.v2.core.warehouse import Aisle, Criterias, ReadOperation, merge
 from tests.v2.utils import DB
 
 from ..schemas import HrFlowMiniApplication

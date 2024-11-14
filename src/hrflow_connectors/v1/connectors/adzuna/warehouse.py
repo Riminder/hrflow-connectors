@@ -5,7 +5,6 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field
 
-from hrflow_connectors.v1.connectors.adzuna.schemas import AdzunaJob
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -15,6 +14,7 @@ from hrflow_connectors.core import (
     WarehouseReadAction,
 )
 from hrflow_connectors.core.warehouse import ActionEndpoints
+from hrflow_connectors.v1.connectors.adzuna.schemas import AdzunaJob
 
 ADZUNA_ENDPOINT = "http://api.adzuna.com/v1/api"
 SEARCH_JOBS_ENDPOINT = ActionEndpoints(

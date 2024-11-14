@@ -38,6 +38,7 @@ if t.TYPE_CHECKING:
 
     class InternalState(InternalStateBase):  # pragma: nocover
         client: S3Client
+
 else:
 
     class InternalState(InternalStateBase):
@@ -103,12 +104,14 @@ def check_store(state: InternalState):
 def get_state():
     if (region_name := os.environ.get(AWS_REGION_ENVIRONMENT_VARIABLE)) is None:
         raise Exception(
-            f"Missing environment variable {AWS_REGION_ENVIRONMENT_VARIABLE} in order to setup S3 store"
+            f"Missing environment variable {AWS_REGION_ENVIRONMENT_VARIABLE} in order"
+            " to setup S3 store"
         )
 
     if (bucket := os.environ.get(BUCKET_ENVIRONMENT_VARIABLE)) is None:
         raise Exception(
-            f"Missing environment variable {BUCKET_ENVIRONMENT_VARIABLE} for S3 store setup"
+            f"Missing environment variable {BUCKET_ENVIRONMENT_VARIABLE} for S3 store"
+            " setup"
         )
 
     if os.environ.get(AWS_ACCESS_KEY_ID_ENVIRONMENT_VARIABLE) and os.environ.get(

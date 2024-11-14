@@ -8,11 +8,6 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field
 
-from hrflow_connectors.v1.connectors.bullhorn.schemas import (
-    BullhornJob,
-    BullhornProfile,
-)
-from hrflow_connectors.v1.connectors.bullhorn.utils.authentication import auth
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -22,6 +17,11 @@ from hrflow_connectors.core import (
     WarehouseWriteAction,
 )
 from hrflow_connectors.core.warehouse import ReadMode
+from hrflow_connectors.v1.connectors.bullhorn.schemas import (
+    BullhornJob,
+    BullhornProfile,
+)
+from hrflow_connectors.v1.connectors.bullhorn.utils.authentication import auth
 
 
 class BaseParameters(ParametersModel):
@@ -145,10 +145,8 @@ def write(
         # Unable to push profile
         if response.status_code // 100 != 2:
             adapter.error(
-                "Failed to push profile from to Bullhorn"
-                " status_code={} response={}".format(
-                    response.status_code, response.text
-                )
+                "Failed to push profile from to Bullhorn status_code={} response={}"
+                .format(response.status_code, response.text)
             )
             failed_profiles.append(profile)
             continue
@@ -273,10 +271,12 @@ def write_application(
         if candidate_exists:
             profile.update(
                 {
-                    "firstName": candidate_data.get("firstName")
-                    or profile.get("firstName"),
-                    "lastName": candidate_data.get("lastName")
-                    or profile.get("lastName"),
+                    "firstName": candidate_data.get("firstName") or profile.get(
+                        "firstName"
+                    ),
+                    "lastName": candidate_data.get("lastName") or profile.get(
+                        "lastName"
+                    ),
                     "name": candidate_data.get("name") or profile.get("name"),
                     "address": candidate_data.get("address") or profile.get("address"),
                     "mobile": candidate_data.get("mobile") or profile.get("mobile"),
@@ -672,10 +672,8 @@ def read_profiles(
         response = requests.get(url=profiles_url, headers=headers)
         if response.status_code // 100 != 2:
             adapter.error(
-                "Failed to pull profiles from Bullhorn"
-                " status_code={} response={}".format(
-                    response.status_code, response.text
-                )
+                "Failed to pull profiles from Bullhorn status_code={} response={}"
+                .format(response.status_code, response.text)
             )
             raise Exception("Failed to pull profiles from Bullhorn")
         response = response.json()

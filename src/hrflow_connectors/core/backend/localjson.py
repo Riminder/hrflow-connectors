@@ -24,8 +24,9 @@ def get_state():
     directory = os.environ.get(DIRECTORY_ENVIRONMENT_VARIABLE)
     if directory is None:
         raise Exception(
-            "Missing environment variable {} in"
-            " order to setup LocalJson store".format(DIRECTORY_ENVIRONMENT_VARIABLE)
+            "Missing environment variable {} in order to setup LocalJson store".format(
+                DIRECTORY_ENVIRONMENT_VARIABLE
+            )
         )
     directory = Path(directory)
     if directory.is_absolute() is False:

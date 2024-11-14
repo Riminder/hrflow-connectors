@@ -5,10 +5,6 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field
 
-from hrflow_connectors.v1.connectors.smartrecruiters.schemas import (
-    SmartRecruitersJob,
-    SmartRecruitersProfile,
-)
 from hrflow_connectors.core import (
     ActionEndpoints,
     DataType,
@@ -18,6 +14,10 @@ from hrflow_connectors.core import (
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
+)
+from hrflow_connectors.v1.connectors.smartrecruiters.schemas import (
+    SmartRecruitersJob,
+    SmartRecruitersProfile,
 )
 
 SMARTRECRUITERS_JOBS_ENDPOINT = "https://api.smartrecruiters.com/jobs"

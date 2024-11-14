@@ -5,10 +5,6 @@ from logging import LoggerAdapter
 import requests
 from pydantic import Field
 
-from hrflow_connectors.v1.connectors.sapsuccessfactors.schemas import (
-    SapCandidateModel,
-    SAPSuccessFactorsJob,
-)
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -17,6 +13,10 @@ from hrflow_connectors.core import (
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
+)
+from hrflow_connectors.v1.connectors.sapsuccessfactors.schemas import (
+    SapCandidateModel,
+    SAPSuccessFactorsJob,
 )
 
 SAP_JOBS_ENDPOINT_LIMIT = 100

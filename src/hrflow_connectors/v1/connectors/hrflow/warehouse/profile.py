@@ -4,10 +4,6 @@ from logging import LoggerAdapter
 from hrflow import Hrflow
 from pydantic import Field
 
-from hrflow_connectors.v1.connectors.hrflow.schemas import (
-    HrFlowProfile,
-    HrFlowProfileParsing,
-)
 from hrflow_connectors.core import (
     DataType,
     FieldType,
@@ -16,6 +12,10 @@ from hrflow_connectors.core import (
     Warehouse,
     WarehouseReadAction,
     WarehouseWriteAction,
+)
+from hrflow_connectors.v1.connectors.hrflow.schemas import (
+    HrFlowProfile,
+    HrFlowProfileParsing,
 )
 
 
@@ -158,7 +158,8 @@ def write(
             )
             if response["code"] != 200:
                 adapter.error(
-                    "Failed to edit profile with reference={} key={} response={}".format(
+                    "Failed to edit profile with reference={} key={} response={}"
+                    .format(
                         profile_to_index["key"], profile_to_index["reference"], response
                     )
                 )

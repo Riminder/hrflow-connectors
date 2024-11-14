@@ -26,9 +26,9 @@ from pydantic import (
 )
 
 from hrflow_connectors.core import backend
+from hrflow_connectors.v1.core.common import ALL_TARGET_CONNECTORS_LIST_PATH
 from hrflow_connectors.v1.core.templates import Templates
 from hrflow_connectors.v1.core.warehouse import ReadMode, Warehouse
-from hrflow_connectors.v1.core.common import ALL_TARGET_CONNECTORS_LIST_PATH
 
 MAIN_IMPORT_NAME: ContextVar[str] = ContextVar(
     "MAIN_IMPORT_NAME", default="hrflow_connectors"
@@ -642,7 +642,8 @@ class ConnectorAction(BaseModel):
 
         read_started_at = time.time()
         adapter.info(
-            "Starting to read from warehouse={} with mode={} read_from={} parameters={}".format(
+            "Starting to read from warehouse={} with mode={} read_from={} parameters={}"
+            .format(
                 self.origin.name,
                 parameters.read_mode,
                 read_from,
@@ -686,7 +687,8 @@ class ConnectorAction(BaseModel):
 
         read_finished_at = time.time()
         adapter.info(
-            "Finished reading in {} from warehouse={} n_items={} read_failure={}".format(
+            "Finished reading in {} from warehouse={} n_items={} read_failure={}"
+            .format(
                 read_finished_at - read_started_at,
                 self.origin.name,
                 len(origin_items),

@@ -3,14 +3,6 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 
-from hrflow_connectors.v1.connectors.hrflow.warehouse import (
-    HrFlowJobWarehouse,
-    HrFlowProfileWarehouse,
-)
-from hrflow_connectors.v1.connectors.lever.warehouse import (
-    LeverJobWarehouse,
-    LeverProfileWarehouse,
-)
 from hrflow_connectors.core import (
     ActionName,
     ActionType,
@@ -19,6 +11,14 @@ from hrflow_connectors.core import (
     ConnectorAction,
     ConnectorType,
     WorkflowType,
+)
+from hrflow_connectors.v1.connectors.hrflow.warehouse import (
+    HrFlowJobWarehouse,
+    HrFlowProfileWarehouse,
+)
+from hrflow_connectors.v1.connectors.lever.warehouse import (
+    LeverJobWarehouse,
+    LeverProfileWarehouse,
 )
 
 
