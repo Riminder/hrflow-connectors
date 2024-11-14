@@ -727,3 +727,15 @@ def test_connector_action_does_not_fail(SmartLeads: TypedSmartLeads):
         assert action_readme is not None
         assert isinstance(action_readme, str)
         assert len(action_readme) > 10
+
+
+def test_connector_stub_does_not_fail(SmartLeads: TypedSmartLeads):
+    with added_connectors(
+        [("SmartLeads", SmartLeads)],
+    ):
+        stubs = templating.connector_stub(SmartLeads)
+
+    assert stubs is not None
+
+    for flow in SmartLeads.flows:
+        assert flow.name(SmartLeads.subtype) in stubs

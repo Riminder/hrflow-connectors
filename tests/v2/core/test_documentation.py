@@ -24,6 +24,7 @@ FORMAT_FILE = "pull_profile_list.json"
 @pytest.fixture(scope="function", autouse=True)
 def clean(connectors_directory: Path, SmartLeads: TypedSmartLeads):
     readme = connectors_directory / SmartLeads.subtype / "README.md"
+    stub = connectors_directory / SmartLeads.subtype / "connector.pyi"
     notebooks_directory = connectors_directory / SmartLeads.subtype / "notebooks"
     keep_empty_notebooks_file = (
         connectors_directory / SmartLeads.subtype / "notebooks" / KEEP_EMPTY_FOLDER
@@ -44,6 +45,7 @@ def clean(connectors_directory: Path, SmartLeads: TypedSmartLeads):
 
     for file in [
         readme,
+        stub,
         *action_documentations,
         keep_empty_notebooks_file,
         notebook,
@@ -67,6 +69,7 @@ def clean(connectors_directory: Path, SmartLeads: TypedSmartLeads):
 
 def test_documentation(connectors_directory: Path, SmartLeads: TypedSmartLeads):
     readme = connectors_directory / SmartLeads.subtype / "README.md"
+    stub = connectors_directory / SmartLeads.subtype / "connector.pyi"
     notebooks_directory = connectors_directory / SmartLeads.subtype / "notebooks"
     keep_empty_notebooks_file = (
         connectors_directory / SmartLeads.subtype / "notebooks" / KEEP_EMPTY_FOLDER
@@ -90,6 +93,7 @@ def test_documentation(connectors_directory: Path, SmartLeads: TypedSmartLeads):
     ]
 
     assert readme.exists() is False
+    assert stub.exists() is False
     assert notebooks_directory.exists() is False
     assert keep_empty_notebooks_file.exists() is False
     assert format_mappings_directory.exists() is False
@@ -104,6 +108,7 @@ def test_documentation(connectors_directory: Path, SmartLeads: TypedSmartLeads):
         )
 
     assert readme.exists() is True
+    assert stub.exists() is True
     assert notebooks_directory.exists() is True
     assert keep_empty_notebooks_file.exists() is True
     assert format_mappings_directory.exists() is True
@@ -120,6 +125,7 @@ def test_documentation_works_with_parameterized_main_module_name(
     connectors_directory: Path, SmartLeads: TypedSmartLeads
 ):
     readme = connectors_directory / SmartLeads.subtype / "README.md"
+    stub = connectors_directory / SmartLeads.subtype / "connector.pyi"
     notebooks_directory = connectors_directory / SmartLeads.subtype / "notebooks"
     keep_empty_notebooks_file = (
         connectors_directory / SmartLeads.subtype / "notebooks" / KEEP_EMPTY_FOLDER
@@ -143,6 +149,7 @@ def test_documentation_works_with_parameterized_main_module_name(
     ]
 
     assert readme.exists() is False
+    assert stub.exists() is False
     assert notebooks_directory.exists() is False
     assert keep_empty_notebooks_file.exists() is False
     assert format_mappings_directory.exists() is False
@@ -170,6 +177,7 @@ def test_documentation_works_with_parameterized_main_module_name(
             )
 
     assert readme.exists() is True
+    assert stub.exists() is True
     assert notebooks_directory.exists() is True
     assert keep_empty_notebooks_file.exists() is True
     assert format_mappings_directory.exists() is True

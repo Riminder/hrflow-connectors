@@ -179,18 +179,18 @@ def generate_doc_digest() -> t.Tuple[dict, dict]:
             path, data = args
             if path.parts[-2:] == ("hrflow-connectors", "README.md"):
                 doc_digest["v1"]["root"]["readme"] = hashlib.md5(data).hexdigest()
-                doc_content["v1"]["root"]["readme"] = data.decode()
+                doc_content["v1"]["root"]["readme"] = data.decode() + "\n"
             elif path.name == "README.md":
                 connector = path.parts[-2]
                 doc_digest["v1"][connector]["readme"] = hashlib.md5(data).hexdigest()
-                doc_content["v1"][connector]["readme"] = data.decode()
+                doc_content["v1"][connector]["readme"] = data.decode() + "\n"
             else:
                 connector = path.parts[-3]
                 action = path.parts[-1].strip(".md")
                 doc_digest["v1"][connector]["actions"][action] = hashlib.md5(
                     data
                 ).hexdigest()
-                doc_content["v1"][connector]["actions"][action] = data.decode()
+                doc_content["v1"][connector]["actions"][action] = data.decode() + "\n"
 
     with mock.patch.object(
         documentation_v2.Path, "write_bytes", autospec=True
@@ -203,14 +203,18 @@ def generate_doc_digest() -> t.Tuple[dict, dict]:
             if path.name == "README.md":
                 connector = path.parts[-2]
                 doc_digest["v2"][connector]["readme"] = hashlib.md5(data).hexdigest()
-                doc_content["v2"][connector]["readme"] = data.decode()
+                doc_content["v2"][connector]["readme"] = data.decode() + "\n"
+            elif path.name == "connector.pyi":
+                connector = path.parts[-2]
+                doc_digest["v2"][connector]["stub"] = hashlib.md5(data).hexdigest()
+                doc_content["v2"][connector]["stub"] = data.decode() + "\n"
             else:
                 connector = path.parts[-3]
                 action = path.parts[-1].strip(".md")
                 doc_digest["v2"][connector]["actions"][action] = hashlib.md5(
                     data
                 ).hexdigest()
-                doc_content["v2"][connector]["actions"][action] = data.decode()
+                doc_content["v2"][connector]["actions"][action] = data.decode() + "\n"
 
     return doc_digest, doc_content
 
@@ -265,7 +269,6 @@ def docs(session):
                 )
             )
 
-        # Root is only handled by v1 code for now
         for version in ["v1", "v2"]:
             connectors_directory = Path(f"./src/hrflow_connectors/{version}/connectors")
             for connector, digests in baseline_doc_digest[version].items():
@@ -285,6 +288,26 @@ def docs(session):
                             tofile=session.python,
                         )
                     )
+                # Only v2 generates stub files
+                if version == "v2":
+                    if digests["stub"] != generated_digest[version].get(
+                        connector, {}
+                    ).get("stub"):
+                        file = str(connectors_directory / connector / "connector.pyi")
+                        baseline = baseline_content[version][connector]["stub"]
+                        generated = (
+                            generated_content[version]
+                            .get(connector, {})
+                            .get("stub", "")
+                        )
+                        difference.append(
+                            difflib.unified_diff(
+                                a=baseline.splitlines(keepends=True),
+                                b=generated.splitlines(keepends=True),
+                                fromfile=file,
+                                tofile=session.python,
+                            )
+                        )
                 for action, digest in digests["actions"].items():
                     if digest != generated_digest[version].get(connector, {}).get(
                         "actions", {}

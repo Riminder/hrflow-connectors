@@ -36,7 +36,7 @@ def ensure_gitkeep(directory: Path, gitkeep_filename: str = ".gitkeep") -> None:
 
 
 def hrflow_connectors_docs(
-    connectors: list[Connector],
+    connectors: t.Iterable[Connector],
     connectors_directory: Path = CONNECTORS_DIRECTORY,
 ) -> None:
     for connector in connectors:
@@ -63,6 +63,9 @@ def hrflow_connectors_docs(
                 connector, current_content=readme_content
             ).encode()
         )
+
+        stubs = connector_directory / "connector.pyi"
+        stubs.write_bytes(templating.connector_stub(connector).encode())
 
         notebooks_directory = connector_directory / "notebooks"
         ensure_gitkeep(notebooks_directory, KEEP_EMPTY_FOLDER)

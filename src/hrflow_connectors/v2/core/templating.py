@@ -264,3 +264,17 @@ def connector_action(connector: Connector, flow: Flow) -> str:
         )
         .replace(",\n    \n)", "\n)")
     )
+
+
+@dataclass(frozen=True)
+class CONNECTOR_STUB:
+    pass
+
+
+def connector_stub(
+    connector: Connector,
+) -> str:
+    return Templates.get_template("connector.pyi.j2").render(
+        import_name=get_import_name(connector),
+        actions=[flow.name(connector.subtype) for flow in connector.flows],
+    )
