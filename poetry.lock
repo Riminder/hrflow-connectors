@@ -596,7 +596,6 @@ files = [
 
 [package.dependencies]
 types-awscrt = "*"
-typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.9\""}
 
 [package.extras]
 botocore = ["botocore"]
@@ -2297,7 +2296,6 @@ files = [
 [package.dependencies]
 markdown-it-py = ">=2.2.0"
 pygments = ">=2.13.0,<3.0.0"
-typing-extensions = {version = ">=4.0.0,<5.0", markers = "python_version < \"3.9\""}
 
 [package.extras]
 jupyter = ["ipywidgets (>=7.5.1,<9)"]
@@ -2614,5 +2612,5 @@ s3 = ["boto3"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.8.1"
-content-hash = "a0f9402db2ee87d2ac84e9bf9da4c57590d56228854218957ac1fc4b048e8209"
+python-versions = "^3.9"
+content-hash = "42fe3eadfe6e11839ea7831e3226cf519ef9e2a5999da54f11c39bcf6fe2c073"
