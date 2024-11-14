@@ -51,9 +51,18 @@ def test_v1_connectors_importable_from_root():
 # from hrflow_connectors.**v1**.connectors.xxxx.utils import yyy
 # But since this migration should not break code currently running in workflows
 # all these legacy imports are reimported temporarly
-# To find these import search an updated version of workflows-customers repository
+# To find these import search an updated version of workflows-customers
+# and hrflow-customers repositories
 LEGACY_IMPORTS = [
-    "from hrflow_connectors.connectors.bullhorn.utils.authentication import auth"
+    "from hrflow_connectors.connectors.bullhorn.utils.authentication import auth",
+    "from hrflow_connectors.connectors.hrflow.schemas import HrFlowProfile",
+    """
+from hrflow_connectors.connectors.hrflow.warehouse import (
+    HrFlowJobWarehouse,
+    HrFlowProfileWarehouse,
+    HrFlowProfileParsingWarehouse,
+)
+""",
 ]
 
 
