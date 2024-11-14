@@ -12,15 +12,17 @@ from pathlib import Path
 from jinja2 import Template
 from pydantic import BaseModel
 from pydantic.fields import ModelField
+from typing_extensions import TypeGuard
 
+from hrflow_connectors.v1.core.common import ALL_TARGET_CONNECTORS_LIST_PATH
 from hrflow_connectors.v1.core.connector import (
     MAIN_IMPORT_NAME,
     Connector,
     get_import_name,
 )
 from hrflow_connectors.v1.core.templates import Templates
-from hrflow_connectors.v1.core.common import ALL_TARGET_CONNECTORS_LIST_PATH
-
+from hrflow_connectors.v2 import __CONNECTORS__ as __CONNECTORS__V2
+from hrflow_connectors.v2.core.connector import Connector as V2Connector
 
 logger = logging.getLogger(__name__)
 CONNECTORS_DIRECTORY = Path(__file__).parent.parent / "connectors"
@@ -51,6 +53,8 @@ BASE_CONNECTOR_PATH: ContextVar[t.Optional[str]] = ContextVar(
 PREMIUM_STATUS = ":lock: Premium"
 PREMIUM_README_LINK = "https://forms.gle/pokoE9pAjSVSFtCe7"
 OPENSOURCE_STATUS = ":book: Open source"
+
+V2_CONNECTORS_BY_NAME = {connector.name: connector for connector in __CONNECTORS__V2}
 
 
 class InvalidConnectorReadmeFormat(Exception):
@@ -178,6 +182,12 @@ def ensure_gitkeep(directory: Path, gitkeep_filename: str = ".gitkeep") -> None:
         gitkeep_file.touch()
 
 
+def connector_is_v2(
+    connector: t.Union[Connector, V2Connector],
+) -> TypeGuard[V2Connector]:
+    return isinstance(connector, V2Connector)
+
+
 def update_root_readme(
     connectors: t.List[Connector],
     target_connectors: t.List[t.Dict],
@@ -189,7 +199,9 @@ def update_root_readme(
         [
             {
                 **connector,
-                "object": connector_by_name.get(connector["name"]),
+                "object": V2_CONNECTORS_BY_NAME.get(
+                    connector["name"], connector_by_name.get(connector["name"])
+                ),
             }
             for connector in target_connectors
         ],
@@ -219,11 +231,26 @@ def update_root_readme(
             else:
                 premium_connectors_table += updated_listing + "\n"
         else:
-            model = connector["object"].model
+            connector_object = t.cast(
+                t.Union[Connector, V2Connector], connector["object"]
+            )
+            if connector_is_v2(connector_object):
+                name = connector_object.name
+                subtype = connector_object.subtype
+                connector_type = connector_object.type
+                base_connector_path = (
+                    BASE_CONNECTOR_PATH.get().rstrip("/").replace("v1", "v2")
+                )
+            else:
+                name = connector_object.model.name
+                subtype = connector_object.model.subtype
+                connector_type = connector_object.model.type
+                base_connector_path = BASE_CONNECTOR_PATH.get().rstrip("/")
+
             result = subprocess.run(
                 GIT_UPDATE_DATE.format(
-                    connector=model.subtype,
-                    base_connector_path=BASE_CONNECTOR_PATH.get().rstrip("/"),
+                    connector=subtype,
+                    base_connector_path=base_connector_path,
                 ),
                 shell=True,
                 text=True,
@@ -233,7 +260,7 @@ def update_root_readme(
             if result.stderr:
                 raise Exception(
                     "Subprocess run for Git update dates failed for connector {} with"
-                    " errors {}".format(model.subtype, result.stderr)
+                    " errors {}".format(subtype, result.stderr)
                 )
             filtered = [
                 line.split(" ")[0]
@@ -254,12 +281,12 @@ def update_root_readme(
                 ).strftime("%d/%m/%Y")
 
             updated_listing = line_pattern.format(
-                name=model.name,
+                name=name,
                 readme_link="./{base_connector_path}/{connector}/README.md".format(
-                    base_connector_path=BASE_CONNECTOR_PATH.get().strip("/"),
-                    connector=model.subtype,
+                    base_connector_path=base_connector_path,
+                    connector=subtype,
                 ),
-                type=model.type.value,
+                type=connector_type.value,
                 status=OPENSOURCE_STATUS,
                 release_date=f'*{connector["release_date"]}*',
                 updated_at=f"*{updated_at}*",

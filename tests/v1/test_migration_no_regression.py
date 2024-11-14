@@ -1,9 +1,8 @@
+import re
 import typing as t
 from pathlib import Path
-import re
-import pytest
 
-import hrflow_connectors
+import pytest
 
 
 def connectors() -> t.Optional[list[str]]:

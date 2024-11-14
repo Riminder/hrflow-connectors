@@ -1,6 +1,9 @@
+import json
 import logging
 import random
 import re
+import tempfile
+import typing as t
 from contextlib import contextmanager
 from datetime import date, datetime, time, timezone
 from os.path import relpath
@@ -9,6 +12,7 @@ from unittest import mock
 
 import pytest
 
+from hrflow_connectors import __CONNECTORS__ as V1_CONNECTORS
 from hrflow_connectors import generate_docs
 from hrflow_connectors.core import (
     ActionName,
@@ -24,10 +28,15 @@ from hrflow_connectors.core.connector import (
     ConnectorImportNameNotFound,
 )
 from hrflow_connectors.core.documentation import (
+    ALL_TARGET_CONNECTORS_LIST_PATH,
+    GIT_UPDATE_DATE,
     KEEP_EMPTY_FOLDER,
     USE_REMOTE_REV,
     InvalidConnectorReadmeFormat,
+    update_root_readme,
 )
+from hrflow_connectors.v1.core.templates import Templates
+from hrflow_connectors.v2 import __CONNECTORS__ as V2_CONNECTORS
 from tests.v1.core.src.hrflow_connectors.connectors.localusers.warehouse import (
     UsersWarehouse,
 )
@@ -136,7 +145,7 @@ SmartLeadsJobs = Connector(
 
 
 @contextmanager
-def patched_subprocess(**kwargs):
+def patched_subprocess(**kwargs) -> t.Iterator[mock.MagicMock]:
     with mock.patch(
         "hrflow_connectors.core.documentation.subprocess.run",
         return_value=mock.MagicMock(
@@ -152,8 +161,8 @@ def patched_subprocess(**kwargs):
                 **kwargs,
             }
         ),
-    ):
-        yield
+    ) as mocked_run:
+        yield mocked_run
 
 
 NOTEBOOKS_FILE = "anyfile.txt"
@@ -979,3 +988,86 @@ def test_main_readme_update_at_uses_pre_v2_updated_at_if_no_commit(
 
     assert f"[**{SmartLeads.model.name}**]" in root_readme.read_text()
     assert expected in root_readme.read_text()
+
+
+def test_root_readme_uses_v2_connectors_when_available():
+    # This test tries to assert two things:
+    #  1. That the git command to pick up updated_at points
+    #          to the v2 subtree when it should
+    #  2. That the link to the readme of each connectors points
+    #          to v2 subtree when it should
+    with open(ALL_TARGET_CONNECTORS_LIST_PATH, "r") as f:
+        production_target_connectors = json.load(f)
+    v1_base_connector_path = "src/hrflow_connectors/v1/connectors"
+    v2_base_connector_path = "src/hrflow_connectors/v2/connectors"
+
+    v2_subtypes = {connector.subtype for connector in V2_CONNECTORS}
+    NOT_MIGRATED_CONNECTOR = [
+        connector
+        for connector in V1_CONNECTORS
+        if connector.model.subtype not in v2_subtypes
+    ]
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        root = Path(temp_dir)
+        readme = root / "README.md"
+
+        assert readme.exists() is False
+
+        with patched_subprocess() as mocked_run:
+            update_root_readme(
+                connectors=V1_CONNECTORS,
+                target_connectors=production_target_connectors,
+                root=root,
+                root_template=Templates.get_template("root_readme.md.j2"),
+            )
+
+        assert readme.exists() is True
+
+        readme_content = readme.read_text()
+        for connector in NOT_MIGRATED_CONNECTOR:
+            assert (
+                f"[**{connector.model.name}**](./{v1_base_connector_path}/{connector.model.subtype}/README.md)"
+                in readme_content
+            )
+            mocked_run.assert_any_call(
+                GIT_UPDATE_DATE.format(
+                    connector=connector.model.subtype,
+                    base_connector_path=v1_base_connector_path,
+                ),
+                shell=mock.ANY,
+                text=mock.ANY,
+                capture_output=mock.ANY,
+                timeout=mock.ANY,
+            )
+
+        for connector in V2_CONNECTORS:
+            assert (
+                f"[**{connector.name}**](./{v2_base_connector_path}/{connector.subtype}/README.md)"
+                in readme_content
+            )
+            assert (
+                f"[**{connector.name}**](./{v1_base_connector_path}/{connector.subtype}/README.md)"
+                not in readme_content
+            )
+            mocked_run.assert_any_call(
+                GIT_UPDATE_DATE.format(
+                    connector=connector.subtype,
+                    base_connector_path=v2_base_connector_path,
+                ),
+                shell=mock.ANY,
+                text=mock.ANY,
+                capture_output=mock.ANY,
+                timeout=mock.ANY,
+            )
+            with pytest.raises(AssertionError):
+                mocked_run.assert_any_call(
+                    GIT_UPDATE_DATE.format(
+                        connector=connector.subtype,
+                        base_connector_path=v1_base_connector_path,
+                    ),
+                    shell=mock.ANY,
+                    text=mock.ANY,
+                    capture_output=mock.ANY,
+                    timeout=mock.ANY,
+                )
