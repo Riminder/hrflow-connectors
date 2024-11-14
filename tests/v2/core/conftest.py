@@ -65,12 +65,15 @@ class SmartLeadsProto(t.Protocol):
 
 @pytest.fixture
 def SmartLeadsF() -> t.Iterator[SmartLeadsProto]:
-    with mock.patch(
-        "hrflow_connectors.v2.core.connector.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
-    ), mock.patch(
-        "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
-        HrFlowMiniWarehouse,
+    with (
+        mock.patch(
+            "hrflow_connectors.v2.core.connector.HrFlowWarehouse",
+            HrFlowMiniWarehouse,
+        ),
+        mock.patch(
+            "hrflow_connectors.v2.core.templating.HrFlowWarehouse",
+            HrFlowMiniWarehouse,
+        ),
     ):
 
         def _SmartLeadsF(

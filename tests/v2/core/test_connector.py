@@ -696,9 +696,12 @@ def test_outcome_if_writing_fails_without_raising(
     # Here we return a dummy array with one but with
     # exact same size a number of read items which means
     # that it fails for 100% of items
-    with mock.patch.object(
-        LeadsAisle.read, "function", return_value=LEADS_DB
-    ), mock.patch.object(JobsAisle.write, "function", return_value=[1] * len(LEADS_DB)):
+    with (
+        mock.patch.object(LeadsAisle.read, "function", return_value=LEADS_DB),
+        mock.patch.object(
+            JobsAisle.write, "function", return_value=[1] * len(LEADS_DB)
+        ),
+    ):
         result = SmartLeads.create_jobs_in_hrflow(
             workflow_id=workflow_id,
             connector_auth=dict(smart_tag="smart::tag::smart"),
@@ -881,9 +884,10 @@ def test_outcome_origin_when_write_failure_happens(
 ):
     # Only the len counts for the events
     failures = [1, 1]
-    with mock.patch.object(
-        LeadsAisle.read, "function", return_value=LEADS_DB
-    ), mock.patch.object(JobsAisle.write, "function", return_value=failures):
+    with (
+        mock.patch.object(LeadsAisle.read, "function", return_value=LEADS_DB),
+        mock.patch.object(JobsAisle.write, "function", return_value=failures),
+    ):
         result = SmartLeads.create_jobs_in_hrflow(
             workflow_id="test",
             connector_auth=dict(smart_tag="smart::tag::smart"),
@@ -977,9 +981,10 @@ def test_outcome_origin_when_many_failure_happens(
 
     write_failures = [1]
 
-    with mock.patch.object(
-        LeadsAisle.read, "function", new=read_with_failures
-    ), mock.patch.object(JobsAisle.write, "function", return_value=write_failures):
+    with (
+        mock.patch.object(LeadsAisle.read, "function", new=read_with_failures),
+        mock.patch.object(JobsAisle.write, "function", return_value=write_failures),
+    ):
         result = SmartLeads.create_jobs_in_hrflow(
             workflow_id="test",
             connector_auth=dict(smart_tag="smart::tag::smart"),
@@ -1025,9 +1030,10 @@ def test_logics_effectively_discards_items(
         written_items = items
         return []
 
-    with mock.patch.object(
-        LeadsAisle.read, "function", return_value=LEADS_DB
-    ), mock.patch.object(JobsAisle.write, "function", new=capture_written_items):
+    with (
+        mock.patch.object(LeadsAisle.read, "function", return_value=LEADS_DB),
+        mock.patch.object(JobsAisle.write, "function", new=capture_written_items),
+    ):
         result = SmartLeads.create_jobs_in_hrflow(
             workflow_id="test",
             connector_auth=dict(smart_tag="smart::tag::smart"),
@@ -1077,11 +1083,12 @@ def test_works_as_expected_with_empty_logics(
 def test_works_as_expected_with_persist_is_false(
     SmartLeads: TypedSmartLeads,
 ):
-    with mock.patch.object(
-        LeadsAisle.read, "function", return_value=LEADS_DB
-    ), mock.patch.object(
-        JobsAisle.write, "function", side_effect=Exception
-    ) as mocked_write:
+    with (
+        mock.patch.object(LeadsAisle.read, "function", return_value=LEADS_DB),
+        mock.patch.object(
+            JobsAisle.write, "function", side_effect=Exception
+        ) as mocked_write,
+    ):
         result = SmartLeads.create_jobs_in_hrflow(
             workflow_id="",
             connector_auth=dict(smart_tag="smart::tag::smart"),
@@ -1112,9 +1119,10 @@ def test_action_works_even_with_no_default_format(SmartLeadsF: SmartLeadsProto):
         )
     )
 
-    with mock.patch.object(
-        LeadsAisle.read, "function", return_value=LEADS_DB
-    ), mock.patch.object(JobsAisle.write, "function", return_value=[]) as mocked_write:
+    with (
+        mock.patch.object(LeadsAisle.read, "function", return_value=LEADS_DB),
+        mock.patch.object(JobsAisle.write, "function", return_value=[]) as mocked_write,
+    ):
         result = getattr(SmartLeads, "create_jobs_in_hrflow")(
             workflow_id="",
             connector_auth=dict(smart_tag="smart::tag::smart"),

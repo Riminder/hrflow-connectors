@@ -4,6 +4,7 @@ from unittest import mock
 try:
     import boto3
 
+    from hrflow_connectors.core.backend import s3  # noqa
     from hrflow_connectors.core.backend.s3 import S3Store  # noqa
 
     skip_s3_tests = False
@@ -15,7 +16,7 @@ from msgspec import Struct
 from pydantic import BaseModel
 
 from hrflow_connectors.core import backend
-from hrflow_connectors.core.backend import localjson, s3
+from hrflow_connectors.core.backend import localjson
 from hrflow_connectors.core.backend.common import StoreNotInitializedError
 from tests.conftest import random_workflow_id
 
@@ -292,8 +293,9 @@ def test_s3_writing_msgspec_model_is_tested_on_init(backend_restore, s3_restore)
         },
         clear=True,
     ):
-        with mock.patch.object(s3, "save", new=failing_if_msgspec), mock.patch.object(
-            s3, "load", new=lambda *args, **kwargs: equal_to_loaded
+        with (
+            mock.patch.object(s3, "save", new=failing_if_msgspec),
+            mock.patch.object(s3, "load", new=lambda *args, **kwargs: equal_to_loaded),
         ):
             with pytest.raises(Exception) as excinfo:
                 s3.S3Store.init()

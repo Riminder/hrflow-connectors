@@ -58,8 +58,10 @@ def hrflow_connectors_docs(
         if readme.exists():
             readme_content = readme.read_text()
 
-        readme.write_text(
-            templating.connector_readme(connector, current_content=readme_content)
+        readme.write_bytes(
+            templating.connector_readme(
+                connector, current_content=readme_content
+            ).encode()
         )
 
         notebooks_directory = connector_directory / "notebooks"
@@ -76,6 +78,6 @@ def hrflow_connectors_docs(
             action_documentation = action_docs_directory / "{}.md".format(
                 flow.name(connector.subtype)
             )
-            action_documentation.write_text(
-                templating.connector_action(connector, flow)
+            action_documentation.write_bytes(
+                templating.connector_action(connector, flow).encode()
             )

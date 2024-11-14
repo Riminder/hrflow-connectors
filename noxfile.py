@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import difflib
 import inspect
 import json
@@ -9,14 +11,19 @@ from pathlib import Path
 
 import nox
 
+if t.TYPE_CHECKING:
+    from tempfile import _TemporaryFileWrapper
+
 nox.options.reuse_existing_virtualenvs = True
 
-PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11"]
+PYTHON_VERSIONS = ["3.9", "3.10", "3.11"]
 REQUIREMENTS_CONTENT = {}
 
 
 @contextmanager
-def requirements_file(session, s3_extra: bool = False) -> None:
+def requirements_file(
+    session, s3_extra: bool = False
+) -> t.Iterator[_TemporaryFileWrapper[bytes]]:
     global REQUIREMENTS_CONTENT
     extra_args = tuple()
     if s3_extra is True:
@@ -93,7 +100,7 @@ def tests_s3(session):
 
 
 PRODUCE_MANIFEST_IN_DIRECTORY = (
-    "from hrflow_connectors import __CONNECTORS__, hrflow_connectors_manifest as m;"
+    "from hrflow_connectors.v2 import __CONNECTORS__, hrflow_connectors_manifest as m;"
     " m(connectors=__CONNECTORS__, directory_path='{directory}')"
 )
 
@@ -147,30 +154,64 @@ def generate_doc_digest() -> t.Tuple[dict, dict]:
     from collections import defaultdict
     from unittest import mock
 
-    from hrflow_connectors.core import documentation
-    from hrflow_connectors.v1 import __CONNECTORS__, generate_docs
+    from hrflow_connectors import __CONNECTORS__ as __CONNECTORS__V1
+    from hrflow_connectors import generate_docs as generate_docs_v1
+    from hrflow_connectors.v1.core import documentation as documentation_v1
+    from hrflow_connectors.v2 import __CONNECTORS__ as __CONNECTORS__V2
+    from hrflow_connectors.v2 import hrflow_connectors_docs as generate_docs_v2
+    from hrflow_connectors.v2.core import documentation as documentation_v2
 
-    doc_digest = defaultdict(lambda: defaultdict(dict))
-    doc_content = defaultdict(lambda: defaultdict(dict))
+    doc_digest = dict(
+        v1=defaultdict[str, dict](lambda: defaultdict(dict)),
+        v2=defaultdict[str, dict](lambda: defaultdict(dict)),
+    )
+    doc_content = dict(
+        v1=defaultdict[str, dict](lambda: defaultdict(dict)),
+        v2=defaultdict[str, dict](lambda: defaultdict(dict)),
+    )
     with mock.patch.object(
-        documentation.Path, "write_bytes", autospec=True
-    ) as mocked_writer:
-        generate_docs(connectors=__CONNECTORS__)
-        for call in mocked_writer.call_args_list:
+        documentation_v1.Path, "write_bytes", autospec=True
+    ) as mocked_writer_v1:
+        generate_docs_v1(connectors=__CONNECTORS__V1)
+
+        for call in mocked_writer_v1.call_args_list:
             args, _ = call
             path, data = args
             if path.parts[-2:] == ("hrflow-connectors", "README.md"):
-                doc_digest["root"]["readme"] = hashlib.md5(data).hexdigest()
-                doc_content["root"]["readme"] = data.decode()
+                doc_digest["v1"]["root"]["readme"] = hashlib.md5(data).hexdigest()
+                doc_content["v1"]["root"]["readme"] = data.decode()
             elif path.name == "README.md":
                 connector = path.parts[-2]
-                doc_digest[connector]["readme"] = hashlib.md5(data).hexdigest()
-                doc_content[connector]["readme"] = data.decode()
+                doc_digest["v1"][connector]["readme"] = hashlib.md5(data).hexdigest()
+                doc_content["v1"][connector]["readme"] = data.decode()
             else:
                 connector = path.parts[-3]
                 action = path.parts[-1].strip(".md")
-                doc_digest[connector]["actions"][action] = hashlib.md5(data).hexdigest()
-                doc_content[connector]["actions"][action] = data.decode()
+                doc_digest["v1"][connector]["actions"][action] = hashlib.md5(
+                    data
+                ).hexdigest()
+                doc_content["v1"][connector]["actions"][action] = data.decode()
+
+    with mock.patch.object(
+        documentation_v2.Path, "write_bytes", autospec=True
+    ) as mocked_writer_v2:
+        generate_docs_v2(connectors=__CONNECTORS__V2)
+
+        for call in mocked_writer_v2.call_args_list:
+            args, _ = call
+            path, data = args
+            if path.name == "README.md":
+                connector = path.parts[-2]
+                doc_digest["v2"][connector]["readme"] = hashlib.md5(data).hexdigest()
+                doc_content["v2"][connector]["readme"] = data.decode()
+            else:
+                connector = path.parts[-3]
+                action = path.parts[-1].strip(".md")
+                doc_digest["v2"][connector]["actions"][action] = hashlib.md5(
+                    data
+                ).hexdigest()
+                doc_content["v2"][connector]["actions"][action] = data.decode()
+
     return doc_digest, doc_content
 
 
@@ -204,13 +245,17 @@ def docs(session):
             with open(generated_content_fp.name, "rt") as generated_content:
                 generated_content = json.loads(generated_content.read())
     if generated_digest != baseline_doc_digest:
-        connectors_directory = Path("./src/hrflow_connectors/connectors")
         difference = []
-        root_readme_digest = baseline_doc_digest.pop("root")["readme"]
-        if root_readme_digest != generated_digest["root"]["readme"]:
-            file = str(connectors_directory / ".." / ".." / ".." / "README.md")
-            baseline = baseline_content["root"]["readme"]
-            generated = generated_content["root"]["readme"]
+
+        # Root is only handled by v1 code for now
+        v1_connectors_directory = Path("./src/hrflow_connectors/v1/connectors")
+        root_readme_digest = baseline_doc_digest["v1"].pop("root")["readme"]
+        if root_readme_digest != generated_digest["v1"]["root"]["readme"]:
+            file = str(
+                v1_connectors_directory / ".." / ".." / ".." / ".." / "README.md"
+            )
+            baseline = baseline_content["v1"]["root"]["readme"]
+            generated = generated_content["v1"]["root"]["readme"]
             difference.append(
                 difflib.unified_diff(
                     a=baseline.splitlines(keepends=True),
@@ -219,31 +264,18 @@ def docs(session):
                     tofile=session.python,
                 )
             )
-        for connector, digests in baseline_doc_digest.items():
-            if digests["readme"] != generated_digest.get(connector, {}).get("readme"):
-                file = str(connectors_directory / connector / "README.md")
-                baseline = baseline_content[connector]["readme"]
-                generated = generated_content.get(connector, {}).get("readme", "")
-                difference.append(
-                    difflib.unified_diff(
-                        a=baseline.splitlines(keepends=True),
-                        b=generated.splitlines(keepends=True),
-                        fromfile=file,
-                        tofile=session.python,
-                    )
-                )
-            for action, digest in digests["actions"].items():
-                if digest != generated_digest.get(connector, {}).get("actions", {}).get(
-                    action
-                ):
-                    file = str(
-                        connectors_directory / connector / "docs" / f"{action}.md"
-                    )
-                    baseline = baseline_content[connector]["actions"][action]
+
+        # Root is only handled by v1 code for now
+        for version in ["v1", "v2"]:
+            connectors_directory = Path(f"./src/hrflow_connectors/{version}/connectors")
+            for connector, digests in baseline_doc_digest[version].items():
+                if digests["readme"] != generated_digest[version].get(
+                    connector, {}
+                ).get("readme"):
+                    file = str(connectors_directory / connector / "README.md")
+                    baseline = baseline_content[version][connector]["readme"]
                     generated = (
-                        generated_content.get(connector, {})
-                        .get("actions", {})
-                        .get(action, "")
+                        generated_content[version].get(connector, {}).get("readme", "")
                     )
                     difference.append(
                         difflib.unified_diff(
@@ -253,6 +285,31 @@ def docs(session):
                             tofile=session.python,
                         )
                     )
+                for action, digest in digests["actions"].items():
+                    if digest != generated_digest[version].get(connector, {}).get(
+                        "actions", {}
+                    ).get(action):
+                        file = str(
+                            connectors_directory / connector / "docs" / f"{action}.md"
+                        )
+                        baseline = baseline_content[version][connector]["actions"][
+                            action
+                        ]
+                        generated = (
+                            generated_content[version]
+                            .get(connector, {})
+                            .get("actions", {})
+                            .get(action, "")
+                        )
+                        difference.append(
+                            difflib.unified_diff(
+                                a=baseline.splitlines(keepends=True),
+                                b=generated.splitlines(keepends=True),
+                                fromfile=file,
+                                tofile=session.python,
+                            )
+                        )
+
         with tempfile.NamedTemporaryFile(
             "wt", suffix=".diff", delete=False
         ) as difffile:

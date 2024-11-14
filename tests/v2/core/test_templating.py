@@ -29,9 +29,10 @@ from tests.v2.core.utils import added_connectors, random_workflow_id
 
 @pytest.fixture
 def globals_with_smartleads(SmartLeads: TypedSmartLeads):
-    with mock.patch.object(
-        LeadsAisle.read, "function", return_value=LEADS_DB
-    ), mock.patch.object(JobsAisle.read, "function", return_value=JOBS_DB):
+    with (
+        mock.patch.object(LeadsAisle.read, "function", return_value=LEADS_DB),
+        mock.patch.object(JobsAisle.read, "function", return_value=JOBS_DB),
+    ):
         setattr(v2, "SmartLeads", SmartLeads)
         yield dict(hrflow_connectors=dict(v2=v2))
     delattr(v2, "SmartLeads")
