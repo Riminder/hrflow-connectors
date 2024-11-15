@@ -2,6 +2,79 @@
 
 
 
+## v4.24.0 (2024-11-15)
+
+### Documentation
+
+* docs: splitting connectors tables by open source / premium ([`4bcfb4c`](https://github.com/Riminder/hrflow-connectors/commit/4bcfb4ce2b1b2278192202d098833e7cdef1fc52))
+
+* docs: updating the text in status column of connectors ([`6f7ecb5`](https://github.com/Riminder/hrflow-connectors/commit/6f7ecb56ad4c6cf91421c679bf8cf3a24e03e3c8))
+
+* docs: removing obsolete emojis from root readme ([`cff34a5`](https://github.com/Riminder/hrflow-connectors/commit/cff34a563318401388ce1716b7ceeb441c6ece2d))
+
+### Feature
+
+* feat: [v1-v2-migration] add new CRUD v2 version ([`8665e42`](https://github.com/Riminder/hrflow-connectors/commit/8665e42720952e20ddde81d8ee3305bb00bdcf32))
+
+### Fix
+
+* fix: error in BreezyHr&#39;s push_profile_list jsonmap ([`c54c9f4`](https://github.com/Riminder/hrflow-connectors/commit/c54c9f4a052ec0f5b02384ac0ffc6fde754b428c))
+
+* fix: fixing bugs with docs and manifest ([`6df74b3`](https://github.com/Riminder/hrflow-connectors/commit/6df74b3b6a938575a0e387861546bd60ddb6d5d2))
+
+* fix: manifest generation bug caused by naming inconsistency between connectors and the main target list ([`822bdbf`](https://github.com/Riminder/hrflow-connectors/commit/822bdbf2cdb875ba40bbc42be2079682e8e0eb39))
+
+### Unknown
+
+* Merge pull request #294 from Riminder/feature/update-jsonmaps
+
+fix: error in BreezyHr&#39;s push_profile_list jsonmap ([`0c22eec`](https://github.com/Riminder/hrflow-connectors/commit/0c22eec4114970d84ba38b84f11df4b6d516de13))
+
+* Merge pull request #293 from Riminder/feature/docs-split-connectors-table
+
+docs: splitting connectors tables by open source / premium ([`65f0072`](https://github.com/Riminder/hrflow-connectors/commit/65f0072743c604d204cd286101c1cc60533f5217))
+
+* Merge pull request #292 from Riminder/feature/docs-update-status-text
+
+docs: updating the text in status column of connectors ([`01002c2`](https://github.com/Riminder/hrflow-connectors/commit/01002c2e281cc2b29894b5cf7ab1862bc7af096c))
+
+* Merge pull request #291 from Riminder/feature/fix-docs-and-manifest
+
+fix: fixing bugs with docs and manifest ([`d7f0bc8`](https://github.com/Riminder/hrflow-connectors/commit/d7f0bc89a5d1536ee87f47e21f9e1bf8c3dac366))
+
+* core: update premium connectors link in docs generation ([`242990f`](https://github.com/Riminder/hrflow-connectors/commit/242990f6e14801941a33c17cda5a410c3602d147))
+
+* Merge pull request #290 from Riminder/feature/update-jsonmaps
+
+fix: manifest generation bug ([`d9f77ba`](https://github.com/Riminder/hrflow-connectors/commit/d9f77bac0d0b99fc3b44f37a50cc84c2a7905048))
+
+* Merge branch &#39;master&#39; into feature/update-jsonmaps ([`b3b4570`](https://github.com/Riminder/hrflow-connectors/commit/b3b4570602a0c38eefa867f74748186a8320989a))
+
+* update jsonmaps for remaining connectorActions ([`7c65104`](https://github.com/Riminder/hrflow-connectors/commit/7c65104f2fd6db0f65d0bd62acf62edcd84a2444))
+
+* Merge pull request #279 from Riminder/feature/update-jsonmaps
+
+Add remaining jsonmaps ([`84dd66d`](https://github.com/Riminder/hrflow-connectors/commit/84dd66d1e499b2f723a1eb635e0fdccb7c7de081))
+
+* update jsonmaps for remaining connectorActions ([`90a4955`](https://github.com/Riminder/hrflow-connectors/commit/90a4955251756a1be3452c397b8a0c5ab77627be))
+
+* Merge pull request #289 from Riminder/feature/fix-root-readme-docs
+
+docs: removing obsolete emojis from root readme ([`074b27b`](https://github.com/Riminder/hrflow-connectors/commit/074b27badc11eba322a2ed036621c20d1390732a))
+
+* Merge pull request #288 from Riminder/feature/update-root-readme-without-checks-crosses
+
+core: updating connectors table structure in root readme ([`d2cb8c9`](https://github.com/Riminder/hrflow-connectors/commit/d2cb8c9d2a39013ff0ca28789015ffb16455581a))
+
+* core: removing emojis from connectors actions status ([`541e8b8`](https://github.com/Riminder/hrflow-connectors/commit/541e8b887ac0b58723708749d6f0e8619837bfa3))
+
+* core: link connector url in readme to folder wfor premium connectors ([`2865ab2`](https://github.com/Riminder/hrflow-connectors/commit/2865ab2e3a56aa556b3a696d8e468d928bd4ee26))
+
+* core: link connector url in readme to folder wfor premium connectors ([`6a33502`](https://github.com/Riminder/hrflow-connectors/commit/6a335024d90117b849837f160f731736820e1a7e))
+
+* core: updating connectors table structure in root readme ([`999a7fd`](https://github.com/Riminder/hrflow-connectors/commit/999a7fdecb66297593dad2cf71fd9ade80c7e9fe))
+
+
 ## v4.23.0 (2024-09-23)
 
 ### Feature
