@@ -1,0 +1,102 @@
+# {{ action_name | title | replace("_", " ") }}
+`{{ origin_name }}` :arrow_right: `{{ target_name }}`
+
+{{ description }}
+
+{% if origin_endpoints %}
+**{{ origin_name }} endpoints used :**
+| Endpoints | Description |
+| --------- | ----------- |
+{%- for endpoint in origin_endpoints %}
+| [**{{ endpoint.name}}**]({{ endpoint.url }}) | {{ endpoint.description }} |
+{%- endfor %}
+
+{% endif %}
+{% if target_endpoints %}
+**{{ target_name }} endpoints used :**
+| Endpoints | Description |
+| --------- | ----------- |
+{%- for endpoint in target_endpoints %}
+| [**{{ endpoint.name}}**]({{ endpoint.url }}) | {{ endpoint.description }} |
+{%- endfor %}
+
+{% endif %}
+## {{ connector_name }} Auth Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+{%- for field in connector_auth_fields %}
+| `{{ field.name }}` {% if field.required %}:red_circle:{% endif %} | `{{ field.type | replace("|", "\|")}}` | {{ field.default }} | {{ field.description }} |
+{%- endfor %}
+
+## HrFlow Auth Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+{%- for field in hrflow_auth_fields %}
+| `{{ field.name }}` {% if field.required %}:red_circle:{% endif %} | `{{ field.type | replace("|", "\|")}}` | {{ field.default }} | {{ field.description }} |
+{%- endfor %}
+
+## Pull Parameters ({{ origin_name }})
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+{%- for field in pull_fields %}
+| `{{ field.name }}` {% if field.required %}:red_circle:{% endif %} | `{{ field.type | replace("|", "\|")}}` | {{ field.default }} | {{ field.description }} |
+{%- endfor %}
+
+## Push Parameters ({{ target_name }})
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+{%- for field in push_fields %}
+| `{{ field.name }}` {% if field.required %}:red_circle:{% endif %} | `{{ field.type | replace("|", "\|")}}` | {{ field.default }} | {{ field.description }} |
+{%- endfor %}
+
+## Other Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+{%- for field in other_fields %}
+| `{{ field.name }}` {% if field.required %}:red_circle:{% endif %} | `{{ field.type | replace("|", "\|")}}` | {{ field.default }} | {{ field.description }} |
+{%- endfor %}
+
+:red_circle: : *required*
+
+## Example
+
+```python
+import logging
+from {{ main_module | default("hrflow_connectors.v2") }} import {{ import_name }}
+
+
+logging.basicConfig(level=logging.INFO)
+
+
+{{ import_name }}.{{ action_name }}(
+    {% for field in other_fields %}{% if field.required %}{{ field.name }}=...,
+    {% endif %}{% endfor -%}
+    connector_auth=dict(
+        {%- for field in connector_auth_fields %}
+        {{ field.name }}=...,
+        {%- endfor %}
+    ),
+    hrflow_auth=dict(
+        {%- for field in hrflow_auth_fields %}
+        {{ field.name }}=...,
+        {%- endfor %}
+    ),
+    pull_parameters=dict(
+        {%- for field in pull_fields %}
+        {{ field.name }}=...,
+        {%- endfor %}
+    ),
+    push_parameters=dict(
+        {%- for field in push_fields %}
+        {{ field.name }}=...,
+        {%- endfor %}
+    ),
+    {% for field in other_fields %}{% if not field.required %}{{ field.name }}=...,
+    {% endif %}{% endfor %}
+)
+```

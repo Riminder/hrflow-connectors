@@ -1,0 +1,7 @@
+# This file is generated automatically
+from hrflow_connectors.v2.core.connector import Connector, PublicActionInterface
+
+class {{ import_name }}Proto(Connector):
+    {% for action in actions %}{{ action }}: PublicActionInterface
+    {% endfor %}
+{{ import_name }}: {{ import_name }}Proto

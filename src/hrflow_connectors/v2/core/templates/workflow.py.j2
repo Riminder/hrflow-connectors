@@ -1,0 +1,116 @@
+import typing as t
+
+from {{ main_module | default("hrflow_connectors.v2") }} import {{ import_name }}
+from hrflow_connectors.v2.core.run import ActionInitError, Reason
+
+CONNECTOR_AUTH_SETTINGS_PREFIX = "{{ connector_auth_settings_prefix }}"
+HRFLOW_AUTH_SETTINGS_PREFIX = "{{ hrflow_auth_settings_prefix }}"
+PULL_PARAMETERS_SETTINGS_PREFIX = "{{ pull_parameters_settings_prefix }}"
+PUSH_PARAMETERS_SETTINGS_PREFIX = "{{ push_parameters_settings_prefix }}"
+
+{{ format_placeholder }}
+
+{{ logics_placeholder }}
+
+{{ callback_placeholder }}
+
+{% if type == "catch" %}
+{{ default_event_parser }}
+
+{{ event_parser_placeholder }}
+
+{% endif %}
+
+def workflow(
+        {% if type == "catch" %}
+        _request: dict,
+        {% endif %}
+        settings: dict
+    ) -> None:
+    if "{{ workflow_id_settings_key }}" not in settings:
+        return {{ import_name }}.{{ action_name }}(
+            workflow_id="",
+            connector_auth=dict(),
+            hrflow_auth=dict(),
+            pull_parameters=dict(),
+            push_parameters=dict(),
+            init_error=ActionInitError(
+                reason=Reason.workflow_id_not_found,
+                data=dict(error="{{ workflow_id_settings_key }} not found in settings", settings_keys=list(settings.keys())),
+            )
+        )
+    workflow_id = settings["{{ workflow_id_settings_key }}"]
+
+    {% if type == "catch" %}
+    event_parser = globals().get("{{ user_event_parser_function_name }}", globals().get("{{ default_event_parser_function_name }}"))
+
+    if event_parser is not None:
+        try:
+            _request = event_parser(_request)
+        except Exception as e:
+            return {{ import_name }}.{{ action_name }}(
+                workflow_id=workflow_id,
+                connector_auth=dict(),
+                hrflow_auth=dict(),
+                pull_parameters=dict(),
+                push_parameters=dict(),
+                init_error=ActionInitError(
+                    reason=Reason.event_parsing_failure,
+                    data=dict(error=e, event=_request),
+                )
+            )
+    {% endif %}
+
+    connector_auth = dict()
+    for parameter in {{ connector_auth }}:
+        parameter_name = "{}{}".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) 
+        if parameter_name in settings:
+            connector_auth[parameter] = settings[parameter_name]
+        {% if type == "catch" %}
+        if parameter_name in _request:
+            connector_auth[parameter] = _request[parameter_name]
+        {% endif %}
+
+    hrflow_auth = dict()
+    for parameter in {{ hrflow_auth }}:
+        parameter_name = "{}{}".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)
+        if parameter_name in settings:
+            hrflow_auth[parameter] = settings[parameter_name]
+        {% if type == "catch" %}
+        if parameter_name in _request:
+            hrflow_auth[parameter] = _request[parameter_name]
+        {% endif %}
+
+    pull_parameters = dict()
+    for parameter in {{ pull_parameters }}:
+        parameter_name = "{}{}".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)
+        if parameter_name in settings:
+            pull_parameters[parameter] = settings[parameter_name]
+        {% if type == "catch" %}
+        if parameter_name in _request:
+            pull_parameters[parameter] = _request[parameter_name]
+        {% endif %}
+
+    push_parameters = dict()
+    for parameter in {{ push_parameters }}:
+        parameter_name = "{}{}".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)
+        if parameter_name in settings:
+            push_parameters[parameter] = settings[parameter_name]
+        {% if type == "catch" %}
+        if parameter_name in _request:
+            push_parameters[parameter] = _request[parameter_name]
+        {% endif %}
+
+    incremental = settings.get("{{ incremental_settings_key }}")
+
+    return {{ import_name }}.{{ action_name }}(
+        workflow_id=workflow_id,
+        connector_auth=connector_auth,
+        hrflow_auth=hrflow_auth,
+        pull_parameters=pull_parameters,
+        push_parameters=push_parameters,
+        logics=globals().get("{{ logics_functions_name }}"),
+        format=globals().get("{{ format_function_name }}"),
+        callback=globals().get("{{ callback_function_name }}"),
+        incremental=incremental == "{{ activate_incremental_token }}",
+    )

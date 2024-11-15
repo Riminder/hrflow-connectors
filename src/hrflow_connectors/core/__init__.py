@@ -1,4 +1,4 @@
-from hrflow_connectors.core.connector import (  # noqa
+from hrflow_connectors.v1.core.connector import (  # noqa
     ActionName,
     ActionType,
     BaseActionParameters,
@@ -9,7 +9,7 @@ from hrflow_connectors.core.connector import (  # noqa
     ParametersOverride,
     WorkflowType,
 )
-from hrflow_connectors.core.warehouse import (  # noqa
+from hrflow_connectors.v1.core.warehouse import (  # noqa
     ActionEndpoints,
     DataType,
     FieldType,

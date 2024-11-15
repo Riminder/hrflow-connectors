@@ -1,0 +1,9 @@
+# 🔌 Connector Actions
+<p align="center">
+
+| Action | Description |
+| ------- | ----------- |
+{% for flow in flows %}| [**{{ flow.name(connector_subtype) | title | replace("_", " ")}}**](docs/{{ flow.name(connector_subtype) }}.md) | {{ flow.description(connector_name) }} |
+{% endfor %}
+
+</p>

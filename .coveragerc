@@ -1,0 +1,2 @@
+[run]
+omit = src/hrflow_connectors/v2/core/hrflow/*
