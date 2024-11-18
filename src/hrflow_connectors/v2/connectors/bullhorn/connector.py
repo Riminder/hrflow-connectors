@@ -15,8 +15,8 @@ def to_int(elm: t.Any) -> int:
     return int(elm)
 
 
-def get_location(info: dict) -> dict:
-    if info is not None:
+def get_location(info: dict) -> dict | None:
+    if info:
         location = info.get("location")
         if location is None:
             location = dict()
@@ -47,6 +47,9 @@ def get_education(education_list: list[dict]) -> list[dict]:
     educations = []
     for hrflow_education in education_list:
         location = hrflow_education["location"]
+        date_start = hrflow_education.get("date_start")
+        date_end = hrflow_education.get("date_end")
+
         education = {
             "id": "0",
             "candidate": {"id": None},
@@ -55,21 +58,13 @@ def get_education(education_list: list[dict]) -> list[dict]:
             "comments": hrflow_education.get("description"),
             "city": location.get("text") if location else None,
             "startDate": (
-                int(
-                    date_format.from_str_to_datetime(
-                        hrflow_education.get("date_start")
-                    ).timestamp()
-                )
-                if hrflow_education.get("date_start")
+                int(date_format.from_str_to_datetime(date_start).timestamp())
+                if date_start is not None
                 else None
             ),
             "endDate": (
-                int(
-                    date_format.from_str_to_datetime(
-                        hrflow_education.get("date_end")
-                    ).timestamp()
-                )
-                if hrflow_education.get("date_start")
+                int(date_format.from_str_to_datetime(date_end).timestamp())
+                if date_end is not None
                 else None
             ),
         }
@@ -80,6 +75,8 @@ def get_education(education_list: list[dict]) -> list[dict]:
 def get_experience(experience_list: list[dict]) -> list[dict]:
     experience_json = []
     for hrflow_experience in experience_list:
+        date_start = hrflow_experience.get("date_start")
+        date_end = hrflow_experience.get("date_end")
         experience = {
             "id": "0",
             "candidate": {"id": None},
@@ -87,21 +84,13 @@ def get_experience(experience_list: list[dict]) -> list[dict]:
             "title": hrflow_experience.get("title"),
             "comments": hrflow_experience.get("description"),
             "startDate": (
-                int(
-                    date_format.from_str_to_datetime(
-                        hrflow_experience.get("date_start")
-                    ).timestamp()
-                )
-                if hrflow_experience.get("date_start")
+                int(date_format.from_str_to_datetime(date_start).timestamp())
+                if date_start
                 else None
             ),
             "endDate": (
-                int(
-                    date_format.from_str_to_datetime(
-                        hrflow_experience.get("date_end")
-                    ).timestamp()
-                )
-                if hrflow_experience.get("date_end")
+                int(date_format.from_str_to_datetime(date_end).timestamp())
+                if date_end
                 else None
             ),
         }
@@ -139,10 +128,10 @@ def get_attachments(
 
 
 def format_profile(data: dict) -> dict:
-    info = data.get("info")
+    info = data.get("info", {})
 
     date_of_birth = None
-    if info is not None and info.get("date_birth"):
+    if info and info.get("date_birth"):
         date_birth_field = info.get("date_birth")
         date_birth_timestamp = date_format.from_str_to_datetime(
             date_birth_field
@@ -163,9 +152,9 @@ def format_profile(data: dict) -> dict:
         "skillSet": get_skills(data) if data.get("skills") else None,
     }
 
-    enrich_profile_education = get_education(data.get("educations"))
-    enrich_profile_experience = get_experience(data.get("experiences"))
-    enrich_profile_attachment = get_attachments(data.get("attachments"))
+    enrich_profile_education = get_education(data.get("educations", []))
+    enrich_profile_experience = get_experience(data.get("experiences", []))
+    enrich_profile_attachment = get_attachments(data.get("attachments", []))
     # Four querys are needed to index a Candidate to Bullhorn
     # The querys's body are grouped in a profile_body_dict
     profile_body_dict = dict(
@@ -183,7 +172,7 @@ def format_job(data: dict) -> dict:
     hrflow_ref = str(data.get("id"))
 
     # Location
-    address = data.get("address")
+    address = data.get("address", {})
     hrflow_fields = {
         "city": address["city"],
         "country": address["countryCode"],
@@ -282,7 +271,10 @@ def profile_format(data: dict) -> dict:
     tags.append({"name": "status", "value": data.get("status")})
     tags.append({"name": "employeeType", "value": data.get("employeeType")})
     tags.append(
-        {"name": "activePlacements", "value": data.get("activePlacements").get("total")}
+        {
+            "name": "activePlacements",
+            "value": data.get("activePlacements", {}).get("total"),
+        }
     )
 
     # Skills
