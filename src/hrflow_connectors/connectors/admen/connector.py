@@ -1,5 +1,4 @@
 import typing as t
-from datetime import datetime
 
 from hrflow_connectors.connectors.admen.warehouse import (
     AdmenJobWarehouse,
@@ -141,20 +140,14 @@ def format_hrflow_experiences_to_admen(hrflow_experiences: t.List) -> t.List[t.D
             RAISON_SOCIALE=hrflow_experience.get("company"),
             POSTE_OCCUPE=hrflow_experience.get("title"),
             DEPARTMENT=hrflow_experience["location"].get("text"),
-            DATE_EXP=(
-                datetime.strptime(
-                    hrflow_experience["date_start"][:10], "%Y-%m-%d"
-                ).date()
-                if hrflow_experience["date_start"]
-                else None
-            ),
+            DATE_EXP=hrflow_experience["date_start"][:10],
             DATE_FIN=(
-                datetime.strptime(hrflow_experience["date_end"][:10], "%Y-%m-%d").date()
-                if hrflow_experience["date_end"]
+                hrflow_experience.get("date_end")[:10]
+                if hrflow_experience.get("date_end")
                 else None
             ),
             COMMENTAIRES=hrflow_experience.get("description"),
-            EN_COURS=1 if not hrflow_experience["date_end"] else 0,
+            EN_COURS=1 if not hrflow_experience.get("date_end") else 0,
         )
         experiences.append(experience)
     return experiences
@@ -162,7 +155,7 @@ def format_hrflow_experiences_to_admen(hrflow_experiences: t.List) -> t.List[t.D
 
 def format_hrflow_profile_to_admen(
     hrflow_profile: t.Dict,
-) -> t.Dict:  # TODO: expand this function
+) -> t.Dict:
     hrflow_profile_info = hrflow_profile["info"]
 
     admen_profile = dict(
@@ -170,17 +163,9 @@ def format_hrflow_profile_to_admen(
         PRENOM=hrflow_profile_info["first_name"],
         EMAIL_PERSO=hrflow_profile_info["email"],
         TEL_MOBILE=hrflow_profile_info["phone"],
-        DATE_NAISSANCE=(
-            datetime.strptime(
-                hrflow_profile_info["date_birth"], "%Y-%m-%dT%H:%M:%S%z"
-            ).date()
-            if hrflow_profile_info["date_birth"]
-            else None
-        ),
-        DATE_CREATION=datetime.strptime(
-            hrflow_profile["created_at"][:10], "%Y-%m-%d"
-        ).date(),
-        DATE_MAJ=datetime.strptime(hrflow_profile["updated_at"], "%Y-%m-%dT%H:%M:%S%z"),
+        DATE_NAISSANCE=hrflow_profile_info["date_birth"],
+        DATE_CREATION=hrflow_profile["created_at"][:10],
+        DATE_MAJ=hrflow_profile["updated_at"],
         ADRESSE=hrflow_profile_info["location"]["text"],
         VILLE=hrflow_profile_info["location"]["fields"]["city"],
         CODE_POSTAL=hrflow_profile_info["location"]["fields"]["postcode"],

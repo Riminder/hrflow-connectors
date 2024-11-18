@@ -65,6 +65,7 @@ class AdmenMission(BaseModel):
     TYPECONTRAT: str
     REGION: str
     PAYS: str
+    CITY: str
     SECTEURWEB: str
     FONCTIONWEB: str
     HTML: str
@@ -86,7 +87,6 @@ class AdmenMission(BaseModel):
     CTCREATOR: str
     COMBIN: bytes
     COMBGCOLOR: float
-    CITY: str
     SALARYMIN: decimal.Decimal
     SALARYMAX: decimal.Decimal
     PERIOD: str
