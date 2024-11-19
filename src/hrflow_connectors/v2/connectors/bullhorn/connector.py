@@ -178,7 +178,12 @@ def format_job(data: dict) -> dict:
         "country": address["countryCode"],
         "postal_code": address["zip"],
     }
-    hrflow_location = {"text": address["address1"], "fields": hrflow_fields}
+    hrflow_location = {
+        "text": address["address1"],
+        "lat": None,
+        "lng": None,
+        "fields": hrflow_fields,
+    }
 
     # Sections
     hrlflow_sections = []
@@ -254,7 +259,7 @@ def profile_format(data: dict) -> dict:
 
     # Location
     location_text = data["address"]["address1"]
-    location = {"text": location_text}
+    location = {"text": location_text, "lng": None, "lat": None}
 
     info = {
         "full_name": full_name,
@@ -339,7 +344,6 @@ def profile_format(data: dict) -> dict:
         "skills": hrflow_skills,
         "experiences": hrflow_experience,
         "educations": hrflow_education,
-        "created_at": None,
         "tags": tags,
         "metadatas": [],
         "resume": {"raw": data["cvFile"], "content_type": "application/pdf"},

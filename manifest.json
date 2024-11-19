@@ -640,7 +640,84 @@
             ],
             "$defs": {}
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": "?.title",
+            "reference": "?.id | $string",
+            "location": {
+              "text": "?.address.address1",
+              "lat": null,
+              "lng": null,
+              "fields": {
+                "city": "?.address.city",
+                "country": "?.address.countryCode",
+                "postal_code": "?.address.zip"
+              }
+            },
+            "sections": "[?.publicDescription ?? {name: 'Bullhorn_description', title: 'Bullhorn_description', description: .publicDescription}]",
+            "skills": "?.skillList != null ?? .skillList | $split(',')| $map({name: ., type: 'undefined', value: null}) : []",
+            "tags": [
+              {
+                "name": "durationWeeks",
+                "value": "?.durationWeeks"
+              },
+              {
+                "name": "degreeList",
+                "value": "?.degreeList != null ?? .degreeList | $join(',') : null"
+              },
+              {
+                "name": "employmentType",
+                "value": "?.employmentType"
+              },
+              {
+                "name": "numOpenings",
+                "value": "?.numOpenings"
+              },
+              {
+                "name": "onSite",
+                "value": "?.onSite"
+              },
+              {
+                "name": "salaryUnit",
+                "value": "?.salaryUnit"
+              },
+              {
+                "name": "startDate",
+                "value": "?.startDate"
+              },
+              {
+                "name": "status",
+                "value": "?.status"
+              },
+              {
+                "name": "type",
+                "value": "?.type"
+              },
+              {
+                "name": "willRelocate",
+                "value": "?.willRelocate"
+              },
+              {
+                "name": "salary",
+                "value": "?.salary"
+              },
+              {
+                "name": "isWorkFromHome",
+                "value": "?.isWorkFromHome"
+              },
+              {
+                "name": "hoursPerWeek",
+                "value": "?.hoursPerWeek"
+              },
+              {
+                "name": "hoursOfOperation",
+                "value": "?.hoursOfOperation"
+              },
+              {
+                "name": "dateAdded",
+                "value": "?.dateAdded"
+              }
+            ]
+          },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Bullhorn\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.create_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Bullhorn.create_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('client_id', 'client_secret', 'password', 'username'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'fields', 'query', 'created_date'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key', 'enrich_with_parsing'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Bullhorn.create_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
             "pull_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Bullhorn\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\ndef workflow(\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.create_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ('client_id', 'client_secret', 'password', 'username'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'fields', 'query', 'created_date'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key', 'enrich_with_parsing'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Bullhorn.create_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -1295,7 +1372,84 @@
             ],
             "$defs": {}
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "name": "?.title",
+            "reference": "?.id | $string",
+            "location": {
+              "text": "?.address.address1",
+              "lat": null,
+              "lng": null,
+              "fields": {
+                "city": "?.address.city",
+                "country": "?.address.countryCode",
+                "postal_code": "?.address.zip"
+              }
+            },
+            "sections": "[?.publicDescription ?? {name: 'Bullhorn_description', title: 'Bullhorn_description', description: .publicDescription}]",
+            "skills": "?.skillList != null ?? .skillList | $split(',')| $map({name: ., type: 'undefined', value: null}) : []",
+            "tags": [
+              {
+                "name": "durationWeeks",
+                "value": "?.durationWeeks"
+              },
+              {
+                "name": "degreeList",
+                "value": "?.degreeList != null ?? .degreeList | $join(',') : null"
+              },
+              {
+                "name": "employmentType",
+                "value": "?.employmentType"
+              },
+              {
+                "name": "numOpenings",
+                "value": "?.numOpenings"
+              },
+              {
+                "name": "onSite",
+                "value": "?.onSite"
+              },
+              {
+                "name": "salaryUnit",
+                "value": "?.salaryUnit"
+              },
+              {
+                "name": "startDate",
+                "value": "?.startDate"
+              },
+              {
+                "name": "status",
+                "value": "?.status"
+              },
+              {
+                "name": "type",
+                "value": "?.type"
+              },
+              {
+                "name": "willRelocate",
+                "value": "?.willRelocate"
+              },
+              {
+                "name": "salary",
+                "value": "?.salary"
+              },
+              {
+                "name": "isWorkFromHome",
+                "value": "?.isWorkFromHome"
+              },
+              {
+                "name": "hoursPerWeek",
+                "value": "?.hoursPerWeek"
+              },
+              {
+                "name": "hoursOfOperation",
+                "value": "?.hoursOfOperation"
+              },
+              {
+                "name": "dateAdded",
+                "value": "?.dateAdded"
+              }
+            ]
+          },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Bullhorn\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.update_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Bullhorn.update_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('client_id', 'client_secret', 'password', 'username'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'fields', 'query', 'last_modified_date'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Bullhorn.update_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
             "pull_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Bullhorn\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\ndef workflow(\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.update_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ('client_id', 'client_secret', 'password', 'username'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'fields', 'query', 'last_modified_date'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Bullhorn.update_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -1949,7 +2103,9 @@
             ],
             "$defs": {}
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "reference": "?.id ?? ?.id | $string"
+          },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Bullhorn\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.archive_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Bullhorn.archive_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('client_id', 'client_secret', 'password', 'username'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'last_modified_date', 'query', 'fields'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Bullhorn.archive_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
             "pull_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Bullhorn\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\ndef workflow(\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.archive_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ('client_id', 'client_secret', 'password', 'username'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'last_modified_date', 'query', 'fields'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Bullhorn.archive_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -3203,7 +3359,48 @@
             ],
             "$defs": {}
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "reference": "?.id | $string",
+            "info": {
+              "full_name": ".name",
+              "first_name": ".firstName",
+              "last_name": ".lastName",
+              "email": ".email",
+              "phone": ".mobile",
+              "date_birth": ".dateOfBirth",
+              "location": {
+                "text": ".address.address1",
+                "lat": null,
+                "lng": null
+              },
+              "gender": ".gender"
+            },
+            "skills": "?.skillSet ?? .skillSet | $split(',') | $map({ name: ., type: hard, value: null }) : [] ",
+            "experiences": ".workHistories | $map({ title: .title, location: { text: '', lng: null, lat: null }, company: .companyName, date_start: .startDate, date_end: .endDate, title: .title, description: .comments })",
+            "educations": ".educations | $map({ location: { text: .city, lng: null, lat: null }, school: .school, date_start: .startDate, date_end: .endDate, title: .degree, certifications: [ .certification ], description: .comments })",
+            "tags": [
+              {
+                "name": "dateAvailable",
+                "value": "?.dateAvailable"
+              },
+              {
+                "name": "status",
+                "value": "?.status"
+              },
+              {
+                "name": "employeeType",
+                "value": "?.employeeType"
+              },
+              {
+                "name": "activePlacements",
+                "value": "?.activePlacements?.total"
+              }
+            ],
+            "resume": {
+              "raw": ".cvFile",
+              "content_type": "application/pdf"
+            }
+          },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Bullhorn\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.create_profiles_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Bullhorn.create_profiles_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('client_id', 'client_secret', 'password', 'username'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'fields', 'query', 'created_date', 'parse_resume'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('source_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Bullhorn.create_profiles_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
             "pull_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Bullhorn\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\ndef workflow(\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.create_profiles_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ('client_id', 'client_secret', 'password', 'username'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'fields', 'query', 'created_date', 'parse_resume'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('source_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Bullhorn.create_profiles_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -4472,7 +4669,48 @@
             ],
             "$defs": {}
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "reference": "?.id | $string",
+            "info": {
+              "full_name": ".name",
+              "first_name": ".firstName",
+              "last_name": ".lastName",
+              "email": ".email",
+              "phone": ".mobile",
+              "date_birth": ".dateOfBirth",
+              "location": {
+                "text": ".address.address1",
+                "lat": null,
+                "lng": null
+              },
+              "gender": ".gender"
+            },
+            "skills": "?.skillSet ?? .skillSet | $split(',') | $map({ name: ., type: hard, value: null }) : [] ",
+            "experiences": ".workHistories | $map({ title: .title, location: { text: '', lng: null, lat: null }, company: .companyName, date_start: .startDate, date_end: .endDate, title: .title, description: .comments })",
+            "educations": ".educations | $map({ location: { text: .city, lng: null, lat: null }, school: .school, date_start: .startDate, date_end: .endDate, title: .degree, certifications: [ .certification ], description: .comments })",
+            "tags": [
+              {
+                "name": "dateAvailable",
+                "value": "?.dateAvailable"
+              },
+              {
+                "name": "status",
+                "value": "?.status"
+              },
+              {
+                "name": "employeeType",
+                "value": "?.employeeType"
+              },
+              {
+                "name": "activePlacements",
+                "value": "?.activePlacements?.total"
+              }
+            ],
+            "resume": {
+              "raw": ".cvFile",
+              "content_type": "application/pdf"
+            }
+          },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Bullhorn\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.update_profiles_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Bullhorn.update_profiles_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('client_id', 'client_secret', 'password', 'username'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'fields', 'query', 'last_modified_date', 'parse_resume'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('source_key', 'only_edit_fields'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Bullhorn.update_profiles_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
             "pull_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Bullhorn\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\ndef workflow(\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.update_profiles_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ('client_id', 'client_secret', 'password', 'username'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'fields', 'query', 'last_modified_date', 'parse_resume'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('source_key', 'only_edit_fields'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Bullhorn.update_profiles_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -5720,7 +5958,9 @@
             ],
             "$defs": {}
           },
-          "jsonmap": {},
+          "jsonmap": {
+            "reference": "?.id ?? ?.id | $string"
+          },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Bullhorn\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.archive_profiles_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Bullhorn.archive_profiles_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('client_id', 'client_secret', 'password', 'username'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'last_modified_date', 'query', 'fields'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('source_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Bullhorn.archive_profiles_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
             "pull_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Bullhorn\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\ndef workflow(\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Bullhorn.archive_profiles_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ('client_id', 'client_secret', 'password', 'username'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'last_modified_date', 'query', 'fields'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('source_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Bullhorn.archive_profiles_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
