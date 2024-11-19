@@ -97,10 +97,10 @@ class BaseJobsParameters(BaseParameters, kw_only=True):
         "customText2,customText3,customText4,customText5,customText6,"
         "customText7,customText8,customText9,customTextBlock1,customTextBlock2,"
         "customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,"
-        "degreeList,description,durationWeeks,educationDegree,employmentType,"
-        "feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,"
-        "markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,"
-        "skillList,source,specialties,startDate,status,title,type,willRelocate,"
+        "degreeList,description,publicDescription,durationWeeks,educationDegree,"
+        "employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,"
+        "isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,"
+        "skills,skillList,source,specialties,startDate,status,title,id,type,willRelocate,"
         "owner"
     )
     query: Annotated[
@@ -242,7 +242,7 @@ class ReadArchivedProfilesCriterias(BaseParameters, kw_only=True):
                 " the specified conditions"
             ),
         ),
-    ] = "isDeleted:0"
+    ] = "isDeleted:1"
     fields: Annotated[
         str,
         Meta(
@@ -497,7 +497,7 @@ def update_application(
             }
             if job_submission_exists:
                 job_submission_id = job_submission_results["data"][0]["id"]
-                adapter.info("Creating JobSubmission")
+                adapter.info("Updating JobSubmission")
                 job_submission_response = update_entity(
                     "JobSubmission",
                     job_submission_id,
@@ -508,15 +508,15 @@ def update_application(
                     adapter,
                 )
             else:
-                adapter.info("Updating JobSubmission")
-            job_submission_response = create_entity(
-                "JobSubmission",
-                rest_url,
-                params,
-                job_submission_payload,
-                auth_parameters,
-                adapter,
-            )
+                adapter.info("Creating JobSubmission")
+                job_submission_response = create_entity(
+                    "JobSubmission",
+                    rest_url,
+                    params,
+                    job_submission_payload,
+                    auth_parameters,
+                    adapter,
+                )
 
         if not job_submission_response:
             failed_profiles.append(profile)
@@ -969,7 +969,6 @@ ProfilesAisle = Aisle(
     schema=BullhornProfile,
 )
 
-# FIXME generic_job_pulling doesn't seem to handle the archive mode
 JobsAisle = Aisle(
     name=Entity.job,
     read=ReadOperation(

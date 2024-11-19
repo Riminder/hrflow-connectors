@@ -27,7 +27,7 @@ Send **archived** 'profile(s)' _from_ Bullhorn _to_ HrFlow
 | ----- | ---- | ------- | ----------- |
 | `limit`  | `integer\|null` | None | Number of items to pull, ignored if not provided. |
 | `last_modified_date` :red_circle: | `string` | None | The modification date from which you want to pull profiles |
-| `query`  | `string` | isDeleted:0 | This query will restrict the results retrieved from Bullhorn based on the specified conditions |
+| `query`  | `string` | isDeleted:1 | This query will restrict the results retrieved from Bullhorn based on the specified conditions |
 | `fields`  | `string` | id | Field to be used as reference for archiving |
 
 ## Push Parameters (HrFlow)

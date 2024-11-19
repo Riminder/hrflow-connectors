@@ -42,7 +42,7 @@ This new connector will enable:
 | ------- | ----------- |
 | [**Create jobs in hrflow**](docs/create_jobs_in_hrflow.md) | Send **created** 'job(s)' _from_  _to_ HrFlow |
 | [**Update jobs in hrflow**](docs/update_jobs_in_hrflow.md) | Send **updated** 'job(s)' _from_  _to_ HrFlow |
-| [**Update jobs in hrflow**](docs/update_jobs_in_hrflow.md) | Send **updated** 'job(s)' _from_  _to_ HrFlow |
+| [**Archive jobs in hrflow**](docs/archive_jobs_in_hrflow.md) | Send **archived** 'job(s)' _from_  _to_ HrFlow |
 | [**Create profiles in hrflow**](docs/create_profiles_in_hrflow.md) | Send **created** 'profile(s)' _from_  _to_ HrFlow |
 | [**Update profiles in hrflow**](docs/update_profiles_in_hrflow.md) | Send **updated** 'profile(s)' _from_  _to_ HrFlow |
 | [**Archive profiles in hrflow**](docs/archive_profiles_in_hrflow.md) | Send **archived** 'profile(s)' _from_  _to_ HrFlow |

@@ -1,7 +1,7 @@
-# Update jobs in hrflow
+# Archive jobs in hrflow
 `Bullhorn` :arrow_right: `HrFlow`
 
-Send **updated** 'job(s)' _from_ Bullhorn _to_ HrFlow
+Send **archived** 'job(s)' _from_ Bullhorn _to_ HrFlow
 
 
 
@@ -26,9 +26,9 @@ Send **updated** 'job(s)' _from_ Bullhorn _to_ HrFlow
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `limit`  | `integer\|null` | None | Number of items to pull, ignored if not provided. |
-| `fields`  | `string` | address,assignedUsers,businessSectors,categories,clientBillRate,clientContact,clientCorporation,costCenter,customInt1,customInt2,customText1,customText10,customText11,customText12,customText13,customText2,customText3,customText4,customText5,customText6,customText7,customText8,customText9,customTextBlock1,customTextBlock2,customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,degreeList,description,publicDescription,durationWeeks,educationDegree,employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,skillList,source,specialties,startDate,status,title,id,type,willRelocate,owner | List of job fields to be retrieved from Bullhorn |
+| `last_modified_date` :red_circle: | `string` | None | The modification date from which you want to pull jobs and archive them |
 | `query`  | `string` | isDeleted:0 AND isOpen:true | This query will restrict the results retrieved from Bullhorn based on the specified conditions |
-| `last_modified_date` :red_circle: | `string` | None | The modification date from which you want to pull jobs |
+| `fields`  | `string` | id | Field to be used as reference for archiving |
 
 ## Push Parameters (HrFlow)
 
@@ -59,7 +59,7 @@ from hrflow_connectors.v2 import Bullhorn
 logging.basicConfig(level=logging.INFO)
 
 
-Bullhorn.update_jobs_in_hrflow(
+Bullhorn.archive_jobs_in_hrflow(
     workflow_id=...,
     logics=...,
     connector_auth=dict(
@@ -74,9 +74,9 @@ Bullhorn.update_jobs_in_hrflow(
     ),
     pull_parameters=dict(
         limit=...,
-        fields=...,
-        query=...,
         last_modified_date=...,
+        query=...,
+        fields=...,
     ),
     push_parameters=dict(
         board_key=...,

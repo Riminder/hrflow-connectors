@@ -148,7 +148,7 @@ def format_profile(data: dict) -> dict:
         "email": info.get("email") if info else None,
         "mobile": info.get("phone") if info else None,
         "dateOfBirth": date_of_birth,
-        "experience": to_int(data.get("experiences_duration")),  # TODO
+        "experience": to_int(data.get("experiences_duration")),
         "skillSet": get_skills(data) if data.get("skills") else None,
     }
 
@@ -181,12 +181,14 @@ def format_job(data: dict) -> dict:
     hrflow_location = {"text": address["address1"], "fields": hrflow_fields}
 
     # Sections
-    section_description = {
-        "name": "Bullhorn_description",
-        "title": "Bullhorn_description",
-        "description": data["publicDescription"],
-    }
-    hrlflow_sections = [section_description]
+    hrlflow_sections = []
+    if data.get("publicDescription"):
+        section_description = {
+            "name": "Bullhorn_description",
+            "title": "Bullhorn_description",
+            "description": data["publicDescription"],
+        }
+        hrlflow_sections = [section_description]
 
     # Tags
     degree_list = data.get("degreeList")
@@ -384,7 +386,7 @@ Bullhorn = Connector(
         Flow(Mode.create, Entity.job, Direction.inbound, format=format_job),
         Flow(Mode.update, Entity.job, Direction.inbound, format=format_job),
         Flow(
-            Mode.update,
+            Mode.archive,
             Entity.job,
             Direction.inbound,
             format=format_item_to_be_archived,

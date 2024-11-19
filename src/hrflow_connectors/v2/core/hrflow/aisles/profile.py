@@ -190,7 +190,10 @@ def create(
             continue
 
         if profile.get("resume", {}).get("raw") is None:
-            adapter.info(f"Profile with reference {profile['reference']} has no resume")
+            adapter.info(
+                f"Profile with reference {profile['reference']} has no resume, adding"
+                " without parsing"
+            )
             response = hrflow_client.profile.storing.add_json(
                 source_key=parameters.source_key, profile_json=profile
             )
