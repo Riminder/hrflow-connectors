@@ -65,6 +65,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Teamtailor**](./src/hrflow_connectors/v1/connectors/teamtailor/README.md) | ATS | :book: Open source | *06/10/2022* | *05/09/2024* |
 | [**Waalaxy**](./src/hrflow_connectors/v1/connectors/waalaxy/README.md) | Automation | :book: Open source | *18/11/2022* | *05/09/2024* |
 | [**Workable**](./src/hrflow_connectors/v1/connectors/workable/README.md) | HCM | :book: Open source | *27/09/2022* | *05/09/2024* |
+| [**Zoho Recruit**](./src/hrflow_connectors/v2/connectors/zohorecruit/README.md) | ATS | :book: Open source | ** | ** |
 
 ## 🤝 List of Job Boards
 
@@ -172,7 +173,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Ubeeo**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**UKG Ready Recruiting**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Workday**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Zoho Recruit**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 
 ## 🤝 List of Job Boards
 
