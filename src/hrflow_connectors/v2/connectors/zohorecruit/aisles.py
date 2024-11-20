@@ -726,23 +726,12 @@ JobsAisle = Aisle(
         criterias=Criterias(
             create=ReadParameters,
             archive=ReadDeleteParameters,
+            update=ReadParameters,
         ),
         function=merge(
             create=generic_read(module_api_name="JobOpenings", action=Mode.create),
             archive=generic_read_deleted("JobOpenings"),
             update=generic_read(module_api_name="JobOpenings", action=Mode.update),
-        ),
-    ),
-    write=WriteOperation(
-        criterias=Criterias(
-            create=WriteParameters,
-            update=WriteParameters,
-            archive=WriteDeleteParameters,
-        ),
-        function=merge(
-            create=generic_write("JobOpenings"),
-            update=generic_update("JobOpenings"),
-            archive=generic_delete("JobOpenings"),
         ),
     ),
 )
@@ -754,6 +743,7 @@ ProfilesAisle = Aisle(
         criterias=Criterias(
             create=ReadParameters,
             archive=ReadDeleteParameters,
+            update=ReadParameters,
         ),
         function=merge(
             create=generic_read(module_api_name="Candidates", action=Mode.create),

@@ -250,23 +250,6 @@ def format_hrflow_profile_to_zoho(profile: dict) -> dict:
     return zoho_candidate
 
 
-def format_hrflow_job_to_zoho(job: dict) -> dict:
-    zoho_job_opening = dict(
-        Job_Opening_Name=job["name"],
-        Posting_Title=job["name"],
-        Required_Skills=get_zoho_skill_set(job["skills"]),
-        Created_Time=job["created_at"],
-        Modified_Time=job["updated_at"],
-        City=job["location"]["fields"].get("city", None),
-        State=job["location"]["fields"].get("state", None),
-        Country=job["location"]["fields"].get("country", None),
-        Zip_Code=job["location"]["fields"].get("postcode", None),
-        Job_Description=job["summary"],
-        Additional_Info=job["sections"][1]["description"],
-    )
-    return zoho_job_opening
-
-
 def format_archive_in_hrflow(record: dict) -> dict:
     return dict(reference=record["id"])
 
@@ -333,28 +316,13 @@ ZohoRecruit = Connector(
             format=format_zoho_job_opening_to_hrflow,
         ),
         Flow(
-            Mode.create,
-            Entity.job,
-            Direction.outbound,
-            format=format_hrflow_job_to_zoho,
-        ),
-        Flow(
             Mode.update,
             Entity.job,
             Direction.inbound,
             format=format_zoho_job_opening_to_hrflow,
         ),
         Flow(
-            Mode.update,
-            Entity.job,
-            Direction.outbound,
-            format=format_hrflow_job_to_zoho,
-        ),
-        Flow(
             Mode.archive, Entity.job, Direction.inbound, format=format_archive_in_hrflow
-        ),
-        Flow(
-            Mode.archive, Entity.job, Direction.outbound, format=format_archive_in_zoho
         ),
     ),
 )
