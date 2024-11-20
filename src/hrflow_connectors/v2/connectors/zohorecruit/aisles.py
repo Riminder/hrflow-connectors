@@ -83,23 +83,23 @@ class AuthParameters(Struct):
         ),
     ]
     authorization_code: Annotated[
-        str,
+        t.Optional[str],
         Meta(
             description=(
                 "The authorization code generated during the Self Client creation, used"
                 " to get the refresh token and the first access token."
             ),
         ),
-    ]
+    ] = None
     refresh_token: Annotated[
-        None,
+        t.Optional[str],
         Meta(
             description=(
                 "The refresh token is used to generate a new access token when the"
                 " current access token expires."
             ),
         ),
-    ]
+    ] = None
     zoho_accounts_url: Annotated[
         ZohoAccountsURL,
         Meta(
@@ -134,9 +134,9 @@ class State(str, Enum):
 
 
 class Type(str, Enum):
-    ALL = "All"
-    RECYCLE = "Recycle"
-    PERMANENT = "Permanent"
+    ALL = "all"
+    RECYCLE = "recycle"
+    PERMANENT = "permanent"
 
 
 class ReadParameters(Struct):
@@ -148,7 +148,7 @@ class ReadParameters(Struct):
                 " API names, comma-separated.\nFor example Last_Name, Email"
             ),
         ),
-    ]
+    ] = None
     sort_order: Annotated[
         t.Optional[SortOrder],
         Meta(
@@ -157,7 +157,7 @@ class ReadParameters(Struct):
                 " descending order\nasc - ascending order\ndesc - descending order"
             ),
         ),
-    ]
+    ] = None
     sort_by: Annotated[
         t.Optional[str],
         Meta(
@@ -166,8 +166,7 @@ class ReadParameters(Struct):
                 " API name\nExample: Email"
             ),
         ),
-    ]
-
+    ] = None
     cvid: Annotated[
         t.Optional[int],
         Meta(
@@ -175,13 +174,13 @@ class ReadParameters(Struct):
                 "To get the list of records based on custom views\n{custom_view_id}"
             ),
         ),
-    ]
+    ] = None
     territory_id: Annotated[
         t.Optional[int],
         Meta(
             description="To get the list of records based on territory\n{territory_id}",
         ),
-    ]
+    ] = None
     include_child: Annotated[
         t.Optional[bool],
         Meta(
@@ -191,7 +190,7 @@ class ReadParameters(Struct):
                 " records.\nThe default value is false."
             ),
         ),
-    ]
+    ] = None
     state: Annotated[
         t.Optional[State],
         Meta(
@@ -204,7 +203,7 @@ class ReadParameters(Struct):
                 " the specified module."
             ),
         ),
-    ]
+    ] = None
     converted: Annotated[
         t.Optional[ZohoBool],
         Meta(
@@ -229,7 +228,7 @@ class ReadParameters(Struct):
 
 class ReadDeleteParameters(Struct):
     type: Annotated[
-        Type,
+        t.Optional[Type],
         Meta(
             description=(
                 "All\nTo get the list of all deleted records\nRecycle\nTo get the list"
@@ -237,7 +236,7 @@ class ReadDeleteParameters(Struct):
                 " permanently deleted records"
             ),
         ),
-    ]
+    ] = Type.ALL
 
 
 class WriteParameters(Struct):
@@ -254,7 +253,7 @@ class WriteDeleteParameters(Struct):
                 " trigger workflows. The default value is true."
             ),
         ),
-    ]
+    ] = True
 
 
 def get_refresh_token_and_first_access_token(
@@ -371,7 +370,6 @@ def generic_read(
         headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
         while True:
             response = requests.get(url, headers=headers, params=params)
-
             if response.status_code == 200:
                 response = response.json()
                 data = response["data"]
@@ -473,6 +471,9 @@ def generic_read_deleted(
                 if not response["info"]["more_records"]:
                     break
                 params["page"] = response["info"]["page"] + 1
+            elif response.status_code == 204:
+                adapter.info("No records found")
+                break
             elif response.status_code == 401:
                 access_token = refresh_access_token(
                     adapter,
