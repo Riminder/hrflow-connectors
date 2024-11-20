@@ -11,8 +11,8 @@ Send **archived** 'job(s)' _from_ Zoho Recruit _to_ HrFlow
 | ----- | ---- | ------- | ----------- |
 | `client_id` :red_circle: | `string` | None | A unique ID displayed under Self Client > Client Secret. |
 | `client_secret` :red_circle: | `string` | None | A unique confidential secret displayed under Self Client > Client Secret. |
-| `authorization_code` :red_circle: | `string` | None | The authorization code generated during the Self Client creation, used to get the refresh token and the first access token. |
-| `refresh_token` :red_circle: | `null` | None | The refresh token is used to generate a new access token when the current access token expires. |
+| `authorization_code`  | `string\|null` | None | The authorization code generated during the Self Client creation, used to get the refresh token and the first access token. |
+| `refresh_token`  | `string\|null` | None | The refresh token is used to generate a new access token when the current access token expires. |
 | `zoho_accounts_url`  | `Literal['https://accounts.zoho.com','https://accounts.zoho.com.au','https://accounts.zoho.com.cn','https://accounts.zoho.eu','https://accounts.zoho.in','https://accounts.zoho.jp','https://accounts.zohocloud.ca']` | https://accounts.zoho.eu | Zoho CRM is hosted at multiple data centers. Therefore, the API domain URL varies for each data center.
 You must use your domain-specific Zoho Accounts URL to generate access and refresh tokens. The following are the various domains and their corresponding accounts URLs.
  US: https://accounts.zoho.com
@@ -34,7 +34,7 @@ You must use your domain-specific Zoho Accounts URL to generate access and refre
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `type` :red_circle: | `Literal['All','Permanent','Recycle']` | None | All
+| `type`  | `Literal['all','permanent','recycle']\|null` | all | All
 To get the list of all deleted records
 Recycle
 To get the list of deleted records from recycle bin

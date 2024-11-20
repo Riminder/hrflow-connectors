@@ -11,8 +11,8 @@ Send **updated** 'profile(s)' _from_ Zoho Recruit _to_ HrFlow
 | ----- | ---- | ------- | ----------- |
 | `client_id` :red_circle: | `string` | None | A unique ID displayed under Self Client > Client Secret. |
 | `client_secret` :red_circle: | `string` | None | A unique confidential secret displayed under Self Client > Client Secret. |
-| `authorization_code` :red_circle: | `string` | None | The authorization code generated during the Self Client creation, used to get the refresh token and the first access token. |
-| `refresh_token` :red_circle: | `null` | None | The refresh token is used to generate a new access token when the current access token expires. |
+| `authorization_code`  | `string\|null` | None | The authorization code generated during the Self Client creation, used to get the refresh token and the first access token. |
+| `refresh_token`  | `string\|null` | None | The refresh token is used to generate a new access token when the current access token expires. |
 | `zoho_accounts_url`  | `Literal['https://accounts.zoho.com','https://accounts.zoho.com.au','https://accounts.zoho.com.cn','https://accounts.zoho.eu','https://accounts.zoho.in','https://accounts.zoho.jp','https://accounts.zohocloud.ca']` | https://accounts.zoho.eu | Zoho CRM is hosted at multiple data centers. Therefore, the API domain URL varies for each data center.
 You must use your domain-specific Zoho Accounts URL to generate access and refresh tokens. The following are the various domains and their corresponding accounts URLs.
  US: https://accounts.zoho.com
@@ -34,24 +34,24 @@ You must use your domain-specific Zoho Accounts URL to generate access and refre
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `fields` :red_circle: | `string\|null` | None | To list all the module records with respect to fields
+| `fields`  | `string\|null` | None | To list all the module records with respect to fields
 Multiple field API names, comma-separated.
 For example Last_Name, Email |
-| `sort_order` :red_circle: | `Literal['asc','desc']\|null` | None | To sort the available list of records in either ascending or descending order
+| `sort_order`  | `Literal['asc','desc']\|null` | None | To sort the available list of records in either ascending or descending order
 asc - ascending order
 desc - descending order |
-| `sort_by` :red_circle: | `string\|null` | None | To sort the available list of records based on the given field
+| `sort_by`  | `string\|null` | None | To sort the available list of records based on the given field
 Field API name
 Example: Email |
-| `cvid` :red_circle: | `integer\|null` | None | To get the list of records based on custom views
+| `cvid`  | `integer\|null` | None | To get the list of records based on custom views
 {custom_view_id} |
-| `territory_id` :red_circle: | `integer\|null` | None | To get the list of records based on territory
+| `territory_id`  | `integer\|null` | None | To get the list of records based on territory
 {territory_id} |
-| `include_child` :red_circle: | `boolean\|null` | None | To include records from the child territories.
+| `include_child`  | `boolean\|null` | None | To include records from the child territories.
 True includes child territory records.
 False does not include child territory records.
 The default value is false. |
-| `state` :red_circle: | `Literal['draft','save']\|null` | None | If the value of this parameter is 'draft', then the response will only contain Draft records from the specified module. If the parameter's value is 'save', then the response will return saved records from the specified module.
+| `state`  | `Literal['draft','save']\|null` | None | If the value of this parameter is 'draft', then the response will only contain Draft records from the specified module. If the parameter's value is 'save', then the response will return saved records from the specified module.
 
 If this parameter is not included in your request body, then the response will only return saved records from the specified module. |
 | `converted`  | `Literal['both','false','true']\|null` | false | To get the list of converted records.

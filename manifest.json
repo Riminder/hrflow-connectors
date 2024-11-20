@@ -6014,11 +6014,27 @@
               },
               "authorization_code": {
                 "description": "The authorization code generated during the Self Client creation, used to get the refresh token and the first access token.",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "refresh_token": {
                 "description": "The refresh token is used to generate a new access token when the current access token expires.",
-                "type": "null"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "zoho_accounts_url": {
                 "description": "Zoho CRM is hosted at multiple data centers. Therefore, the API domain URL varies for each data center.\nYou must use your domain-specific Zoho Accounts URL to generate access and refresh tokens. The following are the various domains and their corresponding accounts URLs.\n US: https://accounts.zoho.com\n AU: https://accounts.zoho.com.au\n EU: https://accounts.zoho.eu\n IN: https://accounts.zoho.in\n CN: https://accounts.zoho.com.cn\n JP: https://accounts.zoho.jp\n CA: https://accounts.zohocloud.ca",
@@ -6028,9 +6044,7 @@
             },
             "required": [
               "client_id",
-              "client_secret",
-              "authorization_code",
-              "refresh_token"
+              "client_secret"
             ],
             "$defs": {
               "ZohoAccountsURL": {
@@ -6476,7 +6490,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "sort_order": {
                 "description": "To sort the available list of records in either ascending or descending order\nasc - ascending order\ndesc - descending order",
@@ -6487,7 +6502,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "sort_by": {
                 "description": "To sort the available list of records based on the given field\nField API name\nExample: Email",
@@ -6498,7 +6514,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "cvid": {
                 "description": "To get the list of records based on custom views\n{custom_view_id}",
@@ -6509,7 +6526,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "territory_id": {
                 "description": "To get the list of records based on territory\n{territory_id}",
@@ -6520,7 +6538,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "include_child": {
                 "description": "To include records from the child territories.\nTrue includes child territory records.\nFalse does not include child territory records.\nThe default value is false.",
@@ -6531,7 +6550,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "state": {
                 "description": "If the value of this parameter is 'draft', then the response will only contain Draft records from the specified module. If the parameter's value is 'save', then the response will return saved records from the specified module.\n\nIf this parameter is not included in your request body, then the response will only return saved records from the specified module.",
@@ -6542,7 +6562,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "converted": {
                 "description": "To get the list of converted records.\nThe default value is false\ntrue - get only converted records\nfalse - get only non-converted records\nboth - get all records",
@@ -6569,15 +6590,7 @@
                 "default": "true"
               }
             },
-            "required": [
-              "fields",
-              "sort_order",
-              "sort_by",
-              "cvid",
-              "territory_id",
-              "include_child",
-              "state"
-            ],
+            "required": [],
             "$defs": {
               "SortOrder": {
                 "title": "SortOrder",
@@ -7685,11 +7698,27 @@
               },
               "authorization_code": {
                 "description": "The authorization code generated during the Self Client creation, used to get the refresh token and the first access token.",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "refresh_token": {
                 "description": "The refresh token is used to generate a new access token when the current access token expires.",
-                "type": "null"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "zoho_accounts_url": {
                 "description": "Zoho CRM is hosted at multiple data centers. Therefore, the API domain URL varies for each data center.\nYou must use your domain-specific Zoho Accounts URL to generate access and refresh tokens. The following are the various domains and their corresponding accounts URLs.\n US: https://accounts.zoho.com\n AU: https://accounts.zoho.com.au\n EU: https://accounts.zoho.eu\n IN: https://accounts.zoho.in\n CN: https://accounts.zoho.com.cn\n JP: https://accounts.zoho.jp\n CA: https://accounts.zohocloud.ca",
@@ -7699,9 +7728,7 @@
             },
             "required": [
               "client_id",
-              "client_secret",
-              "authorization_code",
-              "refresh_token"
+              "client_secret"
             ],
             "$defs": {
               "ZohoAccountsURL": {
@@ -9154,11 +9181,27 @@
               },
               "authorization_code": {
                 "description": "The authorization code generated during the Self Client creation, used to get the refresh token and the first access token.",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "refresh_token": {
                 "description": "The refresh token is used to generate a new access token when the current access token expires.",
-                "type": "null"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "zoho_accounts_url": {
                 "description": "Zoho CRM is hosted at multiple data centers. Therefore, the API domain URL varies for each data center.\nYou must use your domain-specific Zoho Accounts URL to generate access and refresh tokens. The following are the various domains and their corresponding accounts URLs.\n US: https://accounts.zoho.com\n AU: https://accounts.zoho.com.au\n EU: https://accounts.zoho.eu\n IN: https://accounts.zoho.in\n CN: https://accounts.zoho.com.cn\n JP: https://accounts.zoho.jp\n CA: https://accounts.zohocloud.ca",
@@ -9168,9 +9211,7 @@
             },
             "required": [
               "client_id",
-              "client_secret",
-              "authorization_code",
-              "refresh_token"
+              "client_secret"
             ],
             "$defs": {
               "ZohoAccountsURL": {
@@ -9616,7 +9657,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "sort_order": {
                 "description": "To sort the available list of records in either ascending or descending order\nasc - ascending order\ndesc - descending order",
@@ -9627,7 +9669,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "sort_by": {
                 "description": "To sort the available list of records based on the given field\nField API name\nExample: Email",
@@ -9638,7 +9681,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "cvid": {
                 "description": "To get the list of records based on custom views\n{custom_view_id}",
@@ -9649,7 +9693,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "territory_id": {
                 "description": "To get the list of records based on territory\n{territory_id}",
@@ -9660,7 +9705,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "include_child": {
                 "description": "To include records from the child territories.\nTrue includes child territory records.\nFalse does not include child territory records.\nThe default value is false.",
@@ -9671,7 +9717,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "state": {
                 "description": "If the value of this parameter is 'draft', then the response will only contain Draft records from the specified module. If the parameter's value is 'save', then the response will return saved records from the specified module.\n\nIf this parameter is not included in your request body, then the response will only return saved records from the specified module.",
@@ -9682,7 +9729,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "converted": {
                 "description": "To get the list of converted records.\nThe default value is false\ntrue - get only converted records\nfalse - get only non-converted records\nboth - get all records",
@@ -9709,15 +9757,7 @@
                 "default": "true"
               }
             },
-            "required": [
-              "fields",
-              "sort_order",
-              "sort_by",
-              "cvid",
-              "territory_id",
-              "include_child",
-              "state"
-            ],
+            "required": [],
             "$defs": {
               "SortOrder": {
                 "title": "SortOrder",
@@ -10840,11 +10880,27 @@
               },
               "authorization_code": {
                 "description": "The authorization code generated during the Self Client creation, used to get the refresh token and the first access token.",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "refresh_token": {
                 "description": "The refresh token is used to generate a new access token when the current access token expires.",
-                "type": "null"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "zoho_accounts_url": {
                 "description": "Zoho CRM is hosted at multiple data centers. Therefore, the API domain URL varies for each data center.\nYou must use your domain-specific Zoho Accounts URL to generate access and refresh tokens. The following are the various domains and their corresponding accounts URLs.\n US: https://accounts.zoho.com\n AU: https://accounts.zoho.com.au\n EU: https://accounts.zoho.eu\n IN: https://accounts.zoho.in\n CN: https://accounts.zoho.com.cn\n JP: https://accounts.zoho.jp\n CA: https://accounts.zohocloud.ca",
@@ -10854,9 +10910,7 @@
             },
             "required": [
               "client_id",
-              "client_secret",
-              "authorization_code",
-              "refresh_token"
+              "client_secret"
             ],
             "$defs": {
               "ZohoAccountsURL": {
@@ -12309,11 +12363,27 @@
               },
               "authorization_code": {
                 "description": "The authorization code generated during the Self Client creation, used to get the refresh token and the first access token.",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "refresh_token": {
                 "description": "The refresh token is used to generate a new access token when the current access token expires.",
-                "type": "null"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "zoho_accounts_url": {
                 "description": "Zoho CRM is hosted at multiple data centers. Therefore, the API domain URL varies for each data center.\nYou must use your domain-specific Zoho Accounts URL to generate access and refresh tokens. The following are the various domains and their corresponding accounts URLs.\n US: https://accounts.zoho.com\n AU: https://accounts.zoho.com.au\n EU: https://accounts.zoho.eu\n IN: https://accounts.zoho.in\n CN: https://accounts.zoho.com.cn\n JP: https://accounts.zoho.jp\n CA: https://accounts.zohocloud.ca",
@@ -12323,9 +12393,7 @@
             },
             "required": [
               "client_id",
-              "client_secret",
-              "authorization_code",
-              "refresh_token"
+              "client_secret"
             ],
             "$defs": {
               "ZohoAccountsURL": {
@@ -12764,19 +12832,25 @@
             "properties": {
               "type": {
                 "description": "All\nTo get the list of all deleted records\nRecycle\nTo get the list of deleted records from recycle bin\nPermanent\nTo get the list of permanently deleted records",
-                "$ref": "#/$defs/Type"
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Type"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": "all"
               }
             },
-            "required": [
-              "type"
-            ],
+            "required": [],
             "$defs": {
               "Type": {
                 "title": "Type",
                 "enum": [
-                  "All",
-                  "Permanent",
-                  "Recycle"
+                  "all",
+                  "permanent",
+                  "recycle"
                 ]
               }
             }
@@ -13771,11 +13845,27 @@
               },
               "authorization_code": {
                 "description": "The authorization code generated during the Self Client creation, used to get the refresh token and the first access token.",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "refresh_token": {
                 "description": "The refresh token is used to generate a new access token when the current access token expires.",
-                "type": "null"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "zoho_accounts_url": {
                 "description": "Zoho CRM is hosted at multiple data centers. Therefore, the API domain URL varies for each data center.\nYou must use your domain-specific Zoho Accounts URL to generate access and refresh tokens. The following are the various domains and their corresponding accounts URLs.\n US: https://accounts.zoho.com\n AU: https://accounts.zoho.com.au\n EU: https://accounts.zoho.eu\n IN: https://accounts.zoho.in\n CN: https://accounts.zoho.com.cn\n JP: https://accounts.zoho.jp\n CA: https://accounts.zohocloud.ca",
@@ -13785,9 +13875,7 @@
             },
             "required": [
               "client_id",
-              "client_secret",
-              "authorization_code",
-              "refresh_token"
+              "client_secret"
             ],
             "$defs": {
               "ZohoAccountsURL": {
@@ -15180,12 +15268,11 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": true
               }
             },
-            "required": [
-              "wf_trigger"
-            ],
+            "required": [],
             "$defs": {}
           },
           "jsonmap": {
@@ -15236,11 +15323,27 @@
               },
               "authorization_code": {
                 "description": "The authorization code generated during the Self Client creation, used to get the refresh token and the first access token.",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "refresh_token": {
                 "description": "The refresh token is used to generate a new access token when the current access token expires.",
-                "type": "null"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "zoho_accounts_url": {
                 "description": "Zoho CRM is hosted at multiple data centers. Therefore, the API domain URL varies for each data center.\nYou must use your domain-specific Zoho Accounts URL to generate access and refresh tokens. The following are the various domains and their corresponding accounts URLs.\n US: https://accounts.zoho.com\n AU: https://accounts.zoho.com.au\n EU: https://accounts.zoho.eu\n IN: https://accounts.zoho.in\n CN: https://accounts.zoho.com.cn\n JP: https://accounts.zoho.jp\n CA: https://accounts.zohocloud.ca",
@@ -15250,9 +15353,7 @@
             },
             "required": [
               "client_id",
-              "client_secret",
-              "authorization_code",
-              "refresh_token"
+              "client_secret"
             ],
             "$defs": {
               "ZohoAccountsURL": {
@@ -15598,7 +15699,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "sort_order": {
                 "description": "To sort the available list of records in either ascending or descending order\nasc - ascending order\ndesc - descending order",
@@ -15609,7 +15711,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "sort_by": {
                 "description": "To sort the available list of records based on the given field\nField API name\nExample: Email",
@@ -15620,7 +15723,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "cvid": {
                 "description": "To get the list of records based on custom views\n{custom_view_id}",
@@ -15631,7 +15735,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "territory_id": {
                 "description": "To get the list of records based on territory\n{territory_id}",
@@ -15642,7 +15747,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "include_child": {
                 "description": "To include records from the child territories.\nTrue includes child territory records.\nFalse does not include child territory records.\nThe default value is false.",
@@ -15653,7 +15759,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "state": {
                 "description": "If the value of this parameter is 'draft', then the response will only contain Draft records from the specified module. If the parameter's value is 'save', then the response will return saved records from the specified module.\n\nIf this parameter is not included in your request body, then the response will only return saved records from the specified module.",
@@ -15664,7 +15771,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "converted": {
                 "description": "To get the list of converted records.\nThe default value is false\ntrue - get only converted records\nfalse - get only non-converted records\nboth - get all records",
@@ -15691,15 +15799,7 @@
                 "default": "true"
               }
             },
-            "required": [
-              "fields",
-              "sort_order",
-              "sort_by",
-              "cvid",
-              "territory_id",
-              "include_child",
-              "state"
-            ],
+            "required": [],
             "$defs": {
               "SortOrder": {
                 "title": "SortOrder",
@@ -16391,11 +16491,27 @@
               },
               "authorization_code": {
                 "description": "The authorization code generated during the Self Client creation, used to get the refresh token and the first access token.",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "refresh_token": {
                 "description": "The refresh token is used to generate a new access token when the current access token expires.",
-                "type": "null"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "zoho_accounts_url": {
                 "description": "Zoho CRM is hosted at multiple data centers. Therefore, the API domain URL varies for each data center.\nYou must use your domain-specific Zoho Accounts URL to generate access and refresh tokens. The following are the various domains and their corresponding accounts URLs.\n US: https://accounts.zoho.com\n AU: https://accounts.zoho.com.au\n EU: https://accounts.zoho.eu\n IN: https://accounts.zoho.in\n CN: https://accounts.zoho.com.cn\n JP: https://accounts.zoho.jp\n CA: https://accounts.zohocloud.ca",
@@ -16405,9 +16521,7 @@
             },
             "required": [
               "client_id",
-              "client_secret",
-              "authorization_code",
-              "refresh_token"
+              "client_secret"
             ],
             "$defs": {
               "ZohoAccountsURL": {
@@ -16753,7 +16867,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "sort_order": {
                 "description": "To sort the available list of records in either ascending or descending order\nasc - ascending order\ndesc - descending order",
@@ -16764,7 +16879,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "sort_by": {
                 "description": "To sort the available list of records based on the given field\nField API name\nExample: Email",
@@ -16775,7 +16891,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "cvid": {
                 "description": "To get the list of records based on custom views\n{custom_view_id}",
@@ -16786,7 +16903,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "territory_id": {
                 "description": "To get the list of records based on territory\n{territory_id}",
@@ -16797,7 +16915,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "include_child": {
                 "description": "To include records from the child territories.\nTrue includes child territory records.\nFalse does not include child territory records.\nThe default value is false.",
@@ -16808,7 +16927,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "state": {
                 "description": "If the value of this parameter is 'draft', then the response will only contain Draft records from the specified module. If the parameter's value is 'save', then the response will return saved records from the specified module.\n\nIf this parameter is not included in your request body, then the response will only return saved records from the specified module.",
@@ -16819,7 +16939,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": null
               },
               "converted": {
                 "description": "To get the list of converted records.\nThe default value is false\ntrue - get only converted records\nfalse - get only non-converted records\nboth - get all records",
@@ -16846,15 +16967,7 @@
                 "default": "true"
               }
             },
-            "required": [
-              "fields",
-              "sort_order",
-              "sort_by",
-              "cvid",
-              "territory_id",
-              "include_child",
-              "state"
-            ],
+            "required": [],
             "$defs": {
               "SortOrder": {
                 "title": "SortOrder",
@@ -17541,11 +17654,27 @@
               },
               "authorization_code": {
                 "description": "The authorization code generated during the Self Client creation, used to get the refresh token and the first access token.",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "refresh_token": {
                 "description": "The refresh token is used to generate a new access token when the current access token expires.",
-                "type": "null"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
               },
               "zoho_accounts_url": {
                 "description": "Zoho CRM is hosted at multiple data centers. Therefore, the API domain URL varies for each data center.\nYou must use your domain-specific Zoho Accounts URL to generate access and refresh tokens. The following are the various domains and their corresponding accounts URLs.\n US: https://accounts.zoho.com\n AU: https://accounts.zoho.com.au\n EU: https://accounts.zoho.eu\n IN: https://accounts.zoho.in\n CN: https://accounts.zoho.com.cn\n JP: https://accounts.zoho.jp\n CA: https://accounts.zohocloud.ca",
@@ -17555,9 +17684,7 @@
             },
             "required": [
               "client_id",
-              "client_secret",
-              "authorization_code",
-              "refresh_token"
+              "client_secret"
             ],
             "$defs": {
               "ZohoAccountsURL": {
@@ -17896,19 +18023,25 @@
             "properties": {
               "type": {
                 "description": "All\nTo get the list of all deleted records\nRecycle\nTo get the list of deleted records from recycle bin\nPermanent\nTo get the list of permanently deleted records",
-                "$ref": "#/$defs/Type"
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Type"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": "all"
               }
             },
-            "required": [
-              "type"
-            ],
+            "required": [],
             "$defs": {
               "Type": {
                 "title": "Type",
                 "enum": [
-                  "All",
-                  "Permanent",
-                  "Recycle"
+                  "all",
+                  "permanent",
+                  "recycle"
                 ]
               }
             }

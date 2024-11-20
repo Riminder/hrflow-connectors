@@ -11,8 +11,8 @@ Send **archived** 'profile(s)' _from_ HrFlow _to_ Zoho Recruit
 | ----- | ---- | ------- | ----------- |
 | `client_id` :red_circle: | `string` | None | A unique ID displayed under Self Client > Client Secret. |
 | `client_secret` :red_circle: | `string` | None | A unique confidential secret displayed under Self Client > Client Secret. |
-| `authorization_code` :red_circle: | `string` | None | The authorization code generated during the Self Client creation, used to get the refresh token and the first access token. |
-| `refresh_token` :red_circle: | `null` | None | The refresh token is used to generate a new access token when the current access token expires. |
+| `authorization_code`  | `string\|null` | None | The authorization code generated during the Self Client creation, used to get the refresh token and the first access token. |
+| `refresh_token`  | `string\|null` | None | The refresh token is used to generate a new access token when the current access token expires. |
 | `zoho_accounts_url`  | `Literal['https://accounts.zoho.com','https://accounts.zoho.com.au','https://accounts.zoho.com.cn','https://accounts.zoho.eu','https://accounts.zoho.in','https://accounts.zoho.jp','https://accounts.zohocloud.ca']` | https://accounts.zoho.eu | Zoho CRM is hosted at multiple data centers. Therefore, the API domain URL varies for each data center.
 You must use your domain-specific Zoho Accounts URL to generate access and refresh tokens. The following are the various domains and their corresponding accounts URLs.
  US: https://accounts.zoho.com
@@ -41,7 +41,7 @@ You must use your domain-specific Zoho Accounts URL to generate access and refre
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `wf_trigger` :red_circle: | `boolean\|null` | None | Represents if the workflow rules are to be triggered upon record deletion. The value true triggers workflows. The value false does not trigger workflows. The default value is true. |
+| `wf_trigger`  | `boolean\|null` | True | Represents if the workflow rules are to be triggered upon record deletion. The value true triggers workflows. The value false does not trigger workflows. The default value is true. |
 
 ## Other Parameters
 
