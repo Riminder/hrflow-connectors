@@ -26,7 +26,6 @@ def connectors() -> t.Optional[list[str]]:
 def test_v1_connectors_importable_from_root():
     v1_connectors = connectors()
 
-    print(v1_connectors)
     assert v1_connectors is not None and len(v1_connectors) > 0
 
     script = (
