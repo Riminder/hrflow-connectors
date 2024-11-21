@@ -1,0 +1,82 @@
+actions:
+  create_jobs_in_hrflow:
+    - id: first_test
+      connector_auth:
+        client_id: $__client_id
+        client_secret: $__client_secret
+        password: $__password
+        username: $__username
+      hrflow_auth:
+        api_secret: $__api_secret
+        api_user: $__api_user
+    - id: second_test
+      connector_auth:
+        client_id: $__client_id
+        client_secret: $__client_secret
+        password: $__password
+        username: $__username
+      hrflow_auth:
+        api_secret: $__api_secret
+        api_user: $__api_user
+      pull_parameters:
+        created_date: "2024-10-10 00:00:00"
+        limit: 10
+      push_parameters:
+        board_key: $__board_key
+      status: success
+      reason: none
+      events:
+        read_success: 10
+        read_failure: 0
+        write_failure: 0
+    - id: third_test
+      connector_auth: {}
+      hrflow_auth:
+        api_secret: $__api_secret
+        api_user: $__api_user
+      status: fatal
+      reason: bad_origin_parameters
+    - id: fourth_test
+      connector_auth:
+        client_id: $__client_id
+        client_secret: $__client_secret
+        password: $__password
+        username: $__username
+      hrflow_auth: {}
+      pull_parameters:
+        created_date: "2024-10-10 00:00:00"
+        limit: 10
+      status: fatal
+      reason: bad_target_parameters
+    - id: fifth_test
+      connector_auth:
+        client_id: bad_client_id
+        client_secret: bad_client_secret
+        password: $__password
+        username: $__username
+      pull_parameters:
+        created_date: "2024-10-10 00:00:00"
+        limit: 10
+      hrflow_auth:
+        api_secret: $__api_secret
+        api_user: $__api_user
+      push_parameters:
+        board_key: $__board_key
+      status: fatal
+      reason: read_failure
+    - id: sixth_test
+      connector_auth:
+        client_id: $__client_id
+        client_secret: $__client_secret
+        password: $__password
+        username: $__username
+      pull_parameters:
+        created_date: "2024-10-10 00:00:00"
+        limit: 10
+      hrflow_auth:
+        api_secret: bad_api_secret
+        api_user: $__api_user
+      push_parameters:
+        board_key: bad_board_key
+      status: fatal
+      reason: write_failure
