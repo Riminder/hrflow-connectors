@@ -1,0 +1,63 @@
+{
+  "name": ".LIBELLE",
+  "reference": ".ID_MISSION | $string",
+  "created_at": ".DATE_SAISIE | $datetostring('%Y-%m-%d')",
+  "updated_at": ".DATE_MAJ | $datetostring('%Y-%m-%d')",
+  "location": {
+    "text": "$concat(.CITY, ', ', .REGION, ', ', .PAYS)",
+    "lat": null,
+    "lng": null,
+    "fields": {
+      "city": ".CITY",
+      "country": ".PAYS",
+      "postcode": ".ZIP",
+      "state": ".REGION"
+    }
+  },
+  "url": ".URL",
+  "summary": ".DESC_MISSION",
+  "sections": [
+    {
+      "name": "DESC_MISSION",
+      "title": "DESC_MISSION",
+      "description": ".DESC_MISSION"
+    },
+    {
+      "name": "DESC_CUSTOMER",
+      "title": "DESC_CUSTOMER",
+      "description": ".DESC_CUSTOMER"
+    },
+    { "name": "HTML", "title": "HTML", "description": ".HTML" },
+    { "name": "POSTIT", "title": "POSTIT", "description": ".POSTIT" },
+    {
+      "name": "COMMENTAIRE",
+      "title": "COMMENTAIRE",
+      "description": ".COMMENTAIRE"
+    }
+  ],
+  "tags": [
+    {
+      "name": "DATE_DEB_RECHERCHE",
+      "value": ".DATE_DEB_RECHERCHE | $datetostring"
+    },
+    {
+      "name": "DATE_PROPOSITION",
+      "value": ".DATE_PROPOSITION | $datetostring"
+    },
+    {
+      "name": "DATE_ENTREE_FONCT",
+      "value": ".DATE_ENTREE_FONCT | $datetostring"
+    },
+    { "name": "SECTEUR", "value": ".SECTEUR" },
+    { "name": "FONCTION", "value": ".FONCTION" },
+    { "name": "TYPEJOB", "value": ".TYPEJOB" },
+    { "name": "TYPECONTRAT", "value": ".TYPECONTRAT" },
+    { "name": "EDUCLEVEL", "value": ".EDUCLEVEL" },
+    { "name": "JOBEXP", "value": ".JOBEXP" },
+    { "name": "PERIOD", "value": ".PERIOD" },
+    { "name": "SALARYMIN", "value": ".SALARYMIN" },
+    { "name": "SALARYMAX", "value": ".SALARYMAX" },
+    { "name": "SALAIRE_ENTREE", "value": ".SALAIRE_ENTREE" },
+    { "name": "PROCESS", "value": ".PROCESS" }
+  ]
+}
