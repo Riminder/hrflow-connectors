@@ -15,7 +15,7 @@ def to_int(elm: t.Any) -> int:
     return int(elm)
 
 
-def get_location(info: dict) -> dict | None:
+def get_location(info: dict) -> t.Optional[dict]:
     if info:
         location = info.get("location")
         if location is None:
