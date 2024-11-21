@@ -2,6 +2,13 @@
 
 
 
+## v4.25.0 (2024-11-21)
+
+### Feature
+
+* feat: add integration testings for v2 ([`8c78d10`](https://github.com/Riminder/hrflow-connectors/commit/8c78d10b33bc7d121629052982494a201256bc19))
+
+
 ## v4.24.0 (2024-11-15)
 
 ### Documentation
