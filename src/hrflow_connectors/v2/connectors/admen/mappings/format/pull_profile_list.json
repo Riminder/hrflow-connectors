@@ -1,0 +1,30 @@
+{
+  "reference": ".ID_PERSONNE | $string",
+  "info": {
+    "first_name": ".PRENOM",
+    "last_name": ".NOM",
+    "full_name": "$concat(.PRENOM, ' ', .NOM)",
+    "email": "?.EMAIL_PERSO ?? .EMAIL_PERSO: .EMAIL",
+    "phone": ".TEL_MOBILE | .MOBILE_PRO | .TEL_STANDARD | .TEL_PERSO",
+    "date_birth": ".DATE_NAISSANCE | $date('%Y-%m-%d')",
+    "location": {
+      "text": ".ADRESSE",
+      "lat": null,
+      "lng": null,
+      "fields": {
+        "city": ".VILLE",
+        "country": ".PAYS",
+        "postcode": ".CODE_POSTAL",
+        "state": ".AREA",
+        "text": "$concat(.ADRESSE, ', ', .CODE_POSTAL, ' ', .VILLE, ', ', .AREA, ', ', .PAYS)"
+      }
+    },
+    "urls": "[?.LINKEDINPUBLICPROFIL ?? {url:.LINKEDINPUBLICPROFIL, type:linkedin}, ?.FACEBOOKPAGE ?? {url:.FACEBOOKPAGE, type:facebook}, ?.TWITTERPAGE ?? {url:.TWITTERPAGE, type:twitter}]",
+    "gender": "?.GENDER == F ?? female: male"
+  },
+  "resume": ".resume",
+  "experiences": ".experiences | $map({title: ?.INTITULE_POSTE, company: ?.RAISON_SOCIALE, location: {text: ?.VILLE, lat: null, lng: null}, date_start: ?.DATE_EXP ?? .DATE_EXP | $datetostring('%Y-%m-%d'): null, date_end: ?.DATE_FIN ?? .DATE_FIN | $datetostring('%Y-%m-%d'): null, description: ?.POSTE_OCCUPE})",
+  "educations": [],
+  "attachments": [],
+  "tags": "[?.NATIONALITE ?? {name:NATIONALITE, value:.NATIONALITE}, ?.SITU_FAMILLE ?? {name:SITUATION_FAMILLE, value:.SITU_FAMILLE}, ?.POSTE_OCCUPE ?? {name:POSTE_OCCUPE, value:.POSTE_OCCUPE}, ?.POSTE_RECHERCHE ?? {name:POSTE_RECHERCHE, value:.POSTE_RECHERCHE}, ?.MOBILITE_TXT ?? {name:MOBILITE, value:.MOBILITE_TXT}, ?.SECTEUR ?? {name:SECTEUR, value:.SECTEUR}]"
+}
