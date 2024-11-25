@@ -1,4 +1,3 @@
-import pdb
 import time
 import typing as t
 from collections import Counter
@@ -493,7 +492,6 @@ def run(
                 incremental=incremental,
                 incremental_token=incremental_token,
             )
-    pdb.set_trace()
     if persist is False:
         adapter.info(
             f"Running in dry mode with persist={persist}: Ending execution after read,"
