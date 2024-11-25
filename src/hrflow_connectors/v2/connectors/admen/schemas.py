@@ -4,7 +4,6 @@ import decimal
 from msgspec import Struct
 
 
-# Table : MISSION
 class AdmenMission(Struct):
     ID_MISSION: int
     ID_SOCIETE: int
@@ -69,7 +68,7 @@ class AdmenMission(Struct):
     SECTEURWEB: str
     FONCTIONWEB: str
     HTML: str
-    SOFT_DELETED: int  # use for delete_jobs_in_hrflow
+    SOFT_DELETED: int
     DATE_DELETED: datetime.date
     ID_PERDEL: int
     DATE_SAISIE: datetime.date
@@ -115,7 +114,7 @@ class AdmenMission(Struct):
     SHOWEMAILASSI: int
     URL: str
     POSTIT: str
-    DATE_MAJ: str  # use for update_jobs_in_hrflow alongside DATE_SAISIE
+    DATE_MAJ: str
     INDEXED: int
     CAC_FILTER: str
     CAC_PERS1_ACCESS: int
@@ -132,7 +131,6 @@ class AdmenMission(Struct):
     ENTITE: str
 
 
-# Table : TANNONCES
 class AdmenJob(Struct):
     ID_ANNONCE: int
     ID_SUPPORT: int
@@ -173,7 +171,6 @@ class AdmenJob(Struct):
     DESCRASSIGNMENT_TXT: str
 
 
-# Table : CANDIDATURE
 class AdmenCandidature(Struct):
     ID_MISSION: int
     ID_PERSONNE: int
@@ -277,7 +274,6 @@ class AdmenCandidature(Struct):
     Libre1: str
 
 
-# Table : EXPERIENCES_PROFESSIONNELLES
 class AdmenProfessionalExperience(Struct):
     ID_PERSONNE: int
     DATE_EXP: datetime.date
@@ -303,7 +299,6 @@ class AdmenProfessionalExperience(Struct):
     ID_COMPADDR: int
 
 
-# Table : Personnes
 class AdmenProfile(Struct):
     ID_PERSONNE: int
     PER_ID_PERSONNE: int
@@ -359,7 +354,7 @@ class AdmenProfile(Struct):
     TEL4_CONFIDENTIEL: int
     GRAPHOLOGIE: int
     DATE_CREATION: datetime.date
-    DATE_MAJ: datetime.datetime  # use for update_profiles_in_hrflow alongside DATE_CREATION
+    DATE_MAJ: datetime.datetime
     DATE_DEPUIS: datetime.date
     NATIONALITE: str
     SALAIRE: int
@@ -392,7 +387,7 @@ class AdmenProfile(Struct):
     TEL_PERSO3: str
     MOBILE_PRO: str
     EN_COURS: int
-    SOFT_DELETED: int  # use for delete_profiles_in_hrflow
+    SOFT_DELETED: int
     DATE_DELETED: datetime.date
     ID_PERDEL: int
     COLOR: int

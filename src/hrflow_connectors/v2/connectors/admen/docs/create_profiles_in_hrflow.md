@@ -26,10 +26,10 @@ Send **created** 'profile(s)' _from_ AD-MEN _to_ HrFlow
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `share_server` :red_circle: | `string` | None | The hostname of the network share server |
-| `share_name` :red_circle: | `string` | None | The name of the network share |
-| `share_username` :red_circle: | `string` | None | The username to connect to the network share |
-| `share_password` :red_circle: | `string` | None | The password to connect to the network share |
+| `share_server`  | `string\|null` | None | The hostname of the network share server |
+| `share_name`  | `string\|null` | None | The name of the network share |
+| `share_username`  | `string\|null` | None | The username to connect to the network share |
+| `share_password`  | `string\|null` | None | The password to connect to the network share |
 | `limit`  | `integer\|null` | None | The maximum number of items to fetch |
 
 ## Push Parameters (HrFlow)
