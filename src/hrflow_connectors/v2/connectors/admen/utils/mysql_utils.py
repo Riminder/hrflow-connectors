@@ -22,7 +22,7 @@ def connect_to_database(
         connection = mysql.connector.connect(
             host=host, port=port, user=user, password=password, database=database
         )
-        if connection.is_connected():
+        if isinstance(connection, MySQLConnection) and connection.is_connected():
             print("Connected to the database")
             return connection
     except Error as e:
@@ -32,12 +32,28 @@ def connect_to_database(
 
 # Function to query the database and return results as a dictionary
 def query_database(
-    connection: MySQLConnection, query: str
+    connection: MySQLConnection, query: str, params: t.Optional[t.Tuple] = None
 ) -> t.Optional[t.List[t.Dict]]:
+    """
+    Execute a query with optional parameters and return results as a dictionary.
+
+    :param connection: Database connection object.
+    :param query: SQL query string.
+    :param params: Tuple or list of parameters to use in the query.
+    :return: List of dictionaries containing the query results.
+    """
     cursor = connection.cursor(dictionary=True)
-    cursor.execute(query)
-    results = cursor.fetchall()
-    cursor.close()
+    try:
+        if params:
+            cursor.execute(query, params)
+        else:
+            cursor.execute(query)
+        results = cursor.fetchall()
+    except Exception as e:
+        print(f"Error executing query: {e}")
+        results = []
+    finally:
+        cursor.close()
     return results
 
 
@@ -105,10 +121,54 @@ def update_object(
         connection.commit()
         rows_affected = cursor.rowcount
         adapter.info(f"{rows_affected} rows updated in table {table_name}.")
-        return rows_affected > 0
+        return True
     except Error as e:
         connection.rollback()
         adapter.error(f"Failed to update object in the table {table_name}: {e}")
         return False
     finally:
         cursor.close()
+
+
+# def update_object(
+#     adapter: LoggerAdapter,
+#     connection: MySQLConnection,
+#     table_name: str,
+#     object_data: t.Dict,
+#     where_clause: t.Dict,
+# ) -> bool:
+#     set_clause = ", ".join(
+#         [
+#             f"`{col}` = %s" if object_data[col] is not None else f"`{col}` = NULL"
+#             for col in object_data
+#         ]
+#     )
+#     where_conditions = " AND ".join(
+#         [
+#             f"`{col}` = %s" if where_clause[col] is not None else f"`{col}` IS NULL"
+#             for col in where_clause
+#         ]
+#     )
+#     sql = f"UPDATE {table_name} SET {set_clause} WHERE {where_conditions}"
+
+#     cursor = connection.cursor()
+#     try:
+#         values = [value for value in object_data.values() if value is not None] + [
+#             value for value in where_clause.values() if value is not None
+#         ]
+#         adapter.debug("SQL Query:", sql)
+#         adapter.debug("Values:", values)
+#         cursor.execute(sql, values)
+#         connection.commit()
+#         rows_affected = cursor.rowcount
+#         if rows_affected == 0:
+#             adapter.warning(f"No rows updated in table {table_name}.")
+#         else:
+#             adapter.info(f"{rows_affected} rows updated in table {table_name}.")
+#         return rows_affected > 0
+#     except Error as e:
+#         connection.rollback()
+#         adapter.error(f"Failed to update object in the table {table_name}: {e}")
+#         return False
+#     finally:
+#         cursor.close()

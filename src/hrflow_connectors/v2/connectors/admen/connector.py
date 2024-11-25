@@ -299,12 +299,12 @@ def format_profile_archive_in_hrflow(admen_profile: t.Dict) -> t.Dict:
 
 def format_hrflow_profile_for_update_to_admen(hrflow_profile: t.Dict) -> t.Dict:
     admen_profile = format_hrflow_profile_to_admen(hrflow_profile)
-    admen_profile["ID_PERSONNE"] = hrflow_profile["reference"]
+    admen_profile["ID_PERSONNE"] = int(hrflow_profile["reference"])
     return admen_profile
 
 
 def format_profile_archive_in_admen(hrflow_profile: t.Dict) -> t.Dict:
-    admen_profile = dict(ID_PERSONNE=hrflow_profile["reference"], SOFT_DELETED=1)
+    admen_profile = dict(ID_PERSONNE=int(hrflow_profile["reference"]), SOFT_DELETED=1)
     return admen_profile
 
 
