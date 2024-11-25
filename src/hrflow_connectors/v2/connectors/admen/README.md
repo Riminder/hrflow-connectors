@@ -43,9 +43,15 @@ This new connector will enable:
 
 | Action | Description |
 | ------- | ----------- |
-| [**Pull job list**](docs/pull_job_list.md) | Retrieves jobs from the ***AD-MEN*** database serverand send them to a ***Hrflow.ai Board***. |
-| [**Pull profile list**](docs/pull_profile_list.md) | Retrieves profiles from the ***AD-MEN*** database serverand send them to a ***Hrflow.ai Source***. |
-| [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source to the ***AD-MEN*** database server |
+| [**Create jobs in hrflow**](docs/create_jobs_in_hrflow.md) | Send **created** 'job(s)' _from_  _to_ HrFlow |
+| [**Update jobs in hrflow**](docs/update_jobs_in_hrflow.md) | Send **updated** 'job(s)' _from_  _to_ HrFlow |
+| [**Archive jobs in hrflow**](docs/archive_jobs_in_hrflow.md) | Send **archived** 'job(s)' _from_  _to_ HrFlow |
+| [**Create profiles in hrflow**](docs/create_profiles_in_hrflow.md) | Send **created** 'profile(s)' _from_  _to_ HrFlow |
+| [**Update profiles in hrflow**](docs/update_profiles_in_hrflow.md) | Send **updated** 'profile(s)' _from_  _to_ HrFlow |
+| [**Archive profiles in hrflow**](docs/archive_profiles_in_hrflow.md) | Send **archived** 'profile(s)' _from_  _to_ HrFlow |
+| [**Create profiles in **](docs/create_profiles_in_.md) | Send **created** 'profile(s)' _from_ HrFlow _to_  |
+| [**Update profiles in **](docs/update_profiles_in_.md) | Send **updated** 'profile(s)' _from_ HrFlow _to_  |
+| [**Archive profiles in **](docs/archive_profiles_in_.md) | Send **archived** 'profile(s)' _from_ HrFlow _to_  |
 
 
 </p>

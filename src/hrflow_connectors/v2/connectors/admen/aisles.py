@@ -76,29 +76,29 @@ class ReadJobsParameters(Struct):
 
 class ReadProfilesParameters(Struct):
     share_server: Annotated[
-        str,
+        t.Optional[str],
         Meta(
             description="The hostname of the network share server",
         ),
-    ]
+    ] = None
     share_name: Annotated[
-        str,
+        t.Optional[str],
         Meta(
             description="The name of the network share",
         ),
-    ]
+    ] = None
     share_username: Annotated[
-        str,
+        t.Optional[str],
         Meta(
             description="The username to connect to the network share",
         ),
-    ]
+    ] = None
     share_password: Annotated[
-        str,
+        t.Optional[str],
         Meta(
             description="The password to connect to the network share",
         ),
-    ]
+    ] = None
     limit: Annotated[
         t.Optional[int],
         Meta(
@@ -224,19 +224,24 @@ def generic_profile_read(
                 None,
                 None,
             )
-
-            # Establish SMB connection
-            smb_connected, smb_tree, smb_session, smb_connection = (
-                establish_smb_connection(
-                    adapter,
-                    parameters.share_server,
-                    parameters.share_username,
-                    parameters.share_password,
-                    parameters.share_name,
-                    max_retries,
-                    retry_delay,
+            if (
+                parameters.share_server
+                and parameters.share_name
+                and parameters.share_username
+                and parameters.share_password
+            ):
+                # Establish SMB connection
+                smb_connected, smb_tree, smb_session, smb_connection = (
+                    establish_smb_connection(
+                        adapter,
+                        parameters.share_server,
+                        parameters.share_username,
+                        parameters.share_password,
+                        parameters.share_name,
+                        max_retries,
+                        retry_delay,
+                    )
                 )
-            )
 
             if profiles:
                 for profile in profiles:
@@ -324,6 +329,67 @@ def write_profiles(
     return failed_profiles
 
 
+def generic_update():
+    def update(
+        adapter: LoggerAdapter,
+        auth_parameters: AuthParameters,
+        parameters: WriteProfilesParameters,
+        items: t.Iterable[t.Dict],
+    ) -> t.List[t.Dict]:
+        failed_items = []
+        profiles_table = "PERSONNES"
+        experiences_table = "EXPERIENCES_PROFESSIONNELLES"
+
+        connection = connect_to_database(
+            auth_parameters.db_host,
+            auth_parameters.db_port,
+            auth_parameters.db_user,
+            auth_parameters.db_password,
+            auth_parameters.db_name,
+        )
+        if connection:
+            for item in items:
+                ID_PERSONNE = item.pop("ID_PERSONNE")
+                experiences = item.pop("experiences", [])
+                where_clause = {"ID_PERSONNE": ID_PERSONNE}
+                update_result = update_object(
+                    adapter, connection, profiles_table, item, where_clause
+                )
+                if not update_result:
+                    failed_items.append(item)
+                for experience in experiences:
+                    query = f"""
+                    SELECT * FROM {experiences_table}
+                    WHERE INTITULE_POSTE = %s AND ID_PERSONNE = %s
+                    """
+                    params = (experience["INTITULE_POSTE"], ID_PERSONNE)
+                    existing_experience = query_database(connection, query, params)
+                    if existing_experience:
+                        where_clause = {
+                            "ID_PERSONNE": ID_PERSONNE,
+                            "INTITULE_POSTE": experience["INTITULE_POSTE"],
+                        }
+                        update_result = update_object(
+                            adapter,
+                            connection,
+                            experiences_table,
+                            experience,
+                            where_clause,
+                        )
+                        if not update_result:
+                            adapter.error(f"Failed to update experience: {experience}")
+                    else:
+                        experience["ID_PERSONNE"] = ID_PERSONNE
+                        insert_object(
+                            adapter, connection, experiences_table, experience
+                        )
+
+            connection.close()
+        return failed_items
+
+    return update
+
+
 JobsAisle = Aisle(
     name=Entity.job,
     schema=AdmenMission,
@@ -340,38 +406,6 @@ JobsAisle = Aisle(
         ),
     ),
 )
-
-
-def generic_update():
-    def update(
-        adapter: LoggerAdapter,
-        auth_parameters: AuthParameters,
-        parameters: WriteProfilesParameters,
-        items: t.Iterable[t.Dict],
-    ) -> t.List[t.Dict]:
-        failed_items = []
-        connection = connect_to_database(
-            auth_parameters.db_host,
-            auth_parameters.db_port,
-            auth_parameters.db_user,
-            auth_parameters.db_password,
-            auth_parameters.db_name,
-        )
-        if connection:
-            table_name = "PERSONNES"
-            for item in items:
-                ID_PERSONNE = item.pop("ID_PERSONNE")
-                where_clause = {"ID_PERSONNE": {ID_PERSONNE}}
-                update_result = update_object(
-                    adapter, connection, table_name, item, where_clause
-                )
-                if not update_result:
-                    failed_items.append(item)
-            connection.close()
-        return failed_items
-
-    return update
-
 
 ProfilesAisle = Aisle(
     name=Entity.profile,
