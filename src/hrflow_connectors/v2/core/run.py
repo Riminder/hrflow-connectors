@@ -492,6 +492,7 @@ def run(
                 incremental=incremental,
                 incremental_token=incremental_token,
             )
+
     if persist is False:
         adapter.info(
             f"Running in dry mode with persist={persist}: Ending execution after read,"
