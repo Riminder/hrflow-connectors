@@ -1,0 +1,95 @@
+{
+  "reference": ".id",
+  "info": {
+    "first_name": ".First_Name",
+    "last_name": ".Last_Name",
+    "full_name": ".Full_Name",
+    "email": ".Email",
+    "phone": ".Phone",
+    "location": {
+      "text": "$concat(?.Street >> '', ' ', ?.City >> '',  ' ', ?.State >> '', ' ', ?.Country >> '', ' ', ?.Zip_Code >> '')",
+      "lat": null,
+      "lng": null,
+      "fields": {
+        "postcode": "?.Zip_Code",
+        "city": "?.City",
+        "state": "?.State",
+        "country": "?.Country"
+      }
+    },
+    "urls": [
+      {
+        "type": "linkedin",
+        "url": ".LinkedIn__s"
+      },
+      {
+        "type": "facebook",
+        "url": ".Facebook__s"
+      },
+      {
+        "type": "twitter",
+        "url": ".Twitter"
+      },
+      {
+        "type": "from_resume",
+        "url": ".Website"
+      }
+    ]
+  },
+  "created_at": ".Created_Time",
+  "updated_at": ".Updated_On",
+  "experiences_duration": ".Experience_in_Years",
+  "experiences": ".Experience_in_Years | $map({title: .Occupation_Title, company: .Company, date_start: .Work_Duration.from, date_end: .Work_Duration?.to, description: .Summary})",
+  "educations": ".Educational_Details | $map({title: .Degree, school: .Institute_School, date_start: .Education_Duration.from, date_end: .Education_Duration?.to, description: .Major_Department})",
+  "skills": ".Skill_Set | $split(', ') | $map({name: ., value: null, type: 'hard'})",
+  "tags": [
+    {
+      "name": "Current_Job_Title",
+      "value": ".Current_Job_Title"
+    },
+    {
+      "name": "Current_Salary",
+      "value": ".Current_Salary"
+    },
+    {
+      "name": "Expected_Salary",
+      "value": ".Expected_Salary"
+    },
+    {
+      "name": "Current_Employer",
+      "value": ".Current_Employer"
+    },
+    {
+      "name": "Highest_Qualification_Held",
+      "value": ".Highest_Qualification_Held"
+    },
+    {
+      "name": "Source",
+      "value": ".Source"
+    },
+    {
+      "name": "Origin",
+      "value": ".Origin"
+    },
+    {
+      "name": "Candidate_Status",
+      "value": ".Candidate_Status"
+    },
+    {
+      "name": "Is_Unqualified",
+      "value": ".Is_Unqualified"
+    },
+    {
+      "name": "Additional_Info",
+      "value": ".Additional_Info"
+    },
+    {
+      "name": "applied_with_linkedin",
+      "value": ".applied_with_linkedin"
+    },
+    {
+      "name": "No_of_Applications",
+      "value": ".No_of_Applications"
+    }
+  ]
+}
