@@ -189,8 +189,11 @@ def create(
             )
             continue
 
-        if profile.get("resume", {}).get("raw") is None:
-            adapter.info(f"Profile with reference {profile['reference']} has no resume")
+        if not profile.get("resume") or profile["resume"].get("raw") is None:
+            adapter.info(
+                f"Profile with reference {profile['reference']} has no resume, adding"
+                " without parsing"
+            )
             response = hrflow_client.profile.storing.add_json(
                 source_key=parameters.source_key, profile_json=profile
             )
@@ -266,7 +269,7 @@ def update(
         )
         profile_to_edit = {**current_profile, **edit}
 
-        if profile.get("resume"):
+        if profile.get("resume") and profile["resume"].get("raw") is not None:
             if not current_profile.get("attachments"):
                 parsing_response = hrflow_client.profile.parsing.add_file(
                     source_key=parameters.source_key,

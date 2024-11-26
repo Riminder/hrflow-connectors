@@ -1,5 +1,6 @@
 import logging
 import os
+import secrets
 import typing as t
 from io import BytesIO
 
@@ -55,7 +56,7 @@ class CannotReadFromS3Error(Exception):
 
 def check_store_pydantic(state: InternalState):
     root_model = create_model("S3StoreRoot", root="HrFlow Connectors", store=NAME)
-    root_key = "__root"
+    root_key = f"__root_{secrets.token_hex(4)}"
     root = root_model()
     try:
         save(state, root_key, root)
@@ -77,7 +78,7 @@ def check_store_msgspec(state: InternalState):
     root_model = defstruct(
         "S3StoreRoot", [("root", str, "HrFlow Connectors"), ("store", str, NAME)]
     )
-    root_key = "__root"
+    root_key = f"__root_{secrets.token_hex(4)}"
     root = root_model()
     try:
         save(state, root_key, root)

@@ -97,10 +97,10 @@ class BaseJobsParameters(BaseParameters, kw_only=True):
         "customText2,customText3,customText4,customText5,customText6,"
         "customText7,customText8,customText9,customTextBlock1,customTextBlock2,"
         "customTextBlock3,customTextBlock4,customTextBlock5,dateAdded,dateEnd,"
-        "degreeList,description,durationWeeks,educationDegree,employmentType,"
-        "feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,isWorkFromHome,"
-        "markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,skills,"
-        "skillList,source,specialties,startDate,status,title,type,willRelocate,"
+        "degreeList,description,publicDescription,durationWeeks,educationDegree,"
+        "employmentType,feeArrangement,hoursOfOperation,hoursPerWeek,isOpen,"
+        "isWorkFromHome,markUpPercentage,numOpenings,onSite,payRate,salary,salaryUnit,"
+        "skills,skillList,source,specialties,startDate,status,title,id,type,willRelocate,"
         "owner"
     )
     query: Annotated[
@@ -242,7 +242,7 @@ class ReadArchivedProfilesCriterias(BaseParameters, kw_only=True):
                 " the specified conditions"
             ),
         ),
-    ] = "isDeleted:0"
+    ] = "isDeleted:1"
     fields: Annotated[
         str,
         Meta(
@@ -253,7 +253,7 @@ class ReadArchivedProfilesCriterias(BaseParameters, kw_only=True):
 
 def make_request(
     method, url, params, auth_parameters: AuthParameters, adapter, json=None
-):
+) -> t.Optional[dict]:
     response = method(url, params=params, data=json)
     if response.status_code == 401:
         adapter.info("Auth token expired, regenerating...")
@@ -268,7 +268,7 @@ def make_request(
     return handle_response(response, adapter)
 
 
-def handle_response(response, adapter):
+def handle_response(response, adapter) -> t.Optional[dict]:
     if not response.ok:
         adapter.error(
             f"Request failed with status_code={response.status_code},"
@@ -292,7 +292,14 @@ def search_entity(
     return response
 
 
-def create_entity(entity, rest_url, params, data, auth_parameters, adapter):
+def create_entity(
+    entity: str,
+    rest_url: str,
+    params: dict,
+    data: dict,
+    auth_parameters: AuthParameters,
+    adapter: LoggerAdapter,
+) -> t.Optional[dict]:
     url = f"{rest_url}entity/{entity}"
     response = make_request(
         requests.post, url, params, auth_parameters, adapter, json.dumps(data)
@@ -300,7 +307,15 @@ def create_entity(entity, rest_url, params, data, auth_parameters, adapter):
     return response
 
 
-def update_entity(entity, entity_id, rest_url, params, data, auth_parameters, adapter):
+def update_entity(
+    entity: str,
+    entity_id: str,
+    rest_url: str,
+    params: dict,
+    data: dict,
+    auth_parameters: AuthParameters,
+    adapter: LoggerAdapter,
+) -> t.Optional[dict]:
     url = f"{rest_url}entity/{entity}/{entity_id}"
     response = make_request(
         requests.put, url, params, auth_parameters, adapter, json.dumps(data)
@@ -308,15 +323,28 @@ def update_entity(entity, entity_id, rest_url, params, data, auth_parameters, ad
     return response
 
 
-def check_entity_files(entity, rest_url, params, entity_id, auth_parameters, adapter):
+def check_entity_files(
+    entity: str,
+    entity_id: str,
+    rest_url: str,
+    params: dict,
+    auth_parameters: AuthParameters,
+    adapter: LoggerAdapter,
+) -> t.Optional[dict]:
     url = f"{rest_url}entityFiles/{entity}/{entity_id}"
     response = make_request(requests.get, url, params, auth_parameters, adapter)
     return response
 
 
 def upload_attachment(
-    entity, entity_id, rest_url, params, attachment, adapter, auth_parameters
-):
+    entity: str,
+    entity_id: str,
+    rest_url: str,
+    params: dict,
+    auth_parameters: AuthParameters,
+    adapter: LoggerAdapter,
+    attachment,
+) -> t.Optional[dict]:
     url = f"{rest_url}file/{entity}/{entity_id}"
     attachment_response = make_request(
         requests.put, url, params, auth_parameters, adapter, json.dumps(attachment)
@@ -368,7 +396,7 @@ def update_application(
         if search_results["count"] == 0:
             adapter.info(f"Creating candidate with email: {email}")
             candidate_response = create_entity(
-                "Candidate", rest_url, params, profile, parameters, adapter
+                "Candidate", rest_url, params, profile, auth_parameters, adapter
             )
             if not candidate_response:
                 failed_profiles.append(profile)
@@ -403,7 +431,7 @@ def update_application(
                 rest_url,
                 params,
                 profile,
-                parameters,
+                auth_parameters,
                 adapter,
             )
 
@@ -416,12 +444,18 @@ def update_application(
                     f"Checking if attachment exists for candidate {candidate_id}"
                 )
                 entity_files = check_entity_files(
-                    "Candidate", rest_url, params, candidate_id, parameters, adapter
+                    "Candidate",
+                    candidate_id,
+                    rest_url,
+                    params,
+                    auth_parameters,
+                    adapter,
                 )
-                attachment_exists = any(
-                    file["name"] == attachment["name"]
-                    for file in entity_files.get("EntityFiles", [])
-                )
+                if entity_files:
+                    attachment_exists = any(
+                        file["name"] == attachment["name"]
+                        for file in entity_files.get("EntityFiles", [])
+                    )
 
         if not attachment_exists:
             adapter.info("Uploading attachment")
@@ -430,9 +464,9 @@ def update_application(
                 candidate_id,
                 rest_url,
                 params,
-                attachment,
+                auth_parameters,
                 adapter,
-                parameters,
+                attachment,
             )
             if not attachment_response:
                 failed_profiles.append(profile)
@@ -452,39 +486,37 @@ def update_application(
             parameters,
         )
 
-        job_submission_exists = job_submission_results.get("count", 0) > 0
-        job_submission_id = (
-            job_submission_results["data"][0]["id"] if job_submission_exists else None
-        )
+        if job_submission_results:
+            job_submission_exists = job_submission_results.get("count", 0) > 0
 
-        job_submission_payload = {
-            "candidate": {"id": candidate_id},
-            "jobOrder": {"id": parameters.job_id},
-            "status": parameters.status_when_created,
-            "dateWebResponse": int(time.time() * 1000),
-        }
-
-        adapter.info("Creating or updating JobSubmission")
-        job_submission_response = (
-            update_entity(
-                "JobSubmission",
-                job_submission_id,
-                rest_url,
-                params,
-                job_submission_payload,
-                parameters,
-                adapter,
-            )
-            if job_submission_exists
-            else create_entity(
-                "JobSubmission",
-                rest_url,
-                params,
-                job_submission_payload,
-                parameters,
-                adapter,
-            )
-        )
+            job_submission_payload = {
+                "candidate": {"id": candidate_id},
+                "jobOrder": {"id": parameters.job_id},
+                "status": parameters.status_when_created,
+                "dateWebResponse": int(time.time() * 1000),
+            }
+            if job_submission_exists:
+                job_submission_id = job_submission_results["data"][0]["id"]
+                adapter.info("Updating JobSubmission")
+                job_submission_response = update_entity(
+                    "JobSubmission",
+                    job_submission_id,
+                    rest_url,
+                    params,
+                    job_submission_payload,
+                    auth_parameters,
+                    adapter,
+                )
+            else:
+                adapter.info("Creating JobSubmission")
+                job_submission_response = create_entity(
+                    "JobSubmission",
+                    rest_url,
+                    params,
+                    job_submission_payload,
+                    auth_parameters,
+                    adapter,
+                )
 
         if not job_submission_response:
             failed_profiles.append(profile)
@@ -580,16 +612,23 @@ def generic_job_pulling(
                         should_break = True
                         break
 
+                    date_added = job.get("dateAdded")
+                    date_last_modified = job.get("dateLastModified")
+
+                    transformed_date_added = transform_timestamp_read_from(date_added)
+                    transformed_date_last_modified = transform_timestamp_read_from(
+                        date_last_modified
+                    )
+
                     if (
                         action is Mode.create
-                        and transform_timestamp_read_from(job.get("dateAdded"))[:19]
-                        != transform_timestamp_read_from(job.get("dateLastModified"))[
+                        and transformed_date_added is not None
+                        and transformed_date_last_modified is not None
+                        and transformed_date_added[:19]
+                        != transformed_date_last_modified[
                             :19
                         ]  # ignore microsecond difference created by Bullhorn
-                    ) or (
-                        action is Mode.update
-                        and job.get("dateAdded") == job.get("dateLastModified")
-                    ):
+                    ) or (action is Mode.update and date_added == date_last_modified):
                         continue
 
                     if (
@@ -726,18 +765,23 @@ def generic_profile_pulling(
                         should_break = True
                         break
 
+                    date_added = profile.get("dateAdded")
+                    date_last_modified = profile.get("dateLastModified")
+
+                    transformed_date_added = transform_timestamp_read_from(date_added)
+                    transformed_date_last_modified = transform_timestamp_read_from(
+                        date_last_modified
+                    )
+
                     if (
                         action is Mode.create
-                        and transform_timestamp_read_from(profile.get("dateAdded"))[:19]
-                        != transform_timestamp_read_from(
-                            profile.get("dateLastModified")
-                        )[
+                        and transformed_date_added is not None
+                        and transformed_date_last_modified is not None
+                        and transformed_date_added[:19]
+                        != transformed_date_last_modified[
                             :19
                         ]  # ignore microsecond difference created by Bullhorn
-                    ) or (
-                        action is Mode.update
-                        and profile.get("dateAdded") == profile.get("dateLastModified")
-                    ):
+                    ) or (action is Mode.update and date_added == date_last_modified):
                         continue
 
                     if (
@@ -753,7 +797,10 @@ def generic_profile_pulling(
                         total_returned += 1
                         continue
 
-                    if parameters.parse_resume:
+                    if (
+                        not isinstance(parameters, ReadArchivedProfilesCriterias)
+                        and parameters.parse_resume
+                    ):
                         profile["cvFile"] = None
                         url_files = (
                             authentication["restUrl"]
@@ -922,7 +969,6 @@ ProfilesAisle = Aisle(
     schema=BullhornProfile,
 )
 
-# FIXME generic_job_pulling doesn't seem to handle the archive mode
 JobsAisle = Aisle(
     name=Entity.job,
     read=ReadOperation(
