@@ -1,0 +1,58 @@
+actions:
+  create_jobs_in_hrflow:
+    - id: valid_parameters
+      connector_auth:
+        x_smart_token: $__X_SMART_TOKEN
+      pull_parameters:
+        posting_status: PUBLIC
+      hrflow_auth:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      push_parameters:
+        board_key: $__BOARD_KEY
+      status: success
+    - id: not_x_smart_token
+      hrflow_auth:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      pull_parameters:
+        posting_status: PUBLIC
+      push_parameters:
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+    - id: no_hrflow_board_key
+      connector_auth:
+        x_smart_token: $__X_SMART_TOKEN
+      pull_parameters:
+        posting_status: PUBLIC
+      hrflow_auth:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      push_parameters:
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_x_smart_token
+      connector_auth:
+        x_smart_token: bad_smart_token
+      pull_parameters:
+        posting_status: PUBLIC
+      hrflow_auth:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      push_parameters:
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+    - id: invalid_hrflow_api_secret
+      connector_auth:
+        x_smart_token: $__X_SMART_TOKEN
+      hrflow_auth:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+      pull_parameters:
+        posting_status: PUBLIC
+      push_parameters:
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: write_failure
