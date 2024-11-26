@@ -1,5 +1,13 @@
 [
   {
+    "name": "AD-MEN",
+    "type": "CRM",
+    "subtype": "admen",
+    "status": "premium",
+    "release_date": "",
+    "pre_v2_updated_at": ""
+  },
+  {
     "name": "Abacus Umantis",
     "type": "ATS",
     "subtype": "abacusumantis",
