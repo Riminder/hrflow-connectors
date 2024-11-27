@@ -1,0 +1,15 @@
+{
+  "properties": {
+    "email": ".info.email",
+    "firstname": ".info.first_name",
+    "lastname": ".info.last_name",
+    "date_of_birth": ".info.date_birth",
+    "phone": ".info.phone",
+    "address": ".location.text",
+    "zip": ".fields >> {} | ?.postcode >> Undefined",
+    "city": ".fields >> {} | ?.city >> Undefined",
+    "state": ".fields >> {} | ?.state >> Undefined",
+    "country": ".fields >> {} | ?.country >> Undefined",
+    "company": "''"
+  }
+}
