@@ -55,7 +55,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Ceridian**](./src/hrflow_connectors/v1/connectors/ceridian/README.md) | HCM | :book: Open source | *19/01/2022* | *05/09/2024* |
 | [**Digitalrecruiters**](./src/hrflow_connectors/v1/connectors/digitalrecruiters/README.md) | ATS | :book: Open source | *17/08/2023* | *24/10/2024* |
 | [**Greenhouse**](./src/hrflow_connectors/v1/connectors/greenhouse/README.md) | ATS | :book: Open source | *19/01/2022* | *05/09/2024* |
-| [**Hubspot**](./src/hrflow_connectors/v1/connectors/hubspot/README.md) | CRM | :book: Open source | *27/10/2022* | *05/09/2024* |
+| [**Hubspot**](./src/hrflow_connectors/v2/connectors/hubspot/README.md) | CRM | :book: Open source | *27/10/2022* | *05/09/2024* |
 | [**Lever**](./src/hrflow_connectors/v1/connectors/lever/README.md) | ATS | :book: Open source | *18/08/2023* | *23/10/2024* |
 | [**Recruitee**](./src/hrflow_connectors/v1/connectors/recruitee/README.md) | ATS | :book: Open source | *30/10/2022* | *23/10/2024* |
 | [**Salesforce**](./src/hrflow_connectors/v1/connectors/salesforce/README.md) | CRM | :book: Open source | *03/08/2023* | *05/09/2024* |

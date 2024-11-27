@@ -33,8 +33,12 @@ In this section, we outline the data flow between different components of the co
 
 | Action | Description |
 | ------- | ----------- |
-| [**Push profile**](docs/push_profile.md) | Writes a profile from Hrflow.ai Source as a contact on Hubspot via the API |
-| [**Pull profile list**](docs/pull_profile_list.md) | Retrieves contacts from Hubspot via API and send them to a ***Hrflow.ai Source***. |
+| [**Create profiles in hrflow**](docs/create_profiles_in_hrflow.md) | Send **created** 'profile(s)' _from_  _to_ HrFlow |
+| [**Create profiles in **](docs/create_profiles_in_.md) | Send **created** 'profile(s)' _from_ HrFlow _to_  |
+| [**Update profiles in hrflow**](docs/update_profiles_in_hrflow.md) | Send **updated** 'profile(s)' _from_  _to_ HrFlow |
+| [**Update profiles in **](docs/update_profiles_in_.md) | Send **updated** 'profile(s)' _from_ HrFlow _to_  |
+| [**Archive profiles in hrflow**](docs/archive_profiles_in_hrflow.md) | Send **archived** 'profile(s)' _from_  _to_ HrFlow |
+| [**Archive profiles in **](docs/archive_profiles_in_.md) | Send **archived** 'profile(s)' _from_ HrFlow _to_  |
 
 
 </p>
