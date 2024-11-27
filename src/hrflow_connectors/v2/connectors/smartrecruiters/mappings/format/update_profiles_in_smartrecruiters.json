@@ -1,0 +1,13 @@
+{
+  "firstName": ".info.first_name",
+  "lastName": ".info.last_name",
+  "email": ".info.email",
+  "phoneNumber": ".info.phone",
+  "location": ".info.location | {lat: .lat >> 0, lng: .lng >> 0, city: .fields >> {} | ?.city >> Undefined, country: .fields >> {} | ?.country >> Undefined, region: .fields >> {} | ?.region >> Undefined }",
+  "experiences": ".experiences | $map({title: .title >> Undefined, company: .company >> Undefined, description: .description, current: false, startDate: .date_start >> XXXX | $split(T) | .[0], endDate: .date_end >> XXXX | $split(T) | .[0], location: .location.text >> Undefined })",
+  "educations": ".educations | $map({institution: .school >> Undefined, degree: .title >> Undefined, major: Undefined, description: .description, current: false, startDate: .date_start >> XXXX | $split(T) | .[0], endDate: .date_end >> XXXX | $split(T) | .[0], location: .location.text >> Undefined })",
+  "web": "{'type': 'url'}",
+  "tags": "[]",
+  "consent": true,
+  "attachments": "?.attachments >> []"
+}
