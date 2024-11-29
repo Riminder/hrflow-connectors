@@ -1,0 +1,80 @@
+{
+  "name": "?.title",
+  "reference": "?.id | $string",
+  "created_at": "?.created_at",
+  "updated_at": "?.updated_at",
+  "location": {
+    "text": "?.location",
+    "lat": null,
+    "lng": null,
+    "fields": {
+      "city": "?.city",
+      "postcode": "?.postal_code"
+    }
+  },
+  "url": "?.url",
+  "summary": "?.description",
+  "requirements": "?.requirements",
+  "sections": [
+    {
+      "name": "job_requirements",
+      "title": "'Job Requirements'",
+      "description": "?.requirements"
+    },
+    {
+      "name": "job_description",
+      "title": "'Job Description'",
+      "description": "?.description"
+    },
+    {
+      "name": "job_highlights",
+      "title": "'Job Highlights'",
+      "description": "?.highlight_html"
+    }
+  ],
+  "tags": [
+    { "name": "category", "value": "?.category" },
+    { "name": "department", "value": "?.department" },
+    { "name": "options_cv", "value": "?.options_cv" },
+    {
+      "name": "options_cover_letter",
+      "value": "?.options_cover_letter"
+    },
+    { "name": "experience", "value": "?.experience" },
+    { "name": "education", "value": "?.education" },
+    { "name": "employment_type", "value": "?.employment_type" },
+    { "name": "remote_option", "value": "?.remote" },
+    { "name": "number_of_openings", "value": "?.number_of_openings" },
+    { "name": "candidates_count", "value": "?.candidates_count" },
+    {
+      "name": "disqualified_candidates_count",
+      "value": "?.disqualified_candidates_count"
+    },
+    {
+      "name": "qualified_candidates_count",
+      "value": "?.qualified_candidates_count"
+    },
+    {
+      "name": "hired_candidates_count",
+      "value": "?.hired_candidates_count"
+    },
+    { "name": "email_confirmation_body", "value": "?.email_confirmation_body" },
+    { "name": "status", "value": "?.status" },
+    { "name": "closed_at", "value": "?.closed_at" },
+    { "name": "offer_tags", "value": "?.offer_tags  || []" }
+  ],
+  "ranges_float": [
+    {
+      "name": "'working hours'",
+      "value_min": "?.min_hours",
+      "value_max": "?.max_hours",
+      "unit": "'Hours per week'"
+    },
+    {
+      "name": "$concat('salary per ',?.salary.period)",
+      "value_min": "?.salary.min",
+      "value_max": "?.salary.max",
+      "unit": "?.salary.currency"
+    }
+  ]
+}
