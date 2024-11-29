@@ -1,0 +1,29 @@
+{
+  "reference": "?.id | $string",
+  "text": "?.description",
+  "info": {
+    "full_name": "?.name",
+    "first_name": "?.name and .name | $split('') | $length != 1 ?? .name | $split(' ') | $slice(0, -1) | $join(' '): .name",
+    "last_name": "?.name and .name | $split('') | $length != 1 ?? .name | $split(' ') | $slice(-1) | .[0] : null",
+    "email": "?.emails[0]",
+    "phone": "?.phones[0]",
+    "date_birth": ".fields | .kind == 'date_of_birth' ?? .values.[0].date : null",
+    "gender": ".fields | .kind == 'gender' ?? .values.[0].value : null",
+    "urls": "$merge(.social_links || [], .links || []) | $map({url: ., type: 'from_resume'})",
+    "location": {
+      "text": ".fields | .kind == 'address' ?? .values.[0].text : ''",
+      "lat": null,
+      "lng": null
+    }
+  },
+  "created_at": "?.created_at",
+  "updated_at": "?.updated_at",
+  "educations": ".fields | .kind == 'education' ?? .values >> [] | $map({school: .school, date_start: .start_date, date_end: .end_date, description: .description, title: .major})",
+  "languages": ".fields | .kind == 'language_skill' ?? .values >> [] | $map({name: .language_name, value: .level}): []",
+  "skills": ".fields | .kind == 'skills' ?? .values >> [] | $map({name: .text, type: 'hard', value: null}): []",
+  "experiences": ".fields | .kind == 'experience' ?? .values >> [] | $map({company: .company, date_start: .start_date, date_end: .end_date, description: .description, title: .title, location: {text: .location, lat: null, lng: null}})",
+  "resume": {
+    "raw": "?.cv_file"
+  },
+  "tags": "$merge([{name: 'source', value: ?.source}, {name: 'sources', value: ?.sources}, {name: 'positive_ratings', value: ?.positive_ratings}, {name: 'grouped_open_question_answers', value: ?.grouped_open_question_answers}, {name: 'cover_letter', value: ?.cover_letter}, {name: 'last_message_at', value: ?.last_message_at}, {name: 'is_hired', value: ?.is_hired}, {name: 'tags', value: ?.tags || []}], .fields | $map( .kind != 'experience' and .kind != 'education' and .kind != 'skills' and .kind != 'language_skill' and .kind != 'address' and .kind != 'date_of_birth' ?? {name: ?.name || .kind, value: .values}))"
+}
