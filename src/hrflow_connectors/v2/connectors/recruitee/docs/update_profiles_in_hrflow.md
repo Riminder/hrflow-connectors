@@ -13,7 +13,7 @@ Send **updated** 'profile(s)' _from_ Recruitee _to_ HrFlow
 | `api_token` :red_circle: | `string` | None | Personal API Token allowing access to the Recruitee API from external services. |
 | `recruitee_endpoint`  | `Literal['https://api.rc.recruitee.dev/c','https://api.recruitee.com/c','https://api.s.recruitee.com/c']` | https://api.recruitee.com/c | Specifies which endpoint to be used, satging or production. |
 
-## HrFlow Auth Parameters
+## HrFlow.ai Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |

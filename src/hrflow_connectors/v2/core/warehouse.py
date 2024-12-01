@@ -125,7 +125,7 @@ class Criterias:
 
 
 @dataclass
-class Endpoinsts:
+class Endpoints:
     create: t.Optional[Endpoint] = None
     update: t.Optional[Endpoint] = None
     archive: t.Optional[Endpoint] = None
@@ -146,7 +146,7 @@ OperationT = t.TypeVar("OperationT", Read, Write)
 class Operation(t.Generic[OperationT]):
     function: OperationT
     criterias: Criterias
-    endpoints: Endpoinsts = field(default_factory=Endpoinsts)
+    endpoints: Endpoints = field(default_factory=Endpoints)
 
 
 @dataclass

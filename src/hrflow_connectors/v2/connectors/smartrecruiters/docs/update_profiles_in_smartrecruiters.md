@@ -5,13 +5,19 @@ Send **updated** 'profile(s)' _from_ HrFlow _to_ SmartRecruiters
 
 
 
+**SmartRecruiters endpoint used :**
+| Endpoint | Description |
+| --------- | ----------- |
+| [**Update Candidate**](https://developers.smartrecruiters.com/reference/candidatespatch-1) | Endpoint to update a candidate with a given id, a candidateId parameter is required, the request method is `PUT` |
+
+
 ## SmartRecruiters Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `x_smart_token` :red_circle: | `string` | None | X-SmartToken used to access SmartRecruiters API |
 
-## HrFlow Auth Parameters
+## HrFlow.ai Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |

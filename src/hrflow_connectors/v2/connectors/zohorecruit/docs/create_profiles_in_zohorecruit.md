@@ -23,7 +23,7 @@ You must use your domain-specific Zoho Accounts URL to generate access and refre
  JP: https://accounts.zoho.jp
  CA: https://accounts.zohocloud.ca |
 
-## HrFlow Auth Parameters
+## HrFlow.ai Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |

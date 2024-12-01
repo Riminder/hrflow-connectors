@@ -3,22 +3,18 @@
 
 {{ description }}
 
-{% if origin_endpoints %}
-**{{ origin_name }} endpoints used :**
-| Endpoints | Description |
+{% if origin_endpoint %}
+**{{ origin_name }} endpoint used :**
+| Endpoint | Description |
 | --------- | ----------- |
-{%- for endpoint in origin_endpoints %}
-| [**{{ endpoint.name}}**]({{ endpoint.url }}) | {{ endpoint.description }} |
-{%- endfor %}
+| [**{{ origin_endpoint.name}}**]({{ origin_endpoint.url }}) | {{ origin_endpoint.description }} |
 
 {% endif %}
-{% if target_endpoints %}
-**{{ target_name }} endpoints used :**
-| Endpoints | Description |
+{% if target_endpoint %}
+**{{ target_name }} endpoint used :**
+| Endpoint | Description |
 | --------- | ----------- |
-{%- for endpoint in target_endpoints %}
-| [**{{ endpoint.name}}**]({{ endpoint.url }}) | {{ endpoint.description }} |
-{%- endfor %}
+| [**{{ target_endpoint.name}}**]({{ target_endpoint.url }}) | {{ target_endpoint.description }} |
 
 {% endif %}
 ## {{ connector_name }} Auth Parameters
@@ -29,7 +25,7 @@
 | `{{ field.name }}` {% if field.required %}:red_circle:{% endif %} | `{{ field.type | replace("|", "\|")}}` | {{ field.default }} | {{ field.description }} |
 {%- endfor %}
 
-## HrFlow Auth Parameters
+## HrFlow.ai Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |

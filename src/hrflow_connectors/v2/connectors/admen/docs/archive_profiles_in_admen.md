@@ -15,7 +15,7 @@ Send **archived** 'profile(s)' _from_ HrFlow _to_ AD-MEN
 | `db_user` :red_circle: | `string` | None | The username to connect to the database |
 | `db_password` :red_circle: | `string` | None | The password to connect to the database |
 
-## HrFlow Auth Parameters
+## HrFlow.ai Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |

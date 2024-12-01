@@ -11,7 +11,7 @@ Send **archived** 'profile(s)' _from_ Hubspot _to_ HrFlow
 | ----- | ---- | ------- | ----------- |
 | `access_token` :red_circle: | `string` | None | The token used to authenticate any API calls made for to your HubSpot account. |
 
-## HrFlow Auth Parameters
+## HrFlow.ai Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |

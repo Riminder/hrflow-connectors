@@ -14,7 +14,7 @@ Send **created** 'profile(s)' _from_ Bullhorn _to_ HrFlow
 | `password` :red_circle: | `string` | None | Password for Bullhorn login |
 | `username` :red_circle: | `string` | None | Username for Bullhorn login |
 
-## HrFlow Auth Parameters
+## HrFlow.ai Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
