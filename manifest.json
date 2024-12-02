@@ -81,7 +81,7 @@
             "required": [],
             "$defs": {}
           },
-          "supports_incremental": false,
+          "supports_incremental": true,
           "pull_parameters": {
             "title": "ReadCreatedJobsCriterias",
             "type": "object",
@@ -818,7 +818,7 @@
             "required": [],
             "$defs": {}
           },
-          "supports_incremental": false,
+          "supports_incremental": true,
           "pull_parameters": {
             "title": "ReadUpdatedJobsCriterias",
             "type": "object",
@@ -1550,7 +1550,7 @@
             "required": [],
             "$defs": {}
           },
-          "supports_incremental": false,
+          "supports_incremental": true,
           "pull_parameters": {
             "title": "ReadArchivedJobsCriterias",
             "type": "object",
@@ -2374,7 +2374,7 @@
               }
             }
           },
-          "supports_incremental": false,
+          "supports_incremental": true,
           "pull_parameters": {
             "title": "ReadCreatedProfilesCriterias",
             "type": "object",
@@ -3669,7 +3669,7 @@
               }
             }
           },
-          "supports_incremental": false,
+          "supports_incremental": true,
           "pull_parameters": {
             "title": "ReadUpdatedProfilesCriterias",
             "type": "object",
@@ -4979,7 +4979,7 @@
               }
             }
           },
-          "supports_incremental": false,
+          "supports_incremental": true,
           "pull_parameters": {
             "title": "ReadArchivedProfilesCriterias",
             "type": "object",

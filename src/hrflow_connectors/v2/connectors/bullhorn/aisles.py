@@ -18,6 +18,7 @@ from hrflow_connectors.v2.core.common import Entity, Mode
 from hrflow_connectors.v2.core.warehouse import (
     Aisle,
     Criterias,
+    IncrementalTokenHandler,
     ReadOperation,
     WriteOperation,
     merge,
@@ -965,6 +966,11 @@ ProfilesAisle = Aisle(
             update=ReadUpdatedProfilesCriterias,
             archive=ReadArchivedProfilesCriterias,
         ),
+        incremental_token_handler=IncrementalTokenHandler(
+            create=item_to_read_from_create,
+            update=item_to_read_from_update_or_archive,
+            archive=item_to_read_from_update_or_archive,
+        ),
     ),
     schema=BullhornProfile,
 )
@@ -981,6 +987,11 @@ JobsAisle = Aisle(
             create=ReadCreatedJobsCriterias,
             update=ReadUpdatedJobsCriterias,
             archive=ReadArchivedJobsCriterias,
+        ),
+        incremental_token_handler=IncrementalTokenHandler(
+            create=item_to_read_from_create,
+            update=item_to_read_from_update_or_archive,
+            archive=item_to_read_from_update_or_archive,
         ),
     ),
     schema=BullhornJob,
