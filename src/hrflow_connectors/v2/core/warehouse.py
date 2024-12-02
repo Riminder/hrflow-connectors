@@ -139,6 +139,24 @@ class Endpoints:
             return self.archive
 
 
+@dataclass
+class IncrementalTokenHandler:
+    create: t.Optional[t.Callable[[dict], str]] = None
+    update: t.Optional[t.Callable[[dict], str]] = None
+    archive: t.Optional[t.Callable[[dict], str]] = None
+
+    def get_handler(self, mode: Mode) -> t.Optional[t.Callable[[dict], str]]:
+        if mode is Mode.create:
+            return self.create
+        if mode is Mode.update:
+            return self.update
+        if mode is Mode.archive:
+            return self.archive
+
+    def __call__(self, mode: Mode) -> t.Optional[t.Callable[[dict], str]]:
+        return self.get_handler(mode)
+
+
 OperationT = t.TypeVar("OperationT", Read, Write)
 
 
@@ -151,11 +169,13 @@ class Operation(t.Generic[OperationT]):
 
 @dataclass
 class ReadOperation(Operation[Read]):
-    get_incremental_token: t.Optional[t.Callable[[dict], str]] = None
+    # get_incremental_token: t.Optional[t.Callable[[dict], str]] = None
+    incremental_token_handler: t.Optional[IncrementalTokenHandler] = None
 
-    @property
-    def supports_incremental(self):
-        return self.get_incremental_token is not None
+    def supports_incremental(self, mode: Mode) -> bool:
+        if self.incremental_token_handler is None:
+            return False
+        return self.incremental_token_handler.get_handler(mode) is not None
 
     def __call__(
         self,

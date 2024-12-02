@@ -9,6 +9,7 @@ from hrflow_connectors.v2.core.common import Entity
 from hrflow_connectors.v2.core.warehouse import (
     Aisle,
     Criterias,
+    IncrementalTokenHandler,
     ReadOperation,
     WriteOperation,
     merge,
@@ -309,7 +310,9 @@ LeadsAisle = Aisle(
             update=ReadUpdatedCriterias,
             archive=ReadArchivedCriterias,
         ),
-        get_incremental_token=lambda lead: str(lead["id"]),
+        incremental_token_handler=IncrementalTokenHandler(
+            create=lambda lead: str(lead["id"]),
+        ),
     ),
     write=WriteOperation(
         function=merge(create=create, update=update, archive=archive),
