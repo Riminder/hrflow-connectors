@@ -500,7 +500,7 @@ def test_outcome_if_running_incremental_but_origin_does_not_support_it(
 ):
     assert LeadsAisle.read is not None
 
-    with mock.patch.object(LeadsAisle.read, "get_incremental_token", None):
+    with mock.patch.object(LeadsAisle.read, "incremental_token_handler", None):
         result = SmartLeads.create_jobs_in_hrflow(
             workflow_id="test",
             connector_auth=dict(smart_tag="smart::tag::smart"),
@@ -569,7 +569,7 @@ def test_outcome_if_getting_incremental_token_fails(
     assert LeadsAisle.read is not None
 
     with mock.patch.object(
-        LeadsAisle.read, "get_incremental_token", side_effect=Exception
+        LeadsAisle.read.incremental_token_handler, "create", side_effect=Exception
     ):
         result = SmartLeads.create_jobs_in_hrflow(
             workflow_id=workflow_id,

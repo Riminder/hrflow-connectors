@@ -11,10 +11,11 @@ from hrflow_connectors.v2.connectors.smartrecruiters.schemas import (
     SmartRecruitersProfile,
 )
 from hrflow_connectors.v2.core.common import Entity
-from hrflow_connectors.v2.core.warehouse import (  # Endpoints,
+from hrflow_connectors.v2.core.warehouse import (
     Aisle,
     Criterias,
     Endpoint,
+    Endpoints,
     ReadOperation,
     WriteOperation,
     merge,
@@ -460,11 +461,11 @@ ProfilesAisle = Aisle(
             update=read_profiles,
             archive=read_profiles,
         ),
-        # endpoints=Endpoints(
-        #     create=GET_CANDIDATE_ENDPOINT,
-        #     update=GET_CANDIDATE_ENDPOINT,
-        #     archive=GET_CANDIDATE_ENDPOINT,
-        # ),
+        endpoints=Endpoints(
+            create=GET_CANDIDATE_ENDPOINT,
+            update=GET_CANDIDATE_ENDPOINT,
+            archive=GET_CANDIDATE_ENDPOINT,
+        ),
     ),
     write=WriteOperation(
         criterias=Criterias(
@@ -477,10 +478,10 @@ ProfilesAisle = Aisle(
             update=update_profiles,
             archive=delete_profiles,
         ),
-        # endpoints=Endpoints(
-        #     create=POST_CANDIDATE_ENDPOINT,
-        #     update=UPDATE_CANDIDATE_ENDPOINT,
-        #     archive=DELETE_CANDIDATE_ENDPOINT,
-        # ),
+        endpoints=Endpoints(
+            create=POST_CANDIDATE_ENDPOINT,
+            update=UPDATE_CANDIDATE_ENDPOINT,
+            archive=DELETE_CANDIDATE_ENDPOINT,
+        ),
     ),
 )

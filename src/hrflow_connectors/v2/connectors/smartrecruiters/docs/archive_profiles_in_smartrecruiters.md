@@ -5,13 +5,19 @@ Send **archived** 'profile(s)' _from_ HrFlow _to_ SmartRecruiters
 
 
 
+**SmartRecruiters endpoint used :**
+| Endpoint | Description |
+| --------- | ----------- |
+| [**Delete Candidate**](https://developers.smartrecruiters.com/reference/candidatesdelete-1) | Endpoint to delete a candidate with a given id, a candidateId parameter is required, the request method is `DELETE` |
+
+
 ## SmartRecruiters Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `x_smart_token` :red_circle: | `string` | None | X-SmartToken used to access SmartRecruiters API |
 
-## HrFlow Auth Parameters
+## HrFlow.ai Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |

@@ -362,7 +362,7 @@ class Connector:
                 hrflow_auth_parameters=json_schema(HrFlowWarehouse.auth),
                 origin=self.name if flow.direction is Direction.inbound else "HrFlow",
                 origin_data_schema=json_schema(origin_aisle.schema),
-                supports_incremental=origin_aisle.read.supports_incremental,
+                supports_incremental=origin_aisle.read.supports_incremental(flow.mode),
                 pull_parameters=json_schema(pull_parameters),
                 target="HrFlow" if flow.direction is Direction.inbound else self.name,
                 target_data_schema=json_schema(target_aisle.schema),

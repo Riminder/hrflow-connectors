@@ -4,6 +4,12 @@
 Send **archived** 'profile(s)' _from_ SmartRecruiters _to_ HrFlow
 
 
+**SmartRecruiters endpoint used :**
+| Endpoint | Description |
+| --------- | ----------- |
+| [**Get candidate**](https://developers.smartrecruiters.com/reference/candidatesget-1) | Endpoint to get the content of a candidate with a given id, a candidateId parameter is required, the request method is `GET` |
+
+
 
 ## SmartRecruiters Auth Parameters
 
@@ -11,7 +17,7 @@ Send **archived** 'profile(s)' _from_ SmartRecruiters _to_ HrFlow
 | ----- | ---- | ------- | ----------- |
 | `x_smart_token` :red_circle: | `string` | None | X-SmartToken used to access SmartRecruiters API |
 
-## HrFlow Auth Parameters
+## HrFlow.ai Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |

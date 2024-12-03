@@ -5,13 +5,19 @@ Send **created** 'profile(s)' _from_ HrFlow _to_ SmartRecruiters
 
 
 
+**SmartRecruiters endpoint used :**
+| Endpoint | Description |
+| --------- | ----------- |
+| [**Post Candidate**](https://developers.smartrecruiters.com/reference/candidatesadd-1) | Endpoint to create a new candidate and assign to a talent pool, the request method is `POST` |
+
+
 ## SmartRecruiters Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `x_smart_token` :red_circle: | `string` | None | X-SmartToken used to access SmartRecruiters API |
 
-## HrFlow Auth Parameters
+## HrFlow.ai Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |

@@ -11,7 +11,7 @@ Send **archived** 'job(s)' _from_ SmartRecruiters _to_ HrFlow
 | ----- | ---- | ------- | ----------- |
 | `x_smart_token` :red_circle: | `string` | None | X-SmartToken used to access SmartRecruiters API |
 
-## HrFlow Auth Parameters
+## HrFlow.ai Auth Parameters
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
