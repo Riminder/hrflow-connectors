@@ -1,19 +1,19 @@
 # 📖 Summary
-- [📖 Summary](#-summary)
-- [💼 About SmartRecruiters](#-about-smartrecruiters)
-  - [😍 Why is it a big deal for SmartRecruiters customers \& partners?](#-why-is-it-a-big-deal-for-smartrecruiters-customers--partners)
-- [🔧 How does it work?](#-how-does-it-work)
-  - [📊 Data integration capabilities:](#-data-integration-capabilities)
-  - [🧠 Artificial Intelligence capabilities:](#-artificial-intelligence-capabilities)
-- [🔌 Connector Actions](#-connector-actions)
-- [🐍 Quick Start Examples](#-quick-start-examples)
-- [🔗 Useful Links](#-useful-links)
-- [👏 Special Thanks](#-special-thanks)
+- [📖 Summary](#📖-summary)
+- [💼 About Smartrecruiters](#💼-about-smartrecruiters)
+  - [😍 Why is it a big deal for Smartrecruiters customers & partners?](#😍-why-is-it-a-big-deal-for-smartrecruiters-customers--partners)
+- [🔧 How does it work?](#🔧-how-does-it-work)
+  - [📊 Data integration capabilities:](#📊-data-integration-capabilities)
+  - [🧠 Artificial Intelligence capabilities:](#🧠-artificial-intelligence-capabilities)
+- [🔌 Connector Actions](#🔌-connector-actions)
+- [💍 Quick Start Examples](#💍-quick-start-examples)
+- [🔗 Useful Links](#🔗-useful-links)
+- [👏 Special Thanks](#👏-special-thanks)
 
 
-# 💼 About SmartRecruiters
+# 💼 About Smartrecruiters
 
-SmartRecruiters’ Talent Acquisition Suite is used by organizations to make the best hires. It has complete functionality for recruitment marketing and collaborative hiring built on a modern cloud platform with an open marketplace for 3rd party recruitment services.
+> Move beyond applicant tracking systems (ATS) with an enterprise-grade recruiting platform designed for the modern workforce. SmartRecruiters' Talent Acquisition Suite provides everything needed to attract, select, and hire great talent.
 
 <p align="center">
 <image src=https://user-images.githubusercontent.com/57711045/214608440-2d838ca1-cdd9-49ca-ac3b-25d65f06994a.png width=90% height=100% >
@@ -23,24 +23,24 @@ SmartRecruiters’ Talent Acquisition Suite is used by organizations to make the
 <image src=https://user-images.githubusercontent.com/57711045/214608101-4a496152-8aec-4528-afd0-b0712f9c5010.png width=90% height=100% >
 </p>
 
-## 😍 Why is it a big deal for SmartRecruiters customers & partners?
+## 😍 Why is it a big deal for Smartrecruiters customers & partners?
 
 This new connector will enable:
+- ⚡ A Fastlane Talent & Workforce data integration for Smartrecruiters customers & partners
+- 🤖 Cutting-edge AI-powered Talent Experiences & Recruiter Experiences for Smartrecruiters customers
 
-- ⚡ A Fastlane Talent & Workforce data integration for SmartRecruiters customers & partners
-- 🤖 Cutting-edge AI-powered Talent Experiences & Recruiter Experiences for SmartRecruiters customers
-
-# 🔧 How does it work?
-
+#  🔧 How does it work?
 ## 📊 Data integration capabilities:
+- ⬅️ Send Profiles data from Smartrecruiters to a Destination of your choice.
+- ➡️ Send Profiles data from a Source of your choice to Smartrecruiters.
+- ⬅️ Send Jobs data from Smartrecruiters to a Destination of your choice.
+- ➡️ Send Jobs data from a Source of your choice to Smartrecruiters.
 
-- ➡️ Send Profiles data from a Source of your choice to SmartRecruiters
-- ⬅️ Send Jobs data from SmartRecruiters to a Destination of your choice
 
 ## 🧠 Artificial Intelligence capabilities:
-
 - Extract, Structure, and Categorize Talent & Workforce data
-- Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets
+- Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Smartrecruiters**)
+
 
 # 🔌 Connector Actions
 <p align="center">
@@ -65,9 +65,10 @@ This new connector will enable:
 </p>
 
 
-# 🐍 Quick Start Examples
+# 💍 Quick Start Examples
 
 To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**.
+
 
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
 
@@ -78,8 +79,7 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 
 
 Once the connector module is imported, you can leverage all the different actions that it offers.
-
-For more code details checkout connector code
+For more code details checkout connector code.
 
 
 # 🔗 Useful Links
@@ -90,5 +90,5 @@ For more code details checkout connector code
 
 
 # 👏 Special Thanks
-- 💻 HrFlow.ai : [the-forest-tree](https://github.com/the-forest-tree) - Software Engineer
+- 💻 HrFlow.ai : [the-forest-tree](https://github.com/the-forest-tree) - Software Engineer &  [Nedhir Ebnou](https://github.com/itsnedhir) - Software Engineer
 - 🤝 [SmartRecruiters](https://www.smartrecruiters.com/) : Special thanks to the SmartRecruiters team for their help and collaboration in building this integrationn

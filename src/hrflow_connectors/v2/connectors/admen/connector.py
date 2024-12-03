@@ -309,8 +309,8 @@ def format_profile_archive_in_admen(hrflow_profile: t.Dict) -> t.Dict:
 
 
 DESCRIPTION = """
-Besoin d'une solution RH efficace et performante pour la gestion de vos candidatures ?
-Misez sur AD-Men, le Logiciel N°1 des Cabinets de Recrutement.
+Need an efficient, high-performance HR solution for managing your applications?
+Choose AD-Men, the No. 1 software for recruitment agencies.
 """
 
 Admen = Connector(

@@ -14,8 +14,8 @@
 # 💼 About Admen
 
 > 
-Besoin d'une solution RH efficace et performante pour la gestion de vos candidatures ?
-Misez sur AD-Men, le Logiciel N°1 des Cabinets de Recrutement.
+Need an efficient, high-performance HR solution for managing your applications?
+Choose AD-Men, the No. 1 software for recruitment agencies.
 
 
 
@@ -56,6 +56,12 @@ This new connector will enable:
 
 </p>
 
+</p>
+
+<p align="center">
+<image src=https://github.com/user-attachments/assets/cac7da42-2146-4e67-ac8c-7e37f4550554 width=90% height=100% 
+>
+</p>
 
 # 💍 Quick Start Examples
 
@@ -65,6 +71,11 @@ To make sure you can successfully run the latest versions of the example scripts
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
 
 
+<p align="center">
+<image src=https://github.com/user-attachments/assets/2dead632-4543-4be3-bc6d-d85a49bc31d0 width=90% height=100% 
+>
+</p>
+
 Once the connector module is imported, you can leverage all the different actions that it offers.
 
 For more code details checkout connector code.
@@ -72,10 +83,10 @@ For more code details checkout connector code.
 
 # 🔗 Useful Links
 
-- 📄Visit [Admen](https://www.admen.com/) to learn more.
+- 📄Visit [Admen](https://www.ad-rh.com/) to learn more.
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/admen) on our Github.
 
 
 # 👏 Special Thanks
-- 💻 HrFlow.ai : XXXXX YYYYY - Software Engineer
-- 🤝 Admen : XXXXX YYYYY - Partner Manager
+- 💻 HrFlow.ai :  [Nedhir Ebnou](https://github.com/itsnedhir) - Software Engineer
+- 🤝 Inasoft : Aurélie CARLESCHI - Operations Director
