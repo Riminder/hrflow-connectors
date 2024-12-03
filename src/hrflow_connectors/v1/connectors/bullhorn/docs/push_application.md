@@ -31,6 +31,7 @@ Retrieves profiles from Hrflow.ai and writes their applications to the Bullhorn 
 | `password` :red_circle: | `str` | None | Password for Bullhorn login |
 | `username` :red_circle: | `str` | None | Username for Bullhorn login |
 | `job_id` :red_circle: | `str` | None | id for the job in Bullhorn |
+| `candidate_id`  | `str` | None | id of the profile in Bullhorn |
 | `status_when_created` :red_circle: | `str` | None | The status of the application when created in Bullhorn |
 | `source`  | `str` | None | The source of the application to be created in Bullhorn |
 
@@ -66,6 +67,7 @@ Bullhorn.push_application(
         password="your_password",
         username="your_username",
         job_id="your_job_id",
+        candidate_id="your_candidate_id",
         status_when_created="your_status_when_created",
         source="your_source",
     )

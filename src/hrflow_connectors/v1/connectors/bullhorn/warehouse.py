@@ -63,6 +63,13 @@ class WriteApplicationsParameters(BaseParameters):
         field_type=FieldType.Auth,
     )
 
+    candidate_id: str = Field(
+        None,
+        description="id of the profile in Bullhorn",
+        repr=False,
+        field_type=FieldType.Auth,
+    )
+
     status_when_created: str = Field(
         ...,
         description="The status of the application when created in Bullhorn",
@@ -243,84 +250,89 @@ def write_application(
     adapter.info(f"connexion info {params}, rest_url: {rest_url}")
 
     for profile in profiles:
-        attachment = profile.pop("attachment")
-        profile["source"] = parameters.source or profile.get("source")
-        profile["status"] = parameters.status_when_created or profile.get("status")
-        email = profile["email"]
-        adapter.info(f"checking if candidate with {email} already exists")
-        search_results = search_entity(
-            "Candidate",
-            rest_url,
-            bh_rest_token,
-            f"(email:{email} OR email2:{email}) AND isDeleted:0",
-            (
-                "id,isDeleted,dateAdded,status,source,email,"
-                "firstName,lastName,name,mobile,address"
-            ),
-            adapter,
-        )
-
-        if not search_results:
-            failed_profiles.append(profile)
-            continue
-        adapter.info(f"search profile response {search_results}")
-        candidate_exists = search_results["count"] > 0
-        candidate_data = search_results["data"][0] if candidate_exists else {}
-        candidate_id = candidate_data.get("id") if candidate_exists else None
-
-        if candidate_exists:
-            profile.update(
-                {
-                    "firstName": candidate_data.get("firstName") or profile.get(
-                        "firstName"
-                    ),
-                    "lastName": candidate_data.get("lastName") or profile.get(
-                        "lastName"
-                    ),
-                    "name": candidate_data.get("name") or profile.get("name"),
-                    "address": candidate_data.get("address") or profile.get("address"),
-                    "mobile": candidate_data.get("mobile") or profile.get("mobile"),
-                    "status": candidate_data.get("status") or profile.get("status"),
-                }
-            )
-        adapter.info("creating or updating the candidate")
-        candidate_response = create_or_update_entity(
-            "Candidate", rest_url, params, profile, adapter, candidate_id
-        )
-        if not candidate_response:
-            failed_profiles.append(profile)
-            continue
-        adapter.info(f"candidate creation response {candidate_response}")
-        if not candidate_exists:
-            candidate_id = candidate_response.get("changedEntityId")
-
-        attachment_exists = False
-        if candidate_exists and attachment:
-            entity_files = check_entity_files(
-                "Candidate", rest_url, params, candidate_id, adapter
-            )
-            if entity_files:
-                attachments = entity_files.get("EntityFiles", [])
-                if attachments and attachment["name"] == attachments[0]["name"]:
-                    attachment_exists = True
-        adapter.info(f"attachment for the candidate exists {attachment_exists}")
-        if not attachment_exists and attachment:
-            attachment_response = make_request(
-                requests.put,
-                f"{rest_url}file/Candidate/{candidate_id}",
-                params,
+        if parameters.candidate_id:
+            candidate_id = parameters.candidate_id
+        if not parameters.candidate_id:
+            attachment = profile.pop("attachment")
+            profile["source"] = parameters.source or profile.get("source")
+            profile["status"] = parameters.status_when_created or profile.get("status")
+            email = profile["email"]
+            adapter.info(f"checking if candidate with {email} already exists")
+            search_results = search_entity(
+                "Candidate",
+                rest_url,
+                bh_rest_token,
+                f"(email:{email} OR email2:{email}) AND isDeleted:0",
+                (
+                    "id,isDeleted,dateAdded,status,source,email,"
+                    "firstName,lastName,name,mobile,address"
+                ),
                 adapter,
-                json.dumps(attachment),
             )
-            if not handle_response(attachment_response, adapter):
+
+            if not search_results:
                 failed_profiles.append(profile)
                 continue
-            attachment_response = handle_response(attachment_response, adapter)
-            adapter.info(f"attachment response {attachment_response}")
-        adapter.info(
-            "Verifying if candidate had already applied for the job"
-            f" {parameters.job_id}"
-        )
+            adapter.info(f"search profile response {search_results}")
+            candidate_exists = search_results["count"] > 0
+            candidate_data = search_results["data"][0] if candidate_exists else {}
+            candidate_id = candidate_data.get("id") if candidate_exists else None
+
+            if candidate_exists:
+                profile.update(
+                    {
+                        "firstName": candidate_data.get("firstName") or profile.get(
+                            "firstName"
+                        ),
+                        "lastName": candidate_data.get("lastName") or profile.get(
+                            "lastName"
+                        ),
+                        "name": candidate_data.get("name") or profile.get("name"),
+                        "address": candidate_data.get("address") or profile.get(
+                            "address"
+                        ),
+                        "mobile": candidate_data.get("mobile") or profile.get("mobile"),
+                        "status": candidate_data.get("status") or profile.get("status"),
+                    }
+                )
+            adapter.info("creating or updating the candidate")
+            candidate_response = create_or_update_entity(
+                "Candidate", rest_url, params, profile, adapter, candidate_id
+            )
+            if not candidate_response:
+                failed_profiles.append(profile)
+                continue
+            adapter.info(f"candidate creation response {candidate_response}")
+            if not candidate_exists:
+                candidate_id = candidate_response.get("changedEntityId")
+
+            attachment_exists = False
+            if candidate_exists and attachment:
+                entity_files = check_entity_files(
+                    "Candidate", rest_url, params, candidate_id, adapter
+                )
+                if entity_files:
+                    attachments = entity_files.get("EntityFiles", [])
+                    if attachments and attachment["name"] == attachments[0]["name"]:
+                        attachment_exists = True
+            adapter.info(f"attachment for the candidate exists {attachment_exists}")
+            if not attachment_exists and attachment:
+                attachment_response = make_request(
+                    requests.put,
+                    f"{rest_url}file/Candidate/{candidate_id}",
+                    params,
+                    adapter,
+                    json.dumps(attachment),
+                )
+                if not handle_response(attachment_response, adapter):
+                    failed_profiles.append(profile)
+                    continue
+                attachment_response = handle_response(attachment_response, adapter)
+                adapter.info(f"attachment response {attachment_response}")
+            adapter.info(
+                "Verifying if candidate had already applied for the job"
+                f" {parameters.job_id}"
+            )
         job_submission_results = search_entity(
             "JobSubmission",
             rest_url,
@@ -343,6 +355,7 @@ def write_application(
             "candidate": {"id": candidate_id},
             "jobOrder": {"id": parameters.job_id},
             "status": parameters.status_when_created,
+            "source": parameters.source,
             "dateWebResponse": int(time.time() * 1000),
         }
         adapter.info("Creating or updating if candidate jobSubmission")
