@@ -53,6 +53,11 @@ This new connector will enable:
 
 </p>
 
+<p align="center">
+<image src=https://github.com/user-attachments/assets/0c646581-8bce-4e54-b52d-a20353fc459c width=90% height=100% 
+>
+</p>
+
 
 # 💍 Quick Start Examples
 
@@ -61,6 +66,10 @@ To make sure you can successfully run the latest versions of the example scripts
 
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
 
+<p align="center">
+<image src=https://github.com/user-attachments/assets/4b16200f-81e2-4766-8f2d-b2ee8bd5e470 width=90% height=100% 
+>
+</p>
 
 Once the connector module is imported, you can leverage all the different actions that it offers.
 
@@ -75,4 +84,4 @@ For more code details checkout connector code.
 
 
 # 👏 Special Thanks
-- 💻 HrFlow.ai : Nedhir Ebnou - Software Engineer
+- 💻 HrFlow.ai :  [Nedhir Ebnou](https://github.com/itsnedhir) - Software Engineer

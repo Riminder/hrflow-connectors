@@ -261,14 +261,18 @@ def format_job(recruitee_job: t.Dict) -> t.Dict:
     return job
 
 
+DESCRIPTION = (
+    "Recruitee is an innovative and intuitive recruitment software that empowers"
+    " businesses to streamline hiring processes and attract top talent. Recruitee"
+    " provides a comprehensive solution that ensures a seamless and efficient"
+    " recruitment experience."
+)
+
 Recruitee = Connector(
     name="Recruitee",
     type=ConnectorType.ATS,
     subtype="recruitee",
-    description=(
-        "Collaborative hiring software and modern applicant tracking system with easy"
-        " setup, great UI, and top-rated customer support. "
-    ),
+    description=DESCRIPTION,
     url="https://recruitee.com/",
     warehouse=RecruiteeWarehouse,
     flows=(

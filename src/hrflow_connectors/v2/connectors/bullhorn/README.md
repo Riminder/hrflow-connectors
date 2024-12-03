@@ -15,6 +15,13 @@
 
 > Transform Your Business with Bullhorn Staffing and Recruitment Software
 
+<p align="center">
+<image src=https://user-images.githubusercontent.com/57711045/216124159-5bf2ff28-66a7-4327-ba1d-e417748d4ab5.png width=90% height=100% >
+</p>
+
+<p align="center">
+<image src=https://user-images.githubusercontent.com/57711045/216124837-d8dd8f03-dae5-4298-ba57-cef2c00df4dd.png width=90% height=100% >
+</p>
 
 ## 😍 Why is it a big deal for Bullhorn customers & partners?
 
@@ -29,11 +36,17 @@ This new connector will enable:
 - ⬅️ Send Jobs data from Bullhorn to a Destination of your choice.
 - ➡️ Send Jobs data from a Source of your choice to Bullhorn.
 
+<p align="center">
+<image src=https://github.com/Riminder/hrflow-connectors/assets/57711045/9dc5543c-5507-4317-ad23-c1702153a972 width=90% height=100% >
+</p>
 
 ## 🧠 Artificial Intelligence capabilities:
 - Extract, Structure, and Categorize Talent & Workforce data
 - Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Bullhorn**)
 
+<p align="center">
+<image src=https://user-images.githubusercontent.com/57711045/217298819-29d43799-422d-48f4-8995-272d0af66cbe.gif width=90% height=100% >
+</p>
 
 # 🔌 Connector Actions
 <p align="center">
@@ -58,6 +71,9 @@ To make sure you can successfully run the latest versions of the example scripts
 
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
 
+<p align="center">
+<image src=https://user-images.githubusercontent.com/57711045/216126235-03319722-c10b-460d-b19d-0e4240fe652c.png width=90% height=100% >
+</p>
 
 Once the connector module is imported, you can leverage all the different actions that it offers.
 
@@ -71,5 +87,5 @@ For more code details checkout connector code.
 
 
 # 👏 Special Thanks
-- 💻 HrFlow.ai : XXXXX YYYYY - Software Engineer
-- 🤝 Bullhorn : XXXXX YYYYY - Partner Manager
+- 💻 HrFlow.ai : [Nedhir Ebnou](https://github.com/itsnedhir) - Software Engineer & Abdellahi Mezid - Software Engineer
+- 🤝 Bullhorn : Arne LOOTEN - Partner Manager

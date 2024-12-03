@@ -1,41 +1,39 @@
+# 📖 Summary
+- [📖 Summary](#📖-summary)
+- [💼 About Recruitee](#💼-about-recruitee)
+  - [😍 Why is it a big deal for Recruitee customers & partners?](#😍-why-is-it-a-big-deal-for-recruitee-customers--partners)
+- [🔧 How does it work?](#🔧-how-does-it-work)
+  - [📊 Data integration capabilities:](#📊-data-integration-capabilities)
+  - [🧠 Artificial Intelligence capabilities:](#🧠-artificial-intelligence-capabilities)
+- [🔌 Connector Actions](#🔌-connector-actions)
+- [💍 Quick Start Examples](#💍-quick-start-examples)
+- [🔗 Useful Links](#🔗-useful-links)
+- [👏 Special Thanks](#👏-special-thanks)
 
-- [💼  About Recruitee](#--about-Recruitee)
-- [😍 **What makes this major news for Recruitee customers \& partners?**](#-what-makes-this-major-news-for-Recruitee-customers--partners)
-- [🔧 How does it work?](#-how-does-it-work)
-  - [📊 Data integration capabilities:](#-data-integration-capabilities)
-  - [🧠 Artificial Intelligence capabilities:](#-artificial-intelligence-capabilities)
-- [🔌 Connector Actions](#-connector-actions)
-- [🐍 Quick Start Examples](#-quick-start-examples)
-- [🔗 Useful Links](#-useful-links)
-- [👏 Special Thanks](#-special-thanks)
 
-# 💼  About Recruitee
+# 💼 About Recruitee
 
-Recruitee is an innovative and intuitive recruitment software that empowers businesses to streamline hiring processes and attract top talent.
+> Recruitee is an innovative and intuitive recruitment software that empowers businesses to streamline hiring processes and attract top talent. Recruitee provides a comprehensive solution that ensures a seamless and efficient recruitment experience.
 
-Recruitee provides a comprehensive solution that ensures a seamless and efficient recruitment experience.
 
-<p align="center">
-<image src=https://github.com/Riminder/hrflow-connectors/assets/57711045/3457716c-0c60-4db3-8f6d-78c6a42b9923 width=90% height=100% >
-</p>
+## 😍 Why is it a big deal for Recruitee customers & partners?
 
-# 😍 **What makes this major news for Recruitee customers & partners?**
+This new connector will enable:
+- ⚡ A Fastlane Talent & Workforce data integration for Recruitee customers & partners
+- 🤖 Cutting-edge AI-powered Talent Experiences & Recruiter Experiences for Recruitee customers
 
-This new connector will enable Recruitee customers & partners to:
-- ⚡ Seamlessly Integrate Talent & Workforce data
-- 🤖 Elevate their Talent and Recruiter Experiences
-
-# 🔧 How does it work?
-
+#  🔧 How does it work?
 ## 📊 Data integration capabilities:
+- ⬅️ Send Profiles data from Recruitee to a Destination of your choice.
+- ➡️ Send Profiles data from a Source of your choice to Recruitee.
+- ⬅️ Send Jobs data from Recruitee to a Destination of your choice.
+- ➡️ Send Jobs data from a Source of your choice to Recruitee.
 
-- ➡️ Push Profiles from a Source of your choice to Recruitee
-- ⬅️ Pull Jobs from Recruitee to a Destination of your choice
 
 ## 🧠 Artificial Intelligence capabilities:
+- Extract, Structure, and Categorize Talent & Workforce data
+- Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Recruitee**)
 
-- Easily Extract, Structure, and Categorize Talent & Workforce data
-- Effortlessly Search, Score, and Match Profiles and Jobs with precision.
 
 # 🔌 Connector Actions
 <p align="center">
@@ -59,8 +57,7 @@ This new connector will enable Recruitee customers & partners to:
 <image src=https://github.com/Riminder/hrflow-connectors/assets/57711045/ff726feb-d580-40f8-82b2-6c1132cebd8e width=90% height=100% >
 </p>
 
-# 🐍 Quick Start Examples
-
+# 💍 Quick Start Examples
 
 To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**.
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
@@ -72,16 +69,15 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 
 Once the connector module is imported, you can leverage all the different actions that it offers.
 
-For more code details checkout connector code
+For more code details checkout connector code.
 
 # 🔗 Useful Links
 
-- 📄Visit [Recruitee](https://Recruitee.com/) to learn more.
+- 📄Visit [Recruitee](https://recruitee.com/) to learn more.
 - ⚙️ API documentation : [Recruitee API](https://api.recruitee.com/docs/index.html)
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/recruitee) on our Github.
 
 
 # 👏 Special Thanks
-- 💻 HrFlow.ai :  [Nedhir EBNOU](https://github.com/nedhirouebnou) - Software Engineer
-- 🤝 Recruitee : **MengJia de Lange-Chen - Technical Partner Manager** and all the Recruitee team for their help and collaboration in building this integration
-
+- 💻 HrFlow.ai :  [Nedhir Ebnou](https://github.com/itsnedhir) - Software Engineer
+- 🤝 Tellent : **Nuno Sequeira &  Diana De Freitas - Integrations Partners** for their help and collaboration in building this integration

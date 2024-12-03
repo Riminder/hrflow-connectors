@@ -44,7 +44,7 @@ In this section, we outline the data flow between different components of the co
 </p>
 
 
-# 🐍 Quick Start Example
+# 💍 Quick Start Examples
 
 
 To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**.
@@ -68,6 +68,6 @@ For more code details checkout connector code
 
 
 # 👏 Special Thanks
-- 💻 HrFlow.ai :  [Nedhir Ebnou](https://github.com/nedhirouebnou) - Software Engineer
+- 💻 HrFlow.ai :  [Nedhir Ebnou](https://github.com/itsnedhir) - Software Engineer
 - 🤝 Hubspot :[Hubspot for the  accessible documentation](https://www.hubspot.com)
 
