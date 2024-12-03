@@ -274,9 +274,9 @@ def update(
             else profile
         )
         profile_to_edit = {**current_profile, **edit}
-        del profile_to_edit[
-            "resume"
-        ]  # remove resume file from profile to edit because it's not JSON serializable
+        profile_to_edit.pop(
+            "resume", None
+        )  # remove resume file from profile to edit because it's not JSON serializable
 
         if profile.get("resume") and profile["resume"].get("raw") is not None:
             if not current_profile.get("attachments"):
