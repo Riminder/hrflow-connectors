@@ -64402,6 +64402,3609 @@
           }
         }
       ]
+    },
+    {
+      "name": "Adzuna",
+      "type": "JOBBOARD",
+      "subtype": "adzuna",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v2/connectors/adzuna/logo.png",
+      "actions": [
+        {
+          "name": "create_jobs_in_hrflow",
+          "data_type": "job",
+          "direction": "inbound",
+          "mode": "create",
+          "connector_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "app_id": {
+                "description": "Application ID, supplied by Adzuna",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "app_key": {
+                "description": "Application key, supplied by Adzuna",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "app_id",
+              "app_key"
+            ],
+            "$defs": {}
+          },
+          "hrflow_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "description": "API Key used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "description": "User email used to access HrFlow.ai API",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user"
+            ],
+            "$defs": {}
+          },
+          "origin": "Adzuna",
+          "origin_data_schema": {
+            "title": "AdzunaJob",
+            "type": "object",
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "created": {
+                "title": "Created",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "full_description": {
+                "title": "Full Description",
+                "type": "string"
+              },
+              "redirect_url": {
+                "title": "Redirect Url",
+                "type": "string"
+              },
+              "latitude": {
+                "title": "Latitude",
+                "type": "number"
+              },
+              "longitude": {
+                "title": "Longitude",
+                "type": "number"
+              },
+              "category": {
+                "$ref": "#/definitions/Category"
+              },
+              "location": {
+                "$ref": "#/definitions/Location"
+              },
+              "salary_min": {
+                "title": "Salary Min",
+                "type": "integer"
+              },
+              "salary_max": {
+                "title": "Salary Max",
+                "type": "integer"
+              },
+              "salary_is_predicted": {
+                "$ref": "#/definitions/Flag"
+              },
+              "company": {
+                "$ref": "#/definitions/Company"
+              },
+              "contract_type": {
+                "$ref": "#/definitions/ContractType"
+              },
+              "contract_time": {
+                "$ref": "#/definitions/ContractTime"
+              }
+            },
+            "required": [
+              "id",
+              "created",
+              "title",
+              "description",
+              "redirect_url",
+              "category",
+              "location",
+              "salary_min",
+              "salary_max",
+              "salary_is_predicted",
+              "company"
+            ],
+            "definitions": {
+              "Category": {
+                "title": "Category",
+                "type": "object",
+                "properties": {
+                  "tag": {
+                    "title": "Tag",
+                    "type": "string"
+                  },
+                  "label": {
+                    "title": "Label",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tag",
+                  "label"
+                ]
+              },
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "area": {
+                    "title": "Area",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "display_name": {
+                    "title": "Display Name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "area",
+                  "display_name"
+                ]
+              },
+              "Flag": {
+                "title": "Flag",
+                "description": "An enumeration.",
+                "enum": [
+                  "1",
+                  "0"
+                ],
+                "type": "string"
+              },
+              "Company": {
+                "title": "Company",
+                "type": "object",
+                "properties": {
+                  "display_name": {
+                    "title": "Display Name",
+                    "type": "string"
+                  },
+                  "canonical_name": {
+                    "title": "Canonical Name",
+                    "type": "string"
+                  },
+                  "count": {
+                    "title": "Count",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "display_name"
+                ]
+              },
+              "ContractType": {
+                "title": "ContractType",
+                "description": "An enumeration.",
+                "enum": [
+                  "permanent",
+                  "contract"
+                ],
+                "type": "string"
+              },
+              "ContractTime": {
+                "title": "ContractTime",
+                "description": "An enumeration.",
+                "enum": [
+                  "full_time",
+                  "part_time"
+                ],
+                "type": "string"
+              }
+            }
+          },
+          "supports_incremental": false,
+          "pull_parameters": {
+            "title": "ReadJobsParameters",
+            "type": "object",
+            "properties": {
+              "country": {
+                "description": "ISO 8601 country code of the country of interest",
+                "$ref": "#/$defs/CountryCode"
+              },
+              "results_per_page": {
+                "description": "The number of results to include on a page of search results.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 50
+              },
+              "what": {
+                "description": "The keywords to search for. Multiple terms may be space separated.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "what_and": {
+                "description": "The keywords to search for, all keywords must be found.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "what_phrase": {
+                "description": "An entire phrase which must be found in the description or title.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "what_or": {
+                "description": "The keywords to search for, any keywords may be found. Multiple terms may be space separated.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "what_exclude": {
+                "description": "Keywords to exclude from the search. Multiple terms may be space separated.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "title_only": {
+                "description": "Keywords to find, but only in the title. Multiple terms may be space separated.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "where": {
+                "description": "The geographic centre of the search. Place names, postal codes, etc. may be used.\t",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "distance": {
+                "description": "The distance in kilometres from the centre of the place described by the 'where' parameter. Defaults to 5km.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location0": {
+                "description": "The location fields may be used to describe a location, in a similar form to that returned in a Adzuna::API::Response::Location object.For example, \"location0=UK&location1=South East England&location2=Surrey\"  will performn a search over the county of Surrey.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location1": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location2": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location3": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location4": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location5": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location6": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location7": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "max_days_old": {
+                "description": "The age of the oldest advertisment in days that will be returned.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "category": {
+                "description": "The category tag, as returned by the \"category\" endpoint.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "sort_dir": {
+                "description": "The direction to order the search results.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/SortDir"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "sort_by": {
+                "description": "The ordering of the search results.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/SortKey"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "salary_min": {
+                "description": "The minimum salary we wish to get results for.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "salary_max": {
+                "description": "The maximum salary we wish to get results for.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "salary_include_unknown": {
+                "description": "If set it \"1\", jobs without a known salary are returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "full_time": {
+                "description": "If set to \"1\", only full time jobs will be returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "part_time": {
+                "description": "If set to \"1\", only part time jobs will be returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "contract": {
+                "description": "If set to \"1\", only contract jobs will be returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "permanent": {
+                "description": "If set to \"1\", only permanent jobs will be returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "company": {
+                "description": "The canonical company name. This may be returned in a Adzuna::API::Response::Company object when a job is returned. A full list of allowed terms in not available through the API.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "country"
+            ],
+            "$defs": {
+              "CountryCode": {
+                "title": "CountryCode",
+                "enum": [
+                  "at",
+                  "au",
+                  "br",
+                  "ca",
+                  "de",
+                  "fr",
+                  "gb",
+                  "in",
+                  "it",
+                  "nl",
+                  "nz",
+                  "pl",
+                  "ru",
+                  "sg",
+                  "us",
+                  "za"
+                ]
+              },
+              "SortDir": {
+                "title": "SortDir",
+                "enum": [
+                  "down",
+                  "up"
+                ]
+              },
+              "SortKey": {
+                "title": "SortKey",
+                "enum": [
+                  "date",
+                  "default",
+                  "hybrid",
+                  "relevance",
+                  "salary"
+                ]
+              },
+              "Filter": {
+                "title": "Filter",
+                "enum": [
+                  "1"
+                ]
+              }
+            }
+          },
+          "target": "HrFlow",
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "description": "Identification key of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "reference": {
+                "description": "Custom identifier of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "name": {
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "description": "Job location object.",
+                "$ref": "#/$defs/Location"
+              },
+              "sections": {
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/Section"
+                }
+              },
+              "url": {
+                "description": "Job post original URL.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "summary": {
+                "description": "Brief summary of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "archieved_at": {
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "updated_at": {
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "created_at": {
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "skills": {
+                "description": "list of skills of the Job.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Skill"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "languages": {
+                "description": "list of spoken languages of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "certifications": {
+                "description": "list of certifications of the Job.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "courses": {
+                "description": "list of courses of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tasks": {
+                "description": "list of tasks of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tags": {
+                "description": "list of tags of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "metadatas": {
+                "description": "list of metadatas of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "ranges_float": {
+                "description": "list of ranges of floats",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/RangesFloat"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "ranges_date": {
+                "description": "list of ranges of dates",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/RangesDate"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "name",
+              "location",
+              "sections"
+            ],
+            "$defs": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "description": "Location text address.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lat": {
+                    "description": "Geocentric latitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lng": {
+                    "description": "Geocentric longitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "fields": {
+                    "description": "other location attributes like country, country_code etc",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ]
+                  },
+                  "value": {
+                    "description": "Value associated to the skill",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Value associated to the Object's name",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value. Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value. Example: 100.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "unit": {
+                    "description": "Unit of the value. Example: euros.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              }
+            }
+          },
+          "push_parameters": {
+            "title": "CreateCriterias",
+            "type": "object",
+            "properties": {
+              "board_key": {
+                "description": "HrFlow.ai board key",
+                "type": "string"
+              },
+              "enrich_with_parsing": {
+                "description": "When enabled jobs are enriched with HrFlow.ai parsing",
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "required": [
+              "board_key"
+            ],
+            "$defs": {}
+          },
+          "jsonmap": {
+            "name": "?.title",
+            "reference": "?.id | $string",
+            "created_at": "?.created",
+            "location": {
+              "lat": "?.latitude != null ?? .latitude | $float : null",
+              "lng": "?.longitude != null ?? .longitude | $float : null",
+              "text": "?.location.display_name || ''"
+            },
+            "url": "?.redirect_url",
+            "summary": "?.description",
+            "sections": "?.full_description ?? [{name: 'full_description', title: 'Full Description', description: .full_description}]: []",
+            "tags": [
+              {
+                "name": "contract_type",
+                "value": "?.contract_type"
+              },
+              {
+                "name": "contract_time",
+                "value": "?.contract_time"
+              },
+              {
+                "name": "salary_min",
+                "value": "?.salary_min"
+              },
+              {
+                "name": "salary_max",
+                "value": "?.salary_max"
+              },
+              {
+                "name": "salary_is_predicted",
+                "value": "?.salary_is_predicted == '1' ?? true : false"
+              },
+              {
+                "name": "category",
+                "value": "?.category?.label"
+              },
+              {
+                "name": "company",
+                "value": "?.company?.display_name"
+              }
+            ]
+          },
+          "workflow": {
+            "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Adzuna\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Adzuna.create_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Adzuna.create_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('app_id', 'app_key'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('country', 'results_per_page', 'what', 'what_and', 'what_phrase', 'what_or', 'what_exclude', 'title_only', 'where', 'distance', 'location0', 'location1', 'location2', 'location3', 'location4', 'location5', 'location6', 'location7', 'max_days_old', 'category', 'sort_dir', 'sort_by', 'salary_min', 'salary_max', 'salary_include_unknown', 'full_time', 'part_time', 'contract', 'permanent', 'company'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key', 'enrich_with_parsing'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Adzuna.create_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "pull_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Adzuna\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\ndef workflow(\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Adzuna.create_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ('app_id', 'app_key'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('country', 'results_per_page', 'what', 'what_and', 'what_phrase', 'what_or', 'what_exclude', 'title_only', 'where', 'distance', 'location0', 'location1', 'location2', 'location3', 'location4', 'location5', 'location6', 'location7', 'max_days_old', 'category', 'sort_dir', 'sort_by', 'salary_min', 'salary_max', 'salary_include_unknown', 'full_time', 'part_time', 'contract', 'permanent', 'company'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key', 'enrich_with_parsing'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Adzuna.create_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "settings_keys": {
+              "workflow_id": "__workflow_id",
+              "incremental": "__incremental",
+              "connector_auth_prefix": "connector_auth_",
+              "hrflow_auth_prefix": "hrflow_auth_",
+              "pull_parameters_prefix": "pull_parameters_",
+              "push_parameters_prefix": "push_parameters_"
+            },
+            "placeholders": {
+              "logics": "# << logics_placeholder >>",
+              "format": "# << format_placeholder >>",
+              "callback": "# << callback_placeholder >>",
+              "event_parser": "# << event_parser_placeholder >>"
+            },
+            "expected": {
+              "activate_incremental": "enable",
+              "logics_functions_name": "logics",
+              "format_functions_name": "format",
+              "callback_functions_name": "callback",
+              "event_parser_function_name": "event_parser"
+            }
+          }
+        },
+        {
+          "name": "update_jobs_in_hrflow",
+          "data_type": "job",
+          "direction": "inbound",
+          "mode": "update",
+          "connector_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "app_id": {
+                "description": "Application ID, supplied by Adzuna",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "app_key": {
+                "description": "Application key, supplied by Adzuna",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "app_id",
+              "app_key"
+            ],
+            "$defs": {}
+          },
+          "hrflow_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "description": "API Key used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "description": "User email used to access HrFlow.ai API",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user"
+            ],
+            "$defs": {}
+          },
+          "origin": "Adzuna",
+          "origin_data_schema": {
+            "title": "AdzunaJob",
+            "type": "object",
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "created": {
+                "title": "Created",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "full_description": {
+                "title": "Full Description",
+                "type": "string"
+              },
+              "redirect_url": {
+                "title": "Redirect Url",
+                "type": "string"
+              },
+              "latitude": {
+                "title": "Latitude",
+                "type": "number"
+              },
+              "longitude": {
+                "title": "Longitude",
+                "type": "number"
+              },
+              "category": {
+                "$ref": "#/definitions/Category"
+              },
+              "location": {
+                "$ref": "#/definitions/Location"
+              },
+              "salary_min": {
+                "title": "Salary Min",
+                "type": "integer"
+              },
+              "salary_max": {
+                "title": "Salary Max",
+                "type": "integer"
+              },
+              "salary_is_predicted": {
+                "$ref": "#/definitions/Flag"
+              },
+              "company": {
+                "$ref": "#/definitions/Company"
+              },
+              "contract_type": {
+                "$ref": "#/definitions/ContractType"
+              },
+              "contract_time": {
+                "$ref": "#/definitions/ContractTime"
+              }
+            },
+            "required": [
+              "id",
+              "created",
+              "title",
+              "description",
+              "redirect_url",
+              "category",
+              "location",
+              "salary_min",
+              "salary_max",
+              "salary_is_predicted",
+              "company"
+            ],
+            "definitions": {
+              "Category": {
+                "title": "Category",
+                "type": "object",
+                "properties": {
+                  "tag": {
+                    "title": "Tag",
+                    "type": "string"
+                  },
+                  "label": {
+                    "title": "Label",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tag",
+                  "label"
+                ]
+              },
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "area": {
+                    "title": "Area",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "display_name": {
+                    "title": "Display Name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "area",
+                  "display_name"
+                ]
+              },
+              "Flag": {
+                "title": "Flag",
+                "description": "An enumeration.",
+                "enum": [
+                  "1",
+                  "0"
+                ],
+                "type": "string"
+              },
+              "Company": {
+                "title": "Company",
+                "type": "object",
+                "properties": {
+                  "display_name": {
+                    "title": "Display Name",
+                    "type": "string"
+                  },
+                  "canonical_name": {
+                    "title": "Canonical Name",
+                    "type": "string"
+                  },
+                  "count": {
+                    "title": "Count",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "display_name"
+                ]
+              },
+              "ContractType": {
+                "title": "ContractType",
+                "description": "An enumeration.",
+                "enum": [
+                  "permanent",
+                  "contract"
+                ],
+                "type": "string"
+              },
+              "ContractTime": {
+                "title": "ContractTime",
+                "description": "An enumeration.",
+                "enum": [
+                  "full_time",
+                  "part_time"
+                ],
+                "type": "string"
+              }
+            }
+          },
+          "supports_incremental": false,
+          "pull_parameters": {
+            "title": "ReadJobsParameters",
+            "type": "object",
+            "properties": {
+              "country": {
+                "description": "ISO 8601 country code of the country of interest",
+                "$ref": "#/$defs/CountryCode"
+              },
+              "results_per_page": {
+                "description": "The number of results to include on a page of search results.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 50
+              },
+              "what": {
+                "description": "The keywords to search for. Multiple terms may be space separated.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "what_and": {
+                "description": "The keywords to search for, all keywords must be found.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "what_phrase": {
+                "description": "An entire phrase which must be found in the description or title.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "what_or": {
+                "description": "The keywords to search for, any keywords may be found. Multiple terms may be space separated.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "what_exclude": {
+                "description": "Keywords to exclude from the search. Multiple terms may be space separated.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "title_only": {
+                "description": "Keywords to find, but only in the title. Multiple terms may be space separated.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "where": {
+                "description": "The geographic centre of the search. Place names, postal codes, etc. may be used.\t",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "distance": {
+                "description": "The distance in kilometres from the centre of the place described by the 'where' parameter. Defaults to 5km.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location0": {
+                "description": "The location fields may be used to describe a location, in a similar form to that returned in a Adzuna::API::Response::Location object.For example, \"location0=UK&location1=South East England&location2=Surrey\"  will performn a search over the county of Surrey.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location1": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location2": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location3": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location4": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location5": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location6": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location7": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "max_days_old": {
+                "description": "The age of the oldest advertisment in days that will be returned.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "category": {
+                "description": "The category tag, as returned by the \"category\" endpoint.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "sort_dir": {
+                "description": "The direction to order the search results.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/SortDir"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "sort_by": {
+                "description": "The ordering of the search results.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/SortKey"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "salary_min": {
+                "description": "The minimum salary we wish to get results for.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "salary_max": {
+                "description": "The maximum salary we wish to get results for.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "salary_include_unknown": {
+                "description": "If set it \"1\", jobs without a known salary are returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "full_time": {
+                "description": "If set to \"1\", only full time jobs will be returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "part_time": {
+                "description": "If set to \"1\", only part time jobs will be returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "contract": {
+                "description": "If set to \"1\", only contract jobs will be returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "permanent": {
+                "description": "If set to \"1\", only permanent jobs will be returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "company": {
+                "description": "The canonical company name. This may be returned in a Adzuna::API::Response::Company object when a job is returned. A full list of allowed terms in not available through the API.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "country"
+            ],
+            "$defs": {
+              "CountryCode": {
+                "title": "CountryCode",
+                "enum": [
+                  "at",
+                  "au",
+                  "br",
+                  "ca",
+                  "de",
+                  "fr",
+                  "gb",
+                  "in",
+                  "it",
+                  "nl",
+                  "nz",
+                  "pl",
+                  "ru",
+                  "sg",
+                  "us",
+                  "za"
+                ]
+              },
+              "SortDir": {
+                "title": "SortDir",
+                "enum": [
+                  "down",
+                  "up"
+                ]
+              },
+              "SortKey": {
+                "title": "SortKey",
+                "enum": [
+                  "date",
+                  "default",
+                  "hybrid",
+                  "relevance",
+                  "salary"
+                ]
+              },
+              "Filter": {
+                "title": "Filter",
+                "enum": [
+                  "1"
+                ]
+              }
+            }
+          },
+          "target": "HrFlow",
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "description": "Identification key of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "reference": {
+                "description": "Custom identifier of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "name": {
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "description": "Job location object.",
+                "$ref": "#/$defs/Location"
+              },
+              "sections": {
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/Section"
+                }
+              },
+              "url": {
+                "description": "Job post original URL.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "summary": {
+                "description": "Brief summary of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "archieved_at": {
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "updated_at": {
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "created_at": {
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "skills": {
+                "description": "list of skills of the Job.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Skill"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "languages": {
+                "description": "list of spoken languages of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "certifications": {
+                "description": "list of certifications of the Job.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "courses": {
+                "description": "list of courses of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tasks": {
+                "description": "list of tasks of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tags": {
+                "description": "list of tags of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "metadatas": {
+                "description": "list of metadatas of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "ranges_float": {
+                "description": "list of ranges of floats",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/RangesFloat"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "ranges_date": {
+                "description": "list of ranges of dates",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/RangesDate"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "name",
+              "location",
+              "sections"
+            ],
+            "$defs": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "description": "Location text address.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lat": {
+                    "description": "Geocentric latitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lng": {
+                    "description": "Geocentric longitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "fields": {
+                    "description": "other location attributes like country, country_code etc",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ]
+                  },
+                  "value": {
+                    "description": "Value associated to the skill",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Value associated to the Object's name",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value. Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value. Example: 100.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "unit": {
+                    "description": "Unit of the value. Example: euros.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              }
+            }
+          },
+          "push_parameters": {
+            "title": "UpdateCriterias",
+            "type": "object",
+            "properties": {
+              "board_key": {
+                "description": "HrFlow.ai board key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "board_key"
+            ],
+            "$defs": {}
+          },
+          "jsonmap": {
+            "name": "?.title",
+            "reference": "?.id | $string",
+            "created_at": "?.created",
+            "location": {
+              "lat": "?.latitude != null ?? .latitude | $float : null",
+              "lng": "?.longitude != null ?? .longitude | $float : null",
+              "text": "?.location.display_name || ''"
+            },
+            "url": "?.redirect_url",
+            "summary": "?.description",
+            "sections": "?.full_description ?? [{name: 'full_description', title: 'Full Description', description: .full_description}]: []",
+            "tags": [
+              {
+                "name": "contract_type",
+                "value": "?.contract_type"
+              },
+              {
+                "name": "contract_time",
+                "value": "?.contract_time"
+              },
+              {
+                "name": "salary_min",
+                "value": "?.salary_min"
+              },
+              {
+                "name": "salary_max",
+                "value": "?.salary_max"
+              },
+              {
+                "name": "salary_is_predicted",
+                "value": "?.salary_is_predicted == '1' ?? true : false"
+              },
+              {
+                "name": "category",
+                "value": "?.category?.label"
+              },
+              {
+                "name": "company",
+                "value": "?.company?.display_name"
+              }
+            ]
+          },
+          "workflow": {
+            "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Adzuna\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Adzuna.update_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Adzuna.update_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('app_id', 'app_key'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('country', 'results_per_page', 'what', 'what_and', 'what_phrase', 'what_or', 'what_exclude', 'title_only', 'where', 'distance', 'location0', 'location1', 'location2', 'location3', 'location4', 'location5', 'location6', 'location7', 'max_days_old', 'category', 'sort_dir', 'sort_by', 'salary_min', 'salary_max', 'salary_include_unknown', 'full_time', 'part_time', 'contract', 'permanent', 'company'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Adzuna.update_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "pull_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Adzuna\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\ndef workflow(\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Adzuna.update_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ('app_id', 'app_key'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('country', 'results_per_page', 'what', 'what_and', 'what_phrase', 'what_or', 'what_exclude', 'title_only', 'where', 'distance', 'location0', 'location1', 'location2', 'location3', 'location4', 'location5', 'location6', 'location7', 'max_days_old', 'category', 'sort_dir', 'sort_by', 'salary_min', 'salary_max', 'salary_include_unknown', 'full_time', 'part_time', 'contract', 'permanent', 'company'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Adzuna.update_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "settings_keys": {
+              "workflow_id": "__workflow_id",
+              "incremental": "__incremental",
+              "connector_auth_prefix": "connector_auth_",
+              "hrflow_auth_prefix": "hrflow_auth_",
+              "pull_parameters_prefix": "pull_parameters_",
+              "push_parameters_prefix": "push_parameters_"
+            },
+            "placeholders": {
+              "logics": "# << logics_placeholder >>",
+              "format": "# << format_placeholder >>",
+              "callback": "# << callback_placeholder >>",
+              "event_parser": "# << event_parser_placeholder >>"
+            },
+            "expected": {
+              "activate_incremental": "enable",
+              "logics_functions_name": "logics",
+              "format_functions_name": "format",
+              "callback_functions_name": "callback",
+              "event_parser_function_name": "event_parser"
+            }
+          }
+        },
+        {
+          "name": "archive_jobs_in_hrflow",
+          "data_type": "job",
+          "direction": "inbound",
+          "mode": "archive",
+          "connector_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "app_id": {
+                "description": "Application ID, supplied by Adzuna",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "app_key": {
+                "description": "Application key, supplied by Adzuna",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "app_id",
+              "app_key"
+            ],
+            "$defs": {}
+          },
+          "hrflow_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "description": "API Key used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "description": "User email used to access HrFlow.ai API",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user"
+            ],
+            "$defs": {}
+          },
+          "origin": "Adzuna",
+          "origin_data_schema": {
+            "title": "AdzunaJob",
+            "type": "object",
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "created": {
+                "title": "Created",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "full_description": {
+                "title": "Full Description",
+                "type": "string"
+              },
+              "redirect_url": {
+                "title": "Redirect Url",
+                "type": "string"
+              },
+              "latitude": {
+                "title": "Latitude",
+                "type": "number"
+              },
+              "longitude": {
+                "title": "Longitude",
+                "type": "number"
+              },
+              "category": {
+                "$ref": "#/definitions/Category"
+              },
+              "location": {
+                "$ref": "#/definitions/Location"
+              },
+              "salary_min": {
+                "title": "Salary Min",
+                "type": "integer"
+              },
+              "salary_max": {
+                "title": "Salary Max",
+                "type": "integer"
+              },
+              "salary_is_predicted": {
+                "$ref": "#/definitions/Flag"
+              },
+              "company": {
+                "$ref": "#/definitions/Company"
+              },
+              "contract_type": {
+                "$ref": "#/definitions/ContractType"
+              },
+              "contract_time": {
+                "$ref": "#/definitions/ContractTime"
+              }
+            },
+            "required": [
+              "id",
+              "created",
+              "title",
+              "description",
+              "redirect_url",
+              "category",
+              "location",
+              "salary_min",
+              "salary_max",
+              "salary_is_predicted",
+              "company"
+            ],
+            "definitions": {
+              "Category": {
+                "title": "Category",
+                "type": "object",
+                "properties": {
+                  "tag": {
+                    "title": "Tag",
+                    "type": "string"
+                  },
+                  "label": {
+                    "title": "Label",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tag",
+                  "label"
+                ]
+              },
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "area": {
+                    "title": "Area",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "display_name": {
+                    "title": "Display Name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "area",
+                  "display_name"
+                ]
+              },
+              "Flag": {
+                "title": "Flag",
+                "description": "An enumeration.",
+                "enum": [
+                  "1",
+                  "0"
+                ],
+                "type": "string"
+              },
+              "Company": {
+                "title": "Company",
+                "type": "object",
+                "properties": {
+                  "display_name": {
+                    "title": "Display Name",
+                    "type": "string"
+                  },
+                  "canonical_name": {
+                    "title": "Canonical Name",
+                    "type": "string"
+                  },
+                  "count": {
+                    "title": "Count",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "display_name"
+                ]
+              },
+              "ContractType": {
+                "title": "ContractType",
+                "description": "An enumeration.",
+                "enum": [
+                  "permanent",
+                  "contract"
+                ],
+                "type": "string"
+              },
+              "ContractTime": {
+                "title": "ContractTime",
+                "description": "An enumeration.",
+                "enum": [
+                  "full_time",
+                  "part_time"
+                ],
+                "type": "string"
+              }
+            }
+          },
+          "supports_incremental": false,
+          "pull_parameters": {
+            "title": "ReadJobsParameters",
+            "type": "object",
+            "properties": {
+              "country": {
+                "description": "ISO 8601 country code of the country of interest",
+                "$ref": "#/$defs/CountryCode"
+              },
+              "results_per_page": {
+                "description": "The number of results to include on a page of search results.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 50
+              },
+              "what": {
+                "description": "The keywords to search for. Multiple terms may be space separated.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "what_and": {
+                "description": "The keywords to search for, all keywords must be found.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "what_phrase": {
+                "description": "An entire phrase which must be found in the description or title.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "what_or": {
+                "description": "The keywords to search for, any keywords may be found. Multiple terms may be space separated.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "what_exclude": {
+                "description": "Keywords to exclude from the search. Multiple terms may be space separated.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "title_only": {
+                "description": "Keywords to find, but only in the title. Multiple terms may be space separated.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "where": {
+                "description": "The geographic centre of the search. Place names, postal codes, etc. may be used.\t",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "distance": {
+                "description": "The distance in kilometres from the centre of the place described by the 'where' parameter. Defaults to 5km.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location0": {
+                "description": "The location fields may be used to describe a location, in a similar form to that returned in a Adzuna::API::Response::Location object.For example, \"location0=UK&location1=South East England&location2=Surrey\"  will performn a search over the county of Surrey.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location1": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location2": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location3": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location4": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location5": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location6": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "location7": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "max_days_old": {
+                "description": "The age of the oldest advertisment in days that will be returned.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "category": {
+                "description": "The category tag, as returned by the \"category\" endpoint.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "sort_dir": {
+                "description": "The direction to order the search results.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/SortDir"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "sort_by": {
+                "description": "The ordering of the search results.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/SortKey"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "salary_min": {
+                "description": "The minimum salary we wish to get results for.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "salary_max": {
+                "description": "The maximum salary we wish to get results for.",
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "salary_include_unknown": {
+                "description": "If set it \"1\", jobs without a known salary are returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "full_time": {
+                "description": "If set to \"1\", only full time jobs will be returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "part_time": {
+                "description": "If set to \"1\", only part time jobs will be returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "contract": {
+                "description": "If set to \"1\", only contract jobs will be returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "permanent": {
+                "description": "If set to \"1\", only permanent jobs will be returned.",
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "company": {
+                "description": "The canonical company name. This may be returned in a Adzuna::API::Response::Company object when a job is returned. A full list of allowed terms in not available through the API.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "country"
+            ],
+            "$defs": {
+              "CountryCode": {
+                "title": "CountryCode",
+                "enum": [
+                  "at",
+                  "au",
+                  "br",
+                  "ca",
+                  "de",
+                  "fr",
+                  "gb",
+                  "in",
+                  "it",
+                  "nl",
+                  "nz",
+                  "pl",
+                  "ru",
+                  "sg",
+                  "us",
+                  "za"
+                ]
+              },
+              "SortDir": {
+                "title": "SortDir",
+                "enum": [
+                  "down",
+                  "up"
+                ]
+              },
+              "SortKey": {
+                "title": "SortKey",
+                "enum": [
+                  "date",
+                  "default",
+                  "hybrid",
+                  "relevance",
+                  "salary"
+                ]
+              },
+              "Filter": {
+                "title": "Filter",
+                "enum": [
+                  "1"
+                ]
+              }
+            }
+          },
+          "target": "HrFlow",
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "description": "Identification key of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "reference": {
+                "description": "Custom identifier of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "name": {
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "description": "Job location object.",
+                "$ref": "#/$defs/Location"
+              },
+              "sections": {
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/Section"
+                }
+              },
+              "url": {
+                "description": "Job post original URL.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "summary": {
+                "description": "Brief summary of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "archieved_at": {
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "updated_at": {
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "created_at": {
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "skills": {
+                "description": "list of skills of the Job.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Skill"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "languages": {
+                "description": "list of spoken languages of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "certifications": {
+                "description": "list of certifications of the Job.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "courses": {
+                "description": "list of courses of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tasks": {
+                "description": "list of tasks of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tags": {
+                "description": "list of tags of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "metadatas": {
+                "description": "list of metadatas of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "ranges_float": {
+                "description": "list of ranges of floats",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/RangesFloat"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "ranges_date": {
+                "description": "list of ranges of dates",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/RangesDate"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "name",
+              "location",
+              "sections"
+            ],
+            "$defs": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "description": "Location text address.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lat": {
+                    "description": "Geocentric latitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lng": {
+                    "description": "Geocentric longitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "fields": {
+                    "description": "other location attributes like country, country_code etc",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ]
+                  },
+                  "value": {
+                    "description": "Value associated to the skill",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Value associated to the Object's name",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value. Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value. Example: 100.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "unit": {
+                    "description": "Unit of the value. Example: euros.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              }
+            }
+          },
+          "push_parameters": {
+            "title": "ArchiveCriterias",
+            "type": "object",
+            "properties": {
+              "board_key": {
+                "description": "HrFlow.ai board key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "board_key"
+            ],
+            "$defs": {}
+          },
+          "jsonmap": {
+            "reference": "?.id | $string"
+          },
+          "workflow": {
+            "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Adzuna\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Adzuna.archive_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Adzuna.archive_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('app_id', 'app_key'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('country', 'results_per_page', 'what', 'what_and', 'what_phrase', 'what_or', 'what_exclude', 'title_only', 'where', 'distance', 'location0', 'location1', 'location2', 'location3', 'location4', 'location5', 'location6', 'location7', 'max_days_old', 'category', 'sort_dir', 'sort_by', 'salary_min', 'salary_max', 'salary_include_unknown', 'full_time', 'part_time', 'contract', 'permanent', 'company'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Adzuna.archive_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "pull_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Adzuna\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\ndef workflow(\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Adzuna.archive_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ('app_id', 'app_key'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('country', 'results_per_page', 'what', 'what_and', 'what_phrase', 'what_or', 'what_exclude', 'title_only', 'where', 'distance', 'location0', 'location1', 'location2', 'location3', 'location4', 'location5', 'location6', 'location7', 'max_days_old', 'category', 'sort_dir', 'sort_by', 'salary_min', 'salary_max', 'salary_include_unknown', 'full_time', 'part_time', 'contract', 'permanent', 'company'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Adzuna.archive_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "settings_keys": {
+              "workflow_id": "__workflow_id",
+              "incremental": "__incremental",
+              "connector_auth_prefix": "connector_auth_",
+              "hrflow_auth_prefix": "hrflow_auth_",
+              "pull_parameters_prefix": "pull_parameters_",
+              "push_parameters_prefix": "push_parameters_"
+            },
+            "placeholders": {
+              "logics": "# << logics_placeholder >>",
+              "format": "# << format_placeholder >>",
+              "callback": "# << callback_placeholder >>",
+              "event_parser": "# << event_parser_placeholder >>"
+            },
+            "expected": {
+              "activate_incremental": "enable",
+              "logics_functions_name": "logics",
+              "format_functions_name": "format",
+              "callback_functions_name": "callback",
+              "event_parser_function_name": "event_parser"
+            }
+          }
+        }
+      ]
     }
   ]
 }
