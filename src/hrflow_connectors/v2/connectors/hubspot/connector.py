@@ -74,7 +74,11 @@ Hubspot = Connector(
     name="Hubspot",
     type=ConnectorType.CRM,
     subtype="hubspot",
-    description="",
+    description=(
+        "HubSpot is a CRM platform with all the software, integrations, and resources"
+        " you need to connect marketing, sales, content management, and customer"
+        " service."
+    ),
     url="https://www.hubspot.com/",
     warehouse=HubspotWarehouse,
     flows=(

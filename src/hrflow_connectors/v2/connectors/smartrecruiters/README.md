@@ -15,13 +15,6 @@
 
 > Move beyond applicant tracking systems (ATS) with an enterprise-grade recruiting platform designed for the modern workforce. SmartRecruiters' Talent Acquisition Suite provides everything needed to attract, select, and hire great talent.
 
-<p align="center">
-<image src=https://user-images.githubusercontent.com/57711045/214608440-2d838ca1-cdd9-49ca-ac3b-25d65f06994a.png width=90% height=100% >
-</p>
-
-<p align="center">
-<image src=https://user-images.githubusercontent.com/57711045/214608101-4a496152-8aec-4528-afd0-b0712f9c5010.png width=90% height=100% >
-</p>
 
 ## 😍 Why is it a big deal for Smartrecruiters customers & partners?
 
@@ -36,6 +29,9 @@ This new connector will enable:
 - ⬅️ Send Jobs data from Smartrecruiters to a Destination of your choice.
 - ➡️ Send Jobs data from a Source of your choice to Smartrecruiters.
 
+<p align="center">
+<image src=https://user-images.githubusercontent.com/57711045/214609749-f47466cc-efe9-4132-b81b-dc0dcfe77464.png width=90% height=100% >
+</p>
 
 ## 🧠 Artificial Intelligence capabilities:
 - Extract, Structure, and Categorize Talent & Workforce data
@@ -60,10 +56,6 @@ This new connector will enable:
 
 </p>
 
-<p align="center">
-<image src=https://user-images.githubusercontent.com/57711045/214609749-f47466cc-efe9-4132-b81b-dc0dcfe77464.png width=90% height=100% >
-</p>
-
 
 # 💍 Quick Start Examples
 
@@ -79,14 +71,15 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 
 
 Once the connector module is imported, you can leverage all the different actions that it offers.
+
 For more code details checkout connector code.
 
 
 # 🔗 Useful Links
 
-- 📄Visit [SmartRecruiters](https://www.smartrecruiters.com/) to learn more.
+- 📄 Visit [Smartrecruiters](https://www.smartrecruiters.com/) to learn more.
 - ⚙️ API documentation : (https://developers.smartrecruiters.com/doc)
-- 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/smartrecruiters) on our Github.
+- 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/v2/connectors/smartrecruiters) on our Github.
 
 
 # 👏 Special Thanks
