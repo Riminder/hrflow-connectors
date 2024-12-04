@@ -1,7 +1,7 @@
 # 📖 Summary
 - [📖 Summary](#📖-summary)
-- [💼 About Zohorecruit](#💼-about-zohorecruit)
-  - [😍 Why is it a big deal for Zohorecruit customers & partners?](#😍-why-is-it-a-big-deal-for-zohorecruit-customers--partners)
+- [💼 About Zoho recruit](#💼-about-zoho-recruit)
+  - [😍 Why is it a big deal for Zoho recruit customers & partners?](#😍-why-is-it-a-big-deal-for-zoho-recruit-customers--partners)
 - [🔧 How does it work?](#🔧-how-does-it-work)
   - [📊 Data integration capabilities:](#📊-data-integration-capabilities)
   - [🧠 Artificial Intelligence capabilities:](#🧠-artificial-intelligence-capabilities)
@@ -11,28 +11,28 @@
 - [👏 Special Thanks](#👏-special-thanks)
 
 
-# 💼 About Zohorecruit
+# 💼 About Zoho recruit
 
 > Zoho Recruit offers a powerful ATS and CRM in a single recruitment platform. With scalability, customization, and remote hiring tools, Recruit has everything your staffing agency or internal HR team needs to match the right candidate to the right role.
 
 
-## 😍 Why is it a big deal for Zohorecruit customers & partners?
+## 😍 Why is it a big deal for Zoho recruit customers & partners?
 
 This new connector will enable:
-- ⚡ A Fastlane Talent & Workforce data integration for Zohorecruit customers & partners
-- 🤖 Cutting-edge AI-powered Talent Experiences & Recruiter Experiences for Zohorecruit customers
+- ⚡ A Fastlane Talent & Workforce data integration for Zoho recruit customers & partners
+- 🤖 Cutting-edge AI-powered Talent Experiences & Recruiter Experiences for Zoho recruit customers
 
 #  🔧 How does it work?
 ## 📊 Data integration capabilities:
-- ⬅️ Send Profiles data from Zohorecruit to a Destination of your choice.
-- ➡️ Send Profiles data from a Source of your choice to Zohorecruit.
-- ⬅️ Send Jobs data from Zohorecruit to a Destination of your choice.
-- ➡️ Send Jobs data from a Source of your choice to Zohorecruit.
+- ⬅️ Send Profiles data from Zoho recruit to a Destination of your choice.
+- ➡️ Send Profiles data from a Source of your choice to Zoho recruit.
+- ⬅️ Send Jobs data from Zoho recruit to a Destination of your choice.
+- ➡️ Send Jobs data from a Source of your choice to Zoho recruit.
 
 
 ## 🧠 Artificial Intelligence capabilities:
 - Extract, Structure, and Categorize Talent & Workforce data
-- Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Zohorecruit**)
+- Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Zoho recruit**)
 
 
 # 🔌 Connector Actions
@@ -53,11 +53,6 @@ This new connector will enable:
 
 </p>
 
-<p align="center">
-<image src=https://github.com/user-attachments/assets/0c646581-8bce-4e54-b52d-a20353fc459c width=90% height=100% 
->
-</p>
-
 
 # 💍 Quick Start Examples
 
@@ -66,10 +61,6 @@ To make sure you can successfully run the latest versions of the example scripts
 
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
 
-<p align="center">
-<image src=https://github.com/user-attachments/assets/4b16200f-81e2-4766-8f2d-b2ee8bd5e470 width=90% height=100% 
->
-</p>
 
 Once the connector module is imported, you can leverage all the different actions that it offers.
 
@@ -78,9 +69,9 @@ For more code details checkout connector code.
 
 # 🔗 Useful Links
 
-- 📄Visit [Zohorecruit](https://zoho.com/recruit/) to learn more.
+- 📄 Visit [Zoho recruit](https://zoho.com/recruit/) to learn more.
 - ⚙️ API documentation : (https://www.zoho.com/recruit/developer-guide/apiv2/)
-- 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/zohorecruit) on our Github.
+- 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/v2/connectors/zohorecruit) on our Github.
 
 
 # 👏 Special Thanks
