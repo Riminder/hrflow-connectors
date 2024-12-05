@@ -1,0 +1,79 @@
+actions:
+  create_jobs_in_hrflow:
+    - id: valid_parameters
+      connector_auth:
+        app_id: $__APP_ID
+        app_key: $__APP_KEY
+      hrflow_auth:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      pull_parameters:
+        country: "gb"
+        results_per_page: 20
+        what: "javascript developer"
+        what_exclude: "java"
+        where: "london"
+        sort_by: "salary"
+        salary_min: 90000
+        full_time: "1"
+        permanent: "1"
+      push_parameters:
+        board_key: $__BOARD_KEY
+      status: success
+    - id: no_client_credentials
+      connector_auth: {}
+      hrflow_auth:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      pull_parameters:
+        what: "javascript developer"
+      push_parameters:
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+    - id: no_hrflow_board_key
+      connector_auth:
+        app_id: $__APP_ID
+        app_key: $__APP_KEY
+      hrflow_auth:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      pull_parameters:
+        country: "us"
+      push_parameters: {}
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_client_credentials
+      connector_auth:
+        app_id: bad_client_id
+        app_key: bad_client_secret
+      hrflow_auth:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      pull_parameters:
+        country: "us"
+      push_parameters:
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+    - id: invalid_hrflow_api_secret
+      connector_auth:
+        app_id: $__APP_ID
+        app_key: $__APP_KEY
+      hrflow_auth:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+      pull_parameters:
+        country: "gb"
+        results_per_page: 20
+        what: "javascript developer"
+        what_exclude: "java"
+        where: "london"
+        sort_by: "salary"
+        salary_min: 90000
+        full_time: "1"
+        permanent: "1"
+      push_parameters:
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: write_failure

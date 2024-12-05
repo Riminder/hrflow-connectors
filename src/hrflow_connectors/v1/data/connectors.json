@@ -872,9 +872,9 @@
     "pre_v2_updated_at": ""
   },
   {
-    "name": "Pole Emploi",
+    "name": "France Travail (ex: Pole Emploi)",
     "type": "Job Board",
-    "subtype": "poleemploi",
+    "subtype": "francetravail",
     "status": "opensource",
     "release_date": "15/07/2022",
     "pre_v2_updated_at": "24/10/2024"

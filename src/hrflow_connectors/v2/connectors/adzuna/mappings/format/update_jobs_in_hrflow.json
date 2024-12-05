@@ -1,0 +1,43 @@
+{
+  "name": "?.title",
+  "reference": "?.id | $string",
+  "created_at": "?.created",
+  "location": {
+    "lat": "?.latitude != null ?? .latitude | $float : null",
+    "lng": "?.longitude != null ?? .longitude | $float : null",
+    "text": "?.location.display_name || ''"
+  },
+  "url": "?.redirect_url",
+  "summary": "?.description",
+  "sections": "?.full_description ?? [{name: 'full_description', title: 'Full Description', description: .full_description}]: []",
+  "tags": [
+    {
+      "name": "contract_type",
+      "value": "?.contract_type"
+    },
+    {
+      "name": "contract_time",
+      "value": "?.contract_time"
+    },
+    {
+      "name": "salary_min",
+      "value": "?.salary_min"
+    },
+    {
+      "name": "salary_max",
+      "value": "?.salary_max"
+    },
+    {
+      "name": "salary_is_predicted",
+      "value": "?.salary_is_predicted == '1' ?? true : false"
+    },
+    {
+      "name": "category",
+      "value": "?.category?.label"
+    },
+    {
+      "name": "company",
+      "value": "?.company?.display_name"
+    }
+  ]
+}
