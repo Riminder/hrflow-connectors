@@ -2,6 +2,25 @@
 
 
 
+## v4.26.1 (2024-12-05)
+
+### Fix
+
+* fix: bug resume key error when updating profile with only_edit_fields ([`cfcea9d`](https://github.com/Riminder/hrflow-connectors/commit/cfcea9d0b32217375f41991726b17e9024ee4ab1))
+
+* fix: add data flows and import graphs to connectors&#39; documentations ([`f93cc43`](https://github.com/Riminder/hrflow-connectors/commit/f93cc4365eda7defed2ffa00cf8d6091d3eb3ae6))
+
+### Unknown
+
+* Merge pull request #307 from Riminder/fix/connector-bullhorn
+
+fix: bug resume key error when updating profile with only_edit_fields ([`7c871e9`](https://github.com/Riminder/hrflow-connectors/commit/7c871e902be11189056b898ef88a71e92699efbb))
+
+* Merge pull request #306 from Riminder/fix/documentations-graphs
+
+update: connectors&#39; documentations with data flows and import graph ([`3b72be1`](https://github.com/Riminder/hrflow-connectors/commit/3b72be1ab739c25cf255e704d851932cb7d05f5f))
+
+
 ## v4.26.0 (2024-12-03)
 
 ### Feature
