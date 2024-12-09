@@ -1,0 +1,67 @@
+actions:
+  create_jobs_in_hrflow:
+    - id: valid_parameters
+      connector_auth:
+        client_id: $__CLIENT_ID
+        client_secret: $__CLIENT_SECRET
+      hrflow_auth:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      pull_parameters:
+        secteurActivite: "72"
+        typeContrat: "CDI"
+        natureContrat: "E1"
+        range: "0-1"
+      push_parameters:
+        board_key: $__BOARD_KEY
+      status: success
+    - id: no_client_credentials
+      connector_auth: {}
+      hrflow_auth:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      pull_parameters:
+        motsCles: INFORMATIQUE
+      push_parameters:
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+    - id: no_hrflow_board_key
+      connector_auth:
+        client_id: $__CLIENT_ID
+        client_secret: $__CLIENT_SECRET
+      hrflow_auth:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      pull_parameters:
+        motsCles: Software
+      push_parameters: {}
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_client_credentials
+      connector_auth:
+        client_id: bad_client_id
+        client_secret: bad_client_secret
+      hrflow_auth:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      pull_parameters:
+        motsCles: Software
+      push_parameters:
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+    - id: invalid_hrflow_api_secret
+      connector_auth:
+        client_id: $__CLIENT_ID
+        client_secret: $__CLIENT_SECRET
+      hrflow_auth:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+      pull_parameters:
+        motsCles: Software
+        range: "0-1"
+      push_parameters:
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: write_failure

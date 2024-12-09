@@ -29,6 +29,9 @@ This new connector will enable:
 - ⬅️ Send Jobs data from Recruitee to a Destination of your choice.
 - ➡️ Send Jobs data from a Source of your choice to Recruitee.
 
+<p align="center">
+<image src=https://github.com/Riminder/hrflow-connectors/assets/57711045/ff726feb-d580-40f8-82b2-6c1132cebd8e width=90% height=100% >
+</p>
 
 ## 🧠 Artificial Intelligence capabilities:
 - Extract, Structure, and Categorize Talent & Workforce data
@@ -53,13 +56,12 @@ This new connector will enable:
 
 </p>
 
-<p align="center">
-<image src=https://github.com/Riminder/hrflow-connectors/assets/57711045/ff726feb-d580-40f8-82b2-6c1132cebd8e width=90% height=100% >
-</p>
 
 # 💍 Quick Start Examples
 
 To make sure you can successfully run the latest versions of the example scripts, you have to **install the package from PyPi**.
+
+
 To browse the examples of actions corresponding to released versions of 🤗 this connector, you just need to import the module like this :
 
 
@@ -71,11 +73,13 @@ Once the connector module is imported, you can leverage all the different action
 
 For more code details checkout connector code.
 
+
 # 🔗 Useful Links
 
-- 📄Visit [Recruitee](https://recruitee.com/) to learn more.
+- 📄 Visit [Recruitee](https://recruitee.com/) to learn more.
 - ⚙️ API documentation : [Recruitee API](https://api.recruitee.com/docs/index.html)
-- 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/recruitee) on our Github.
+- 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/v2/connectors/recruitee) on our Github.
+
 
 
 # 👏 Special Thanks

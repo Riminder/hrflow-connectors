@@ -1,7 +1,7 @@
 # 📖 Summary
 - [📖 Summary](#📖-summary)
-- [💼 About Admen](#💼-about-admen)
-  - [😍 Why is it a big deal for Admen customers & partners?](#😍-why-is-it-a-big-deal-for-admen-customers--partners)
+- [💼 About Ad-men](#💼-about-ad-men)
+  - [😍 Why is it a big deal for Ad-men customers & partners?](#😍-why-is-it-a-big-deal-for-ad-men-customers--partners)
 - [🔧 How does it work?](#🔧-how-does-it-work)
   - [📊 Data integration capabilities:](#📊-data-integration-capabilities)
   - [🧠 Artificial Intelligence capabilities:](#🧠-artificial-intelligence-capabilities)
@@ -11,7 +11,7 @@
 - [👏 Special Thanks](#👏-special-thanks)
 
 
-# 💼 About Admen
+# 💼 About Ad-men
 
 > 
 Need an efficient, high-performance HR solution for managing your applications?
@@ -19,23 +19,29 @@ Choose AD-Men, the No. 1 software for recruitment agencies.
 
 
 
-## 😍 Why is it a big deal for Admen customers & partners?
+## 😍 Why is it a big deal for Ad-men customers & partners?
 
 This new connector will enable:
-- ⚡ A Fastlane Talent & Workforce data integration for Admen customers & partners
-- 🤖 Cutting-edge AI-powered Talent Experiences & Recruiter Experiences for Admen customers
+- ⚡ A Fastlane Talent & Workforce data integration for Ad-men customers & partners
+- 🤖 Cutting-edge AI-powered Talent Experiences & Recruiter Experiences for Ad-men customers
 
 #  🔧 How does it work?
 ## 📊 Data integration capabilities:
-- ⬅️ Send Profiles data from Admen to a Destination of your choice.
-- ➡️ Send Profiles data from a Source of your choice to Admen.
-- ⬅️ Send Jobs data from Admen to a Destination of your choice.
-- ➡️ Send Jobs data from a Source of your choice to Admen.
+- ⬅️ Send Profiles data from Ad-men to a Destination of your choice.
+- ➡️ Send Profiles data from a Source of your choice to Ad-men.
+- ⬅️ Send Jobs data from Ad-men to a Destination of your choice.
+- ➡️ Send Jobs data from a Source of your choice to Ad-men.
 
+</p>
+
+<p align="center">
+<image src=https://github.com/user-attachments/assets/cac7da42-2146-4e67-ac8c-7e37f4550554 width=90% height=100% 
+>
+</p>
 
 ## 🧠 Artificial Intelligence capabilities:
 - Extract, Structure, and Categorize Talent & Workforce data
-- Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Admen**)
+- Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Ad-men**)
 
 
 # 🔌 Connector Actions
@@ -56,12 +62,6 @@ This new connector will enable:
 
 </p>
 
-</p>
-
-<p align="center">
-<image src=https://github.com/user-attachments/assets/cac7da42-2146-4e67-ac8c-7e37f4550554 width=90% height=100% 
->
-</p>
 
 # 💍 Quick Start Examples
 
@@ -83,8 +83,8 @@ For more code details checkout connector code.
 
 # 🔗 Useful Links
 
-- 📄Visit [Admen](https://www.ad-rh.com/) to learn more.
-- 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/connectors/admen) on our Github.
+- 📄 Visit [Ad-men](https://www.ad-rh.com/) to learn more.
+- 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/v2/connectors/admen) on our Github.
 
 
 # 👏 Special Thanks
