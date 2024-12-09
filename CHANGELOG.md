@@ -2,6 +2,25 @@
 
 
 
+## v4.26.2 (2024-12-09)
+
+### Fix
+
+* fix: remove Pole Emploi from V1_CONNECTORS to resolve test_root_readme_uses_v2_connectors_when_available failure caused by name mismatch in main README ([`c346485`](https://github.com/Riminder/hrflow-connectors/commit/c3464850a012eb85a3c905b2522dabd6e4136e66))
+
+* fix: unify connector documentations ([`af42ff6`](https://github.com/Riminder/hrflow-connectors/commit/af42ff66ec38d53643d676f2c9d885f00325e170))
+
+### Unknown
+
+* Merge pull request #308 from Riminder/feature/adzuna-pole-emploi-v2
+
+Feature/adzuna pole emploi v2 ([`cd3d79a`](https://github.com/Riminder/hrflow-connectors/commit/cd3d79a27c87b82da570fec689acffd75a623f5b))
+
+* feature: Add France Travail(ex: Pole Emploi) Connector in CRUD v2 ([`839d6b0`](https://github.com/Riminder/hrflow-connectors/commit/839d6b03c41f5b6771e42f3f4f3f8298b78bf433))
+
+* feature: Add Adzuna Connector in CRUD v2 ([`d4852a8`](https://github.com/Riminder/hrflow-connectors/commit/d4852a8b8fc694c5f10114b878db6030539c60be))
+
+
 ## v4.26.1 (2024-12-05)
 
 ### Fix
