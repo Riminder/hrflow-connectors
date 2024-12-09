@@ -6,7 +6,7 @@
   "location": "?.lieuTravail ?? {lat: .lieuTravail?.latitude, lng: .lieuTravail?.longitude, text: $concat(.lieuTravail?.libelle >> '', ' ', .lieuTravail?.codePostal >> '') | $strip}: {lat: null, lng: null, text: ''}",
   "url": "?.origineOffre?.urlOrigine",
   "summary": "?.description",
-  "requirements": "?.formations ?? $map($concat(.niveauLibelle || '', ' en ', .domaineLibelle || '')) | $join(' ')",
+  "requirements": "?.formations ?? $map($concat(.niveauLibelle || '', ' en ', .domaineLibelle || '')) | $join('\n')",
   "skills": "?.competences ?? $map({name: .libelle, value: null, type: hard}) : []",
   "languages": "?.langues ?? $map({name: .libelle, value: null}) : []",
   "sections": [
