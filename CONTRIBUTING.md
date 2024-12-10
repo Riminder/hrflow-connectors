@@ -239,6 +239,53 @@ For all kind of contributions make sure that :
 7. **[Optional]** [_Only if your are contributing a new connector_] Make sure that your own connector tests are ok. Run `poetry run pytest --no-cov --ignore tests/core --connector=${YOUR_CONNECTOR_NAME}`
 8. If you reach this step then your PR is very welcome ! From your fork you can target our `master` branch
 
+
+## Required and Optional Flows for New Connectors
+
+When contributing a new connector to `hrflow-connectors`, ensure you implement the following flows based on the connector type. These flows are critical for maintaining functional consistency across connectors.
+
+### ATS/CRM/HCM Connectors
+
+**Must Have (minimum 9 flows):**
+1. Push profile to Connector:
+   - `create_profiles_in_connector`
+   - `update_profiles_in_connector`
+   - `archive_profiles_in_connector`
+2. Pull jobs from Connector:
+   - `create_jobs_in_hrflow`
+   - `update_jobs_in_hrflow`
+   - `archive_jobs_in_hrflow`
+3. Pull profiles from Connector:
+   - `create_profiles_in_hrflow`
+   - `update_profiles_in_hrflow`
+   - `archive_profiles_in_hrflow`
+
+**Nice to Have:**
+1. Pull applications from Connector:
+   - `create_applications_in_connector`
+   - `update_applications_in_connector`
+
+### Job Board Connectors
+
+**Must Have (minimum 3 flows):**
+1. Pull jobs from Connector:
+   - `create_jobs_in_hrflow`
+   - `update_jobs_in_hrflow`
+   - `archive_jobs_in_hrflow`
+
+**Nice to Have:**
+1. Push profile to Connector:
+   - `create_profiles_in_connector`
+   - `update_profiles_in_connector`
+   - `archive_profiles_in_connector`
+2. Pull profiles from Connector:
+   - `create_profiles_in_hrflow`
+   - `update_profiles_in_hrflow`
+   - `archive_profiles_in_hrflow`
+3. Pull applications from Connector:
+   - `create_applications_in_connector`
+   - `update_applications_in_connector`
+
 ## Issue Reports
 
 If you experience bugs or general issues with [hrflow-connectors](https://github.com/Riminder/hrflow-connectors), please have a look at the [issue tracker](https://github.com/Riminder/hrflow-connectors/issues) before firing a new issue report.
