@@ -250,7 +250,7 @@ def format_candidate(breezy_profile: t.Dict) -> t.Dict:
     return hrflow_profile
 
 
-BreezyHR = Connector(
+BreezyHr = Connector(
     name="Breezy HR",
     type=ConnectorType.ATS,
     subtype="breezyhr",
