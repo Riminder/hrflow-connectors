@@ -284,7 +284,11 @@ def write_profiles(
             )
             raise Exception("Failed to retrieve company id")
 
-    post_candidate_url = f"{BREEZY_BASE_URL}/company/{company_id}/position/{parameters.position_id}/candidates"
+    post_candidate_url = (
+        f"{BREEZY_BASE_URL}/company/{company_id}/position/"
+        f"{parameters.position_id}/candidates"
+    )
+
     for profile in items:
         resume_url = profile.pop("resume", None)
         profile.update({"origin": parameters.origin})
@@ -365,7 +369,11 @@ def update_profiles(
             )
             raise Exception("Failed to retrieve company id")
 
-    base_url = f"{BREEZY_BASE_URL}/company/{company_id}/position/{parameters.position_id}/candidate"
+    base_url = (
+        f"{BREEZY_BASE_URL}/company/{company_id}/position/"
+        f"{parameters.position_id}/candidate"
+    )
+
     for profile in items:
         candidate_id = profile.pop("id")
         candidate_work_history = profile.pop("work_history", [])
