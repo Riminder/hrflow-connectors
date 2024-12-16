@@ -15,6 +15,8 @@ Send **created** 'profile(s)' _from_ Flatchr _to_ HrFlow
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
+| `api_key` :red_circle: | `string` | None | The API key to authenticate with the Flatchr API |
+| `company_id` :red_circle: | `string` | None | The ID of the company to authenticate with |
 | `env_base_url`  | `Literal['https://api.demo.flatchr.io','https://api.flatchr.io/']` | https://api.flatchr.io/ | The base URL of the Flatchr API |
 
 ## HrFlow.ai Auth Parameters
@@ -35,7 +37,6 @@ Send **created** 'profile(s)' _from_ Flatchr _to_ HrFlow
 | `column`  | `string\|null` | None | The column in which the candidate is located, Ex: 'Entretien RH' |
 | `start`  | `string\|null` | None | The start date in MM/DD/YY of the search |
 | `end`  | `string\|null` | None | The end date in MM/DD/YY of the search |
-| `company`  | `string\|null` | None | Allows a search on several companies for multi-accounts |
 | `vacancy`  | `string\|null` | None | id of the offer in which the candidate is involved |
 
 ## Push Parameters (HrFlow)
@@ -71,6 +72,8 @@ Flatchr.create_profiles_in_hrflow(
     workflow_id=...,
     logics=...,
     connector_auth=dict(
+        api_key=...,
+        company_id=...,
         env_base_url=...,
     ),
     hrflow_auth=dict(
@@ -85,7 +88,6 @@ Flatchr.create_profiles_in_hrflow(
         column=...,
         start=...,
         end=...,
-        company=...,
         vacancy=...,
     ),
     push_parameters=dict(

@@ -15,6 +15,8 @@ Send **archived** 'profile(s)' _from_ HrFlow _to_ Flatchr
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
+| `api_key` :red_circle: | `string` | None | The API key to authenticate with the Flatchr API |
+| `company_id` :red_circle: | `string` | None | The ID of the company to authenticate with |
 | `env_base_url`  | `Literal['https://api.demo.flatchr.io','https://api.flatchr.io/']` | https://api.flatchr.io/ | The base URL of the Flatchr API |
 
 ## HrFlow.ai Auth Parameters
@@ -35,7 +37,7 @@ Send **archived** 'profile(s)' _from_ HrFlow _to_ Flatchr
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `vacancy_id` :red_circle: | `string` | None | The ID of the offer to assign the candidate to
+| `vacancy_id`  | `string\|null` | None | The ID of the offer to assign the candidate to
 Equivalent to id in the Flatchr API not vacancy_id nor the slug |
 
 ## Other Parameters
@@ -65,6 +67,8 @@ Flatchr.archive_profiles_in_flatchr(
     workflow_id=...,
     logics=...,
     connector_auth=dict(
+        api_key=...,
+        company_id=...,
         env_base_url=...,
     ),
     hrflow_auth=dict(

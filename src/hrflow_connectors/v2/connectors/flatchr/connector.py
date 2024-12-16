@@ -7,12 +7,15 @@ from hrflow_connectors.v2.core.connector import Connector, ConnectorType, Flow
 
 def format_flatchr_profile(flatchr_profile: t.Dict) -> t.Dict:
     hrflow_profile = dict(
-        reference=flatchr_profile.get("applicant"),
+        reference=flatchr_profile.get("id"),
         created_at=flatchr_profile.get("created_at"),
         info=dict(
             email=flatchr_profile.get("email"),
             first_name=flatchr_profile.get("firstname"),
             last_name=flatchr_profile.get("lastname"),
+            full_name=(
+                f"{flatchr_profile.get('firstname')} {flatchr_profile.get('lastname')}"
+            ),
             location=dict(text="", lat=None, lng=None),
             phone=flatchr_profile.get("phone"),
         ),
@@ -20,13 +23,15 @@ def format_flatchr_profile(flatchr_profile: t.Dict) -> t.Dict:
         experiences=[],
         attachments=[],
         tags=[
+            {"name": "applicant_id", "value": flatchr_profile.get("applicant")},
             {"name": "vacancy", "value": flatchr_profile.get("vacancy")},
-            {"name": "vacancy_id", "value": flatchr_profile.get("vacancy")},
+            {"name": "vacancy_id", "value": flatchr_profile.get("vacancy_id")},
             {"name": "source", "value": flatchr_profile.get("source")},
             {"name": "external_id", "value": flatchr_profile.get("external_id")},
             {"name": "hired", "value": flatchr_profile.get("hired")},
             {"name": "column", "value": flatchr_profile.get("column")},
         ],
+        resume=flatchr_profile.get("resume"),
     )
     return hrflow_profile
 
@@ -56,20 +61,36 @@ def format_hrflow_profile(hrflow_profile: t.Dict) -> t.Dict:
     return profile
 
 
+def format_hrflow_profile_for_update(hrflow_profile: t.Dict) -> t.Dict:
+    flatchr_profile = format_hrflow_profile(hrflow_profile)
+    flatchr_profile["id"] = hrflow_profile["reference"]
+    return flatchr_profile
+
+
 def format_flatchr_profile_for_archive(flatchr_profile: t.Dict) -> t.Dict:
-    return {"reference": flatchr_profile["applicant"]}
+    return {"reference": flatchr_profile["id"]}
 
 
-def format_hrflow_for_archive(hrflow_profile: t.Dict) -> t.Dict:
-    return {"applicant": hrflow_profile["reference"]}
+def format_hrflow_profile_for_archive(hrflow_profile: t.Dict) -> t.Dict:
+    vacancy_id = next(
+        (tag["value"] for tag in hrflow_profile["tags"] if tag["name"] == "vacancy_id"),
+        None,
+    )
+    applicant_id = next(
+        (
+            tag["value"]
+            for tag in hrflow_profile["tags"]
+            if tag["name"] == "applicant_id"
+        ),
+        None,
+    )
+    return {"applicant_id": applicant_id, "vacancy_id": vacancy_id}
 
 
 def get_tags(flatchr_job: t.Dict) -> t.List:
     t = lambda name, value: dict(name=name, value=value)
     tags = [
-        t("id", flatchr_job.get("id")),
         t("slug", flatchr_job.get("slug")),
-        t("reference", flatchr_job.get("reference")),
         t("status", flatchr_job.get("status")),
         t("language", flatchr_job.get("language")),
         t("company_id", flatchr_job.get("company_id")),
@@ -87,7 +108,7 @@ def get_tags(flatchr_job: t.Dict) -> t.List:
 
 def format_flatchr_job(flatchr_job: t.Dict) -> t.Dict:
     hrflow_job = dict(
-        reference=flatchr_job.get("vacancy_id"),
+        reference=flatchr_job.get("id"),
         name=flatchr_job.get("title"),
         created_at=flatchr_job.get("created_at"),
         updated_at=flatchr_job.get("updated_at"),
@@ -115,7 +136,7 @@ def format_flatchr_job(flatchr_job: t.Dict) -> t.Dict:
         url=flatchr_job.get("apply_url"),
         skills=[
             dict(name=skill, value=None, type="soft")
-            for skill in flatchr_job.get("skills", "").split(";")
+            for skill in (flatchr_job.get("skills") or "").split(";")
         ],
         tags=get_tags(flatchr_job),
     )
@@ -123,7 +144,7 @@ def format_flatchr_job(flatchr_job: t.Dict) -> t.Dict:
 
 
 def format_flatchr_job_for_archive(flatchr_job: t.Dict) -> t.Dict:
-    return {"reference": flatchr_job["vacancy_id"]}
+    return {"reference": flatchr_job["id"]}
 
 
 DESCRIPTION = (
@@ -167,13 +188,13 @@ Flatchr = Connector(
             Mode.update,
             Entity.profile,
             Direction.outbound,
-            format=format_hrflow_profile,
+            format=format_hrflow_profile_for_update,
         ),
         Flow(
             Mode.archive,
             Entity.profile,
             Direction.outbound,
-            format=format_hrflow_for_archive,
+            format=format_hrflow_profile_for_archive,
         ),
         Flow(
             Mode.create,

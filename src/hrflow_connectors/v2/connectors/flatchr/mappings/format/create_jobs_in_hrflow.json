@@ -1,5 +1,5 @@
 {
-  "reference": "?.vacancy_id",
+  "reference": "?.id",
   "name": "?.title",
   "created_at": "?.created_at",
   "updated_at": "?.updated_at",
@@ -29,7 +29,7 @@
   "responsibilities": "?.mission",
   "requirements": "?.profile",
   "url": "?.apply_url",
-  "skills": "?.skills || '' | $split(';') | $map({name: ., value: null, type: 'soft'})",
+  "skills": "?.skills != null ?? .skills | $split(';') | $map({name: ., value: null, type: 'soft'})",
   "tags": [
     {
       "name": "id",

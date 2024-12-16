@@ -31,13 +31,13 @@ class FlatchrBaseURL(str, Enum):
 
 
 class AuthParameters(Struct):
-    api_key = Annotated[
+    api_key: Annotated[
         str,
         Meta(
             description="The API key to authenticate with the Flatchr API",
         ),
     ]
-    company_id = Annotated[
+    company_id: Annotated[
         str,
         Meta(
             description="The ID of the company to authenticate with",
@@ -51,7 +51,7 @@ class AuthParameters(Struct):
     ] = FlatchrBaseURL.PRODUCTION
 
 
-class ReadProfilesParameters(Struct):
+class ReadProfilesParameters(Struct, omit_defaults=True):
     firstname: Annotated[
         t.Optional[str],
         Meta(
@@ -96,12 +96,6 @@ class ReadProfilesParameters(Struct):
             description="The end date in MM/DD/YY of the search",
         ),
     ] = None
-    company: Annotated[
-        t.Optional[str],
-        Meta(
-            description="Allows a search on several companies for multi-accounts",
-        ),
-    ] = None
     vacancy: Annotated[
         t.Optional[str],
         Meta(description="id of the offer in which the candidate is involved"),
@@ -131,14 +125,14 @@ class UpdateProfilesParameters(Struct):
 
 class ArchiveProfilesParameters(Struct):
     vacancy_id: Annotated[
-        str,
+        t.Optional[str],
         Meta(
             description=(
                 "The ID of the offer to assign the candidate to\nEquivalent to id in"
                 " the Flatchr API not vacancy_id nor the slug"
             ),
         ),
-    ]
+    ] = None
 
 
 class ReadJobsParameters(Struct):
@@ -171,8 +165,96 @@ def read_profiles(
         )
         raise Exception("Failed to fetch profiles from Flatchr")
     profiles = response.json()
+    # The following steps are a workaround around limitations and misconfigurations in the Flatchr API
+    # We go through the collumns endpoint to get the id of the column the candidate is in right now using the column name
+    columns_response = requests.get(
+        "{base_url}/company/{companyId}/columns".format(
+            base_url=auth_parameters.env_base_url, companyId=auth_parameters.company_id
+        ),
+        headers=headers,
+    )
+    columns = columns_response.json()
+    # we go through the vacancies endpoint to get the id of the vacancy the candidate is attached to using the vacancy_id in the profile
+    vacancies_response = requests.get(
+        "{base_url}/company/{companyId}/vacancies".format(
+            base_url=auth_parameters.env_base_url, companyId=auth_parameters.company_id
+        ),
+        headers=headers,
+    )
+    vacancies = vacancies_response.json()
+
     for profile in profiles:
-        yield profile
+        column_id = next(
+            (
+                column["id"]
+                for column in columns
+                if column["title"] == profile["column"]
+            ),
+            None,
+        )
+        vacancy_id = next(
+            (
+                vacancy["id"]
+                for vacancy in vacancies
+                if vacancy["vacancy_id"] == profile["vacancy_id"]
+            ),
+            None,
+        )
+        # We move candidate to the same column he's in right now just to get the candidate id
+        if column_id and vacancy_id:
+            move_candidate_response = requests.put(
+                "{base_url}/company/{companyId}/vacancy/{vacancyId}/applicant/{applicantId}"
+                .format(
+                    base_url=auth_parameters.env_base_url,
+                    companyId=auth_parameters.company_id,
+                    vacancyId=vacancy_id,
+                    applicantId=profile["applicant"],
+                ),
+                headers=headers,
+                json={"column_id": column_id},
+            )
+            if move_candidate_response.status_code // 100 != 2:
+                adapter.error(
+                    "Failed to move candidate in Flatchr status_code={} response={}"
+                    .format(
+                        move_candidate_response.status_code,
+                        move_candidate_response.text,
+                    )
+                )
+            candidate_additional_info = move_candidate_response.json()["candidate"]
+            # Get the candidate resume
+            candidate_resume_response = requests.get(
+                "{base_url}/company/{companyId}/files/expire?key={key}&extension={extension}&token={token}"
+                .format(
+                    base_url=auth_parameters.env_base_url,
+                    companyId=auth_parameters.company_id,
+                    key=candidate_additional_info["aws"]["key"],
+                    extension=candidate_additional_info["aws"]["extension"],
+                    token=auth_parameters.api_key,
+                )
+            )
+            if candidate_resume_response.status_code // 100 != 2:
+                adapter.error(
+                    "Failed to get candidate resume in Flatchr status_code={}"
+                    " response={}".format(
+                        candidate_resume_response.status_code,
+                        candidate_resume_response.text,
+                    )
+                )
+                candidate_additional_info["resume"] = None
+            else:
+                candidate_additional_info["resume"] = {
+                    "raw": candidate_resume_response.content,
+                    "content_type": candidate_additional_info["aws"]["extension"],
+                }
+            profile.update(candidate_additional_info)
+            yield profile
+        else:
+            adapter.error(
+                "Failed to get column id or vacancy id for candidate column_id={} "
+                "vacancy_id={}".format(column_id, vacancy_id)
+            )
+            raise Exception("Failed to get column id or vacancy id for candidate")
 
 
 def write(
@@ -215,24 +297,47 @@ def archive(
     items: t.Iterable[dict],
 ) -> t.List[t.Dict]:
     failed_profiles = []
-    FLATCHR_ARCHIVE_CANDIDATES_ENDPOINT = (
-        "{base_url}/company/{companyId}/vacancy/{vacancyId}/applicant".format(
-            base_url=auth_parameters.env_base_url,
-            companyId=auth_parameters.company_id,
-            vacancyId=parameters.vacancy_id,
-        )
-    )
     headers = {"Authorization": "Bearer {}".format(auth_parameters.api_key)}
 
     for profile in items:
-        response = requests.delete(
-            url=f"{FLATCHR_ARCHIVE_CANDIDATES_ENDPOINT}/{profile['applicant']}",
+        if parameters.vacancy_id:
+            vacancy_id = parameters.vacancy_id
+        else:
+            # we go through the vacancies endpoint to get the id of the vacancy the candidate is attached to using the vacancy_id in the profile
+            vacancies_response = requests.get(
+                "{base_url}/company/{companyId}/vacancies".format(
+                    base_url=auth_parameters.env_base_url,
+                    companyId=auth_parameters.company_id,
+                ),
+                headers=headers,
+            )
+            vacancies = vacancies_response.json()
+            vacancy_id = next(
+                (
+                    vacancy["id"]
+                    for vacancy in vacancies
+                    if vacancy["vacancy_id"] == profile["vacancy_id"]
+                ),
+                None,
+            )
+
+        archive_candidate_response = requests.delete(
+            "{base_url}/company/{companyId}/vacancy/{vacancyId}/applicant/{applicantId}"
+            .format(
+                base_url=auth_parameters.env_base_url,
+                companyId=auth_parameters.company_id,
+                vacancyId=vacancy_id,
+                applicantId=profile["applicant_id"],
+            ),
             headers=headers,
         )
-        if response.status_code // 100 != 2:
+        if archive_candidate_response.status_code // 100 != 2:
             adapter.error(
                 "Failed to archive profile in Flatchr status_code={} response={}"
-                .format(response.status_code, response.text)
+                .format(
+                    archive_candidate_response.status_code,
+                    archive_candidate_response.text,
+                )
             )
             failed_profiles.append(profile)
 
@@ -254,9 +359,7 @@ def update(
     headers = {"Authorization": "Bearer {}".format(auth_parameters.api_key)}
 
     for profile in items:
-        json_data = dict(
-            reference=profile.pop("email"), type="applicants", value=profile
-        )
+        json_data = dict(reference=profile.pop("id"), type="applicants", value=profile)
         response = requests.post(
             url=FLATCHR_UPDATE_CANDIDATES_ENDPOINT,
             headers=headers,

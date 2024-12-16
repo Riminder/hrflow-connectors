@@ -32,6 +32,7 @@ This new connector will enable:
 - ➡️ Send Profiles data from a Source of your choice to Flatchr.
 - ⬅️ Send Jobs data from Flatchr to a Destination of your choice.
 - ➡️ Send Jobs data from a Source of your choice to Flatchr.
+
 <p align="center">
 <image src=https://github.com/user-attachments/assets/38d23ec9-ab19-4f6f-8691-c9c8941e30de
  width=90% height=100% >
@@ -73,7 +74,6 @@ To browse the examples of actions corresponding to released versions of 🤗 thi
 <image src=https://github.com/user-attachments/assets/dcfb14df-939c-4c3e-91c2-886b923c8000
  width=90% height=100% >
 </p>
-
 
 
 Once the connector module is imported, you can leverage all the different actions that it offers.
