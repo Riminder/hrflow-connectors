@@ -1,0 +1,50 @@
+{
+  "reference": "?._id",
+  "info": {
+    "full_name": ".name",
+    "first_name": ".name | $split(' ') | .[0]",
+    "last_name": ".name | $split(' ') | .[-1]",
+    "email": ".email_address",
+    "phone": ".phone_number",
+    "urls": "?.social_profiles || [] | $map({type: .type, url: .url})",
+    "summary": ".summary",
+    "location": {
+      "text": "?.address",
+      "lat": null,
+      "lng": null
+    }
+  },
+  "created_at": "?.creation_date",
+  "updated_at": "?.updated_date",
+  "experiences": "?.work_history || [] | $map({company: ?.company_name, title: ?.title, description: ?.summary, date_start: ?.start_date.year != null and ?.start_date.month != null and ?.start_date.day != null ?? .start_date | $concat(.year, '-', $concat('0', .month) | $slice(-2), '-', $concat('0', .day) | $slice(-2)) : null, date_end: ?.end_date.year != null and ?.end_date.month != null and ?.end_date.day != null ?? .end_date | $concat(.year, '-', $concat('0', .month) | $slice(-2), '-', $concat('0', .day) | $slice(-2)) : null, location: {text: null, lat: null, lng: null}})",
+  "educations": "?.education || [] | $map({school: ?.school_name, title: $concat(?.degree || '', ' ', ?.field_of_study || '')| $strip, description: $concat(?.degree || '', ' ', ?.field_of_study || '', ' at ', ?.school_name || '')| $strip, date_start: ?.start_date.year != null and ?.start_date.month != null and ?.start_date.day != null ?? .start_date | $concat(.year, '-', $concat('0', .month) | $slice(-2), '-', $concat('0', .day) | $slice(-2)) : null, date_end: ?.end_date.year != null and ?.end_date.month != null and ?.end_date.day != null ?? .end_date | $concat(.year, '-', $concat('0', .month) | $slice(-2), '-', $concat('0', .day) | $slice(-2)) : null, location: {text: null, lat: null, lng: null}})",
+  "skills": [],
+  "tags": [
+    {
+      "name": "breezy_hr_tags",
+      "value": "?.tags"
+    },
+    {
+      "name": "headline",
+      "value": "?.headline"
+    },
+    {
+      "name": "origin",
+      "value": "?.origin"
+    },
+    {
+      "name": "source",
+      "value": "?.source?.name"
+    },
+    {
+      "name": "sourced_by",
+      "value": "?.sourced_by"
+    },
+    { "name": "stage", "value": "?.stage?.name" },
+    {
+      "name": "overall_score",
+      "value": "?.overall_score?.average_score"
+    }
+  ],
+  "resume": "?.resume"
+}

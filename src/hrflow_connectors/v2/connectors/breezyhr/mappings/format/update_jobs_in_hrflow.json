@@ -1,0 +1,90 @@
+{
+  "name": "?.name",
+  "reference": "?._id",
+  "summary": "?.description | $sub('<[^<]+?>', '') | $sub('&nbsp;', ' ')",
+  "location": {
+    "text": "?.location?.streetAddress?.custom ?? .location.streetAddress.custom: .location.name",
+    "geojson": {
+      "country": "?.location?.country?.name",
+      "city": "?.location?.city",
+      "text": "?.location?.streetAddress?.custom ?? .location.streetAddress.custom: .location.name"
+    },
+    "lat": null,
+    "lng": null
+  },
+  "sections": [
+    {
+      "name": "description",
+      "title": "description",
+      "description": "?.description | $sub('<[^<]+?>', '') | $sub('&nbsp;', ' ')"
+    },
+    {
+      "name": "experience",
+      "title": "Required Experience",
+      "description": "?.experience?.name"
+    },
+    {
+      "name": "education",
+      "title": "Required Education",
+      "description": "?.education?.name"
+    },
+    {
+      "name": "category",
+      "title": "Category",
+      "description": "?.category?.name"
+    },
+    {
+      "name": "remote",
+      "title": "Remote Information",
+      "description": "?.location?.remote_details"
+    }
+  ],
+  "tags": [
+    {
+      "name": "type",
+      "value": "?.type?.name"
+    },
+    {
+      "name": "experience",
+      "value": "?.experience?.name"
+    },
+    {
+      "name": "education",
+      "value": "?.education"
+    },
+    {
+      "name": "department",
+      "value": "?.department"
+    },
+    {
+      "name": "requisition_id",
+      "value": "?.requisition_id"
+    },
+    {
+      "name": "category",
+      "value": "?.category?.name"
+    },
+    {
+      "name": "candidate_type",
+      "value": "?.candidate_type"
+    },
+    {
+      "name": "isremote",
+      "value": "?.location?.is_remote"
+    },
+    {
+      "name": "remote_details",
+      "value": "?.location?.remote_details"
+    },
+    {
+      "name": "creator_id",
+      "value": "?.creator_id"
+    },
+    {
+      "name": "breezy_hr_tags",
+      "value": "?.tags"
+    }
+  ],
+  "created_at": "?.creation_date",
+  "updated_at": "?.updated_date"
+}
