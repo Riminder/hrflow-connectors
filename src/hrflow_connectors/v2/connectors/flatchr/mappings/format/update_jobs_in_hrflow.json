@@ -1,0 +1,91 @@
+{
+  "reference": "?.id",
+  "name": "?.title",
+  "created_at": "?.created_at",
+  "updated_at": "?.updated_at",
+  "summary": "?.description",
+  "location": {
+    "text": "",
+    "lat": null,
+    "lng": null
+  },
+  "sections": [
+    {
+      "name": "description",
+      "title": "Description",
+      "description": "?.description"
+    },
+    {
+      "name": "mission",
+      "title": "Mission",
+      "description": "?.mission"
+    },
+    {
+      "name": "profile",
+      "title": "Profile",
+      "description": "?.profile"
+    }
+  ],
+  "responsibilities": "?.mission",
+  "requirements": "?.profile",
+  "url": "?.apply_url",
+  "skills": "?.skills != null ?? .skills | $split(';') | $map({name: ., value: null, type: 'soft'})",
+  "tags": [
+    {
+      "name": "id",
+      "value": "?.id"
+    },
+    {
+      "name": "slug",
+      "value": "?.slug"
+    },
+    {
+      "name": "reference",
+      "value": "?.reference"
+    },
+    {
+      "name": "status",
+      "value": "?.status"
+    },
+    {
+      "name": "language",
+      "value": "?.language"
+    },
+    {
+      "name": "company_id",
+      "value": "?.company_id"
+    },
+    {
+      "name": "currency",
+      "value": "?.currency"
+    },
+    {
+      "name": "mensulaity",
+      "value": "?.mensulaity"
+    },
+    {
+      "name": "start_date",
+      "value": "?.start_date"
+    },
+    {
+      "name": "end_date",
+      "value": "?.end_date"
+    },
+    {
+      "name": "driver_license",
+      "value": "?.driver_license"
+    },
+    {
+      "name": "remote",
+      "value": "?.remote"
+    },
+    {
+      "name": "handicap",
+      "value": "?.handicap"
+    },
+    {
+      "name": "partial",
+      "value": "?.partial"
+    }
+  ]
+}
