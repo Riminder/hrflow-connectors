@@ -1,0 +1,71 @@
+warehouse:
+  TeamtailorJobWarehouse:
+    read:
+      - parameters:
+          Authorization: $__AUTHORIZATION
+          X_Api_Version: $__X_API_VERSION
+actions:
+  push_profile:
+    - id: valid_parameters
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        Authorization: $__AUTHORIZATION
+        X_Api_Version: $__X_API_VERSION
+      status: success
+  pull_jobs:
+    - id: valid_parameters
+      origin_parameters:
+        Authorization: $__AUTHORIZATION
+        X_Api_Version: $__X_API_VERSION
+        filter[remote-status]: none
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: success
+    - id: not_x_smart_token
+      origin_parameters:
+        X_Api_Version: $__X_API_VERSION
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: bad_origin_parameters
+    - id: no_hrflow_board_key
+      origin_parameters:
+        Authorization: $__AUTHORIZATION
+        X_Api_Version: $__X_API_VERSION
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_x_smart_token
+      origin_parameters:
+        Authorization: bad_smart_token
+        X_Api_Version: $__X_API_VERSION
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: read_failure
+    - id: invalid_hrflow_api_secret
+      origin_parameters:
+        Authorization: $__AUTHORIZATION
+        X_Api_Version: $__X_API_VERSION
+        posting_status: PUBLIC
+      target_parameters:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+        board_key: $__BOARD_KEY
+      status: fatal
+      reason: write_failure
