@@ -1,0 +1,29 @@
+{
+  "id": ".reference",
+  "candidate": {
+    "firstName": ".info.first_name",
+    "lastName": ".info.last_name",
+    "mail": ".info.email",
+    "initialReferrer": "HrFlow",
+    "lang": ".text_language | $string | $upper",
+    "social_links": {
+      "linkedin": ".info.urls | .type == linkedin ?? .url",
+      "viadeo": ".info.urls | .type == viadeo ?? .url",
+      "twitter": ".info.urls | .type == twitter ?? .url",
+      "github": ".info.urls | .type == github ?? .url",
+      "behance": ".info.urls | .type == behance ?? .url",
+      "other": ".info.urls | .type == other ?? .url",
+      "website": ".info.urls | .type == website ?? .url",
+      "dribble": ".info.urls | .type == dribble ?? .url"
+    },
+    "location": {
+      "country": ".info.location.?fields?.country ?? .info.location.fields.country | $slice(0, 2) | $upper",
+      "lat": "info.location.lat",
+      "lng": "info.location.lng",
+      "city": ".info.location.?fields?.city ?? .info.location.fields.city",
+      "postalCode": ".info.location.?fields?.postcode ?? .info.location.fields.postcode",
+      "street": ".info.location.?fields?.road ?? .info.location.fields.road",
+      "streetNumber": ".info.location.?fields?.house_number ?? .info.location.fields.house_number"
+    }
+  }
+}
