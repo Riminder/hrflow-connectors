@@ -291,7 +291,7 @@ def profile_format(data: dict) -> dict:
         skill_list = skill_list.split(",")
         if skill_list:
             for skill in skill_list:
-                new_skill = {"name": skill, "type": "hard", "value": None}
+                new_skill = {"name": skill, "value": None}
                 hrflow_skills.append(new_skill)
 
     # Education

@@ -114,7 +114,7 @@ def format_recruitee_candidate(recruitee_candidate: t.Dict) -> t.Dict:
         for lang in extract_field_values(fields, "language_skill")
     ]
     skills = [
-        {"name": skill["text"], "type": "hard", "value": None}
+        {"name": skill["text"], "value": None}
         for skill in extract_field_values(fields, "skills")
     ]
 

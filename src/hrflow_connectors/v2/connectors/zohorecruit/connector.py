@@ -127,7 +127,6 @@ def get_skills(skill_set: str) -> list:
         skill_dict = dict(
             name=skill,
             value=None,
-            type="hard",
         )
         skills.append(skill_dict)
     return skills
