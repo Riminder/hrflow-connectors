@@ -1,0 +1,60 @@
+{
+  "reference": "?.id",
+  "info": {
+    "full_name": "?.name",
+    "first_name": "?.first_name",
+    "last_name": "?.last_name",
+    "email": "?.email",
+    "phone": "?.phone",
+    "location": {
+      "text": "?.location?.location_str",
+      "lat": null,
+      "lng": null
+    },
+    "summary": "?.summary",
+    "picture": "?.image_url"
+  },
+  "created_at": "?.created_at",
+  "updated_at": "?.updated_at",
+  "educations": "?.education_entries || [] | $map({school: ?.school, title:?.degree and ?.field_of_study ?? $concat(.degree, ' in ', .field_of_study): ?.degree || ?.field_of_study || 'Undefined', description: null, date_start: ?.start_date, date_end: ?.end_date, location: {text: null, lat: null, lng: null}})",
+  "experiences": "?.experience_entries || [] | $map({company: ?.company, title: ?.title, date_start: ?.start_date, date_end: ?.end_date, description: ?.summary, location: {text: null, lat: null, lng: null}})",
+  "skills": "?.skills || [] | $map({name: .name, value: null})",
+  "tags": [
+    {
+      "name": "job",
+      "value": "?.job"
+    },
+    {
+      "name": "stage",
+      "value": "?.stage"
+    },
+    {
+      "name": "disqualified",
+      "value": "?.disqualified"
+    },
+    {
+      "name": "disqualified_at",
+      "value": "?.disqualified_at"
+    },
+    {
+      "name": "disqualified_reason",
+      "value": "?.disqualified_reason"
+    },
+    {
+      "name": "hired_at",
+      "value": "?.hired_at"
+    },
+    {
+      "name": "source",
+      "value": "?.source"
+    },
+    {
+      "name": "answers",
+      "value": "?.answers"
+    },
+    {
+      "name": "workable_tags",
+      "value": "?.tags"
+    }
+  ]
+}
