@@ -1,0 +1,77 @@
+{
+  "reference": "?.id | $string",
+  "name": "?.title",
+  "created_at": "?.created_at",
+  "updated_at": "?.updated_at",
+  "summary": "?.notes",
+  "url": "?.absolute_url",
+  "location": {
+    "text": "?.location?.name",
+    "lat": null,
+    "lng": null
+  },
+  "sections": [
+    {
+      "name": "notes",
+      "title": "notes",
+      "description": "?.notes"
+    },
+    {
+      "name": "education",
+      "title": "education",
+      "description": "?.education"
+    },
+    {
+      "name": "employment",
+      "title": "employment",
+      "description": "?.employment"
+    }
+  ],
+  "metadatas": "?.metadata",
+  "tags": [
+    {
+      "name": "requisition_id",
+      "value": "?.requisition_id"
+    },
+    {
+      "name": "confidential",
+      "value": "?.confidential"
+    },
+    {
+      "name": "status",
+      "value": "?.status"
+    },
+    {
+      "name": "opened_at",
+      "value": "?.opened_at"
+    },
+    {
+      "name": "closed_at",
+      "value": "?.closed_at"
+    },
+    {
+      "name": "departments",
+      "value": "?.departments || [] | $map(.name)"
+    },
+    {
+      "name": "offices",
+      "value": "?.offices || [] | $map(.name)"
+    },
+    {
+      "name": "employment_type",
+      "value": "?.custom_fields?.employment_type"
+    },
+    {
+      "name": "maximum_budget",
+      "value": "?.custom_fields?.budget.value"
+    },
+    {
+      "name": "is_template",
+      "value": "?.is_template"
+    },
+    {
+      "name": "copied_from_id",
+      "value": "?.copied_from_id"
+    }
+  ]
+}
