@@ -1,0 +1,15 @@
+{
+  "first_name": ".info.first_name",
+  "last_name": ".info.last_name",
+  "email": ".info.email",
+  "phone": ".info.phone",
+  "address": ".info.location.text",
+  "city": ".info.location?.fields?.city",
+  "state": ".info.location?.fields?.state",
+  "postal": ".info.location?.fields?.postcode",
+  "source": ".source.name",
+  "linkedin": ".info.urls | .type == 'linkedin' ?? .url: null",
+  "twitter": ".info.urls | .type == 'twitter' ?? .url: null",
+  "resumetext": ".text",
+  "base64-resume": ".attachments | .type == 'resume' ?? .public_url | $webhook(GET, ., {}, {}, {}, .content) | $b64encode: null"
+}

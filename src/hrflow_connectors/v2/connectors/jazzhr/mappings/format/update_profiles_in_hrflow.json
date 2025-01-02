@@ -1,0 +1,66 @@
+{
+  "reference": ".id",
+  "info": {
+    "first_name": ".first_name",
+    "last_name": ".last_name",
+    "full_name": "$concat(.first_name , ' ' , .last_name)",
+    "email": ".email",
+    "phone": ".phone",
+    "location": {
+      "text": "$concat(.postal, ', ', .city, ', ', .state, ', ', .country)",
+      "lat": null,
+      "lng": null
+    },
+    "urls": [
+      {
+        "type": "linkedin",
+        "url": ".linkedin"
+      },
+      {
+        "type": "website",
+        "url": ".website"
+      },
+      {
+        "type": "twitter",
+        "url": ".twitter"
+      }
+    ],
+    "gender": ".eeo_gender == 1 ?? 'female': 'male'"
+  },
+  "text": ".resume_text",
+  "skills": [],
+  "experiences": [],
+  "educations": [],
+  "languages": [],
+  "certifications": [],
+  "interests": [],
+  "tags": [
+    { "name": "apply_date", "value": ".apply_date" },
+    { "name": "address", "value": ".address" },
+    { "name": "job", "value": ".job" },
+    { "name": "job_status", "value": ".job_status" },
+    { "name": "workflow_id", "value": ".workflow_id" },
+    { "name": "coverletter", "value": ".coverletter" },
+    { "name": "source", "value": ".source" },
+    { "name": "referral", "value": ".referral" },
+    { "name": "license", "value": ".license" },
+    { "name": "cdl", "value": ".cdl" },
+    { "name": "relocate", "value": ".relocate" },
+    { "name": "citizen", "value": ".citizen" },
+    { "name": "education", "value": ".education" },
+    { "name": "college", "value": ".college" },
+    { "name": "gpa", "value": ".gpa" },
+    { "name": "over18", "value": ".over18" },
+    { "name": "flighthours", "value": ".flighthours" },
+    { "name": "flightgrade", "value": ".flightgrade" },
+    { "name": "felony", "value": ".felony" },
+    { "name": "felonyexplain", "value": ".felonyexplain" },
+    { "name": "custom_questions_id", "value": ".custom_questions_id" },
+    { "name": "internal_job_code", "value": ".internal_job_code" },
+    { "name": "eeo_1_job_category", "value": ".eeo_1_job_category" },
+    { "name": "open_date", "value": ".open_date" }
+  ],
+  "resume": {
+    "raw": ".base64_resume"
+  }
+}

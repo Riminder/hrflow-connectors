@@ -1,0 +1,40 @@
+{
+  "reference": "?.id",
+  "name": "?.title",
+  "description": "?.description",
+  "location": {
+    "text": "$concat(?.city, ', ', ?.state, ', ', ?.country)",
+    "lat": null,
+    "lng": null
+  },
+  "sections": [
+    {
+      "name": "Job Description",
+      "title": "Job Description",
+      "description": "?.description"
+    }
+  ],
+  "ranges_float": [
+    {
+      "name": "Salary",
+      "value_min": "?.approved_salary_range_minimum",
+      "value_max": "?.approved_salary_range_maximum",
+      "unit": null
+    }
+  ],
+  "summary": "?.job_notes",
+  "tags": [
+    { "name": "hiring_lead_id", "value": "?.hiring_lead_id" },
+    { "name": "employment_type", "value": "?.employment_type" },
+    { "name": "minimum_experience", "value": "?.minimum_experience" },
+    { "name": "department", "value": "?.department" },
+    { "name": "job_status", "value": "?.job_status" },
+    { "name": "syndication", "value": "?.syndication" },
+    { "name": "workflow_id", "value": "?.workflow_id" },
+    { "name": "custom_questions_id", "value": "?.custom_questions_id" },
+    { "name": "internal_job_code", "value": "?.internal_job_code" },
+    { "name": "eeo_1_job_category", "value": "?.eeo_1_job_category" },
+    { "name": "eeo_1_job_category", "value": "?.eeo_1_job_category" },
+    { "name": "open_date", "value": "?.open_date" }
+  ]
+}
