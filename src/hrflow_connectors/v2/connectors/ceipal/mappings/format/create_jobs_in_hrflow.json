@@ -1,0 +1,79 @@
+{
+  "reference": ".id",
+  "name": ".position_title",
+  "url": ".apply_job",
+  "summary": ".requisition_description",
+  "created_at": ".created",
+  "updated_at": ".modified",
+  "sections": [
+    {
+      "name": "description",
+      "title": "description",
+      "description": ".requisition_description"
+    },
+    {
+      "name": "public_job_desc",
+      "title": "public_job_desc",
+      "description": ".public_job_desc"
+    },
+    {
+      "name": "experience",
+      "title": "experience",
+      "description": ".experience"
+    },
+    {
+      "name": "min_experience",
+      "title": "min_experience",
+      "description": ".min_experience"
+    }
+  ],
+  "location": {
+    "text": ".address",
+    "lat": null,
+    "lng": null,
+    "fields": {
+      "city": ".city",
+      "state": ".state",
+      "country": ".country",
+      "postcode": ".postal_code"
+    }
+  },
+  "skills": ".skills || [] | $split(',') | $map({name: ., value: null, type: null})",
+  "ranges_float": ".pay_rates | $map({name: $concat('pay_rate_', .pay_rate_employment_type), min_value: .pay_rate | $split('-') | .[0], max_value: .pay_rate | $split('-') | .[1], unit: .pay_rate_currency})",
+  "ranges_date": [
+    {
+      "name": "Period",
+      "value_min": ".job_start_date",
+      "value_max": ".job_end_date"
+    }
+  ],
+  "tags": [
+    { "name": "business_unit_id", "value": ".business_unit_id" },
+    { "name": "assigned_recruiter", "value": ".assigned_recruiter" },
+    { "name": "posted_by", "value": ".posted_by" },
+    { "name": "duration", "value": ".duration" },
+    { "name": "experience", "value": ".experience" },
+    { "name": "min_experience", "value": ".min_experience" },
+    { "name": "job_start_date", "value": ".job_start_date" },
+    { "name": "job_end_date", "value": ".job_end_date" },
+    { "name": "work_authorization", "value": ".work_authorization" },
+    { "name": "number_of_positions", "value": ".number_of_positions" },
+    { "name": "closing_date", "value": ".closing_date" },
+    { "name": "remote_opportunities", "value": ".remote_opportunities" },
+    { "name": "public_job_title", "value": ".public_job_title" },
+    { "name": "employment_type", "value": ".employment_type" },
+    { "name": "primary_recruiter", "value": ".primary_recruiter" },
+    { "name": "department", "value": ".department" },
+    { "name": "currency", "value": ".currency" },
+    { "name": "job_status", "value": ".job_status" },
+    { "name": "industry", "value": ".industry" },
+    { "name": "tax_terms", "value": ".tax_terms" },
+    { "name": "apply_job", "value": ".apply_job" },
+    {
+      "name": "apply_job_without_registration",
+      "value": ".apply_job_without_registration"
+    },
+    { "name": "contact_person", "value": ".contact_person" },
+    { "name": "posted", "value": ".posted" }
+  ]
+}

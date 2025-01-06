@@ -52,6 +52,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**AD-MEN**](./src/hrflow_connectors/v2/connectors/admen/README.md) | CRM | :book: Open source | ** | ** |
 | [**Breezy HR**](./src/hrflow_connectors/v2/connectors/breezyhr/README.md) | ATS | :book: Open source | *19/01/2022* | *31/10/2024* |
 | [**Bullhorn**](./src/hrflow_connectors/v2/connectors/bullhorn/README.md) | ATS | :book: Open source | *26/01/2022* | *23/10/2024* |
+| [**Ceipal**](./src/hrflow_connectors/v2/connectors/ceipal/README.md) | ATS | :book: Open source | ** | ** |
 | [**Ceridian**](./src/hrflow_connectors/v1/connectors/ceridian/README.md) | HCM | :book: Open source | *19/01/2022* | *05/09/2024* |
 | [**Digitalrecruiters**](./src/hrflow_connectors/v1/connectors/digitalrecruiters/README.md) | ATS | :book: Open source | *17/08/2023* | *24/10/2024* |
 | [**Flatchr**](./src/hrflow_connectors/v2/connectors/flatchr/README.md) | ATS | :book: Open source | *21/04/2022* | ** |
@@ -99,7 +100,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Carerix**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**CATS**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Cegid (Meta4)**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Ceipal**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**ClayHR**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**ClockWork**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Comeet**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
