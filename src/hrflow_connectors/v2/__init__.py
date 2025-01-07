@@ -3,6 +3,8 @@ from hrflow_connectors.v2.connectors.adzuna import Adzuna
 from hrflow_connectors.v2.connectors.bullhorn import Bullhorn
 from hrflow_connectors.v2.connectors.francetravail import FranceTravail
 from hrflow_connectors.v2.connectors.hubspot import Hubspot
+from hrflow_connectors.v2.connectors.jobology import Jobology
+from hrflow_connectors.v2.connectors.meteojob import Meteojob
 from hrflow_connectors.v2.connectors.recruitee import Recruitee
 from hrflow_connectors.v2.connectors.smartrecruiters import SmartRecruiters
 from hrflow_connectors.v2.connectors.zohorecruit import ZohoRecruit
@@ -22,4 +24,6 @@ __CONNECTORS__ = [
     Recruitee,
     Adzuna,
     FranceTravail,
+    Meteojob,
+    Jobology,
 ]
