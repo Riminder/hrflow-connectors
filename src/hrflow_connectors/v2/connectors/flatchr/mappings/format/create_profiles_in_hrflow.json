@@ -1,0 +1,50 @@
+{
+  "reference": "?.id",
+  "created_at": "?.created_at",
+  "info": {
+    "email": "?.email",
+    "first_name": "?.firstname",
+    "last_name": "?.lastname",
+    "full_name": "?.firstname + ' ' + ?.lastname",
+    "location": {
+      "text": "",
+      "lat": null,
+      "lng": null
+    },
+    "phone": "?.phone"
+  },
+  "educations": [],
+  "experiences": [],
+  "attachments": [],
+  "tags": [
+    {
+      "name": "applicant_id",
+      "value": "?.applicant_id"
+    },
+    {
+      "name": "vacancy",
+      "value": "?.vacancy"
+    },
+    {
+      "name": "vacancy_id",
+      "value": "?.vacancy_id"
+    },
+    {
+      "name": "source",
+      "value": "?.source"
+    },
+    {
+      "name": "external_id",
+      "value": "?.external_id"
+    },
+    {
+      "name": "hired",
+      "value": "?.hired"
+    },
+    {
+      "name": "column",
+      "value": "?.column"
+    }
+  ],
+  "resume": "?.resume"
+}

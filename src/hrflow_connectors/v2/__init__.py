@@ -1,6 +1,7 @@
 from hrflow_connectors.v2.connectors.admen import Admen
 from hrflow_connectors.v2.connectors.adzuna import Adzuna
 from hrflow_connectors.v2.connectors.bullhorn import Bullhorn
+from hrflow_connectors.v2.connectors.flatchr import Flatchr
 from hrflow_connectors.v2.connectors.francetravail import FranceTravail
 from hrflow_connectors.v2.connectors.hubspot import Hubspot
 from hrflow_connectors.v2.connectors.recruitee import Recruitee
@@ -22,4 +23,5 @@ __CONNECTORS__ = [
     Recruitee,
     Adzuna,
     FranceTravail,
+    Flatchr,
 ]

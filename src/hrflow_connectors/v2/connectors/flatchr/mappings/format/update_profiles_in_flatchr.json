@@ -1,0 +1,11 @@
+{
+  "id": ".reference",
+  "firstname": ".info.first_name",
+  "lastname": ".info.last_name",
+  "email": ".info.email",
+  "phone": ".info.phone",
+  "urls": ".info.urls | $map({.type: .url})",
+  "type": "link",
+  "resume": ".attachments | .type == 'resume' ?? .public_url",
+  "source": "$concat('HrFlow Source: ', .source.name)"
+}
