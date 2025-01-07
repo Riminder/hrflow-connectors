@@ -2,6 +2,23 @@
 
 
 
+## v4.26.3 (2025-01-07)
+
+### Fix
+
+* fix: update Flatchr integration to accommodate API limitations ([`e54f5b3`](https://github.com/Riminder/hrflow-connectors/commit/e54f5b31ab6b8280abb9d23d5166de0a6cb2f9b4))
+
+### Unknown
+
+* Merge pull request #309 from Riminder/feature/flatchr-v2
+
+feature: Add Flatchr  Connector in CRUD v2 ([`6bba5c4`](https://github.com/Riminder/hrflow-connectors/commit/6bba5c48502065814a89e1edfa05f5c1b43f881f))
+
+* removing extra docs ([`aaa336a`](https://github.com/Riminder/hrflow-connectors/commit/aaa336ac1e84e44b88af7c2ee3ffb98f46ef37e2))
+
+* feature: Add Flatchr  Connector in CRUD v2 ([`dc116ef`](https://github.com/Riminder/hrflow-connectors/commit/dc116ef7330d19bc780af9ff17adc4337b29024d))
+
+
 ## v4.26.2 (2024-12-09)
 
 ### Fix
