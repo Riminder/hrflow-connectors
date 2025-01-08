@@ -1,0 +1,62 @@
+{
+  "reference": "?.id",
+  "info": {
+    "first_name": ".attributes?.first-name",
+    "last_name": ".attributes?.last-name",
+    "full_name": "$concat(.attributes?.first-name , ' ' , .attributes?.last-name)",
+    "email": ".attributes?.email",
+    "phone": ".attributes?.phone",
+    "location": {
+      "text": "",
+      "lat": null,
+      "lng": null
+    },
+    "picture": ".attributes?.picture",
+    "urls": [
+      {
+        "type": "linkedin",
+        "url": ".attributes?.linkedin-url"
+      }
+    ],
+    "summary": ".attributes?.pitch"
+  },
+  "updated_at": ".attributes?.updated-at",
+  "created_at": ".attributes?.created-at",
+  "experiences": [],
+  "educations": [],
+  "resume": "?.resume",
+  "tags": [
+    {
+      "name": "sourced",
+      "value": ".attributes?.sourced"
+    },
+    {
+      "name": "connected",
+      "value": ".attributes?.connected"
+    },
+    {
+      "name": "internal",
+      "value": ".attributes?.internal"
+    },
+    {
+      "name": "referred",
+      "value": ".attributes?.referred"
+    },
+    {
+      "name": "referring_url",
+      "value": ".attributes?.referring-url"
+    },
+    {
+      "name": "referring_site",
+      "value": ".attributes?.referring-site"
+    },
+    {
+      "name": "unsubscribed",
+      "value": ".attributes?.unsubscribed"
+    },
+    {
+      "name": "teamtailor_tags",
+      "value": "?.tags"
+    }
+  ]
+}
