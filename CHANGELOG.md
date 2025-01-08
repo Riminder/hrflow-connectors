@@ -2,6 +2,29 @@
 
 
 
+## v4.27.0 (2025-01-08)
+
+### Documentation
+
+* docs: add required and optional flows for new connectors in CONTRIBUTING.md ([`6ffacb0`](https://github.com/Riminder/hrflow-connectors/commit/6ffacb04779cc11852ba2c50153bbfd7e6d2fdb7))
+
+### Feature
+
+* feat: docs, graphs and manifest for Breezy HR ([`e70153e`](https://github.com/Riminder/hrflow-connectors/commit/e70153e8276ce6b4bed69a5a99c9335042d45555))
+
+### Unknown
+
+* Merge pull request #311 from Riminder/feature/breezyhr-v2
+
+Feature/breezyhr v2 ([`1cd97c5`](https://github.com/Riminder/hrflow-connectors/commit/1cd97c53d50858ddc2e3748d6f7ad26905749d4a))
+
+* feature: Add Breezy HR  Connector in CRUD v2 ([`eb4d294`](https://github.com/Riminder/hrflow-connectors/commit/eb4d294c2650d388584299a851e3bb99751324c9))
+
+* Merge pull request #310 from Riminder/update/contibuting-md
+
+docs: add required and optional flows for new connectors in CONTRIBUT… ([`48c57c4`](https://github.com/Riminder/hrflow-connectors/commit/48c57c420c9ffd46b744ebbafb94af6ea53db545))
+
+
 ## v4.26.3 (2025-01-07)
 
 ### Fix
