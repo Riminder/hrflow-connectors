@@ -1,6 +1,7 @@
 from hrflow_connectors.v2.connectors.admen import Admen
 from hrflow_connectors.v2.connectors.adzuna import Adzuna
 from hrflow_connectors.v2.connectors.bullhorn import Bullhorn
+from hrflow_connectors.v2.connectors.carrevolutis import Carrevolutis
 from hrflow_connectors.v2.connectors.flatchr import Flatchr
 from hrflow_connectors.v2.connectors.francetravail import FranceTravail
 from hrflow_connectors.v2.connectors.hubspot import Hubspot
@@ -24,4 +25,5 @@ __CONNECTORS__ = [
     Adzuna,
     FranceTravail,
     Flatchr,
+    Carrevolutis,
 ]
