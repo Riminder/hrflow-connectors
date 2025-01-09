@@ -2,6 +2,31 @@
 
 
 
+## v4.27.1 (2025-01-09)
+
+### Fix
+
+* fix: skills hardcoded as type hard ([`e11b4b9`](https://github.com/Riminder/hrflow-connectors/commit/e11b4b9822d2283cf76cdcabae870810807ac4f7))
+
+### Unknown
+
+* Merge pull request #314 from Riminder/feature/workable-v2
+
+Feature/workable v2 ([`93639c8`](https://github.com/Riminder/hrflow-connectors/commit/93639c8e0206b9137af352ae170e00d185246c95))
+
+* feature: Add Workable Connector in CRUD v2 ([`69aa211`](https://github.com/Riminder/hrflow-connectors/commit/69aa2117c62b2885623a905d15b45264b6071f39))
+
+* Merge pull request #313 from Riminder/feature/taleez-v2
+
+feature: Add Taleez Connector in CRUD v2 ([`e5bc7c6`](https://github.com/Riminder/hrflow-connectors/commit/e5bc7c638a21857d597638a0cad2f082e4665355))
+
+* feature: Add Taleez Connector in CRUD v2 ([`2e59a8f`](https://github.com/Riminder/hrflow-connectors/commit/2e59a8f64b3cd325bdc940c08da38be59fe52f0e))
+
+* Merge pull request #312 from Riminder/feature/teamtailor-v2
+
+feature: Add Teamtailor Connector in CRUD v2 ([`98c21a3`](https://github.com/Riminder/hrflow-connectors/commit/98c21a31989efdb5dcd6750580f950c4fed87ec0))
+
+
 ## v4.27.0 (2025-01-08)
 
 ### Documentation
@@ -13,6 +38,8 @@
 * feat: docs, graphs and manifest for Breezy HR ([`e70153e`](https://github.com/Riminder/hrflow-connectors/commit/e70153e8276ce6b4bed69a5a99c9335042d45555))
 
 ### Unknown
+
+* feature: Add Teamtailor Connector in CRUD v2 ([`8236995`](https://github.com/Riminder/hrflow-connectors/commit/823699509dbc601cd2e09d987f55b32a039feabf))
 
 * Merge pull request #311 from Riminder/feature/breezyhr-v2
 
