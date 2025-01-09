@@ -1,0 +1,36 @@
+{
+  "name": "?.label >> Undefined",
+  "reference": "?.id | $string",
+  "created_at": ".dateCreation | $fromtimestamp",
+  "updated_at": ".dateLastPublish | $fromtimestamp",
+  "location": {
+    "lat": "?.lat != null ?? .lat | $float: null",
+    "lng": "?.lng != null ?? .lng | $float: null",
+    "text": "$concat(?.postalCode>> '', ' ', ?.city>> '', ' ', ?.country >> '') | $strip",
+    "fields": {
+      "country": "?.country",
+      "city": "?.city",
+      "postcode": "?.postalCode"
+    }
+  },
+  "url": "?.url",
+  "summary": "?.jobDescription",
+  "sections": [
+    {
+      "name": "taleez-sections-jobDescription",
+      "title": "jobDescription",
+      "description": "?.jobDescription"
+    },
+    {
+      "name": "taleez-sections-profileDescription",
+      "title": "profileDescription",
+      "description": "?.profileDescription"
+    },
+    {
+      "name": "taleez-sections-companyDescription",
+      "title": "companyDescription",
+      "description": "?.companyDescription"
+    }
+  ],
+  "tags": "$merge([{name: taleez_contract, value: ?.contract}, {name: taleez_profile, value: ?.profile}, {name: taleez_urlApplying, value: ?.urlApplying}, {name: taleez_currentStatus, value: ?.currentStatus}, {name: taleez_jobTitle, value: ?.jobTitle}, {name: taleez_company, value: ?.company}, {name: taleez_location, value: ?.location}, {name: taleez_startDate, value: ?.startDate}, {name: taleez_endDate, value: ?.endDate}, {name: taleez_description, value: ?.description}, {name: taleez_salary, value: ?.salary}, {name: taleez_salaryCurrency, value: ?.salaryCurrency}, {name: taleez_salaryPeriod, value: ?.salaryPeriod}, {name: taleez_salaryPeriodTimeUnit, value: ?.salaryPeriodTimeUnit}, {name: taleez_contractLength, value: ?.contractLength}, {name: taleez_contractLengthTimeUnit, value: ?.contractLengthTimeUnit}, {name: taleez_fullTime, value: ?.fullTime}, {name: taleez_workHours, value: ?.workHours}, {name: taleez_remote, value: ?.remote}, {name: taleez_recruiterId, value: ?.recruiterId}, {name: taleez_unitId, value: ?.unitId}, {name: taleez_companyLabel, value: ?.companyLabel}, {name: taleez_website, value: ?.website}, {name: taleez_visibility, value: ?.visibility}, {name: taleez_tags, value: ?.tags}], [.properties | .internal == 'Département' ?? ?.value || .values, .properties | .internal == 'Niveau de qualification' ?? ?.value || .values, .properties | .internal == 'Salaire' ?? ?.value || .values, .properties | .internal == 'Expérience' ?? ?.value || .values, .properties | .internal == 'Type de contrat' ?? ?.value || .values, .properties | .internal == 'Date de début' ?? ?.value || .values, .properties | .internal == 'Type de télétravail' ?? ?.value || .values])"
+}

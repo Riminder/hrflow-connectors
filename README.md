@@ -62,7 +62,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Salesforce**](./src/hrflow_connectors/v1/connectors/salesforce/README.md) | CRM | :book: Open source | *03/08/2023* | *05/09/2024* |
 | [**SAP SuccessFactors**](./src/hrflow_connectors/v1/connectors/sapsuccessfactors/README.md) | ATS | :book: Open source | *19/01/2022* | *23/10/2024* |
 | [**SmartRecruiters**](./src/hrflow_connectors/v2/connectors/smartrecruiters/README.md) | ATS | :book: Open source | *21/03/2022* | *05/09/2024* |
-| [**Taleez**](./src/hrflow_connectors/v1/connectors/taleez/README.md) | ATS | :book: Open source | *19/01/2022* | *23/10/2024* |
+| [**Taleez**](./src/hrflow_connectors/v2/connectors/taleez/README.md) | ATS | :book: Open source | *19/01/2022* | *23/10/2024* |
 | [**TalentSoft**](./src/hrflow_connectors/v1/connectors/talentsoft/README.md) | HCM | :book: Open source | *19/04/2022* | ** |
 | [**Teamtailor**](./src/hrflow_connectors/v2/connectors/teamtailor/README.md) | ATS | :book: Open source | *06/10/2022* | *05/09/2024* |
 | [**Waalaxy**](./src/hrflow_connectors/v1/connectors/waalaxy/README.md) | Automation | :book: Open source | *18/11/2022* | *05/09/2024* |
