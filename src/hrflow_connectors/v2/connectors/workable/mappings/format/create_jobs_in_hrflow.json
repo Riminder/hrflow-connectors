@@ -1,0 +1,88 @@
+{
+  "name": "?.title",
+  "reference": "?.shortcode",
+  "url": "?.url",
+  "location": {
+    "text": "?.location?.location_str ?? .location.location_str: $concat(?.location?.city, ', ', ?.location?.region, ', ', ?.location?.zip_code, ', ', ?.location?.country)",
+    "lat": "?.locations?.[0].coords | $split(', ') | .[0] | $float",
+    "lng": "?.locations?.[0].coords | $split(', ') | .[1] | $float",
+    "geojson": {
+      "city": "?.location?.city",
+      "region": "?.location?.region",
+      "zip_code": "?.location?.zip_code",
+      "country": "?.location?.country"
+    }
+  },
+  "sections": [
+    {
+      "name": "full_description",
+      "title": "full_description",
+      "description": "?.full_description"
+    },
+    {
+      "name": "description",
+      "title": "description",
+      "description": "?.description"
+    },
+    {
+      "name": "requirements",
+      "title": "requirements",
+      "description": "?.requirements"
+    },
+    {
+      "name": "benefits",
+      "title": "benefits",
+      "description": "?.benefits"
+    }
+  ],
+  "created_at": "?.created_at",
+  "summary": "?.description",
+  "requirements": "?.requirements",
+  "benefits": "?.benefits",
+  "tags": [
+    {
+      "name": "id",
+      "value": "?.id"
+    },
+    {
+      "name": "state",
+      "value": "?.state"
+    },
+    {
+      "name": "department",
+      "value": "?.department"
+    },
+    {
+      "name": "application_url",
+      "value": "?.application_url"
+    },
+    {
+      "name": "employment_type",
+      "value": "?.employment_type"
+    },
+    {
+      "name": "industry",
+      "value": "?.industry"
+    },
+    {
+      "name": "function",
+      "value": "?.function"
+    },
+    {
+      "name": "experience",
+      "value": "?.experience"
+    },
+    {
+      "name": "education",
+      "value": "?.education"
+    }
+  ],
+  "ranges_float": [
+    {
+      "name": "salary",
+      "value_min": "?.salary?.salary_from",
+      "value_max": "?.salary?.salary_to",
+      "unit": "?.salary?.salary_currency"
+    }
+  ]
+}

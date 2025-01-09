@@ -96,7 +96,7 @@ def format_job(
         summary=pole_emploi_job.get("description"),
         requirements=get_requirements(pole_emploi_job.get("formations", [])),
         skills=[
-            dict(name=skill["libelle"], value=None, type="hard")
+            dict(name=skill["libelle"], value=None)
             for skill in pole_emploi_job.get("competences", [])
         ],
         languages=[

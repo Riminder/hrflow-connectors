@@ -1,0 +1,16 @@
+{
+  "id": "?.reference",
+  "name": "?.info?.full_name",
+  "firstname": "?.info?.first_name",
+  "lastname": "?.info?.last_name",
+  "email": "?.info?.email",
+  "phone": "?.info?.phone",
+  "address": "?.info?.location?.text",
+  "summary": "?.info?.summary",
+  "image_url": "?.info?.picture",
+  "education_entries": "?.educations || [] | $map({degree: .title, school: .school || 'Undefined', start_date: .date_start, end_date: .date_end})",
+  "experience_entries": "?.experiences || [] | $map({title: .title || 'Undefined', company: .company, summary: .description, start_date: .date_start, end_date: .date_end})",
+  "skills": "?.skills || [] | $map(.name)",
+  "social_profiles": "?.info?.urls || [] | $map({type: .type, url: .url})",
+  "resume_url": "?.attachments | .type == 'resume' ?? .public_url"
+}
