@@ -1,0 +1,83 @@
+# Archive profiles in salesforce
+`HrFlow` :arrow_right: `Salesforce`
+
+Send **archived** 'profile(s)' _from_ HrFlow _to_ Salesforce
+
+
+
+## Salesforce Auth Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `sf_username` :red_circle: | `string` | None | username used to access Salesforce API |
+| `sf_password` :red_circle: | `string` | None | password used to access Salesforce API |
+| `sf_security_token` :red_circle: | `string` | None | Security Token to access Salesforce API.See below for instructions: How Can I Find My Security Token and Use It in Data Loader | Salesforce Platform  https://www.youtube.com/watch?v=nYbfxeSGKFM&ab_channel=SalesforceSupport |
+| `sf_organization_id` :red_circle: | `string` | None | See below for instructions: How to find your organization id  https://help.salesforce.com/s/articleView?id=000385215&type=1 |
+
+## HrFlow.ai Auth Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `api_secret` :red_circle: | `string` | None | API Key used to access HrFlow.ai API |
+| `api_user` :red_circle: | `string` | None | User email used to access HrFlow.ai API |
+
+## Pull Parameters (HrFlow)
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `source_key` :red_circle: | `string` | None | HrFlow.ai source key |
+| `profile_key` :red_circle: | `string` | None | HrFlow.ai profile key |
+
+## Push Parameters (Salesforce)
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+
+## Other Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `workflow_id` :red_circle: | `string` | None | A stable identifier used for persisting in incremental mode |
+| `logics` :red_circle: | `array\|null` | None | A list of functions called in sequence with each item pulled from the origin. Each function might either return it's argument or None to discard the item. Any item discarded is eventually not pushed to the target |
+| `format`  | `Callable\|null` | None | A formatting function to apply on items pulled before the push |
+| `callback`  | `Callable\|null` | None | Registers a callback function to be called at the of a successful execution |
+| `persist`  | `boolean` | True | When False has the effect of running in dry mode. Items are pulled but not pushed to the target |
+| `incremental`  | `boolean` | False | Controls the incremental reading execution mode |
+
+:red_circle: : *required*
+
+## Example
+
+```python
+import logging
+from hrflow_connectors.v2 import Salesforce
+
+
+logging.basicConfig(level=logging.INFO)
+
+
+Salesforce.archive_profiles_in_salesforce(
+    workflow_id=...,
+    logics=...,
+    connector_auth=dict(
+        sf_username=...,
+        sf_password=...,
+        sf_security_token=...,
+        sf_organization_id=...,
+    ),
+    hrflow_auth=dict(
+        api_secret=...,
+        api_user=...,
+    ),
+    pull_parameters=dict(
+        source_key=...,
+        profile_key=...,
+    ),
+    push_parameters=dict(
+    ),
+    format=...,
+    callback=...,
+    persist=...,
+    incremental=...
+)
+```

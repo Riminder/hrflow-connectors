@@ -5,6 +5,7 @@ ignore = E731, W503, E203
 black-config = pyproject.toml
 per-file-ignores =
     src/hrflow_connectors/v2/connectors/zohorecruit/aisles.py: E501
+    src/hrflow_connectors/v2/connectors/salesforce/aisles.py: E501
     src/hrflow_connectors/v2/connectors/flatchr/aisles.py: E501
     src/hrflow_connectors/v1/core/documentation.py: E501
     tests/v1/core/test_documentation.py: E501

@@ -6,6 +6,7 @@ from hrflow_connectors.v2.connectors.flatchr import Flatchr
 from hrflow_connectors.v2.connectors.francetravail import FranceTravail
 from hrflow_connectors.v2.connectors.hubspot import Hubspot
 from hrflow_connectors.v2.connectors.recruitee import Recruitee
+from hrflow_connectors.v2.connectors.salesforce import Salesforce
 from hrflow_connectors.v2.connectors.smartrecruiters import SmartRecruiters
 from hrflow_connectors.v2.connectors.taleez import Taleez
 from hrflow_connectors.v2.connectors.teamtailor import Teamtailor
@@ -32,4 +33,5 @@ __CONNECTORS__ = [
     Teamtailor,
     Taleez,
     Workable,
+    Salesforce,
 ]

@@ -1,0 +1,26 @@
+{
+  "archived_at": ".Archive__c",
+  "archive": ".Archive__c",
+  "name": ".Name__c",
+  "reference": ".Reference__c",
+  "url": ".URL__c",
+  "picture": ".Picture__c",
+  "summary": ".Summary__c",
+  "location": {
+    "text": ".Location_Text__c",
+    "lat": ".Location_Lat__c",
+    "lng": ".Location_Lng__c"
+  },
+  "culture": ".Culture__c",
+  "responsibilities": ".Responsibilities__c",
+  "requirements": ".Requirements__c",
+  "benefits": ".Benefits__c",
+  "interviews": ".Interviews__c",
+  "sections": ".Sections__c | $jsonload",
+  "skills": ".Skills__c | $jsonload",
+  "languages": ".Languages__c | $jsonload",
+  "tags": ".Tags__c | $jsonload",
+  "ranges_date": ".Ranges_Date__c | $jsonload",
+  "ranges_float": ".Ranges_Float__c | $jsonload",
+  "metadatas": ".Metadatas__c | $jsonload"
+}

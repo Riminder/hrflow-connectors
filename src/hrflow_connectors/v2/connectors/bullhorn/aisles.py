@@ -581,7 +581,7 @@ def generic_job_pulling(
                     date_value = read_data[date_field]
                     last_id = read_data["last_id"]
                 except (json.JSONDecodeError, KeyError) as e:
-                    raise Exception(f"Error parsing read_from: {e}")
+                    raise Exception(f"Error parsing incremental_token: {e}")
             else:
                 date_value = getattr(parameters, date_field)
                 last_id = None
