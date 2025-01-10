@@ -1,0 +1,140 @@
+warehouse:
+  WaalaxyProfilesWarehouse:
+    read:
+      - parameters:
+          profile: {
+    "_id": "63579da9dc3ed5f5b5556725",
+    "email": "",
+    "company_linkedinUrl": "https://www.linkedin.com/company/hrflowai",
+    "company_name": "HrFlow.ai",
+    "connectedAt": "",
+    "company_website": "https://hrflow.ai",
+    "premium": "No",
+    "prospectList": "Invitation Workflow",
+    "firstName": "Léo",
+    "jobSeeker": "No",
+    "tags": "",
+    "lastName": "FERRETTI",
+    "linkedinUrl": "https://www.linkedin.com/in/léo-ferretti/",
+    "dropcontactEmail": "",
+    "emailReplied": "No",
+    "occupation": "Étudiant(e) à EPITA: Ecole d'Ingénieurs en Informatique",
+    "phoneNumbers": "",
+    "emailSent": "No",
+    "firstMessageAt": "",
+    "location": "Carpentras  Provence-Alpes-Côte d'Azur  France",
+    "messageReplied": "Yes",
+    "messageSent": "No",
+    "profileStatus": "pending",
+    "salesNavigatorUrl": "https://www.linkedin.com/sales/people/ACwAADlFw4UBM68oBJlIWKiHPCaHfKv7nQwG-7o,NAME_SEARCH",
+    "__typename": "FormattedProspect",
+}
+actions:
+  catch_profile:
+    - id: write_fails_because_of_existing_profile
+      origin_parameters:
+        profile: {
+    "_id": "63579da9dc3ed5f5b5556725",
+    "email": "",
+    "company_linkedinUrl": "https://www.linkedin.com/company/hrflowai",
+    "company_name": "HrFlow.ai",
+    "connectedAt": "",
+    "company_website": "https://hrflow.ai",
+    "premium": "No",
+    "prospectList": "Invitation Workflow",
+    "firstName": "Léo",
+    "jobSeeker": "No",
+    "tags": "",
+    "lastName": "FERRETTI",
+    "linkedinUrl": "https://www.linkedin.com/in/léo-ferretti/",
+    "dropcontactEmail": "",
+    "emailReplied": "No",
+    "occupation": "Étudiant(e) à EPITA: Ecole d'Ingénieurs en Informatique",
+    "phoneNumbers": "",
+    "emailSent": "No",
+    "firstMessageAt": "",
+    "location": "Carpentras  Provence-Alpes-Côte d'Azur  France",
+    "messageReplied": "Yes",
+    "messageSent": "No",
+    "profileStatus": "pending",
+    "salesNavigatorUrl": "https://www.linkedin.com/sales/people/ACwAADlFw4UBM68oBJlIWKiHPCaHfKv7nQwG-7o,NAME_SEARCH",
+    "__typename": "FormattedProspect",
+}
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        only_edit_fields: ["tags"]
+      status: fatal
+      reason: write_failure
+    - id: no_hrflow_source_key
+      origin_parameters:
+        profile: {
+    "_id": "63579da9dc3ed5f5b5557625",
+    "email": "",
+    "company_linkedinUrl": "https://www.linkedin.com/company/hrflowai",
+    "company_name": "HrFlow.ai",
+    "connectedAt": "",
+    "company_website": "https://hrflow.ai",
+    "premium": "No",
+    "prospectList": "Invitation Workflow",
+    "firstName": "Léo",
+    "jobSeeker": "No",
+    "tags": "",
+    "lastName": "FERRETTI",
+    "linkedinUrl": "https://www.linkedin.com/in/léo-ferretti/",
+    "dropcontactEmail": "",
+    "emailReplied": "No",
+    "occupation": "Étudiant(e) à EPITA: Ecole d'Ingénieurs en Informatique",
+    "phoneNumbers": "",
+    "emailSent": "No",
+    "firstMessageAt": "",
+    "location": "Carpentras  Provence-Alpes-Côte d'Azur  France",
+    "messageReplied": "Yes",
+    "messageSent": "No",
+    "profileStatus": "pending",
+    "salesNavigatorUrl": "https://www.linkedin.com/sales/people/ACwAADlFw4UBM68oBJlIWKiHPCaHfKv7nQwG-7o,NAME_SEARCH",
+    "__typename": "FormattedProspect",
+}
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        only_edit_fields: ["tags"]
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_hrflow_api_secret
+      origin_parameters:
+        profile: {
+    "_id": "63579da9dc3ed5f5b5557625",
+    "email": "",
+    "company_linkedinUrl": "https://www.linkedin.com/company/hrflowai",
+    "company_name": "HrFlow.ai",
+    "connectedAt": "",
+    "company_website": "https://hrflow.ai",
+    "premium": "No",
+    "prospectList": "Invitation Workflow",
+    "firstName": "Léo",
+    "jobSeeker": "No",
+    "tags": "",
+    "lastName": "FERRETTI",
+    "linkedinUrl": "https://www.linkedin.com/in/léo-ferretti/",
+    "dropcontactEmail": "",
+    "emailReplied": "No",
+    "occupation": "Étudiant(e) à EPITA: Ecole d'Ingénieurs en Informatique",
+    "phoneNumbers": "",
+    "emailSent": "No",
+    "firstMessageAt": "",
+    "location": "Carpentras  Provence-Alpes-Côte d'Azur  France",
+    "messageReplied": "Yes",
+    "messageSent": "No",
+    "profileStatus": "pending",
+    "salesNavigatorUrl": "https://www.linkedin.com/sales/people/ACwAADlFw4UBM68oBJlIWKiHPCaHfKv7nQwG-7o,NAME_SEARCH",
+    "__typename": "FormattedProspect",
+}
+      target_parameters:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        only_edit_fields: ["tags"]
+      status: fatal
+      reason: write_failure
