@@ -57,16 +57,14 @@ def format_greenhouse_job(data: t.Dict) -> t.Dict:
                 name="closed_at",
                 value=data.get("closed_at"),
             ),
-            dict(
-                name="departments",
-                value=[
-                    department["name"] for department in data.get("departments", [])
-                ],
-            ),
-            dict(
-                name="offices",
-                value=[office["name"] for office in data.get("offices", [])],
-            ),
+            *[
+                dict(name="department", value=department["name"])
+                for department in data.get("departments", [])
+            ],
+            *[
+                dict(name="office", value=office["name"])
+                for office in data.get("offices", [])
+            ],
             dict(
                 name="employment_type",
                 value=data.get("custom_fields", {}).get("employment_type"),
@@ -84,20 +82,24 @@ def format_greenhouse_job(data: t.Dict) -> t.Dict:
                 value=data.get("copied_from_id"),
             ),
         ],
-        ranges_floats=[
-            dict(
-                name="salary_range",
-                value_min=data.get("custom_fields", {})
-                .get("salary_range", {})
-                .get("min_value", None),
-                value_max=data.get("custom_fields", {})
-                .get("salary_range", {})
-                .get("max_value", None),
-                unit=data.get("custom_fields", {})
-                .get("salary_range", {})
-                .get("unit", None),
-            )
-        ],
+        ranges_floats=(
+            [
+                dict(
+                    name="salary_range",
+                    value_min=data.get("custom_fields", {})
+                    .get("salary_range", {})
+                    .get("min_value", None),
+                    value_max=data.get("custom_fields", {})
+                    .get("salary_range", {})
+                    .get("max_value", None),
+                    unit=data.get("custom_fields", {})
+                    .get("salary_range", {})
+                    .get("unit", None),
+                )
+            ]
+            if data.get("custom_fields", {}).get("salary_range")
+            else []
+        ),
     )
     return job
 
