@@ -192,9 +192,9 @@
     "pre_v2_updated_at": ""
   },
   {
-    "name": "Ceridian",
+    "name": "Dayforce",
     "type": "HCM",
-    "subtype": "ceridian",
+    "subtype": "dayforce",
     "status": "opensource",
     "release_date": "19/01/2022",
     "pre_v2_updated_at": "05/09/2024"

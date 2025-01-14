@@ -1,0 +1,52 @@
+{
+  "name": "?.Title",
+  "summary": "?.Description",
+  "reference": "?.ReferenceNumber | $string",
+  "url": "?.JobDetailsUrl",
+  "location": {
+    "text": "?.AddressLine1",
+    "lat": null,
+    "lng": null,
+    "fields": {
+      "city": "?.City",
+      "state": "?.State",
+      "country": "?.Country",
+      "postcode": "?.PostalCode"
+    }
+  },
+  "sections": [
+    {
+      "name": "dayforce_description",
+      "title": "dayforce_description",
+      "description": "?.Description"
+    }
+  ],
+  "created_at": "?.DatePosted",
+  "updated_at": "?.LastUpdated",
+  "tags": [
+    {
+      "name": "dayforce_parent_requisition_code",
+      "value": "?.ParentRequisitionCode"
+    },
+    {
+      "name": "dayforce_apply_url",
+      "value": "?.ApplyUrl"
+    },
+    {
+      "name": "dayforce_client-site-name",
+      "value": "?.ClientSiteName"
+    },
+    {
+      "name": "dayforce_client-site-ref-code",
+      "value": "?.ClientSiteXRefCode"
+    },
+    {
+      "name": "dayforce_company_name",
+      "value": "?.CompanyName"
+    },
+    {
+      "name": "dayforce_remote",
+      "value": "?.IsVirtualLocation"
+    }
+  ]
+}
