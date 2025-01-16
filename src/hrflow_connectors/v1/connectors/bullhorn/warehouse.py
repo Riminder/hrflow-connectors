@@ -250,6 +250,7 @@ def write_application(
     adapter.info(f"connexion info {params}, rest_url: {rest_url}")
 
     for profile in profiles:
+        comment = profile.pop("comment", None)
         if parameters.candidate_id:
             candidate_id = parameters.candidate_id
         if not parameters.candidate_id:
@@ -358,6 +359,10 @@ def write_application(
             "source": parameters.source,
             "dateWebResponse": int(time.time() * 1000),
         }
+
+        if comment:
+            job_submission_payload["comments"] = comment
+
         adapter.info("Creating or updating if candidate jobSubmission")
         job_submission_response = create_or_update_entity(
             "JobSubmission",

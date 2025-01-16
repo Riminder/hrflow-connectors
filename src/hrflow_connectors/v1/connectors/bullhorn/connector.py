@@ -383,9 +383,21 @@ def profile_format(data: BullhornProfile) -> t.Dict:
 
 def format_application(data: HrFlowProfile) -> t.Dict:
     info = data.get("info") or {}
+    metadatas = data.get("metadatas") or []
+
     attachments = (
         [data["attachments"][0]] if data.get("attachments") is not None else []
     )
+
+    comment = next(
+        (
+            metadata["value"]
+            for metadata in metadatas
+            if metadata.get("name") == "comment"
+        ),
+        None,
+    )
+
     profile = {
         "firstName": info.get("first_name"),
         "lastName": info.get("last_name"),
@@ -393,6 +405,7 @@ def format_application(data: HrFlowProfile) -> t.Dict:
         "address": get_location(info),
         "email": info.get("email"),
         "mobile": info.get("phone"),
+        "comment": comment,
     }
 
     attachment_list = get_attachments(
