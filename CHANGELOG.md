@@ -2,6 +2,25 @@
 
 
 
+## v4.27.2 (2025-01-16)
+
+### Fix
+
+* fix: add sending comments to bullhorn ([`5c46633`](https://github.com/Riminder/hrflow-connectors/commit/5c466335cc6f6ac240fa85e27211ef409f505130))
+
+### Unknown
+
+* Merge pull request #325 from Riminder/fix/connector-bullhorn
+
+fix: add sending comments to bullhorn ([`495925b`](https://github.com/Riminder/hrflow-connectors/commit/495925b2416c8e2ce5eb74b98dce3d5f562bbac5))
+
+* Merge pull request #315 from Riminder/feature/waalaxy-v2
+
+feature: Add Waalaxy Connector in CRUD v2 ([`08dfcb7`](https://github.com/Riminder/hrflow-connectors/commit/08dfcb75276ec93576dd246a7aa864bb5a15b5f8))
+
+* feature: Add Waalaxy Connector in CRUD v2 ([`e58ee7e`](https://github.com/Riminder/hrflow-connectors/commit/e58ee7ea438e8634a04a0ad472be7b8a512e02de))
+
+
 ## v4.27.1 (2025-01-09)
 
 ### Fix
