@@ -79,6 +79,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**France Travail (ex: Pole Emploi)**](./src/hrflow_connectors/v2/connectors/francetravail/README.md) | Job Board | :book: Open source | *15/07/2022* | *24/10/2024* |
 | [**Jobology**](./src/hrflow_connectors/v1/connectors/jobology/README.md) | Job Board | :book: Open source | *21/12/2022* | *05/09/2024* |
 | [**Meteojob**](./src/hrflow_connectors/v1/connectors/meteojob/README.md) | Job Board | :book: Open source | *15/02/2024* | *05/09/2024* |
+| [**Monster**](./src/hrflow_connectors/v2/connectors/monster/README.md) | Job Board | :book: Open source | *23/11/2022* | ** |
 
 # :lock: Premium Connectors
 
@@ -205,7 +206,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Leboncoin**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**LesJeudis**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**LinkedIn**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Monster**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Neuvoo**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Optioncarriere**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Staffme**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |

@@ -1,0 +1,39 @@
+{
+  "reference": "?.identity?.seekerRefCode",
+  "info": {
+    "full_name": "?.identity?.name",
+    "first_name": "?.identity?.name | $split(' ') | .[0]",
+    "last_name": "?.identity?.name | $split(' ') | .[-1]",
+    "email": "?.identity?.emailAddress",
+    "phone": "?.phoneNumbers[0]?.phoneNumberValue",
+    "location": {
+      "text": ".location ?? '' : $concat(.location?.postalCode >> '', ' ', .location?.city >> '', ' ', .location?.state >> '', ' ', .location?.country >> '') | $strip",
+      "lat": null,
+      "lng": null,
+      "fields": {
+        "city": "?.location?.city",
+        "country": "?.location?.country",
+        "state": "?.location?.state",
+        "postcode": "?.location?.postalCode"
+      }
+    }
+  },
+  "experiences_duration": "?.yearsOfExperience",
+  "experiences": [
+    {
+      "company": "?.relevance?.experience?.company?.name",
+      "title": "?.relevance?.experience?.title?.name",
+      "date_start": "?.relevance?.experience?.start",
+      "date_end": "?.relevance?.experience?.end",
+      "description": null,
+      "location": {
+        "text": null,
+        "lat": null,
+        "lng": null
+      }
+    }
+  ],
+  "educations": "?.educationalHistory | $map({title: .degree, school: .schoolName, date_start: .start, date_end: .end, description: null, location: {text: null, lat: null, lng: null}})",
+  "skills": "?.relevance?.skills | $map({name: .name, type: null, value: null})",
+  "tags": "$merge([{name: 'textResumeID', value: ?.identity?.textResumeID}, {name: 'resumeTitle', value: ?.resumeTitle}, {name: 'targetJobTitle', value: ?.targetJobTitle}, {name: 'highestEducationDegree', value: ?.highestEducationDegree}, {name: 'veteran', value: ?.veteran}, {name: 'lastActive', value: ?.lastActive}, {name: 'willRelocate', value: ?.location?.willRelocate}, {name: 'willTravel', value: ?.willTravel}, {name: 'relevanceScore', value: ?.relevance?.score}, {name: 'securityClearance', value: ?.securityClearance?.clearance}, {name: 'source', value: ?.source}], ?.location?.workAuthorizations | $map({name: 'workAuthorization', value: .authorization}), ?.boards | $map({name: 'board', value: .name}))"
+}
