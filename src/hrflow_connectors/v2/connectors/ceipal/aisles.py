@@ -11,6 +11,7 @@ from hrflow_connectors.v2.core.common import Entity
 from hrflow_connectors.v2.core.warehouse import Aisle, Criterias, ReadOperation, merge
 
 CEIPAL_API_URL = "https://api.ceipal.com/v1"
+CEIPAL_ENDPOINT_LIMIT = 50
 
 
 class AuthParameters(Struct):
@@ -38,9 +39,7 @@ class ReadJobPostingsParameters(Struct, omit_defaults=True):
     limit: Annotated[
         t.Optional[int],
         Meta(
-            description=(
-                "Default page limit is 20 and can go up to 50 records per page."
-            ),
+            description="Number of items to pull from CEIPAL",
         ),
     ] = 20
     business_unit_id: Annotated[
@@ -152,9 +151,7 @@ class ReadApplicantsParameters(Struct):
     limit: Annotated[
         t.Optional[int],
         Meta(
-            description=(
-                "Default page limit is 20 and can go up to 50 records per page."
-            ),
+            description="Number of items to pull from CEIPAL",
         ),
     ] = 20
     created_by: Annotated[
@@ -242,24 +239,21 @@ def read_jobs(
     }
     params = msgspec_json.decode(msgspec_json.encode(parameters), type=dict)
 
+    limit = params.pop("limit")
+    params["limit"] = limit if limit <= CEIPAL_ENDPOINT_LIMIT else CEIPAL_ENDPOINT_LIMIT
+
+    jobs = []
+
     # TODO: verify that pagination is handled correctly
     while True:
         response = requests.get(jobs_list_url, headers=headers, params=params)
 
         if response.status_code // 100 == 2:
-            result = response.json()
-            if not result:
+            jobs.extend(response.json())
+            if len(jobs) == 0 or len(jobs) >= limit:
                 break
+            params["offset"] += CEIPAL_ENDPOINT_LIMIT
 
-            for job in result:
-                full_job_response = requests.get(
-                    "{}/getJobPostingDetails".format(CEIPAL_API_URL),
-                    headers=headers,
-                    params={"job_id": job["id"]},
-                )
-                yield full_job_response.json()
-
-            params["offset"] += parameters.limit
         else:
             if "access_token expired" in response.json()["detail"]:
                 access_token = refresh_access_token(refresh_token)
@@ -269,6 +263,22 @@ def read_jobs(
                     f"Error in fetching jobs: {response.text} with status code:"
                     f" {response.status_code}"
                 )
+
+    if len(jobs) > limit:
+        jobs = jobs[:limit]
+
+    for job in jobs:
+        full_job_response = requests.get(
+            "{}/getJobPostingDetails".format(CEIPAL_API_URL),
+            headers=headers,
+            params={"job_id": job["id"]},
+        )
+        if full_job_response.status_code // 100 != 2:
+            raise Exception(
+                f"Error in fetching job details: {full_job_response.text} with"
+                f" status code: {full_job_response.status_code}"
+            )
+        yield full_job_response.json()
 
 
 def read_applicants(
@@ -287,25 +297,21 @@ def read_applicants(
     }
     params = msgspec_json.decode(msgspec_json.encode(parameters), type=dict)
 
+    limit = params.pop("limit")
+    params["limit"] = limit if limit <= CEIPAL_ENDPOINT_LIMIT else CEIPAL_ENDPOINT_LIMIT
+
+    applicants = []
+
     # TODO: verify that pagination is handled correctly
     while True:
         response = requests.get(applicants_list_url, headers=headers, params=params)
 
         if response.status_code // 100 == 2:
-            result = response.json()
-            if not result:
+            applicants.extend(response.json())
+            if len(applicants) == 0 or len(applicants) >= limit:
                 break
-
-            for applicant in result:
-                if applicant["resume_path"]:
-                    resume_response = requests.get(
-                        applicant["resume_path"], headers=headers
-                    )
-                    applicant["resume"] = resume_response.content.decode("utf-8")
-
-                yield applicant
-
             params["offset"] += parameters.limit
+
         else:
             if "access_token expired" in response.json()["detail"]:
                 access_token = refresh_access_token(refresh_token)
@@ -315,6 +321,21 @@ def read_applicants(
                     f"Error in fetching applicants: {response.text} with status code:"
                     f" {response.status_code}"
                 )
+
+    if len(applicants) > limit:
+        applicants = applicants[:limit]
+
+    for applicant in applicants:
+        if applicant["resume_path"]:
+            resume_response = requests.get(applicant["resume_path"], headers=headers)
+            if resume_response.status_code // 100 != 2:
+                raise Exception(
+                    f"Error in fetching resume: {resume_response.text} with"
+                    f" status code: {resume_response.status_code}"
+                )
+            applicant["resume"] = resume_response.content.decode("utf-8")
+
+        yield applicant
 
 
 JobsAisle = Aisle(

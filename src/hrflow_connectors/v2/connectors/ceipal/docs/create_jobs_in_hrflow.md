@@ -24,7 +24,7 @@ Send **created** 'job(s)' _from_ Ceipal _to_ HrFlow
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `limit`  | `integer\|null` | 20 | Default page limit is 20 and can go up to 50 records per page. |
+| `limit`  | `integer\|null` | 20 | Number of items to pull from CEIPAL |
 | `business_unit_id`  | `integer\|null` | None | Every job is associated with a business unit. Pass the business unit id as the parameter to get the jobs. |
 | `country`  | `integer\|null` | None | Pull the jobs based on the country. Use the countries endpoint to get the list of countries. |
 | `state`  | `integer\|null` | None | Pass the state id as the parameter to get the jobs. Use the states endpoint to get the states list. |

@@ -24,7 +24,7 @@ Send **updated** 'profile(s)' _from_ Ceipal _to_ HrFlow
 
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
-| `limit`  | `integer\|null` | 20 | Default page limit is 20 and can go up to 50 records per page. |
+| `limit`  | `integer\|null` | 20 | Number of items to pull from CEIPAL |
 | `created_by`  | `integer\|null` | None | User ID of the applicant creator |
 | `source`  | `integer\|null` | None | Source ID of the applicants |
 | `applicant_status`  | `integer\|null` | None | Applicant status ID |
