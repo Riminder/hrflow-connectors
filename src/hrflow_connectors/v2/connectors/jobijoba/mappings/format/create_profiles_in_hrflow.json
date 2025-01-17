@@ -1,0 +1,42 @@
+{
+  "reference": ".applicationId",
+  "resume": {
+    "raw": ".cv",
+    "content_type": ".content_type"
+  },
+  "tags": [
+    {
+      "name": "job-number",
+      "value": "?.job?.jobId != null ?? .job.jobId  | $slice(0,10) : null"
+    },
+    {
+      "name": "first_name",
+      "value": "?.applicant?.firstName"
+    },
+    {
+      "name": "last_name",
+      "value": "?.applicant?.lastName"
+    },
+    {
+      "name": "phone",
+      "value": "?.applicant?.phoneNumber"
+    },
+    {
+      "name": "email",
+      "value": "?.applicant?.email"
+    },
+    {
+      "name": "job-lien_annonce_site_carriere",
+      "value": "?.jobAtsUrl"
+    },
+    {
+      "name": "statistic-source",
+      "value": "?.source"
+    },
+    {
+      "name": "statistic-jbsource",
+      "value": "?.source"
+    }
+  ],
+  "metadatas": []
+}

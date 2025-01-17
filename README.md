@@ -77,6 +77,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Adzuna**](./src/hrflow_connectors/v2/connectors/adzuna/README.md) | Job Board | :book: Open source | *08/09/2022* | *05/09/2024* |
 | [**Carrevolutis**](./src/hrflow_connectors/v1/connectors/carrevolutis/README.md) | Job Board | :book: Open source | *20/03/2024* | *05/09/2024* |
 | [**France Travail (ex: Pole Emploi)**](./src/hrflow_connectors/v2/connectors/francetravail/README.md) | Job Board | :book: Open source | *15/07/2022* | *24/10/2024* |
+| [**Jobijoba**](./src/hrflow_connectors/v2/connectors/jobijoba/README.md) | Job Board | :book: Open source | ** | ** |
 | [**Jobology**](./src/hrflow_connectors/v1/connectors/jobology/README.md) | Job Board | :book: Open source | *21/12/2022* | *05/09/2024* |
 | [**Meteojob**](./src/hrflow_connectors/v1/connectors/meteojob/README.md) | Job Board | :book: Open source | *15/02/2024* | *05/09/2024* |
 
@@ -194,7 +195,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**HelloWork**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Indeed**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Inzojob**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
-| [**Jobijoba**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Jobrapido**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**JobTeaser**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
 | [**Jobtransport**](https://forms.gle/pokoE9pAjSVSFtCe7) | Job Board | :lock: Premium |  |  |
