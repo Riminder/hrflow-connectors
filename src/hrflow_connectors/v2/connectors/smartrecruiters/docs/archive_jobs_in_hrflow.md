@@ -26,7 +26,7 @@ Send **archived** 'job(s)' _from_ SmartRecruiters _to_ HrFlow
 | `updated_after`  | `string\|null` | None | ISO8601-formatted time boundaries for the job update time |
 | `posting_status`  | `Literal['INTERNAL','NOT_PUBLISHED','PRIVATE','PUBLIC']\|null` | None | Posting status of a job. One of ['PUBLIC', 'INTERNAL', 'NOT_PUBLISHED', 'PRIVATE'] |
 | `job_status`  | `Literal['CANCELLED','CREATED','FILLED','INTERVIEW','OFFER','ON_HOLD','SOURCING']\|null` | None | Status of a job. One of ['CREATED', 'SOURCING', 'FILLED', 'INTERVIEW', 'OFFER', 'CANCELLED', 'ON_HOLD'] |
-| `limit`  | `integer` | 100 | Number of items to pull from SmartRecruiters at a time. |
+| `limit`  | `integer` | 100 | Number of items to pull from SmartRecruiters. |
 
 ## Push Parameters (HrFlow)
 

@@ -152,7 +152,7 @@ class ReadJobsParameters(Struct):
     ] = None
     limit: Annotated[
         int,
-        Meta(description="Number of items to pull from SmartRecruiters at a time."),
+        Meta(description="Number of items to pull from SmartRecruiters."),
     ] = SMARTRECRUITERS_ENDPOINT_LIMIT
 
 
@@ -192,12 +192,7 @@ class ReadProfilesParameters(Struct):
     limit: Annotated[
         int,
         Meta(
-            description=(
-                "Number of items to pull from SmartRecruiters at a time. Not matter"
-                " what value is supplied it is capped at {}".format(
-                    SMARTRECRUITERS_ENDPOINT_LIMIT
-                )
-            ),
+            description="Number of items to pull from SmartRecruiters.",
         ),
     ] = SMARTRECRUITERS_ENDPOINT_LIMIT
     updated_after: Annotated[
