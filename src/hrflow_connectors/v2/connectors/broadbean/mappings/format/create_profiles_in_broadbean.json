@@ -1,0 +1,15 @@
+{
+  "name": ".info.full_name",
+  "email": ".info.email",
+  "contact_telephone": ".info.phone || 'Undefined'",
+  "mobile_telephone": ".info.phone || 'Undefined'",
+  "location_city": ".info.location?.fields?.city || 'Undefined'",
+  "location_country": ".info.location?.fields?.country || 'Undefined'",
+  "location_postcode": ".info.location?.fields?.postcode || 'Undefined'",
+  "location_latitude": ".info.location.lat || 0",
+  "location_longitude": ".info.location.lng || 0",
+  "current_job_title": null,
+  "current_job_employer": null,
+  "current_job_startdate": null,
+  "documents": ".attachments | map({filename: .filename, type: .type, content: $webhook(GET, .public_url, {}, {}, {}) | $b64encode})"
+}
