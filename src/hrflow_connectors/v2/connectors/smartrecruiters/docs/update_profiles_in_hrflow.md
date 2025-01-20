@@ -33,7 +33,7 @@ Send **updated** 'profile(s)' _from_ SmartRecruiters _to_ HrFlow
 | `tags`  | `array\|null` | None | List of tags to filter candidates by |
 | `onboarding_status`  | `Literal['ONBOARDING_FAILED','ONBOARDING_SUCCESSFUL','READY_TO_ONBOARD']\|null` | None | Onboarding status of a candidate |
 | `status`  | `array\|null` | None | candidate’s status filter in a context of a job |
-| `limit`  | `integer` | 100 | Number of items to pull from SmartRecruiters at a time. Not matter what value is supplied it is capped at 100 |
+| `limit`  | `integer` | 100 | Number of items to pull from SmartRecruiters. |
 | `updated_after`  | `string\|null` | None | ISO8601-formatted time boundaries for the candidate update time |
 
 ## Push Parameters (HrFlow)

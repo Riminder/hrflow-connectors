@@ -2,6 +2,7 @@ from hrflow_connectors.v2.connectors.admen import Admen
 from hrflow_connectors.v2.connectors.adzuna import Adzuna
 from hrflow_connectors.v2.connectors.breezyhr import BreezyHR
 from hrflow_connectors.v2.connectors.bullhorn import Bullhorn
+from hrflow_connectors.v2.connectors.ceipal import Ceipal
 from hrflow_connectors.v2.connectors.flatchr import Flatchr
 from hrflow_connectors.v2.connectors.francetravail import FranceTravail
 from hrflow_connectors.v2.connectors.greenhouse import Greenhouse
@@ -38,4 +39,5 @@ __CONNECTORS__ = [
     Waalaxy,
     Greenhouse,
     JazzHR,
+    Ceipal,
 ]
