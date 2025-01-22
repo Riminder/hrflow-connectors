@@ -1,0 +1,10 @@
+{
+  "candidateId": "?.reference",
+  "firstName": "?.info?.first_name",
+  "lastName": "?.info?.last_name",
+  "cellPhone": "?.info?.phone",
+  "address": "?.info?.location?.text",
+  "country": "?.info?.location?.fields?.country != null ?? .info.location.fields.country | $slice(0,-1)",
+  "city": "?.info?.location?.fields?.city",
+  "zip": "?.info?.location?.fields?.postcode"
+}
