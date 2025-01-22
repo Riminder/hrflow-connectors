@@ -1,0 +1,39 @@
+{
+  "reference": ".candidateId",
+  "info": {
+    "first_name": ".firstName",
+    "last_name": ".lastName",
+    "full_name": "$concat(.firstName, ' ', .lastName)",
+    "email": ".contactEmail",
+    "phone": ".cellPhone",
+    "location": {
+      "text": ".address",
+      "fields": {
+        "country": ".country",
+        "city": ".city",
+        "postcode": ".zip"
+      },
+      "lat": null,
+      "lng": null
+    }
+  },
+  "created_at": "{{To be implemented}}",
+  "updated_at": "{{To be implemented}}",
+  "educations": "?.education?.results | $map({school: ?.school, title: null, location: {text: null, lat: null, lng: null}, start_date: ?.startDate | {{to be implented}}, end_date: ?.endDate | {{to be implented}}})",
+  "experiences": "$merge(?.outsideWorkExperience?.results | $map({company: ?.employer, title: null, location: {text: null, lat: null, lng: null}, start_date: ?.startDate | {{to be implented}}, end_date: ?.endDate | {{to be implented}}}),?.insideWorkExperience?.results | $map({company: ?.employer, title: null, location: {text: null, lat: null, lng: null}, start_date: ?.startDate | {{to be implented}}, end_date: ?.endDate | {{to be implented}}}))",
+  "skills": [],
+  "resume": { "raw": ".resume" },
+  "tags": [
+    { "name": "consent_to_marketing", "value": "?.consentToMarketing" },
+    { "name": "current_title", "value": "?.currentTitle" },
+    {
+      "name": "date_of_availability",
+      "value": "?.dateofAvailability | {{to be implemented}}"
+    },
+    {
+      "name": "last_login_date_time",
+      "value": "?.lastLoginDateTime |{{to be implemented}}"
+    },
+    { "name": "visibility_option", "value": "?.visibilityOption" }
+  ]
+}
