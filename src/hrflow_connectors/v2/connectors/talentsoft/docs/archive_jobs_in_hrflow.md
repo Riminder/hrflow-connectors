@@ -1,0 +1,85 @@
+# Archive jobs in hrflow
+`TalentSoft` :arrow_right: `HrFlow`
+
+Send **archived** 'job(s)' _from_ TalentSoft _to_ HrFlow
+
+
+
+## TalentSoft Auth Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `client_id` :red_circle: | `string` | None | client id used to access TalentSoft front office API |
+| `client_secret` :red_circle: | `string` | None | client secret used to access TalentSoft front office API |
+| `client_url` :red_circle: | `string` | None | url used to access TalentSoft front office API |
+
+## HrFlow.ai Auth Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `api_secret` :red_circle: | `string` | None | API Key used to access HrFlow.ai API |
+| `api_user` :red_circle: | `string` | None | User email used to access HrFlow.ai API |
+
+## Pull Parameters (TalentSoft)
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `q`  | `string\|null` | None | Query search to get vacancies |
+| `filter`  | `string\|null` | None | Filter to apply when reading vacancies. See documentation at https://developers.cegid.com/api-details#api=cegid-talentsoft-recruiting-matchingindexation&operation=api-exports-v1-vacancies-get . . You can filter by **chronoNumber**, **updateDate**, **reference** **vacancyStatus**, **clientVacancyStatus**, **publicationMedia**  **publishedOnTheMedia**. Examples : By reference Single Item 'reference::2019-01'; By reference Multiple Items 'reference::2019-01,2019-02,2019-03';  By updateDate updated before the 10th of June 2019 'updateDate:lt:2019-06-10'; By chronoNumber greater than 108921  'chronoNumber:gt:108921' .  |
+| `max_read`  | `integer` | 100 | The maximum number of jobs to pull during the execution. Proper tuning of this parameter should allow to control the execution time and avoid overtimes |
+
+## Push Parameters (HrFlow)
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `board_key` :red_circle: | `string` | None | HrFlow.ai board key |
+
+## Other Parameters
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `workflow_id` :red_circle: | `string` | None | A stable identifier used for persisting in incremental mode |
+| `logics` :red_circle: | `array\|null` | None | A list of functions called in sequence with each item pulled from the origin. Each function might either return it's argument or None to discard the item. Any item discarded is eventually not pushed to the target |
+| `format`  | `Callable\|null` | None | A formatting function to apply on items pulled before the push |
+| `callback`  | `Callable\|null` | None | Registers a callback function to be called at the of a successful execution |
+| `persist`  | `boolean` | True | When False has the effect of running in dry mode. Items are pulled but not pushed to the target |
+| `incremental`  | `boolean` | False | Controls the incremental reading execution mode |
+
+:red_circle: : *required*
+
+## Example
+
+```python
+import logging
+from hrflow_connectors.v2 import TalentSoft
+
+
+logging.basicConfig(level=logging.INFO)
+
+
+TalentSoft.archive_jobs_in_hrflow(
+    workflow_id=...,
+    logics=...,
+    connector_auth=dict(
+        client_id=...,
+        client_secret=...,
+        client_url=...,
+    ),
+    hrflow_auth=dict(
+        api_secret=...,
+        api_user=...,
+    ),
+    pull_parameters=dict(
+        q=...,
+        filter=...,
+        max_read=...,
+    ),
+    push_parameters=dict(
+        board_key=...,
+    ),
+    format=...,
+    callback=...,
+    persist=...,
+    incremental=...
+)
+```

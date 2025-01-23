@@ -11,6 +11,7 @@ from hrflow_connectors.v2.connectors.jazzhr import JazzHR
 from hrflow_connectors.v2.connectors.recruitee import Recruitee
 from hrflow_connectors.v2.connectors.smartrecruiters import SmartRecruiters
 from hrflow_connectors.v2.connectors.taleez import Taleez
+from hrflow_connectors.v2.connectors.talentsoft import TalentSoft
 from hrflow_connectors.v2.connectors.teamtailor import Teamtailor
 from hrflow_connectors.v2.connectors.waalaxy import Waalaxy
 from hrflow_connectors.v2.connectors.workable import Workable
@@ -40,4 +41,5 @@ __CONNECTORS__ = [
     Greenhouse,
     JazzHR,
     Ceipal,
+    TalentSoft,
 ]
