@@ -329,7 +329,7 @@ def get_sections(taleez_job: t.Dict) -> t.List[t.Dict]:
     return sections
 
 
-def get_tags(taleez_job: t.Dict) -> t.List[t.Dict]:
+def get_job_tags(taleez_job: t.Dict) -> t.List[t.Dict]:
     taleez_tags = taleez_job.get("tags")
     taleez_properties = taleez_job.get("properties", [])
     if taleez_tags is None:
@@ -351,7 +351,6 @@ def get_tags(taleez_job: t.Dict) -> t.List[t.Dict]:
         "companyLabel",
         "website",
         "visibility",
-        "tags",
     ]
 
     custom_properties = [
@@ -365,15 +364,17 @@ def get_tags(taleez_job: t.Dict) -> t.List[t.Dict]:
     ]
 
     tags = [
-        t("{}_{}".format("taleez", field), taleez_job.get(field))
-        for field in custom_fields
+        t("taleez_{}".format(field), taleez_job.get(field)) for field in custom_fields
     ]
+    tags.extend(
+        [t("taleez_tag", taleez_tag) for taleez_tag in taleez_job.get(tags, [])]
+    )
     for prop in custom_properties:
         property_object = next(
             filter(lambda x: x["internal"] == prop, taleez_properties), {}
         )
         prop_value = property_object.get("value") or property_object.get("values")
-        tags.append(t("{}_{}".format("taleez", prop), prop_value))
+        tags.append(t("taleez_{}".format(prop), prop_value))
 
     return tags
 
@@ -388,7 +389,7 @@ def format_job(taleez_job: t.Dict) -> t.Dict:
         url=taleez_job.get("url"),
         summary=taleez_job.get("jobDescription"),
         sections=get_sections(taleez_job),
-        tags=get_tags(taleez_job),
+        tags=get_job_tags(taleez_job),
     )
     return job
 

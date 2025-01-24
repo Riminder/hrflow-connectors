@@ -70,7 +70,10 @@ def format_job(breezy_job: t.Dict) -> t.Dict:
         t("isremote", is_remote),
         t("remote_details", remote_details),
         t("creator_id", breezy_job.get("creator_id")),
-        t("breezy_hr_tags", breezy_job.get("tags")),
+        *[
+            t("breezy_hr_tag", breezy_hr_tag)
+            for breezy_hr_tag in breezy_job.get("tags", [])
+        ],
     ]
 
     hrflow_job = dict(
@@ -268,7 +271,10 @@ def format_candidate(breezy_profile: t.Dict) -> t.Dict:
 
     tags = []
     t = lambda name, value: dict(name=name, value=value)
-    tags.append(t("breezy_hr_tags", breezy_profile.get("tags")))
+    tags.extend(
+        t("breezy_hr_tag", breezy_hr_tag)
+        for breezy_hr_tag in breezy_profile.get("tags", [])
+    )
     tags.append(t("headline", breezy_profile.get("headline")))
     tags.append(t("origin", breezy_profile.get("origin")))
     tags.append(t("source", breezy_profile.get("source", {}).get("name")))
