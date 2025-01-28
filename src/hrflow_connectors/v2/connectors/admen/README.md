@@ -1,7 +1,7 @@
 # 📖 Summary
 - [📖 Summary](#📖-summary)
-- [💼 About Ad-men](#💼-about-ad-men)
-  - [😍 Why is it a big deal for Ad-men customers & partners?](#😍-why-is-it-a-big-deal-for-ad-men-customers--partners)
+- [💼 About AD-MEN](#💼-about-ad-men)
+  - [😍 Why is it a big deal for AD-MEN customers & partners?](#😍-why-is-it-a-big-deal-for-ad-men-customers--partners)
 - [🔧 How does it work?](#🔧-how-does-it-work)
   - [📊 Data integration capabilities:](#📊-data-integration-capabilities)
   - [🧠 Artificial Intelligence capabilities:](#🧠-artificial-intelligence-capabilities)
@@ -11,28 +11,25 @@
 - [👏 Special Thanks](#👏-special-thanks)
 
 
-# 💼 About Ad-men
+# 💼 About AD-MEN
 
-> 
-Need an efficient, high-performance HR solution for managing your applications?
+> Need an efficient, high-performance HR solution for managing your applications?
 Choose AD-Men, the No. 1 software for recruitment agencies.
 
 
 
-## 😍 Why is it a big deal for Ad-men customers & partners?
+## 😍 Why is it a big deal for AD-MEN customers & partners?
 
 This new connector will enable:
-- ⚡ A Fastlane Talent & Workforce data integration for Ad-men customers & partners
-- 🤖 Cutting-edge AI-powered Talent Experiences & Recruiter Experiences for Ad-men customers
+- ⚡ A Fastlane Talent & Workforce data integration for AD-MEN customers & partners
+- 🤖 Cutting-edge AI-powered Talent Experiences & Recruiter Experiences for AD-MEN customers
 
 #  🔧 How does it work?
 ## 📊 Data integration capabilities:
-- ⬅️ Send Profiles data from Ad-men to a Destination of your choice.
-- ➡️ Send Profiles data from a Source of your choice to Ad-men.
-- ⬅️ Send Jobs data from Ad-men to a Destination of your choice.
-- ➡️ Send Jobs data from a Source of your choice to Ad-men.
-
-</p>
+- ⬅️ Send Profiles data from AD-MEN to a Destination of your choice.
+- ➡️ Send Profiles data from a Source of your choice to AD-MEN.
+- ⬅️ Send Jobs data from AD-MEN to a Destination of your choice.
+- ➡️ Send Jobs data from a Source of your choice to AD-MEN.
 
 <p align="center">
 <image src=https://github.com/user-attachments/assets/cac7da42-2146-4e67-ac8c-7e37f4550554 width=90% height=100% 
@@ -41,7 +38,7 @@ This new connector will enable:
 
 ## 🧠 Artificial Intelligence capabilities:
 - Extract, Structure, and Categorize Talent & Workforce data
-- Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in Ad-men**)
+- Search, Score, and Match Profiles & Jobs with our APIs and AI Widgets (**Matching Custom Tab in AD-MEN**)
 
 
 # 🔌 Connector Actions
@@ -49,15 +46,15 @@ This new connector will enable:
 
 | Action | Description |
 | ------- | ----------- |
-| [**Create jobs in hrflow**](docs/create_jobs_in_hrflow.md) | Send **created** 'job(s)' _from_  _to_ HrFlow |
-| [**Update jobs in hrflow**](docs/update_jobs_in_hrflow.md) | Send **updated** 'job(s)' _from_  _to_ HrFlow |
-| [**Archive jobs in hrflow**](docs/archive_jobs_in_hrflow.md) | Send **archived** 'job(s)' _from_  _to_ HrFlow |
-| [**Create profiles in hrflow**](docs/create_profiles_in_hrflow.md) | Send **created** 'profile(s)' _from_  _to_ HrFlow |
-| [**Update profiles in hrflow**](docs/update_profiles_in_hrflow.md) | Send **updated** 'profile(s)' _from_  _to_ HrFlow |
-| [**Archive profiles in hrflow**](docs/archive_profiles_in_hrflow.md) | Send **archived** 'profile(s)' _from_  _to_ HrFlow |
-| [**Create profiles in **](docs/create_profiles_in_.md) | Send **created** 'profile(s)' _from_ HrFlow _to_  |
-| [**Update profiles in **](docs/update_profiles_in_.md) | Send **updated** 'profile(s)' _from_ HrFlow _to_  |
-| [**Archive profiles in **](docs/archive_profiles_in_.md) | Send **archived** 'profile(s)' _from_ HrFlow _to_  |
+| [**Create jobs in hrflow**](docs/create_jobs_in_hrflow.md) | Send **created** 'job(s)' _from_ AD-MEN _to_ HrFlow |
+| [**Update jobs in hrflow**](docs/update_jobs_in_hrflow.md) | Send **updated** 'job(s)' _from_ AD-MEN _to_ HrFlow |
+| [**Archive jobs in hrflow**](docs/archive_jobs_in_hrflow.md) | Send **archived** 'job(s)' _from_ AD-MEN _to_ HrFlow |
+| [**Create profiles in hrflow**](docs/create_profiles_in_hrflow.md) | Send **created** 'profile(s)' _from_ AD-MEN _to_ HrFlow |
+| [**Update profiles in hrflow**](docs/update_profiles_in_hrflow.md) | Send **updated** 'profile(s)' _from_ AD-MEN _to_ HrFlow |
+| [**Archive profiles in hrflow**](docs/archive_profiles_in_hrflow.md) | Send **archived** 'profile(s)' _from_ AD-MEN _to_ HrFlow |
+| [**Create profiles in admen**](docs/create_profiles_in_admen.md) | Send **created** 'profile(s)' _from_ HrFlow _to_ AD-MEN |
+| [**Update profiles in admen**](docs/update_profiles_in_admen.md) | Send **updated** 'profile(s)' _from_ HrFlow _to_ AD-MEN |
+| [**Archive profiles in admen**](docs/archive_profiles_in_admen.md) | Send **archived** 'profile(s)' _from_ HrFlow _to_ AD-MEN |
 
 
 </p>
@@ -83,7 +80,7 @@ For more code details checkout connector code.
 
 # 🔗 Useful Links
 
-- 📄 Visit [Ad-men](https://www.ad-rh.com/) to learn more.
+- 📄 Visit [AD-MEN](https://www.ad-rh.com/) to learn more.
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/v2/connectors/admen) on our Github.
 
 

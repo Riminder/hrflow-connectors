@@ -48,9 +48,9 @@ This new connector will enable:
 
 | Action | Description |
 | ------- | ----------- |
-| [**Create jobs in hrflow**](docs/create_jobs_in_hrflow.md) | Send **created** 'job(s)' _from_  _to_ HrFlow |
-| [**Update jobs in hrflow**](docs/update_jobs_in_hrflow.md) | Send **updated** 'job(s)' _from_  _to_ HrFlow |
-| [**Archive jobs in hrflow**](docs/archive_jobs_in_hrflow.md) | Send **archived** 'job(s)' _from_  _to_ HrFlow |
+| [**Create jobs in hrflow**](docs/create_jobs_in_hrflow.md) | Send **created** 'job(s)' _from_ France Travail (ex: Pole Emploi) _to_ HrFlow |
+| [**Update jobs in hrflow**](docs/update_jobs_in_hrflow.md) | Send **updated** 'job(s)' _from_ France Travail (ex: Pole Emploi) _to_ HrFlow |
+| [**Archive jobs in hrflow**](docs/archive_jobs_in_hrflow.md) | Send **archived** 'job(s)' _from_ France Travail (ex: Pole Emploi) _to_ HrFlow |
 
 
 </p>

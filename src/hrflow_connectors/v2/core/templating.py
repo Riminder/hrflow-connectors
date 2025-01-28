@@ -123,7 +123,7 @@ def connector_readme(
 ) -> str:
     if current_content is None:
         return Templates.get_template("connector_readme.md.j2").render(
-            connector_name=connector.name.capitalize(),
+            connector_name=connector.name,
             connector_subtype=connector.subtype,
             description=connector.description,
             url=connector.url,
@@ -142,6 +142,8 @@ def connector_readme(
             "connector_actions.md.j2"
         ).render(
             flows=connector.flows,
+            connector_subtype=connector.subtype,
+            connector_name=connector.name,
         )
         return "{before}{actions}{after}".format(
             before=current_content[: match.start()],
