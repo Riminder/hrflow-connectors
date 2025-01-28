@@ -82,6 +82,8 @@ def format_job(breezy_job: t.Dict) -> t.Dict:
         summary=cleaned_description,
         location=location,
         sections=sections,
+        requirements=breezy_job.get("education", "")
+        + breezy_job.get("experience", {}).get("name", ""),
         tags=tags,
         created_at=breezy_job.get("creation_date"),
         updated_at=breezy_job.get("updated_date"),

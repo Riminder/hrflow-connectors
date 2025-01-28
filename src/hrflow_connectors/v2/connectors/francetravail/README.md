@@ -75,7 +75,7 @@ For more code details checkout connector code.
 # 🔗 Useful Links
 
 - 📄 Visit [France Travail (ex: Pole Emploi)](https://www.francetravail.fr/) to learn more.
-- ⚙️ API documentation : (https://francetravail.io/produits-partages/documentation/utilisation-api-france-travail)
+- ⚙️ API documentation : (https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/)
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/v2/connectors/francetravail) on our Github.
 
 

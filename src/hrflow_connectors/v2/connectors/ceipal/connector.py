@@ -82,6 +82,7 @@ def format_job(ceipal_job: dict) -> dict:
                 "description": ceipal_job["min_experience"],
             },
         ],
+        requirements=ceipal_job["experience"],
         location=dict(
             text=ceipal_job["address"],
             lat=None,

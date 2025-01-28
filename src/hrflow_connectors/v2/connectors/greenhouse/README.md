@@ -81,6 +81,7 @@ For more code details checkout connector code.
 # 🔗 Useful Links
 
 - 📄 Visit [Greenhouse](https://www.greenhouse.io/) to learn more.
+- ⚙️ API documentation : (https://developers.greenhouse.io/harvest.html#introduction)
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/v2/connectors/greenhouse) on our Github.
 
 

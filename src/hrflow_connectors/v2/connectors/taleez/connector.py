@@ -388,6 +388,8 @@ def format_job(taleez_job: t.Dict) -> t.Dict:
         location=get_location(taleez_job),
         url=taleez_job.get("url"),
         summary=taleez_job.get("jobDescription"),
+        culture=taleez_job.get("companyDescription"),
+        requirements=taleez_job.get("profileDescription"),
         sections=get_sections(taleez_job),
         tags=get_job_tags(taleez_job),
     )
