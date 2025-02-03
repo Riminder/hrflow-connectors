@@ -6,6 +6,7 @@ from hrflow_connectors.v2.connectors.ceipal import Ceipal
 from hrflow_connectors.v2.connectors.flatchr import Flatchr
 from hrflow_connectors.v2.connectors.francetravail import FranceTravail
 from hrflow_connectors.v2.connectors.greenhouse import Greenhouse
+from hrflow_connectors.v2.connectors.homerun import Homerun
 from hrflow_connectors.v2.connectors.hubspot import Hubspot
 from hrflow_connectors.v2.connectors.jazzhr import JazzHR
 from hrflow_connectors.v2.connectors.recruitee import Recruitee
@@ -40,4 +41,5 @@ __CONNECTORS__ = [
     Greenhouse,
     JazzHR,
     Ceipal,
+    Homerun,
 ]
