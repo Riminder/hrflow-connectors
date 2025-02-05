@@ -48,6 +48,17 @@ def get_requirements(pole_emploi_formations: t.List[t.Dict]) -> t.Optional[str]:
     return requirements if requirements else None
 
 
+def get_responsibilities(pole_emploi_qualities: t.List[t.Dict]) -> t.Optional[str]:
+    responsibilities = "\n".join(
+        [
+            qualite["description"]
+            for qualite in pole_emploi_qualities
+            if qualite.get("description")
+        ]
+    )
+    return responsibilities if responsibilities else None
+
+
 def get_tags(job: t.Dict) -> t.List[t.Dict]:
     contact = job.get("contact", {})
     salary = job.get("salaire", {})
@@ -94,7 +105,11 @@ def format_job(
         location=get_job_location(pole_emploi_job.get("lieuTravail")),
         url=pole_emploi_job.get("origineOffre", {}).get("urlOrigine"),
         summary=pole_emploi_job.get("description"),
+        culture=pole_emploi_job.get("entreprise", {}).get("description"),
         requirements=get_requirements(pole_emploi_job.get("formations", [])),
+        responsibilities=get_responsibilities(
+            pole_emploi_job.get("qualitesProfessionnelles", [])
+        ),
         skills=[
             dict(name=skill["libelle"], value=None)
             for skill in pole_emploi_job.get("competences", [])

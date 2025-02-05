@@ -66,7 +66,16 @@ class AuthParameters(Struct):
     ] = None
 
 
-class ReadJobsParameters(Struct):
+class BaseReadParameters(Struct):
+    limit: Annotated[
+        int,
+        Meta(
+            description="Number of items to pull from the Breezy HR",
+        ),
+    ] = 100
+
+
+class ReadJobsParameters(BaseReadParameters):
     state: Annotated[
         State,
         Meta(
@@ -114,7 +123,7 @@ class UpdateProfilesParameters(Struct):
     ]
 
 
-class ReadProfilesParameters(Struct):
+class ReadProfilesParameters(BaseReadParameters):
     position_id: Annotated[
         t.Optional[str],
         Meta(
@@ -194,6 +203,7 @@ def generic_jobs_read(
             adapter.error(f"Failed to read jobs, reason: {response.text}")
             raise Exception("Failed to read jobs")
 
+        items_collected = 0
         for job in response.json():
             if mode == Mode.create and not is_within_five_minutes(
                 job["creation_date"], job["updated_date"]
@@ -204,6 +214,9 @@ def generic_jobs_read(
             ):
                 continue
             yield job
+            items_collected += 1
+            if items_collected >= parameters.limit:
+                break
 
         revoke_access_token(access_token)
 

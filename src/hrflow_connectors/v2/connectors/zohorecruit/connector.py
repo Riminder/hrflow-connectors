@@ -68,7 +68,6 @@ def format_zoho_job_opening_to_hrflow(job_opening: dict) -> dict:
         location=get_location(job_opening),
         summary=job_opening["Job_Description"],
         skills=get_skills(job_opening["Required_Skills"]),
-        # TODO: get Additional_Info & Job_Description and add them only if they exist
         sections=[
             dict(
                 name="Job_Description",

@@ -32,37 +32,7 @@
       "description": "?.highlight_html"
     }
   ],
-  "tags": [
-    { "name": "category", "value": "?.category" },
-    { "name": "department", "value": "?.department" },
-    { "name": "options_cv", "value": "?.options_cv" },
-    {
-      "name": "options_cover_letter",
-      "value": "?.options_cover_letter"
-    },
-    { "name": "experience", "value": "?.experience" },
-    { "name": "education", "value": "?.education" },
-    { "name": "employment_type", "value": "?.employment_type" },
-    { "name": "remote_option", "value": "?.remote" },
-    { "name": "number_of_openings", "value": "?.number_of_openings" },
-    { "name": "candidates_count", "value": "?.candidates_count" },
-    {
-      "name": "disqualified_candidates_count",
-      "value": "?.disqualified_candidates_count"
-    },
-    {
-      "name": "qualified_candidates_count",
-      "value": "?.qualified_candidates_count"
-    },
-    {
-      "name": "hired_candidates_count",
-      "value": "?.hired_candidates_count"
-    },
-    { "name": "email_confirmation_body", "value": "?.email_confirmation_body" },
-    { "name": "status", "value": "?.status" },
-    { "name": "closed_at", "value": "?.closed_at" },
-    { "name": "offer_tags", "value": "?.offer_tags  || []" }
-  ],
+  "tags": "$merge([{name: 'category', value: ?.category}, {name: 'department', value: ?.department}, {name: 'options_cv', value: ?.options_cv}, {name: 'options_cover_letter', value: ?.options_cover_letter}, {name: 'experience', value: ?.experience}, {name: 'education', value: ?.education}, {name: 'employment_type', value: ?.employment_type}, {name: 'remote_option', value: ?.remote}, {name: 'number_of_openings', value: ?.number_of_openings}, {name: 'candidates_count', value: ?.candidates_count}, {name: 'disqualified_candidates_count', value: ?.disqualified_candidates_count}, {name: 'qualified_candidates_count', value: ?.qualified_candidates_count}, {name: 'hired_candidates_count', value: ?.hired_candidates_count}, {name: 'email_confirmation_body', value: ?.email_confirmation_body}, {name: 'status', value: ?.status}, {name: 'closed_at', value: ?.closed_at}], ?.offer_tags || [] | $map({name: 'offer_tag', value: .}))",
   "ranges_float": [
     {
       "name": "'working hours'",

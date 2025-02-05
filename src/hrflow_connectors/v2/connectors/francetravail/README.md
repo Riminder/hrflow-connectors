@@ -48,9 +48,9 @@ This new connector will enable:
 
 | Action | Description |
 | ------- | ----------- |
-| [**Create jobs in hrflow**](docs/create_jobs_in_hrflow.md) | Send **created** 'job(s)' _from_  _to_ HrFlow |
-| [**Update jobs in hrflow**](docs/update_jobs_in_hrflow.md) | Send **updated** 'job(s)' _from_  _to_ HrFlow |
-| [**Archive jobs in hrflow**](docs/archive_jobs_in_hrflow.md) | Send **archived** 'job(s)' _from_  _to_ HrFlow |
+| [**Create jobs in hrflow**](docs/create_jobs_in_hrflow.md) | Send **created** 'job(s)' _from_ France Travail (ex: Pole Emploi) _to_ HrFlow |
+| [**Update jobs in hrflow**](docs/update_jobs_in_hrflow.md) | Send **updated** 'job(s)' _from_ France Travail (ex: Pole Emploi) _to_ HrFlow |
+| [**Archive jobs in hrflow**](docs/archive_jobs_in_hrflow.md) | Send **archived** 'job(s)' _from_ France Travail (ex: Pole Emploi) _to_ HrFlow |
 
 
 </p>
@@ -75,7 +75,7 @@ For more code details checkout connector code.
 # 🔗 Useful Links
 
 - 📄 Visit [France Travail (ex: Pole Emploi)](https://www.francetravail.fr/) to learn more.
-- ⚙️ API documentation : (https://francetravail.io/produits-partages/documentation/utilisation-api-france-travail)
+- ⚙️ API documentation : (https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/)
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/v2/connectors/francetravail) on our Github.
 
 

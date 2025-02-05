@@ -44,12 +44,12 @@ This new connector will enable:
 
 | Action | Description |
 | ------- | ----------- |
-| [**Create profiles in hrflow**](docs/create_profiles_in_hrflow.md) | Send **created** 'profile(s)' _from_  _to_ HrFlow |
-| [**Create profiles in **](docs/create_profiles_in_.md) | Send **created** 'profile(s)' _from_ HrFlow _to_  |
-| [**Update profiles in hrflow**](docs/update_profiles_in_hrflow.md) | Send **updated** 'profile(s)' _from_  _to_ HrFlow |
-| [**Update profiles in **](docs/update_profiles_in_.md) | Send **updated** 'profile(s)' _from_ HrFlow _to_  |
-| [**Archive profiles in hrflow**](docs/archive_profiles_in_hrflow.md) | Send **archived** 'profile(s)' _from_  _to_ HrFlow |
-| [**Archive profiles in **](docs/archive_profiles_in_.md) | Send **archived** 'profile(s)' _from_ HrFlow _to_  |
+| [**Create profiles in hrflow**](docs/create_profiles_in_hrflow.md) | Send **created** 'profile(s)' _from_ Hubspot _to_ HrFlow |
+| [**Create profiles in hubspot**](docs/create_profiles_in_hubspot.md) | Send **created** 'profile(s)' _from_ HrFlow _to_ Hubspot |
+| [**Update profiles in hrflow**](docs/update_profiles_in_hrflow.md) | Send **updated** 'profile(s)' _from_ Hubspot _to_ HrFlow |
+| [**Update profiles in hubspot**](docs/update_profiles_in_hubspot.md) | Send **updated** 'profile(s)' _from_ HrFlow _to_ Hubspot |
+| [**Archive profiles in hrflow**](docs/archive_profiles_in_hrflow.md) | Send **archived** 'profile(s)' _from_ Hubspot _to_ HrFlow |
+| [**Archive profiles in hubspot**](docs/archive_profiles_in_hubspot.md) | Send **archived** 'profile(s)' _from_ HrFlow _to_ Hubspot |
 
 
 </p>
@@ -74,8 +74,7 @@ For more code details checkout connector code.
 
 # 🔗 Useful Links
 
-- 📄Visit [Hubspot](https://www.hubspot.com) to learn more.
-- ⚙️ API documentation : (https://developers.hubspot.com/docs/api/overview)
+- 📄 Visit [Hubspot](https://www.hubspot.com/) to learn more.
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/v2/connectors/hubspot) on our Github.
 
 

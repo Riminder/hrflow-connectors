@@ -139,7 +139,14 @@ class Type(str, Enum):
     PERMANENT = "permanent"
 
 
-class ReadParameters(Struct):
+class BaseReadParameters(Struct):
+    limit: Annotated[
+        int,
+        Meta(description="Number of items to pull from Zoho."),
+    ] = 100
+
+
+class ReadParameters(BaseReadParameters):
     fields: Annotated[
         t.Optional[str],
         Meta(
@@ -226,7 +233,7 @@ class ReadParameters(Struct):
     ] = ZohoBool.TRUE
 
 
-class ReadDeleteParameters(Struct):
+class ReadDeleteParameters(BaseReadParameters):
     type: Annotated[
         t.Optional[Type],
         Meta(
@@ -364,10 +371,13 @@ def generic_read(
 
         params = asdict(parameters)
         state = params.pop("state", None)
+        limit = params.pop("limit", 100)
         if state:
             params["$state"] = state
 
         headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
+        items_collected = 0
+
         while True:
             response = requests.get(url, headers=headers, params=params)
             if response.status_code == 200:
@@ -388,11 +398,15 @@ def generic_read(
                     )
                     if full_record_response.status_code == 200:
                         yield full_record_response.json()["data"][0]
+                        items_collected += 1
                     else:
                         adapter.error(
                             f"Failed to fetch record: {full_record_response.text},"
                             f" response status code {full_record_response.status_code}"
                         )
+                    if limit and items_collected >= limit:
+                        break
+
                 if not response["info"]["more_records"]:
                     break
                 params["page"] = response["info"]["page"] + 1
@@ -459,7 +473,11 @@ def generic_read_deleted(
             )
 
         params = asdict(parameters)
+        limit = params.pop("limit", None)
+        items_collected = 0
+
         headers = {"Authorization": f"Zoho-oauthtoken {access_token}"}
+
         while True:
             response = requests.get(url, headers=headers, params=params)
             if response.status_code == 200:
@@ -467,6 +485,10 @@ def generic_read_deleted(
                 records = response["data"]
                 for record in records:
                     yield record
+                    items_collected += 1
+
+                if limit and items_collected >= limit:
+                    break
 
                 if not response["info"]["more_records"]:
                     break

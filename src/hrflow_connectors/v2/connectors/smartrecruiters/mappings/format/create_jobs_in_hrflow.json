@@ -5,6 +5,8 @@
   "updated_at": "?.updatedon",
   "url": null,
   "summary": null,
+  "culture": "?.companyDescription",
+  "requirements": "?.qualifications",
   "location": {
     "lat": ".location.latitude != null ?? .location.latitude | $float : null",
     "lng": ".location.longitude != null ?? .location.longitude | $float : null",

@@ -27,6 +27,7 @@
       "description": ".min_experience"
     }
   ],
+  "requirements": ".experience",
   "location": {
     "text": ".address",
     "lat": null,
