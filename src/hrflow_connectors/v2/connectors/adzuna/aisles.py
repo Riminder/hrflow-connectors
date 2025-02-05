@@ -86,6 +86,12 @@ class ReadJobsParameters(Struct):
             description="ISO 8601 country code of the country of interest",
         ),
     ]
+    limit: Annotated[
+        t.Optional[int],
+        Meta(
+            description="The maximum number of results to return.",
+        ),
+    ] = 100
     results_per_page: Annotated[
         t.Optional[int],
         Meta(
@@ -275,9 +281,11 @@ def read(
     params = asdict(parameters)
     page = 1
     country = params.pop("country")
+    limit = params.pop("limit", 100)
     params["app_id"] = auth_parameters.app_id
     params["app_key"] = auth_parameters.app_key
 
+    all_jobs = []
     while True:
         ADZUNA_JOBS_SEARCH_ENDPOINT = "{}/jobs/{}/search/{}".format(
             ADZUNA_BASE_URL, country.value, page
@@ -296,12 +304,14 @@ def read(
             raise Exception("Failed to pull jobs from Adzuna")
 
         jobs = response.json()["results"]
-        for job in jobs:
-            yield job
+        all_jobs.extend(jobs)
 
         page += 1
-        if len(jobs) == 0 or page == MAX_NUMBER_OF_PAGES:
+        if len(all_jobs) >= limit or len(jobs) == 0 or page > MAX_NUMBER_OF_PAGES:
             break
+
+    for job in all_jobs:
+        yield job
 
 
 JobsAisle = Aisle(

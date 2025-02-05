@@ -100,6 +100,12 @@ class ReadProfilesParameters(Struct, omit_defaults=True):
         t.Optional[str],
         Meta(description="id of the offer in which the candidate is involved"),
     ] = None
+    limit: Annotated[
+        t.Optional[int],
+        Meta(
+            description="The maximum number of profiles to return",
+        ),
+    ] = 100
 
 
 class WriteProfilesParameters(Struct):
@@ -136,7 +142,12 @@ class ArchiveProfilesParameters(Struct):
 
 
 class ReadJobsParameters(Struct):
-    pass
+    limit: Annotated[
+        int,
+        Meta(
+            description="The maximum number of jobs to return",
+        ),
+    ] = 100
 
 
 def read_profiles(
@@ -153,6 +164,7 @@ def read_profiles(
     )
     headers = {"Authorization": "Bearer {}".format(auth_parameters.api_key)}
     data = msgspec_json.decode(msgspec_json.encode(parameters), type=dict)
+    limit = data.pop("limit", 100)
 
     response = requests.post(
         url=FLATCHR_CANDIDATES_ENDPOINT, headers=headers, json=data
@@ -182,6 +194,8 @@ def read_profiles(
         headers=headers,
     )
     vacancies = vacancies_response.json()
+
+    profiles = profiles[:limit]
 
     for profile in profiles:
         column_id = next(
@@ -379,7 +393,7 @@ def update(
 def read_jobs(
     adapter: LoggerAdapter,
     auth_parameters: AuthParameters,
-    parameters: ReadProfilesParameters,
+    parameters: ReadJobsParameters,
     incremental: bool,
     incremental_token: t.Optional[str],
 ) -> t.Iterable[t.Dict]:
@@ -397,6 +411,8 @@ def read_jobs(
         )
         raise Exception("Failed to fetch jobs from Flatchr")
     jobs = response.json()
+
+    jobs = jobs[: parameters.limit]
     for job in jobs:
         yield job
 

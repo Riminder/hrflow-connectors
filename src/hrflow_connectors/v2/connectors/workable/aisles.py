@@ -85,6 +85,12 @@ class JobsReadParameters(Struct, omit_defaults=True):
             description="Returns jobs updated after the specified timestamp/date time.",
         ),
     ] = None
+    limit: Annotated[
+        int,
+        Meta(
+            description="The number of jobs to pull",
+        ),
+    ] = 100
 
 
 class ReadProfileParameters(Struct, omit_defaults=True):
@@ -130,6 +136,12 @@ class ReadProfileParameters(Struct, omit_defaults=True):
             ),
         ),
     ] = None
+    limit: Annotated[
+        int,
+        Meta(
+            description="The number of jobs to pull",
+        ),
+    ] = 100
 
 
 class WriteProfileParameters(Struct, omit_defaults=True):
@@ -170,7 +182,7 @@ def read_jobs(
     jobs_url = WORKABLE_BASE_URL.format(subdomain=auth_parameters.subdomain) + "/jobs"
 
     params = msgspec_json.decode(msgspec_json.encode(parameters), type=dict)
-    # params["include_fields"] = "shortcode"
+    limit = params.pop("limit", 100)
 
     headers = {
         "Authorization": f"Bearer {auth_parameters.api_access_token}",
@@ -187,10 +199,16 @@ def read_jobs(
             raise Exception("Failed to read Workable jobs")
 
         jobs.extend(response.json().get("jobs", []))
+        if len(jobs) >= limit:
+            break
+
         next_url = response.json().get("paging", {}).get("next")
         if not next_url:
             break
         url = next_url
+
+    if len(jobs) > limit:
+        jobs = jobs[:limit]
 
     for job in jobs:
         full_job_response = requests.get(
@@ -217,6 +235,7 @@ def read_profiles(
     )
 
     params = msgspec_json.decode(msgspec_json.encode(parameters), type=dict)
+    limit = params.pop("limit", 100)
 
     headers = {
         "Authorization": f"Bearer {auth_parameters.api_access_token}",
@@ -233,10 +252,16 @@ def read_profiles(
             raise Exception("Failed to read Workable profiles")
 
         profiles.extend(response.json().get("candidates", []))
+        if len(profiles) >= limit:
+            break
+
         next_url = response.json().get("paging", {}).get("next")
         if not next_url:
             break
         url = next_url
+
+    if len(profiles) > limit:
+        profiles = profiles[:limit]
 
     for profile in profiles:
         full_profile_response = requests.get(
