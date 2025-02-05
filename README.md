@@ -57,6 +57,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Digitalrecruiters**](./src/hrflow_connectors/v1/connectors/digitalrecruiters/README.md) | ATS | :book: Open source | *17/08/2023* | *24/10/2024* |
 | [**Flatchr**](./src/hrflow_connectors/v2/connectors/flatchr/README.md) | ATS | :book: Open source | *21/04/2022* | ** |
 | [**Greenhouse**](./src/hrflow_connectors/v2/connectors/greenhouse/README.md) | ATS | :book: Open source | *19/01/2022* | *05/09/2024* |
+| [**Homerun**](./src/hrflow_connectors/v2/connectors/homerun/README.md) | ATS | :book: Open source | ** | ** |
 | [**Hubspot**](./src/hrflow_connectors/v2/connectors/hubspot/README.md) | CRM | :book: Open source | *27/10/2022* | *05/09/2024* |
 | [**JazzHR**](./src/hrflow_connectors/v2/connectors/jazzhr/README.md) | ATS | :book: Open source | ** | ** |
 | [**Lever**](./src/hrflow_connectors/v1/connectors/lever/README.md) | ATS | :book: Open source | *18/08/2023* | *23/10/2024* |
@@ -121,7 +122,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Harbour ATS**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Haufe Umantis**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Heyrecruit**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Homerun**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**HR Cloud**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**HR Office**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**HRworks**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |

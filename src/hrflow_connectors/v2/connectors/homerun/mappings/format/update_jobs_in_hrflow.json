@@ -1,0 +1,47 @@
+{
+  "reference": ".id",
+  "title": ".title",
+  "url": ".job_url",
+  "summary": ".description",
+  "sections": [
+    {
+      "name": "description",
+      "title": "Description",
+      "content": ".description"
+    },
+    {
+      "name": "page_content",
+      "title": "Page Content",
+      "content": ".page_content"
+    }
+  ],
+  "location": {
+    "text": ".location.address",
+    "fields": {
+      "city": ".location.city",
+      "country": ".location.country",
+      "text": ".location.address",
+      "postcode": ".location.postal_code",
+      "state": ".location.region"
+    }
+  },
+  "created_at": ".created_at",
+  "tags": [
+    {
+      "name": "department",
+      "value": ".department.name"
+    },
+    {
+      "name": "is_remote",
+      "value": ".is_remote"
+    },
+    {
+      "name": "total_candidate_count",
+      "value": ".total_candidate_count"
+    },
+    {
+      "name": "status",
+      "value": ".status"
+    }
+  ]
+}
