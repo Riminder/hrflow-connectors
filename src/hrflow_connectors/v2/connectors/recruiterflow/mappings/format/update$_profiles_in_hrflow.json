@@ -1,0 +1,48 @@
+{
+  "referenec": ".id | $string",
+  "created_at": ".added_time",
+  "info": {
+    "first_name": ".first_name",
+    "last_name": ".last_name",
+    "full_name": ".name",
+    "email": ".email?.[0]",
+    "phone": ".phone_number?.[0]",
+    "picture": ".img_link",
+    "location": {
+      "text": ".location.location",
+      "lat": null,
+      "lng": null,
+      "fields": {
+        "city": ".location.city",
+        "state": ".location.state",
+        "country": ".location.country",
+        "postcode": ".location.postal_code"
+      }
+    },
+    "urls": [
+      { "linkedin": ".linkedin_profile" },
+      { "angellist": ".angellist_profile" },
+      { "github": ".github_profile" },
+      { "facebook": ".facebook_profile" },
+      { "twitter": ".twitter_profile" },
+      { "xing": ".xing_profile" },
+      { "behance": ".behance_profile" },
+      { "dribbble": ".dribbble_profile" }
+    ],
+    "summary": ".candidate_summary"
+  },
+  "educations": ".education | $map({school: .school, title: .degree, description: .specialization, date_start: .from[0] != null or .from[1] != null ?? $concat(.from[1], '-', .from[0]) : null, date_end: .to[0] != null or .to[1] != null ?? $concat(.to[1], '-', .to[0]) : null, location: {text: null, lat: null, lng: null}})",
+  "experiences": ".experience | $map({title: .designation, company: .organization, date_start: .from[0] != null or .from[1] != null ?? $concat(.from[1], '-', .from[0]) : null, date_end: .to[0] != null or .to[1] != null ?? $concat(.to[1], '-', .to[0]) : null, description: .description || '', location: {text: null, lat: null, lng: null}})",
+  "skills": ".skills | $map({name: ., value: null, type: null})",
+  "tags": [
+    { "name": "added_by", "value": ".added_by.name" },
+    { "name": "source_name", "value": ".source_name" },
+    { "name": "client", "value": "?.client ?? .client.name: null" },
+    { "name": "status", "value": ".status.name" },
+    { "name": "current_designation", "value": ".current_designation" },
+    { "name": "current_organization", "value": ".current_organization" },
+    { "name": "do_not_email", "value": ".do_not_email" },
+    { "name": "rating", "value": ".rating.name" }
+  ],
+  "resume": { "raw": ".resume" }
+}
