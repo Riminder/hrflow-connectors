@@ -1,0 +1,55 @@
+{
+  "reference": ".id | $string",
+  "name": ".title || .name",
+  "location": {
+    "text": ".locations?.[0]?.name",
+    "lat": null,
+    "lng": null,
+    "fields": {
+      "city": ".locations?.[0]?.city",
+      "state": ".locations?.[0]?.state",
+      "country": ".locations?.[0]?.country",
+      "postcode": ".locations?.[0]?.postal_code"
+    }
+  },
+  "summary": "?.about_position",
+  "sections": [
+    {
+      "name": "job_description",
+      "value": "?.about_position"
+    }
+  ],
+  "url": "?.apply_link",
+  "ranges_float": [
+    {
+      "name": "experience_range",
+      "value_min": ".experience_range_start",
+      "value_max": ".experience_range_end",
+      "unit": "year"
+    },
+    {
+      "name": "salary_per_?.salary_frequency",
+      "value_min": ".salary_range_start",
+      "value_max": ".salary_range_end",
+      "unit": ".salary_range_currency"
+    }
+  ],
+  "ranges_date": [
+    {
+      "name": "contract_period",
+      "value_min": ".contract_start_date",
+      "value_max": ".contract_end_date"
+    }
+  ],
+  "tags": [
+    { "name": "company", "value": ".company.name" },
+    { "name": "current_opening", "value": ".current_opening" },
+    { "name": "department", "value": ".department" },
+    { "name": "employment_type", "value": ".employment_type" },
+    { "name": "is_open", "value": ".is_open" },
+    { "name": "is_full_time", "value": "?.work_quantum?.is_full_time" },
+    { "name": "job_status", "value": ".job_status.name" },
+    { "name": "job_type", "value": ".job_type.name" },
+    { "name": "number_of_openings", "value": ".number_of_openings" }
+  ]
+}
