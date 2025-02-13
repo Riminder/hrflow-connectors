@@ -1,0 +1,83 @@
+{
+  "reference": "?.Id",
+  "name": "?.Title",
+  "url": "?.CareerSites?.[0]?.URL",
+  "created_at": "?.CreateDateLocal",
+  "updated_at": "?.LastModificationDate",
+  "summary": "?.ExternalDescription",
+  "location": {
+    "text": "?.Address",
+    "lat": null,
+    "lng": null,
+    "fields": {
+      "city": "?.AddressDetails?.City",
+      "state": "?.AddressDetails?.State",
+      "country": "?.AddressDetails?.Country",
+      "postcode": "?.AddressDetails?.PostalCode"
+    }
+  },
+  "responsibilities": "?.JobResponsibilities || [] | $join(', ')",
+  "requirements": "?.MinimumQualification",
+  "ranges_float": [
+    {
+      "name": "Salary Range",
+      "min": "?.RangeLow",
+      "max": "?.RangeHigh",
+      "unit": "?.CurrencySymbol || ?.Currency"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ApplicantCount",
+      "value": "?.ApplicantCount"
+    },
+    {
+      "name": "Compensation",
+      "value": "?.Compensation"
+    },
+    {
+      "name": "ContactPhone",
+      "value": "?.ContactPhone"
+    },
+    {
+      "name": "DefaultEffectiveDate",
+      "value": "?.DefaultEffectiveDate"
+    },
+    {
+      "name": "DefaultExpirationDate",
+      "value": "?.DefaultExpirationDate"
+    },
+    {
+      "name": "Division",
+      "value": "?.Division"
+    },
+    {
+      "name": "EmploymentType",
+      "value": "?.EmploymentType"
+    },
+    {
+      "name": "HiringManager",
+      "value": "?.HiringManager?.Name"
+    },
+    {
+      "name": "IdealQualification",
+      "value": "?.IdealQualification"
+    },
+    {
+      "name": "Ongoing",
+      "value": "?.Ongoing"
+    },
+    {
+      "name": "Priority",
+      "value": "?.Priority"
+    },
+    {
+      "name": "Ref",
+      "value": "?.Ref"
+    },
+    {
+      "name": "TargetHireDate",
+      "value": "?.TargetHireDate"
+    }
+  ]
+}
