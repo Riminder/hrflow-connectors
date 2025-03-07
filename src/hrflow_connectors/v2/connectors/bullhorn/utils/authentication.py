@@ -42,17 +42,17 @@ def make_token_request(data):
     )
 
 
-def login_to_bullhorn(access_token):
+def login_to_bullhorn(access_token_response):
     """
     Log in to Bullhorn using the obtained access token.
     """
     login_url = "https://rest.bullhornstaffing.com/rest-services/login"
-    params = {"version": "2.0", "access_token": access_token["access_token"]}
+    params = {"version": "2.0", "access_token": access_token_response["access_token"]}
     response = requests.post(url=login_url, params=params)
 
     if response.ok:
         auth_response = response.json()
-        auth_response["refresh_token"] = access_token["refresh_token"]
+        auth_response["refresh_token"] = access_token_response["BhRestToken"]
         return auth_response
 
     raise Exception(
