@@ -197,11 +197,18 @@ def create(
             response = hrflow_client.profile.storing.add_json(
                 source_key=parameters.source_key, profile_json=profile
             )
+            if response["code"] // 100 != 2:
+                adapter.error(
+                    "Failed to add profile without parsing with"
+                    f" reference={profile['reference']} response={response}"
+                )
+                failed.append(profile)
+            continue
         else:
             parsing_response = hrflow_client.profile.parsing.add_file(
                 source_key=parameters.source_key,
                 profile_file=profile["resume"]["raw"],
-                profile_content_type=profile["resume"]["content_type"],
+                profile_content_type=profile["resume"].get("content_type"),
                 profile_file_name=profile["resume"].get("file_name"),
                 reference=profile["reference"],
                 tags=profile.get("tags", []),
@@ -217,21 +224,20 @@ def create(
                 failed.append(profile)
                 continue
 
-            if source_response["data"].get("sync_parsing"):
-                current_profile = parsing_response["data"]["profile"]
-                profile_result = hydrate_profile(current_profile, profile)
-                response = hrflow_client.profile.storing.edit(
-                    source_key=parameters.source_key,
-                    key=profile_result["key"],
-                    profile_json=profile_result,
-                )
-
-        if response["code"] // 100 != 2:
-            adapter.error(
-                "Failed to process profile with"
-                f" reference={profile['reference']} response={response}"
+        if source_response["data"].get("sync_parsing"):
+            current_profile = parsing_response["data"]["profile"]
+            profile_result = hydrate_profile(current_profile, profile)
+            response = hrflow_client.profile.storing.edit(
+                source_key=parameters.source_key,
+                key=profile_result["key"],
+                profile_json=profile_result,
             )
-            failed.append(profile)
+            if response["code"] // 100 != 2:
+                adapter.error(
+                    "Failed to edit profile after parsing with"
+                    f" reference={profile['reference']} response={response}"
+                )
+                failed.append(profile)
 
     return failed
 
@@ -268,17 +274,21 @@ def update(
             else profile
         )
         profile_to_edit = {**current_profile, **edit}
+        profile_to_edit.pop(
+            "resume", None
+        )  # remove resume file from profile to edit because it's not JSON serializable
 
         if profile.get("resume") and profile["resume"].get("raw") is not None:
             if not current_profile.get("attachments"):
                 parsing_response = hrflow_client.profile.parsing.add_file(
                     source_key=parameters.source_key,
                     profile_file=profile["resume"]["raw"],
-                    profile_content_type=profile["resume"]["content_type"],
+                    profile_content_type=profile["resume"].get("content_type"),
+                    profile_file_name=profile["resume"].get("file_name"),
                     reference=profile["reference"],
-                    tags=profile["tags"],
-                    metadatas=profile["metadatas"],
-                    created_at=profile["created_at"],
+                    tags=profile.get("tags", []),
+                    metadatas=profile.get("metadatas", {}),
+                    created_at=profile.get("created_at"),
                 )
 
                 if parsing_response["code"] not in [201, 202]:

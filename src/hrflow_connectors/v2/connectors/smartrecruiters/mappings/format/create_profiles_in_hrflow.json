@@ -1,0 +1,18 @@
+{
+  "reference": "?.id",
+  "info": {
+    "first_name": "?.firstName",
+    "last_name": "?.lastName",
+    "full_name": "$concat(.firstName || '' , ' ', .lastName || '')",
+    "email": "?.email",
+    "phone": "?.phoneNumber",
+    "location": "?.location ??  .location | {lat: ?.lat ?? .lat | $float: null, lng: ?.lng ?? .lng | $float: null, text: $concat(.country ?? '', ' ', .region ?? '', ' ', .city ?? '', ' ', .address ?? '') | $strip}: {lat: null, lng: null, text: ''}",
+    "urls": "?.web  ?? .web | $items | $map({type: .[0], url: .[1]}): []"
+  },
+  "created_at": "?.createdOn",
+  "updated_at": "?.updatedOn",
+  "experiences": "?.experience | $map({company: ?.company, description: ?.description, date_end: ?.endDate, date_start: ?.startDate, title: ?.title, location: {lat: null, lng: null, text: ?.location}})",
+  "educations": "?.education | $map({school: ?.institution, title: $concat(?.major || '', ',', ?.degree || ''), date_start: ?.startDate, date_end: ?.endDate, description: ?.description, location: {lat: null, lng: null, text: .location}})",
+  "skills": [],
+  "tags": []
+}

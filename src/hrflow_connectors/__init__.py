@@ -10,7 +10,6 @@ from hrflow_connectors.v1.connectors.hubspot import Hubspot
 from hrflow_connectors.v1.connectors.jobology import Jobology
 from hrflow_connectors.v1.connectors.lever import Lever
 from hrflow_connectors.v1.connectors.meteojob import Meteojob
-from hrflow_connectors.v1.connectors.poleemploi import PoleEmploi
 from hrflow_connectors.v1.connectors.recruitee import Recruitee
 from hrflow_connectors.v1.connectors.salesforce import Salesforce
 from hrflow_connectors.v1.connectors.sapsuccessfactors import SAPSuccessFactors
@@ -26,7 +25,6 @@ from hrflow_connectors.v1.core.documentation import generate_docs  # noqa
 __CONNECTORS__ = [
     SmartRecruiters,
     TalentSoft,
-    PoleEmploi,
     Adzuna,
     Recruitee,
     Workable,

@@ -1,0 +1,4 @@
+{
+  "applicant_id": ".tags | .name == 'applicant_id' ?? .value: null",
+  "vacancy_id": ".tags | .name == 'vacancy_id' ?? .value: null"
+}

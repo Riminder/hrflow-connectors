@@ -1,0 +1,119 @@
+warehouse:
+  HubspotContactWarehouse:
+    read:
+      - parameters:
+          access_token: $__ACCESS_TOKEN
+actions:
+  push_profile:
+    - id: write_fails_because_of_existing_profile
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        access_token: $__ACCESS_TOKEN
+        dealID: 14789629331
+      status: fatal
+      reason: write_failure
+    - id: no_access_token
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        dealID: 14789629331
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_access_token
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        access_token: bad_access_token
+        dealID: 14789629331
+      status: fatal
+      reason: write_failure
+    - id: no_hrflow_source_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        access_token: $__ACCESS_TOKEN
+        dealID: 14789629331
+      status: fatal
+      reason: bad_origin_parameters
+    - id: no_hrflow_profile_key
+      origin_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+      target_parameters:
+        access_token: $__ACCESS_TOKEN
+        dealID: 14789629331
+      status: fatal
+      reason: bad_origin_parameters
+    - id: invalid_hrflow_api_secret
+      origin_parameters:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        profile_key: $__PROFILE_KEY
+      target_parameters:
+        access_token: $__ACCESS_TOKEN
+        dealID: 14789629331
+      status: fatal
+      reason: read_failure
+  pull_profile_list:
+    - id: valid_parameters
+      origin_parameters:
+        access_token: $__ACCESS_TOKEN
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        only_edit_fields: []
+      status: success
+    - id: no_access_token
+      origin_parameters:
+        limit: 10
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        only_edit_fields: []        
+      status: fatal
+      reason: bad_origin_parameters    
+    - id: invalid_access_token
+      origin_parameters:
+        access_token: bad_access_token
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        only_edit_fields: []
+      status: fatal
+      reason: read_failure
+    - id: no_hrflow_source_key
+      origin_parameters:
+        access_token: $__ACCESS_TOKEN
+      target_parameters:
+        api_secret: $__API_SECRET
+        api_user: $__API_USER
+        only_edit_fields: []
+      status: fatal
+      reason: bad_target_parameters
+    - id: invalid_hrflow_api_secret      
+      origin_parameters:
+        access_token: $__ACCESS_TOKEN
+      target_parameters:
+        api_secret: bad_api_secret
+        api_user: $__API_USER
+        source_key: $__SOURCE_KEY
+        only_edit_fields: []
+      status: fatal
+      reason: write_failure

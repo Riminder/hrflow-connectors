@@ -1,0 +1,38 @@
+{
+  "reference": ".id | $string",
+  "created_at": ".dateCreation | $fromtimestamp",
+  "info": {
+    "first_name": "?.firstName",
+    "last_name": "?.lastName",
+    "full_name": "$concat(?.firstName, ' ', ?.lastName)",
+    "email": "?.mail",
+    "phone": "?.phone",
+    "urls": {
+      "linkedin": "?.social_links?.linkedin",
+      "viadeo": "?.social_links?.viadeo",
+      "twitter": "?.social_links?.twitter",
+      "github": "?.social_links?.github",
+      "behance": "?.social_links?.behance",
+      "other": "?.social_links?.other",
+      "website": "?.social_links?.website",
+      "dribble": "?.social_links?.dribble"
+    },
+    "location": {
+      "lat": "?. location ?? | .lat | $float: null",
+      "lng": "?. location ?? | .lng | $float: null",
+      "text": "?. location ?? | $concat(?.postalCode>> '', ' ', ?.city>> '', ' ', ?.country >> '') | $strip: null",
+      "fields": {
+        "country": "?. location ?? | .country: null",
+        "city": "?. location ?? | .city: null",
+        "postcode": "?. location ?? | .postalCode: null",
+        "road": "?. location ?? | .street: null",
+        "house_number": "?. location ?? | .streetNumbe: null"
+      }
+    }
+  },
+  "skill": [],
+  "educations": [],
+  "experiences": [],
+  "tags": "[.properties | .internal == 'Expérience' ?? ?.value || .values, .properties | .internal == 'Salaire €' ?? ?.value || .values, .properties | .internal == 'Disponibilité' ?? ?.value || .values, .properties | .internal == 'Source candidat' ?? ?.value || .values]",
+  "resume": "{raw: ?.resume}"
+}

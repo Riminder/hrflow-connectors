@@ -1,0 +1,100 @@
+{
+  "reference": ".id",
+  "created_at": ".Created_Time",
+  "updated_at": ".Modified_Time",
+  "name": ".Job_Opening_Name",
+  "location": {
+    "text": "$concat(?.City >> '',  ' ', ?.State >> '', ' ', ?.Country >> '', ' ', ?.Zip_Code >> '')",
+    "lat": null,
+    "lng": null,
+    "fields": {
+      "postcode": "?.Zip_Code",
+      "city": "?.City",
+      "state": "?.State",
+      "country": "?.Country"
+    }
+  },
+  "summary": ".Job_Description",
+  "sections": [
+    {
+      "name": "Job_Description",
+      "title": "Job Description",
+      "description": ".Job_Description"
+    },
+    {
+      "name": "Additional_Info",
+      "title": "Additional Info",
+      "description": ".Additional_Info"
+    }
+  ],
+  "tags": [
+    {
+      "name": "AccountManager",
+      "value": ".AccountManager"
+    },
+    {
+      "name": "AssignedRecruiter",
+      "value": ".AssignedRecruiter"
+    },
+    {
+      "name": "ClientName",
+      "value": ".ClientName"
+    },
+    {
+      "name": "ContactName",
+      "value": ".ContactName"
+    },
+    {
+      "name": "Date_Opened",
+      "value": ".Date_Opened"
+    },
+    {
+      "name": "Industry",
+      "value": ".Industry"
+    },
+    {
+      "name": "Job_Opening_Status",
+      "value": ".Job_Opening_Status"
+    },
+    {
+      "name": "JobType",
+      "value": ".JobType"
+    },
+    {
+      "name": "Number_of_Positions",
+      "value": ".Number_of_Positions"
+    },
+    {
+      "name": "No_of_Candidates_Associated",
+      "value": ".No_of_Candidates_Associated"
+    },
+    {
+      "name": "No_of_Candidates_Hired",
+      "value": ".No_of_Candidates_Hired"
+    },
+    {
+      "name": "State",
+      "value": ".State"
+    },
+    {
+      "name": "WorkExperience",
+      "value": ".WorkExperience"
+    },
+    {
+      "name": "Country",
+      "value": ".Country"
+    },
+    {
+      "name": "ModifiedBy",
+      "value": ".ModifiedBy"
+    },
+    {
+      "name": "Salary",
+      "value": ".Salary"
+    },
+    {
+      "name": "Remote_Job",
+      "value": ".Remote_Job"
+    }
+  ]
+}

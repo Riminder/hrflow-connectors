@@ -18,6 +18,7 @@ from hrflow_connectors.v2.core.common import Entity, Mode
 from hrflow_connectors.v2.core.warehouse import (
     Aisle,
     Criterias,
+    IncrementalTokenHandler,
     ReadOperation,
     WriteOperation,
     merge,
@@ -56,6 +57,12 @@ class UpdateApplicationsCriterias(Struct):
         str,
         Meta(
             description="id for the job in Bullhorn",
+        ),
+    ]
+    candidate_id: Annotated[
+        str,
+        Meta(
+            description="id for of the profile in Bullhorn",
         ),
     ]
     # maybe should be optional
@@ -370,107 +377,113 @@ def update_application(
     params = {"BhRestToken": bh_rest_token}
 
     for profile in items:
-        attachment = profile.pop("attachment", None)
-        profile["source"] = [parameters.source or profile.get("source")]
-        profile["status"] = parameters.status_when_created or profile.get("status")
-        email = profile["email"]
+        if parameters.candidate_id:
+            candidate_id = parameters.candidate_id
 
-        adapter.info(f"Checking if candidate with email: {email} already exists.")
-        search_results = search_entity(
-            "Candidate",
-            rest_url,
-            bh_rest_token,
-            f"(email:{email} OR email2:{email}) AND isDeleted:0",
-            (
-                "id,isDeleted,dateAdded,status,source,email,firstName,"
-                "lastName,name,mobile,address"
-            ),
-            adapter,
-            parameters,
-        )
+        if not parameters.candidate_id:
+            attachment = profile.pop("attachment", None)
+            profile["source"] = [parameters.source or profile.get("source")]
+            profile["status"] = parameters.status_when_created or profile.get("status")
+            email = profile["email"]
 
-        if not search_results:
-            failed_profiles.append(profile)
-            continue
-
-        if search_results["count"] == 0:
-            adapter.info(f"Creating candidate with email: {email}")
-            candidate_response = create_entity(
-                "Candidate", rest_url, params, profile, auth_parameters, adapter
-            )
-            if not candidate_response:
-                failed_profiles.append(profile)
-                continue
-            candidate_id = candidate_response["changedEntityId"]
-            attachment_exists = False
-
-        else:
-            candidate_data = search_results["data"][0]
-            candidate_id = candidate_data.get("id")
-
-            profile.update(
-                {
-                    "firstName": candidate_data.get("firstName") or profile.get(
-                        "firstName"
-                    ),
-                    "lastName": candidate_data.get("lastName") or profile.get(
-                        "lastName"
-                    ),
-                    "name": candidate_data.get("name") or profile.get("name"),
-                    "address": candidate_data.get("address") or profile.get("address"),
-                    "mobile": candidate_data.get("mobile") or profile.get("mobile"),
-                    "status": candidate_data.get("status") or profile.get("status"),
-                    "source": candidate_data.get("source") or profile.get("source"),
-                }
-            )
-
-            adapter.info(f"Updating candidate with ID: {candidate_id}")
-            candidate_response = update_entity(
+            adapter.info(f"Checking if candidate with email: {email} already exists.")
+            search_results = search_entity(
                 "Candidate",
-                candidate_id,
                 rest_url,
-                params,
-                profile,
-                auth_parameters,
+                bh_rest_token,
+                f"(email:{email} OR email2:{email}) AND isDeleted:0",
+                (
+                    "id,isDeleted,dateAdded,status,source,email,firstName,"
+                    "lastName,name,mobile,address"
+                ),
                 adapter,
+                parameters,
             )
 
-            if not candidate_response:
+            if not search_results:
                 failed_profiles.append(profile)
                 continue
 
-            if attachment:
-                adapter.info(
-                    f"Checking if attachment exists for candidate {candidate_id}"
+            if search_results["count"] == 0:
+                adapter.info(f"Creating candidate with email: {email}")
+                candidate_response = create_entity(
+                    "Candidate", rest_url, params, profile, auth_parameters, adapter
                 )
-                entity_files = check_entity_files(
+                if not candidate_response:
+                    failed_profiles.append(profile)
+                    continue
+                candidate_id = candidate_response["changedEntityId"]
+                attachment_exists = False
+
+            else:
+                candidate_data = search_results["data"][0]
+                candidate_id = candidate_data.get("id")
+
+                profile.update(
+                    {
+                        "firstName": candidate_data.get("firstName") or profile.get(
+                            "firstName"
+                        ),
+                        "lastName": candidate_data.get("lastName") or profile.get(
+                            "lastName"
+                        ),
+                        "name": candidate_data.get("name") or profile.get("name"),
+                        "address": candidate_data.get("address") or profile.get(
+                            "address"
+                        ),
+                        "mobile": candidate_data.get("mobile") or profile.get("mobile"),
+                        "status": candidate_data.get("status") or profile.get("status"),
+                        "source": candidate_data.get("source") or profile.get("source"),
+                    }
+                )
+
+                adapter.info(f"Updating candidate with ID: {candidate_id}")
+                candidate_response = update_entity(
+                    "Candidate",
+                    candidate_id,
+                    rest_url,
+                    params,
+                    profile,
+                    auth_parameters,
+                    adapter,
+                )
+
+                if not candidate_response:
+                    failed_profiles.append(profile)
+                    continue
+
+                if attachment:
+                    adapter.info(
+                        f"Checking if attachment exists for candidate {candidate_id}"
+                    )
+                    entity_files = check_entity_files(
+                        "Candidate",
+                        candidate_id,
+                        rest_url,
+                        params,
+                        auth_parameters,
+                        adapter,
+                    )
+                    if entity_files:
+                        attachment_exists = any(
+                            file["name"] == attachment["name"]
+                            for file in entity_files.get("EntityFiles", [])
+                        )
+
+            if not attachment_exists:
+                adapter.info("Uploading attachment")
+                attachment_response = upload_attachment(
                     "Candidate",
                     candidate_id,
                     rest_url,
                     params,
                     auth_parameters,
                     adapter,
+                    attachment,
                 )
-                if entity_files:
-                    attachment_exists = any(
-                        file["name"] == attachment["name"]
-                        for file in entity_files.get("EntityFiles", [])
-                    )
-
-        if not attachment_exists:
-            adapter.info("Uploading attachment")
-            attachment_response = upload_attachment(
-                "Candidate",
-                candidate_id,
-                rest_url,
-                params,
-                auth_parameters,
-                adapter,
-                attachment,
-            )
-            if not attachment_response:
-                failed_profiles.append(profile)
-                continue
+                if not attachment_response:
+                    failed_profiles.append(profile)
+                    continue
 
         adapter.info(
             f"Checking if candidate {candidate_id} has already applied for job"
@@ -965,6 +978,11 @@ ProfilesAisle = Aisle(
             update=ReadUpdatedProfilesCriterias,
             archive=ReadArchivedProfilesCriterias,
         ),
+        incremental_token_handler=IncrementalTokenHandler(
+            create=item_to_read_from_create,
+            update=item_to_read_from_update_or_archive,
+            archive=item_to_read_from_update_or_archive,
+        ),
     ),
     schema=BullhornProfile,
 )
@@ -981,6 +999,11 @@ JobsAisle = Aisle(
             create=ReadCreatedJobsCriterias,
             update=ReadUpdatedJobsCriterias,
             archive=ReadArchivedJobsCriterias,
+        ),
+        incremental_token_handler=IncrementalTokenHandler(
+            create=item_to_read_from_create,
+            update=item_to_read_from_update_or_archive,
+            archive=item_to_read_from_update_or_archive,
         ),
     ),
     schema=BullhornJob,

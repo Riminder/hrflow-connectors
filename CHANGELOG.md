@@ -2,6 +2,225 @@
 
 
 
+## v4.27.2 (2025-01-16)
+
+### Fix
+
+* fix: add sending comments to bullhorn ([`5c46633`](https://github.com/Riminder/hrflow-connectors/commit/5c466335cc6f6ac240fa85e27211ef409f505130))
+
+### Unknown
+
+* Merge pull request #325 from Riminder/fix/connector-bullhorn
+
+fix: add sending comments to bullhorn ([`495925b`](https://github.com/Riminder/hrflow-connectors/commit/495925b2416c8e2ce5eb74b98dce3d5f562bbac5))
+
+* Merge pull request #315 from Riminder/feature/waalaxy-v2
+
+feature: Add Waalaxy Connector in CRUD v2 ([`08dfcb7`](https://github.com/Riminder/hrflow-connectors/commit/08dfcb75276ec93576dd246a7aa864bb5a15b5f8))
+
+* feature: Add Waalaxy Connector in CRUD v2 ([`e58ee7e`](https://github.com/Riminder/hrflow-connectors/commit/e58ee7ea438e8634a04a0ad472be7b8a512e02de))
+
+
+## v4.27.1 (2025-01-09)
+
+### Fix
+
+* fix: skills hardcoded as type hard ([`e11b4b9`](https://github.com/Riminder/hrflow-connectors/commit/e11b4b9822d2283cf76cdcabae870810807ac4f7))
+
+### Unknown
+
+* Merge pull request #314 from Riminder/feature/workable-v2
+
+Feature/workable v2 ([`93639c8`](https://github.com/Riminder/hrflow-connectors/commit/93639c8e0206b9137af352ae170e00d185246c95))
+
+* feature: Add Workable Connector in CRUD v2 ([`69aa211`](https://github.com/Riminder/hrflow-connectors/commit/69aa2117c62b2885623a905d15b45264b6071f39))
+
+* Merge pull request #313 from Riminder/feature/taleez-v2
+
+feature: Add Taleez Connector in CRUD v2 ([`e5bc7c6`](https://github.com/Riminder/hrflow-connectors/commit/e5bc7c638a21857d597638a0cad2f082e4665355))
+
+* feature: Add Taleez Connector in CRUD v2 ([`2e59a8f`](https://github.com/Riminder/hrflow-connectors/commit/2e59a8f64b3cd325bdc940c08da38be59fe52f0e))
+
+* Merge pull request #312 from Riminder/feature/teamtailor-v2
+
+feature: Add Teamtailor Connector in CRUD v2 ([`98c21a3`](https://github.com/Riminder/hrflow-connectors/commit/98c21a31989efdb5dcd6750580f950c4fed87ec0))
+
+
+## v4.27.0 (2025-01-08)
+
+### Documentation
+
+* docs: add required and optional flows for new connectors in CONTRIBUTING.md ([`6ffacb0`](https://github.com/Riminder/hrflow-connectors/commit/6ffacb04779cc11852ba2c50153bbfd7e6d2fdb7))
+
+### Feature
+
+* feat: docs, graphs and manifest for Breezy HR ([`e70153e`](https://github.com/Riminder/hrflow-connectors/commit/e70153e8276ce6b4bed69a5a99c9335042d45555))
+
+### Unknown
+
+* feature: Add Teamtailor Connector in CRUD v2 ([`8236995`](https://github.com/Riminder/hrflow-connectors/commit/823699509dbc601cd2e09d987f55b32a039feabf))
+
+* Merge pull request #311 from Riminder/feature/breezyhr-v2
+
+Feature/breezyhr v2 ([`1cd97c5`](https://github.com/Riminder/hrflow-connectors/commit/1cd97c53d50858ddc2e3748d6f7ad26905749d4a))
+
+* feature: Add Breezy HR  Connector in CRUD v2 ([`eb4d294`](https://github.com/Riminder/hrflow-connectors/commit/eb4d294c2650d388584299a851e3bb99751324c9))
+
+* Merge pull request #310 from Riminder/update/contibuting-md
+
+docs: add required and optional flows for new connectors in CONTRIBUT… ([`48c57c4`](https://github.com/Riminder/hrflow-connectors/commit/48c57c420c9ffd46b744ebbafb94af6ea53db545))
+
+
+## v4.26.3 (2025-01-07)
+
+### Fix
+
+* fix: update Flatchr integration to accommodate API limitations ([`e54f5b3`](https://github.com/Riminder/hrflow-connectors/commit/e54f5b31ab6b8280abb9d23d5166de0a6cb2f9b4))
+
+### Unknown
+
+* Merge pull request #309 from Riminder/feature/flatchr-v2
+
+feature: Add Flatchr  Connector in CRUD v2 ([`6bba5c4`](https://github.com/Riminder/hrflow-connectors/commit/6bba5c48502065814a89e1edfa05f5c1b43f881f))
+
+* removing extra docs ([`aaa336a`](https://github.com/Riminder/hrflow-connectors/commit/aaa336ac1e84e44b88af7c2ee3ffb98f46ef37e2))
+
+* feature: Add Flatchr  Connector in CRUD v2 ([`dc116ef`](https://github.com/Riminder/hrflow-connectors/commit/dc116ef7330d19bc780af9ff17adc4337b29024d))
+
+
+## v4.26.2 (2024-12-09)
+
+### Fix
+
+* fix: remove Pole Emploi from V1_CONNECTORS to resolve test_root_readme_uses_v2_connectors_when_available failure caused by name mismatch in main README ([`c346485`](https://github.com/Riminder/hrflow-connectors/commit/c3464850a012eb85a3c905b2522dabd6e4136e66))
+
+* fix: unify connector documentations ([`af42ff6`](https://github.com/Riminder/hrflow-connectors/commit/af42ff66ec38d53643d676f2c9d885f00325e170))
+
+### Unknown
+
+* Merge pull request #308 from Riminder/feature/adzuna-pole-emploi-v2
+
+Feature/adzuna pole emploi v2 ([`cd3d79a`](https://github.com/Riminder/hrflow-connectors/commit/cd3d79a27c87b82da570fec689acffd75a623f5b))
+
+* feature: Add France Travail(ex: Pole Emploi) Connector in CRUD v2 ([`839d6b0`](https://github.com/Riminder/hrflow-connectors/commit/839d6b03c41f5b6771e42f3f4f3f8298b78bf433))
+
+* feature: Add Adzuna Connector in CRUD v2 ([`d4852a8`](https://github.com/Riminder/hrflow-connectors/commit/d4852a8b8fc694c5f10114b878db6030539c60be))
+
+
+## v4.26.1 (2024-12-05)
+
+### Fix
+
+* fix: bug resume key error when updating profile with only_edit_fields ([`cfcea9d`](https://github.com/Riminder/hrflow-connectors/commit/cfcea9d0b32217375f41991726b17e9024ee4ab1))
+
+* fix: add data flows and import graphs to connectors&#39; documentations ([`f93cc43`](https://github.com/Riminder/hrflow-connectors/commit/f93cc4365eda7defed2ffa00cf8d6091d3eb3ae6))
+
+### Unknown
+
+* Merge pull request #307 from Riminder/fix/connector-bullhorn
+
+fix: bug resume key error when updating profile with only_edit_fields ([`7c871e9`](https://github.com/Riminder/hrflow-connectors/commit/7c871e902be11189056b898ef88a71e92699efbb))
+
+* Merge pull request #306 from Riminder/fix/documentations-graphs
+
+update: connectors&#39; documentations with data flows and import graph ([`3b72be1`](https://github.com/Riminder/hrflow-connectors/commit/3b72be1ab739c25cf255e704d851932cb7d05f5f))
+
+
+## v4.26.0 (2024-12-03)
+
+### Feature
+
+* feat: add params candidate_id in bullhron update application v1 &amp; v2 ([`7c2af8a`](https://github.com/Riminder/hrflow-connectors/commit/7c2af8a07295c6bb3efedbf0f8ca4960ecbd3003))
+
+* feat: Hubspot docs + manifest ([`9087bea`](https://github.com/Riminder/hrflow-connectors/commit/9087bea789652f845183af3d2e7f9a1e2b626ac2))
+
+* feat: Admen e2e Bug hunt + Jsonmaps ([`cf9761e`](https://github.com/Riminder/hrflow-connectors/commit/cf9761e96030a28506f91ea0d9abbdb355d547be))
+
+* feat: Add integration tests config for Bullhorn v2 ([`f8fa2ac`](https://github.com/Riminder/hrflow-connectors/commit/f8fa2ac3d58c39ef0d8ae63108a87317495fabe2))
+
+### Fix
+
+* fix: support distinct incremental methods per action (create, update, archive) ([`722e8c7`](https://github.com/Riminder/hrflow-connectors/commit/722e8c709879dff25ed5436eabd4470e1e7a8fd5))
+
+* fix: documentation generation bug for connector actions with Aisle Endpoints configured ([`d6bd087`](https://github.com/Riminder/hrflow-connectors/commit/d6bd08786f48724966fd2c15129183dac7bdcee0))
+
+* fix: include AD-MEN in target connectors list to update root README ([`d143f5e`](https://github.com/Riminder/hrflow-connectors/commit/d143f5ef80f766875dd0e54e2903dc0e7186cd81))
+
+* fix: resolve ADMEN CI-CD pipeline failure caused by missing dependencies in poetry environment ([`3f0e210`](https://github.com/Riminder/hrflow-connectors/commit/3f0e210741d8aaaa783dba9c6fae763e44ed73fd))
+
+* fix: use msgspec instead of Pydantic in Zoho ([`23d2a20`](https://github.com/Riminder/hrflow-connectors/commit/23d2a201efd024c012674e84a64d4aa3f991832f))
+
+* fix: e2e Zoho Bug hunt ([`67e1ecc`](https://github.com/Riminder/hrflow-connectors/commit/67e1ecc0ecc00e9fd087d8716293048c00d6f89e))
+
+* fix: remove Zoho outbound Job flows, reading jobs not supported on HrFlow Warehouse ([`4af4b82`](https://github.com/Riminder/hrflow-connectors/commit/4af4b82440779a6c91148095acb46fb1a4cde393))
+
+* fix: handle missing resume in profile during parsing for update and create actions in HrFlow ([`9ac253a`](https://github.com/Riminder/hrflow-connectors/commit/9ac253abe618d3f3593984307fd0a24c3a55973e))
+
+* fix: replace Python 3.10+ type hint `dict | None` with `t.Optional[dict]` for Python 3.9 compatibility ([`00c993e`](https://github.com/Riminder/hrflow-connectors/commit/00c993eb8eab959b5b209c20a6771b288c179096))
+
+* fix: e2e Bullhorn bugs hunt ([`4acaccc`](https://github.com/Riminder/hrflow-connectors/commit/4acacccc205b17571eaf55aa1996e329431e1157))
+
+* fix: type checker related issues ([`60aa5fc`](https://github.com/Riminder/hrflow-connectors/commit/60aa5fc75224925e06b2995be4de5ed065097304))
+
+### Unknown
+
+* Merge pull request #305 from Riminder/fix/connector-bullhorn
+
+feat: add params candidate_id in bullhron update application v1 &amp; v2 ([`c949efe`](https://github.com/Riminder/hrflow-connectors/commit/c949efe818ae7000a3297477c5a504d4900936f5))
+
+* Merge pull request #304 from Riminder/fix/incremental-config-and-doc-generation-bugs
+
+Fix/incremental config and doc generation bugs ([`7a1e28c`](https://github.com/Riminder/hrflow-connectors/commit/7a1e28c352b0412e6d6e8db64825f240595c6f68))
+
+* update: configure Bullhorn Warehouse for incremental reading ([`e592edc`](https://github.com/Riminder/hrflow-connectors/commit/e592edc60cafe0a837a263c40a072724872a43eb))
+
+* Merge pull request #303 from Riminder/feature/recruitee-v2
+
+feature: Add Recruitee Connector in CRUD v2 ([`3f951d0`](https://github.com/Riminder/hrflow-connectors/commit/3f951d0f519bbc53125cf8a87685b7eb4bf9f12f))
+
+* feature: Add Recruitee Connector in CRUD v2 ([`ca693ab`](https://github.com/Riminder/hrflow-connectors/commit/ca693abc001848288712bffcce9c99cc664dffb5))
+
+* Merge pull request #302 from Riminder/feature/hubspot-v2
+
+Feature/hubspot v2 ([`232137d`](https://github.com/Riminder/hrflow-connectors/commit/232137d3752de311979f9fc39e7e6fc72345cbd0))
+
+* feature: Add Hubspot Connector in CRUD v2 ([`3918f95`](https://github.com/Riminder/hrflow-connectors/commit/3918f958d85498efe75ed41f0659d492dc520c95))
+
+* Merge pull request #301 from Riminder/feature/smartrecruiters-v2
+
+Feature/smartrecruiters v2 ([`a0601d4`](https://github.com/Riminder/hrflow-connectors/commit/a0601d491285d401f73c919f3bd92df70ac04846))
+
+* feature: Add SmartRecruiters Connector in CRUD v2 ([`d7d7c8d`](https://github.com/Riminder/hrflow-connectors/commit/d7d7c8d8d57cdb03614bcfbdde164e5f62bc4cbd))
+
+* Merge pull request #299 from Riminder/feature/admen-connector-v2
+
+Feature/admen connector v2 ([`193cd24`](https://github.com/Riminder/hrflow-connectors/commit/193cd243ee33994a97943d1a4bd463229395ef44))
+
+* update: README.md ([`9b7ef61`](https://github.com/Riminder/hrflow-connectors/commit/9b7ef61de9e740b848f8985d882bdc20b287e197))
+
+* Admen: docs &amp; manifest ([`2cfd061`](https://github.com/Riminder/hrflow-connectors/commit/2cfd061e00e999666448244d9cbd2680d43e5353))
+
+* feature: Add ADMEN  Connector in CRUD v2 ([`dc86963`](https://github.com/Riminder/hrflow-connectors/commit/dc86963110999e823126c40778b473e263ff1104))
+
+* Merge pull request #297 from Riminder/feature/zoho-connector-v2
+
+Feature/zoho connector v2 ([`621af85`](https://github.com/Riminder/hrflow-connectors/commit/621af85860523215e892503b26cebfe97fe90065))
+
+* update: Zoho docs &amp; manifest ([`2890204`](https://github.com/Riminder/hrflow-connectors/commit/28902048d31bc08c7ab63a5fb596509f6ae4cfd9))
+
+* update: Zoho jsonmaps, docs &amp; manifest ([`4a5e401`](https://github.com/Riminder/hrflow-connectors/commit/4a5e401904b7366e89b5049fd6e77d1f64e6dd47))
+
+* feature: Add Zoho Recruit Connector in CRUD v2 ([`77acd9e`](https://github.com/Riminder/hrflow-connectors/commit/77acd9ee43425c1e0f0277e286d8482b125b145d))
+
+* Merge pull request #296 from Riminder/feature/bullhorn-v2
+
+Feature/bullhorn v2 ([`2f10960`](https://github.com/Riminder/hrflow-connectors/commit/2f10960246e42f40ffd70a32cdb3bb53efac7647))
+
+* minor: add variability in key used to check S3 store to avoid potential failures because of race conditions in CI ([`595629a`](https://github.com/Riminder/hrflow-connectors/commit/595629af7ae24f8b456711c44bf613ad86bf0fa3))
+
+* feature: Bullhorn jsonmaps implementations ([`f12078a`](https://github.com/Riminder/hrflow-connectors/commit/f12078aaf9cf4c418d86995e8e968afc76fefa6a))
+
+
 ## v4.25.0 (2024-11-21)
 
 ### Feature

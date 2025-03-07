@@ -1,0 +1,21 @@
+{
+  "ID_PERSONNE": ".reference | $int",
+  "NOM": ".info.last_name",
+  "PRENOM": ".info.first_name",
+  "EMAIL_PERSO": ".info.email",
+  "TEL_MOBILE": ".info.phone",
+  "DATE_NAISSANCE": ".info.date_birth",
+  "DATE_CREATION": ".created_at | $slice(0, 10)",
+  "DATE_MAJ": ".updated_at",
+  "ADRESSE": ".info.location.text",
+  "VILLE": ".info.location.fields.city",
+  "CODE_POSTAL": ".info.location.fields.postcode",
+  "AREA": ".info.location.fields.state",
+  "PAYS": ".info.location.fields.country",
+  "LINKEDINPUBLICPROFIL": ".info.urls |  .type == linkedin ?? .url",
+  "VIADEOPUBLICPROFIL": ".info.urls |  .type == viadeo ?? .url",
+  "TWITTERPAGE": ".info.urls |  .type == twitter ?? .url",
+  "FACEBOOKPAGE": ".info.urls |  .type == facebook ?? .url",
+  "experiences": ".experiences | $map({INTITULE_POSTE: .title, RAISON_SOCIALE: .company, POSTE_OCCUPE: .title, DEPARTMENT: .location?.text, DATE_EXP: .date_start | $slice(0, 10), DATE_FIN: ?.date_end ?? .date_end | $slice(0, 10): null, COMMENTAIRES: .description, EN_COURS: ?.date_end ?? 0: 1})",
+  "scsync_modified": 0
+}

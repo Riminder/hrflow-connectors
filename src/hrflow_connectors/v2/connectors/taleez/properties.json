@@ -1,0 +1,890 @@
+{
+  "hasMore": false,
+  "list": [
+    {
+      "id": 90347,
+      "internal": "Source candidat",
+      "name": "",
+      "nameEn": null,
+      "apiKey": "source-candidat",
+      "type": "INPUT",
+      "disabled": false,
+      "choices": []
+    },
+    {
+      "id": 90346,
+      "internal": "CV",
+      "name": "CV",
+      "nameEn": null,
+      "apiKey": "cv",
+      "type": "DOC",
+      "disabled": false,
+      "choices": []
+    },
+    {
+      "id": 90345,
+      "internal": "Contrat candidat",
+      "name": "Contrat souhaité",
+      "nameEn": null,
+      "apiKey": "contrat-candidat",
+      "type": "SELECTMUL",
+      "disabled": false,
+      "choices": [
+        {
+          "id": 1061244,
+          "labelFr": "CDI (contrat à durée indéterminée)",
+          "labelEn": null,
+          "apiKey": "cdi--contrat-a-duree-indeterminee-",
+          "order": 0,
+          "category": false
+        },
+        {
+          "id": 1061245,
+          "labelFr": "CDD (contrat à durée déterminée)",
+          "labelEn": null,
+          "apiKey": "cdd--contrat-a-duree-determinee-",
+          "order": 1,
+          "category": false
+        },
+        {
+          "id": 1061246,
+          "labelFr": "Intérim (contrat de travail temporaire)",
+          "labelEn": null,
+          "apiKey": "interim--contrat-de-travail-temporaire-",
+          "order": 2,
+          "category": false
+        },
+        {
+          "id": 1061247,
+          "labelFr": "Freelance",
+          "labelEn": null,
+          "apiKey": "freelance",
+          "order": 3,
+          "category": false
+        },
+        {
+          "id": 1061248,
+          "labelFr": "Stage",
+          "labelEn": null,
+          "apiKey": "stage",
+          "order": 4,
+          "category": false
+        },
+        {
+          "id": 1061249,
+          "labelFr": "Alternance (contrat d'apprentissage)",
+          "labelEn": null,
+          "apiKey": "alternance--contrat-d-apprentissage-",
+          "order": 5,
+          "category": false
+        },
+        {
+          "id": 1061250,
+          "labelFr": "Alternance (contrat de professionalisation)",
+          "labelEn": null,
+          "apiKey": "alternance--contrat-de-professionalisation-",
+          "order": 6,
+          "category": false
+        },
+        {
+          "id": 1061251,
+          "labelFr": "VIE (volontariat international en entreprise)",
+          "labelEn": null,
+          "apiKey": "vie--volontariat-international-en-entreprise-",
+          "order": 7,
+          "category": false
+        },
+        {
+          "id": 1061252,
+          "labelFr": "Job étudiant",
+          "labelEn": null,
+          "apiKey": "job-etudiant",
+          "order": 8,
+          "category": false
+        },
+        {
+          "id": 1061253,
+          "labelFr": "Franchisé",
+          "labelEn": null,
+          "apiKey": "franchise",
+          "order": 9,
+          "category": false
+        },
+        {
+          "id": 1061254,
+          "labelFr": "Statutaire",
+          "labelEn": null,
+          "apiKey": "statutaire",
+          "order": 10,
+          "category": false
+        },
+        {
+          "id": 1061255,
+          "labelFr": "Intermittent",
+          "labelEn": null,
+          "apiKey": "intermittent",
+          "order": 11,
+          "category": false
+        },
+        {
+          "id": 1061256,
+          "labelFr": "Service civique",
+          "labelEn": null,
+          "apiKey": "service-civique",
+          "order": 12,
+          "category": false
+        },
+        {
+          "id": 1061257,
+          "labelFr": "CEE (contrat d'engagement éducatif)",
+          "labelEn": null,
+          "apiKey": "cee--contrat-d-engagement-educatif-",
+          "order": 13,
+          "category": false
+        },
+        {
+          "id": 1061258,
+          "labelFr": "Autre",
+          "labelEn": null,
+          "apiKey": "autre",
+          "order": 14,
+          "category": false
+        }
+      ]
+    },
+    {
+      "id": 90344,
+      "internal": "Profil candidat",
+      "name": "Votre profil",
+      "nameEn": null,
+      "apiKey": "profil-candidat",
+      "type": "SELECTMUL",
+      "disabled": false,
+      "choices": [
+        {
+          "id": 1061218,
+          "labelFr": "Comptabilité",
+          "labelEn": null,
+          "apiKey": "comptabilite",
+          "order": 0,
+          "category": false
+        },
+        {
+          "id": 1061219,
+          "labelFr": "Administration",
+          "labelEn": null,
+          "apiKey": "administration",
+          "order": 1,
+          "category": false
+        },
+        {
+          "id": 1061220,
+          "labelFr": "Art et design",
+          "labelEn": null,
+          "apiKey": "art-et-design",
+          "order": 2,
+          "category": false
+        },
+        {
+          "id": 1061221,
+          "labelFr": "Commercial",
+          "labelEn": null,
+          "apiKey": "commercial",
+          "order": 3,
+          "category": false
+        },
+        {
+          "id": 1061222,
+          "labelFr": "Social et communauté",
+          "labelEn": null,
+          "apiKey": "social-et-communaute",
+          "order": 4,
+          "category": false
+        },
+        {
+          "id": 1061223,
+          "labelFr": "Conseil",
+          "labelEn": null,
+          "apiKey": "conseil",
+          "order": 5,
+          "category": false
+        },
+        {
+          "id": 1061224,
+          "labelFr": "Enseignement",
+          "labelEn": null,
+          "apiKey": "enseignement",
+          "order": 6,
+          "category": false
+        },
+        {
+          "id": 1061225,
+          "labelFr": "Ingénierie",
+          "labelEn": null,
+          "apiKey": "ingenierie",
+          "order": 7,
+          "category": false
+        },
+        {
+          "id": 1061226,
+          "labelFr": "Entreprenariat",
+          "labelEn": null,
+          "apiKey": "entreprenariat",
+          "order": 8,
+          "category": false
+        },
+        {
+          "id": 1061227,
+          "labelFr": "Finance",
+          "labelEn": null,
+          "apiKey": "finance",
+          "order": 9,
+          "category": false
+        },
+        {
+          "id": 1061228,
+          "labelFr": "Service de santé",
+          "labelEn": null,
+          "apiKey": "service-de-sante",
+          "order": 10,
+          "category": false
+        },
+        {
+          "id": 1061229,
+          "labelFr": "Ressources humaines",
+          "labelEn": null,
+          "apiKey": "ressources-humaines",
+          "order": 11,
+          "category": false
+        },
+        {
+          "id": 1061230,
+          "labelFr": "IT",
+          "labelEn": null,
+          "apiKey": "it",
+          "order": 12,
+          "category": false
+        },
+        {
+          "id": 1061231,
+          "labelFr": "Service juridique",
+          "labelEn": null,
+          "apiKey": "service-juridique",
+          "order": 13,
+          "category": false
+        },
+        {
+          "id": 1061232,
+          "labelFr": "Marketing",
+          "labelEn": null,
+          "apiKey": "marketing",
+          "order": 14,
+          "category": false
+        },
+        {
+          "id": 1061233,
+          "labelFr": "Médias et communication",
+          "labelEn": null,
+          "apiKey": "medias-et-communication",
+          "order": 15,
+          "category": false
+        },
+        {
+          "id": 1061234,
+          "labelFr": "Opérations",
+          "labelEn": null,
+          "apiKey": "operations",
+          "order": 16,
+          "category": false
+        },
+        {
+          "id": 1061235,
+          "labelFr": "Responsable produit",
+          "labelEn": null,
+          "apiKey": "responsable-produit",
+          "order": 17,
+          "category": false
+        },
+        {
+          "id": 1061236,
+          "labelFr": "Management de projet",
+          "labelEn": null,
+          "apiKey": "management-de-projet",
+          "order": 18,
+          "category": false
+        },
+        {
+          "id": 1061237,
+          "labelFr": "Achats",
+          "labelEn": null,
+          "apiKey": "achats",
+          "order": 19,
+          "category": false
+        },
+        {
+          "id": 1061238,
+          "labelFr": "Contrôle qualité",
+          "labelEn": null,
+          "apiKey": "controle-qualite",
+          "order": 20,
+          "category": false
+        },
+        {
+          "id": 1061239,
+          "labelFr": "Immobilier",
+          "labelEn": null,
+          "apiKey": "immobilier",
+          "order": 21,
+          "category": false
+        },
+        {
+          "id": 1061240,
+          "labelFr": "Recherche",
+          "labelEn": null,
+          "apiKey": "recherche",
+          "order": 22,
+          "category": false
+        },
+        {
+          "id": 1061241,
+          "labelFr": "Ventes",
+          "labelEn": null,
+          "apiKey": "ventes",
+          "order": 23,
+          "category": false
+        },
+        {
+          "id": 1061242,
+          "labelFr": "Assistance",
+          "labelEn": null,
+          "apiKey": "assistance",
+          "order": 24,
+          "category": false
+        },
+        {
+          "id": 1061243,
+          "labelFr": "Autres",
+          "labelEn": null,
+          "apiKey": "autres",
+          "order": 25,
+          "category": false
+        }
+      ]
+    },
+    {
+      "id": 90343,
+      "internal": "Salaire €",
+      "name": "Salaire souhaité (brut par an)",
+      "nameEn": null,
+      "apiKey": "salaire--",
+      "type": "SELECT",
+      "disabled": false,
+      "choices": [
+        {
+          "id": 1061179,
+          "labelFr": "5 000 à 10 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "5-000-a-10-000---brut-annuel",
+          "order": 0,
+          "category": false
+        },
+        {
+          "id": 1061180,
+          "labelFr": "10 000 à 15 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "10-000-a-15-000---brut-annuel",
+          "order": 1,
+          "category": false
+        },
+        {
+          "id": 1061181,
+          "labelFr": "15 000 à 20 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "15-000-a-20-000---brut-annuel",
+          "order": 2,
+          "category": false
+        },
+        {
+          "id": 1061182,
+          "labelFr": "20 000 à 25 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "20-000-a-25-000---brut-annuel",
+          "order": 3,
+          "category": false
+        },
+        {
+          "id": 1061183,
+          "labelFr": "25 000 à 30 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "25-000-a-30-000---brut-annuel",
+          "order": 4,
+          "category": false
+        },
+        {
+          "id": 1061184,
+          "labelFr": "30 000 à 35 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "30-000-a-35-000---brut-annuel",
+          "order": 5,
+          "category": false
+        },
+        {
+          "id": 1061185,
+          "labelFr": "35 000 à 40 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "35-000-a-40-000---brut-annuel",
+          "order": 6,
+          "category": false
+        },
+        {
+          "id": 1061186,
+          "labelFr": "40 000 à 45 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "40-000-a-45-000---brut-annuel",
+          "order": 7,
+          "category": false
+        },
+        {
+          "id": 1061187,
+          "labelFr": "45 000 à 50 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "45-000-a-50-000---brut-annuel",
+          "order": 8,
+          "category": false
+        },
+        {
+          "id": 1061188,
+          "labelFr": "50 000 à 55 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "50-000-a-55-000---brut-annuel",
+          "order": 9,
+          "category": false
+        },
+        {
+          "id": 1061189,
+          "labelFr": "55 000 à 60 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "55-000-a-60-000---brut-annuel",
+          "order": 10,
+          "category": false
+        },
+        {
+          "id": 1061190,
+          "labelFr": "60 000 à 65 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "60-000-a-65-000---brut-annuel",
+          "order": 11,
+          "category": false
+        },
+        {
+          "id": 1061191,
+          "labelFr": "65 000 à 70 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "65-000-a-70-000---brut-annuel",
+          "order": 12,
+          "category": false
+        },
+        {
+          "id": 1061192,
+          "labelFr": "70 000 à 75 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "70-000-a-75-000---brut-annuel",
+          "order": 13,
+          "category": false
+        },
+        {
+          "id": 1061193,
+          "labelFr": "75 000 à 80 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "75-000-a-80-000---brut-annuel",
+          "order": 14,
+          "category": false
+        },
+        {
+          "id": 1061194,
+          "labelFr": "80 000 à 85 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "80-000-a-85-000---brut-annuel",
+          "order": 15,
+          "category": false
+        },
+        {
+          "id": 1061195,
+          "labelFr": "85 000 à 90 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "85-000-a-90-000---brut-annuel",
+          "order": 16,
+          "category": false
+        },
+        {
+          "id": 1061196,
+          "labelFr": "90 000 à 95 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "90-000-a-95-000---brut-annuel",
+          "order": 17,
+          "category": false
+        },
+        {
+          "id": 1061197,
+          "labelFr": "95 000 à 100 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "95-000-a-100-000---brut-annuel",
+          "order": 18,
+          "category": false
+        },
+        {
+          "id": 1061198,
+          "labelFr": "100 000 à 105 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "100-000-a-105-000---brut-annuel",
+          "order": 19,
+          "category": false
+        },
+        {
+          "id": 1061199,
+          "labelFr": "105 000 à 110 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "105-000-a-110-000---brut-annuel",
+          "order": 20,
+          "category": false
+        },
+        {
+          "id": 1061200,
+          "labelFr": "110 000 à 115 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "110-000-a-115-000---brut-annuel",
+          "order": 21,
+          "category": false
+        },
+        {
+          "id": 1061201,
+          "labelFr": "115 000 à 120 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "115-000-a-120-000---brut-annuel",
+          "order": 22,
+          "category": false
+        },
+        {
+          "id": 1061202,
+          "labelFr": "120 000 à 125 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "120-000-a-125-000---brut-annuel",
+          "order": 23,
+          "category": false
+        },
+        {
+          "id": 1061203,
+          "labelFr": "125 000 à 130 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "125-000-a-130-000---brut-annuel",
+          "order": 24,
+          "category": false
+        },
+        {
+          "id": 1061204,
+          "labelFr": "130 000 à 135 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "130-000-a-135-000---brut-annuel",
+          "order": 25,
+          "category": false
+        },
+        {
+          "id": 1061205,
+          "labelFr": "135 000 à 140 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "135-000-a-140-000---brut-annuel",
+          "order": 26,
+          "category": false
+        },
+        {
+          "id": 1061206,
+          "labelFr": "140 000 à 145 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "140-000-a-145-000---brut-annuel",
+          "order": 27,
+          "category": false
+        },
+        {
+          "id": 1061207,
+          "labelFr": "145 000 à 150 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "145-000-a-150-000---brut-annuel",
+          "order": 28,
+          "category": false
+        },
+        {
+          "id": 1061208,
+          "labelFr": "150 000 à 155 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "150-000-a-155-000---brut-annuel",
+          "order": 29,
+          "category": false
+        },
+        {
+          "id": 1061209,
+          "labelFr": "155 000 à 160 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "155-000-a-160-000---brut-annuel",
+          "order": 30,
+          "category": false
+        },
+        {
+          "id": 1061210,
+          "labelFr": "160 000 à 165 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "160-000-a-165-000---brut-annuel",
+          "order": 31,
+          "category": false
+        },
+        {
+          "id": 1061211,
+          "labelFr": "165 000 à 170 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "165-000-a-170-000---brut-annuel",
+          "order": 32,
+          "category": false
+        },
+        {
+          "id": 1061212,
+          "labelFr": "170 000 à 175 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "170-000-a-175-000---brut-annuel",
+          "order": 33,
+          "category": false
+        },
+        {
+          "id": 1061213,
+          "labelFr": "175 000 à 180 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "175-000-a-180-000---brut-annuel",
+          "order": 34,
+          "category": false
+        },
+        {
+          "id": 1061214,
+          "labelFr": "180 000 à 185 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "180-000-a-185-000---brut-annuel",
+          "order": 35,
+          "category": false
+        },
+        {
+          "id": 1061215,
+          "labelFr": "185 000 à 190 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "185-000-a-190-000---brut-annuel",
+          "order": 36,
+          "category": false
+        },
+        {
+          "id": 1061216,
+          "labelFr": "190 000 à 195 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "190-000-a-195-000---brut-annuel",
+          "order": 37,
+          "category": false
+        },
+        {
+          "id": 1061217,
+          "labelFr": "195 000 à 200 000 € brut annuel",
+          "labelEn": null,
+          "apiKey": "195-000-a-200-000---brut-annuel",
+          "order": 38,
+          "category": false
+        }
+      ]
+    },
+    {
+      "id": 90342,
+      "internal": "Disponibilité",
+      "name": "Votre disponibilité",
+      "nameEn": null,
+      "apiKey": "disponibilite",
+      "type": "DATE",
+      "disabled": false,
+      "choices": []
+    },
+    {
+      "id": 90341,
+      "internal": "Niveau d'étude",
+      "name": "Votre niveau d'étude",
+      "nameEn": null,
+      "apiKey": "niveau-d-etude",
+      "type": "SELECT",
+      "disabled": false,
+      "choices": [
+        {
+          "id": 1061171,
+          "labelFr": "Aucun diplôme",
+          "labelEn": null,
+          "apiKey": "aucun-diplome",
+          "order": 0,
+          "category": false
+        },
+        {
+          "id": 1061172,
+          "labelFr": "BEP, CAP ou équivalent",
+          "labelEn": null,
+          "apiKey": "bep--cap-ou-equivalent",
+          "order": 1,
+          "category": false
+        },
+        {
+          "id": 1061173,
+          "labelFr": "Baccalauréat (bac +0)",
+          "labelEn": null,
+          "apiKey": "baccalaureat--bac--0-",
+          "order": 2,
+          "category": false
+        },
+        {
+          "id": 1061174,
+          "labelFr": "DUT, BTS, Diplôme d'état ou équivalent (bac +2)",
+          "labelEn": null,
+          "apiKey": "dut--bts--diplome-d-etat-ou-equivalent--bac--2-",
+          "order": 3,
+          "category": false
+        },
+        {
+          "id": 1061175,
+          "labelFr": "Licence, Bachelor ou équivalent (bac +3)",
+          "labelEn": null,
+          "apiKey": "licence--bachelor-ou-equivalent--bac--3-",
+          "order": 4,
+          "category": false
+        },
+        {
+          "id": 1061176,
+          "labelFr": "Master 1 ou équivalent (bac +4)",
+          "labelEn": null,
+          "apiKey": "master-1-ou-equivalent--bac--4-",
+          "order": 5,
+          "category": false
+        },
+        {
+          "id": 1061177,
+          "labelFr": "Master, Diplôme d'ingénieur ou équivalent (bac +5)",
+          "labelEn": null,
+          "apiKey": "master--diplome-d-ingenieur-ou-equivalent--bac--5-",
+          "order": 6,
+          "category": false
+        },
+        {
+          "id": 1061178,
+          "labelFr": "Doctorat et équivalent (> bac +5)",
+          "labelEn": null,
+          "apiKey": "doctorat-et-equivalent----bac--5-",
+          "order": 7,
+          "category": false
+        }
+      ]
+    },
+    {
+      "id": 90340,
+      "internal": "Expérience",
+      "name": "Votre expérience",
+      "nameEn": null,
+      "apiKey": "experience",
+      "type": "SELECT",
+      "disabled": false,
+      "choices": [
+        {
+          "id": 1061159,
+          "labelFr": "Aucune expérience",
+          "labelEn": null,
+          "apiKey": "aucune-experience",
+          "order": 0,
+          "category": false
+        },
+        {
+          "id": 1061160,
+          "labelFr": "1 an d'expérience",
+          "labelEn": null,
+          "apiKey": "1-an-d-experience",
+          "order": 1,
+          "category": false
+        },
+        {
+          "id": 1061161,
+          "labelFr": "2 ans d'expérience",
+          "labelEn": null,
+          "apiKey": "2-ans-d-experience",
+          "order": 2,
+          "category": false
+        },
+        {
+          "id": 1061162,
+          "labelFr": "3 ans d'expérience",
+          "labelEn": null,
+          "apiKey": "3-ans-d-experience",
+          "order": 3,
+          "category": false
+        },
+        {
+          "id": 1061163,
+          "labelFr": "4 ans d'expérience",
+          "labelEn": null,
+          "apiKey": "4-ans-d-experience",
+          "order": 4,
+          "category": false
+        },
+        {
+          "id": 1061164,
+          "labelFr": "5 ans d'expérience",
+          "labelEn": null,
+          "apiKey": "5-ans-d-experience",
+          "order": 5,
+          "category": false
+        },
+        {
+          "id": 1061165,
+          "labelFr": "6 ans d'expérience",
+          "labelEn": null,
+          "apiKey": "6-ans-d-experience",
+          "order": 6,
+          "category": false
+        },
+        {
+          "id": 1061166,
+          "labelFr": "7 ans d'expérience",
+          "labelEn": null,
+          "apiKey": "7-ans-d-experience",
+          "order": 7,
+          "category": false
+        },
+        {
+          "id": 1061167,
+          "labelFr": "8 ans d'expérience",
+          "labelEn": null,
+          "apiKey": "8-ans-d-experience",
+          "order": 8,
+          "category": false
+        },
+        {
+          "id": 1061168,
+          "labelFr": "9 ans d'expérience",
+          "labelEn": null,
+          "apiKey": "9-ans-d-experience",
+          "order": 9,
+          "category": false
+        },
+        {
+          "id": 1061169,
+          "labelFr": "10 ans d'expérience",
+          "labelEn": null,
+          "apiKey": "10-ans-d-experience",
+          "order": 10,
+          "category": false
+        },
+        {
+          "id": 1061170,
+          "labelFr": "+ de 10 ans d'expérience",
+          "labelEn": null,
+          "apiKey": "--de-10-ans-d-experience",
+          "order": 11,
+          "category": false
+        }
+      ]
+    }
+  ]
+}

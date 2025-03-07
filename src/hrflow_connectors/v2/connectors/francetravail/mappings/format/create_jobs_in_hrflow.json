@@ -1,0 +1,102 @@
+{
+  "name": "?.intitule",
+  "reference": "?.id",
+  "created_at": "?.dateCreation",
+  "updated_at": "?.dateActualisation",
+  "location": "?.lieuTravail ?? {lat: .lieuTravail?.latitude, lng: .lieuTravail?.longitude, text: $concat(.lieuTravail?.libelle >> '', ' ', .lieuTravail?.codePostal >> '') | $strip}: {lat: null, lng: null, text: ''}",
+  "url": "?.origineOffre?.urlOrigine",
+  "summary": "?.description",
+  "requirements": "?.formations ?? $map($concat(.niveauLibelle || '', ' en ', .domaineLibelle || '')) | $join('\n')",
+  "skills": "?.competences ?? $map({name: .libelle, value: null, type: hard}) : []",
+  "languages": "?.langues ?? $map({name: .libelle, value: null}) : []",
+  "sections": [
+    {
+      "name": "company_description",
+      "title": "'Company Description'",
+      "description": "?.entreprise?.description"
+    }
+  ],
+  "tags": [
+    {
+      "name": "rome_code",
+      "value": "?.romeCode"
+    },
+    {
+      "name": "rome_label",
+      "value": "?.romeLibelle"
+    },
+    {
+      "name": "contract_nature",
+      "value": "?.natureContrat"
+    },
+    {
+      "name": "contract_type",
+      "value": "?.typeContratLibelle"
+    },
+    {
+      "name": "accessible_to_disabled",
+      "value": "?.accessibleTH"
+    },
+    {
+      "name": "is_apprenticeship",
+      "value": "?.alternance"
+    },
+    {
+      "name": "experience_required",
+      "value": "?.experienceExige == 'E' ?? true : false"
+    },
+    {
+      "name": "experience_description",
+      "value": "?.experienceLibelle"
+    },
+    {
+      "name": "salary_description",
+      "value": "?.salaire?.libelle"
+    },
+    {
+      "name": "working_hours_description",
+      "value": "?.dureeTravailLibelle"
+    },
+    { "name": "working_hours_type", "value": "?.dureeTravailLibelleConverti" },
+    {
+      "name": "qualification_label",
+      "value": "?.qualificationLibelle"
+    },
+    {
+      "name": "sector_of_activity",
+      "value": "?.secteurActiviteLibelle"
+    },
+    {
+      "name": "company_name",
+      "value": "?.entreprise?.nom"
+    },
+    {
+      "name": "company_description",
+      "value": "?.entreprise?.description"
+    },
+    {
+      "name": "company_website",
+      "value": "?.entreprise?.url"
+    },
+    {
+      "name": "recruiter_name",
+      "value": "?.contact?.nom"
+    },
+    {
+      "name": "recruiter_email",
+      "value": "?.contact?.courriel"
+    },
+    {
+      "name": "recruiter_phone",
+      "value": "?.contact?.telephone"
+    },
+    {
+      "name": "recruiter_website",
+      "value": "?.contact?.urlRecruteur"
+    },
+    {
+      "name": "application_url",
+      "value": "?.contact?.urlPostulation"
+    }
+  ]
+}

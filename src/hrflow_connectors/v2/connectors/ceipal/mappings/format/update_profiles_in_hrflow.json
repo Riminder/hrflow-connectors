@@ -1,0 +1,38 @@
+{
+  "reference": ".id",
+  "created_at": ".created_at",
+  "info": {
+    "first_name": ".firstname",
+    "last_name": ".lastname",
+    "full_name": "$concat(.firstname, ' ', .middlename, ' ', .lastname)",
+    "email": ".email",
+    "phone": ".mobile_number",
+    "location": {
+      "text": ".address",
+      "lat": null,
+      "lng": null,
+      "fields": {
+        "city": ".city",
+        "state": ".state",
+        "country": ".country"
+      }
+    }
+  },
+  "skills": ".skills || [] | $split(',') | $map({name: ., value: null, type: null})",
+  "experiences": [],
+  "educations": [],
+  "tags": [
+    { "name": "applicant_id", "value": ".id" },
+    { "name": "middlename", "value": ".middlename" },
+    { "name": "consultant_name", "value": ".consultant_name" },
+    { "name": "email_address_1", "value": ".email_address_1" },
+    { "name": "other_phone", "value": ".other_phone" },
+    { "name": "applicant_status", "value": ".applicant_status" },
+    { "name": "job_title", "value": ".job_title" },
+    { "name": "home_phone_number", "value": ".home_phone_number" },
+    { "name": "work_phone_number", "value": ".work_phone_number" },
+    { "name": "created_by", "value": ".created_by" },
+    { "name": "source", "value": ".source" }
+  ],
+  "resume": { "raw": ".resume" }
+}

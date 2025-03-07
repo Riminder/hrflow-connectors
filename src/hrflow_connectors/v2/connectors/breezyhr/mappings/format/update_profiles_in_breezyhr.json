@@ -1,0 +1,12 @@
+{
+  "id": "?.reference",
+  "name": "?.info?.full_name",
+  "email_address": "?.info?.email",
+  "phone_number": "?.info?.phone",
+  "address": "?.info?.location?.text",
+  "summary": "?.info?.summary",
+  "work_history": "?.experiences | $map({company_name: ?.company >> 'Undefined', title: ?.title, summary: ?.description, start_year: ?.date_start != null ?? .date_start | $slice(0, 3) | $int, start_month: ?.date_start != null ?? .date_start | $slice(4,7) | $int, end_year: ?.date_end != null ?? .date_end | $slice(0, 3) | $int, end_month: ?.date_end != null ?? .date_end | $slice(4,7) | $int})",
+  "education": "?.educations | $map({school_name: ?.school >> 'Undefined', field_of_study: ?.title, start_year: ?.date_start != null ?? .date_start | $slice(0, 3) | $int, end_year: ?.date_end != null ?? .date_end | $slice(0, 3) | $int})",
+  "social_profiles": ".info?.urls >> [] | $map({.type: .url | $sub('(^https?://)(.*)', 'https://$2')})",
+  "tags": "?.skills >> [] | $map(?.name)"
+}

@@ -1,0 +1,4 @@
+{
+  "ID_PERSONNE": ".reference | $int",
+  "SOFT_DELETED": 1
+}

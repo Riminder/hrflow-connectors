@@ -322,10 +322,10 @@ def run(
 
     incremental_token = None
     if incremental:
-        if origin.read.supports_incremental is False:
+        if origin.read.supports_incremental(mode) is False:
             adapter.warning(
                 f"Origin warehouse {metadata.origin_name} does not support incremetal"
-                " reading"
+                " reading for mode {mode}."
             )
             return RunResult(
                 status=Status.fatal,
@@ -393,13 +393,15 @@ def run(
         last_item = origin_items[-1]
 
         # We know it's not None because of the check
-        # origin.read.supports_incremental
+        # origin.read.supports_incremental(mode)
         # Adding these kinds of asserts which are anyway removed
         # in optimized Python bytecode is for type checkers only
-        assert origin.read.get_incremental_token is not None
+        assert origin.read.incremental_token_handler is not None
+        token_handler = token_handler = origin.read.incremental_token_handler(mode)
+        assert token_handler is not None  # for type-checker
 
         try:
-            next_incremental_token = origin.read.get_incremental_token(last_item)
+            next_incremental_token = token_handler(last_item)
         except Exception as e:
             events[Event.getting_incremental_token_failure] += 1
             adapter.exception(

@@ -1,0 +1,21 @@
+{
+  "First_Name": ".info.first_name",
+  "Last_Name": ".info.last_name",
+  "Full_Name": ".info.full_name",
+  "Email": ".info.email",
+  "Phone": ".info.phone",
+  "skillSet": ".skills | $map(.name) | $join(', ')",
+  "Experience_in_Years": ".experiences_duration",
+  "Experience_Details": ".experiences | $map({Occupation_Title: .title,I_currently_work_here: ?.date_end == null  ?? true: false , Company: .company, Work_Duration: {from: .date_start, to: ?.date_end}, Summary: .description})",
+  "Educational_Details": ".educations | $map({Institute_School: .school, Currently_pursuing: ?.date_end == null  ?? true: false, Degree: .title, Major_Department: .description, Duration: {from: .date_start, to: ?.date_end}})",
+  "Created_Time": ".created_at",
+  "Updated_On": ".updated_at",
+  "LinkedIn__s": ".info.urls | .type == linkedin ?? .url",
+  "Facebook__s": ".info.urls | .type == facebook ?? .url",
+  "Twitter": ".info.urls | .type == twitter ?? .url",
+  "Street": ".info.location.text",
+  "City": ".info.location.fields?.city",
+  "State": ".info.location.fields?.state",
+  "Zip_Code": ".info.location.fields?.postcode",
+  "Country": ".info.location.fields?.country"
+}

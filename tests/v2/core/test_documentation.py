@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from unittest import mock
 
 import pytest
 
@@ -14,7 +15,11 @@ from hrflow_connectors.v2.core.utils import (
     AmbiguousConnectorImportName,
     ConnectorImportNameNotFound,
 )
+from hrflow_connectors.v2.core.warehouse import Endpoint, Endpoints
 from tests.v2.core.conftest import SmartLeadsProto, TypedSmartLeads
+from tests.v2.core.src.hrflow_connectors.connectors.smartleads.aisles.leads import (
+    LeadsAisle,
+)
 from tests.v2.core.utils import added_connectors, main_import_name_as
 
 NOTEBOOKS_FILE = "anyfile.txt"
@@ -65,6 +70,64 @@ def clean(connectors_directory: Path, SmartLeads: TypedSmartLeads):
     ]:
         if directory.is_dir():
             directory.rmdir()
+
+
+def test_documentation_works_if_endpoints_are_set_up(
+    connectors_directory: Path, SmartLeads: TypedSmartLeads
+):
+    endpoints = Endpoints(
+        create=Endpoint(
+            name="Create",
+            description="Create a lead",
+            url="https://api.smartleads.com/create",
+        ),
+        update=Endpoint(
+            name="Update",
+            description="Update a lead",
+            url="https://api.smartleads.com/update",
+        ),
+        archive=Endpoint(
+            name="Archive",
+            description="Archive a lead",
+            url="https://api.smartleads.com/archive",
+        ),
+    )
+
+    with mock.patch.object(LeadsAisle.read, "endpoints", endpoints):
+        with mock.patch.object(LeadsAisle.write, "endpoints", endpoints):
+            with added_connectors([("SmartLeads", SmartLeads)]):
+                hrflow_connectors_docs(
+                    connectors=[SmartLeads],
+                    connectors_directory=connectors_directory,
+                )
+
+    for flow in SmartLeads.flows:
+        action_documentations = (
+            connectors_directory
+            / SmartLeads.subtype
+            / "docs"
+            / f"{flow.name(SmartLeads.subtype)}.md"
+        )
+
+        assert action_documentations.exists()
+
+        doc_content = action_documentations.read_text()
+
+        if flow.mode == Mode.create:
+            endpoint = endpoints.create
+        elif flow.mode == Mode.update:
+            endpoint = endpoints.update
+        elif flow.mode == Mode.archive:
+            endpoint = endpoints.archive
+
+        assert endpoint is not None
+
+        assert "endpoint used" in doc_content
+
+        assert (
+            f"| [**{endpoint.name}**]({endpoint.url}) | {endpoint.description} |"
+            in doc_content
+        )
 
 
 def test_documentation(connectors_directory: Path, SmartLeads: TypedSmartLeads):

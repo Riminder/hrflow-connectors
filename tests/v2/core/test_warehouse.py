@@ -8,6 +8,7 @@ from hrflow_connectors.v2.core.common import Entity, Mode, Schema
 from hrflow_connectors.v2.core.warehouse import (
     Aisle,
     Criterias,
+    IncrementalTokenHandler,
     ModeIsNotSupported,
     ReadOperation,
     Warehouse,
@@ -50,7 +51,7 @@ def test_read_supports_incremental():
         ReadOperation(
             function=MagicMock(),
             criterias=Criterias(),
-        ).supports_incremental
+        ).supports_incremental(Mode.create)
         is False
     )
 
@@ -58,8 +59,10 @@ def test_read_supports_incremental():
         ReadOperation(
             function=MagicMock(),
             criterias=Criterias(),
-            get_incremental_token=lambda *args, **kwargs: "token",
-        ).supports_incremental
+            incremental_token_handler=IncrementalTokenHandler(
+                create=lambda *args, **kwargs: "token",
+            ),
+        ).supports_incremental(Mode.create)
         is True
     )
 

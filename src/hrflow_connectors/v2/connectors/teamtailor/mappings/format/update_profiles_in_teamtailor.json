@@ -1,0 +1,12 @@
+{
+  "id": ".reference",
+  "first-name": ".info?.first_name",
+  "last-name": ".info?.last_name",
+  "email": ".info?.email",
+  "phone": ".info?.phone",
+  "picture": ".info?.picture",
+  "linkedin-url": ".info?.urls || [] | .type == 'linkedin' ?? .url: null",
+  "pitch": ".info?.summary | $slice(0,139)",
+  "resume": ".attachments != [] | .[0]?.public_url: null",
+  "sourced": true
+}

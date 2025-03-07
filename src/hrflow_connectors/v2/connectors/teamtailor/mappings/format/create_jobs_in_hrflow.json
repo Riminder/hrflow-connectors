@@ -1,0 +1,51 @@
+{
+  "reference": "?.id",
+  "name": ".attributes?.title",
+  "summary": ".attributes?.body",
+  "created_at": ".attributes?.created-at",
+  "updated_at": ".attributes?.updated-at",
+  "url": "?.links?.careersite-job-url",
+  "location": "?.location",
+  "sections": [
+    {
+      "name": "job_description",
+      "title": "'Job Description'",
+      "description": ".attributes?.body"
+    },
+    {
+      "name": "job_pitch",
+      "title": "'Job Pitch'",
+      "description": ".attributes?.pitch"
+    }
+  ],
+  "tags": [
+    { "name": "start-date", "value": ".attributes?.start-date" },
+    { "name": "end-date", "value": ".attributes?.end-date" },
+    { "name": "status", "value": ".attributes?.status" },
+    { "name": "human-status", "value": ".attributes?.human-status" },
+    { "name": "language-code", "value": ".attributes?.language-code" },
+    {
+      "name": "employment-type",
+      "value": ".attributes?.employment-type"
+    },
+    {
+      "name": "employment-level",
+      "value": ".attributes?.employment-level"
+    },
+    {
+      "name": "remote-status",
+      "value": ".attributes?.remote-status"
+    },
+    {
+      "name": "salary-time-unit",
+      "value": ".attributes?.salary-time-unit"
+    },
+    { "name": "min-salary", "value": ".attributes?.min-salary" },
+    { "name": "max-salary", "value": ".attributes?.max-salary" },
+    { "name": "currency", "value": ".attributes?.currency" },
+    { "name": "internal", "value": ".attributes?.internal" },
+    { "name": "internal-name", "value": ".attributes?.internal-name" },
+    { "name": "pinned", "value": ".attributes?.pinned" },
+    { "name": "teamtailor_tags", "value": "?.tags" }
+  ]
+}
