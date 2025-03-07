@@ -33,7 +33,7 @@ jobs:
 
       - name: Load cached Poetry installation
         id: cached-poetry-install
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.local
           key: poetry-${{ env.POETRY_VERSION }}
@@ -47,7 +47,7 @@ jobs:
 
       - name: Load cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ env.BASELINE_PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
@@ -70,7 +70,7 @@ jobs:
 
       - name: Load cached nox venvs
         id: cached-nox-venvs
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ env.NOX_ENV_DIR }}
           key: nox-venvs-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
@@ -118,7 +118,7 @@ jobs:
 
       - name: Load cached Poetry installation
         id: cached-poetry-install
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.local
           key: poetry-${{ env.POETRY_VERSION }}
@@ -128,7 +128,7 @@ jobs:
 
       - name: Load cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ env.BASELINE_PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
@@ -137,7 +137,7 @@ jobs:
 
       - name: Load cached nox venvs
         id: cached-nox-venvs
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ env.NOX_ENV_DIR }}
           key: nox-venvs-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
@@ -184,7 +184,7 @@ jobs:
 
       - name: Load cached Poetry installation
         id: cached-poetry-install
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.local
           key: poetry-${{ env.POETRY_VERSION }}
@@ -194,7 +194,7 @@ jobs:
 
       - name: Load cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ env.BASELINE_PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
