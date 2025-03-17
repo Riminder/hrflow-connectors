@@ -1,0 +1,26 @@
+{
+  "id": ".reference",
+  "name": ".info.full_name",
+  "first_name": ".info.first_name",
+  "last_name": ".info.last_name",
+  "email": [{ "email": ".info.email", "is_primary": 1 }],
+  "phone_number": [{ "phone_number": ".info.phone", "type": 1 }],
+  "linkedin_profile": ".info.urls | .type == 'linkedin' ?? .url: null",
+  "twitter_profile": ".info.urls | .type == 'twitter' ?? .url: null",
+  "facebook_profile": ".info.urls | .type == 'facebook' ?? .url: null",
+  "github_profile": ".info.urls | .type == 'github' ?? .url: null",
+  "skills": ".skills | $map(.name)",
+  "title": ".info.summary",
+  "source": ".source.name",
+  "location": {
+    "location": ".info.location.text",
+    "city": ".info.location.fields?.city",
+    "state": ".info.location.fields?.state",
+    "country": ".info.location.fields?.country",
+    "postal_code": ".info.location.fields?.postcode"
+  },
+  "experience": ".experiences | $map({organization: .company || 'Undefined', designation: .title, from: .date_start | $split('-') |  [.[1] | $int, .[0] | $int], to: .date_end | $split('-') |  [.[1] | $int, .[0] | $int]})",
+  "education": ".educations | $map({school: .school || 'Undefined', degree: .title, specialization: .description, from: .date_start | $split('-') |  [.[1] | $int, .[0] | $int], to: .date_end | $split('-') |  [.[1] | $int, .[0] | $int]})",
+  "added_time": ".created_at",
+  "resume": ".attachments[0]"
+}
