@@ -54,6 +54,7 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Bullhorn**](./src/hrflow_connectors/v2/connectors/bullhorn/README.md) | ATS | :book: Open source | *26/01/2022* | *23/10/2024* |
 | [**Ceipal**](./src/hrflow_connectors/v2/connectors/ceipal/README.md) | ATS | :book: Open source | ** | ** |
 | [**Ceridian**](./src/hrflow_connectors/v1/connectors/ceridian/README.md) | HCM | :book: Open source | *19/01/2022* | *05/09/2024* |
+| [**Cornerstone OnDemand**](./src/hrflow_connectors/v2/connectors/cornerstoneondemand/README.md) | ATS | :book: Open source | ** | ** |
 | [**Digitalrecruiters**](./src/hrflow_connectors/v1/connectors/digitalrecruiters/README.md) | ATS | :book: Open source | *17/08/2023* | *24/10/2024* |
 | [**Flatchr**](./src/hrflow_connectors/v2/connectors/flatchr/README.md) | ATS | :book: Open source | *21/04/2022* | ** |
 | [**Greenhouse**](./src/hrflow_connectors/v2/connectors/greenhouse/README.md) | ATS | :book: Open source | *19/01/2022* | *05/09/2024* |
@@ -105,7 +106,6 @@ We invite developers to join us in our mission to bring AI and data integration 
 | [**Comeet**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**concludis**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Connexys By Bullhorn**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
-| [**Cornerstone OnDemand**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Cornerstone TalentLink**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**Crosstalent**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
 | [**d.vinci**](https://forms.gle/pokoE9pAjSVSFtCe7) | ATS | :lock: Premium |  |  |
