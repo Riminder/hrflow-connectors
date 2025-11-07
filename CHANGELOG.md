@@ -2,6 +2,53 @@
 
 
 
+## v4.27.3 (2025-11-07)
+
+### Fix
+
+* fix: codestyle ([`68f5eff`](https://github.com/Riminder/hrflow-connectors/commit/68f5eff40a2f08dd1388e8417aab5f0f4d9e617c))
+
+* fix: codestyle ([`ecae5e5`](https://github.com/Riminder/hrflow-connectors/commit/ecae5e5e3086c5849a5c312f7355e5915293f3aa))
+
+* fix: adding missing HrFlowJob import ([`38dd0e0`](https://github.com/Riminder/hrflow-connectors/commit/38dd0e09085a69d9e35c2dc2149065b5ad1df07f))
+
+* fix: update github workflow action cache ([`022935f`](https://github.com/Riminder/hrflow-connectors/commit/022935f96995f1beb274c9b1b9d2eacacdd32524))
+
+* fix: update Ceipal pulling logic to enforce limit parameter on item retrieval ([`5c1d0ee`](https://github.com/Riminder/hrflow-connectors/commit/5c1d0ee291467559a679981fc1f9ed98513ff5b4))
+
+* fix: update SmartRecruiters limit parameter descriptions ([`867dd9c`](https://github.com/Riminder/hrflow-connectors/commit/867dd9c500edd469a117e2d2121a2e12c9997794))
+
+* fix: split list-valued tags into individual tags in Greenhouse job formatting for improved frontend usability ([`b5ce2b2`](https://github.com/Riminder/hrflow-connectors/commit/b5ce2b251e99e51a28b51dfc78ac7ba9ad427f4a))
+
+### Unknown
+
+* Merge pull request #337 from Riminder/fix/adding-hrflowjob-v1-import
+
+fix: adding missing HrFlowJob import ([`3557fd4`](https://github.com/Riminder/hrflow-connectors/commit/3557fd48a3af0600e2f72db39a206ef12f76657e))
+
+* Merge pull request #335 from Riminder/fix/use-cache-v4
+
+fix: update github workflow action cache ([`36ed8a7`](https://github.com/Riminder/hrflow-connectors/commit/36ed8a72e412a1372da71571315584a91ff820bd))
+
+* Merge pull request #318 from Riminder/feature/ceipal-v2
+
+feature: Add Ceipal Connector in CRUD v2 ([`84997dd`](https://github.com/Riminder/hrflow-connectors/commit/84997ddba5603b7c6a32049403f897d569bd961b))
+
+* feature: Add Ceipal Connector in CRUD v2 ([`103ed7a`](https://github.com/Riminder/hrflow-connectors/commit/103ed7a945cacd7e3b40d713d93a8412974c898f))
+
+* Merge pull request #317 from Riminder/feature/jazzhr-v2
+
+feature: Add JazzHR Connector in CRUD v2 ([`b54058f`](https://github.com/Riminder/hrflow-connectors/commit/b54058f33fc0b43cc03b29d36f840cdc0957f9bd))
+
+* feature: Add JazzHR Connector in CRUD v2 ([`9918a24`](https://github.com/Riminder/hrflow-connectors/commit/9918a248811f72f1831cb2ebd4294e1a40f5c40e))
+
+* Merge pull request #316 from Riminder/feature/greenhouse-v2
+
+feature: Add GreenHouse Connector in CRUD v2 ([`e9337f7`](https://github.com/Riminder/hrflow-connectors/commit/e9337f7e090c4f722696c78924bbe24b2d5dcd83))
+
+* feature: Add GreenHouse Connector in CRUD v2 ([`caa7fb9`](https://github.com/Riminder/hrflow-connectors/commit/caa7fb997ca22c0bf2697a1f6e116b111034b473))
+
+
 ## v4.27.2 (2025-01-16)
 
 ### Fix
