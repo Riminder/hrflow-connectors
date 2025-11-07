@@ -2,6 +2,19 @@
 
 
 
+## v4.27.4 (2025-11-07)
+
+### Fix
+
+* fix: adding missing HrFlowProfileParsing import ([`f861725`](https://github.com/Riminder/hrflow-connectors/commit/f861725593e97a4ddc78770e5374f37e78e788b8))
+
+### Unknown
+
+* Merge pull request #338 from Riminder/fix/adding-hrflowjob-v1-import
+
+fix: adding missing HrFlowProfileParsing import ([`d3350a4`](https://github.com/Riminder/hrflow-connectors/commit/d3350a4e3476380903a4792e1658f7bc57850303))
+
+
 ## v4.27.3 (2025-11-07)
 
 ### Fix
