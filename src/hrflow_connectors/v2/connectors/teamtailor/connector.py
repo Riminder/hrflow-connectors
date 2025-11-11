@@ -51,7 +51,10 @@ def format_job(teamtailor_job: t.Dict) -> t.Dict:
             t("internal", job_attributes.get("internal")),
             t("internal-name", job_attributes.get("internal-name")),
             t("pinned", job_attributes.get("pinned")),
-            t("teamtailor_tags", job_attributes.get("tags")),
+            *[
+                t("teamtailor_tag", teamtailor_tag)
+                for teamtailor_tag in job_attributes.get("tags", [])
+            ],
             t(
                 "careersite-job-apply-url",
                 teamtailor_job.get("links", {}).get("careersite-job-apply-url"),
@@ -127,7 +130,10 @@ def format_teamtailor_profile(teamtailor_profile: t.Dict) -> t.Dict:
             t("referring_url", profile_attributes.get("referring-url")),
             t("referring_site", profile_attributes.get("referring-site")),
             t("unsubscribed", profile_attributes.get("unsubscribed")),
-            t("teamtailor_tags", profile_attributes.get("tags")),
+            *[
+                t("teamtailor_tag", teamtailor_tag)
+                for teamtailor_tag in profile_attributes.get("tags", [])
+            ],
         ],
     )
     return profile

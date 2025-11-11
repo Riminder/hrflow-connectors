@@ -41,7 +41,7 @@ class ReadJobPostingsParameters(Struct, omit_defaults=True):
         Meta(
             description="Number of items to pull from CEIPAL",
         ),
-    ] = 20
+    ] = 100
     business_unit_id: Annotated[
         t.Optional[int],
         Meta(
@@ -239,7 +239,7 @@ def read_jobs(
     }
     params = msgspec_json.decode(msgspec_json.encode(parameters), type=dict)
 
-    limit = params.pop("limit")
+    limit = params.pop("limit", 100)
     params["limit"] = limit if limit <= CEIPAL_ENDPOINT_LIMIT else CEIPAL_ENDPOINT_LIMIT
 
     jobs = []
@@ -297,7 +297,7 @@ def read_applicants(
     }
     params = msgspec_json.decode(msgspec_json.encode(parameters), type=dict)
 
-    limit = params.pop("limit")
+    limit = params.pop("limit", 100)
     params["limit"] = limit if limit <= CEIPAL_ENDPOINT_LIMIT else CEIPAL_ENDPOINT_LIMIT
 
     applicants = []

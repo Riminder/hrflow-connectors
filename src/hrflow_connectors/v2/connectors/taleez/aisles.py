@@ -102,6 +102,12 @@ class ReadJobsParameters(Struct, omit_defaults=True):
             ),
         ),
     ] = None
+    limit: Annotated[
+        int,
+        Meta(
+            description="The number of jobs to pull from Taleez. Default is 100",
+        ),
+    ] = TALEEZ_JOBS_ENDPOINT_LIMIT
 
 
 class ReadProfilesParameters(Struct, omit_defaults=True):
@@ -111,6 +117,12 @@ class ReadProfilesParameters(Struct, omit_defaults=True):
             description="Filter by mail",
         ),
     ] = None
+    limit: Annotated[
+        int,
+        Meta(
+            description="The number of profiles to pull from Taleez. Default is 100.",
+        ),
+    ] = TALEEZ_JOBS_ENDPOINT_LIMIT
 
 
 class WriteProfilesParameters(Struct):
@@ -156,6 +168,8 @@ def read_jobs(
     incremental_token: t.Optional[str],
 ) -> t.Iterable[t.Dict]:
     params = msgspec_json.decode(msgspec_json.encode(parameters), type=dict)
+    limit = params.pop("limit")
+
     params["withDetails"] = True
     params["withProps"] = True
     page = 0
@@ -178,10 +192,13 @@ def read_jobs(
 
         response = response.json()
         jobs.extend(response["list"])
+        if len(jobs) >= limit:
+            break
         if response["hasMore"] is False:
             break
         page += 1
 
+    jobs = jobs[:limit]
     for job in jobs:
         yield job
 
@@ -194,6 +211,7 @@ def read_profiles(
     incremental_token: t.Optional[str],
 ) -> t.Iterable[t.Dict]:
     params = msgspec_json.decode(msgspec_json.encode(parameters), type=dict)
+    limit = params.pop("limit", 100)
     params["withProps"] = True
     page = 0
     profiles = []
@@ -215,10 +233,13 @@ def read_profiles(
 
         response = response.json()
         profiles.extend(response["list"])
+        if len(profiles) >= limit:
+            break
         if response["hasMore"] is False:
             break
         page += 1
 
+    profiles = profiles[:limit]
     for profile in profiles:
         resume_link = profile.get("resume")
         if resume_link:

@@ -34,7 +34,6 @@ This new connector will enable:
 - ➡️ Send Jobs data from a Source of your choice to Greenhouse.
 
 
-
 <p align="center">
 <image src=https://github.com/user-attachments/assets/06cafa10-de38-40d8-b153-2148f5e0a06b width=90% height=100% >
 </p>
@@ -49,15 +48,15 @@ This new connector will enable:
 
 | Action | Description |
 | ------- | ----------- |
-| [**Create jobs in hrflow**](docs/create_jobs_in_hrflow.md) | Send **created** 'job(s)' _from_  _to_ HrFlow |
-| [**Update jobs in hrflow**](docs/update_jobs_in_hrflow.md) | Send **updated** 'job(s)' _from_  _to_ HrFlow |
-| [**Archive jobs in hrflow**](docs/archive_jobs_in_hrflow.md) | Send **archived** 'job(s)' _from_  _to_ HrFlow |
-| [**Create profiles in hrflow**](docs/create_profiles_in_hrflow.md) | Send **created** 'profile(s)' _from_  _to_ HrFlow |
-| [**Update profiles in hrflow**](docs/update_profiles_in_hrflow.md) | Send **updated** 'profile(s)' _from_  _to_ HrFlow |
-| [**Archive profiles in hrflow**](docs/archive_profiles_in_hrflow.md) | Send **archived** 'profile(s)' _from_  _to_ HrFlow |
-| [**Create profiles in **](docs/create_profiles_in_.md) | Send **created** 'profile(s)' _from_ HrFlow _to_  |
-| [**Update profiles in **](docs/update_profiles_in_.md) | Send **updated** 'profile(s)' _from_ HrFlow _to_  |
-| [**Archive profiles in **](docs/archive_profiles_in_.md) | Send **archived** 'profile(s)' _from_ HrFlow _to_  |
+| [**Create jobs in hrflow**](docs/create_jobs_in_hrflow.md) | Send **created** 'job(s)' _from_ Greenhouse _to_ HrFlow |
+| [**Update jobs in hrflow**](docs/update_jobs_in_hrflow.md) | Send **updated** 'job(s)' _from_ Greenhouse _to_ HrFlow |
+| [**Archive jobs in hrflow**](docs/archive_jobs_in_hrflow.md) | Send **archived** 'job(s)' _from_ Greenhouse _to_ HrFlow |
+| [**Create profiles in hrflow**](docs/create_profiles_in_hrflow.md) | Send **created** 'profile(s)' _from_ Greenhouse _to_ HrFlow |
+| [**Update profiles in hrflow**](docs/update_profiles_in_hrflow.md) | Send **updated** 'profile(s)' _from_ Greenhouse _to_ HrFlow |
+| [**Archive profiles in hrflow**](docs/archive_profiles_in_hrflow.md) | Send **archived** 'profile(s)' _from_ Greenhouse _to_ HrFlow |
+| [**Create profiles in greenhouse**](docs/create_profiles_in_greenhouse.md) | Send **created** 'profile(s)' _from_ HrFlow _to_ Greenhouse |
+| [**Update profiles in greenhouse**](docs/update_profiles_in_greenhouse.md) | Send **updated** 'profile(s)' _from_ HrFlow _to_ Greenhouse |
+| [**Archive profiles in greenhouse**](docs/archive_profiles_in_greenhouse.md) | Send **archived** 'profile(s)' _from_ HrFlow _to_ Greenhouse |
 
 
 </p>
@@ -82,9 +81,9 @@ For more code details checkout connector code.
 # 🔗 Useful Links
 
 - 📄 Visit [Greenhouse](https://www.greenhouse.io/) to learn more.
+- ⚙️ API documentation : (https://developers.greenhouse.io/harvest.html#introduction)
 - 💻 [Connector code](https://github.com/Riminder/hrflow-connectors/tree/master/src/hrflow_connectors/v2/connectors/greenhouse) on our Github.
 
 
 # 👏 Special Thanks
-- 💻 HrFlow.ai : XXXXX YYYYY - Software Engineer
-- 🤝 Greenhouse : XXXXX YYYYY - Partner Manager
+- 💻 HrFlow.ai :  [Nedhir Ebnou](https://github.com/nedhirouebnou) - Software Engineer
