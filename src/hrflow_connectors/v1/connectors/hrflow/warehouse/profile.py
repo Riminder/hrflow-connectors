@@ -132,6 +132,7 @@ def write(
         api_secret=parameters.api_secret, api_user=parameters.api_user
     )
     for profile in profiles:
+        # FIXME: handle upsert mode (create / edit depending on profile existence)
         if parameters.edit:
             current_profile = hrflow_client.profile.storing.get(
                 source_key=parameters.source_key, reference=profile["reference"]
@@ -169,7 +170,9 @@ def write(
                 source_key=parameters.source_key, profile_json=profile
             )
             if response["code"] // 100 != 2:
-                adapter.error("Failed to add profile with response={}".format(response))
+                adapter.warning(
+                    "Failed to add profile with response={}".format(response)
+                )
                 failed.append(profile)
     return failed
 
