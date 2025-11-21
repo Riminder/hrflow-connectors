@@ -2,6 +2,21 @@
 
 
 
+## v4.27.5 (2025-11-21)
+
+### Fix
+
+* fix: codestyle ([`7655fae`](https://github.com/Riminder/hrflow-connectors/commit/7655fae6d9fe63c044ec68f89032d1e941621129))
+
+* fix: switching profile creation error on existing reference to a warning ([`38b2eee`](https://github.com/Riminder/hrflow-connectors/commit/38b2eee79c06c9cc5a4e7bcb026138d208e908ca))
+
+### Unknown
+
+* Merge pull request #339 from Riminder/fix/profile-edit-error-to-warning
+
+fix: switching profile creation error on existing reference to a warning ([`5ab06f2`](https://github.com/Riminder/hrflow-connectors/commit/5ab06f2a0d0ec593d7151ece4415caa4f1394178))
+
+
 ## v4.27.4 (2025-11-07)
 
 ### Fix
