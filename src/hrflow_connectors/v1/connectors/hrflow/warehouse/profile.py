@@ -170,7 +170,9 @@ def write(
                 source_key=parameters.source_key, profile_json=profile
             )
             if response["code"] // 100 != 2:
-                adapter.warning("Failed to add profile with response={}".format(response))
+                adapter.warning(
+                    "Failed to add profile with response={}".format(response)
+                )
                 failed.append(profile)
     return failed
 
