@@ -1,0 +1,24 @@
+{
+  "reference": "?.id",
+  "name": "?.attributes.title",
+  "created_at": "?.attributes.creationDate",
+  "updated_at": "?.attributes.updateDate",
+  "location": {
+    "text": null,
+    "lat": null,
+    "lng": null
+  },
+  "sections": [
+    {
+      "name": "boondmanager_description",
+      "title": "Description",
+      "description": "?.attributes.description"
+    }
+  ],
+  "tags": [
+    { "name": "boondmanager_expertise_area_id", "value": "?.attributes.expertiseArea" },
+    { "name": "boondmanager_origin_id", "value": "?.attributes.origin.typeOf" },
+    { "name": "boondmanager_duration_id", "value": "?.attributes.duration" },
+    { "name": "boondmanager_number_of_active_positionings", "value": "?.attributes.numberOfActivePositionings" }
+  ]
+}
