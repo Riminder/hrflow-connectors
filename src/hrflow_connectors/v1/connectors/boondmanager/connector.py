@@ -1,4 +1,3 @@
-import base64
 import typing as t
 
 from hrflow_connectors.core import (
@@ -11,11 +10,13 @@ from hrflow_connectors.core import (
     WorkflowType,
 )
 from hrflow_connectors.v1.connectors.boondmanager.warehouse import (
+    BoondManagerCandidateParsingWarehouse,
     BoondManagerCandidateWarehouse,
     BoondManagerOpportunityWarehouse,
 )
 from hrflow_connectors.v1.connectors.hrflow.warehouse import (
     HrFlowJobWarehouse,
+    HrFlowProfileParsingWarehouse,
     HrFlowProfileWarehouse,
 )
 
@@ -131,7 +132,48 @@ def format_opportunity(boondmanager_opportunity: dict) -> dict:
     origin_id = (attributes.get("origin") or {}).get("typeOf")
     duration_id = attributes.get("duration")
 
+    state_id = attributes.get("state")
+    type_of_id = attributes.get("typeOf")
+    mode_id = attributes.get("mode")
+
     tags = [
+        dict(name="boondmanager_reference", value=attributes.get("reference")),
+        dict(name="boondmanager_state_id", value=state_id),
+        dict(
+            name="boondmanager_state_value",
+            value=next(
+                (
+                    i["value"]
+                    for i in setting.get("state", {}).get("opportunity", [])
+                    if i.get("id") == state_id
+                ),
+                None,
+            ),
+        ),
+        dict(name="boondmanager_typeof_id", value=type_of_id),
+        dict(
+            name="boondmanager_typeof_value",
+            value=next(
+                (
+                    i["value"]
+                    for i in setting.get("typeOf", {}).get("opportunity", [])
+                    if i.get("id") == type_of_id
+                ),
+                None,
+            ),
+        ),
+        dict(name="boondmanager_mode_id", value=mode_id),
+        dict(
+            name="boondmanager_mode_value",
+            value=next(
+                (
+                    i["value"]
+                    for i in setting.get("workUnitRate", [])
+                    if i.get("id") == mode_id
+                ),
+                None,
+            ),
+        ),
         dict(name="boondmanager_expertise_area_id", value=expertise_area_id),
         dict(
             name="boondmanager_expertise_area_value",
@@ -168,6 +210,8 @@ def format_opportunity(boondmanager_opportunity: dict) -> dict:
                 None,
             ),
         ),
+        dict(name="boondmanager_start_date", value=attributes.get("startDate")),
+        dict(name="boondmanager_end_date", value=attributes.get("endDate")),
         dict(
             name="boondmanager_number_of_active_positionings",
             value=attributes.get("numberOfActivePositionings"),
@@ -184,6 +228,28 @@ def format_opportunity(boondmanager_opportunity: dict) -> dict:
             )
         )
 
+    sections = [
+        dict(
+            name="boondmanager_description",
+            title="Description",
+            description=attributes.get("description"),
+        ),
+    ]
+    if attributes.get("criteria"):
+        sections.append(
+            dict(
+                name="boondmanager_criteria",
+                title="Criteria",
+                description=attributes.get("criteria"),
+            )
+        )
+
+    skills = [
+        dict(name=tool, type="hard", value=None)
+        for tool in (attributes.get("tools") or [])
+        if tool
+    ]
+
     return dict(
         reference=str(boondmanager_opportunity.get("id", "")),
         name=attributes.get("title"),
@@ -197,13 +263,8 @@ def format_opportunity(boondmanager_opportunity: dict) -> dict:
             lat=None,
             lng=None,
         ),
-        sections=[
-            dict(
-                name="boondmanager_description",
-                title="Description",
-                description=attributes.get("description"),
-            )
-        ],
+        sections=sections,
+        skills=skills,
         tags=tags,
     )
 
@@ -225,18 +286,6 @@ def format_candidate(boondmanager_candidate: dict) -> dict:
     ]
 
     skills, tasks = get_skills_and_tasks(attributes.get("skills"))
-
-    attachments = []
-    resume_bytes = boondmanager_candidate.get("_resume_bytes")
-    if resume_bytes:
-        encoded = base64.b64encode(resume_bytes).decode("utf-8")
-        attachments.append(
-            dict(
-                type="resume",
-                public_url=f"data:application/pdf;base64,{encoded}",
-                filename="resume.pdf",
-            )
-        )
 
     state_id = attributes.get("state")
     availability_id = attributes.get("availability")
@@ -355,9 +404,21 @@ def format_candidate(boondmanager_candidate: dict) -> dict:
         languages=get_languages(attributes.get("languages")),
         experiences=get_experience(attributes.get("references")),
         educations=get_education(attributes.get("diplomas")),
-        attachments=attachments,
         tags=tags,
     )
+
+
+def format_parsing_candidate(boondmanager_candidate: dict) -> dict:
+    return {
+        "reference": str(boondmanager_candidate.get("id", "")),
+        "created_at": boondmanager_candidate.get("attributes", {}).get("creationDate"),
+        "tags": [],
+        "metadatas": [],
+        "resume": {
+            "raw": boondmanager_candidate.get("_resume_bytes"),
+            "content_type": "application/pdf",
+        },
+    }
 
 
 BoondManager = Connector(
@@ -399,6 +460,21 @@ BoondManager = Connector(
             ),
             origin=BoondManagerCandidateWarehouse,
             target=HrFlowProfileWarehouse,
+            action_type=ActionType.inbound,
+        ),
+        ConnectorAction(
+            name=ActionName.pull_resume_attachment_list,
+            trigger_type=WorkflowType.pull,
+            description=(
+                "Retrieves candidate resumes from BoondManager"
+                " and parses them using the HrFlow.ai parsing engine."
+            ),
+            parameters=BaseActionParameters.with_defaults(
+                "ReadCandidatesParsingActionParameters",
+                format=format_parsing_candidate,
+            ),
+            origin=BoondManagerCandidateParsingWarehouse,
+            target=HrFlowProfileParsingWarehouse,
             action_type=ActionType.inbound,
         ),
     ],

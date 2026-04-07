@@ -10,7 +10,7 @@ Retrieves all candidates from BoondManager and sends them to an HrFlow.ai Source
 | Field | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
 | `logics`  | `typing.List[typing.Callable[[typing.Dict], typing.Optional[typing.Dict]]]` | [] | List of logic functions |
-| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_candidate`](../connector.py#L198) | Formatting function |
+| `format`  | `typing.Callable[[typing.Dict], typing.Dict]` | [`format_candidate`](../connector.py#L272) | Formatting function |
 | `read_mode`  | `str` | ReadMode.sync | If 'incremental' then `read_from` of the last run is given to Origin Warehouse during read. **The actual behavior depends on implementation of read**. In 'sync' mode `read_from` is neither fetched nor given to Origin Warehouse during read. |
 
 ## Source Parameters
@@ -23,7 +23,6 @@ Retrieves all candidates from BoondManager and sends them to an HrFlow.ai Source
 | `language`  | `str` | fr | Language code used when resolving IDs to human-readable labels via the application dictionary (e.g. 'fr', 'en'). |
 | `candidate_states`  | `str` | None | Comma-separated list of candidate state IDs to include. Leave empty to retrieve all states. BoondManager state IDs: 0=À traiter, 1=En cours de process, 2=Vivier, 3=Converti en Ressource, 4=Si projet, 5=Ne plus contacter, 6=Proposition en cours, 7=À recontacter plus tard, 9=Top profil. Example: '0,1,2,3,4,6,9'. |
 | `limit`  | `int` | None | Maximum number of candidates to pull. Leave empty to pull all. Useful for testing or incremental runs. |
-| `fetch_resume`  | `bool` | False | When True, the connector will attempt to download the most recent resume file for each candidate and attach it as a base64-encoded resume URL. This significantly increases runtime due to one extra API call per candidate. |
 
 ## Destination Parameters
 
@@ -62,7 +61,6 @@ BoondManager.pull_profile_list(
         language="fr",
         candidate_states="your_candidate_states",
         limit=0,
-        fetch_resume=False,
     ),
     target_parameters=dict(
         api_secret="your_api_secret",

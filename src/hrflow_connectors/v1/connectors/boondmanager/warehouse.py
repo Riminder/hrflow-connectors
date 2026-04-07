@@ -98,15 +98,29 @@ class ReadCandidatesParameters(BaseParameters):
         ),
         field_type=FieldType.QueryParam,
     )
-    fetch_resume: bool = Field(
-        default=False,
+
+
+class ReadCandidatesParsingParameters(BaseParameters):
+    candidate_states: t.Optional[str] = Field(
+        default=None,
         description=(
-            "When True, the connector will attempt to download the most recent"
-            " resume file for each candidate and attach it as a base64-encoded"
-            " resume URL. This significantly increases runtime due to one extra"
-            " API call per candidate."
+            "Comma-separated list of candidate state IDs to include."
+            " Leave empty to retrieve all states."
+            " BoondManager state IDs: 0=À traiter, 1=En cours de process,"
+            " 2=Vivier, 3=Converti en Ressource, 4=Si projet,"
+            " 5=Ne plus contacter, 6=Proposition en cours, 7=À recontacter plus tard,"
+            " 9=Top profil."
+            " Example: '0,1,2,3,4,6,9'."
         ),
-        field_type=FieldType.Other,
+        field_type=FieldType.QueryParam,
+    )
+    limit: t.Optional[int] = Field(
+        default=None,
+        description=(
+            "Maximum number of candidates to pull. Leave empty to pull all."
+            " Useful for testing or incremental runs."
+        ),
+        field_type=FieldType.QueryParam,
     )
 
 
@@ -243,7 +257,7 @@ def read_candidates(
         for item in data:
             candidate_id = item["id"]
             detail_response = requests.get(
-                url=f"{BOONDMANAGER_BASE_URL}/candidates/{candidate_id}",
+                url=f"{BOONDMANAGER_BASE_URL}/candidates/{candidate_id}/information",
                 headers=auth_headers(
                     parameters.user_token,
                     parameters.client_token,
@@ -268,39 +282,111 @@ def read_candidates(
             )
             full_candidate["_app_dictionary"] = app_dictionary
 
-            if parameters.fetch_resume:
-                attrs = full_candidate.get("attributes", {})
-                if attrs.get("numberOfResumes", 0) > 0:
-                    resumes_data = (
-                        full_candidate.get("relationships", {})
-                        .get("resumes", {})
-                        .get("data", [])
-                    )
-                    if resumes_data:
-                        resume_id = resumes_data[-1].get("id")
-                        resume_response = requests.get(
-                            url=f"{BOONDMANAGER_BASE_URL}/documents/{resume_id}",
-                            headers=auth_headers(
-                                parameters.user_token,
-                                parameters.client_token,
-                                parameters.client_key,
-                            ),
-                            timeout=REQUEST_TIMEOUT,
-                        )
-                        if resume_response.status_code == 200:
-                            full_candidate["_resume_bytes"] = resume_response.content
-                        else:
-                            adapter.warning(
-                                "Failed to fetch resume for candidate_id={}"
-                                " resume_id={} status_code={}".format(
-                                    candidate_id,
-                                    resume_id,
-                                    resume_response.status_code,
-                                )
-                            )
-
             collected += 1
             yield full_candidate
+
+            if parameters.limit is not None and collected >= parameters.limit:
+                return
+
+        if collected >= total_expected:
+            break
+        page += 1
+
+
+def read_candidates_parsing(
+    adapter: LoggerAdapter,
+    parameters: ReadCandidatesParsingParameters,
+    read_mode: t.Optional[ReadMode] = None,
+    read_from: t.Optional[str] = None,
+) -> t.Iterable[t.Dict]:
+    list_params: dict = {"sort": "creationDate", "page": 1}
+    if parameters.candidate_states is not None:
+        list_params["candidateStates"] = parameters.candidate_states
+
+    page = 1
+    total_expected = None
+    collected = 0
+
+    while True:
+        list_params["page"] = page
+        response = requests.get(
+            url=f"{BOONDMANAGER_BASE_URL}/candidates",
+            headers=auth_headers(
+                parameters.user_token, parameters.client_token, parameters.client_key
+            ),
+            params=list_params,
+            timeout=REQUEST_TIMEOUT,
+        )
+        if response.status_code != 200:
+            adapter.error(
+                "Failed to list candidates from BoondManager"
+                " page={} status_code={} response={}".format(
+                    page, response.status_code, response.text
+                )
+            )
+            break
+
+        payload = response.json()
+        if total_expected is None:
+            total_expected = payload.get("meta", {}).get("totals", {}).get("rows", 0)
+
+        data = payload.get("data", [])
+        if not data:
+            break
+
+        for item in data:
+            candidate_id = item["id"]
+
+            info_response = requests.get(
+                url=f"{BOONDMANAGER_BASE_URL}/candidates/{candidate_id}/information",
+                headers=auth_headers(
+                    parameters.user_token,
+                    parameters.client_token,
+                    parameters.client_key,
+                ),
+                timeout=REQUEST_TIMEOUT,
+            )
+            if info_response.status_code != 200:
+                adapter.warning(
+                    "Failed to fetch candidate information for candidate_id={}"
+                    " status_code={}".format(candidate_id, info_response.status_code)
+                )
+                continue
+
+            info_data = info_response.json().get("data", {})
+            resume_entries = (
+                info_data.get("relationships", {}).get("resumes", {}).get("data", [])
+            )
+            if not resume_entries:
+                continue
+
+            resume_id = resume_entries[-1].get("id")
+            resume_response = requests.get(
+                url=f"{BOONDMANAGER_BASE_URL}/documents/{resume_id}",
+                headers=auth_headers(
+                    parameters.user_token,
+                    parameters.client_token,
+                    parameters.client_key,
+                ),
+                timeout=REQUEST_TIMEOUT,
+            )
+            if resume_response.status_code != 200:
+                adapter.warning(
+                    "Failed to fetch resume for candidate_id={}"
+                    " resume_id={} status_code={}".format(
+                        candidate_id, resume_id, resume_response.status_code
+                    )
+                )
+                continue
+
+            candidate = {
+                "id": candidate_id,
+                "attributes": info_data.get("attributes", {}),
+                "_resume_bytes": resume_response.content,
+            }
+
+            collected += 1
+            yield candidate
 
             if parameters.limit is not None and collected >= parameters.limit:
                 return
@@ -327,5 +413,15 @@ BoondManagerCandidateWarehouse = Warehouse(
     read=WarehouseReadAction(
         parameters=ReadCandidatesParameters,
         function=read_candidates,
+    ),
+)
+
+BoondManagerCandidateParsingWarehouse = Warehouse(
+    name="BoondManager Candidates",
+    data_schema=BoondManagerCandidate,
+    data_type=DataType.profile,
+    read=WarehouseReadAction(
+        parameters=ReadCandidatesParsingParameters,
+        function=read_candidates_parsing,
     ),
 )

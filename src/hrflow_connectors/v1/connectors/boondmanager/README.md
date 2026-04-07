@@ -42,6 +42,7 @@ This new connector will enable:
 | ------- | ----------- |
 | [**Pull job list**](docs/pull_job_list.md) | Retrieves all opportunities (job openings) from BoondManager and sends them to an HrFlow.ai Board. |
 | [**Pull profile list**](docs/pull_profile_list.md) | Retrieves all candidates from BoondManager and sends them to an HrFlow.ai Source. |
+| [**Pull resume attachment list**](docs/pull_resume_attachment_list.md) | Retrieves candidate resumes from BoondManager and parses them using the HrFlow.ai parsing engine. |
 
 
 </p>
