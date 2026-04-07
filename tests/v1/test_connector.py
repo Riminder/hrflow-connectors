@@ -3,7 +3,7 @@ from collections import namedtuple
 
 import pytest
 
-import hrflow_connectors.v1 as v1
+import hrflow_connectors as v1
 from hrflow_connectors.v1.core.tests import collect_connector_tests
 
 ConnectorActionTestParams = namedtuple(

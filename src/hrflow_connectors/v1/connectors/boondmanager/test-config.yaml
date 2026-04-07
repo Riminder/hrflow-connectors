@@ -1,6 +1,5 @@
 actions:
   pull_job_list:
-    # ── Cases that need no real credentials (test parameter validation) ──────
     - id: no_credentials
       origin_parameters:
         language: "fr"
@@ -23,13 +22,13 @@ actions:
       status: fatal
       reason: bad_target_parameters
 
-    # ── Cases that call the real BoondManager API ────────────────────────────
     - id: valid_parameters
       origin_parameters:
         client_key: $__CLIENT_KEY
         client_token: $__CLIENT_TOKEN
         user_token: $__USER_TOKEN
         language: "fr"
+        limit: 5
       target_parameters:
         api_secret: $__HRFLOW_API_SECRET
         api_user: $__HRFLOW_API_USER
@@ -55,6 +54,7 @@ actions:
         client_token: $__CLIENT_TOKEN
         user_token: $__USER_TOKEN
         language: "fr"
+        limit: 5
       target_parameters:
         api_secret: bad_api_secret
         api_user: $__HRFLOW_API_USER
@@ -68,6 +68,7 @@ actions:
         client_token: $__CLIENT_TOKEN
         user_token: $__USER_TOKEN
         language: "fr"
+        limit: 5
         opportunity_states: "0"
       target_parameters:
         api_secret: $__HRFLOW_API_SECRET
@@ -76,7 +77,6 @@ actions:
       status: success
 
   pull_profile_list:
-    # ── Cases that need no real credentials ──────────────────────────────────
     - id: no_credentials
       origin_parameters:
         language: "fr"
@@ -84,6 +84,7 @@ actions:
         api_secret: $__HRFLOW_API_SECRET
         api_user: $__HRFLOW_API_USER
         source_key: $__HRFLOW_SOURCE_KEY
+        only_edit_fields: []
       status: fatal
       reason: bad_origin_parameters
 
@@ -96,21 +97,22 @@ actions:
       target_parameters:
         api_secret: $__HRFLOW_API_SECRET
         api_user: $__HRFLOW_API_USER
+        only_edit_fields: []
       status: fatal
       reason: bad_target_parameters
 
-    # ── Cases that call the real BoondManager API ────────────────────────────
     - id: valid_parameters
       origin_parameters:
         client_key: $__CLIENT_KEY
         client_token: $__CLIENT_TOKEN
         user_token: $__USER_TOKEN
         language: "fr"
+        limit: 5
       target_parameters:
         api_secret: $__HRFLOW_API_SECRET
         api_user: $__HRFLOW_API_USER
         source_key: $__HRFLOW_SOURCE_KEY
-      status: success
+        only_edit_fields: []
 
     - id: filter_candidate_states
       origin_parameters:
@@ -118,12 +120,13 @@ actions:
         client_token: $__CLIENT_TOKEN
         user_token: $__USER_TOKEN
         language: "fr"
+        limit: 5
         candidate_states: "0,1,2,3,4,6,9"
       target_parameters:
         api_secret: $__HRFLOW_API_SECRET
         api_user: $__HRFLOW_API_USER
         source_key: $__HRFLOW_SOURCE_KEY
-      status: success
+        only_edit_fields: []
 
     - id: invalid_boondmanager_credentials
       origin_parameters:
@@ -135,6 +138,7 @@ actions:
         api_secret: $__HRFLOW_API_SECRET
         api_user: $__HRFLOW_API_USER
         source_key: $__HRFLOW_SOURCE_KEY
+        only_edit_fields: []
       status: fatal
       reason: read_failure
 
@@ -144,9 +148,11 @@ actions:
         client_token: $__CLIENT_TOKEN
         user_token: $__USER_TOKEN
         language: "fr"
+        limit: 5
       target_parameters:
         api_secret: bad_api_secret
         api_user: $__HRFLOW_API_USER
         source_key: $__HRFLOW_SOURCE_KEY
+        only_edit_fields: []
       status: fatal
       reason: write_failure
