@@ -4,6 +4,7 @@ from hrflow_connectors.v1.connectors.boondmanager.utils.jwt import auth_headers
 
 BOONDMANAGER_BASE_URL = "https://ui.boondmanager.com/api"
 REQUEST_TIMEOUT = 30  # seconds
+PAGE_SIZE = 100  # BoondManager supports up to 500; 100 is a safe performant default
 
 
 def fetch_app_dictionary(

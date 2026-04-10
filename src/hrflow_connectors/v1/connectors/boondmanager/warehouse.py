@@ -18,8 +18,15 @@ from hrflow_connectors.v1.connectors.boondmanager.schemas import (
 )
 from hrflow_connectors.v1.connectors.boondmanager.utils.api import (
     BOONDMANAGER_BASE_URL,
+    PAGE_SIZE,
     REQUEST_TIMEOUT,
     fetch_app_dictionary,
+)
+from hrflow_connectors.v1.connectors.boondmanager.utils.incremental import (
+    item_to_read_from,
+    parse_cursor,
+    should_skip_item,
+    to_api_date,
 )
 from hrflow_connectors.v1.connectors.boondmanager.utils.jwt import auth_headers
 
@@ -137,7 +144,21 @@ def read_opportunities(
         parameters.language,
     )
 
-    list_params: dict = {"sort": "creationDate", "page": 1}
+    last_update_date: t.Optional[str] = None
+    last_id: t.Optional[str] = None
+
+    list_params: dict = {"maxResults": PAGE_SIZE, "page": 1}
+    if read_mode is ReadMode.incremental:
+        # Always sort by updateDate in incremental mode so the cursor is meaningful
+        # on every subsequent run — including the very first (no cursor yet).
+        list_params["sort"] = "updateDate"
+        if read_from:
+            last_update_date, last_id = parse_cursor(read_from)
+            list_params["period"] = "updated"
+            if last_update_date:
+                list_params["startDate"] = to_api_date(last_update_date)
+    else:
+        list_params["sort"] = "creationDate"
     if parameters.opportunity_states is not None:
         list_params["opportunityStates"] = parameters.opportunity_states
 
@@ -173,6 +194,9 @@ def read_opportunities(
             break
 
         for item in data:
+            if should_skip_item(item, last_update_date, last_id):
+                continue
+
             opp_id = item["id"]
             detail_response = requests.get(
                 url=f"{BOONDMANAGER_BASE_URL}/opportunities/{opp_id}/information",
@@ -219,7 +243,19 @@ def read_candidates(
         parameters.language,
     )
 
-    list_params: dict = {"sort": "creationDate", "page": 1}
+    last_update_date: t.Optional[str] = None
+    last_id: t.Optional[str] = None
+
+    list_params: dict = {"maxResults": PAGE_SIZE, "page": 1}
+    if read_mode is ReadMode.incremental:
+        list_params["sort"] = "updateDate"
+        if read_from:
+            last_update_date, last_id = parse_cursor(read_from)
+            list_params["period"] = "updated"
+            if last_update_date:
+                list_params["startDate"] = to_api_date(last_update_date)
+    else:
+        list_params["sort"] = "creationDate"
     if parameters.candidate_states is not None:
         list_params["candidateStates"] = parameters.candidate_states
 
@@ -255,6 +291,9 @@ def read_candidates(
             break
 
         for item in data:
+            if should_skip_item(item, last_update_date, last_id):
+                continue
+
             candidate_id = item["id"]
             detail_response = requests.get(
                 url=f"{BOONDMANAGER_BASE_URL}/candidates/{candidate_id}/information",
@@ -299,7 +338,7 @@ def read_candidates_parsing(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-    list_params: dict = {"sort": "creationDate", "page": 1}
+    list_params: dict = {"sort": "creationDate", "maxResults": PAGE_SIZE, "page": 1}
     if parameters.candidate_states is not None:
         list_params["candidateStates"] = parameters.candidate_states
 
@@ -324,6 +363,11 @@ def read_candidates_parsing(
                     page, response.status_code, response.text
                 )
             )
+            if collected == 0:
+                raise Exception(
+                    "Failed to list candidates from BoondManager on first page:"
+                    " status_code={}".format(response.status_code)
+                )
             break
 
         payload = response.json()
@@ -403,6 +447,8 @@ BoondManagerOpportunityWarehouse = Warehouse(
     read=WarehouseReadAction(
         parameters=ReadOpportunitiesParameters,
         function=read_opportunities,
+        supports_incremental=True,
+        item_to_read_from=item_to_read_from,
     ),
 )
 
@@ -413,6 +459,8 @@ BoondManagerCandidateWarehouse = Warehouse(
     read=WarehouseReadAction(
         parameters=ReadCandidatesParameters,
         function=read_candidates,
+        supports_incremental=True,
+        item_to_read_from=item_to_read_from,
     ),
 )
 
