@@ -344,7 +344,19 @@ def read_candidates_parsing(
     read_mode: t.Optional[ReadMode] = None,
     read_from: t.Optional[str] = None,
 ) -> t.Iterable[t.Dict]:
-    list_params: dict = {"sort": "creationDate", "maxResults": PAGE_SIZE, "page": 1}
+    last_update_date: t.Optional[str] = None
+    last_id: t.Optional[str] = None
+
+    list_params: dict = {"maxResults": PAGE_SIZE, "page": 1}
+    if read_mode is ReadMode.incremental:
+        list_params["sort"] = "updateDate"
+        if read_from:
+            last_update_date, last_id = parse_cursor(read_from)
+            list_params["period"] = "updated"
+            if last_update_date:
+                list_params["startDate"] = to_api_date(last_update_date)
+    else:
+        list_params["sort"] = "creationDate"
     if parameters.candidate_states is not None:
         list_params["candidateStates"] = parameters.candidate_states
 
@@ -385,6 +397,9 @@ def read_candidates_parsing(
             break
 
         for item in data:
+            if should_skip_item(item, last_update_date, last_id):
+                continue
+
             candidate_id = item["id"]
 
             info_response = requests.get(
@@ -477,5 +492,7 @@ BoondManagerCandidateParsingWarehouse = Warehouse(
     read=WarehouseReadAction(
         parameters=ReadCandidatesParsingParameters,
         function=read_candidates_parsing,
+        supports_incremental=True,
+        item_to_read_from=item_to_read_from,
     ),
 )
