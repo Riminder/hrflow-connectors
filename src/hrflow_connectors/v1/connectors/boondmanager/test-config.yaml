@@ -113,6 +113,20 @@ actions:
       status: fatal
       reason: write_failure
 
+    - id: valid_parameters_with_enrichment_v2
+      origin_parameters:
+        client_key: $__CLIENT_KEY
+        client_token: $__CLIENT_TOKEN
+        user_token: $__USER_TOKEN
+        language: "fr"
+        limit: 5
+        opportunity_states: "0"
+      target_parameters:
+        api_secret: $__HRFLOW_API_SECRET
+        api_user: $__HRFLOW_API_USER
+        board_key: $__HRFLOW_BOARD_KEY
+        enrich_with_parsing_v2: true
+
     - id: filter_opportunity_states
       origin_parameters:
         client_key: $__CLIENT_KEY
@@ -164,7 +178,6 @@ actions:
         api_user: $__HRFLOW_API_USER
         source_key: $__HRFLOW_SOURCE_KEY
         only_edit_fields: []
-      status: success_with_failures
 
     - id: filter_candidate_states
       origin_parameters:

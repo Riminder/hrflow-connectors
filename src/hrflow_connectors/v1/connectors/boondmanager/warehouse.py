@@ -217,7 +217,13 @@ def read_opportunities(
                 continue
 
             full_opp = detail_response.json().get("data", {})
-            full_opp.setdefault("attributes", {}).update(item.get("attributes", {}))
+            # Merge: start from list attributes, then overlay detail attributes
+            # so the richer detail data wins over sparse list data.
+            merged_attrs = {
+                **item.get("attributes", {}),
+                **full_opp.get("attributes", {}),
+            }
+            full_opp["attributes"] = merged_attrs
             full_opp["_app_dictionary"] = app_dictionary
             collected += 1
             yield full_opp

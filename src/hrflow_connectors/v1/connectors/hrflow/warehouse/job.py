@@ -3,6 +3,7 @@ import re
 import typing as t
 from logging import LoggerAdapter
 
+import requests
 from hrflow import Hrflow
 from pydantic import Field
 
@@ -24,6 +25,68 @@ LABEL_TO_JOB_FIELD = dict(
     language="languages",
 )
 SKILL_LABEL_TO_TYPE = dict(Skill=None, skill_hard="hard", skill_soft="soft")
+
+
+def smart_update(base: t.Dict, updates: t.Dict) -> t.Dict:
+    """Merge parsed results into a job dict using append-if-empty-per-item
+    strategy.
+
+    For list fields (skills, languages, ...): append items from updates that
+    are not already present (deduplicated by name).
+    For scalar fields (summary, culture, ...): only fill if the base value is
+    empty or None.
+    """
+    list_fields = [
+        "skills",
+        "languages",
+        "certifications",
+        "courses",
+        "tasks",
+        "interests",
+    ]
+    scalar_fields = [
+        "summary",
+        "culture",
+        "benefits",
+        "responsibilities",
+        "requirements",
+        "interviews",
+    ]
+
+    for field in list_fields:
+        parsed_items = updates.get(field) or []
+        if not parsed_items:
+            continue
+        if base.get(field) is None:
+            base[field] = []
+        existing_names = {
+            item.get("name", "").lower() for item in base[field] if item.get("name")
+        }
+        for item in parsed_items:
+            if item.get("name") and item["name"].lower() not in existing_names:
+                base[field].append(item)
+                existing_names.add(item["name"].lower())
+
+    for field in scalar_fields:
+        parsed_value = updates.get(field)
+        if parsed_value and not base.get(field):
+            base[field] = parsed_value
+
+    # Merge location if base location text is empty
+    parsed_location = updates.get("location")
+    if parsed_location and isinstance(parsed_location, dict):
+        if base.get("location") is None:
+            base["location"] = parsed_location
+        elif not base["location"].get("text"):
+            base["location"]["text"] = parsed_location.get("text")
+
+    # Merge ranges (date, float) if base has none
+    for range_field in ["ranges_date", "ranges_float"]:
+        parsed_ranges = updates.get(range_field)
+        if parsed_ranges and not base.get(range_field):
+            base[range_field] = parsed_ranges
+
+    return base
 
 
 class JobParsingException(Exception):
@@ -59,6 +122,15 @@ class WriteJobParameters(ParametersModel):
     enrich_with_parsing: bool = Field(
         False,
         description="When enabled jobs are enriched with HrFlow.ai parsing",
+        field_type=FieldType.Other,
+    )
+    enrich_with_parsing_v2: bool = Field(
+        False,
+        description=(
+            "When enabled jobs are enriched with HrFlow.ai Atlas parsing model."
+            " Uses the newer parsing API that returns a structured job object."
+            " Cannot be used together with enrich_with_parsing."
+        ),
         field_type=FieldType.Other,
     )
 
@@ -124,6 +196,58 @@ def enrich_job_with_parsing(hrflow_client: Hrflow, job: t.Dict) -> None:
     return
 
 
+def enrich_job_with_parsing_v2(api_secret: str, api_user: str, job: t.Dict) -> None:
+    """Enrich a job dict using HrFlow.ai Atlas parsing model.
+
+    Sends the concatenated job text (name + summary + sections) to the
+    HrFlow.ai parsing API with output_object="job" and parsing_model="atlas".
+    The API returns a fully structured job object which is then merged back
+    into the original job using smart_update (append-if-empty per item).
+    """
+    job_text = "\n\n".join(
+        "{}:\n{}".format(s.get("title", "Section"), s.get("description", ""))
+        for s in job.get("sections") or [{}]
+        if s.get("description")
+    )
+    if not job_text.strip():
+        return
+
+    hrflow_api_base_url = "https://api.hrflow.ai/v1"
+    response = requests.post(
+        "{}/text/parsing".format(hrflow_api_base_url),
+        headers={
+            "accept": "application/json",
+            "X-API-KEY": api_secret,
+            "X-USER-EMAIL": api_user,
+        },
+        json=dict(
+            texts=[job_text],
+            output_object="job",
+            parsing_model="atlas",
+        ),
+        timeout=30,
+    )
+    if response.status_code >= 400:
+        raise JobParsingException(
+            "Failed to parse job with atlas model",
+            client_response=dict(
+                status_code=response.status_code,
+                body=response.text,
+            ),
+        )
+
+    data = response.json().get("data", [])
+    if not data or not isinstance(data, list) or not data[0].get("job"):
+        return
+
+    parsed_job = data[0]["job"]
+    parsed_job.pop("key", None)
+    parsed_job.pop("board_key", None)
+    parsed_job.pop("board", None)
+
+    smart_update(job, parsed_job)
+
+
 def write(
     adapter: LoggerAdapter, parameters: WriteJobParameters, jobs: t.Iterable[t.Dict]
 ) -> t.List[t.Dict]:
@@ -183,6 +307,12 @@ def write(
                 raise Exception("Failed to archive job")
         adapter.info("Archiving finished")
 
+    if parameters.enrich_with_parsing and parameters.enrich_with_parsing_v2:
+        raise ValueError(
+            "enrich_with_parsing and enrich_with_parsing_v2 cannot both be enabled."
+            " Please choose one enrichment method."
+        )
+
     for job in jobs:
         reference = job.get("reference")
         if reference is None:
@@ -194,6 +324,21 @@ def write(
                 except JobParsingException as e:
                     adapter.error(
                         "Failed to parse job response={}".format(e.client_response)
+                    )
+                    failed_jobs.append(job)
+                    continue
+            elif parameters.enrich_with_parsing_v2:
+                adapter.info("Starting atlas parsing for job without reference")
+                try:
+                    enrich_job_with_parsing_v2(
+                        parameters.api_secret, parameters.api_user, job
+                    )
+                    adapter.info("Atlas parsing finished")
+                except JobParsingException as e:
+                    adapter.error(
+                        "Failed to parse job with atlas model response={}".format(
+                            e.client_response
+                        )
                     )
                     failed_jobs.append(job)
                     continue
@@ -222,6 +367,23 @@ def write(
                 except JobParsingException as e:
                     adapter.error(
                         "Failed to parse job response={}".format(e.client_response)
+                    )
+                    failed_jobs.append(job)
+                    continue
+            elif parameters.enrich_with_parsing_v2:
+                adapter.info(
+                    "Starting atlas parsing for job with reference={}".format(reference)
+                )
+                try:
+                    enrich_job_with_parsing_v2(
+                        parameters.api_secret, parameters.api_user, job
+                    )
+                    adapter.info("Atlas parsing finished")
+                except JobParsingException as e:
+                    adapter.error(
+                        "Failed to parse job with atlas model response={}".format(
+                            e.client_response
+                        )
                     )
                     failed_jobs.append(job)
                     continue
