@@ -1,5 +1,6 @@
 from hrflow_connectors.core import backend
 from hrflow_connectors.v1.connectors.adzuna.connector import Adzuna
+from hrflow_connectors.v1.connectors.boondmanager import BoondManager
 from hrflow_connectors.v1.connectors.breezyhr import BreezyHR
 from hrflow_connectors.v1.connectors.bullhorn import Bullhorn
 from hrflow_connectors.v1.connectors.carrevolutis import Carrevolutis
@@ -43,6 +44,7 @@ __CONNECTORS__ = [
     Jobology,
     Meteojob,
     Carrevolutis,
+    BoondManager,
 ]
 
 backend.configure_store()

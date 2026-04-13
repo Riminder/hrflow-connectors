@@ -5,7 +5,7 @@ from importlib import import_module
 
 import pytest
 
-import hrflow_connectors.v1 as v1
+import hrflow_connectors as v1
 from hrflow_connectors.v1.core.tests import collect_connector_tests
 
 WarehouseReadTest = namedtuple(
@@ -31,7 +31,7 @@ def parameterize_read_warehouse_tests(
         connector_test_suite = collect_connector_tests(connector)
         if connector_test_suite.warehouse:
             warehouses = import_module(
-                "hrflow_connectors.connectors.v1.{}.warehouse".format(
+                "hrflow_connectors.v1.connectors.{}.warehouse".format(
                     connector.model.subtype
                 )
             )

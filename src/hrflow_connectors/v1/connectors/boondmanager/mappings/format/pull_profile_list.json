@@ -1,0 +1,24 @@
+{
+  "reference": "?.id",
+  "created_at": "?.attributes.creationDate",
+  "updated_at": "?.attributes.updateDate",
+  "info": {
+    "first_name": "?.attributes.firstName",
+    "last_name": "?.attributes.lastName",
+    "email": "?.attributes.email1",
+    "phone": "?.attributes.phone1",
+    "date_birth": "?.attributes.dateOfBirth",
+    "location": {
+      "text": "?.attributes.address",
+      "lat": null,
+      "lng": null
+    },
+    "summary": "?.attributes.title"
+  },
+  "tags": [
+    { "name": "boondmanager_state_id", "value": "?.attributes.state" },
+    { "name": "boondmanager_availability_id", "value": "?.attributes.availability" },
+    { "name": "boondmanager_global_evaluation_id", "value": "?.attributes.globalEvaluation" },
+    { "name": "boondmanager_number_of_active_positionings", "value": "?.attributes.numberOfActivePositionings" }
+  ]
+}

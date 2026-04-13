@@ -120,6 +120,14 @@
     "pre_v2_updated_at": ""
   },
   {
+    "name": "BoondManager",
+    "type": "ATS",
+    "subtype": "boondmanager",
+    "status": "opensource",
+    "release_date": "06/04/2026",
+    "pre_v2_updated_at": ""
+  },
+  {
     "name": "Breezy HR",
     "type": "ATS",
     "subtype": "breezyhr",
