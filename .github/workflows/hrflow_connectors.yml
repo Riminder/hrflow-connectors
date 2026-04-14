@@ -27,7 +27,7 @@ jobs:
           lfs: true
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v2
         with:
           python-version: ${{ env.BASELINE_PYTHON_VERSION }}
 
@@ -112,7 +112,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           lfs: true
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v2
         with:
           python-version: ${{ env.BASELINE_PYTHON_VERSION }}
 
@@ -178,7 +178,7 @@ jobs:
           lfs: true
           persist-credentials: false
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v2
         with:
           python-version: ${{ env.BASELINE_PYTHON_VERSION }}
 
