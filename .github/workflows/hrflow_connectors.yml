@@ -62,10 +62,6 @@ jobs:
       - name: Run push hooks
         run: poetry run pre-commit run --show-diff-on-failure --hook-stage push --all-files
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.9"
-
       # This action sets up a Python environment with Nox by:
       # - Activating every version of Python that GitHub Actions supports.
       # - Installing Nox.

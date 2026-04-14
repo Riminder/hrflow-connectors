@@ -16,7 +16,7 @@ if t.TYPE_CHECKING:
 
 nox.options.reuse_existing_virtualenvs = True
 
-PYTHON_VERSIONS = ["3.9", "3.10", "3.11"]
+PYTHON_VERSIONS = ["3.10", "3.11"]
 REQUIREMENTS_CONTENT = {}
 
 
