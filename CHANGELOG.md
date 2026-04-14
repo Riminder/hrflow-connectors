@@ -2,6 +2,45 @@
 
 
 
+## v4.28.0 (2026-04-14)
+
+### Feature
+
+* feat: pull resume attachment incremental mode ([`7b5a1ef`](https://github.com/Riminder/hrflow-connectors/commit/7b5a1ef06c62b81ec68e48d8c61d2272946e6d48))
+
+* feat: pull job list enrichment v2 ([`501b5ac`](https://github.com/Riminder/hrflow-connectors/commit/501b5ac071447ee6f821023357b71361289b5a46))
+
+* feat: BoondManager incremental read mode ([`02c18b7`](https://github.com/Riminder/hrflow-connectors/commit/02c18b71cb76977c48e78ebf046f711ee1485367))
+
+* feat: adds BoonManager connector with pull_job_list and pull_profile_list actions ([`32e8536`](https://github.com/Riminder/hrflow-connectors/commit/32e853626785b105564a344de0c6679c165c541a))
+
+### Fix
+
+* fix(ci): use correct pytest flags for connector integration tests ([`b44f796`](https://github.com/Riminder/hrflow-connectors/commit/b44f796c17242931aea5738f4edf77d4c612be65))
+
+* fix(ci): drop Python 3.9 from nox sessions and bump setup-python to v5 ([`655b070`](https://github.com/Riminder/hrflow-connectors/commit/655b0709097370efedb0ecf186cb5bf9e3c2aa7b))
+
+* fix(ci): use CPython 3.9 in GitHub Actions to fix msgspec build failure ([`af54567`](https://github.com/Riminder/hrflow-connectors/commit/af54567da809c851df0873069ff77152de2b9531))
+
+* fix: connectors v1 docs for ci ([`f044d39`](https://github.com/Riminder/hrflow-connectors/commit/f044d3985aac65776d2603ea179a107c8a3a196e))
+
+* fix: fix v1 integration tests collection of connector modules ([`77687e9`](https://github.com/Riminder/hrflow-connectors/commit/77687e9c3fe4e0eeaa745ebee5d19519d1bde572))
+
+### Unknown
+
+* Merge pull request #342 from Riminder/nasser-gh-actions-fix
+
+fix: connectors github actions ([`31e43e4`](https://github.com/Riminder/hrflow-connectors/commit/31e43e4df88be01b4befb9024d52fd6ccacc5e39))
+
+* revert back to setup-python@v2 ([`03a2698`](https://github.com/Riminder/hrflow-connectors/commit/03a269856a8b032ec6b486d1017def563e2d495f))
+
+* Merge pull request #341 from Riminder/nasser-boondmanager-connector
+
+feat: adds BoondManager connector with pull_job_list, pull_profile_list and pull_resume_attachment_list actions ([`46cefaf`](https://github.com/Riminder/hrflow-connectors/commit/46cefaf17fbda19294cf434cf638e6064b087907))
+
+* squash: pull resume attachments ([`a1fb398`](https://github.com/Riminder/hrflow-connectors/commit/a1fb3986f27b58cc4e3907ac8610eb4d58afea37))
+
+
 ## v4.27.5 (2025-11-21)
 
 ### Fix
