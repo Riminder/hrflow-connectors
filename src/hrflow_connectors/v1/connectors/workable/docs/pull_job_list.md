@@ -30,6 +30,7 @@ Retrieves all jobs via the ***Workable*** API and send them to a ***Hrflow.ai Bo
 | `sync`  | `bool` | True | When enabled only pushed jobs will remain in the board |
 | `update_content`  | `bool` | False | When enabled jobs already present in the board are updated |
 | `enrich_with_parsing`  | `bool` | False | When enabled jobs are enriched with HrFlow.ai parsing |
+| `enrich_with_parsing_v2`  | `bool` | False | When enabled jobs are enriched with HrFlow.ai Atlas parsing model. Uses the newer parsing API that returns a structured job object. Cannot be used together with enrich_with_parsing. |
 
 :red_circle: : *required*
 
@@ -62,6 +63,7 @@ Workable.pull_job_list(
         sync=True,
         update_content=False,
         enrich_with_parsing=False,
+        enrich_with_parsing_v2=False,
     )
 )
 ```
