@@ -155461,6 +155461,2336 @@
           }
         }
       ]
+    },
+    {
+      "name": "Homerun",
+      "type": "ATS",
+      "subtype": "homerun",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v2/connectors/homerun/logo.jpeg",
+      "actions": [
+        {
+          "name": "create_jobs_in_hrflow",
+          "data_type": "job",
+          "direction": "inbound",
+          "mode": "create",
+          "connector_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "public_api_key": {
+                "description": "The public API key of the Homerun account.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "public_api_key"
+            ],
+            "$defs": {}
+          },
+          "hrflow_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "description": "API Key used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "description": "User email used to access HrFlow.ai API",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user"
+            ],
+            "$defs": {}
+          },
+          "origin": "Homerun",
+          "origin_data_schema": {
+            "title": "HomerunJob",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "application_form_url": {
+                "type": "string"
+              },
+              "job_url": {
+                "type": "string"
+              },
+              "share_image_url": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "page_content": {
+                "type": "string"
+              },
+              "total_candidate_count": {
+                "type": "integer"
+              },
+              "type": {
+                "type": "string"
+              },
+              "expires_at": {
+                "type": "string"
+              },
+              "is_remote": {
+                "type": "boolean"
+              },
+              "location_type": {
+                "type": "string"
+              },
+              "location": {
+                "$ref": "#/$defs/Location"
+              },
+              "department": {
+                "$ref": "#/$defs/HomerunObject"
+              },
+              "stages": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/HomerunObject"
+                }
+              },
+              "created_at": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "application_form_url",
+              "job_url",
+              "share_image_url",
+              "status",
+              "title",
+              "description",
+              "page_content",
+              "total_candidate_count",
+              "type",
+              "expires_at",
+              "is_remote",
+              "location_type",
+              "location",
+              "department",
+              "stages",
+              "created_at"
+            ],
+            "$defs": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "postal_code": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "region": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "country",
+                  "address",
+                  "postal_code",
+                  "city",
+                  "region"
+                ]
+              },
+              "HomerunObject": {
+                "title": "HomerunObject",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "supports_incremental": false,
+          "pull_parameters": {
+            "title": "ReadJobsParameters",
+            "type": "object",
+            "properties": {
+              "status_filter": {
+                "description": "Name of the vacancy status",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/JobStatus"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [],
+            "$defs": {
+              "JobStatus": {
+                "title": "JobStatus",
+                "enum": [
+                  "closed",
+                  "draft",
+                  "private",
+                  "public"
+                ]
+              }
+            }
+          },
+          "target": "HrFlow",
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "description": "Identification key of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "reference": {
+                "description": "Custom identifier of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "name": {
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "description": "Job location object.",
+                "$ref": "#/$defs/Location"
+              },
+              "sections": {
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/Section"
+                }
+              },
+              "url": {
+                "description": "Job post original URL.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "summary": {
+                "description": "Brief summary of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "archieved_at": {
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "updated_at": {
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "created_at": {
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "skills": {
+                "description": "list of skills of the Job.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Skill"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "languages": {
+                "description": "list of spoken languages of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "certifications": {
+                "description": "list of certifications of the Job.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "courses": {
+                "description": "list of courses of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tasks": {
+                "description": "list of tasks of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tags": {
+                "description": "list of tags of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "metadatas": {
+                "description": "list of metadatas of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "ranges_float": {
+                "description": "list of ranges of floats",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/RangesFloat"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "ranges_date": {
+                "description": "list of ranges of dates",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/RangesDate"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "name",
+              "location",
+              "sections"
+            ],
+            "$defs": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "description": "Location text address.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lat": {
+                    "description": "Geocentric latitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lng": {
+                    "description": "Geocentric longitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "fields": {
+                    "description": "other location attributes like country, country_code etc",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ]
+                  },
+                  "value": {
+                    "description": "Value associated to the skill",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Value associated to the Object's name",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value. Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value. Example: 100.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "unit": {
+                    "description": "Unit of the value. Example: euros.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              }
+            }
+          },
+          "push_parameters": {
+            "title": "CreateCriterias",
+            "type": "object",
+            "properties": {
+              "board_key": {
+                "description": "HrFlow.ai board key",
+                "type": "string"
+              },
+              "enrich_with_parsing": {
+                "description": "When enabled jobs are enriched with HrFlow.ai parsing",
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "required": [
+              "board_key"
+            ],
+            "$defs": {}
+          },
+          "jsonmap": {
+            "reference": ".id",
+            "title": ".title",
+            "url": ".job_url",
+            "summary": ".description",
+            "sections": [
+              {
+                "name": "description",
+                "title": "Description",
+                "content": ".description"
+              },
+              {
+                "name": "page_content",
+                "title": "Page Content",
+                "content": ".page_content"
+              }
+            ],
+            "location": {
+              "text": ".location.address",
+              "fields": {
+                "city": ".location.city",
+                "country": ".location.country",
+                "text": ".location.address",
+                "postcode": ".location.postal_code",
+                "state": ".location.region"
+              }
+            },
+            "created_at": ".created_at",
+            "tags": [
+              {
+                "name": "department",
+                "value": ".department.name"
+              },
+              {
+                "name": "is_remote",
+                "value": ".is_remote"
+              },
+              {
+                "name": "total_candidate_count",
+                "value": ".total_candidate_count"
+              },
+              {
+                "name": "status",
+                "value": ".status"
+              }
+            ]
+          },
+          "workflow": {
+            "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Homerun\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Homerun.create_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Homerun.create_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('public_api_key',):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('status_filter',):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key', 'enrich_with_parsing'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Homerun.create_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "pull_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Homerun\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\ndef workflow(\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Homerun.create_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ('public_api_key',):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('status_filter',):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key', 'enrich_with_parsing'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Homerun.create_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "settings_keys": {
+              "workflow_id": "__workflow_id",
+              "incremental": "__incremental",
+              "connector_auth_prefix": "connector_auth_",
+              "hrflow_auth_prefix": "hrflow_auth_",
+              "pull_parameters_prefix": "pull_parameters_",
+              "push_parameters_prefix": "push_parameters_"
+            },
+            "placeholders": {
+              "logics": "# << logics_placeholder >>",
+              "format": "# << format_placeholder >>",
+              "callback": "# << callback_placeholder >>",
+              "event_parser": "# << event_parser_placeholder >>"
+            },
+            "expected": {
+              "activate_incremental": "enable",
+              "logics_functions_name": "logics",
+              "format_functions_name": "format",
+              "callback_functions_name": "callback",
+              "event_parser_function_name": "event_parser"
+            }
+          }
+        },
+        {
+          "name": "update_jobs_in_hrflow",
+          "data_type": "job",
+          "direction": "inbound",
+          "mode": "update",
+          "connector_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "public_api_key": {
+                "description": "The public API key of the Homerun account.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "public_api_key"
+            ],
+            "$defs": {}
+          },
+          "hrflow_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "description": "API Key used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "description": "User email used to access HrFlow.ai API",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user"
+            ],
+            "$defs": {}
+          },
+          "origin": "Homerun",
+          "origin_data_schema": {
+            "title": "HomerunJob",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "application_form_url": {
+                "type": "string"
+              },
+              "job_url": {
+                "type": "string"
+              },
+              "share_image_url": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "page_content": {
+                "type": "string"
+              },
+              "total_candidate_count": {
+                "type": "integer"
+              },
+              "type": {
+                "type": "string"
+              },
+              "expires_at": {
+                "type": "string"
+              },
+              "is_remote": {
+                "type": "boolean"
+              },
+              "location_type": {
+                "type": "string"
+              },
+              "location": {
+                "$ref": "#/$defs/Location"
+              },
+              "department": {
+                "$ref": "#/$defs/HomerunObject"
+              },
+              "stages": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/HomerunObject"
+                }
+              },
+              "created_at": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "application_form_url",
+              "job_url",
+              "share_image_url",
+              "status",
+              "title",
+              "description",
+              "page_content",
+              "total_candidate_count",
+              "type",
+              "expires_at",
+              "is_remote",
+              "location_type",
+              "location",
+              "department",
+              "stages",
+              "created_at"
+            ],
+            "$defs": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "postal_code": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "region": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "country",
+                  "address",
+                  "postal_code",
+                  "city",
+                  "region"
+                ]
+              },
+              "HomerunObject": {
+                "title": "HomerunObject",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "supports_incremental": false,
+          "pull_parameters": {
+            "title": "ReadJobsParameters",
+            "type": "object",
+            "properties": {
+              "status_filter": {
+                "description": "Name of the vacancy status",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/JobStatus"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [],
+            "$defs": {
+              "JobStatus": {
+                "title": "JobStatus",
+                "enum": [
+                  "closed",
+                  "draft",
+                  "private",
+                  "public"
+                ]
+              }
+            }
+          },
+          "target": "HrFlow",
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "description": "Identification key of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "reference": {
+                "description": "Custom identifier of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "name": {
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "description": "Job location object.",
+                "$ref": "#/$defs/Location"
+              },
+              "sections": {
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/Section"
+                }
+              },
+              "url": {
+                "description": "Job post original URL.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "summary": {
+                "description": "Brief summary of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "archieved_at": {
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "updated_at": {
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "created_at": {
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "skills": {
+                "description": "list of skills of the Job.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Skill"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "languages": {
+                "description": "list of spoken languages of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "certifications": {
+                "description": "list of certifications of the Job.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "courses": {
+                "description": "list of courses of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tasks": {
+                "description": "list of tasks of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tags": {
+                "description": "list of tags of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "metadatas": {
+                "description": "list of metadatas of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "ranges_float": {
+                "description": "list of ranges of floats",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/RangesFloat"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "ranges_date": {
+                "description": "list of ranges of dates",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/RangesDate"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "name",
+              "location",
+              "sections"
+            ],
+            "$defs": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "description": "Location text address.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lat": {
+                    "description": "Geocentric latitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lng": {
+                    "description": "Geocentric longitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "fields": {
+                    "description": "other location attributes like country, country_code etc",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ]
+                  },
+                  "value": {
+                    "description": "Value associated to the skill",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Value associated to the Object's name",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value. Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value. Example: 100.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "unit": {
+                    "description": "Unit of the value. Example: euros.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              }
+            }
+          },
+          "push_parameters": {
+            "title": "UpdateCriterias",
+            "type": "object",
+            "properties": {
+              "board_key": {
+                "description": "HrFlow.ai board key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "board_key"
+            ],
+            "$defs": {}
+          },
+          "jsonmap": {
+            "reference": ".id",
+            "title": ".title",
+            "url": ".job_url",
+            "summary": ".description",
+            "sections": [
+              {
+                "name": "description",
+                "title": "Description",
+                "content": ".description"
+              },
+              {
+                "name": "page_content",
+                "title": "Page Content",
+                "content": ".page_content"
+              }
+            ],
+            "location": {
+              "text": ".location.address",
+              "fields": {
+                "city": ".location.city",
+                "country": ".location.country",
+                "text": ".location.address",
+                "postcode": ".location.postal_code",
+                "state": ".location.region"
+              }
+            },
+            "created_at": ".created_at",
+            "tags": [
+              {
+                "name": "department",
+                "value": ".department.name"
+              },
+              {
+                "name": "is_remote",
+                "value": ".is_remote"
+              },
+              {
+                "name": "total_candidate_count",
+                "value": ".total_candidate_count"
+              },
+              {
+                "name": "status",
+                "value": ".status"
+              }
+            ]
+          },
+          "workflow": {
+            "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Homerun\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Homerun.update_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Homerun.update_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('public_api_key',):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('status_filter',):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Homerun.update_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "pull_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Homerun\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\ndef workflow(\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Homerun.update_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ('public_api_key',):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('status_filter',):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Homerun.update_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "settings_keys": {
+              "workflow_id": "__workflow_id",
+              "incremental": "__incremental",
+              "connector_auth_prefix": "connector_auth_",
+              "hrflow_auth_prefix": "hrflow_auth_",
+              "pull_parameters_prefix": "pull_parameters_",
+              "push_parameters_prefix": "push_parameters_"
+            },
+            "placeholders": {
+              "logics": "# << logics_placeholder >>",
+              "format": "# << format_placeholder >>",
+              "callback": "# << callback_placeholder >>",
+              "event_parser": "# << event_parser_placeholder >>"
+            },
+            "expected": {
+              "activate_incremental": "enable",
+              "logics_functions_name": "logics",
+              "format_functions_name": "format",
+              "callback_functions_name": "callback",
+              "event_parser_function_name": "event_parser"
+            }
+          }
+        },
+        {
+          "name": "archive_jobs_in_hrflow",
+          "data_type": "job",
+          "direction": "inbound",
+          "mode": "archive",
+          "connector_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "public_api_key": {
+                "description": "The public API key of the Homerun account.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "public_api_key"
+            ],
+            "$defs": {}
+          },
+          "hrflow_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "description": "API Key used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "description": "User email used to access HrFlow.ai API",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user"
+            ],
+            "$defs": {}
+          },
+          "origin": "Homerun",
+          "origin_data_schema": {
+            "title": "HomerunJob",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "application_form_url": {
+                "type": "string"
+              },
+              "job_url": {
+                "type": "string"
+              },
+              "share_image_url": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "page_content": {
+                "type": "string"
+              },
+              "total_candidate_count": {
+                "type": "integer"
+              },
+              "type": {
+                "type": "string"
+              },
+              "expires_at": {
+                "type": "string"
+              },
+              "is_remote": {
+                "type": "boolean"
+              },
+              "location_type": {
+                "type": "string"
+              },
+              "location": {
+                "$ref": "#/$defs/Location"
+              },
+              "department": {
+                "$ref": "#/$defs/HomerunObject"
+              },
+              "stages": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/HomerunObject"
+                }
+              },
+              "created_at": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "application_form_url",
+              "job_url",
+              "share_image_url",
+              "status",
+              "title",
+              "description",
+              "page_content",
+              "total_candidate_count",
+              "type",
+              "expires_at",
+              "is_remote",
+              "location_type",
+              "location",
+              "department",
+              "stages",
+              "created_at"
+            ],
+            "$defs": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "postal_code": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "region": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "country",
+                  "address",
+                  "postal_code",
+                  "city",
+                  "region"
+                ]
+              },
+              "HomerunObject": {
+                "title": "HomerunObject",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "supports_incremental": false,
+          "pull_parameters": {
+            "title": "ReadJobsParameters",
+            "type": "object",
+            "properties": {
+              "status_filter": {
+                "description": "Name of the vacancy status",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/JobStatus"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [],
+            "$defs": {
+              "JobStatus": {
+                "title": "JobStatus",
+                "enum": [
+                  "closed",
+                  "draft",
+                  "private",
+                  "public"
+                ]
+              }
+            }
+          },
+          "target": "HrFlow",
+          "target_data_schema": {
+            "title": "HrFlowJob",
+            "type": "object",
+            "properties": {
+              "key": {
+                "description": "Identification key of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "reference": {
+                "description": "Custom identifier of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "name": {
+                "description": "Job title.",
+                "type": "string"
+              },
+              "location": {
+                "description": "Job location object.",
+                "$ref": "#/$defs/Location"
+              },
+              "sections": {
+                "description": "Job custom sections.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/Section"
+                }
+              },
+              "url": {
+                "description": "Job post original URL.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "summary": {
+                "description": "Brief summary of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "archieved_at": {
+                "description": "type: datetime ISO8601, Archive date of the Job. The value is null for unarchived Jobs.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "updated_at": {
+                "description": "type: datetime ISO8601, Last update date of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "created_at": {
+                "description": "type: datetime ISO8601, Creation date of the Job.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "skills": {
+                "description": "list of skills of the Job.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Skill"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "languages": {
+                "description": "list of spoken languages of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "certifications": {
+                "description": "list of certifications of the Job.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "courses": {
+                "description": "list of courses of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tasks": {
+                "description": "list of tasks of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tags": {
+                "description": "list of tags of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "metadatas": {
+                "description": "list of metadatas of the Job",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "ranges_float": {
+                "description": "list of ranges of floats",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/RangesFloat"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "ranges_date": {
+                "description": "list of ranges of dates",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/RangesDate"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "name",
+              "location",
+              "sections"
+            ],
+            "$defs": {
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "description": "Location text address.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lat": {
+                    "description": "Geocentric latitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lng": {
+                    "description": "Geocentric longitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "fields": {
+                    "description": "other location attributes like country, country_code etc",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Section": {
+                "title": "Section",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Section of the Job. Example: culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Display Title of a Section. Example: Corporate Culture",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Text description of a Section: Example: Our values areNone",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ]
+                  },
+                  "value": {
+                    "description": "Value associated to the skill",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Value associated to the Object's name",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "RangesFloat": {
+                "title": "RangesFloat",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of floats attached to the Job. Example: salary",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value. Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value. Example: 100.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "unit": {
+                    "description": "Unit of the value. Example: euros.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "RangesDate": {
+                "title": "RangesDate",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of a Range of dates attached to the Job. Example: availability.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_min": {
+                    "description": "Min value in datetime ISO 8601, Example: 500.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "value_max": {
+                    "description": "Max value in datetime ISO 8601, Example: 1000",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              }
+            }
+          },
+          "push_parameters": {
+            "title": "ArchiveCriterias",
+            "type": "object",
+            "properties": {
+              "board_key": {
+                "description": "HrFlow.ai board key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "board_key"
+            ],
+            "$defs": {}
+          },
+          "jsonmap": {
+            "reference": ".id"
+          },
+          "workflow": {
+            "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Homerun\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Homerun.archive_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Homerun.archive_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('public_api_key',):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('status_filter',):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Homerun.archive_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "pull_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Homerun\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\ndef workflow(\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Homerun.archive_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ('public_api_key',):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('status_filter',):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Homerun.archive_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "settings_keys": {
+              "workflow_id": "__workflow_id",
+              "incremental": "__incremental",
+              "connector_auth_prefix": "connector_auth_",
+              "hrflow_auth_prefix": "hrflow_auth_",
+              "pull_parameters_prefix": "pull_parameters_",
+              "push_parameters_prefix": "push_parameters_"
+            },
+            "placeholders": {
+              "logics": "# << logics_placeholder >>",
+              "format": "# << format_placeholder >>",
+              "callback": "# << callback_placeholder >>",
+              "event_parser": "# << event_parser_placeholder >>"
+            },
+            "expected": {
+              "activate_incremental": "enable",
+              "logics_functions_name": "logics",
+              "format_functions_name": "format",
+              "callback_functions_name": "callback",
+              "event_parser_function_name": "event_parser"
+            }
+          }
+        }
+      ]
     }
   ]
 }
