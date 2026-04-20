@@ -1,0 +1,94 @@
+{
+  "name": "?.jobReqLocale?.jobTitle",
+  "reference": "?.jobReqId",
+  "location": {
+    "text": "?.location_obj?.results?.[0]?.name",
+    "fields": { "country": "?.country" },
+    "lat": null,
+    "lng": null
+  },
+  "url": "?.quickApply",
+  "created_at": "{{To be implemented}}",
+  "updated_at": "{{To be implemented}}",
+  "summary": "?.jobReqLocale?.jobDescription",
+  "skills": "?.competencies?.results | $map({name: ?.name, value: null, type: null})",
+  "requirements": "?.jobProfile?.longDesc_en_US",
+  "tags": [
+    {
+      "name": "status",
+      "value": "?.status?.results?.[0]?.name"
+    },
+    {
+      "name": "department",
+      "value": "?.department_obj?.name_en_US"
+    },
+    {
+      "name": "division",
+      "value": "?.division_obj?.name_en_US"
+    },
+    {
+      "name": "facility",
+      "value": "?.facility"
+    },
+    {
+      "name": "legal_entity",
+      "value": "?.legalEntity_obj?.name_en_US"
+    },
+    {
+      "name": "job_role_entity",
+      "value": "?.jobRoleEntity?.name_en_US"
+    },
+    {
+      "name": "recruiter_team",
+      "value": "?.recruiterTeamGroup?.results?.[0]?.userGroupName"
+    },
+    {
+      "name": "hire_manager_team",
+      "value": "?.hiringManagerTeamGroup?.results?.[0]?.userGroupName"
+    },
+    {
+      "name": "sourcer_team",
+      "value": "?.sourcerTeamGroup?.results?.[0]?.userGroupName"
+    },
+    {
+      "name": "corporate_posting",
+      "value": "?.corporatePosting"
+    },
+    {
+      "name": "cost_of_hire",
+      "value": "?.costOfHire"
+    },
+    {
+      "name": "number_openings",
+      "value": "?.numberOpenings"
+    },
+    {
+      "name": "openings_filled",
+      "value": "?.openingsFilled"
+    },
+    {
+      "name": "salary_base",
+      "value": "?.salaryBase"
+    },
+    {
+      "name": "salary_base",
+      "value": "?.salaryBase"
+    },
+    {
+      "name": "work_hours",
+      "value": "?.workHours"
+    },
+    {
+      "name": "time_to_fill",
+      "value": "?.timeToFill"
+    }
+  ],
+  "ranges_float": [
+    {
+      "name": "salary_range",
+      "value_min": "?.salaryMin",
+      "value_max": "?.salaryMax",
+      "unit": "?.currency"
+    }
+  ]
+}

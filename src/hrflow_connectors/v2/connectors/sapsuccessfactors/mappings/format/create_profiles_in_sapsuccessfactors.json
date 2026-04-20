@@ -1,0 +1,16 @@
+{
+  "firstName": "?.info?.first_name",
+  "lastName": "?.info?.last_name",
+  "primaryEmail": "?.info?.email",
+  "cellPhone": "?.info?.phone",
+  "address": "?.info?.location?.text",
+  "country": "?.info?.location?.fields?.country != null ?? .info.location.fields.country | $slice(0,-1)",
+  "city": "?.info?.location?.fields?.city",
+  "zip": "?.info?.location?.fields?.postcode",
+  "education": {
+    "results": "?.educations | $map({school: ?.school,  startDate: .date_start | $timestamp | $concat('/Date(', ., ')/'), endDate: .date_end | $timestamp | $concat('/Date(', ., ')/')})"
+  },
+  "outsideWorkExperience": {
+    "results": "?.educations | $map({employer: ?.company, startDate: .date_start | $timestamp | $concat('/Date(', ., ')/'), endDate: .date_end | $timestamp | $concat('/Date(', ., ')/')})"
+  }
+}
