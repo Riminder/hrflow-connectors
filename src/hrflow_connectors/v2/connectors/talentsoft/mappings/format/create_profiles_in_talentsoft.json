@@ -1,0 +1,179 @@
+{
+  "#CONTRACT_TYPE_REFERENTIAL": {
+    "Alternance": {
+      "code": 1047,
+      "clientCode": "_TS_CO_Contract_Alternance",
+      "label": "Apprenticeship",
+      "type": "contractType",
+      "parentType": ""
+    },
+    "CDD": {
+      "code": 1045,
+      "clientCode": "_TS_CO_Contract_CDD",
+      "label": "Fixed Term contract",
+      "type": "contractType",
+      "parentType": ""
+    },
+    "CDI": {
+      "code": 1044,
+      "clientCode": "_TS_CO_Contract_CDI",
+      "label": "Permanent",
+      "type": "contractType",
+      "parentType": ""
+    },
+    "CIFRE": {
+      "code": 1049,
+      "clientCode": "_TS_CO_Contract_CIFRE",
+      "label": "CIFRE",
+      "type": "contractType",
+      "parentType": ""
+    },
+    "Stage": {
+      "code": 1046,
+      "clientCode": "_TS_CO_Contract_Stage",
+      "label": "Internship / Student",
+      "type": "contractType",
+      "parentType": ""
+    },
+    "VIE": {
+      "code": 1048,
+      "clientCode": "_TS_CO_Contract_VIE",
+      "label": "VIE",
+      "type": "contractType",
+      "parentType": ""
+    }
+  },
+  "#EDUCATIONS_REFERENTIEL": {
+    "Aucun diplôme": {
+      "code": 261,
+      "clientCode": "_TS_etude_min_Aucun_diplome",
+      "label": "No Degree",
+      "type": "educationLevel",
+      "parentType": ""
+    },
+    "BAC": {
+      "code": 262,
+      "clientCode": "_TS_etude_min_BAC",
+      "label": "Bac",
+      "type": "educationLevel",
+      "parentType": ""
+    },
+    "BAC+2": {
+      "code": 2859,
+      "clientCode": "_TS_etude_min_BAC2",
+      "label": "A Levels, Diploma",
+      "type": "educationLevel",
+      "parentType": ""
+    },
+    "BAC+3": {
+      "code": 4028,
+      "clientCode": "_TS_etude_min_Licence",
+      "label": "Licence",
+      "type": "educationLevel",
+      "parentType": ""
+    },
+    "BAC+4": {
+      "code": 2860,
+      "clientCode": "_TS_etude_min_BAC4",
+      "label": "Bachelor's Degree",
+      "type": "educationLevel",
+      "parentType": ""
+    },
+    "BAC+5": {
+      "code": 266,
+      "clientCode": "_TS_etude_min_BAC5",
+      "label": "Master Degree",
+      "type": "educationLevel",
+      "parentType": ""
+    },
+    "CAP, BEP": {
+      "code": 2858,
+      "clientCode": "_TS_etude_min_CAP_BEP",
+      "label": "GCSEs",
+      "type": "educationLevel",
+      "parentType": ""
+    },
+    "DOCTORAT": {
+      "code": 2861,
+      "clientCode": "_TS_etude_min_DOCTORAT",
+      "label": "PhD, Doctorate",
+      "type": "educationLevel",
+      "parentType": ""
+    },
+    "Mastère": {
+      "code": 4030,
+      "clientCode": "_TS_etude_min_Mastere",
+      "label": "Mastère",
+      "type": "educationLevel",
+      "parentType": ""
+    }
+  },
+  "#EXPERIENCES_REFERENTIEL": {
+    "Etudiant-e": "",
+    "Débutant-e/première expérience": {
+      "code": 274,
+      "clientCode": "_TS_niveau_exp_premiere_exp",
+      "label": "First experience",
+      "type": "experienceLevel",
+      "parentType": ""
+    },
+    "Supérieure à 3 ans": {
+      "code": 1785,
+      "clientCode": "_TS_niveau_exp_superieur_3ans ",
+      "label": "More than 3 years",
+      "type": "experienceLevel",
+      "parentType": ""
+    },
+    "Supérieure à 5 ans": {
+      "code": 1783,
+      "clientCode": "_TS_niveau_exp_superieur_5ans",
+      "label": "More than 5 years",
+      "type": "experienceLevel",
+      "parentType": ""
+    },
+    "Supérieure à 8 ans": {
+      "code": 275,
+      "clientCode": "_TS_niveau_exp_superieur_8ans",
+      "label": "More than 8 years",
+      "type": "experienceLevel",
+      "parentType": ""
+    }
+  },
+
+  "applicant": {
+    "personalInformation": {
+      "firstName": ".info.first_name",
+      "lastName": ".info.last_name",
+      "birthDate": ".info.date_birth",
+      "phoneNumber": ".info.phone",
+      "email": ".info.email",
+      "address": ".info.location.text",
+      "city": ".info.location.fields?.city >> ''",
+      "postalCode": ".info.location.fields?.postalCode >> ''",
+      "civility": ".info?.gender != null ?? .info.gender | {code: . == 'male' ?? 280: 281, clientCode: . == 'male' ?? '_TS_CO_Civility_Mr': '_TS_CO_Civility_Mme' , label: . == 'male' ?? 'Mr.': 'Ms.', type: 'civility', parentType: ''}: null"
+    },
+    "jobPreferences": {
+      "contractType": ".tags | .name == 'talentsoft_contract_type' ??  #CONTRACT_TYPE_REFERENTIAL.[.value]: null",
+      "salaryPretensions": ".tags | .name == 'talentsoft_salary' ?? .value: null"
+    },
+    "education": {
+      "diplomas": "$merge(.tags | .name == 'talentsoft_experience_level' ?? [{educationLevel: #EDUCATIONS_REFERENTIEL.[.value]}]: [], .educations | $map({college: .school, yearObtained: .date_end ?? .date_end | $slice(0, 3): ''}))"
+    },
+    "experiences": {
+      "experienceLevel": ".tags | .name == 'talentsoft_experience_level' ?? #EXPERIENCES_REFERENTIEL.[.value]: null",
+      "experienceList": ".experiences | $map({company: .company, function: .title, length: .date_start != null and .date_end != null ?? '<< MISSING ARITHMETICS HERE >>' : null })"
+    }
+  },
+  "application": {
+    "type": "offer",
+    "offerReference": ""
+  },
+  "uploadedFiles": [
+    {
+      "description": ".attachments[0].original_file_name",
+      "fileTypeId": 36,
+      "key": "cv_file_id"
+    }
+  ],
+  "attachment": ".attachments[0]"
+}

@@ -1,0 +1,11 @@
+{
+  "reference": ".candidateDetail.id",
+  "created_at": ".candidateDetail.creationDate",
+  "updated_at": "$now('iso')",
+  "resume": ".attachments | .isResume ?? {raw: .raw, content_type: .mimeType} : null ",
+  "tags": "$merge([{ 'name': 'talentsoft-isEmployee', 'value': '.isEmployee'},{ 'name': 'talentsoft-isInProgress', 'value': '.isInProgress'},{ 'name': 'talentsoft-residentCountry-id', 'value': '.candidateDetail.personalInformation.residentCountry?.id'},{ 'name': 'talentsoft-contractType-id', 'value': '.candidateDetail.positionSought.contractType.id'},{ 'name': 'talentsoft-profileStatus-id', 'value': '.candidateDetail.positionSought.jobPreferencesCustomFields.customCodeTable1.id'},{ 'name': 'talentsoft-experienceLevel-id', 'value': '.candidateDetail.globalExperience.globalExperienceLevel.id'},{ 'name': 'talentsoft-profile-id', 'value': '.candidateDetail.positionSought.primaryProfile.id'},{ 'name': 'talentsofteducationLevel-id', 'value': '.candidateDetail.educations.educationLevel.id'}], .candidateDetail.educations | $map(.educationLevel != null ?? {name: 'talentsofteducationLevel-id', value: .educationLevel.id} ), .applications | $map({name: 'talentsoft-application-vacancyReference', value: .vacancyReference}))",
+  "metadatas": [
+    { "name": "profile_uid", "value": ".candidateDetail.id" },
+    ".attachments | .isResume ?? {name: 'filename', value: .filename}"
+  ]
+}
