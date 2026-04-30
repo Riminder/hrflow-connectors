@@ -155461,6 +155461,1271 @@
           }
         }
       ]
+    },
+    {
+      "name": "Broadbean",
+      "type": "ATS",
+      "subtype": "broadbean",
+      "logo": "https://raw.githubusercontent.com/Riminder/hrflow-connectors/master/src/hrflow_connectors/v2/connectors/broadbean/logo.png",
+      "actions": [
+        {
+          "name": "create_profiles_in_broadbean",
+          "data_type": "profile",
+          "direction": "outbound",
+          "mode": "create",
+          "connector_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "secret_key": {
+                "description": "Secret provided by Veritone Hire",
+                "type": "string"
+              }
+            },
+            "required": [
+              "secret_key"
+            ],
+            "$defs": {}
+          },
+          "hrflow_auth_parameters": {
+            "title": "AuthParameters",
+            "type": "object",
+            "properties": {
+              "api_secret": {
+                "description": "API Key used to access HrFlow.ai API",
+                "type": "string"
+              },
+              "api_user": {
+                "description": "User email used to access HrFlow.ai API",
+                "type": "string"
+              }
+            },
+            "required": [
+              "api_secret",
+              "api_user"
+            ],
+            "$defs": {}
+          },
+          "origin": "HrFlow",
+          "origin_data_schema": {
+            "title": "HrFlowProfile",
+            "type": "object",
+            "properties": {
+              "key": {
+                "description": "Identification key of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "reference": {
+                "description": "Custom identifier of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "info": {
+                "description": "Object containing the Profile's info.",
+                "$ref": "#/$defs/ProfileInfo"
+              },
+              "text_language": {
+                "description": "Code language of the Profile. type: string code ISO 639-1",
+                "type": "string"
+              },
+              "text": {
+                "description": "Full text of the Profile.",
+                "type": "string"
+              },
+              "archived_at": {
+                "description": "type: datetime ISO8601, Archive date of the Profile. The value is null for unarchived Profiles.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "updated_at": {
+                "description": "type: datetime ISO8601, Last update date of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "created_at": {
+                "description": "type: datetime ISO8601, Creation date of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "experiences_duration": {
+                "description": "Total number of years of experience.",
+                "type": "number"
+              },
+              "educations_duration": {
+                "description": "Total number of years of education.",
+                "type": "number"
+              },
+              "experiences": {
+                "description": "List of experiences of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Experience"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": []
+              },
+              "educations": {
+                "description": "List of educations of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Education"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": []
+              },
+              "attachments": {
+                "description": "List of documents attached to the Profile.",
+                "type": "array",
+                "default": []
+              },
+              "skills": {
+                "description": "List of skills of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Skill"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "languages": {
+                "description": "List of spoken languages of the profile",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "certifications": {
+                "description": "List of certifications of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "courses": {
+                "description": "List of courses of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tasks": {
+                "description": "List of tasks of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "interests": {
+                "description": "List of interests of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "tags": {
+                "description": "List of tags of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "metadatas": {
+                "description": "List of metadatas of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/GeneralEntitySchema"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "labels": {
+                "description": "List of labels of the Profile.",
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Label"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "info",
+              "text_language",
+              "text",
+              "experiences_duration",
+              "educations_duration"
+            ],
+            "$defs": {
+              "ProfileInfo": {
+                "title": "ProfileInfo",
+                "type": "object",
+                "properties": {
+                  "full_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "first_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "last_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "email": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "phone": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "date_birth": {
+                    "description": "Profile date of birth",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "location": {
+                    "description": "Profile location object",
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/$defs/Location"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "urls": {
+                    "description": "Profile social networks and URLs",
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/InfoUrl"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "picture": {
+                    "description": "Profile picture url",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "gender": {
+                    "description": "Profile gender",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "summary": {
+                    "description": "Profile summary text",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "full_name",
+                  "first_name",
+                  "last_name",
+                  "email",
+                  "phone"
+                ]
+              },
+              "Location": {
+                "title": "Location",
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "description": "Location text address.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lat": {
+                    "description": "Geocentric latitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "lng": {
+                    "description": "Geocentric longitude of the Location.",
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "fields": {
+                    "description": "other location attributes like country, country_code etc",
+                    "anyOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": []
+              },
+              "InfoUrl": {
+                "title": "InfoUrl",
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "facebook",
+                      "from_resume",
+                      "github",
+                      "linkedin",
+                      "twitter"
+                    ]
+                  },
+                  "url": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "url"
+                ]
+              },
+              "Experience": {
+                "title": "Experience",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "description": "Identification key of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "company": {
+                    "description": "Company name of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "logo": {
+                    "description": "Logo of the Company",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Title of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Description of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "location": {
+                    "description": "Location object of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/$defs/Location"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_start": {
+                    "description": "Start date of the experience. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_end": {
+                    "description": "End date of the experience. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "skills": {
+                    "description": "List of skills of the Experience.",
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/Skill"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "certifications": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "courses": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tasks": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "certifications",
+                  "courses",
+                  "tasks"
+                ]
+              },
+              "Skill": {
+                "title": "Skill",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the skill",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Type of the skill. hard or soft",
+                    "enum": [
+                      "hard",
+                      "soft"
+                    ]
+                  },
+                  "value": {
+                    "description": "Value associated to the skill",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              },
+              "GeneralEntitySchema": {
+                "title": "GeneralEntitySchema",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Identification name of the Object",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Value associated to the Object's name",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "Education": {
+                "title": "Education",
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "description": "Identification key of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "school": {
+                    "description": "School name of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "logo": {
+                    "description": "Logo of the School",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "title": {
+                    "description": "Title of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "description": {
+                    "description": "Description of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "location": {
+                    "description": "Location object of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/$defs/Location"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_start": {
+                    "description": "Start date of the Education. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "date_end": {
+                    "description": "End date of the Education. type: ('datetime ISO 8601')",
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "skills": {
+                    "description": "List of skills of the Education.",
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/Skill"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "certifications": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "courses": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tasks": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/GeneralEntitySchema"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "certifications",
+                  "courses",
+                  "tasks"
+                ]
+              },
+              "Label": {
+                "title": "Label",
+                "type": "object",
+                "properties": {
+                  "board_key": {
+                    "description": "Identification key of the Board containing the target Job.",
+                    "type": "string"
+                  },
+                  "job_key": {
+                    "description": "Identification key of the Job.",
+                    "type": "string"
+                  },
+                  "job_reference": {
+                    "description": "Custom identifier of the Job.",
+                    "type": "string"
+                  },
+                  "stage": {
+                    "description": "Stage associated to the Profile following the action of a recruiter (yes, no, later).",
+                    "enum": [
+                      "later",
+                      "no",
+                      "yes"
+                    ]
+                  },
+                  "date_stage": {
+                    "description": "Date of the stage edit action. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  },
+                  "rating": {
+                    "description": "Rating associated to the Profile following the action of a recruiter (from 1 to 5).",
+                    "anyOf": [
+                      {
+                        "enum": [
+                          1,
+                          2,
+                          3,
+                          4,
+                          5
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "date_rating": {
+                    "description": "Date of the rating action. type: ('datetime ISO 8601')",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "board_key",
+                  "job_key",
+                  "job_reference",
+                  "stage",
+                  "date_stage",
+                  "rating",
+                  "date_rating"
+                ]
+              }
+            }
+          },
+          "supports_incremental": false,
+          "pull_parameters": {
+            "title": "ReadAllModesCriterias",
+            "type": "object",
+            "properties": {
+              "source_key": {
+                "description": "HrFlow.ai source key",
+                "type": "string"
+              },
+              "profile_key": {
+                "description": "HrFlow.ai profile key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "source_key",
+              "profile_key"
+            ],
+            "$defs": {}
+          },
+          "target": "Broadbean",
+          "target_data_schema": {
+            "title": "BroadbeanCandidate",
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "first_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "last_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "email": {
+                "type": "string"
+              },
+              "contact_telephone": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "mobile_telephone": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "location_city": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "location_country": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "location_postcode": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "location_latitude": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "location_longitude": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "current_job_title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "current_job_employer": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "current_job_startdate": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "documents": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/$defs/Document"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "first_name",
+              "last_name",
+              "email",
+              "contact_telephone",
+              "mobile_telephone",
+              "location_city",
+              "location_country",
+              "location_postcode",
+              "location_latitude",
+              "location_longitude",
+              "current_job_title",
+              "current_job_employer",
+              "current_job_startdate",
+              "documents"
+            ],
+            "$defs": {
+              "Document": {
+                "title": "Document",
+                "type": "object",
+                "properties": {
+                  "filename": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "filename",
+                  "type",
+                  "content"
+                ]
+              }
+            }
+          },
+          "push_parameters": {
+            "title": "WriteProfilesParameters",
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "description": "ID for the candidate importer client mapper (Provided by Veritone Hire)",
+                "type": "string"
+              },
+              "source_id": {
+                "description": "Transaction/Publisher Source ID to link to the transformer (Provided by Veritone Hire)",
+                "type": "string"
+              },
+              "job_id": {
+                "description": "The ID of the Job the candidate has applied to",
+                "type": "string"
+              },
+              "shortlist_id": {
+                "description": "Shortlist ID for the candidate\t",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "aplitrak_email_address": {
+                "description": "If you are a Job Board integrating with Candidate Hub, it is important that you include the unique tracking link/email in the supplementary context. This helps us identify the vacancy the candidate has applied for.\t",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              }
+            },
+            "required": [
+              "client_id",
+              "source_id",
+              "job_id"
+            ],
+            "$defs": {}
+          },
+          "jsonmap": {
+            "name": ".info.full_name",
+            "email": ".info.email",
+            "contact_telephone": ".info.phone || 'Undefined'",
+            "mobile_telephone": ".info.phone || 'Undefined'",
+            "location_city": ".info.location?.fields?.city || 'Undefined'",
+            "location_country": ".info.location?.fields?.country || 'Undefined'",
+            "location_postcode": ".info.location?.fields?.postcode || 'Undefined'",
+            "location_latitude": ".info.location.lat || 0",
+            "location_longitude": ".info.location.lng || 0",
+            "current_job_title": null,
+            "current_job_employer": null,
+            "current_job_startdate": null,
+            "documents": ".attachments | map({filename: .filename, type: .type, content: $webhook(GET, .public_url, {}, {}, {}) | $b64encode})"
+          },
+          "workflow": {
+            "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Broadbean\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Broadbean.create_profiles_in_broadbean(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Broadbean.create_profiles_in_broadbean(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('secret_key',):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('source_key', 'profile_key'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('client_id', 'source_id', 'job_id', 'shortlist_id', 'aplitrak_email_address'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Broadbean.create_profiles_in_broadbean(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "pull_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Broadbean\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\ndef workflow(\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Broadbean.create_profiles_in_broadbean(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n\n    connector_auth = dict()\n    for parameter in ('secret_key',):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('source_key', 'profile_key'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('client_id', 'source_id', 'job_id', 'shortlist_id', 'aplitrak_email_address'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Broadbean.create_profiles_in_broadbean(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
+            "settings_keys": {
+              "workflow_id": "__workflow_id",
+              "incremental": "__incremental",
+              "connector_auth_prefix": "connector_auth_",
+              "hrflow_auth_prefix": "hrflow_auth_",
+              "pull_parameters_prefix": "pull_parameters_",
+              "push_parameters_prefix": "push_parameters_"
+            },
+            "placeholders": {
+              "logics": "# << logics_placeholder >>",
+              "format": "# << format_placeholder >>",
+              "callback": "# << callback_placeholder >>",
+              "event_parser": "# << event_parser_placeholder >>"
+            },
+            "expected": {
+              "activate_incremental": "enable",
+              "logics_functions_name": "logics",
+              "format_functions_name": "format",
+              "callback_functions_name": "callback",
+              "event_parser_function_name": "event_parser"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -1,6 +1,7 @@
 from hrflow_connectors.v2.connectors.admen import Admen
 from hrflow_connectors.v2.connectors.adzuna import Adzuna
 from hrflow_connectors.v2.connectors.breezyhr import BreezyHR
+from hrflow_connectors.v2.connectors.broadbean import Broadbean
 from hrflow_connectors.v2.connectors.bullhorn import Bullhorn
 from hrflow_connectors.v2.connectors.ceipal import Ceipal
 from hrflow_connectors.v2.connectors.flatchr import Flatchr
@@ -40,4 +41,5 @@ __CONNECTORS__ = [
     Greenhouse,
     JazzHR,
     Ceipal,
+    Broadbean,
 ]
