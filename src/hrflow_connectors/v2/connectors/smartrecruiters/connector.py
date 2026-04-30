@@ -95,6 +95,8 @@ def format_sr_job(smartrecruiters_job: t.Dict) -> t.Dict:
         location=get_job_location(smartrecruiters_job.get("location")),
         url=None,
         summary=None,
+        culture=smartrecruiters_job.get("companyDescription"),
+        requirements=smartrecruiters_job.get("qualifications"),
         sections=get_sections(smartrecruiters_job),
         tags=get_tags(smartrecruiters_job),
     )

@@ -37310,6 +37310,8 @@
             "updated_at": "?.updatedon",
             "url": null,
             "summary": null,
+            "culture": "?.companyDescription",
+            "requirements": "?.qualifications",
             "location": {
               "lat": ".location.latitude != null ?? .location.latitude | $float : null",
               "lng": ".location.longitude != null ?? .location.longitude | $float : null",
@@ -38549,6 +38551,8 @@
             "updated_at": "?.updatedon",
             "url": null,
             "summary": null,
+            "culture": "?.companyDescription",
+            "requirements": "?.qualifications",
             "location": {
               "lat": ".location.latitude != null ?? .location.latitude | $float : null",
               "lng": ".location.longitude != null ?? .location.longitude | $float : null",
@@ -55867,7 +55871,7 @@
             "resume": {
               "raw": "?.cv_file"
             },
-            "tags": "$merge([{name: 'source', value: ?.source}, {name: 'sources', value: ?.sources}, {name: 'positive_ratings', value: ?.positive_ratings}, {name: 'grouped_open_question_answers', value: ?.grouped_open_question_answers}, {name: 'cover_letter', value: ?.cover_letter}, {name: 'last_message_at', value: ?.last_message_at}, {name: 'is_hired', value: ?.is_hired}, {name: 'tags', value: ?.tags || []}], .fields | $map( .kind != 'experience' and .kind != 'education' and .kind != 'skills' and .kind != 'language_skill' and .kind != 'address' and .kind != 'date_of_birth' ?? {name: ?.name || .kind, value: .values}))"
+            "tags": "$merge([{name: 'source', value: ?.source}, {name: 'sources', value: ?.sources}, {name: 'positive_ratings', value: ?.positive_ratings}, {name: 'grouped_open_question_answers', value: ?.grouped_open_question_answers}, {name: 'cover_letter', value: ?.cover_letter}, {name: 'last_message_at', value: ?.last_message_at}, {name: 'is_hired', value: ?.is_hired}], .fields | $map( .kind != 'experience' and .kind != 'education' and .kind != 'skills' and .kind != 'language_skill' and .kind != 'address' and .kind != 'date_of_birth' ?? {name: ?.name || .kind, value: .values}), ?.tags || [] | $map({name: 'candidate_tag', value: .}))"
           },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Recruitee\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Recruitee.create_profiles_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Recruitee.create_profiles_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('company_id', 'api_token', 'recruitee_endpoint'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'offset', 'created_after', 'disqualified', 'qualified', 'ids', 'offer_id', 'query', 'sort', 'with_messages', 'with_my_messages'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('source_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Recruitee.create_profiles_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -57191,7 +57195,7 @@
             "resume": {
               "raw": "?.cv_file"
             },
-            "tags": "$merge([{name: 'source', value: ?.source}, {name: 'sources', value: ?.sources}, {name: 'positive_ratings', value: ?.positive_ratings}, {name: 'grouped_open_question_answers', value: ?.grouped_open_question_answers}, {name: 'cover_letter', value: ?.cover_letter}, {name: 'last_message_at', value: ?.last_message_at}, {name: 'is_hired', value: ?.is_hired}, {name: 'tags', value: ?.tags || []}], .fields | $map( .kind != 'experience' and .kind != 'education' and .kind != 'skills' and .kind != 'language_skill' and .kind != 'address' and .kind != 'date_of_birth' ?? {name: ?.name || .kind, value: .values}))"
+            "tags": "$merge([{name: 'source', value: ?.source}, {name: 'sources', value: ?.sources}, {name: 'positive_ratings', value: ?.positive_ratings}, {name: 'grouped_open_question_answers', value: ?.grouped_open_question_answers}, {name: 'cover_letter', value: ?.cover_letter}, {name: 'last_message_at', value: ?.last_message_at}, {name: 'is_hired', value: ?.is_hired}], .fields | $map( .kind != 'experience' and .kind != 'education' and .kind != 'skills' and .kind != 'language_skill' and .kind != 'address' and .kind != 'date_of_birth' ?? {name: ?.name || .kind, value: .values}), ?.tags || [] | $map({name: 'candidate_tag', value: .}))"
           },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Recruitee\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Recruitee.update_profiles_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Recruitee.update_profiles_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('company_id', 'api_token', 'recruitee_endpoint'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('limit', 'offset', 'created_after', 'disqualified', 'qualified', 'ids', 'offer_id', 'query', 'sort', 'with_messages', 'with_my_messages'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('source_key', 'only_edit_fields'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Recruitee.update_profiles_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -62720,76 +62724,7 @@
                 "description": "?.highlight_html"
               }
             ],
-            "tags": [
-              {
-                "name": "category",
-                "value": "?.category"
-              },
-              {
-                "name": "department",
-                "value": "?.department"
-              },
-              {
-                "name": "options_cv",
-                "value": "?.options_cv"
-              },
-              {
-                "name": "options_cover_letter",
-                "value": "?.options_cover_letter"
-              },
-              {
-                "name": "experience",
-                "value": "?.experience"
-              },
-              {
-                "name": "education",
-                "value": "?.education"
-              },
-              {
-                "name": "employment_type",
-                "value": "?.employment_type"
-              },
-              {
-                "name": "remote_option",
-                "value": "?.remote"
-              },
-              {
-                "name": "number_of_openings",
-                "value": "?.number_of_openings"
-              },
-              {
-                "name": "candidates_count",
-                "value": "?.candidates_count"
-              },
-              {
-                "name": "disqualified_candidates_count",
-                "value": "?.disqualified_candidates_count"
-              },
-              {
-                "name": "qualified_candidates_count",
-                "value": "?.qualified_candidates_count"
-              },
-              {
-                "name": "hired_candidates_count",
-                "value": "?.hired_candidates_count"
-              },
-              {
-                "name": "email_confirmation_body",
-                "value": "?.email_confirmation_body"
-              },
-              {
-                "name": "status",
-                "value": "?.status"
-              },
-              {
-                "name": "closed_at",
-                "value": "?.closed_at"
-              },
-              {
-                "name": "offer_tags",
-                "value": "?.offer_tags  || []"
-              }
-            ],
+            "tags": "$merge([{name: 'category', value: ?.category}, {name: 'department', value: ?.department}, {name: 'options_cv', value: ?.options_cv}, {name: 'options_cover_letter', value: ?.options_cover_letter}, {name: 'experience', value: ?.experience}, {name: 'education', value: ?.education}, {name: 'employment_type', value: ?.employment_type}, {name: 'remote_option', value: ?.remote}, {name: 'number_of_openings', value: ?.number_of_openings}, {name: 'candidates_count', value: ?.candidates_count}, {name: 'disqualified_candidates_count', value: ?.disqualified_candidates_count}, {name: 'qualified_candidates_count', value: ?.qualified_candidates_count}, {name: 'hired_candidates_count', value: ?.hired_candidates_count}, {name: 'email_confirmation_body', value: ?.email_confirmation_body}, {name: 'status', value: ?.status}, {name: 'closed_at', value: ?.closed_at}], ?.offer_tags || [] | $map({name: 'offer_tag', value: .}))",
             "ranges_float": [
               {
                 "name": "'working hours'",
@@ -63563,76 +63498,7 @@
                 "description": "?.highlight_html"
               }
             ],
-            "tags": [
-              {
-                "name": "category",
-                "value": "?.category"
-              },
-              {
-                "name": "department",
-                "value": "?.department"
-              },
-              {
-                "name": "options_cv",
-                "value": "?.options_cv"
-              },
-              {
-                "name": "options_cover_letter",
-                "value": "?.options_cover_letter"
-              },
-              {
-                "name": "experience",
-                "value": "?.experience"
-              },
-              {
-                "name": "education",
-                "value": "?.education"
-              },
-              {
-                "name": "employment_type",
-                "value": "?.employment_type"
-              },
-              {
-                "name": "remote_option",
-                "value": "?.remote"
-              },
-              {
-                "name": "number_of_openings",
-                "value": "?.number_of_openings"
-              },
-              {
-                "name": "candidates_count",
-                "value": "?.candidates_count"
-              },
-              {
-                "name": "disqualified_candidates_count",
-                "value": "?.disqualified_candidates_count"
-              },
-              {
-                "name": "qualified_candidates_count",
-                "value": "?.qualified_candidates_count"
-              },
-              {
-                "name": "hired_candidates_count",
-                "value": "?.hired_candidates_count"
-              },
-              {
-                "name": "email_confirmation_body",
-                "value": "?.email_confirmation_body"
-              },
-              {
-                "name": "status",
-                "value": "?.status"
-              },
-              {
-                "name": "closed_at",
-                "value": "?.closed_at"
-              },
-              {
-                "name": "offer_tags",
-                "value": "?.offer_tags  || []"
-              }
-            ],
+            "tags": "$merge([{name: 'category', value: ?.category}, {name: 'department', value: ?.department}, {name: 'options_cv', value: ?.options_cv}, {name: 'options_cover_letter', value: ?.options_cover_letter}, {name: 'experience', value: ?.experience}, {name: 'education', value: ?.education}, {name: 'employment_type', value: ?.employment_type}, {name: 'remote_option', value: ?.remote}, {name: 'number_of_openings', value: ?.number_of_openings}, {name: 'candidates_count', value: ?.candidates_count}, {name: 'disqualified_candidates_count', value: ?.disqualified_candidates_count}, {name: 'qualified_candidates_count', value: ?.qualified_candidates_count}, {name: 'hired_candidates_count', value: ?.hired_candidates_count}, {name: 'email_confirmation_body', value: ?.email_confirmation_body}, {name: 'status', value: ?.status}, {name: 'closed_at', value: ?.closed_at}], ?.offer_tags || [] | $map({name: 'offer_tag', value: .}))",
             "ranges_float": [
               {
                 "name": "'working hours'",
@@ -70244,7 +70110,9 @@
             "location": "?.lieuTravail ?? {lat: .lieuTravail?.latitude, lng: .lieuTravail?.longitude, text: $concat(.lieuTravail?.libelle >> '', ' ', .lieuTravail?.codePostal >> '') | $strip}: {lat: null, lng: null, text: ''}",
             "url": "?.origineOffre?.urlOrigine",
             "summary": "?.description",
+            "culture": "?.entreprise?.description",
             "requirements": "?.formations ?? $map($concat(.niveauLibelle || '', ' en ', .domaineLibelle || '')) | $join('\n')",
+            "responsibilities": "?.qualitesProfessionnelles ?? $map(.description) | $join('\n')",
             "skills": "?.competences ?? $map({name: .libelle, value: null, type: hard}) : []",
             "languages": "?.langues ?? $map({name: .libelle, value: null}) : []",
             "sections": [
@@ -72495,7 +72363,9 @@
             "location": "?.lieuTravail ?? {lat: .lieuTravail?.latitude, lng: .lieuTravail?.longitude, text: $concat(.lieuTravail?.libelle >> '', ' ', .lieuTravail?.codePostal >> '') | $strip}: {lat: null, lng: null, text: ''}",
             "url": "?.origineOffre?.urlOrigine",
             "summary": "?.description",
+            "culture": "?.entreprise?.description",
             "requirements": "?.formations ?? $map($concat(.niveauLibelle || '', ' en ', .domaineLibelle || '')) | $join('\n')",
+            "responsibilities": "?.qualitesProfessionnelles ?? $map(.description) | $join('\n')",
             "skills": "?.competences ?? $map({name: .libelle, value: null, type: hard}) : []",
             "languages": "?.langues ?? $map({name: .libelle, value: null}) : []",
             "sections": [
@@ -85967,52 +85837,8 @@
                 "description": "?.location?.remote_details"
               }
             ],
-            "tags": [
-              {
-                "name": "type",
-                "value": "?.type?.name"
-              },
-              {
-                "name": "experience",
-                "value": "?.experience?.name"
-              },
-              {
-                "name": "education",
-                "value": "?.education"
-              },
-              {
-                "name": "department",
-                "value": "?.department"
-              },
-              {
-                "name": "requisition_id",
-                "value": "?.requisition_id"
-              },
-              {
-                "name": "category",
-                "value": "?.category?.name"
-              },
-              {
-                "name": "candidate_type",
-                "value": "?.candidate_type"
-              },
-              {
-                "name": "isremote",
-                "value": "?.location?.is_remote"
-              },
-              {
-                "name": "remote_details",
-                "value": "?.location?.remote_details"
-              },
-              {
-                "name": "creator_id",
-                "value": "?.creator_id"
-              },
-              {
-                "name": "breezy_hr_tags",
-                "value": "?.tags"
-              }
-            ],
+            "requirements": "[?.education | ' ', ?.experience ?? | ' '] | $join('\n') | $strip",
+            "tags": "$merge([{name: 'type', value: ?.type?.name}, {name: 'experience', value: ?.experience?.name}, {name: 'education', value: ?.education}, {name: 'department', value: ?.department}, {name: 'requisition_id', value: ?.requisition_id}, {name: 'category', value: ?.category?.name}, {name: 'candidate_type', value: ?.candidate_type}, {name: 'isremote', value: ?.location?.is_remote}, {name: 'remote_details', value: ?.location?.remote_details}, {name: 'creator_id', value: ?.creator_id}], ?.tags || [] | $map({name: 'breezy_hr_tag', value: .}))",
             "created_at": "?.creation_date",
             "updated_at": "?.updated_date"
           },
@@ -86967,52 +86793,8 @@
                 "description": "?.location?.remote_details"
               }
             ],
-            "tags": [
-              {
-                "name": "type",
-                "value": "?.type?.name"
-              },
-              {
-                "name": "experience",
-                "value": "?.experience?.name"
-              },
-              {
-                "name": "education",
-                "value": "?.education"
-              },
-              {
-                "name": "department",
-                "value": "?.department"
-              },
-              {
-                "name": "requisition_id",
-                "value": "?.requisition_id"
-              },
-              {
-                "name": "category",
-                "value": "?.category?.name"
-              },
-              {
-                "name": "candidate_type",
-                "value": "?.candidate_type"
-              },
-              {
-                "name": "isremote",
-                "value": "?.location?.is_remote"
-              },
-              {
-                "name": "remote_details",
-                "value": "?.location?.remote_details"
-              },
-              {
-                "name": "creator_id",
-                "value": "?.creator_id"
-              },
-              {
-                "name": "breezy_hr_tags",
-                "value": "?.tags"
-              }
-            ],
+            "requirements": "[?.education | ' ', ?.experience ?? | ' '] | $join('\n') | $strip",
+            "tags": "$merge([{name: 'type', value: ?.type?.name}, {name: 'experience', value: ?.experience?.name}, {name: 'education', value: ?.education}, {name: 'department', value: ?.department}, {name: 'requisition_id', value: ?.requisition_id}, {name: 'category', value: ?.category?.name}, {name: 'candidate_type', value: ?.candidate_type}, {name: 'isremote', value: ?.location?.is_remote}, {name: 'remote_details', value: ?.location?.remote_details}, {name: 'creator_id', value: ?.creator_id}], ?.tags || [] | $map({name: 'breezy_hr_tag', value: .}))",
             "created_at": "?.creation_date",
             "updated_at": "?.updated_date"
           },
@@ -95649,72 +95431,7 @@
                 "description": ".attributes?.pitch"
               }
             ],
-            "tags": [
-              {
-                "name": "start-date",
-                "value": ".attributes?.start-date"
-              },
-              {
-                "name": "end-date",
-                "value": ".attributes?.end-date"
-              },
-              {
-                "name": "status",
-                "value": ".attributes?.status"
-              },
-              {
-                "name": "human-status",
-                "value": ".attributes?.human-status"
-              },
-              {
-                "name": "language-code",
-                "value": ".attributes?.language-code"
-              },
-              {
-                "name": "employment-type",
-                "value": ".attributes?.employment-type"
-              },
-              {
-                "name": "employment-level",
-                "value": ".attributes?.employment-level"
-              },
-              {
-                "name": "remote-status",
-                "value": ".attributes?.remote-status"
-              },
-              {
-                "name": "salary-time-unit",
-                "value": ".attributes?.salary-time-unit"
-              },
-              {
-                "name": "min-salary",
-                "value": ".attributes?.min-salary"
-              },
-              {
-                "name": "max-salary",
-                "value": ".attributes?.max-salary"
-              },
-              {
-                "name": "currency",
-                "value": ".attributes?.currency"
-              },
-              {
-                "name": "internal",
-                "value": ".attributes?.internal"
-              },
-              {
-                "name": "internal-name",
-                "value": ".attributes?.internal-name"
-              },
-              {
-                "name": "pinned",
-                "value": ".attributes?.pinned"
-              },
-              {
-                "name": "teamtailor_tags",
-                "value": "?.tags"
-              }
-            ]
+            "tags": "$merge([{name: 'start-date', value: .attributes?.start-date}, {name: 'end-date', value: .attributes?.end-date}, {name: 'status', value: .attributes?.status}, {name: 'human-status', value: .attributes?.human-status}, {name: 'language-code', value: .attributes?.language-code}, {name: 'employment-type',value: .attributes?.employment-type}, {name: 'employment-level',value: .attributes?.employment-level}, {name: 'remote-status',value: .attributes?.remote-status}, {name: 'salary-time-unit',value: .attributes?.salary-time-unit}, {name: 'min-salary', value: .attributes?.min-salary}, {name: 'max-salary', value: .attributes?.max-salary}, {name: 'currency', value: .attributes?.currency}, {name: 'internal', value: .attributes?.internal}, {name: 'internal-name', value: .attributes?.internal-name}, {name: 'pinned', value: .attributes?.pinned}], ?.tags || [] | $map({name: 'teamtailor_tag', value: .}))"
           },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Teamtailor\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Teamtailor.create_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Teamtailor.create_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('api_key', 'X_Api_Version'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('filter_status', 'filter_feed', 'filter_department', 'filter_role', 'filter_locations', 'filter_regions', 'filter_tags', 'filter_remote_status', 'filter_created_at_from', 'filter_created_at_to', 'filter_updated_at_from', 'filter_updated_at_to', 'sort'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key', 'enrich_with_parsing'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Teamtailor.create_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -96870,72 +96587,7 @@
                 "description": ".attributes?.pitch"
               }
             ],
-            "tags": [
-              {
-                "name": "start-date",
-                "value": ".attributes?.start-date"
-              },
-              {
-                "name": "end-date",
-                "value": ".attributes?.end-date"
-              },
-              {
-                "name": "status",
-                "value": ".attributes?.status"
-              },
-              {
-                "name": "human-status",
-                "value": ".attributes?.human-status"
-              },
-              {
-                "name": "language-code",
-                "value": ".attributes?.language-code"
-              },
-              {
-                "name": "employment-type",
-                "value": ".attributes?.employment-type"
-              },
-              {
-                "name": "employment-level",
-                "value": ".attributes?.employment-level"
-              },
-              {
-                "name": "remote-status",
-                "value": ".attributes?.remote-status"
-              },
-              {
-                "name": "salary-time-unit",
-                "value": ".attributes?.salary-time-unit"
-              },
-              {
-                "name": "min-salary",
-                "value": ".attributes?.min-salary"
-              },
-              {
-                "name": "max-salary",
-                "value": ".attributes?.max-salary"
-              },
-              {
-                "name": "currency",
-                "value": ".attributes?.currency"
-              },
-              {
-                "name": "internal",
-                "value": ".attributes?.internal"
-              },
-              {
-                "name": "internal-name",
-                "value": ".attributes?.internal-name"
-              },
-              {
-                "name": "pinned",
-                "value": ".attributes?.pinned"
-              },
-              {
-                "name": "teamtailor_tags",
-                "value": "?.tags"
-              }
-            ]
+            "tags": "$merge([{name: 'start-date', value: .attributes?.start-date}, {name: 'end-date', value: .attributes?.end-date}, {name: 'status', value: .attributes?.status}, {name: 'human-status', value: .attributes?.human-status}, {name: 'language-code', value: .attributes?.language-code}, {name: 'employment-type',value: .attributes?.employment-type}, {name: 'employment-level',value: .attributes?.employment-level}, {name: 'remote-status',value: .attributes?.remote-status}, {name: 'salary-time-unit',value: .attributes?.salary-time-unit}, {name: 'min-salary', value: .attributes?.min-salary}, {name: 'max-salary', value: .attributes?.max-salary}, {name: 'currency', value: .attributes?.currency}, {name: 'internal', value: .attributes?.internal}, {name: 'internal-name', value: .attributes?.internal-name}, {name: 'pinned', value: .attributes?.pinned}], ?.tags || [] | $map({name: 'teamtailor_tag', value: .}))"
           },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Teamtailor\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Teamtailor.update_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Teamtailor.update_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('api_key', 'X_Api_Version'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('filter_status', 'filter_feed', 'filter_department', 'filter_role', 'filter_locations', 'filter_regions', 'filter_tags', 'filter_remote_status', 'filter_created_at_from', 'filter_created_at_to', 'filter_updated_at_from', 'filter_updated_at_to', 'sort'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Teamtailor.update_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -99499,40 +99151,7 @@
             "experiences": [],
             "educations": [],
             "resume": "?.resume",
-            "tags": [
-              {
-                "name": "sourced",
-                "value": ".attributes?.sourced"
-              },
-              {
-                "name": "connected",
-                "value": ".attributes?.connected"
-              },
-              {
-                "name": "internal",
-                "value": ".attributes?.internal"
-              },
-              {
-                "name": "referred",
-                "value": ".attributes?.referred"
-              },
-              {
-                "name": "referring_url",
-                "value": ".attributes?.referring-url"
-              },
-              {
-                "name": "referring_site",
-                "value": ".attributes?.referring-site"
-              },
-              {
-                "name": "unsubscribed",
-                "value": ".attributes?.unsubscribed"
-              },
-              {
-                "name": "teamtailor_tags",
-                "value": "?.tags"
-              }
-            ]
+            "tags": "$merge([{name: 'sourced', value: .attributes?.sourced}, {name: 'connected', value: .attributes?.connected}, {name: 'internal', value: .attributes?.internal}, {name: 'referred', value: .attributes?.referred}, {name: 'referring_url', value: .attributes?.referring-url}, {name: 'referring_site', value: .attributes?.referring-site}, {name: 'unsubscribed', value: .attributes?.unsubscribed}], ?.tags || [] | $map({name: 'teamtailor_tag', value: .}))"
           },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Teamtailor\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Teamtailor.create_profiles_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Teamtailor.create_profiles_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('api_key', 'X_Api_Version'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('filter_email', 'filter_department', 'filter_role', 'filter_locations', 'filter_regions', 'filter_created_at_from', 'filter_created_at_to', 'filter_updated_at_from', 'filter_updated_at_to', 'filter_connected', 'sort'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('source_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Teamtailor.create_profiles_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -100974,40 +100593,7 @@
             "experiences": [],
             "educations": [],
             "resume": "?.resume",
-            "tags": [
-              {
-                "name": "sourced",
-                "value": ".attributes?.sourced"
-              },
-              {
-                "name": "connected",
-                "value": ".attributes?.connected"
-              },
-              {
-                "name": "internal",
-                "value": ".attributes?.internal"
-              },
-              {
-                "name": "referred",
-                "value": ".attributes?.referred"
-              },
-              {
-                "name": "referring_url",
-                "value": ".attributes?.referring-url"
-              },
-              {
-                "name": "referring_site",
-                "value": ".attributes?.referring-site"
-              },
-              {
-                "name": "unsubscribed",
-                "value": ".attributes?.unsubscribed"
-              },
-              {
-                "name": "teamtailor_tags",
-                "value": "?.tags"
-              }
-            ]
+            "tags": "$merge([{name: 'sourced', value: .attributes?.sourced}, {name: 'connected', value: .attributes?.connected}, {name: 'internal', value: .attributes?.internal}, {name: 'referred', value: .attributes?.referred}, {name: 'referring_url', value: .attributes?.referring-url}, {name: 'referring_site', value: .attributes?.referring-site}, {name: 'unsubscribed', value: .attributes?.unsubscribed}], ?.tags || [] | $map({name: 'teamtailor_tag', value: .}))"
           },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Teamtailor\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Teamtailor.update_profiles_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Teamtailor.update_profiles_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('api_key', 'X_Api_Version'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('filter_email', 'filter_department', 'filter_role', 'filter_locations', 'filter_regions', 'filter_created_at_from', 'filter_created_at_to', 'filter_updated_at_from', 'filter_updated_at_to', 'filter_connected', 'sort'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('source_key', 'only_edit_fields'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Teamtailor.update_profiles_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -105941,6 +105527,8 @@
             },
             "url": "?.url",
             "summary": "?.jobDescription",
+            "culture": "?.companyDescription",
+            "requirements": "?.profileDescription",
             "sections": [
               {
                 "name": "taleez-sections-jobDescription",
@@ -105958,7 +105546,7 @@
                 "description": "?.companyDescription"
               }
             ],
-            "tags": "$merge([{name: taleez_contract, value: ?.contract}, {name: taleez_profile, value: ?.profile}, {name: taleez_urlApplying, value: ?.urlApplying}, {name: taleez_currentStatus, value: ?.currentStatus}, {name: taleez_jobTitle, value: ?.jobTitle}, {name: taleez_company, value: ?.company}, {name: taleez_location, value: ?.location}, {name: taleez_startDate, value: ?.startDate}, {name: taleez_endDate, value: ?.endDate}, {name: taleez_description, value: ?.description}, {name: taleez_salary, value: ?.salary}, {name: taleez_salaryCurrency, value: ?.salaryCurrency}, {name: taleez_salaryPeriod, value: ?.salaryPeriod}, {name: taleez_salaryPeriodTimeUnit, value: ?.salaryPeriodTimeUnit}, {name: taleez_contractLength, value: ?.contractLength}, {name: taleez_contractLengthTimeUnit, value: ?.contractLengthTimeUnit}, {name: taleez_fullTime, value: ?.fullTime}, {name: taleez_workHours, value: ?.workHours}, {name: taleez_remote, value: ?.remote}, {name: taleez_recruiterId, value: ?.recruiterId}, {name: taleez_unitId, value: ?.unitId}, {name: taleez_companyLabel, value: ?.companyLabel}, {name: taleez_website, value: ?.website}, {name: taleez_visibility, value: ?.visibility}, {name: taleez_tags, value: ?.tags}], [.properties | .internal == 'D\u00e9partement' ?? ?.value || .values, .properties | .internal == 'Niveau de qualification' ?? ?.value || .values, .properties | .internal == 'Salaire' ?? ?.value || .values, .properties | .internal == 'Exp\u00e9rience' ?? ?.value || .values, .properties | .internal == 'Type de contrat' ?? ?.value || .values, .properties | .internal == 'Date de d\u00e9but' ?? ?.value || .values, .properties | .internal == 'Type de t\u00e9l\u00e9travail' ?? ?.value || .values])"
+            "tags": "$merge([{name: taleez_contract, value: ?.contract}, {name: taleez_profile, value: ?.profile}, {name: taleez_urlApplying, value: ?.urlApplying}, {name: taleez_currentStatus, value: ?.currentStatus}, {name: taleez_jobTitle, value: ?.jobTitle}, {name: taleez_company, value: ?.company}, {name: taleez_location, value: ?.location}, {name: taleez_startDate, value: ?.startDate}, {name: taleez_endDate, value: ?.endDate}, {name: taleez_description, value: ?.description}, {name: taleez_salary, value: ?.salary}, {name: taleez_salaryCurrency, value: ?.salaryCurrency}, {name: taleez_salaryPeriod, value: ?.salaryPeriod}, {name: taleez_salaryPeriodTimeUnit, value: ?.salaryPeriodTimeUnit}, {name: taleez_contractLength, value: ?.contractLength}, {name: taleez_contractLengthTimeUnit, value: ?.contractLengthTimeUnit}, {name: taleez_fullTime, value: ?.fullTime}, {name: taleez_workHours, value: ?.workHours}, {name: taleez_remote, value: ?.remote}, {name: taleez_recruiterId, value: ?.recruiterId}, {name: taleez_unitId, value: ?.unitId}, {name: taleez_companyLabel, value: ?.companyLabel}, {name: taleez_website, value: ?.website}, {name: taleez_visibility, value: ?.visibility}], ?.tags || [] | $map({name: 'taleez_tags', value: '.'}), [.properties | .internal == 'D\u00e9partement' ?? ?.value || .values, .properties | .internal == 'Niveau de qualification' ?? ?.value || .values, .properties | .internal == 'Salaire' ?? ?.value || .values, .properties | .internal == 'Exp\u00e9rience' ?? ?.value || .values, .properties | .internal == 'Type de contrat' ?? ?.value || .values, .properties | .internal == 'Date de d\u00e9but' ?? ?.value || .values, .properties | .internal == 'Type de t\u00e9l\u00e9travail' ?? ?.value || .values])"
           },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Taleez\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Taleez.create_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Taleez.create_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('x_taleez_api_secret',):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('unitId', 'status', 'contract', 'city', 'companyLabel', 'tag', 'visibility', 'visibilityToken', 'sort'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key', 'enrich_with_parsing'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Taleez.create_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -106931,6 +106519,8 @@
             },
             "url": "?.url",
             "summary": "?.jobDescription",
+            "culture": "?.companyDescription",
+            "requirements": "?.profileDescription",
             "sections": [
               {
                 "name": "taleez-sections-jobDescription",
@@ -106948,7 +106538,7 @@
                 "description": "?.companyDescription"
               }
             ],
-            "tags": "$merge([{name: taleez_contract, value: ?.contract}, {name: taleez_profile, value: ?.profile}, {name: taleez_urlApplying, value: ?.urlApplying}, {name: taleez_currentStatus, value: ?.currentStatus}, {name: taleez_jobTitle, value: ?.jobTitle}, {name: taleez_company, value: ?.company}, {name: taleez_location, value: ?.location}, {name: taleez_startDate, value: ?.startDate}, {name: taleez_endDate, value: ?.endDate}, {name: taleez_description, value: ?.description}, {name: taleez_salary, value: ?.salary}, {name: taleez_salaryCurrency, value: ?.salaryCurrency}, {name: taleez_salaryPeriod, value: ?.salaryPeriod}, {name: taleez_salaryPeriodTimeUnit, value: ?.salaryPeriodTimeUnit}, {name: taleez_contractLength, value: ?.contractLength}, {name: taleez_contractLengthTimeUnit, value: ?.contractLengthTimeUnit}, {name: taleez_fullTime, value: ?.fullTime}, {name: taleez_workHours, value: ?.workHours}, {name: taleez_remote, value: ?.remote}, {name: taleez_recruiterId, value: ?.recruiterId}, {name: taleez_unitId, value: ?.unitId}, {name: taleez_companyLabel, value: ?.companyLabel}, {name: taleez_website, value: ?.website}, {name: taleez_visibility, value: ?.visibility}, {name: taleez_tags, value: ?.tags}], [.properties | .internal == 'D\u00e9partement' ?? ?.value || .values, .properties | .internal == 'Niveau de qualification' ?? ?.value || .values, .properties | .internal == 'Salaire' ?? ?.value || .values, .properties | .internal == 'Exp\u00e9rience' ?? ?.value || .values, .properties | .internal == 'Type de contrat' ?? ?.value || .values, .properties | .internal == 'Date de d\u00e9but' ?? ?.value || .values, .properties | .internal == 'Type de t\u00e9l\u00e9travail' ?? ?.value || .values])"
+            "tags": "$merge([{name: taleez_contract, value: ?.contract}, {name: taleez_profile, value: ?.profile}, {name: taleez_urlApplying, value: ?.urlApplying}, {name: taleez_currentStatus, value: ?.currentStatus}, {name: taleez_jobTitle, value: ?.jobTitle}, {name: taleez_company, value: ?.company}, {name: taleez_location, value: ?.location}, {name: taleez_startDate, value: ?.startDate}, {name: taleez_endDate, value: ?.endDate}, {name: taleez_description, value: ?.description}, {name: taleez_salary, value: ?.salary}, {name: taleez_salaryCurrency, value: ?.salaryCurrency}, {name: taleez_salaryPeriod, value: ?.salaryPeriod}, {name: taleez_salaryPeriodTimeUnit, value: ?.salaryPeriodTimeUnit}, {name: taleez_contractLength, value: ?.contractLength}, {name: taleez_contractLengthTimeUnit, value: ?.contractLengthTimeUnit}, {name: taleez_fullTime, value: ?.fullTime}, {name: taleez_workHours, value: ?.workHours}, {name: taleez_remote, value: ?.remote}, {name: taleez_recruiterId, value: ?.recruiterId}, {name: taleez_unitId, value: ?.unitId}, {name: taleez_companyLabel, value: ?.companyLabel}, {name: taleez_website, value: ?.website}, {name: taleez_visibility, value: ?.visibility}], ?.tags || [] | $map({name: 'taleez_tags', value: '.'}), [.properties | .internal == 'D\u00e9partement' ?? ?.value || .values, .properties | .internal == 'Niveau de qualification' ?? ?.value || .values, .properties | .internal == 'Salaire' ?? ?.value || .values, .properties | .internal == 'Exp\u00e9rience' ?? ?.value || .values, .properties | .internal == 'Type de contrat' ?? ?.value || .values, .properties | .internal == 'Date de d\u00e9but' ?? ?.value || .values, .properties | .internal == 'Type de t\u00e9l\u00e9travail' ?? ?.value || .values])"
           },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Taleez\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Taleez.update_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Taleez.update_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('x_taleez_api_secret',):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('unitId', 'status', 'contract', 'city', 'companyLabel', 'tag', 'visibility', 'visibilityToken', 'sort'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Taleez.update_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -118242,44 +117832,7 @@
             "educations": "?.education_entries || [] | $map({school: ?.school, title:?.degree and ?.field_of_study ?? $concat(.degree, ' in ', .field_of_study): ?.degree || ?.field_of_study || 'Undefined', description: null, date_start: ?.start_date, date_end: ?.end_date, location: {text: null, lat: null, lng: null}})",
             "experiences": "?.experience_entries || [] | $map({company: ?.company, title: ?.title, date_start: ?.start_date, date_end: ?.end_date, description: ?.summary, location: {text: null, lat: null, lng: null}})",
             "skills": "?.skills || [] | $map({name: .name, value: null})",
-            "tags": [
-              {
-                "name": "job",
-                "value": "?.job"
-              },
-              {
-                "name": "stage",
-                "value": "?.stage"
-              },
-              {
-                "name": "disqualified",
-                "value": "?.disqualified"
-              },
-              {
-                "name": "disqualified_at",
-                "value": "?.disqualified_at"
-              },
-              {
-                "name": "disqualified_reason",
-                "value": "?.disqualified_reason"
-              },
-              {
-                "name": "hired_at",
-                "value": "?.hired_at"
-              },
-              {
-                "name": "source",
-                "value": "?.source"
-              },
-              {
-                "name": "answers",
-                "value": "?.answers"
-              },
-              {
-                "name": "workable_tags",
-                "value": "?.tags"
-              }
-            ]
+            "tags": "$merge([{name: 'job', value: ?.job}, {name: 'stage', value: ?.stage}, {name: 'disqualified', value: ?.disqualified}, {name: 'disqualified_at', value: ?.disqualified_at}, {name: 'disqualified_reason', value: ?.disqualified_reason}, {name: 'hired_at', value: ?.hired_at}, {name: 'source', value: ?.source}, {name: 'answers', value: ?.answers}], ?.tags || [] | $map({name: 'workable_tag', value: .}))"
           },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Workable\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Workable.create_profiles_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Workable.create_profiles_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('api_access_token', 'subdomain'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('email', 'shortcode', 'stage', 'max_id', 'created_after', 'updated_after'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('source_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Workable.create_profiles_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -119810,44 +119363,7 @@
             "educations": "?.education_entries || [] | $map({school: ?.school, title:?.degree and ?.field_of_study ?? $concat(.degree, ' in ', .field_of_study): ?.degree || ?.field_of_study || 'Undefined', description: null, date_start: ?.start_date, date_end: ?.end_date, location: {text: null, lat: null, lng: null}})",
             "experiences": "?.experience_entries || [] | $map({company: ?.company, title: ?.title, date_start: ?.start_date, date_end: ?.end_date, description: ?.summary, location: {text: null, lat: null, lng: null}})",
             "skills": "?.skills || [] | $map({name: .name, value: null})",
-            "tags": [
-              {
-                "name": "job",
-                "value": "?.job"
-              },
-              {
-                "name": "stage",
-                "value": "?.stage"
-              },
-              {
-                "name": "disqualified",
-                "value": "?.disqualified"
-              },
-              {
-                "name": "disqualified_at",
-                "value": "?.disqualified_at"
-              },
-              {
-                "name": "disqualified_reason",
-                "value": "?.disqualified_reason"
-              },
-              {
-                "name": "hired_at",
-                "value": "?.hired_at"
-              },
-              {
-                "name": "source",
-                "value": "?.source"
-              },
-              {
-                "name": "answers",
-                "value": "?.answers"
-              },
-              {
-                "name": "workable_tags",
-                "value": "?.tags"
-              }
-            ]
+            "tags": "$merge([{name: 'job', value: ?.job}, {name: 'stage', value: ?.stage}, {name: 'disqualified', value: ?.disqualified}, {name: 'disqualified_at', value: ?.disqualified_at}, {name: 'disqualified_reason', value: ?.disqualified_reason}, {name: 'hired_at', value: ?.hired_at}, {name: 'source', value: ?.source}, {name: 'answers', value: ?.answers}], ?.tags || [] | $map({name: 'workable_tag', value: .}))"
           },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Workable\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Workable.update_profiles_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Workable.update_profiles_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('api_access_token', 'subdomain'):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('email', 'shortcode', 'stage', 'max_id', 'created_after', 'updated_after'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('source_key', 'only_edit_fields'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Workable.update_profiles_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -128927,52 +128443,7 @@
               }
             ],
             "metadatas": "?.metadata",
-            "tags": [
-              {
-                "name": "requisition_id",
-                "value": "?.requisition_id"
-              },
-              {
-                "name": "confidential",
-                "value": "?.confidential"
-              },
-              {
-                "name": "status",
-                "value": "?.status"
-              },
-              {
-                "name": "opened_at",
-                "value": "?.opened_at"
-              },
-              {
-                "name": "closed_at",
-                "value": "?.closed_at"
-              },
-              {
-                "name": "departments",
-                "value": "?.departments || [] | $map(.name)"
-              },
-              {
-                "name": "offices",
-                "value": "?.offices || [] | $map(.name)"
-              },
-              {
-                "name": "employment_type",
-                "value": "?.custom_fields?.employment_type"
-              },
-              {
-                "name": "maximum_budget",
-                "value": "?.custom_fields?.budget.value"
-              },
-              {
-                "name": "is_template",
-                "value": "?.is_template"
-              },
-              {
-                "name": "copied_from_id",
-                "value": "?.copied_from_id"
-              }
-            ]
+            "tags": "$merge([{name: 'requisition_id', value: ?.requisition_id}, {name: 'confidential', value: ?.confidential}, {name: 'status', value: ?.status}, {name: 'opened_at', value: ?.opened_at}, {name: 'closed_at', value: ?.closed_at}, {name: 'employment_type', value: ?.custom_fields?.employment_type}, {name: 'maximum_budget', value: ?.custom_fields?.budget.value}, {name: 'is_template', value: ?.is_template}, {name: 'copied_from_id', value: ?.copied_from_id}], ?.departments || [] | $map({name: 'departments', value: .name}), ?.offices || [] | $map({name: 'offices', value: .name}))"
           },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Greenhouse\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Greenhouse.create_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Greenhouse.create_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('auth',):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('skip_count', 'created_before', 'created_after', 'updated_before', 'updated_after', 'requisition_id', 'opening_id', 'status', 'department_id', 'external_department_id', 'office_id', 'external_office_id', 'custom_field_option_id'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key', 'enrich_with_parsing'):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Greenhouse.create_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -130109,52 +129580,7 @@
               }
             ],
             "metadatas": "?.metadata",
-            "tags": [
-              {
-                "name": "requisition_id",
-                "value": "?.requisition_id"
-              },
-              {
-                "name": "confidential",
-                "value": "?.confidential"
-              },
-              {
-                "name": "status",
-                "value": "?.status"
-              },
-              {
-                "name": "opened_at",
-                "value": "?.opened_at"
-              },
-              {
-                "name": "closed_at",
-                "value": "?.closed_at"
-              },
-              {
-                "name": "departments",
-                "value": "?.departments || [] | $map(.name)"
-              },
-              {
-                "name": "offices",
-                "value": "?.offices || [] | $map(.name)"
-              },
-              {
-                "name": "employment_type",
-                "value": "?.custom_fields?.employment_type"
-              },
-              {
-                "name": "maximum_budget",
-                "value": "?.custom_fields?.budget.value"
-              },
-              {
-                "name": "is_template",
-                "value": "?.is_template"
-              },
-              {
-                "name": "copied_from_id",
-                "value": "?.copied_from_id"
-              }
-            ]
+            "tags": "$merge([{name: 'requisition_id', value: ?.requisition_id}, {name: 'confidential', value: ?.confidential}, {name: 'status', value: ?.status}, {name: 'opened_at', value: ?.opened_at}, {name: 'closed_at', value: ?.closed_at}, {name: 'employment_type', value: ?.custom_fields?.employment_type}, {name: 'maximum_budget', value: ?.custom_fields?.budget.value}, {name: 'is_template', value: ?.is_template}, {name: 'copied_from_id', value: ?.copied_from_id}], ?.departments || [] | $map({name: 'departments', value: .name}), ?.offices || [] | $map({name: 'offices', value: .name}))"
           },
           "workflow": {
             "catch_template": "import typing as t\n\nfrom hrflow_connectors.v2 import Greenhouse\nfrom hrflow_connectors.v2.core.run import ActionInitError, Reason\n\nCONNECTOR_AUTH_SETTINGS_PREFIX = \"connector_auth_\"\nHRFLOW_AUTH_SETTINGS_PREFIX = \"hrflow_auth_\"\nPULL_PARAMETERS_SETTINGS_PREFIX = \"pull_parameters_\"\nPUSH_PARAMETERS_SETTINGS_PREFIX = \"push_parameters_\"\n\n# << format_placeholder >>\n\n# << logics_placeholder >>\n\n# << callback_placeholder >>\n\n\n\n\n# << event_parser_placeholder >>\n\n\n\ndef workflow(\n        \n        _request: dict,\n        \n        settings: dict\n    ) -> None:\n    if \"__workflow_id\" not in settings:\n        return Greenhouse.update_jobs_in_hrflow(\n            workflow_id=\"\",\n            connector_auth=dict(),\n            hrflow_auth=dict(),\n            pull_parameters=dict(),\n            push_parameters=dict(),\n            init_error=ActionInitError(\n                reason=Reason.workflow_id_not_found,\n                data=dict(error=\"__workflow_id not found in settings\", settings_keys=list(settings.keys())),\n            )\n        )\n    workflow_id = settings[\"__workflow_id\"]\n\n    \n    event_parser = globals().get(\"event_parser\", globals().get(\"default_event_parser\"))\n\n    if event_parser is not None:\n        try:\n            _request = event_parser(_request)\n        except Exception as e:\n            return Greenhouse.update_jobs_in_hrflow(\n                workflow_id=workflow_id,\n                connector_auth=dict(),\n                hrflow_auth=dict(),\n                pull_parameters=dict(),\n                push_parameters=dict(),\n                init_error=ActionInitError(\n                    reason=Reason.event_parsing_failure,\n                    data=dict(error=e, event=_request),\n                )\n            )\n    \n\n    connector_auth = dict()\n    for parameter in ('auth',):\n        parameter_name = \"{}{}\".format(CONNECTOR_AUTH_SETTINGS_PREFIX, parameter) \n        if parameter_name in settings:\n            connector_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            connector_auth[parameter] = _request[parameter_name]\n        \n\n    hrflow_auth = dict()\n    for parameter in ('api_secret', 'api_user'):\n        parameter_name = \"{}{}\".format(HRFLOW_AUTH_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            hrflow_auth[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            hrflow_auth[parameter] = _request[parameter_name]\n        \n\n    pull_parameters = dict()\n    for parameter in ('skip_count', 'created_before', 'created_after', 'updated_before', 'updated_after', 'requisition_id', 'opening_id', 'status', 'department_id', 'external_department_id', 'office_id', 'external_office_id', 'custom_field_option_id'):\n        parameter_name = \"{}{}\".format(PULL_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            pull_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            pull_parameters[parameter] = _request[parameter_name]\n        \n\n    push_parameters = dict()\n    for parameter in ('board_key',):\n        parameter_name = \"{}{}\".format(PUSH_PARAMETERS_SETTINGS_PREFIX, parameter)\n        if parameter_name in settings:\n            push_parameters[parameter] = settings[parameter_name]\n        \n        if parameter_name in _request:\n            push_parameters[parameter] = _request[parameter_name]\n        \n\n    incremental = settings.get(\"__incremental\")\n\n    return Greenhouse.update_jobs_in_hrflow(\n        workflow_id=workflow_id,\n        connector_auth=connector_auth,\n        hrflow_auth=hrflow_auth,\n        pull_parameters=pull_parameters,\n        push_parameters=push_parameters,\n        logics=globals().get(\"logics\"),\n        format=globals().get(\"format\"),\n        callback=globals().get(\"callback\"),\n        incremental=incremental == \"enable\",\n    )",
@@ -149513,6 +148939,7 @@
                 "description": ".min_experience"
               }
             ],
+            "requirements": ".experience",
             "location": {
               "text": ".address",
               "lat": null,
@@ -150606,6 +150033,7 @@
                 "description": ".min_experience"
               }
             ],
+            "requirements": ".experience",
             "location": {
               "text": ".address",
               "lat": null,

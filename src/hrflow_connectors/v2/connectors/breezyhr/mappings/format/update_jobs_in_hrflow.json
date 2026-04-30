@@ -39,52 +39,8 @@
       "description": "?.location?.remote_details"
     }
   ],
-  "tags": [
-    {
-      "name": "type",
-      "value": "?.type?.name"
-    },
-    {
-      "name": "experience",
-      "value": "?.experience?.name"
-    },
-    {
-      "name": "education",
-      "value": "?.education"
-    },
-    {
-      "name": "department",
-      "value": "?.department"
-    },
-    {
-      "name": "requisition_id",
-      "value": "?.requisition_id"
-    },
-    {
-      "name": "category",
-      "value": "?.category?.name"
-    },
-    {
-      "name": "candidate_type",
-      "value": "?.candidate_type"
-    },
-    {
-      "name": "isremote",
-      "value": "?.location?.is_remote"
-    },
-    {
-      "name": "remote_details",
-      "value": "?.location?.remote_details"
-    },
-    {
-      "name": "creator_id",
-      "value": "?.creator_id"
-    },
-    {
-      "name": "breezy_hr_tags",
-      "value": "?.tags"
-    }
-  ],
+  "requirements": "[?.education | ' ', ?.experience ?? | ' '] | $join('\n') | $strip",
+  "tags": "$merge([{name: 'type', value: ?.type?.name}, {name: 'experience', value: ?.experience?.name}, {name: 'education', value: ?.education}, {name: 'department', value: ?.department}, {name: 'requisition_id', value: ?.requisition_id}, {name: 'category', value: ?.category?.name}, {name: 'candidate_type', value: ?.candidate_type}, {name: 'isremote', value: ?.location?.is_remote}, {name: 'remote_details', value: ?.location?.remote_details}, {name: 'creator_id', value: ?.creator_id}], ?.tags || [] | $map({name: 'breezy_hr_tag', value: .}))",
   "created_at": "?.creation_date",
   "updated_at": "?.updated_date"
 }

@@ -25,5 +25,5 @@
   "resume": {
     "raw": "?.cv_file"
   },
-  "tags": "$merge([{name: 'source', value: ?.source}, {name: 'sources', value: ?.sources}, {name: 'positive_ratings', value: ?.positive_ratings}, {name: 'grouped_open_question_answers', value: ?.grouped_open_question_answers}, {name: 'cover_letter', value: ?.cover_letter}, {name: 'last_message_at', value: ?.last_message_at}, {name: 'is_hired', value: ?.is_hired}, {name: 'tags', value: ?.tags || []}], .fields | $map( .kind != 'experience' and .kind != 'education' and .kind != 'skills' and .kind != 'language_skill' and .kind != 'address' and .kind != 'date_of_birth' ?? {name: ?.name || .kind, value: .values}))"
+  "tags": "$merge([{name: 'source', value: ?.source}, {name: 'sources', value: ?.sources}, {name: 'positive_ratings', value: ?.positive_ratings}, {name: 'grouped_open_question_answers', value: ?.grouped_open_question_answers}, {name: 'cover_letter', value: ?.cover_letter}, {name: 'last_message_at', value: ?.last_message_at}, {name: 'is_hired', value: ?.is_hired}], .fields | $map( .kind != 'experience' and .kind != 'education' and .kind != 'skills' and .kind != 'language_skill' and .kind != 'address' and .kind != 'date_of_birth' ?? {name: ?.name || .kind, value: .values}), ?.tags || [] | $map({name: 'candidate_tag', value: .}))"
 }

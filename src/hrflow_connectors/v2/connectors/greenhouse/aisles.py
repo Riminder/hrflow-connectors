@@ -135,6 +135,12 @@ class ReadProfilesParameters(Struct):
             ),
         ),
     ] = None
+    limit: Annotated[
+        int,
+        Meta(
+            description="The number of candidates to return",
+        ),
+    ] = 100
 
 
 class ReadJobsParameters(Struct, omit_defaults=True):
@@ -255,6 +261,12 @@ class ReadJobsParameters(Struct, omit_defaults=True):
             ),
         ),
     ] = None
+    limit: Annotated[
+        int,
+        Meta(
+            description="The number of jobs to return",
+        ),
+    ] = 100
 
 
 def read_profiles(
@@ -268,6 +280,7 @@ def read_profiles(
     authorization = base64.b64encode(auth_parameters.auth.encode("ascii"))
     page = 0
     params = msgspec_json.decode(msgspec_json.encode(parameters), type=dict)
+    limit = params.pop("limit", 100)
 
     all_profiles = []
     while True:
@@ -289,12 +302,12 @@ def read_profiles(
             raise Exception("Failed to pull profiles from Greenhouse")
         response = response.json()
         profiles = response.get("candidates", [])
-        if len(profiles) == 0:
-            break
         all_profiles += profiles
-
+        if len(profiles) == 0 or len(all_profiles) >= limit:
+            break
         page += 1
 
+    all_profiles = all_profiles[:limit]
     adapter.info("Pulling {} profiles".format(len(all_profiles)))
     for profile in all_profiles:
         yield profile
@@ -312,6 +325,7 @@ def read_jobs(
 
     page = 0
     params = msgspec_json.decode(msgspec_json.encode(parameters), type=dict)
+    limit = params.pop("limit", 100)
 
     all_jobs = []
     while True:
@@ -335,10 +349,9 @@ def read_jobs(
             raise Exception("Failed to pull jobs from Greenhouse")
         response = response.json()
         jobs = response.get("jobs", [])
-        if len(jobs) == 0:
-            break
         all_jobs += jobs
-
+        if len(jobs) == 0 or all_jobs >= limit:
+            break
         page += 1
 
         adapter.info("Pulling {} jobs".format(len(all_jobs)))

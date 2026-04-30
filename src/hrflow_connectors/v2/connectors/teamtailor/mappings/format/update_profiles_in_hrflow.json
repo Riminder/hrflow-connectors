@@ -25,38 +25,5 @@
   "experiences": [],
   "educations": [],
   "resume": "?.resume",
-  "tags": [
-    {
-      "name": "sourced",
-      "value": ".attributes?.sourced"
-    },
-    {
-      "name": "connected",
-      "value": ".attributes?.connected"
-    },
-    {
-      "name": "internal",
-      "value": ".attributes?.internal"
-    },
-    {
-      "name": "referred",
-      "value": ".attributes?.referred"
-    },
-    {
-      "name": "referring_url",
-      "value": ".attributes?.referring-url"
-    },
-    {
-      "name": "referring_site",
-      "value": ".attributes?.referring-site"
-    },
-    {
-      "name": "unsubscribed",
-      "value": ".attributes?.unsubscribed"
-    },
-    {
-      "name": "teamtailor_tags",
-      "value": "?.tags"
-    }
-  ]
+  "tags": "$merge([{name: 'sourced', value: .attributes?.sourced}, {name: 'connected', value: .attributes?.connected}, {name: 'internal', value: .attributes?.internal}, {name: 'referred', value: .attributes?.referred}, {name: 'referring_url', value: .attributes?.referring-url}, {name: 'referring_site', value: .attributes?.referring-site}, {name: 'unsubscribed', value: .attributes?.unsubscribed}], ?.tags || [] | $map({name: 'teamtailor_tag', value: .}))"
 }

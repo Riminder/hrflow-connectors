@@ -74,7 +74,16 @@ class WriteProfilesParameters(Struct):
     pass
 
 
-class ReadJobsParameters(Struct):
+class BaseReadParameters(Struct):
+    limit: Annotated[
+        int,
+        Meta(
+            description="The number of items to pull from Teamtailor. Default is 100.",
+        ),
+    ] = 100
+
+
+class ReadJobsParameters(BaseReadParameters):
     filter_status: Annotated[
         t.Optional[status],
         Meta(
@@ -158,7 +167,7 @@ class ReadJobsParameters(Struct):
     ] = None
 
 
-class ReadProfilesParameters(Struct):
+class ReadProfilesParameters(BaseReadParameters):
     filter_email: Annotated[
         t.Optional[str],
         Meta(description="Filter by email address"),
@@ -265,6 +274,7 @@ def read_jobs(
     }
 
     params = asdict(parameters)
+    limit = params.pop("limit", 100)
     params_dict = {
         "filter[status]": params.get("filter_status"),
         "filter[feed]": params.get("filter_feed"),
@@ -298,12 +308,14 @@ def read_jobs(
         jobs = response.get("data")
 
         all_jobs += jobs
+        if len(all_jobs) >= limit:
+            break
         if response.get("links").get("next") is None:
             break
         else:
             url = response.get("links").get("next")
 
-    adapter.info("Pulling {} jobs from Teamtailor API".format(len(all_jobs)))
+    all_jobs = all_jobs[:limit]
 
     for job in all_jobs:
         job_location = enrich_location(job.get("id"), headers)
@@ -324,6 +336,7 @@ def read_profiles(
     }
 
     params = asdict(parameters)
+    limit = params.pop("limit", 100)
     params_dict = {
         "filter[email]": params.get("filter_email"),
         "filter[department]": params.get("filter_department"),
@@ -354,12 +367,14 @@ def read_profiles(
         profiles = response.get("data")
 
         all_profiles += profiles
+        if len(all_profiles) >= limit:
+            break
         if response.get("links").get("next") is None:
             break
         else:
             url = response.get("links").get("next")
 
-    adapter.info("Pulling {} profiles from Teamtailor API".format(len(all_profiles)))
+    all_profiles = all_profiles[:limit]
 
     for profile in all_profiles:
         resume_url = profile["attributes"].get("resume")

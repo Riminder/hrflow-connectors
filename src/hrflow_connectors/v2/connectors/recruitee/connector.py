@@ -76,7 +76,10 @@ def get_candidate_tags(recruitee_candidate: t.Dict) -> t.List[t.Dict]:
             "address",
         }
     ]
-    tags += [{"name": "tags", "value": recruitee_candidate.get("tags", [])}]
+    tags += [
+        {"name": "candidate_tag", "value": candidate_tag}
+        for candidate_tag in recruitee_candidate.get("tags", [])
+    ]
     return tags
 
 
@@ -192,7 +195,12 @@ def get_job_tags(recruitee_job: t.Dict) -> t.List[t.Dict]:
         "closed_at",
     ]
     tags = [{"name": key, "value": recruitee_job.get(key)} for key in tag_keys]
-    tags += [{"name": "offer_tags", "value": recruitee_job.get("offer_tags", [])}]
+    tags.extend(
+        [
+            {"name": "offer_tag", "value": offer_tag}
+            for offer_tag in recruitee_job.get("offer_tags", [])
+        ]
+    )
 
     return tags
 

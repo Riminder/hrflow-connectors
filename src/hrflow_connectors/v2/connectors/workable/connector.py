@@ -164,7 +164,10 @@ def format_candidate(
             t("hired_at", workable_candidate.get("hired_at")),
             t("source", workable_candidate.get("source")),
             t("answers", workable_candidate.get("answers")),
-            t("workable_tags", workable_candidate.get("tags")),
+            *[
+                t("workable_tag", workable_tag)
+                for workable_tag in workable_candidate.get("tags", [])
+            ],
         ],
         resume=dict(raw=workable_candidate.get("resume")),
     )
